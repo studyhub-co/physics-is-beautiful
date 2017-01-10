@@ -1,0 +1,24 @@
+{% include "PiB/navbar.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+
+<div class="container">
+    <div class="section-title"><h1>{{lesson.lesson_name}}</h1></div>
+    <div class="row">
+        {% for question in lesson.question_set.all %}
+            <a href="{% url 'PiB:problem' question.id %}">
+                <div class="col-md-1">
+                    <h1>{{ question.question_text }}</h1>
+                </div>
+            </a>
+        {% endfor %}
+        {% for DrawVector in lesson.drawvector_set.all %}
+            <a href="{% url 'PiB:drawvector' DrawVector.id %}">
+                <div class="col-md-1">
+                    <h1>{{ DrawVector.question_text }}</h1>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+

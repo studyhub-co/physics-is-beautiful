@@ -1,0 +1,18 @@
+{% include "PiB/navbar.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+
+<div class="container">
+        <div class="section-title"><h1>{{module}}</h1></div>
+        <div class="row">
+            {% for lesson in module.lesson_set.all %}
+                 <a href="{% url 'PiB:lesson' lesson.id %}">
+                    <div class="col-md-1">
+                        <div class="thumbnail"><img src=" /{{ lesson.lesson_image.url }}"></div>
+                        <h1>{{ lesson }}</h1>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+</div>
+

@@ -1,0 +1,84 @@
+Metadata-Version: 2.0
+Name: python-monkey-business
+Version: 1.0.0
+Summary: Utility functions for monkey-patching python code
+Home-page: https://github.com/theatlantic/python-monkey-business
+Author: The Atlantic
+Author-email: programmers@theatlantic.com
+License: BSD
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Requires-Dist: six (>=1.7.0)
+
+About
+-----
+
+python-monkey-business is a package that provides a decorator for
+monkey-patching python functions at runtime.
+
+Installation
+------------
+
+Using pip::
+
+    pip install python-monkey-business
+
+Or, to install from source::
+
+    pip install -e git+https://github.com/theatlantic/python-monkey-business.git#egg=python-monkey-business
+
+If the source is already checked out, use setuptools::
+
+    python setup.py develop
+
+Usage
+-----
+
+To use python-monkey-business to swap out a function in a class or module at runtime:
+
+.. code-block:: python
+
+    import monkeybiz
+
+    from foomodule import FooClass
+    import barmodule
+
+
+    # This replaces FooClass.bar with our method
+    @monkeybiz.patch(FooClass)
+    def bar(original_fn, *args, **kwargs):
+        print "Patched!"
+        return original_fn(*args, **kwargs)
+
+    # This replaces barmodule.baz with our function
+    @monkeybiz.patch(barmodule)
+    def baz(original_fn, *args, **kwargs):
+        #...
+
+The first argument to ``monkeybiz.patch`` can be either a module, a class,
+or a list of modules and/or classes. The decorator also takes optional
+``name`` and ``avoid_doublewrap`` keyword arguments. If ``name`` is omitted,
+the name of the function being patched will be the name of the function being
+decorated. If ``avoid_doublewrap`` is True (the default), then functions and
+methods can only be patched once using this function.
+
+Use ``monkeybiz.unpatch()`` to revert a monkey-patched function to its original.
+
+License
+-------
+
+This code is licensed under the `Simplified BSD
+License <http://opensource.org/licenses/BSD-2-Clause>`_. View the
+``LICENSE`` file under the root directory for complete license and
+copyright information.
+
+

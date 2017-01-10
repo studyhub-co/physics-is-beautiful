@@ -1,0 +1,20 @@
+{% include "PiB/navbar.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+
+<div class="container">
+    {% for unit in unit_list %}
+        <div class="section-title"><h1>{{unit.unit_name}}</h1></div>
+        <div class="row">
+            {% for module in unit.module_set.all %}
+                 <a href="{% url 'PiB:module' module.id %}">
+                    <div class="col-md-1">
+                        <div class="thumbnail"><img src=" /{{ module.module_image.url }}"></div>
+                        <h1>{{ module }}</h1>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+

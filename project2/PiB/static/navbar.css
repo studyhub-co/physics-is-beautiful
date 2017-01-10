@@ -1,0 +1,124 @@
+@font-face {
+    font-family: 'Tw Cen MT';
+    src: url('typeface/hinted-TwCenMT-Regular.eot');
+    src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+    url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+    url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.nav a {
+    color: #5a5a5a;
+    font-family: Tw Cen MT;
+}
+
+.nav li {
+    display: inline;
+}
+
+.navbar.navbar-default {
+    /*background: #1caff6;*/
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3dbaf4+31,04a8f4+60,1caff6+100 */
+    background: #1caff6; /* Old browsers */
+    background: -moz-linear-gradient(left,  #3dbaf4 31%, #04a8f4 60%, #1caff6 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left,  #3dbaf4 31%,#04a8f4 60%,#1caff6 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right,  #3dbaf4 31%,#04a8f4 60%,#1caff6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3dbaf4', endColorstr='#1caff6',GradientType=1 ); /* IE6-9 */
+}
+.navbar.navbar-default a {
+    color:white;
+    font-size:25px;
+    font-family: Tw Cen MT;
+}
+
+.nav.navbar-nav.navbar-right a {
+    color:white;
+    font-size:20px;
+    background: #1caff6;
+}
+.nav.navbar-nav.navbar-right p {
+    color:white;
+    font-size:15px;
+    font-family: Tw Cen MT;
+}
+.nav.navbar-nav.navbar-right a:hover{
+    background: #EEE;
+}
+
+.navbar.navbar-default button {
+    background-color: aliceblue;
+}
+
+.navbar-brand {
+    position: relative;
+    top: -5px;
+}
+
+.navbar-brand:hover {
+    -webkit-animation-name: hue; /* Chrome, Safari, Opera */
+    -webkit-animation-duration: 1s; /* Chrome, Safari, Opera */
+    animation-name: hue;
+    animation-duration: 1s;
+}
+
+span.menuToolbutton {
+    color: white !important;
+    font-size: 19px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes hue {
+    from {color: #FFF;}
+    to {color: #555;}
+}
+
+/* Standard syntax */
+@keyframes hue {
+    from {color: #FFF;}
+    to {color: #555;}
+}
+
+#navbarUserName {
+    margin-left: 10px;
+}
+
+#nb_profilePic {
+    height: 18px;
+    width: 18px;
+}
+
+span.community-name {
+    display: none !important;
+}
+
+/*@media all and (max-width: 320px) {
+.nb-drop-level-1 {
+    display: none;
+}*/
+@media all and (max-width: 320px) {
+    .navbar.navbar-default a {
+        font-size: 20px;
+        top: -1px;
+    }
+}
+
+@media all and (max-width: 280px) {
+    .navbar.navbar-default a {
+        font-size: 15px;
+        top: 0px;
+    }
+}
+
+@media all and (max-width: 240px) {
+    .nb-drop-level-1 {
+        display: none;
+    }
+    .navbar.navbar-default a {
+        font-size: 25px;
+        top: -5px;
+    }
+}

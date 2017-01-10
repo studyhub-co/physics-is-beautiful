@@ -1,0 +1,43 @@
+{% load static %}
+
+<head>
+
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'homepage/main.css' %}">
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <title>Physics is Beautiful</title>
+    <meta name="description" content="The free, interactive, easy way to learn physics for everyone. Full physics curriculum designed for all levels:
+		algebra & calculus-based physics, AP, high-school & university, and for the casual learner" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="NP7f-DpvWUhmilJHYIMqFthNKWFToSdt52-Z8W6CErc" />
+</head>
+
+<body>
+<div class="nav">
+    <div class="container">
+        <ul class="pull-right">
+            <div class="dropdown">
+                <button id="loginButton" onClick="location.href='{% url 'account_login' %}'">
+                    Log in
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                </ul>
+            </div>
+
+        </ul>
+    </div>
+</div>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>Physics is <span style="white-space: nowrap;">beauti\(\!\int\!\)ul.</span></h1>
+        <p>
+            Start learning physics, free.
+        </p>
+    </div>
+</div>
+
+</body>

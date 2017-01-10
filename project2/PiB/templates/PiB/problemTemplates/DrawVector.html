@@ -1,0 +1,17 @@
+{% extends "PiB/ProblemPageBase.html" %}
+
+
+{% block LHS %}
+    <h1 id='ajaxDiv'>{{drawvector.question_text}}</h1>
+    {% if drawvector.image %}
+        <div class="thumbnail"><img src=" /{{ drawvector.image.url }}"></div>
+    {% endif %}
+{% endblock LHS %}
+
+
+{% block RHS %}
+    <canvas id="c" width="300px" height="300px" style="border:1px solid #ccc"></canvas>
+    <div class="button-group" id="vectorButton">
+        <a class="btn btn-primary" id="button">Check</a>
+    </div>
+{% endblock RHS %}
