@@ -1,7 +1,12 @@
-{% include "PiB/navbar.html" %}
+{% extends "PiB/navbar.html" %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'PiB/ProblemPageBase.css' %}" />
 
+{% block ExtraHead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'PiB/ProblemPageBase.css' %}" />
+    {% block ExtraExtraHead %} {% endblock  %}
+{% endblock %}
+
+{% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-6 text-center">
@@ -65,3 +70,4 @@
 
     </div>
 </div>
+{% endblock %}

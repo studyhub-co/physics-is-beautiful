@@ -115,11 +115,14 @@ function drawVector() {
         userDeltaY = Math.round((line.y1-line.y2)/grid);
         if(calcArrowAngle(line.x1, line.y1, line.x2, line.y2)<360){userAngle=calcArrowAngle(line.x1, line.y1, line.x2, line.y2);}
         else{userAngle=calcArrowAngle(line.x1, line.y1, line.x2, line.y2)-360;}
-        answerJSON = $.parseJSON(answer);
-        if("magnitude" in answerJSON){ answerMagnitude=answerJSON.magnitude} else{answerMagnitude = userMagnitude}
-        if("deltax" in answerJSON){ answerDeltaX=answerJSON.deltax} else{answerDeltaX = userDeltaX}
-        if("deltay" in answerJSON){ answerDeltaY=answerJSON.deltay} else{answerDeltaY = userDeltaY}
-        if("angle" in answerJSON){ answerAngle=answerJSON.angle} else{answerAngle = userAngle}
+        magnitude=drawvectorDjango.magnitude;
+        deltax= drawvectorDjango.xComponent;
+        deltay= drawvectorDjango.yComponent;
+        angle= drawvectorDjango.angle;
+        if(magnitude){ answerMagnitude=magnitude} else{answerMagnitude = userMagnitude}
+        if(deltax){ answerDeltaX=deltax} else{answerDeltaX = userDeltaX}
+        if(deltay){ answerDeltaY=deltay} else{answerDeltaY = userDeltaY}
+        if(angle){ answerAngle=angle} else{answerAngle = userAngle}
         $("#button").unbind("click");
         $("#button").click(function() {
             $(".upper-canvas").css("pointer-events","none");
