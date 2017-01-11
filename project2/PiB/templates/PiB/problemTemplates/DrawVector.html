@@ -1,5 +1,6 @@
 {% extends "PiB/ProblemPageBase.html" %}
-
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'ProblemPageBase.css' %}" />
 
 {% block LHS %}
     <h1 id='ajaxDiv'>{{drawvector.question_text}}</h1>
