@@ -1,7 +1,11 @@
-{% include "PiB/navbar.html" %}
+{% extends "PiB/navbar.html" %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
 
+{% block ExtraHead %}
+<link rel="stylesheet" type="text/css" href="{% static 'PiB/style.css' %}" />
+{% endblock %}
+
+{% block content %}
 <div class="container">
     {% for unit in unit_list %}
         <div class="section-title"><h1>{{unit.unit_name}}</h1></div>
@@ -17,4 +21,4 @@
         </div>
     {% endfor %}
 </div>
-
+{% endblock %}

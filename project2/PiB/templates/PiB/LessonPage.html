@@ -1,7 +1,10 @@
 {% include "PiB/navbar.html" %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+{% block ExtraHead %}
+<link rel="stylesheet" type="text/css" href="{% static 'PiB/style.css' %}" />
+{% endblock %}
 
+{% block content %}
 <div class="container">
     <div class="section-title"><h1>{{lesson.lesson_name}}</h1></div>
     <div class="row">
@@ -21,4 +24,4 @@
         {% endfor %}
     </div>
 </div>
-
+{% endblock %}
