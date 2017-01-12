@@ -18,3 +18,8 @@ pip install -r requirements.txt
 ```
 
 * You should find the site running on `http://localhost:8000`
+
+## Development
+
+* We respect the rules set out by pep8 with the exception of a 100 character line limit.
+* We use the flake8 python script for linting.
