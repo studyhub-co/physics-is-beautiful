@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('PiB', '0001_initial'),
+        ('pib', '0001_initial'),
     ]
 
     operations = [
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('lesson_name', models.CharField(max_length=200)),
                 ('pub_date', models.DateTimeField(verbose_name=b'date published')),
                 ('lesson_image', models.ImageField(upload_to=b'')),
-                ('module', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='PiB.Module')),
+                ('module', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pib.Module')),
             ],
         ),
         migrations.CreateModel(
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('question_text', models.CharField(max_length=200)),
                 ('pub_date', models.DateTimeField(verbose_name=b'date published')),
                 ('module_image', models.ImageField(upload_to=b'')),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='PiB.Lesson')),
+                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pib.Lesson')),
             ],
         ),
         migrations.AlterModelOptions(
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='choice',
             name='question',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='PiB.Question'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pib.Question'),
         ),
         migrations.AlterOrderWithRespectTo(
             name='question',

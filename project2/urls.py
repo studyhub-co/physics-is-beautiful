@@ -22,8 +22,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', include('homepage.urls')),
-    url(r'^curriculum/', include('PiB.urls')),
+    url(r'^curriculum/', include('pib.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

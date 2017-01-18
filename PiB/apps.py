@@ -4,4 +4,4 @@ from django.apps import AppConfig
 
 
 class PibConfig(AppConfig):
-    name = 'PiB'
+    name = 'pib'

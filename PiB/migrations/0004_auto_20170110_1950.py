@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('PiB', '0003_auto_20170106_0359'),
+        ('pib', '0003_auto_20170106_0359'),
     ]
 
     operations = [
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('pub_date', models.DateTimeField(verbose_name=b'date published')),
                 ('image', models.ImageField(blank=True, upload_to=b'')),
                 ('position', models.PositiveSmallIntegerField(null=True, verbose_name=b'Position')),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='PiB.Lesson')),
+                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pib.Lesson')),
             ],
             options={
                 'ordering': ['position'],

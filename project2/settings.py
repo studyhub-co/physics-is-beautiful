@@ -25,7 +25,7 @@ SECRET_KEY = '0dk3tvyko9mz6t!+y42*$lzow)^dr3#(i_8^!7(x64!&yrpiz7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','physicsisbeautiful.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'physicsisbeautiful.com']
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -39,21 +39,21 @@ AUTHENTICATION_BACKENDS = (
 
 INSTALLED_APPS = [
     'homepage.apps.HomepageConfig',
-    'PiB.apps.PibConfig',
+    'pib.apps.PibConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #For allauth
+    # For allauth
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    #Nested admin
+    # Nested admin
     'nested_admin',
 ]
 
@@ -148,8 +148,7 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = False
 
 
-
-MEDIA_ROOT = os.path.join(BASE_DIR,'MEDIA')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
 MEDIA_URL = 'media/'
 
-LOGIN_REDIRECT_URL = 'PiB:curriculum'
+LOGIN_REDIRECT_URL = 'pib:curriculum'

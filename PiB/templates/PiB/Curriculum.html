@@ -1,8 +1,8 @@
-{% extends "PiB/navbar.html" %}
+{% extends "pib/navbar.html" %}
 {% load static %}
 
 {% block ExtraHead %}
-<link rel="stylesheet" type="text/css" href="{% static 'PiB/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'pib/style.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
         <div class="section-title"><h1>{{unit.unit_name}}</h1></div>
         <div class="row">
             {% for module in unit.module_set.all %}
-                 <a href="{% url 'PiB:module' module.id %}">
+                 <a href="{% url 'pib:module' module.id %}">
                     <div class="col-md-1">
                         <div class="thumbnail"><img src=" /{{ module.module_image.url }}"></div>
                         <h1>{{ module }}</h1>
