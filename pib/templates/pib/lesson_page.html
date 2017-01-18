@@ -15,10 +15,10 @@
                 </div>
             </a>
         {% endfor %}
-        {% for DrawVector in lesson.drawvector_set.all %}
-            <a href="{% url 'pib:drawvector' DrawVector.id %}">
+        {% for draw_vector in lesson.drawvector_set.all %}
+            <a href="{% url 'pib:drawvector' draw_vector.id %}">
                 <div class="col-md-1">
-                    <h1>{{ DrawVector.question_text }}</h1>
+                    <h1>{{ draw_vector.question_text }}</h1>
                 </div>
             </a>
         {% endfor %}
