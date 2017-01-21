@@ -1,13 +1,13 @@
-{% include "pib/navbar.html" %}
+{% include "curricula/navbar.html" %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
 
 <div class="container">
-    <div class="section-title"><h1>{{question.question_text}}</h1></div>
+    <div class="section-title"><h1>{{lesson.lesson_name}}</h1></div>
     <div class="row">
-        {% for choice in question.choice_set.all %}
+        {% for question in lesson.question_set.all %}
             <div class="col-md-1">
-                <h1>{{ choice }}</h1>
+                <h1>{{ question }}</h1>
             </div>
         {% endfor %}
     </div>

@@ -39,7 +39,7 @@ AUTHENTICATION_BACKENDS = (
 
 INSTALLED_APPS = [
     'homepage.apps.HomepageConfig',
-    'pib.apps.PibConfig',
+    'curricula.apps.CurriculaConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -151,4 +151,4 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = False
 MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
 MEDIA_URL = 'media/'
 
-LOGIN_REDIRECT_URL = 'pib:curriculum'
+LOGIN_REDIRECT_URL = 'curricula:curriculum'

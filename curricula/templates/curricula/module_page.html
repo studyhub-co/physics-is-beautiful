@@ -1,7 +1,7 @@
-{% include "pib/navbar.html" %}
+{% include "curricula/navbar.html" %}
 {% load static %}
 {% block ExtraHead %}
-<link rel="stylesheet" type="text/css" href="{% static 'pib/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
         <div class="section-title"><h1>{{module}}</h1></div>
         <div class="row">
             {% for lesson in module.lesson_set.all %}
-                 <a href="{% url 'pib:lesson' lesson.id %}">
+                 <a href="{% url 'curricula:lesson' lesson.id %}">
                     <div class="col-md-1">
                         <div class="thumbnail"><img src=" /{{ lesson.lesson_image.url }}"></div>
                         <h1>{{ lesson }}</h1>

@@ -1,9 +1,9 @@
 @font-face {
     font-family: 'Tw Cen MT';
-    src: url('/static/pib/typeface/hinted-TwCenMT-Regular.eot');
-    src: url('/static/pib/typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
-    url('/static/pib/typeface/hinted-TwCenMT-Regular.woff') format('woff'),
-    url('/static/pib/typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+    src: url('/static/curricula/typeface/hinted-TwCenMT-Regular.eot');
+    src: url('/static/curricula/typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+    url('/static/curricula/typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+    url('/static/curricula/typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

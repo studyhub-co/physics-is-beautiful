@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 
-app_name = 'pib'
+app_name = 'curricula'
 
 urlpatterns = [
     url(r'^$', views.CurriculumView.as_view(), name='curriculum'),
