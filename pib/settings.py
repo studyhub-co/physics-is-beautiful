@@ -38,8 +38,6 @@ AUTHENTICATION_BACKENDS = (
 # Application definition
 
 INSTALLED_APPS = [
-    'homepage.apps.HomepageConfig',
-    'curricula.apps.CurriculaConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,6 +53,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     # Nested admin
     'nested_admin',
+    # pib apps
+    'homepage.apps.HomepageConfig',
+    'curricula.apps.CurriculaConfig',
 ]
 
 MIDDLEWARE = [
