@@ -1,4 +1,5 @@
 Django==1.10.5
 django-allauth==0.30.0
+django-light-enums==0.1.6
 django-nested-admin==3.0.12
 Pillow==4.0.0

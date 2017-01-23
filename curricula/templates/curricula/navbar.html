@@ -43,16 +43,16 @@
         {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li>
+                <li class="nav-item">
                     <p id="navbarUserName" class="navbar-text">
-                        Username here
+		    {{ request.user.first_name }} {{ request.user.last_name }}
                     </p>
                 </li>
-                <li class="active">
-                    Dashboard
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'curricula:curriculum' %}">Dashboard</a>
                 </li>
-                <li>
-                    Logout
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                 </li>
             </ul>
         </div><!--/.nav-collapse -->

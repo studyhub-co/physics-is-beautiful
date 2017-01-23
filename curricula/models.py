@@ -1,107 +1,153 @@
 from django.db import models
+from django.core import urlresolvers
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
+from django_light_enums import enum
 
 
-class Curriculum(models.Model):
+class BaseModel(models.Model):
+
+    class Meta:
+        abstract = True
+
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return urlresolvers.reverse(
+            'admin:{}_{}_change'.format(
+                content_type.app_label,
+                content_type.model
+            ),
+            args=[self.id]
+        )
+
+
+class Curriculum(BaseModel):
 
     class Meta:
         verbose_name_plural = "curricula"
+        db_table = 'curricula_curricula'
+
+    class Name:
+        DEFAULT = 'Default Curriculum'
 
     name = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-    image = models.ImageField
-
-    def __str__(self):
-        return self.curriculum_name
-
-
-class Unit(models.Model):
-
-    class Meta:
-        ordering = ['position']
-
-    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    published_on = models.DateTimeField('date published')
-    image = models.ImageField
-    position = models.PositiveSmallIntegerField("Position", null=True)
-
-    def __str__(self):
-        return self.unit_name
-
-
-class Module(models.Model):
-
-    class Meta:
-        ordering = ['position']
-
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    published_on = models.DateTimeField('date published')
+    published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
-    position = models.PositiveSmallIntegerField("Position", null=True)
 
     def __str__(self):
-        return self.module_name
+        return 'Curriculum: {}'.format(self.name)
 
 
-class Lesson(models.Model):
+class Unit(BaseModel):
 
     class Meta:
         ordering = ['position']
+        db_table = 'curricula_units'
 
-    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    curriculum = models.ForeignKey(Curriculum, related_name='units', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    published_on = models.DateTimeField('date published')
+    published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
-    position = models.PositiveSmallIntegerField("Position", null=True)
+    position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
     def __str__(self):
-        return self.lesson_name
+        return 'Unit: {}'.format(self.name)
 
 
-class Question(models.Model):
+class Module(BaseModel):
 
     class Meta:
         ordering = ['position']
+        db_table = 'curricula_modules'
 
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, related_name='modules', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    published_on = models.DateTimeField('date published', null=True, blank=True)
+    image = models.ImageField()
+    position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+
+    def __str__(self):
+        return 'Module: {}'.format(self.name)
+
+
+class Lesson(BaseModel):
+
+    class Meta:
+        ordering = ['position']
+        db_table = 'curricula_lessons'
+
+    module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    published_on = models.DateTimeField('date published', null=True, blank=True)
+    image = models.ImageField()
+    position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+
+    def __str__(self):
+        return 'Lesson: {}'.format(self.name)
+
+
+class Question(BaseModel):
+
+    class Meta:
+        ordering = ['position']
+        db_table = 'curricula_questions'
+
+    class QuestionType(enum.Enum):
+        SINGLE_ANSWER = 10
+        MULTIPLE_CHOICES = 20
+
+    lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
-    published_on = models.DateTimeField('date published')
+    published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
-    position = models.PositiveSmallIntegerField("Position", null=True)
+    question_type = enum.EnumField(QuestionType)
+    position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
     def __str__(self):
-        return self.question_text
+        return 'Question: '.format(self.text)
 
 
-class Choice(models.Model):
+class Answer(BaseModel):
 
     class Meta:
         ordering = ['position']
+        db_table = 'curricula_answers'
 
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
+    position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content = GenericForeignKey('content_type', 'object_id')
+    is_correct = models.BooleanField(default=False)
+
+
+class Text(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_text_answers'
+
     text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
-    position = models.PositiveSmallIntegerField("Position", null=True)
 
     def __str__(self):
-        return self.choice_text
+        return 'Text: {}'.format(self.text)
 
 
-class DrawVector(models.Model):
+class Vector(BaseModel):
 
     class Meta:
-        ordering = ['position']
+        db_table = 'curricula_vector_answers'
 
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    question_text = models.CharField(max_length=200)
     magnitude = models.PositiveSmallIntegerField("Magnitude", null=True, blank=True)
     angle = models.PositiveSmallIntegerField("Angle", null=True, blank=True)
-    xComponent = models.SmallIntegerField("x-Component", null=True, blank=True)
-    yComponent = models.SmallIntegerField("y-Component", null=True, blank=True)
-    pub_date = models.DateTimeField('date published')
-    image = models.ImageField(blank=True)
-    position = models.PositiveSmallIntegerField("Position", null=True)
+    x_component = models.SmallIntegerField("x-Component", null=True, blank=True)
+    y_component = models.SmallIntegerField("y-Component", null=True, blank=True)
 
     def __str__(self):
-        return self.question_text
+        if self.magnitude and self.angle:
+            return 'Vector: ({}, {}°)'.format(self.magnitude, self.angle)
+        else:
+            return 'Vector: {}x + {}y'.format(self.x_component, self.y_component)

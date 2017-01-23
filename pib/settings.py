@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # Nested admin
     'nested_admin',
     # pib apps
+    'profiles.apps.ProfilesConfig',
     'homepage.apps.HomepageConfig',
     'curricula.apps.CurriculaConfig',
 ]
@@ -144,9 +145,11 @@ SITE_ID = 1
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_SIGNUP_FORM_CLASS = 'profiles.forms.SignupForm'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = False
+SOCIALACCOUNT_AUTO_SIGNUP = False
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')

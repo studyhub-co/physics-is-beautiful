@@ -90,3 +90,6 @@ ENV/
 
 # ignore sqllite db
 db.sqlite3
+
+# ignore media dir
+MEDIA/

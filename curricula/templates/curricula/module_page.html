@@ -10,9 +10,9 @@
         <div class="row">
             {% for lesson in module.lesson_set.all %}
                  <a href="{% url 'curricula:lesson' lesson.id %}">
-                    <div class="col-md-1">
-                        <div class="thumbnail"><img src=" /{{ lesson.lesson_image.url }}"></div>
-                        <h1>{{ lesson }}</h1>
+                    <div class="col-md-1 module-accessible-block">
+                        <div class="thumbnail"><img src=" /{{ lesson.image.url }}"></div>
+                        <h1>{{ lesson.name }}</h1>
                     </div>
                 </a>
             {% endfor %}
