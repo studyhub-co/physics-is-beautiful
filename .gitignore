@@ -93,3 +93,9 @@ db.sqlite3
 
 # ignore media dir
 MEDIA/
+
+# npm
+node_modules/
+
+# bundles
+assets/bundles/

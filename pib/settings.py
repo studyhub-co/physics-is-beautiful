@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
+    # webpack
+    'webpack_loader',
     # Nested admin
     'nested_admin',
     # pib apps
@@ -140,6 +142,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# We do this so that django's collectstatic copies or our bundles to the
+# STATIC_ROOT or syncs them to whatever storage we use.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
+
 SITE_ID = 1
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -151,8 +159,15 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = False
 SOCIALACCOUNT_AUTO_SIGNUP = False
 
+LOGIN_REDIRECT_URL = 'curricula:curriculum'
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
 MEDIA_URL = 'media/'
 
-LOGIN_REDIRECT_URL = 'curricula:curriculum'
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    }
+}

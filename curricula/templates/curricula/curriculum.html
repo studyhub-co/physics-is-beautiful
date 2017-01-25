@@ -1,4 +1,5 @@
 {% extends "curricula/navbar.html" %}
+{% load render_bundle from webpack_loader %}
 {% load static %}
 
 {% block ExtraHead %}
@@ -7,6 +8,8 @@
 
 {% block content %}
 <div class="container">
+    <div id="react-app"></div>
+    {% render_bundle 'main' %}
     {% for unit in unit_list %}
         <div class="section-title"><h1>{{unit.name}}</h1></div>
         <div class="row">
