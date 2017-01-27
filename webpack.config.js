@@ -18,7 +18,14 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /\.jsx?$/, exclude: /node_modules/, loader: 'jsx-loader?insertPragma=React.DOM&harmony'}, // to transform JSX into JS
+            {
+                test: /\.jsx?$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/,
+                query: {
+                    presets: ['es2015', 'react']
+                }
+            }
         ],
     },
 
