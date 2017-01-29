@@ -90,7 +90,7 @@ class SpecialAnswerFormMixin(object):
         NOTE: We ignore the commit flag.
         """
         instance = super(SpecialAnswerFormMixin, self).save(commit=False)
-        if not instance.id:
+        if not instance.id and instance.question:
             instance.position = instance.question.answers.count()
         if not instance.object_id:
             kwargs = {field: self.cleaned_data[field] for field in self.FIELDS}
@@ -171,7 +171,7 @@ class TextAnswerInline(NestedTabularInline):
 
     def get_max_num(self, request, obj=None, **kwargs):
         if not obj or obj.question_type == Question.QuestionType.SINGLE_ANSWER:
-            return 1 if obj.answers.count() < 1 else 0
+            return 1 if not obj or obj.answers.count() < 1 else 0
         else:
             return None
 

@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 from django_light_enums import enum
+from shortuuidfield import ShortUUIDField
 
 
 class BaseModel(models.Model):
@@ -25,6 +26,12 @@ class BaseModel(models.Model):
         )
 
 
+class CurriculumQuerySet(models.QuerySet):
+
+    def get_default(self):
+        return self.get(name=Curriculum.Name.DEFAULT)
+
+
 class Curriculum(BaseModel):
 
     class Meta:
@@ -34,7 +41,10 @@ class Curriculum(BaseModel):
     class Name:
         DEFAULT = 'Default Curriculum'
 
-    name = models.CharField(max_length=200)
+    objects = CurriculumQuerySet.as_manager()
+
+    uuid = ShortUUIDField()
+    name = models.CharField(max_length=200, db_index=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
 
@@ -48,6 +58,7 @@ class Unit(BaseModel):
         ordering = ['position']
         db_table = 'curricula_units'
 
+    uuid = ShortUUIDField()
     curriculum = models.ForeignKey(Curriculum, related_name='units', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
@@ -64,6 +75,7 @@ class Module(BaseModel):
         ordering = ['position']
         db_table = 'curricula_modules'
 
+    uuid = ShortUUIDField()
     unit = models.ForeignKey(Unit, related_name='modules', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
@@ -80,11 +92,15 @@ class Lesson(BaseModel):
         ordering = ['position']
         db_table = 'curricula_lessons'
 
+    uuid = ShortUUIDField()
     module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField()
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+
+    def get_next_question(self):
+        return self.questions.first()
 
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
@@ -98,14 +114,19 @@ class Question(BaseModel):
 
     class QuestionType(enum.Enum):
         SINGLE_ANSWER = 10
-        MULTIPLE_CHOICES = 20
+        MULTIPLE_CHOICE = 20
 
+    uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     question_type = enum.EnumField(QuestionType)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+
+    @property
+    def question_type_name(self):
+        return self.QuestionType.get_name(self.question_type)
 
     def __str__(self):
         return 'Question: '.format(self.text)
@@ -117,6 +138,7 @@ class Answer(BaseModel):
         ordering = ['position']
         db_table = 'curricula_answers'
 
+    uuid = ShortUUIDField()
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
