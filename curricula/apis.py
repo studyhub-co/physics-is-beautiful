@@ -74,6 +74,11 @@ class LessonSerializer(BaseSerializer):
         model = Lesson
         fields = ['uuid', 'name', 'image']
 
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        return '/{}'.format(obj.image.url)
+
 
 class LessonViewSet(ModelViewSet):
 
@@ -92,10 +97,16 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
 
     class Meta:
         model = Module
-        fields = ['uuid', 'name', 'image']
+        fields = ['uuid', 'name', 'image', 'lesson_count']
         expandable_fields = {
             'lessons': (LessonSerializer, (), {'many': True}),
         }
+
+    image = serializers.SerializerMethodField()
+    lesson_count = serializers.IntegerField(source='lessons.count')
+
+    def get_image(self, obj):
+        return '/{}'.format(obj.image.url)
 
 
 class ModuleViewSet(ModelViewSet):

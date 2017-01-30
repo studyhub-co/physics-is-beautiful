@@ -4,11 +4,12 @@
 
 {% block ExtraHead %}
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+<script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'curricula/draw_vector.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <div id="react-app"></div>
     {% render_bundle 'main' %}
 </div>
-<div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-family: STIXSizeOneSym, sans-serif;"></div></div>
 {% endblock %}

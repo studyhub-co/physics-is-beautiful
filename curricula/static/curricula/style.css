@@ -1,6 +1,29 @@
-html, body {
+@font-face {
+	font-family: 'Tw Cen MT';
+	src: url('/typeface/hinted-TwCenMT-Regular.eot');
+	src: url('/typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+		url('/typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+		url('/typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
+html, body {
 	background-color: #f1f1f1;
+}
+
+#backToDashboard {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+}
+
+
+#lessonStatButton {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	display: none;
 }
 
 .container {
@@ -93,6 +116,27 @@ img.grayed-out-img {
 	filter: grayscale(100%) brightness(134%);
 }
 
+.lesson-completed {
+	color: #8d8;
+}
+
+.lesson-accessible {
+	/*color: #0A0;*/
+}
+
+.lesson-accessible-block {
+	border-radius: 5px;
+	box-shadow: 5px 5px 15px #BBB;
+}
+
+.lesson-skipped {
+	color: #FA0;
+}
+
+.lesson-locked {
+	color: #AAA;
+}
+
 .col-md-1 h1 {
 	font-size: 14px;
 	text-align: center;
@@ -100,15 +144,6 @@ img.grayed-out-img {
 	padding: 0;
 	text-transform: capitalize;
 	height: 40px;
-}
-
-.exam-banner {
-	height: 60px;
-	padding-top: 50px;
-	color: #FA0;
-	font-size: 20px;
-	opacity: 0;
-	display: none;
 }
 
 .module-completed {
@@ -149,6 +184,7 @@ img.grayed-out-img {
 .btn.btn-info.btn-xs.pull-right.active {
 	background-color: black;
 }
+
 #name {
 	color: white;
 	font-family: Tw Cen MT;
