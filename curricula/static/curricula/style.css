@@ -95,10 +95,11 @@ html, body {
 
 .bounding-box {
 	border-radius: 25px;
-	padding: 40px;
+	padding: 2vh;
 	background-color: white;
 	box-shadow: 0 0 10px #d8d8d8;
-	height: 150px;
+        margin: 2vh;
+	padding-bottom: 3vh;
 }
 
 .thumbnail {
@@ -193,4 +194,3 @@ img.grayed-out-img {
 	padding: 0px 30px;
 	margin: 16px 0;
 }
-
