@@ -38,65 +38,19 @@ class Section extends React.Component {
 }
 
 
+var GRID = 50;
 
 
-class VectorCanvas extends React.Component {
-    constructor() {
-        super();
-        this.line;
-        this.triangle;
-        this.deltaX;
-        this.deltaY;
-        this.isDown = false;
-        this.grid = 50;
-        this.canvas = null;
-    }
-
-    componentDidMount() {
-        this.canvas = new fabric.Canvas('c', {
-            selection: false,
-            hasControls: false
-        });
-        for (var i = 1; i < (600 / this.grid); i++) {
-            this.canvas.add(new fabric.Line([i * this.grid, 0, i * this.grid, 600], {
-                stroke: '#ccc',
-                hasControls: false,
-                hasBorders: false,
-                selectable: false
-            }));
-            this.canvas.add(new fabric.Line([0, i * this.grid, 600, i * this.grid], {
-                stroke: '#ccc',
-                hasControls: false,
-                hasBorders: false,
-                selectable: false
-            }))
-        }
-        this.canvas.on('mouse:down', this.mouseDown.bind(this));
-        this.canvas.on('mouse:move', this.mouseMove.bind(this));
-        this.canvas.on('mouse:up', this.mouseUp.bind(this));
-    }
-
-    calcArrowAngle(x1, y1, x2, y2) {
-        var angle = 0,
-        x, y;
-        x = (x2 - x1);
-        y = (y2 - y1);
-        if (x === 0) {
-            angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
-        } else if (y === 0) {
-            angle = (x > 0) ? 0 : Math.PI;
-        } else {
-            angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
-        }
-
-        return (angle * 180 / Math.PI + 90);
-    }
-
-    mouseDown(o) {
-        this.canvas.remove(this.line, this.triangle);
-        this.isDown = true;
-        var pointer = this.canvas.getPointer(o.e);
-        var points = [Math.round(pointer.x / this.grid) * this.grid, Math.round(pointer.y / this.grid) * this.grid, pointer.x, pointer.y];
+class CanvasArrow {
+    constructor(canvas, pointer) {
+        this.canvas = canvas;
+        var points = [
+            Math.round(pointer.x / GRID) * GRID,
+            Math.round(pointer.y / GRID) * GRID,
+            pointer.x,
+            pointer.y
+        ];
+        this.onCanvas = false;
         this.line = new fabric.Line(points, {
             strokeWidth: 5,
             fill: 'red',
@@ -126,52 +80,160 @@ class VectorCanvas extends React.Component {
             height: 20,
             fill: 'red'
         });
-
         this.canvas.add(this.line, this.triangle);
+        this.drawing = true;
+    }
+
+    calcArrowAngle(x1, y1, x2, y2) {
+        var angle = 0;
+        var x = (x2 - x1);
+        var y = (y2 - y1);
+        if (x === 0) {
+            angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
+        } else if (y === 0) {
+            angle = (x > 0) ? 0 : Math.PI;
+        } else {
+            angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
+        }
+        return (angle * 180 / Math.PI + 90);
+    }
+
+    draw(pointer) {
+        if (this.drawing) {
+            this.line.set({x2: pointer.x, y2: pointer.y});
+            this.triangle.set({
+                'left': pointer.x + this.deltaX,
+                'top': pointer.y + this.deltaY,
+                'angle': this.calcArrowAngle(this.line.x1, this.line.y1, this.line.x2, this.line.y2)
+            });
+            this.canvas.renderAll();
+        }
+    }
+
+    complete(pointer) {
+        this.drawing = false;
+        var snappedxCoordinate = Math.round(pointer.x / GRID) * GRID;
+        var snappedyCoordinate = Math.round(pointer.y / GRID) * GRID;
+        var snappedxCoordinateArrowhead = Math.round((pointer.x + this.deltaX) / GRID) * GRID;
+        var snappedyCoordinateArrowhead = Math.round((pointer.y + this.deltaY) / GRID) * GRID;
+
+        this.line.set({
+            x2: snappedxCoordinate - 4 * Math.sin(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate) * Math.PI / 180),
+            y2: snappedyCoordinate + 4 * Math.cos(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate) * Math.PI / 180)
+        });
+        this.triangle.set({
+            'left': snappedxCoordinateArrowhead - 9 * Math.sin(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate) * Math.PI / 180),
+            'top': snappedyCoordinateArrowhead + 9 * Math.cos(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate) * Math.PI / 180),
+            'angle': this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate)
+        });
+        if (this.getVectorMagnitude() == 0) {
+            this.canvas.remove(this.line);
+            this.triangle.set({
+                'left': snappedxCoordinateArrowhead,
+                'top': snappedyCoordinateArrowhead,
+                'angle': 0
+            });
+        }
+        this.canvas.renderAll();
+    }
+
+    getVectorMagnitude() {
+        return Math.sqrt(
+            Math.pow(
+                Math.round((this.line.x2 - this.line.x1) / GRID) * GRID,
+                2
+            ) + Math.pow(
+                Math.round((this.line.y2 - this.line.y1) / GRID) * GRID,
+                2
+            )
+        ) / GRID;
+    }
+
+    getVectorAngle() {
+        var angle = this.calcArrowAngle(this.line.x1, this.line.y1, this.line.x2, this.line.y2);
+        if (angle >= 360) {
+            angle -= 360;
+        }
+        return angle;
+    }
+
+    getXComponent() {
+        return Math.round((this.line.x2 - this.line.x1) / GRID);
+    }
+
+    getYComponent() {
+        return Math.round((this.line.y1 - this.line.y2) / GRID);
+    }
+
+    delete() {
+        this.canvas.remove(this.line, this.triangle);
+    }
+}
+
+
+class VectorCanvas extends React.Component {
+    constructor() {
+        super();
+        this.arrow;
+        this.canvas = null;
+    }
+
+    componentDidMount() {
+        this.canvas = new fabric.Canvas('c', {
+            selection: false,
+            hasControls: false
+        });
+        this.drawGrid();
+        this.canvas.on('mouse:down', this.mouseDown.bind(this));
+        this.canvas.on('mouse:move', this.mouseMove.bind(this));
+        this.canvas.on('mouse:up', this.mouseUp.bind(this));
+        $('#checkAnswer').click(this.checkAnswer.bind(this));
+    }
+
+    drawGrid() {
+        for (var i = 1; i < (600 / GRID); i++) {
+            this.canvas.add(new fabric.Line([i * GRID, 0, i * GRID, 600], {
+                stroke: '#ccc',
+                hasControls: false,
+                hasBorders: false,
+                selectable: false
+            }));
+            this.canvas.add(new fabric.Line([0, i * GRID, 600, i * GRID], {
+                stroke: '#ccc',
+                hasControls: false,
+                hasBorders: false,
+                selectable: false
+            }))
+        }
+    }
+
+    mouseDown(o) {
+        if (this.arrow) {
+            this.arrow.delete();
+        }
+        this.arrow = new CanvasArrow(this.canvas, this.canvas.getPointer(o.e));
     }
 
     mouseMove(o) {
-        if (!this.isDown) return;
-        var pointer = this.canvas.getPointer(o.e);
-        this.line.set({
-            x2: pointer.x,
-            y2: pointer.y
-        });
-        this.triangle.set({
-            'left': pointer.x + this.deltaX,
-            'top': pointer.y + this.deltaY,
-            'angle': this.calcArrowAngle(this.line.x1, this.line.y1, this.line.x2, this.line.y2)
-        });
-        this.canvas.renderAll();
+        if (this.arrow) {
+            this.arrow.draw(this.canvas.getPointer(o.e));
+        }
     }
 
     mouseUp(o) {
-        var pointer = this.canvas.getPointer(o.e);
-        this.isDown = false;
-        var snappedxCoordinate = Math.round(pointer.x / this.grid) * this.grid;
-        var snappedyCoordinate = Math.round(pointer.y / this.grid) * this.grid;
-        var snappedxCoordinateArrowhead = Math.round((pointer.x + this.deltaX) / this.grid) * this.grid;
-        var snappedyCoordinateArrowhead = Math.round((pointer.y + this.deltaY) / this.grid) * this.grid;
-
-        this.line.set({
-            x2: snappedxCoordinate-4*Math.sin(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate)*Math.PI/180),
-            y2: snappedyCoordinate+4*Math.cos(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate)*Math.PI/180)
-        });
-        this.triangle.set({
-            'left': snappedxCoordinateArrowhead-9*Math.sin(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate)*Math.PI/180),
-            'top': snappedyCoordinateArrowhead+9*Math.cos(this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate)*Math.PI/180),
-            'angle': this.calcArrowAngle(this.line.x1, this.line.y1, snappedxCoordinate, snappedyCoordinate)
-        });
-        var userMagnitude = Math.sqrt(Math.pow(Math.round((this.line.x2-this.line.x1)/this.grid)*this.grid,2)+Math.pow(Math.round((this.line.y2-this.line.y1)/this.grid)*this.grid,2))/this.grid;
-        if(userMagnitude==0){this.canvas.remove(this.line);this.triangle.set({'left':snappedxCoordinateArrowhead ,'top':snappedyCoordinateArrowhead,'angle':0});}
-        this.canvas.renderAll();
-        var userDeltaX = Math.round((this.line.x2-this.line.x1)/this.grid);
-        var userDeltaY = Math.round((this.line.y1-this.line.y2)/this.grid);
-        if(this.calcArrowAngle(this.line.x1, this.line.y1, this.line.x2, this.line.y2)<360){var userAngle=this.calcArrowAngle(this.line.x1, this.line.y1, this.line.x2, this.line.y2);}
-        else{var userAngle=this.calcArrowAngle(this.line.x1, this.line.y1, this.line.x2, this.line.y2)-360;}
+        this.arrow.complete(this.canvas.getPointer(o.e));
     }
 
-    checkAnswer() {
+    checkAnswer(o) {
+        if (this.arrow && this.props.submitAnswer) {
+            this.props.submitAnswer(
+                this.arrow.getVectorMagnitude(),
+                this.arrow.getVectorAngle(),
+                this.arrow.getXComponent(),
+                this.arrow.getYComponent(),
+            );
+        }
+        return;
         answerJSON = $.parseJSON(answer);
         if("magnitude" in answerJSON){ answerMagnitude=answerJSON.magnitude} else{answerMagnitude = userMagnitude}
         if("deltax" in answerJSON){ answerDeltaX=answerJSON.deltax} else{answerDeltaX = userDeltaX}
@@ -195,8 +257,8 @@ class VectorCanvas extends React.Component {
                 $("#button").toggleClass('disabled');
                 if("magnitude" in answerJSON){
                     answerTriangle = new fabric.Triangle({
-                        left: 3*this.grid,
-                        top: 3*grid-answerJSON.magnitude*this.grid+10,
+                        left: 3*GRID,
+                        top: 3*grid-answerJSON.magnitude*GRID+10,
                         originX: 'center',
                         originY: 'center',
                         hasBorders: false,
@@ -211,7 +273,7 @@ class VectorCanvas extends React.Component {
                         fill: 'green'
                     });
 
-                    answerLine = new fabric.Line([3*this.grid, 3*this.grid, 3*this.grid, 3*grid-answerJSON.magnitude*this.grid+4], {
+                    answerLine = new fabric.Line([3*GRID, 3*GRID, 3*GRID, 3*grid-answerJSON.magnitude*GRID+4], {
                         strokeWidth: 5,
                         fill: 'green',
                         stroke: 'green',
@@ -219,8 +281,8 @@ class VectorCanvas extends React.Component {
                         originY: 'center'
                     });
                     text = new fabric.Text('correct\nsolution', {
-                        left: 2.35*this.grid,
-                        top: 2*grid-answerJSON.magnitude*this.grid,
+                        left: 2.35*GRID,
+                        top: 2*grid-answerJSON.magnitude*GRID,
                         fontSize: 20,
                         textAlign: 'center',
                         lineHeight: .7,
@@ -232,10 +294,10 @@ class VectorCanvas extends React.Component {
 
 
                 if("deltax" in answerJSON || "deltay" in answerJSON){
-                    if("deltax" in answerJSON){dx=answerJSON.deltax*this.grid;}else{dx=0;}
-                    if("deltay" in answerJSON){dy=answerJSON.deltay*this.grid;}else{dy=0;}
-                    if(dx>2*this.grid){xorigin=this.grid;}else if(dx<-2*this.grid){xorigin=5*this.grid;} else{xorigin=3*this.grid;}
-                    if(dy>2*this.grid){yorigin=5*this.grid;}else if(dy<-2*this.grid){yorigin=this.grid;} else{yorigin=3*this.grid;}
+                    if("deltax" in answerJSON){dx=answerJSON.deltax*GRID;}else{dx=0;}
+                    if("deltay" in answerJSON){dy=answerJSON.deltay*GRID;}else{dy=0;}
+                    if(dx>2*GRID){xorigin=GRID;}else if(dx<-2*GRID){xorigin=5*GRID;} else{xorigin=3*GRID;}
+                    if(dy>2*GRID){yorigin=5*GRID;}else if(dy<-2*GRID){yorigin=GRID;} else{yorigin=3*GRID;}
 
                     answerTriangle = new fabric.Triangle({
                         left: xorigin+dx,
@@ -267,7 +329,7 @@ class VectorCanvas extends React.Component {
                     });
 
                     text = new fabric.Text('correct\nsolution', {
-                        left: xorigin-.65*this.grid+dx,
+                        left: xorigin-.65*GRID+dx,
                         top: yorigin-dy-grid,
                         fontSize: 20,
                         textAlign: 'center',
@@ -279,16 +341,16 @@ class VectorCanvas extends React.Component {
                 }
 
                 if("angle" in answerJSON){
-                    xorigin=3*this.grid;
-                    yorigin=3*this.grid;
-                    if(answerJSON.angle==0){dx=0;dy=this.grid;}
-                    else if(answerJSON.angle==45){dx=this.grid;dy=this.grid;}
-                    else if(answerJSON.angle==90){dx=this.grid;dy=0;}
-                    else if(answerJSON.angle==135){dx=this.grid;dy=-this.grid;}
-                    else if(answerJSON.angle==180){dx=0;dy=-this.grid;}
-                    else if(answerJSON.angle==225){dx=-this.grid;dy=-this.grid;}
-                    else if(answerJSON.angle==270){dx=-this.grid;dy=0;}
-                    else if(answerJSON.angle==315){dx=-this.grid;dy=this.grid;}
+                    xorigin=3*GRID;
+                    yorigin=3*GRID;
+                    if(answerJSON.angle==0){dx=0;dy=GRID;}
+                    else if(answerJSON.angle==45){dx=GRID;dy=GRID;}
+                    else if(answerJSON.angle==90){dx=GRID;dy=0;}
+                    else if(answerJSON.angle==135){dx=GRID;dy=-GRID;}
+                    else if(answerJSON.angle==180){dx=0;dy=-GRID;}
+                    else if(answerJSON.angle==225){dx=-GRID;dy=-GRID;}
+                    else if(answerJSON.angle==270){dx=-GRID;dy=0;}
+                    else if(answerJSON.angle==315){dx=-GRID;dy=GRID;}
                     answerTriangle = new fabric.Triangle({
                         left: xorigin+dx,
                         top: yorigin-dy,
@@ -318,7 +380,7 @@ class VectorCanvas extends React.Component {
                     });
 
                     text = new fabric.Text('correct\nsolution', {
-                        left: xorigin-.65*this.grid+dx,
+                        left: xorigin-.65*GRID+dx,
                         top: yorigin-dy-grid,
                         fontSize: 20,
                         textAlign: 'center',
@@ -340,7 +402,7 @@ class VectorCanvas extends React.Component {
                 <div className="bounding-box">
                     <canvas id="c" width="300" height="300" className="lower-canvas"></canvas>
                     <div className="button-group" id="vectorButton">
-                        <a className="btn btn-primary" id="button">Check</a>
+                        <a className="btn btn-primary" id="checkAnswer">Check</a>
                     </div>
                 </div>
             </div>
@@ -359,7 +421,7 @@ class Question extends React.Component {
                         <div className="thumbnail"></div>
                     </div>
                 </div>
-                <VectorCanvas/>
+                <VectorCanvas submitAnswer={this.props.question.submitAnswer}/>
             </div>
         );
     }
@@ -508,10 +570,15 @@ export default class CurriculumApp extends React.Component {
             url: '/api/v1/curricula/lessons/' + lookupId + '/next-question',
             context: this,
             success: function(data, status, jqXHR) {
+                data.submitAnswer = this.submitAnswer;
                 this.question = data;
                 this.loadQuestion();
             }
         });
+    }
+
+    submitAnswer(magnitude, angle, xComponent, yComponent) {
+        alert('mag: ' + magnitude + ', angle: ' + angle + ', X: ' + xComponent + ', Y: ' + yComponent);
     }
 
     fetchState() {
