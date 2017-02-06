@@ -13,4 +13,6 @@ urlpatterns = [
     url(r'^lessons$', apis.LessonViewSet.as_view({'get': 'list'})),
     url(r'^lessons/(?P<pk>[0-9a-zA-Z_]+)/next-question$',
         apis.LessonViewSet.as_view({'get': 'get_next_question'})),
+    url(r'^questions/(?P<uuid>[0-9a-zA-Z_]+)/response$',
+        apis.QuestionViewSet.as_view({'post': 'user_response'})),
 ]

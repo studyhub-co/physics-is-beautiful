@@ -42,8 +42,9 @@ var GRID = 50;
 
 
 class CanvasArrow {
-    constructor(canvas, pointer) {
+    constructor(canvas, pointer, color) {
         this.canvas = canvas;
+        color = color || 'red';
         var points = [
             Math.round(pointer.x / GRID) * GRID,
             Math.round(pointer.y / GRID) * GRID,
@@ -53,8 +54,8 @@ class CanvasArrow {
         this.onCanvas = false;
         this.line = new fabric.Line(points, {
             strokeWidth: 5,
-            fill: 'red',
-            stroke: 'red',
+            fill: color,
+            stroke: color,
             originX: 'center',
             originY: 'center'
         });
@@ -78,7 +79,7 @@ class CanvasArrow {
             angle: 0,
             width: 20,
             height: 20,
-            fill: 'red'
+            fill: color
         });
         this.canvas.add(this.line, this.triangle);
         this.drawing = true;
@@ -225,184 +226,79 @@ class VectorCanvas extends React.Component {
     }
 
     checkAnswer(o) {
-        if (this.arrow && this.props.submitAnswer) {
-            this.props.submitAnswer(
-                this.arrow.getVectorMagnitude(),
-                this.arrow.getVectorAngle(),
-                this.arrow.getXComponent(),
-                this.arrow.getYComponent(),
+        if (this.arrow && this.props.question.submitAnswer) {
+            this.props.question.submitAnswer(
+                this.props.question.uuid,
+                {
+                    vector: {
+                        // magnitude: this.arrow.getVectorMagnitude(),
+                        // angle: this.arrow.getVectorAngle(),
+                        x_component: this.arrow.getXComponent(),
+                        y_component: this.arrow.getYComponent(),
+                    }
+                }
             );
         }
-        return;
-        answerJSON = $.parseJSON(answer);
-        if("magnitude" in answerJSON){ answerMagnitude=answerJSON.magnitude} else{answerMagnitude = userMagnitude}
-        if("deltax" in answerJSON){ answerDeltaX=answerJSON.deltax} else{answerDeltaX = userDeltaX}
-        if("deltay" in answerJSON){ answerDeltaY=answerJSON.deltay} else{answerDeltaY = userDeltaY}
-        if("angle" in answerJSON){ answerAngle=answerJSON.angle} else{answerAngle = userAngle}
-        $("#button").unbind("click");
-        $("#button").click(function() {
-            $(".upper-canvas").css("pointer-events","none");
-            userAnswer = new Object();
-            userAnswer.magnitude = userMagnitude;
-            userAnswer.deltax = userDeltaX;
-            userAnswer.deltay = userDeltaY;
-            userAnswer.angle = userAngle;
-            userAnswer = JSON.stringify(userAnswer);
-            if( userMagnitude == answerMagnitude && userAngle == answerAngle && userDeltaX == answerDeltaX && userDeltaY == answerDeltaY){
-                correct();
-            } else {
-                this.triangle.set({'fill': '#ffd4cc'});
-                this.line.set({'stroke': '#ffd4cc'});
-                this.canvas.renderAll();
-                $("#button").toggleClass('disabled');
-                if("magnitude" in answerJSON){
-                    answerTriangle = new fabric.Triangle({
-                        left: 3*GRID,
-                        top: 3*grid-answerJSON.magnitude*GRID+10,
-                        originX: 'center',
-                        originY: 'center',
-                        hasBorders: false,
-                        hasControls: false,
-                        lockScalingX: true,
-                        lockScalingY: true,
-                        lockRotation: true,
-                        pointType: 'arrow_start',
-                        angle: 0,
-                        width: 20,
-                        height: 20,
-                        fill: 'green'
-                    });
+    }
 
-                    answerLine = new fabric.Line([3*GRID, 3*GRID, 3*GRID, 3*grid-answerJSON.magnitude*GRID+4], {
-                        strokeWidth: 5,
-                        fill: 'green',
-                        stroke: 'green',
-                        originX: 'center',
-                        originY: 'center'
-                    });
-                    text = new fabric.Text('correct\nsolution', {
-                        left: 2.35*GRID,
-                        top: 2*grid-answerJSON.magnitude*GRID,
-                        fontSize: 20,
-                        textAlign: 'center',
-                        lineHeight: .7,
-                        fontFamily: 'Helvetica',
-                        fill: 'green',
-                    });
-                    this.canvas.add(answerTriangle,answerLine,text);
-                }
+    calcAnswerComponent(value) {
+        if (value > 2 * GRID) {
+            return GRID;
+        }else if (value < -2 * GRID) {
+            return 5 * GRID;
+        } else {
+            return 3 * GRID;
+        }
+    }
 
+    renderAnswer() {
+        var answer = this.props.answer;
+        var pointer = {
+            x: this.calcAnswerComponent(answer.xComponent),
+            y: this.calcAnswerComponent(answer.yComponent),
+        }
+        var end_pointer = {
+            x: pointer['x'] + answer.xComponent * GRID,
+            y: pointer['y'] - answer.yComponent * GRID,
+        }
+        this.answer_arrow = new CanvasArrow(this.canvas, pointer, 'green');
+        this.answer_arrow.complete(end_pointer);
 
-                if("deltax" in answerJSON || "deltay" in answerJSON){
-                    if("deltax" in answerJSON){dx=answerJSON.deltax*GRID;}else{dx=0;}
-                    if("deltay" in answerJSON){dy=answerJSON.deltay*GRID;}else{dy=0;}
-                    if(dx>2*GRID){xorigin=GRID;}else if(dx<-2*GRID){xorigin=5*GRID;} else{xorigin=3*GRID;}
-                    if(dy>2*GRID){yorigin=5*GRID;}else if(dy<-2*GRID){yorigin=GRID;} else{yorigin=3*GRID;}
-
-                    answerTriangle = new fabric.Triangle({
-                        left: xorigin+dx,
-                        top: yorigin-dy,
-                        originX: 'center',
-                        originY: 'center',
-                        hasBorders: false,
-                        hasControls: false,
-                        lockScalingX: true,
-                        lockScalingY: true,
-                        lockRotation: true,
-                        pointType: 'arrow_start',
-                        angle: 0,
-                        width: 20,
-                        height: 20,
-                        fill: 'green'
-                    });
-
-                    answerLine = new fabric.Line([xorigin, yorigin, xorigin+dx, yorigin-dy], {
-                        strokeWidth: 5,
-                        fill: 'green',
-                        stroke: 'green',
-                        originX: 'center',
-                        originY: 'center'
-                    });
-
-                    answerTriangle.set({
-                        'angle': this.calcArrowAngle(answerLine.x1, answerLine.y1, answerLine.x2, answerLine.y2)
-                    });
-
-                    text = new fabric.Text('correct\nsolution', {
-                        left: xorigin-.65*GRID+dx,
-                        top: yorigin-dy-grid,
-                        fontSize: 20,
-                        textAlign: 'center',
-                        lineHeight: .7,
-                        fontFamily: 'Helvetica',
-                        fill: 'green',
-                    });
-                    this.canvas.add(answerTriangle,answerLine,text);
-                }
-
-                if("angle" in answerJSON){
-                    xorigin=3*GRID;
-                    yorigin=3*GRID;
-                    if(answerJSON.angle==0){dx=0;dy=GRID;}
-                    else if(answerJSON.angle==45){dx=GRID;dy=GRID;}
-                    else if(answerJSON.angle==90){dx=GRID;dy=0;}
-                    else if(answerJSON.angle==135){dx=GRID;dy=-GRID;}
-                    else if(answerJSON.angle==180){dx=0;dy=-GRID;}
-                    else if(answerJSON.angle==225){dx=-GRID;dy=-GRID;}
-                    else if(answerJSON.angle==270){dx=-GRID;dy=0;}
-                    else if(answerJSON.angle==315){dx=-GRID;dy=GRID;}
-                    answerTriangle = new fabric.Triangle({
-                        left: xorigin+dx,
-                        top: yorigin-dy,
-                        originX: 'center',
-                        originY: 'center',
-                        hasBorders: false,
-                        hasControls: false,
-                        lockScalingX: true,
-                        lockScalingY: true,
-                        lockRotation: true,
-                        pointType: 'arrow_start',
-                        angle: 0,
-                        width: 20,
-                        height: 20,
-                        fill: 'green'
-                    });
-                    answerLine = new fabric.Line([xorigin, yorigin, xorigin+dx, yorigin-dy], {
-                        strokeWidth: 5,
-                        fill: 'green',
-                        stroke: 'green',
-                        originX: 'center',
-                        originY: 'center'
-                    });
-
-                    answerTriangle.set({
-                        'angle': this.calcArrowAngle(answerLine.x1, answerLine.y1, answerLine.x2, answerLine.y2)
-                    });
-
-                    text = new fabric.Text('correct\nsolution', {
-                        left: xorigin-.65*GRID+dx,
-                        top: yorigin-dy-grid,
-                        fontSize: 20,
-                        textAlign: 'center',
-                        lineHeight: .7,
-                        fontFamily: 'Helvetica',
-                        fill: 'green',
-                    });
-                    this.canvas.add(answerTriangle,answerLine,text);
-                }
-
-                incorrect();
-            }
+        var text = new fabric.Text('correct\nsolution', {
+            left: end_pointer.x - .65 * GRID + answer.xComponent,
+            top: end_pointer.y - answer.yComponent - GRID,
+            fontSize: 20,
+            textAlign: 'center',
+            lineHeight: .7,
+            fontFamily: 'Helvetica',
+            fill: 'green',
         });
+        this.canvas.add(text);
     }
 
     render() {
+        if (this.props.answer) {
+            this.renderAnswer();
+        }
+        var buttonClass = 'btn btn-primary';
+        var canvasStyle = {
+            border: "1px solid #ccc",
+        }
+        if (this.props.question.is_correct !== undefined) {
+            buttonClass += ' disabled';
+            canvasStyle['pointer-events'] = 'none';
+            $('.upper-canvas').css('pointer-events', 'none');
+        } else if (this.arrow) {
+            this.arrow.delete();
+            this.arrow = null;
+            $('.upper-canvas').css('pointer-events', '');
+        }
         return (
             <div className="col-md-6 text-center">
                 <div className="bounding-box">
-                    <canvas id="c" width="300" height="300" className="lower-canvas"></canvas>
+                    <canvas id="c" width="300" height="300" className="lower-canvas" style={canvasStyle}></canvas>
                     <div className="button-group" id="vectorButton">
-                        <a className="btn btn-primary" id="checkAnswer">Check</a>
+                        <a className={buttonClass} id="checkAnswer">Check</a>
                     </div>
                 </div>
             </div>
@@ -415,13 +311,15 @@ class Question extends React.Component {
     render() {
         return (
             <div className="question" id="ajaxDiv">
-                <div className="col-md-6 text-center">
-                    <div className="bounding-box">
-                        <h1 id="ajaxDiv">{this.props.question.text}</h1>
-                        <div className="thumbnail"></div>
+                <div className="row">
+                    <div className="col-md-6 text-center">
+                        <div className="bounding-box">
+                            <h1 id="ajaxDiv">{this.props.question.text}</h1>
+                            <div className="thumbnail"></div>
+                        </div>
                     </div>
+                    <VectorCanvas question={this.props.question} answer={this.props.answer}/>
                 </div>
-                <VectorCanvas submitAnswer={this.props.question.submitAnswer}/>
             </div>
         );
     }
@@ -430,8 +328,39 @@ class Question extends React.Component {
 
 class Footer extends React.Component {
     render () {
+        var checkMarks = '';
+        var correctMessage = '';
+        var continueButton = '';
+        if (this.props.correct === true) {
+            checkMarks = (<span id="correct" className="glyphicon glyphicon-ok-sign pull-right"></span>);
+            correctMessage = 'Correct';
+        } else if (this.props.correct === false) {
+            checkMarks = (<span id="incorrect" className="glyphicon glyphicon-remove-sign pull-right"></span>);
+            correctMessage = 'Incorrect';
+            continueButton = (
+                <button id="checkButton" type="button">
+                    Continue
+                </button>
+            );
+        }
         return (
-            <div id="footer"></div>
+            <div id="footer">
+                <div id="checkMarks">{checkMarks}</div>
+                <div id="checkContainer">
+                    {continueButton}
+                </div>
+                <div id="blockRight">
+                    <div id="correctMessage">{correctMessage}</div>
+                </div>
+                <div className="progress-bottom-container">
+                    <h4>Progress</h4>
+                    <div className="progress">
+                        <div className="progress-bar progress-bar-info progress-bar-striped" id="progressbar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style={{width: this.props.progress + "%"}}>
+                            <span className="sr-only"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         );
     }
 }
@@ -452,17 +381,17 @@ class Sheet extends React.Component {
             });
         }
         var question = '';
+        var footer = '';
         if (this.props.question) {
-            question = <div>
-                <Question question={this.props.question}/>
-                <Footer/>
-            </div>
+            question = <Question question={this.props.question} answer={this.props.answer}/>;
+            footer = <Footer progress={this.props.progress} correct={this.props.question.is_correct}/>;
         }
         return (
             <div className="container">
                 {backLink}
                 {sections}
                 {question}
+                {footer}
                 <div></div>
             </div>
         );
@@ -479,11 +408,17 @@ export default class CurriculumApp extends React.Component {
             currentView: urlPath[2] || urlPath[1],
             currentId: urlPath[3] || 'default',
             sections: [],
+            question: null,
+            backLink: null,
+            progress: 0,
         };
         this.fetchState();
 
         this.curriculum = null;
         this.module = null;
+        this.question = null;
+        this.progress = 0;
+        this.answer = null;
     }
 
     loadCurriculum() {
@@ -509,7 +444,13 @@ export default class CurriculumApp extends React.Component {
                 uuid: unit.uuid,
             });
         }
-        this.setState({sections: sections, backLink: null, question: null});
+        this.setState({
+            sections: sections,
+            backLink: null,
+            question: null,
+            progress: 0,
+            answer: null,
+        });
     }
 
     loadModule() {
@@ -531,14 +472,26 @@ export default class CurriculumApp extends React.Component {
             items: items,
             uuid: this.module.uuid,
         }];
-        this.setState({sections: sections, backLink: '/curriculum/', question:null});
+        this.setState({
+            sections: sections,
+            backLink: '/curriculum/',
+            question:null,
+            progress: 0,
+            answer: null,
+        });
     }
 
     loadQuestion() {
         if (!this.question) {
             return;
         }
-        this.setState({sections: null, backLink: null, question: this.question});
+        this.setState({
+            sections: null,
+            backLink: null,
+            question: this.question,
+            progress: this.progress,
+            answer: this.answer,
+        });
     }
 
     fetchCurriculum(lookupId) {
@@ -570,15 +523,48 @@ export default class CurriculumApp extends React.Component {
             url: '/api/v1/curricula/lessons/' + lookupId + '/next-question',
             context: this,
             success: function(data, status, jqXHR) {
-                data.submitAnswer = this.submitAnswer;
+                data.submitAnswer = this.submitAnswer.bind(this);
                 this.question = data;
                 this.loadQuestion();
             }
         });
     }
 
-    submitAnswer(magnitude, angle, xComponent, yComponent) {
-        alert('mag: ' + magnitude + ', angle: ' + angle + ', X: ' + xComponent + ', Y: ' + yComponent);
+    submitAnswer(questionId, obj) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/curricula/questions/' + questionId + '/response',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            context: this,
+            success: function(data, status, jqXHR) {
+                this.progress = data['score'] / data['required_score'];
+                if (data.was_correct) {
+                    this.question.is_correct = true;
+                } else {
+                    this.question.is_correct = false;
+                    if (data.correct_answer.type == 'vector') {
+                        this.answer = {
+                            type: 'vector',
+                            xComponent: data.correct_answer.content.x_component,
+                            yComponent: data.correct_answer.content.y_component,
+                        }
+                    } else {
+                        this.answer = data.correct_answer;
+                    }
+                }
+                this.loadQuestion();
+                if (data.was_correct) {
+                    setTimeout(
+                        function() {
+                            this.fetchProblem(this.state.currentId);
+                        }.bind(this),
+                        1000
+                    );
+                }
+            }
+        });
     }
 
     fetchState() {
@@ -596,6 +582,6 @@ export default class CurriculumApp extends React.Component {
     }
 
     render() {
-        return <Sheet backLink={this.state.backLink} sections={this.state.sections} question={this.state.question}/>;
+        return <Sheet backLink={this.state.backLink} sections={this.state.sections} question={this.state.question} answer={this.state.answer}/>;
     }
 }

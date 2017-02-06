@@ -112,10 +112,10 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
         model = Answer
         fields = ['magnitude', 'angle', 'x_component', 'y_component', 'is_correct', 'position']
 
-    magnitude = forms.IntegerField(required=False)
-    angle = forms.IntegerField(required=False)
-    x_component = forms.IntegerField(required=False)
-    y_component = forms.IntegerField(required=False)
+    magnitude = forms.FloatField(required=False)
+    angle = forms.FloatField(required=False)
+    x_component = forms.FloatField(required=False)
+    y_component = forms.FloatField(required=False)
 
 
 class VectorAnswerInline(NestedTabularInline):
