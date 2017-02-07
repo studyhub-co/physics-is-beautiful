@@ -1,4 +1,4 @@
-"""pib URL Configuration
+"""pib URL Configuration for the API
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -14,17 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
 from django.conf.urls import include
-from django.conf import settings
-from django.conf.urls.static import static
 
 
 urlpatterns = [
-    url(r'^', include('homepage.urls')),
-    url(r'^api/v1/', include('pib.urls_api', namespace='api')),
-    url(r'^curriculum/', include('curricula.urls')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^accounts/', include('allauth.urls')),
-    url(r'^nested_admin/', include('nested_admin.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    url(r'^curricula/', include('curricula.urls_api')),
+]

@@ -1,0 +1,18 @@
+{% extends "curricula/navbar.html" %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block ExtraHead %}
+{% if 'lessons' in request.path %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/problem_page_base.css' %}" />
+{% else %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+{% endif %}
+<script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div id="react-app"></div>
+    {% render_bundle 'main' %}
+</div>
+{% endblock %}

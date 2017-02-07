@@ -1,0 +1,27 @@
+{% include "curricula/navbar.html" %}
+{% load static %}
+{% block ExtraHead %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-title"><h1>{{lesson.name}}</h1></div>
+    <div class="row">
+        {% for question in lesson.question_set.all %}
+            <a href="{% url 'curricula:problem' question.id %}">
+                <div class="col-md-1">
+                    <h1>{{ question.text }}</h1>
+                </div>
+            </a>
+        {% endfor %}
+        {% for draw_vector in lesson.drawvector_set.all %}
+            <a href="{% url 'curricula:drawvector' draw_vector.id %}">
+                <div class="col-md-1">
+                    <h1>{{ draw_vector.question_text }}</h1>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

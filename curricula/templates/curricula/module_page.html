@@ -1,0 +1,21 @@
+{% include "curricula/navbar.html" %}
+{% load static %}
+{% block ExtraHead %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+        <div class="section-title"><h1>{{module}}</h1></div>
+        <div class="row">
+            {% for lesson in module.lesson_set.all %}
+                 <a href="{% url 'curricula:lesson' lesson.id %}">
+                    <div class="col-md-1 module-accessible-block">
+                        <div class="thumbnail"><img src=" /{{ lesson.image.url }}"></div>
+                        <h1>{{ lesson.name }}</h1>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+</div>
+{% endblock %}
