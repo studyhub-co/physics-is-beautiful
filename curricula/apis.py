@@ -169,7 +169,10 @@ class LessonViewSet(ModelViewSet):
         service = get_progress_service(request, lesson)
         question = service.get_next_question()
         if question:
-            return Response(QuestionSerializer(question).data)
+            data = QuestionSerializer(question).data
+            data.update(LessonProgressSerializer(service.lesson_progress).data)
+            data['required_score'] = service.COMPLETION_THRESHOLD
+            return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

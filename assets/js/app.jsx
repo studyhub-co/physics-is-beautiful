@@ -176,6 +176,8 @@ class VectorCanvas extends React.Component {
     constructor() {
         super();
         this.arrow;
+        this.answerArrow;
+        this.answerText;
         this.canvas = null;
     }
 
@@ -261,10 +263,10 @@ class VectorCanvas extends React.Component {
             x: pointer['x'] + answer.xComponent * GRID,
             y: pointer['y'] - answer.yComponent * GRID,
         }
-        this.answer_arrow = new CanvasArrow(this.canvas, pointer, 'green');
-        this.answer_arrow.complete(end_pointer);
+        this.answerArrow = new CanvasArrow(this.canvas, pointer, 'green');
+        this.answerArrow.complete(end_pointer);
 
-        var text = new fabric.Text('correct\nsolution', {
+        this.answerText = new fabric.Text('correct\nsolution', {
             left: end_pointer.x - .65 * GRID + answer.xComponent,
             top: end_pointer.y - answer.yComponent - GRID,
             fontSize: 20,
@@ -273,12 +275,16 @@ class VectorCanvas extends React.Component {
             fontFamily: 'Helvetica',
             fill: 'green',
         });
-        this.canvas.add(text);
+        this.canvas.add(this.answerText);
     }
 
     render() {
-        if (this.props.answer) {
+        if (this.props.question.is_correct === false && this.props.answer && !this.answerArrow) {
             this.renderAnswer();
+        } else if (this.answerArrow) {
+            this.answerArrow.delete();
+            this.answerArrow = null;
+            this.canvas.remove(this.answerText);
         }
         var buttonClass = 'btn btn-primary';
         var canvasStyle = {
@@ -286,11 +292,13 @@ class VectorCanvas extends React.Component {
         }
         if (this.props.question.is_correct !== undefined) {
             buttonClass += ' disabled';
-            canvasStyle['pointer-events'] = 'none';
+            canvasStyle['pointerEvents'] = 'none';
             $('.upper-canvas').css('pointer-events', 'none');
-        } else if (this.arrow) {
-            this.arrow.delete();
-            this.arrow = null;
+        } else {
+            if (this.arrow) {
+                this.arrow.delete();
+                this.arrow = null;
+            }
             $('.upper-canvas').css('pointer-events', '');
         }
         return (
@@ -338,7 +346,7 @@ class Footer extends React.Component {
             checkMarks = (<span id="incorrect" className="glyphicon glyphicon-remove-sign pull-right"></span>);
             correctMessage = 'Incorrect';
             continueButton = (
-                <button id="checkButton" type="button">
+                <button id="checkButton" type="button" onClick={this.props.continueAction}>
                     Continue
                 </button>
             );
@@ -366,6 +374,26 @@ class Footer extends React.Component {
 }
 
 
+class LessonComplete extends React.Component {
+    render () {
+        // <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+        return (
+            <div className="question" id="ajaxDiv">
+		<div style={{height: "15px"}}></div>
+		<div className="jumbotron">
+                    <h2 className="animated rubberBand" style={{color: "#33A", textAlign: "center"}}>
+                        You rock! Lesson complete!
+                    </h2>
+                </div>
+                <a className="btn btn-primary btn-lg btn-block" href="/curriculum/modules/">
+                    Proceed to next level
+                </a>
+            </div>
+        );
+    }
+}
+
+
 class Sheet extends React.Component {
     render() {
         var backLink = '';
@@ -384,7 +412,11 @@ class Sheet extends React.Component {
         var footer = '';
         if (this.props.question) {
             question = <Question question={this.props.question} answer={this.props.answer}/>;
-            footer = <Footer progress={this.props.progress} correct={this.props.question.is_correct}/>;
+            footer = <Footer progress={this.props.progress} correct={this.props.question.is_correct} continueAction={this.props.continueAction}/>;
+        }
+
+        if (this.props.progress >= 100) {
+            question = <LessonComplete/>;
         }
         return (
             <div className="container">
@@ -523,6 +555,7 @@ export default class CurriculumApp extends React.Component {
             url: '/api/v1/curricula/lessons/' + lookupId + '/next-question',
             context: this,
             success: function(data, status, jqXHR) {
+                this.progress = data['score'] / data['required_score'] * 100;
                 data.submitAnswer = this.submitAnswer.bind(this);
                 this.question = data;
                 this.loadQuestion();
@@ -539,7 +572,7 @@ export default class CurriculumApp extends React.Component {
             data: JSON.stringify(obj),
             context: this,
             success: function(data, status, jqXHR) {
-                this.progress = data['score'] / data['required_score'];
+                this.progress = data['score'] / data['required_score'] * 100;
                 if (data.was_correct) {
                     this.question.is_correct = true;
                 } else {
@@ -549,7 +582,7 @@ export default class CurriculumApp extends React.Component {
                             type: 'vector',
                             xComponent: data.correct_answer.content.x_component,
                             yComponent: data.correct_answer.content.y_component,
-                        }
+                        };
                     } else {
                         this.answer = data.correct_answer;
                     }
@@ -567,6 +600,10 @@ export default class CurriculumApp extends React.Component {
         });
     }
 
+    continueAction() {
+        this.fetchProblem(this.state.currentId);
+    }
+
     fetchState() {
         switch(this.state.currentView) {
             case 'curriculum':
@@ -582,6 +619,7 @@ export default class CurriculumApp extends React.Component {
     }
 
     render() {
-        return <Sheet backLink={this.state.backLink} sections={this.state.sections} question={this.state.question} answer={this.state.answer}/>;
+        var continueAction = this.continueAction.bind(this);
+        return <Sheet backLink={this.state.backLink} sections={this.state.sections} question={this.state.question} answer={this.state.answer} progress={this.state.progress} continueAction={continueAction}/>;
     }
 }
