@@ -53,7 +53,7 @@ class ProgressServiceTests(TestCase):
 
     def test_get_next_question_authed_user(self):
         self.profile = profile_factories.Profile()
-        service = ProgressService(self.profile, self.lesson)
+        service = ProgressService(self.profile.user, self.lesson)
         self._run_service_test(service)
         # we responded to each question twice
         self.assertEqual(UserResponse.objects.count(), len(self.questions) * 2)
