@@ -266,11 +266,11 @@ class Vector(BaseModel):
                 'x_component' in diff or 'y_component' in diff):
             calculated_magnitude = self._calculate_magnitude()
             calculated_angle = self._calculate_angle()
-            if 'magnitude' in diff and self.magnitude != calculated_magnitude:
+            if 'magnitude' in diff and self.magnitude is not None and self.magnitude != calculated_magnitude:
                 raise ValidationError('Provided magnitude is not consistent!')
             else:
                 self.magnitude = calculated_magnitude
-            if 'angle' in diff and self.angle != calculated_angle:
+            if 'angle' in diff and self.angle is not None and self.angle != calculated_angle:
                 raise ValidationError('Provided angle is not consistent!')
             else:
                 self.angle = calculated_angle
@@ -278,11 +278,11 @@ class Vector(BaseModel):
               'magnitude' in diff or 'angle' in diff):
             calculated_x = self._calculate_x()
             calculated_y = self._calculate_y()
-            if 'x_component' in diff and self.x_component != calculated_x:
+            if 'x_component' in diff and self.x_component is not None and self.x_component != calculated_x:
                 raise ValidationError('Provided x_component is not consistent!')
             else:
                 self.x_component = calculated_x
-            if 'y_component' in diff and self.y_component != calculated_y:
+            if 'y_component' in diff and self.y_component is not None and self.y_component != calculated_y:
                 raise ValidationError('Provided y_component is not consistent!')
             else:
                 self.y_component = calculated_y
