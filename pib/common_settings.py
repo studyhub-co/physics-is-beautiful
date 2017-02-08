@@ -144,6 +144,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT')
+
 # We do this so that django's collectstatic copies or our bundles to the
 # STATIC_ROOT or syncs them to whatever storage we use.
 STATICFILES_DIRS = (
