@@ -175,8 +175,7 @@ class Answer(BaseModel):
 class Text(BaseModel):
 
     class Meta:
-        # TODO: rename
-        db_table = 'curricula_text_answers'
+        db_table = 'curricula_texts'
 
     text = models.CharField(max_length=200)
 
@@ -196,7 +195,7 @@ class Vector(BaseModel):
 
     class Meta:
         # TODO: rename
-        db_table = 'curricula_vector_answers'
+        db_table = 'curricula_vectors'
 
     magnitude = models.FloatField("Magnitude", null=True, blank=True)
     angle = models.FloatField("Angle", null=True, blank=True)
