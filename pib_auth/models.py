@@ -72,6 +72,9 @@ class User(PermissionsMixin, AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
         return urlresolvers.reverse(
