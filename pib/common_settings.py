@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # Nested admin
     'nested_admin',
     # pib apps
+    'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
     'homepage.apps.HomepageConfig',
     'curricula.apps.CurriculaConfig',
@@ -139,6 +140,9 @@ USE_L10N = True
 USE_TZ = True
 
 
+AUTH_USER_MODEL = 'pib_auth.User'
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
@@ -166,7 +170,7 @@ SOCIALACCOUNT_AUTO_SIGNUP = False
 LOGIN_REDIRECT_URL = 'curricula:curriculum'
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
+MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT')
 MEDIA_URL = 'media/'
 
 REST_FRAMEWORK = {
@@ -176,6 +180,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'PAGINATE_BY': 50,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
 }
 
 WEBPACK_LOADER = {

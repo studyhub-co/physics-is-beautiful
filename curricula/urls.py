@@ -7,6 +7,6 @@ app_name = 'curricula'
 
 urlpatterns = [
     url(r'^$', views.CurriculumView.as_view(), name='curriculum'),
-    url(r'^modules/(?P<pk>[0-9]+)/$', views.CurriculumView.as_view(), name='module'),
-    url(r'^lessons/(?P<pk>[0-9]+)/$', views.CurriculumView.as_view(), name='lesson'),
+    url(r'^modules/(?P<uuid>[0-9a-zA-Z]+)/$', views.CurriculumView.as_view(), name='module'),
+    url(r'^lessons/(?P<uuid>[0-9a-zA-Z]+)/$', views.CurriculumView.as_view(), name='lesson'),
 ]

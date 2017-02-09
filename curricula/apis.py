@@ -128,6 +128,7 @@ class QuestionViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def user_response(self, request, uuid):
+        print('HERE I AM!!!')
         question = self.get_object()
         data = {'question': question.pk}
         data.update(request.data)
@@ -163,8 +164,9 @@ class LessonViewSet(ModelViewSet):
 
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    lookup_field = 'uuid'
 
-    def get_next_question(self, request, pk):
+    def get_next_question(self, request, uuid):
         lesson = self.get_object()
         service = get_progress_service(request, lesson)
         question = service.get_next_question()
@@ -196,6 +198,7 @@ class ModuleViewSet(ModelViewSet):
 
     serializer_class = ModuleSerializer
     queryset = Module.objects.all()
+    lookup_field = 'uuid'
 
 
 class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
@@ -212,6 +215,7 @@ class UnitViewSet(ModelViewSet):
 
     serializer_class = UnitSerializer
     queryset = Unit.objects.all()
+    lookup_field = 'uuid'
 
 
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
@@ -228,6 +232,7 @@ class CurriculaViewSet(ModelViewSet):
 
     serializer_class = CurriculumSerializer
     queryset = Curriculum.objects.all()
+    lookup_field = 'uuid'
 
     def get_object(self):
         lookup_id = self.kwargs.get(self.lookup_url_kwarg or self.lookup_field)

@@ -199,10 +199,14 @@ class CurriculumAdmin(NestedModelAdmin):
     inlines = [UnitInline]
 
 
+_link_to_curriculum = link_to_field('curriculum')
+
+
 class UnitAdmin(NestedModelAdmin):
 
     inlines = [ModuleInline]
-    readonly_fields = ['position']
+    fields = ['curriculum', _link_to_curriculum, 'name', 'published_on', 'image', 'position']
+    readonly_fields = [_link_to_curriculum, 'position']
 
 
 class ModuleAdmin(NestedModelAdmin):

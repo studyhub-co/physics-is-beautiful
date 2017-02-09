@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.db.models import Count
 
@@ -64,6 +65,9 @@ class ProgressService(ProgressServiceBase):
 
     def save(self):
         for response in self.user_responses:
+            obj = response.content
+            obj.save()
+            response.content = obj
             response.save()
         self.user_responses = []
         self.lesson_progress.save()
