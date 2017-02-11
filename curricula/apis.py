@@ -37,6 +37,9 @@ class VectorSerializer(BaseSerializer):
         model = Vector
         fields = ['magnitude', 'angle', 'x_component', 'y_component']
 
+    def to_representation(self, obj):
+        return super(VectorSerializer, self).to_representation(obj.for_display())
+
 
 class AnswerSerializer(BaseSerializer):
 
@@ -128,7 +131,6 @@ class QuestionViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def user_response(self, request, uuid):
-        print('HERE I AM!!!')
         question = self.get_object()
         data = {'question': question.pk}
         data.update(request.data)

@@ -316,14 +316,29 @@ class VectorCanvas extends React.Component {
 
 
 class Question extends React.Component {
+
+    componentDidMount() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+
+    componentDidUpdate() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+
     render() {
+        var image = '';
+        if (this.props.question.image) {
+            image = <img src={'/' + this.props.question.image}/>;
+        }
         return (
             <div className="question" id="ajaxDiv">
                 <div className="row">
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
                             <h1 id="ajaxDiv">{this.props.question.text}</h1>
-                            <div className="thumbnail"></div>
+                            <div className="thumbnail">
+                                {image}
+                            </div>
                         </div>
                     </div>
                     <VectorCanvas question={this.props.question} answer={this.props.answer}/>

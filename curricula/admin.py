@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib import admin
+from django.contrib import messages
 from django.utils.html import escape
+from django.core.exceptions import ValidationError
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
@@ -94,11 +96,13 @@ class SpecialAnswerFormMixin(object):
             instance.position = instance.question.answers.count()
         if not instance.object_id:
             kwargs = {field: self.cleaned_data[field] for field in self.FIELDS}
-            self.instance.content = self.SPECIAL_MODEL.objects.create(**kwargs)
+            content = self.SPECIAL_MODEL(**kwargs)
         else:
+            content = self.instance.content
             for field in self.FIELDS:
-                setattr(self.instance.content, field, self.cleaned_data[field])
-            self.instance.content.save()
+                setattr(content, field, self.cleaned_data[field])
+        content.save()
+        instance.content = content
         instance.save()
         return instance
 
@@ -116,6 +120,13 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     angle = forms.FloatField(required=False)
     x_component = forms.FloatField(required=False)
     y_component = forms.FloatField(required=False)
+
+    def clean(self):
+        cleaned_data = super(VectorAnswerForm, self).clean()
+        kwargs = {field: cleaned_data[field] for field in self.FIELDS}
+        instance = Vector(**kwargs)
+        instance.validate_fields()
+        return cleaned_data
 
 
 class VectorAnswerInline(NestedTabularInline):

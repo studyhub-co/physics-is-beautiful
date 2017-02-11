@@ -216,16 +216,41 @@ class Vector(BaseModel):
         if isinstance(obj, Answer):
             return self.matches(obj.content)
         try:
-            self._fill_out_fields()
             obj._fill_out_fields()
-            return (
-                self.magnitude == obj.magnitude and
-                self.angle == obj.angle and
-                self.x_component == obj.x_component and
-                self.y_component == obj.y_component
-            )
+            for field in ['magnitude', 'angle', 'x_component', 'y_component']:
+                value = getattr(self, field, None)
+                if value is not None and value != getattr(obj, field):
+                    return False
+            return True
         except AttributeError:
             return False
+
+    def for_display(self):
+        angle = self.angle
+        mag = self.magnitude
+        x = self.x_component
+        y = self.y_component
+
+        if angle is not None or mag is not None or x is not None or y is not None:
+            if angle is None and mag is not None:
+                angle = 0
+            elif mag is None and angle is not None:
+                mag = 1
+            elif angle is None and mag is None:
+                angle = self._calculate_angle()
+                mag = self._calculate_magnitude()
+
+            if x is None and y is None:
+                x = self._calculate_x()
+                y = self._calculate_y()
+
+        return {
+            'angle': angle,
+            'magnitude': mag,
+            'x_component': x,
+            'y_component': y,
+        }
+
 
     def _calculate_magnitude(self):
         return math.sqrt(self.x_component ** 2 + self.y_component ** 2)
@@ -253,40 +278,13 @@ class Vector(BaseModel):
     def _calculate_y(self):
         return self.magnitude * math.sin(self.angle)
 
+    def validate_fields(self):
+        if (self.x_component is None and self.y_component is not None or
+                self.y_component is None and self.x_component is not None):
+            raise ValidationError('If you specify an X component or a Y component, you must specify both!')
+
     def save(self, *args, **kwargs):
-        diff = {'magnitude', 'angle', 'x_component', 'y_component'}
-        if self.pk:
-            db_instance = Vector.objects.get(pk=self.pk)
-            diff = {
-                f for f in diff
-                if getattr(self, f) != getattr(db_instance, f)
-            }
-        if (self.x_component is not None and self.y_component is not None and
-                'x_component' in diff or 'y_component' in diff):
-            calculated_magnitude = self._calculate_magnitude()
-            calculated_angle = self._calculate_angle()
-            if 'magnitude' in diff and self.magnitude is not None and self.magnitude != calculated_magnitude:
-                raise ValidationError('Provided magnitude is not consistent!')
-            else:
-                self.magnitude = calculated_magnitude
-            if 'angle' in diff and self.angle is not None and self.angle != calculated_angle:
-                raise ValidationError('Provided angle is not consistent!')
-            else:
-                self.angle = calculated_angle
-        elif (self.magnitude is not None and self.angle is not None and
-              'magnitude' in diff or 'angle' in diff):
-            calculated_x = self._calculate_x()
-            calculated_y = self._calculate_y()
-            if 'x_component' in diff and self.x_component is not None and self.x_component != calculated_x:
-                raise ValidationError('Provided x_component is not consistent!')
-            else:
-                self.x_component = calculated_x
-            if 'y_component' in diff and self.y_component is not None and self.y_component != calculated_y:
-                raise ValidationError('Provided y_component is not consistent!')
-            else:
-                self.y_component = calculated_y
-        elif diff:
-            raise ValidationError('Must provide an x and y component or an angle and magnitude')
+        self.validate_fields()
         super(Vector, self).save(*args, **kwargs)
 
     def __str__(self):
