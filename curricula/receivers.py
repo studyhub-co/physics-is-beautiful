@@ -5,7 +5,7 @@ from allauth.account.signals import user_signed_up
 
 from profiles.models import Profile
 from .services import AnonymousProgressService
-from .models import Lesson, UserResponse
+from .models import Lesson, UserResponse, Answer
 
 
 @receiver(user_signed_up)
@@ -29,7 +29,11 @@ def transfer_lesson_progress(request, user, **kwargs):
                 ContentType.objects.get(pk=content_type).model_class()
             )
             content_classes[content_type] = content_class
-            content = content_class.objects.create(**response['content'])
+            if content_class == Answer:
+                print('CONTENT:', response['content'])
+                content = Answer.objects.get(**response['content'])
+            else:
+                content = content_class.objects.create(**response['content'])
             UserResponse.objects.create(
                 profile=profile,
                 question_id=response['question'],
@@ -39,4 +43,4 @@ def transfer_lesson_progress(request, user, **kwargs):
                 answered_on=response['answered_on'],
             )
     # clear the session
-    request.session.flush()
+    request.session['lessons'] = {}

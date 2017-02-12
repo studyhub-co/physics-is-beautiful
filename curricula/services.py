@@ -103,6 +103,8 @@ class AnswerSerializer(serializers.ModelSerializer):
         model = Answer
         fields = ['uuid']
 
+    uuid = serializers.CharField()
+
 
 class UserResponseSerializer(serializers.ModelSerializer):
 
