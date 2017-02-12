@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from .models import LessonProgress, UserResponse, Text, Vector
+from .models import LessonProgress, UserResponse, Text, Vector, Answer
 
 
 def get_progress_service(request, lesson):
@@ -97,11 +97,19 @@ class VectorSerializer(serializers.ModelSerializer):
         fields = ['magnitude', 'angle', 'x_component', 'y_component']
 
 
+class AnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Answer
+        fields = ['uuid']
+
+
 class UserResponseSerializer(serializers.ModelSerializer):
 
     CONTENT_SERIALIZER_MAP = {
         Text.__name__.lower(): TextSerializer,
         Vector.__name__.lower(): VectorSerializer,
+        Answer.__name__.lower(): AnswerSerializer,
     }
 
     class Meta:

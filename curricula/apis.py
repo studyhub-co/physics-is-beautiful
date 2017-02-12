@@ -53,8 +53,8 @@ class AnswerSerializer(BaseSerializer):
     class Meta:
         model = Answer
         fields = ['uuid', 'type', 'content']
-        lookup_field = 'uuid'
 
+    uuid = serializers.CharField()
     type = serializers.SerializerMethodField()
     content = serializers.SerializerMethodField()
 
@@ -76,9 +76,12 @@ class UserResponseSerializer(BaseSerializer):
     text = TextSerializer(required=False)
     answer = AnswerSerializer(required=False)
 
+    def validate_answer(self, value):
+        return Answer.objects.get(uuid=value['uuid'])
+
     def validate(self, data):
-        fields = set(self.fields.keys())
-        provided_fields = fields & set(data.keys()) - {'question', 'profile', 'answer', 'answered_on'}
+        fields = set(self.fields.keys()) - {'question', 'profile', 'answered_on'}
+        provided_fields = fields & set(data.keys())
         if len(provided_fields) != 1:
             raise ValidationError('Must specify exactly one of ({})'.format(', '.join(fields)))
         self.field_name = provided_fields.pop()

@@ -286,6 +286,7 @@ class VectorCanvas extends React.Component {
             this.answerArrow = null;
             this.canvas.remove(this.answerText);
         }
+        var nullBox = '';
         var buttonClass = 'btn btn-primary';
         var canvasStyle = {
             border: "1px solid #ccc",
@@ -301,6 +302,16 @@ class VectorCanvas extends React.Component {
             }
             $('.upper-canvas').css('pointer-events', '');
         }
+        if (this.props.question.answer && this.props.question.answer.allow_null) {
+            nullBox = (
+                <div id="nullVector" className="checkbox">
+                    <label id="highlightGreen">
+                        <input id="nullVectorCheckbox" type="checkbox" value=""/>
+                            Null vector
+                    </label>
+                </div>
+            );
+        }
         return (
             <div className="col-md-6 text-center">
                 <div className="bounding-box">
@@ -308,6 +319,55 @@ class VectorCanvas extends React.Component {
                     <div className="button-group" id="vectorButton">
                         <a className={buttonClass} id="checkAnswer">Check</a>
                     </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+
+class MultipleChoice extends React.Component {
+
+    checkAnswer(o) {
+        this.props.question.submitAnswer(
+            this.props.question.uuid,
+            {
+                answer: {
+                    uuid: o.target.id,
+                }
+            }
+        );
+    }
+
+    render() {
+        var choices = [];
+        var hasAnswer = this.props.answer !== null;
+        var disabled = '';
+        if (hasAnswer) {
+            disabled = ' disabled';
+        }
+        for (var i = 0; i < this.props.question.choices.length; i++) {
+            var choice = this.props.question.choices[i];
+            var style = {};
+            if (hasAnswer) {
+                if (this.props.answer.uuid == choice.uuid) {
+                    style["backgroundColor"] = "rgb(79, 212, 24)";
+                    style["borderColor"] = "rgb(79, 212, 24)";
+                } else if (this.props.question.response.answer.uuid == choice.uuid) {
+                    style["backgroundColor"] = "rgb(255, 0, 0)";
+                    style["borderColor"] = "rgb(255, 0, 0)";
+                }
+            }
+            // For now we assume multiple choice to be text answers.
+            choices.push(
+                <a key={choice.uuid} className={"btn btn-primary btn-lg" + disabled} id={choice.uuid} style={style} onClick={this.checkAnswer.bind(this)}>{choice.content.text}</a>
+            );
+        }
+        return (
+            <div className="col-md-6 text-center">
+                <div className="bounding-box">
+                    <h1>Select answer below:</h1>
+                    {choices}
                 </div>
             </div>
         );
@@ -330,6 +390,12 @@ class Question extends React.Component {
         if (this.props.question.image) {
             image = <img src={'/' + this.props.question.image}/>;
         }
+        var answerField = '';
+        if (this.props.question.question_type == "SINGLE_ANSWER") {
+            answerField = <VectorCanvas question={this.props.question} answer={this.props.answer}/>;
+        } else if (this.props.question.question_type == "MULTIPLE_CHOICE") {
+            answerField = <MultipleChoice question={this.props.question} answer={this.props.answer}/>;
+        }
         return (
             <div className="question" id="ajaxDiv">
                 <div className="row">
@@ -341,7 +407,7 @@ class Question extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <VectorCanvas question={this.props.question} answer={this.props.answer}/>
+                    {answerField}
                 </div>
             </div>
         );
@@ -573,6 +639,7 @@ export default class CurriculumApp extends React.Component {
                 this.progress = data['score'] / data['required_score'] * 100;
                 data.submitAnswer = this.submitAnswer.bind(this);
                 this.question = data;
+                this.answer = null;
                 this.loadQuestion();
             }
         });
@@ -587,6 +654,7 @@ export default class CurriculumApp extends React.Component {
             data: JSON.stringify(obj),
             context: this,
             success: function(data, status, jqXHR) {
+                this.question.response = obj;
                 this.progress = data['score'] / data['required_score'] * 100;
                 if (data.was_correct) {
                     this.question.is_correct = true;
