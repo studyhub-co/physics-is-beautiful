@@ -400,7 +400,7 @@ class LessonComplete extends React.Component {
                         You rock! Lesson complete!
                     </h2>
                 </div>
-                <a className="btn btn-primary btn-lg btn-block" href="/curriculum/modules/">
+                <a className="btn btn-primary btn-lg btn-block" href={"/curriculum/modules/" + this.props.lesson.module}>
                     Proceed to next level
                 </a>
             </div>
@@ -431,10 +431,10 @@ class Sheet extends React.Component {
         }
 
         if (this.props.progress >= 100) {
-            question = <LessonComplete/>;
+            question = <LessonComplete lesson={this.props.question.lesson}/>;
         }
         return (
-            <div className="container">
+            <div className="container problem-sheet">
                 {backLink}
                 {sections}
                 {question}

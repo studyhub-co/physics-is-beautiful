@@ -2,6 +2,7 @@ import math
 
 from django.db import models
 from django.core import urlresolvers
+from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 from django.contrib.contenttypes.models import ContentType
@@ -119,7 +120,7 @@ class Question(BaseModel):
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
-    text = models.CharField(max_length=200)
+    text = models.CharField(max_length=255, db_index=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     question_type = enum.EnumField(QuestionType)
@@ -293,10 +294,25 @@ class Vector(BaseModel):
         )
 
 
+class UserResponseQuerySet(models.QuerySet):
+
+    def create(self, *args, **kwargs):
+        kwargs.setdefault('answered_on', timezone.now())
+        return super(UserResponseQuerySet, self).create(*args, **kwargs)
+
+    def bulk_create(self, objs, batch_size=None):
+        for o in objs:
+            if o.answered_on is None:
+                o.answered_on = timezone.now()
+        return super(UserResponseQuerySet, self).bulk_create(objs, batch_size)
+
+
 class UserResponse(BaseModel):
 
     class Meta:
         db_table = 'curricula_user_responses'
+
+    objects = UserResponseQuerySet.as_manager()
 
     profile = models.ForeignKey(
         'profiles.Profile', related_name='responses', on_delete=models.CASCADE
@@ -305,6 +321,7 @@ class UserResponse(BaseModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content = GenericForeignKey('content_type', 'object_id')
+    answered_on = models.DateTimeField()
     is_correct = models.BooleanField(default=False)
 
     def check_response(self):
@@ -329,3 +346,4 @@ class LessonProgress(BaseModel):
     )
     lesson = models.ForeignKey(Lesson, related_name='progress', on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0)
+    completed_on = models.DateTimeField(null=True, blank=True)

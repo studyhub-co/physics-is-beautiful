@@ -1,6 +1,5 @@
 {% load static %}
 {% load auth_tags %}
-{% auth_forms request.get_full_path %}
 
 <head>
 
@@ -10,7 +9,6 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="{% static "homepage/modal.js" %}"></script>
     <title>Physics is Beautiful</title>
     <meta name="description" content="The free, interactive, easy way to learn physics for everyone. Full physics curriculum designed for all levels:
 		algebra & calculus-based physics, AP, high-school & university, and for the casual learner" />
@@ -44,4 +42,5 @@
     </div>
 </div>
 
+{% auth_modal user request.get_full_path %}
 </body>

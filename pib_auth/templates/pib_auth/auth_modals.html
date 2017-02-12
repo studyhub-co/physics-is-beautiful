@@ -5,7 +5,15 @@
 {% get_providers as socialaccount_providers %}
 
 
-{% if not user.is_authenticated %}
+<script type="text/javascript" src="{% static "pib_auth/js/modal.js" %}"></script>
+{% if user.is_authenticated %}
+    <div class="hidden">
+        <form id="logout-form" method="POST" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            <input type='hidden' value='submit'>
+        </form>
+    </div>
+{% else %}
     <div class="modal fade auth-modal" id="login-modal" role="dialog">
         <div class="modal-dialog" role"document">
             <div class="modal-content">

@@ -3,6 +3,7 @@ from collections import defaultdict
 from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.db.models import Count
+from django.utils import timezone
 
 from rest_framework import serializers
 
@@ -31,6 +32,8 @@ class ProgressServiceBase(object):
         is_correct = user_response.check_response()
         if is_correct:
             self.lesson_progress.score += self.CORRECT_RESPONSE_VALUE
+            if self.lesson_progress.score >= self.COMPLETION_THRESHOLD:
+                self.lesson_progress.completed_on = timezone.now()
         else:
             self.lesson_progress.score = max(
                 0, self.lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
@@ -77,7 +80,7 @@ class LessonProgressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LessonProgress
-        fields = ['score']
+        fields = ['score', 'completed_on']
 
 
 class TextSerializer(serializers.ModelSerializer):
@@ -103,7 +106,7 @@ class UserResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserResponse
-        fields = ['question', 'content_type', 'content', 'is_correct']
+        fields = ['question', 'content_type', 'content', 'is_correct', 'answered_on']
 
     content = serializers.SerializerMethodField()
 
@@ -132,11 +135,13 @@ class AnonymousProgressService(ProgressServiceBase):
 
     @cached_property
     def lesson_progress(self):
+        lesson_progress = self.lessons_store.setdefault(
+            str(self.lesson.pk), self.DEFAULT_LESSON_STORE
+        )
         return LessonProgress(
             lesson=self.lesson,
-            score=self.lessons_store.setdefault(
-                str(self.lesson.pk), self.DEFAULT_LESSON_STORE
-            )['score']
+            score=lesson_progress['score'],
+            completed_on=lesson_progress.get('completed_on'),
         )
 
     def get_next_question(self):

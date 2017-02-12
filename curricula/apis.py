@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -67,7 +69,7 @@ class UserResponseSerializer(BaseSerializer):
 
     class Meta:
         model = UserResponse
-        fields = ['profile', 'question', 'vector', 'text', 'answer']
+        fields = ['profile', 'question', 'vector', 'text', 'answer', 'answered_on']
         extra_kwargs = {'profile': {'required': False}}
 
     vector = VectorSerializer(required=False)
@@ -76,7 +78,7 @@ class UserResponseSerializer(BaseSerializer):
 
     def validate(self, data):
         fields = set(self.fields.keys())
-        provided_fields = fields & set(data.keys()) - {'question', 'profile'}
+        provided_fields = fields & set(data.keys()) - {'question', 'profile', 'answer', 'answered_on'}
         if len(provided_fields) != 1:
             raise ValidationError('Must specify exactly one of ({})'.format(', '.join(fields)))
         self.field_name = provided_fields.pop()
@@ -100,16 +102,33 @@ class UserResponseSerializer(BaseSerializer):
         return instance
 
 
+class LessonSerializer(BaseSerializer):
+
+    class Meta:
+        model = Lesson
+        fields = ['uuid', 'name', 'image', 'module']
+
+    image = serializers.SerializerMethodField()
+    module = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        return '/{}'.format(obj.image.url)
+
+    def get_module(self, obj):
+        return obj.module.uuid
+
+
 class QuestionSerializer(BaseSerializer):
 
     class Meta:
         model = Question
-        fields = ['uuid', 'text', 'image', 'question_type', 'choices']
+        fields = ['uuid', 'text', 'image', 'question_type', 'choices', 'lesson']
 
     question_type = serializers.ChoiceField(
         source='question_type_name', choices=Question.QuestionType.choices_inverse
     )
     choices = serializers.SerializerMethodField()
+    lesson = LessonSerializer()
 
     def get_choices(self, obj):
         if obj.question_type == Question.QuestionType.MULTIPLE_CHOICE:
@@ -132,7 +151,7 @@ class QuestionViewSet(ModelViewSet):
 
     def user_response(self, request, uuid):
         question = self.get_object()
-        data = {'question': question.pk}
+        data = {'question': question.pk, 'answered_on': timezone.now()}
         data.update(request.data)
         sr = UserResponseSerializer(data=data)
         sr.is_valid(raise_exception=True)
@@ -148,18 +167,6 @@ class QuestionViewSet(ModelViewSet):
         if not is_correct:
             data['correct_answer'] = AnswerSerializer(user_response.get_correct_answer()).data
         return Response(data)
-
-
-class LessonSerializer(BaseSerializer):
-
-    class Meta:
-        model = Lesson
-        fields = ['uuid', 'name', 'image']
-
-    image = serializers.SerializerMethodField()
-
-    def get_image(self, obj):
-        return '/{}'.format(obj.image.url)
 
 
 class LessonViewSet(ModelViewSet):

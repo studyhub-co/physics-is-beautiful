@@ -5,3 +5,6 @@ from django.apps import AppConfig
 
 class CurriculaConfig(AppConfig):
     name = 'curricula'
+
+    def ready(self):
+        import curricula.receivers

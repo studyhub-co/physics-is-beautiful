@@ -61,7 +61,7 @@ color:#686868 ;
 cursor: pointer;
 border: 2px solid #686868 ;
 }*/
-.container{
+.problem-sheet{
     position:relative;
     min-width: 80vw;
     margin-top: 1%;
@@ -71,7 +71,7 @@ border: 2px solid #686868 ;
     box-shadow: 0 0 10px #d8d8d8;
     padding-bottom:8vh
 }
-.container h1{font-size:120%;}
+.problem-sheet h1{font-size:120%;}
 
 .bounding-box{
     border-radius: 25px;
@@ -90,7 +90,7 @@ border: 2px solid #686868 ;
         border-radius: 0px;
         box-shadow: 0px 2px 4px #d8d8d8;
     }
-    .container {
+    .problem-sheet {
         border-radius: 0px;
         box-shadow: none;
     }
@@ -263,7 +263,7 @@ border: 2px solid #686868 ;
         width:100vw;
         position:relative;
     }
-    .container{
+    .problem-sheet{
         padding:0px;
     }
 }

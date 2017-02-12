@@ -26,7 +26,7 @@ html, body {
 	display: none;
 }
 
-.container {
+.problem-sheet {
 	position: relative;
 	width: 80%;
 	margin-top: 30px;
@@ -39,7 +39,7 @@ html, body {
 }
 
 @media all and (max-width: 770px) { /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
-	.container {
+	.problem-sheet {
 		width: 95%;
 		padding: 30px;
 	}
@@ -49,7 +49,7 @@ html, body {
 }
 
 @media all and (max-width: 410px) { /*iPhone 6 optimization*/
-	.container {
+	.problem-sheet {
 		width: 99%;
 		padding: 20px;
 		margin-top: -15px;
@@ -63,7 +63,7 @@ html, body {
 }
 
 @media all and (max-width: 355px) { /*iPhone 5 optimization*/
-	.container {
+	.problem-sheet {
 		width: 95%;
 		padding: 50px;
 		margin-top: -12px;
@@ -71,19 +71,19 @@ html, body {
 }
 
 @media all and (max-width: 313px) { /*Small screen optimization 1*/
-	.container {
+	.problem-sheet {
 		padding: 40px;
 	}
 }
 
 @media all and (max-width: 292px) { /*Small screen optimization 2*/
-	.container {
+	.problem-sheet {
 		padding: 30px;
 	}
 }
 
 
-.container h1 {
+.problem-sheet h1 {
 	font-size: 100%;
 }
 
