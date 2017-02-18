@@ -14,6 +14,7 @@ def transfer_lesson_progress(request, user, **kwargs):
     Method for transitioning all the tracking data from the session to the
     tracking models.
     """
+    #TODO: optimize for bulk create queries.
     profile = user.profile
     lessons = Lesson.objects.filter(pk__in=request.session.get('lessons', {}).keys())
     for lesson in lessons:
@@ -30,7 +31,6 @@ def transfer_lesson_progress(request, user, **kwargs):
             )
             content_classes[content_type] = content_class
             if content_class == Answer:
-                print('CONTENT:', response['content'])
                 content = Answer.objects.get(**response['content'])
             else:
                 content = content_class.objects.create(**response['content'])
