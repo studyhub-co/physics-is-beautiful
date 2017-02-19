@@ -47,6 +47,14 @@ class ProgressServiceBase(object):
             self.save()
         return question
 
+    def check_lesson_locked(self, lesson):
+        is_locked = self._check_lesson_locked(lesson)
+        if (is_locked and lesson.position == 0 and
+                lesson.module.position == 0 and lesson.module.unit.position == 0):
+            self.unlock_lesson(lesson)
+            return False
+        return is_locked
+
     def check_user_response(self, user_response):
         is_correct = user_response.check_response()
         if is_correct:
@@ -58,7 +66,6 @@ class ProgressServiceBase(object):
                     position__gt=self.current_lesson.position,
                     module__gt=self.current_lesson.module.position,
                 ).order_by('module__position', 'position').first()
-                print('NEXT LESSON:', next_lesson)
                 if next_lesson:
                     self.unlock_lesson(next_lesson)
         else:
@@ -100,7 +107,7 @@ class ProgressService(ProgressServiceBase):
             ).only('lesson_id', 'completed_on')
         }
 
-    def check_lesson_locked(self, lesson):
+    def _check_lesson_locked(self, lesson):
         return bool(not lesson or lesson.pk not in self.lesson_completion_map)
 
     def check_lesson_completed(self, lesson):
@@ -193,7 +200,7 @@ class AnonymousProgressService(ProgressServiceBase):
         self.lessons_store.setdefault(str(lesson.pk), self.DEFAULT_LESSON_STORE)
         return self.get_lesson_progress(lesson)
 
-    def check_lesson_locked(self, lesson):
+    def _check_lesson_locked(self, lesson):
         return str(lesson.pk) in self.lessons_store
 
     def check_lesson_completed(self, lesson):

@@ -197,7 +197,6 @@ class LessonViewSet(ModelViewSet):
         question = service.get_next_question(previous_question)
         if question:
             data = QuestionSerializer(question, context={'progress_service': service}).data
-            print('PROGRESS:', service.current_lesson_progress)
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)
@@ -230,8 +229,6 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
 
     def get_is_locked(self, obj):
         first_lesson = obj.lessons.first()
-        if first_lesson:
-            print('WTF:', first_lesson, first_lesson.pk)
         return bool(
             not first_lesson or self.context['progress_service'].check_lesson_locked(first_lesson)
         )
