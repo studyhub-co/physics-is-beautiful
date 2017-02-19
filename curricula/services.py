@@ -7,14 +7,20 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from .models import LessonProgress, UserResponse, Text, Vector, Answer
+from .models import LessonProgress, UserResponse, Text, Vector, Answer, Lesson
 
 
-def get_progress_service(request, lesson):
+class LessonLocked(Exception):
+
+    def __init__(self, message=None):
+        self.message = message or 'message', 'Lesson is locked!'
+
+
+def get_progress_service(request, current_lesson=None):
     if request.user.is_authenticated():
-        return ProgressService(request.user, lesson)
+        return ProgressService(request, current_lesson=current_lesson)
     else:
-        return AnonymousProgressService(request.user, lesson, session=request.session)
+        return AnonymousProgressService(request, current_lesson=current_lesson, session=request.session)
 
 
 class ProgressServiceBase(object):
@@ -23,20 +29,41 @@ class ProgressServiceBase(object):
     CORRECT_RESPONSE_VALUE = 10
     INCORRECT_RESPONSE_VALUE = -5
 
-    def __init__(self, user, lesson):
-        self.user = user
-        self.lesson = lesson
+    def __init__(self, request, current_lesson=None):
+        self.request = request
+        self.user = request.user
+        self.current_lesson = current_lesson
         self.user_responses = []
 
-    def check_answer(self, user_response):
+    def get_next_question(self, current_question=None):
+        qs = self.current_lesson.questions
+        if current_question:
+            qs = qs.filter(position__gt=current_question.position)
+        question = qs.order_by('position').first()
+        if not question:
+            question = self.current_lesson.questions.first()
+        elif question.position == 0:
+            self.current_lesson_progress.score = 0
+            self.save()
+        return question
+
+    def check_user_response(self, user_response):
         is_correct = user_response.check_response()
         if is_correct:
-            self.lesson_progress.score += self.CORRECT_RESPONSE_VALUE
-            if self.lesson_progress.score >= self.COMPLETION_THRESHOLD:
-                self.lesson_progress.completed_on = timezone.now()
+            self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
+            if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
+                self.current_lesson_progress.completed_on = timezone.now()
+                # unlock the next lesson!
+                next_lesson = Lesson.objects.filter(
+                    position__gt=self.current_lesson.position,
+                    module__gt=self.current_lesson.module.position,
+                ).order_by('module__position', 'position').first()
+                print('NEXT LESSON:', next_lesson)
+                if next_lesson:
+                    self.unlock_lesson(next_lesson)
         else:
-            self.lesson_progress.score = max(
-                0, self.lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
+            self.current_lesson_progress.score = max(
+                0, self.current_lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
             )
 
         self.user_responses.append(user_response)
@@ -47,24 +74,37 @@ class ProgressServiceBase(object):
 class ProgressService(ProgressServiceBase):
 
     @cached_property
-    def lesson_progress(self):
-        progress, _ = LessonProgress.objects.get_or_create(
-            lesson=self.lesson,
-            profile=self.user.profile,
-        )
-        return progress
+    def current_lesson_progress(self):
+        if self.current_lesson:
+            try:
+                return LessonProgress.objects.get(
+                    lesson=self.current_lesson,
+                    profile=self.user.profile,
+                )
+            except LessonProgress.DoesNotExist:
+                if self.current_lesson.module.position == 0 and self.current_lesson.position == 0:
+                    return self.unlock_lesson(self.current_lesson)
+                raise LessonLocked()
 
-    def get_next_question(self):
-        question = self.lesson.questions.exclude(
-            responses__profile=self.user.profile
-        ).order_by('position').first()
-        if not question:
-            question = self.lesson.questions.filter(
-                responses__profile=self.user.profile
-            ).annotate(
-                num_responses=Count('responses')
-            ).order_by('num_responses', 'position').first()
-        return question
+    def unlock_lesson(self, lesson):
+        return LessonProgress.objects.create(
+            lesson=lesson,
+            profile=self.user.profile
+        )
+
+    @cached_property
+    def lesson_completion_map(self):
+        return {
+            lp.lesson_id: lp.completed_on for lp in LessonProgress.objects.filter(
+                profile=self.user.profile
+            ).only('lesson_id', 'completed_on')
+        }
+
+    def check_lesson_locked(self, lesson):
+        return bool(not lesson or lesson.pk not in self.lesson_completion_map)
+
+    def check_lesson_completed(self, lesson):
+        return bool(lesson and self.lesson_completion_map.get(lesson.pk, False))
 
     def save(self):
         for response in self.user_responses:
@@ -73,7 +113,7 @@ class ProgressService(ProgressServiceBase):
             response.content = obj
             response.save()
         self.user_responses = []
-        self.lesson_progress.save()
+        self.current_lesson_progress.save()
 
 
 class LessonProgressSerializer(serializers.ModelSerializer):
@@ -126,60 +166,67 @@ class UserResponseSerializer(serializers.ModelSerializer):
 
 class AnonymousProgressService(ProgressServiceBase):
 
-    DEFAULT_LESSON_STORE = {'score': 0}
+    DEFAULT_LESSON_STORE = {'score': 0, 'completed_on': None, 'responses': []}
 
-    def __init__(self, user, lesson, session):
-        super(AnonymousProgressService, self).__init__(user, lesson)
+    def __init__(self, user, current_lesson, session):
+        super(AnonymousProgressService, self).__init__(user, current_lesson)
         self.session = session
 
     @cached_property
     def lessons_store(self):
         return self.session.setdefault('lessons', {})
 
-    @cached_property
-    def responses_store(self):
-        return self.lessons_store.setdefault(
-            str(self.lesson.pk),
-            self.DEFAULT_LESSON_STORE
-        ).setdefault('responses', [])
+    def get_lesson_responses_store(self, lesson):
+        try:
+            return self.lessons_store[str(lesson.pk)]['responses']
+        except KeyError:
+            if self.current_lesson.module.position == 0 and self.current_lesson.position == 0:
+                return self.unlock_lesson(self.current_lesson)
+            raise LessonLocked()
 
     @cached_property
-    def lesson_progress(self):
-        lesson_progress = self.lessons_store.setdefault(
-            str(self.lesson.pk), self.DEFAULT_LESSON_STORE
-        )
+    def current_lesson_responses_store(self):
+        if self.current_lesson:
+            return self.get_lesson_responses_store(self.current_lesson)
+
+    def unlock_lesson(self, lesson):
+        self.lessons_store.setdefault(str(lesson.pk), self.DEFAULT_LESSON_STORE)
+        return self.get_lesson_progress(lesson)
+
+    def check_lesson_locked(self, lesson):
+        return str(lesson.pk) in self.lessons_store
+
+    def check_lesson_completed(self, lesson):
+        try:
+            return bool(self.get_lesson_progress(lesson).completed_on)
+        except LessonLocked:
+            return False
+
+    def get_lesson_progress(self, lesson):
+        try:
+            lesson_progress = self.lessons_store[str(lesson.pk)]
+        except KeyError:
+            if self.current_lesson.module.position == 0 and self.current_lesson.position == 0:
+                return self.unlock_lesson(self.current_lesson)
+            raise LessonLocked()
         return LessonProgress(
-            lesson=self.lesson,
+            lesson=lesson,
             score=lesson_progress['score'],
-            completed_on=lesson_progress.get('completed_on'),
+            completed_on=lesson_progress['completed_on'],
         )
 
-    def get_next_question(self):
-        question_counts = defaultdict(int)
-        for response in self.responses_store:
-            question_counts[response['question']] += 1
-
-        total_question_count = self.lesson.questions.count()
-        if total_question_count > len(question_counts):
-            return self.lesson.questions.exclude(
-                pk__in=question_counts.keys()
-            ).order_by('position').first()
-        else:
-            question_count_pairs = sorted(question_counts.items(), key=lambda x: x[1])
-            min_value = question_count_pairs[0][1]
-            question_count_pairs = filter(
-                lambda x: x[1] == min_value, question_count_pairs,
-            )
-            questions = [q for q, _ in question_count_pairs]
-            return self.lesson.questions.filter(pk__in=questions).order_by('position').first()
+    @cached_property
+    def current_lesson_progress(self):
+        if self.current_lesson:
+            return self.get_lesson_progress(self.current_lesson)
 
     def save(self):
         lesson_raw = LessonProgressSerializer(
-            self.lesson_progress
+            self.current_lesson_progress
         ).data
         responses_raw = UserResponseSerializer(self.user_responses, many=True).data
-        self.responses_store.extend(responses_raw)
-        lesson_raw['responses'] = self.responses_store
+        self.current_lesson_responses_store.extend(responses_raw)
+        lesson_raw['responses'] = self.current_lesson_responses_store
         self.user_responses = []
-        self.lessons_store[str(self.lesson_progress.lesson.pk)] = lesson_raw
+        self.lessons_store[str(self.current_lesson_progress.lesson.pk)] = lesson_raw
         self.session['lessons'] = self.lessons_store

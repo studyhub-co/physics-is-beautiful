@@ -36,6 +36,7 @@ html, body {
 	background-color: white;
 	box-shadow: 0 0 10px #d8d8d8;
 	margin-bottom: 60px;
+        height: auto;
 }
 
 @media all and (max-width: 770px) { /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/

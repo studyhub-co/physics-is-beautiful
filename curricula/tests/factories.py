@@ -23,6 +23,8 @@ class Module(DjangoModelFactory):
         model = models.Module
 
     unit = SubFactory(Unit)
+    name = Sequence(lambda n: 'Module {}'.format(n))
+    position = Sequence(lambda n: n)
 
 
 class Lesson(DjangoModelFactory):

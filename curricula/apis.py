@@ -109,10 +109,11 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['uuid', 'name', 'image', 'module']
+        fields = ['uuid', 'name', 'image', 'module', 'is_locked']
 
     image = serializers.SerializerMethodField()
     module = serializers.SerializerMethodField()
+    is_locked = serializers.SerializerMethodField()
 
     def get_image(self, obj):
         return '/{}'.format(obj.image.url)
@@ -120,12 +121,15 @@ class LessonSerializer(BaseSerializer):
     def get_module(self, obj):
         return obj.module.uuid
 
+    def get_is_locked(self, obj):
+        return self.context['progress_service'].check_lesson_locked(obj)
+
 
 class QuestionSerializer(BaseSerializer):
 
     class Meta:
         model = Question
-        fields = ['uuid', 'text', 'image', 'question_type', 'choices', 'lesson']
+        fields = ['uuid', 'text', 'hint', 'image', 'question_type', 'choices', 'lesson']
 
     question_type = serializers.ChoiceField(
         source='question_type_name', choices=Question.QuestionType.choices_inverse
@@ -163,8 +167,8 @@ class QuestionViewSet(ModelViewSet):
             kwargs['profile'] = request.user.profile
         user_response = sr.get_response(**kwargs)
         service = get_progress_service(request, question.lesson)
-        is_correct = service.check_answer(user_response)
-        data = LessonProgressSerializer(service.lesson_progress).data
+        is_correct = service.check_user_response(user_response)
+        data = LessonProgressSerializer(service.current_lesson_progress).data
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
         if not is_correct:
@@ -178,13 +182,23 @@ class LessonViewSet(ModelViewSet):
     queryset = Lesson.objects.all()
     lookup_field = 'uuid'
 
+    def get_serializer_context(self):
+        context = super(LessonViewSet, self).get_serializer_context()
+        context['progress_service'] = get_progress_service(context['request'])
+        return context
+
     def get_next_question(self, request, uuid):
         lesson = self.get_object()
         service = get_progress_service(request, lesson)
-        question = service.get_next_question()
+        previous_question = None
+        previous_question_uuid = request.query_params.get('previous_question')
+        if previous_question_uuid:
+            previous_question = Question.objects.filter(uuid=previous_question_uuid).first()
+        question = service.get_next_question(previous_question)
         if question:
-            data = QuestionSerializer(question).data
-            data.update(LessonProgressSerializer(service.lesson_progress).data)
+            data = QuestionSerializer(question, context={'progress_service': service}).data
+            print('PROGRESS:', service.current_lesson_progress)
+            data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -194,16 +208,33 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
 
     class Meta:
         model = Module
-        fields = ['uuid', 'name', 'image', 'lesson_count']
+        fields = ['uuid', 'name', 'image', 'lesson_count', 'lesson_completed_count', 'is_locked']
         expandable_fields = {
             'lessons': (LessonSerializer, (), {'many': True}),
         }
 
     image = serializers.SerializerMethodField()
     lesson_count = serializers.IntegerField(source='lessons.count')
+    lesson_completed_count = serializers.SerializerMethodField()
+    is_locked = serializers.SerializerMethodField()
 
     def get_image(self, obj):
         return '/{}'.format(obj.image.url)
+
+    def get_lesson_completed_count(self, obj):
+        count = 0
+        for lesson in obj.lessons.all():
+            if self.context['progress_service'].check_lesson_completed(lesson):
+                count += 1
+        return count
+
+    def get_is_locked(self, obj):
+        first_lesson = obj.lessons.first()
+        if first_lesson:
+            print('WTF:', first_lesson, first_lesson.pk)
+        return bool(
+            not first_lesson or self.context['progress_service'].check_lesson_locked(first_lesson)
+        )
 
 
 class ModuleViewSet(ModelViewSet):
@@ -211,6 +242,11 @@ class ModuleViewSet(ModelViewSet):
     serializer_class = ModuleSerializer
     queryset = Module.objects.all()
     lookup_field = 'uuid'
+
+    def get_serializer_context(self):
+        context = super(ModuleViewSet, self).get_serializer_context()
+        context['progress_service'] = get_progress_service(context['request'])
+        return context
 
 
 class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
@@ -245,6 +281,11 @@ class CurriculaViewSet(ModelViewSet):
     serializer_class = CurriculumSerializer
     queryset = Curriculum.objects.all()
     lookup_field = 'uuid'
+
+    def get_serializer_context(self):
+        context = super(CurriculaViewSet, self).get_serializer_context()
+        context['progress_service'] = get_progress_service(context['request'])
+        return context
 
     def get_object(self):
         lookup_id = self.kwargs.get(self.lookup_url_kwarg or self.lookup_field)

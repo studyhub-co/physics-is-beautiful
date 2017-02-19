@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from factory import DjangoModelFactory, SubFactory
 
@@ -8,7 +8,7 @@ from profiles import models
 class User(DjangoModelFactory):
 
     class Meta:
-        model = get_user_model()
+        model = settings.AUTH_USER_MODEL
 
 
 class Profile(DjangoModelFactory):

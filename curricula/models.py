@@ -118,12 +118,19 @@ class Question(BaseModel):
         SINGLE_ANSWER = 10
         MULTIPLE_CHOICE = 20
 
+    class AnswerType(enum.Enum):
+        TEXT = 10
+        VECTOR = 20
+        IMAGE = 30
+
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
     text = models.CharField(max_length=255, db_index=True)
+    hint = models.CharField(max_length=1024, blank=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     question_type = enum.EnumField(QuestionType)
+    # answer_type = enum.EnumField(AnswerType)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
     @property

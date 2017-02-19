@@ -1,16 +1,38 @@
 import React from 'react';
 
 
-class Item extends React.Component {
+class LockedItem extends React.Component {
+    render() {
+        if (this.props.locked) {
+            divClass = "";
+            imageClass = "grayed-out-img";
+            h1Class = "module-locked";
+        }
+        return (
+            <div className="col-md-1">
+                <div className="thumbnail">
+                    <img className="grayed-out-img" src={this.props.item.image}/>
+                </div>
+                <h1 className="module-locked">
+                    {this.props.item.name}
+                    <span className="glyphicon glyphicon-lock"></span>
+                </h1>
+            </div>
+        );
+    }
+}
+
+
+class UnlockedItem extends React.Component {
     render() {
         return (
             <div className="col-md-1 module-accessible-block">
-                <a href={this.props.href}>
+                <a href={this.props.item.href}>
                     <div className="thumbnail">
-                        <img src={this.props.image}/>
+                        <img src={this.props.item.image}/>
                     </div>
                     <h1 className="module-accessible">
-                        {this.props.name}
+                        {this.props.item.name}
                         <span></span>
                     </h1>
                 </a>
@@ -20,14 +42,25 @@ class Item extends React.Component {
 }
 
 
+class Item extends React.Component {
+    render() {
+        if (this.props.item.locked) {
+            return <LockedItem item={this.props.item}/>;
+        } else {
+            return <UnlockedItem item={this.props.item}/>;
+        }
+    }
+}
+
+
 class Section extends React.Component {
     render() {
         var items = [];
         this.props.items.forEach(function(el) {
-            items.push(<Item key={el.uuid} name={el.name} image={el.image} href={el.href}/>);
+            items.push(<Item key={el.uuid} item={el}/>);
         });
         return (
-            <div style={{width: "100%"}}>
+            <div className="row" style={{width: "100%"}}>
                 <div className="section-title"><h1>{this.props.name}</h1></div>
                 <div className="row">
                     {items}
@@ -379,6 +412,9 @@ class Question extends React.Component {
 
     componentDidMount() {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        $(window).bind('beforeunload', function(){
+            return 'Changes you made may not be saved.';
+        });
     }
 
     componentDidUpdate() {
@@ -401,7 +437,7 @@ class Question extends React.Component {
                 <div className="row">
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
-                            <h1 id="ajaxDiv">{this.props.question.text}</h1>
+                            <h1 id="ajaxDiv">{this.props.question.text + ' ' + this.props.question.hint}</h1>
                             <div className="thumbnail">
                                 {image}
                             </div>
@@ -544,11 +580,16 @@ export default class CurriculumApp extends React.Component {
             var items = [];
             for(var moduleIndex = 0; moduleIndex < unit.modules.length; moduleIndex++) {
                 var module = unit.modules[moduleIndex];
+                var name = module.name + ' ';
+                if (!module.is_locked) {
+                    name += '(' + module.lesson_completed_count + '/' + module.lesson_count + ')';
+                }
                 items.push({
-                    name: module.name + ' (' + 0 + '/' + module.lesson_count + ')',
+                    name: name,
                     image: module.image,
                     href: '/curriculum/modules/' + module.uuid,
                     uuid: module.uuid,
+                    locked: module.is_locked,
                 });
             }
             sections.push({
@@ -574,10 +615,11 @@ export default class CurriculumApp extends React.Component {
         for(var lessonIndex = 0; lessonIndex < this.module.lessons.length; lessonIndex++) {
             var lesson = this.module.lessons[lessonIndex];
             items.push({
-                name: lesson.name,
+                name: lesson.name + ' ',
                 image: lesson.image,
                 href: '/curriculum/lessons/' + lesson.uuid,
                 uuid: lesson.uuid,
+                locked: lesson.is_locked,
             });
         }
         var sections = [{
@@ -632,9 +674,14 @@ export default class CurriculumApp extends React.Component {
     }
 
     fetchProblem(lookupId) {
+        var data = {};
+        if (this.question) {
+            data['previous_question'] = this.question.uuid
+        }
         $.ajax({
             url: '/api/v1/curricula/lessons/' + lookupId + '/next-question',
             context: this,
+            data: data,
             success: function(data, status, jqXHR) {
                 this.progress = data['score'] / data['required_score'] * 100;
                 data.submitAnswer = this.submitAnswer.bind(this);
