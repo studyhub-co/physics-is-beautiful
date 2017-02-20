@@ -1,6 +1,12 @@
 import React from 'react';
 
 
+var playAudio = function(key) {
+    var audio = new Audio(soundFiles[key]);
+    audio.play();
+}
+
+
 class LockedItem extends React.Component {
     render() {
         if (this.props.locked) {
@@ -616,6 +622,7 @@ class Footer extends React.Component {
 class LessonComplete extends React.Component {
     componentDidMount() {
         window.onbeforeunload = null;
+        playAudio('complete');
     }
 
     render () {
@@ -831,6 +838,7 @@ export default class CurriculumApp extends React.Component {
                 this.progress = data['score'] / data['required_score'] * 100;
                 if (data.was_correct) {
                     this.question.is_correct = true;
+                    playAudio('correct');
                 } else {
                     this.question.is_correct = false;
                     if (data.correct_answer.type == 'vector') {
@@ -842,6 +850,7 @@ export default class CurriculumApp extends React.Component {
                     } else {
                         this.answer = data.correct_answer;
                     }
+                    playAudio('incorrect');
                 }
                 this.loadQuestion();
                 if (data.was_correct) {
@@ -849,7 +858,7 @@ export default class CurriculumApp extends React.Component {
                         function() {
                             this.fetchProblem(this.state.currentId);
                         }.bind(this),
-                        1000
+                        500
                     );
                 }
             }
@@ -857,6 +866,7 @@ export default class CurriculumApp extends React.Component {
     }
 
     continueAction() {
+        playAudio('continue');
         this.fetchProblem(this.state.currentId);
     }
 
