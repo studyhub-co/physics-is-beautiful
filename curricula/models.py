@@ -107,6 +107,10 @@ class Lesson(BaseModel):
     image = models.ImageField()
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
+    @property
+    def is_start(self):
+        return self.position == 0 and self.module.position == 0 and self.module.unit.position == 0
+
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
 

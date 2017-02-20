@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils import timezone
 
 from rest_framework import serializers
@@ -49,8 +49,7 @@ class ProgressServiceBase(object):
 
     def check_lesson_locked(self, lesson):
         is_locked = self._check_lesson_locked(lesson)
-        if (is_locked and lesson.position == 0 and
-                lesson.module.position == 0 and lesson.module.unit.position == 0):
+        if is_locked and lesson.is_start:
             self.unlock_lesson(lesson)
             return False
         return is_locked
@@ -63,9 +62,13 @@ class ProgressServiceBase(object):
                 self.current_lesson_progress.completed_on = timezone.now()
                 # unlock the next lesson!
                 next_lesson = Lesson.objects.filter(
-                    position__gt=self.current_lesson.position,
-                    module__gt=self.current_lesson.module.position,
-                ).order_by('module__position', 'position').first()
+                    Q(position__gt=self.current_lesson.position,
+                      module=self.current_lesson.module) |
+                    Q(module__position__gt=self.current_lesson.module.position,
+                      module__unit=self.current_lesson.module.unit) |
+                    Q(module__unit__position__gt=self.current_lesson.module.unit.position,
+                      module__unit__curriculum=self.current_lesson.module.unit.curriculum)
+                ).order_by('module__unit__position', 'module__position', 'position').first()
                 if next_lesson:
                     self.unlock_lesson(next_lesson)
         else:
@@ -89,29 +92,30 @@ class ProgressService(ProgressServiceBase):
                     profile=self.user.profile,
                 )
             except LessonProgress.DoesNotExist:
-                if self.current_lesson.module.position == 0 and self.current_lesson.position == 0:
+                if self.current_lesson.is_start:
                     return self.unlock_lesson(self.current_lesson)
                 raise LessonLocked()
 
     def unlock_lesson(self, lesson):
-        return LessonProgress.objects.create(
+        lp = LessonProgress.objects.create(
             lesson=lesson,
             profile=self.user.profile
         )
+        self.lesson_completion_map[lesson.uuid] = None
 
     @cached_property
     def lesson_completion_map(self):
         return {
-            lp.lesson_id: lp.completed_on for lp in LessonProgress.objects.filter(
+            lp.lesson.uuid: lp.completed_on for lp in LessonProgress.objects.filter(
                 profile=self.user.profile
             ).only('lesson_id', 'completed_on')
         }
 
     def _check_lesson_locked(self, lesson):
-        return bool(not lesson or lesson.pk not in self.lesson_completion_map)
+        return bool(not lesson or lesson.uuid not in self.lesson_completion_map)
 
     def check_lesson_completed(self, lesson):
-        return bool(lesson and self.lesson_completion_map.get(lesson.pk, False))
+        return bool(lesson and self.lesson_completion_map.get(lesson.uuid, False))
 
     def save(self):
         for response in self.user_responses:
@@ -185,10 +189,10 @@ class AnonymousProgressService(ProgressServiceBase):
 
     def get_lesson_responses_store(self, lesson):
         try:
-            return self.lessons_store[str(lesson.pk)]['responses']
+            return self.lessons_store[lesson.uuid]['responses']
         except KeyError:
-            if self.current_lesson.module.position == 0 and self.current_lesson.position == 0:
-                return self.unlock_lesson(self.current_lesson)
+            if lesson and lesson.is_start:
+                return self.unlock_lesson(lesson)
             raise LessonLocked()
 
     @cached_property
@@ -197,11 +201,11 @@ class AnonymousProgressService(ProgressServiceBase):
             return self.get_lesson_responses_store(self.current_lesson)
 
     def unlock_lesson(self, lesson):
-        self.lessons_store.setdefault(str(lesson.pk), self.DEFAULT_LESSON_STORE)
+        self.lessons_store.setdefault(lesson.uuid, self.DEFAULT_LESSON_STORE)
         return self.get_lesson_progress(lesson)
 
     def _check_lesson_locked(self, lesson):
-        return str(lesson.pk) in self.lessons_store
+        return lesson.uuid not in self.lessons_store
 
     def check_lesson_completed(self, lesson):
         try:
@@ -211,10 +215,10 @@ class AnonymousProgressService(ProgressServiceBase):
 
     def get_lesson_progress(self, lesson):
         try:
-            lesson_progress = self.lessons_store[str(lesson.pk)]
+            lesson_progress = self.lessons_store[lesson.uuid]
         except KeyError:
-            if self.current_lesson.module.position == 0 and self.current_lesson.position == 0:
-                return self.unlock_lesson(self.current_lesson)
+            if lesson and lesson.is_start:
+                return self.unlock_lesson(lesson)
             raise LessonLocked()
         return LessonProgress(
             lesson=lesson,
@@ -235,5 +239,5 @@ class AnonymousProgressService(ProgressServiceBase):
         self.current_lesson_responses_store.extend(responses_raw)
         lesson_raw['responses'] = self.current_lesson_responses_store
         self.user_responses = []
-        self.lessons_store[str(self.current_lesson_progress.lesson.pk)] = lesson_raw
+        self.lessons_store[self.current_lesson_progress.lesson.uuid] = lesson_raw
         self.session['lessons'] = self.lessons_store
