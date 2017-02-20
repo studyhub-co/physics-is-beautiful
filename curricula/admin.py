@@ -263,11 +263,12 @@ class QuestionAdmin(NestedModelAdmin):
 
     def get_inline_instances(self, request, obj=None):
         inline_classes = []
-        db_instance = obj.instance_from_db()
-        if db_instance.answer_type == obj.answer_type:
-            inline = self.inline_map.get(obj.answer_type)
-            if inline and inline not in inline_classes:
-                inline_classes.append(inline)
+        if obj:
+            db_instance = obj.instance_from_db()
+            if db_instance.answer_type == obj.answer_type:
+                inline = self.inline_map.get(obj.answer_type)
+                if inline and inline not in inline_classes:
+                    inline_classes.append(inline)
         return filter(
             lambda i: inline_classes and isinstance(i, tuple(inline_classes)),
             super(QuestionAdmin, self).get_inline_instances(request)
