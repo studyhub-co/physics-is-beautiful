@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
-from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text
+from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image
 
 
 def link_to_obj(name):
@@ -121,6 +121,12 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     x_component = forms.FloatField(required=False)
     y_component = forms.FloatField(required=False)
 
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance and instance.question.question_type == Question.QuestionType.SINGLE_ANSWER:
+            instance.is_correct = True
+        super(VectorAnswerForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super(VectorAnswerForm, self).clean()
         kwargs = {field: cleaned_data[field] for field in self.FIELDS}
@@ -129,10 +135,8 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
         return cleaned_data
 
 
-class VectorAnswerInline(NestedTabularInline):
-    verbose_name_plural = 'Edit Vector Answers'
-    model = Answer
-    form = VectorAnswerForm
+class AnswerTabularInline(NestedTabularInline):
+
     extra = 0
     classes = ['collapse']
     readonly_fields = ['position']
@@ -143,9 +147,11 @@ class VectorAnswerInline(NestedTabularInline):
         else:
             return None
 
-    def get_queryset(self, request):
-        qs = super(VectorAnswerInline, self).get_queryset(request)
-        return qs.filter(content_type__model=Vector.__name__.lower())
+
+class VectorAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Vector Answers'
+    model = Answer
+    form = VectorAnswerForm
 
     def magnitude(self, obj):
         return obj.magnitude
@@ -172,37 +178,34 @@ class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     text = forms.CharField()
 
 
-class TextAnswerInline(NestedTabularInline):
+class TextAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Text Answers'
     model = Answer
     form = TextAnswerForm
-    extra = 0
-    classes = ['collapse']
-    readonly_fields = ['position']
-
-    def get_max_num(self, request, obj=None, **kwargs):
-        if not obj or obj.question_type == Question.QuestionType.SINGLE_ANSWER:
-            return 1 if not obj or obj.answers.count() < 1 else 0
-        else:
-            return None
-
-    def get_queryset(self, request):
-        qs = super(TextAnswerInline, self).get_queryset(request)
-        return qs.filter(content_type__model=Text.__name__.lower())
 
     def text(self, obj):
         return obj.text
 
 
-class AnswerInline(NestedTabularInline):
-    model = Answer
-    sortable_field_name = 'position'
-    extra = 0
-    fields = ['content', 'is_correct', 'position']
-    readonly_fields = ['content']
+class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
-    def has_add_permission(self, request):
-        return False
+    FIELDS = ['image']
+    SPECIAL_MODEL = Image
+
+    class Meta:
+        model = Answer
+        fields = ['image', 'is_correct', 'position']
+
+    image = forms.ImageField()
+
+
+class ImageAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Image Answers'
+    model = Answer
+    form = ImageAnswerForm
+
+    def image(self, obj):
+        return obj.image
 
 
 class CurriculumAdmin(NestedModelAdmin):
@@ -210,32 +213,69 @@ class CurriculumAdmin(NestedModelAdmin):
     inlines = [UnitInline]
 
 
-_link_to_curriculum = link_to_field('curriculum')
+_backlink_to_curriculum = link_to_field('curriculum')
 
 
 class UnitAdmin(NestedModelAdmin):
 
     inlines = [ModuleInline]
-    fields = ['curriculum', _link_to_curriculum, 'name', 'published_on', 'image', 'position']
-    readonly_fields = [_link_to_curriculum, 'position']
+    fields = ['curriculum', _backlink_to_curriculum, 'name', 'published_on', 'image', 'position']
+    readonly_fields = [_backlink_to_curriculum, 'position']
+
+
+_backlink_to_unit = link_to_field('unit')
 
 
 class ModuleAdmin(NestedModelAdmin):
 
     inlines = [LessonInline]
-    readonly_fields = ['position']
+    fields = ['unit', _backlink_to_unit, 'name', 'published_on', 'image', 'position']
+    readonly_fields = [_backlink_to_unit, 'position']
+
+
+_backlink_to_module = link_to_field('module')
 
 
 class LessonAdmin(NestedModelAdmin):
 
     inlines = [QuestionInline]
-    readonly_fields = ['position']
+    fields = ['module', _backlink_to_module, 'name', 'published_on', 'image', 'position']
+    readonly_fields = [_backlink_to_module, 'position']
+
+
+_backlink_to_lesson = link_to_field('lesson')
 
 
 class QuestionAdmin(NestedModelAdmin):
 
-    inlines = [AnswerInline, TextAnswerInline, VectorAnswerInline]
-    readonly_fields = ['position']
+    inlines = [TextAnswerInline, VectorAnswerInline, ImageAnswerInline]
+    fields = [
+        'lesson', _backlink_to_lesson, 'text', 'hint', 'published_on', 'image', 'question_type',
+        'answer_type', 'position'
+    ]
+    readonly_fields = [_backlink_to_lesson, 'position']
+    inline_map = {
+        Question.AnswerType.TEXT: TextAnswerInline,
+        Question.AnswerType.IMAGE: ImageAnswerInline,
+        Question.AnswerType.VECTOR: VectorAnswerInline,
+        Question.AnswerType.NULLABLE_VECTOR: VectorAnswerInline,
+    }
+
+    def get_inline_instances(self, request, obj=None):
+        inline_classes = []
+        db_instance = obj.instance_from_db()
+        if db_instance.answer_type == obj.answer_type:
+            inline = self.inline_map.get(obj.answer_type)
+            if inline and inline not in inline_classes:
+                inline_classes.append(inline)
+        return filter(
+            lambda i: inline_classes and isinstance(i, tuple(inline_classes)),
+            super(QuestionAdmin, self).get_inline_instances(request)
+        )
+
+    def get_formsets(self, request, obj=None):
+        for inline in self.get_inline_instances(request, obj):
+            yield inline.get_formset(request, obj)
 
 
 admin.site.register(Curriculum, CurriculumAdmin)

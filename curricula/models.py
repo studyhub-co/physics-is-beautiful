@@ -20,6 +20,9 @@ class BaseModel(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
+    def instance_from_db(self):
+        return self.__class__.objects.get(pk=self.pk)
+
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
         return urlresolvers.reverse(
@@ -115,13 +118,16 @@ class Question(BaseModel):
         db_table = 'curricula_questions'
 
     class QuestionType(enum.Enum):
+        UNDEFINED = 0
         SINGLE_ANSWER = 10
         MULTIPLE_CHOICE = 20
 
     class AnswerType(enum.Enum):
+        UNDEFINED = 0
         TEXT = 10
         VECTOR = 20
-        IMAGE = 30
+        NULLABLE_VECTOR = 30
+        IMAGE = 40
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
@@ -130,12 +136,16 @@ class Question(BaseModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     question_type = enum.EnumField(QuestionType)
-    # answer_type = enum.EnumField(AnswerType)
+    answer_type = enum.EnumField(AnswerType)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
     @property
     def question_type_name(self):
         return self.QuestionType.get_name(self.question_type)
+
+    @property
+    def answer_type_name(self):
+        return self.AnswerType.get_name(self.answer_type)
 
     @property
     def is_choice_question(self):
@@ -144,6 +154,20 @@ class Question(BaseModel):
     @cached_property
     def correct_answer(self):
         return self.answers.correct()
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            db_instance = self.instance_from_db()
+            if db_instance.answer_type != self.answer_type:
+                self.answers.all().delete()
+            if (db_instance.question_type != self.question_type and
+                    self.question_type == self.QuestionType.SINGLE_ANSWER):
+                self.answers.filter(position__gt=0).delete()
+                answer = self.answers.first()
+                if not answer.is_correct:
+                    answer.is_correct = True
+                    answer.save()
+        super(Question, self).save(*args, **kwargs)
 
     def __str__(self):
         return 'Question: {}'.format(self.text)
@@ -179,6 +203,11 @@ class Answer(BaseModel):
         else:
             return self.content.matches(answer)
 
+    def save(self, *args, **kwargs):
+        if self.question and self.question.question_type == Question.QuestionType.SINGLE_ANSWER:
+            self.is_correct = True
+        super(Answer, self).save(*args, **kwargs)
+
 
 class Text(BaseModel):
 
@@ -197,6 +226,22 @@ class Text(BaseModel):
 
     def __str__(self):
         return 'Text: {}'.format(self.text)
+
+
+class Image(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_images'
+
+    image =  models.ImageField(blank=True)
+
+    def matches(self, obj):
+        if isinstance(obj, Answer):
+            return self.matches(obj.content)
+        raise ValidationError('It does not make sense to try to compare 2 images.')
+
+    def __str__(self):
+        return 'Image: {}'.format(self.image)
 
 
 class Vector(BaseModel):
@@ -249,8 +294,10 @@ class Vector(BaseModel):
                 mag = self._calculate_magnitude()
 
             if x is None and y is None:
-                x = self._calculate_x()
-                y = self._calculate_y()
+                x = self._calculate_x(mag, angle)
+                y = self._calculate_y(mag, angle)
+
+        print('CALCULATED VECTOR:', mag, angle, x, y)
 
         return {
             'angle': angle,
@@ -280,11 +327,15 @@ class Vector(BaseModel):
             calculated_angle += 360
         return calculated_angle
 
-    def _calculate_x(self):
-        return self.magnitude * math.cos(self.angle)
+    def _calculate_x(self, mag=None, angle=None):
+        mag = mag or self.magnitude
+        angle = angle or self.angle
+        return mag * math.cos(math.radians(angle))
 
-    def _calculate_y(self):
-        return self.magnitude * math.sin(self.angle)
+    def _calculate_y(self, mag=None, angle=None):
+        mag = mag or self.magnitude
+        angle = angle or self.angle
+        return mag * math.sin(math.radians(angle))
 
     def validate_fields(self):
         if (self.x_component is None and self.y_component is not None or

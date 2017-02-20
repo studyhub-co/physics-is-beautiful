@@ -8,7 +8,8 @@ from rest_framework.exceptions import ValidationError
 from expander import ExpanderSerializerMixin
 
 from .models import (
-    Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text
+    Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
+    Image
 )
 from .services import get_progress_service
 
@@ -33,6 +34,18 @@ class TextSerializer(BaseSerializer):
         fields = ['text']
 
 
+class ImageSerializer(BaseSerializer):
+
+    class Meta:
+        model = Image
+        fields = ['image']
+
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        return '/{}'.format(obj.image.url)
+
+
 class VectorSerializer(BaseSerializer):
 
     class Meta:
@@ -47,6 +60,7 @@ class AnswerSerializer(BaseSerializer):
 
     CONTENT_SERIALIZER_MAP = {
         Text.__name__.lower(): TextSerializer,
+        Image.__name__.lower(): ImageSerializer,
         Vector.__name__.lower(): VectorSerializer,
     }
 
@@ -69,11 +83,12 @@ class UserResponseSerializer(BaseSerializer):
 
     class Meta:
         model = UserResponse
-        fields = ['profile', 'question', 'vector', 'text', 'answer', 'answered_on']
+        fields = ['profile', 'question', 'vector', 'text', 'image', 'answer', 'answered_on']
         extra_kwargs = {'profile': {'required': False}}
 
     vector = VectorSerializer(required=False)
     text = TextSerializer(required=False)
+    image= ImageSerializer(required=False)
     answer = AnswerSerializer(required=False)
 
     def validate_answer(self, value):
@@ -129,10 +144,13 @@ class QuestionSerializer(BaseSerializer):
 
     class Meta:
         model = Question
-        fields = ['uuid', 'text', 'hint', 'image', 'question_type', 'choices', 'lesson']
+        fields = ['uuid', 'text', 'hint', 'image', 'question_type', 'answer_type', 'choices', 'lesson']
 
     question_type = serializers.ChoiceField(
         source='question_type_name', choices=Question.QuestionType.choices_inverse
+    )
+    answer_type = serializers.ChoiceField(
+        source='answer_type_name', choices=Question.AnswerType.choices_inverse
     )
     choices = serializers.SerializerMethodField()
     lesson = LessonSerializer()

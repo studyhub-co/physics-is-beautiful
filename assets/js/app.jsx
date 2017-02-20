@@ -359,6 +359,48 @@ class VectorCanvas extends React.Component {
 }
 
 
+class TextChoice extends React.Component {
+    render() {
+        var style = {};
+        var disabled = '';
+        if (this.props.hasAnswer) {
+            disabled = ' disabled';
+            if (this.props.is_answer) {
+                style["backgroundColor"] = "rgb(79, 212, 24)";
+                style["borderColor"] = "rgb(79, 212, 24)";
+            } else if (this.props.was_response) {
+                style["backgroundColor"] = "rgb(255, 0, 0)";
+                style["borderColor"] = "rgb(255, 0, 0)";
+            }
+        }
+        return (
+            <a className={"btn btn-primary btn-lg" + disabled} id={this.props.choice.uuid} style={style} onClick={this.props.checkAnswer}>
+                {this.props.choice.content.text}
+            </a>
+        );
+    }
+}
+
+
+class ImageChoice extends React.Component {
+    render() {
+        var style = {};
+        if (this.props.hasAnswer) {
+            style["pointerEvents"] = "none";
+            if (this.props.isAnswer) {
+                style["boxShadow"] = "green 0px 0px 15px";
+                style["border"] = "2px solid rgb(79, 212, 24)";
+            } else if (this.props.wasResponse) {
+                style["boxShadow"] = "rgb(255, 0, 0) 0px 0px 10px";
+            }
+        }
+        return (
+            <img className="inline-picture" id={this.props.choice.uuid} style={style} src={this.props.choice.content.image} onClick={this.props.checkAnswer}/>
+        );
+    }
+}
+
+
 class MultipleChoice extends React.Component {
 
     checkAnswer(o) {
@@ -375,25 +417,36 @@ class MultipleChoice extends React.Component {
     render() {
         var choices = [];
         var hasAnswer = this.props.answer !== null;
-        var disabled = '';
-        if (hasAnswer) {
-            disabled = ' disabled';
+        var Component;
+        switch (this.props.question.answer_type) {
+            case 'TEXT':
+                Component = TextChoice;
+                break;
+            case 'IMAGE':
+                Component = ImageChoice;
+                break;
+            default:
+                return (
+                    <div className="col-md-6 text-center">
+                        <div className="bounding-box">
+                            <h1>Unrecognized answer type: {this.props.question.answer_type}.</h1>
+                        </div>
+                    </div>
+                );
         }
         for (var i = 0; i < this.props.question.choices.length; i++) {
             var choice = this.props.question.choices[i];
-            var style = {};
+            var isAnswer = false;
+            var wasResponse = false;
             if (hasAnswer) {
                 if (this.props.answer.uuid == choice.uuid) {
-                    style["backgroundColor"] = "rgb(79, 212, 24)";
-                    style["borderColor"] = "rgb(79, 212, 24)";
+                    isAnswer = true;
                 } else if (this.props.question.response.answer.uuid == choice.uuid) {
-                    style["backgroundColor"] = "rgb(255, 0, 0)";
-                    style["borderColor"] = "rgb(255, 0, 0)";
+                    wasResponse = true;
                 }
             }
-            // For now we assume multiple choice to be text answers.
             choices.push(
-                <a key={choice.uuid} className={"btn btn-primary btn-lg" + disabled} id={choice.uuid} style={style} onClick={this.checkAnswer.bind(this)}>{choice.content.text}</a>
+                <Component key={choice.uuid} choice={choice} checkAnswer={this.checkAnswer.bind(this)} hasAnswer={hasAnswer} isAnswer={isAnswer} wasResponse={wasResponse}/>
             );
         }
         return (
@@ -412,9 +465,9 @@ class Question extends React.Component {
 
     componentDidMount() {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        $(window).bind('beforeunload', function(){
+        window.onbeforeunload = function() {
             return 'Changes you made may not be saved.';
-        });
+        };
     }
 
     componentDidUpdate() {
@@ -492,6 +545,10 @@ class Footer extends React.Component {
 
 
 class LessonComplete extends React.Component {
+    componentDidMount() {
+        window.onbeforeunload = null;
+    }
+
     render () {
         // <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
         return (
