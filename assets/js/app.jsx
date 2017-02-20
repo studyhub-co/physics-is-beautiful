@@ -205,13 +205,61 @@ class CanvasArrow {
 }
 
 
+class NullVector {
+
+    getXComponent() {
+        return null;
+    }
+
+    getYComponent() {
+        return null;
+    }
+
+    delete() {
+    }
+}
+
+
+class NullCheckbox extends React.Component {
+
+    onChange(event) {
+        this.props.onChange(event);
+    }
+
+    render() {
+        var divStyle = {};
+        var labelStyle = {};
+        var checked = this.props.checked;
+        if (this.props.isAnswer) {
+            divStyle["pointerEvents"] = "none";
+            labelStyle["backgroundColor"] = "rgb(127, 250, 127)";
+            checked = true;
+        }
+        return (
+            <div id="nullVector" className="checkbox" style={divStyle}>
+                <label id="highlightGreen" style={labelStyle}>
+                    <input id="nullVectorCheckbox" type="checkbox" checked={checked} onChange={this.onChange.bind(this)}/>
+                        Null vector
+                </label>
+            </div>
+        );
+    }
+
+}
+
+
 class VectorCanvas extends React.Component {
+
     constructor() {
         super();
         this.arrow;
         this.answerArrow;
         this.answerText;
         this.canvas = null;
+        this.nullChecked = false;
+        this.state = {
+            checked: false,
+        }
     }
 
     componentDidMount() {
@@ -244,20 +292,42 @@ class VectorCanvas extends React.Component {
     }
 
     mouseDown(o) {
+        console.log(this.arrow);
         if (this.arrow) {
+            if (this.arrow instanceof NullVector) {
+                this.setState({checked: false});
+            }
             this.arrow.delete();
         }
         this.arrow = new CanvasArrow(this.canvas, this.canvas.getPointer(o.e));
     }
 
     mouseMove(o) {
-        if (this.arrow) {
+        if (this.arrow && this.arrow instanceof CanvasArrow) {
             this.arrow.draw(this.canvas.getPointer(o.e));
         }
     }
 
     mouseUp(o) {
         this.arrow.complete(this.canvas.getPointer(o.e));
+    }
+
+    nullBoxCheck(event) {
+        var newState = !this.state.checked;
+        if (newState) {
+            if (this.arrow) {
+                this.arrow.delete();
+            }
+            this.arrow = new NullVector();
+            console.log('SET: ' + this.arrow);
+        } else {
+            if (this.arrow) {
+                this.arrow.delete();
+            }
+            console.log('DELETING: ' + this.arrow);
+            this.arrow = null;
+        }
+        this.setState({checked: newState});
     }
 
     checkAnswer(o) {
@@ -312,8 +382,13 @@ class VectorCanvas extends React.Component {
     }
 
     render() {
+        var isAnswer = false;
         if (this.props.question.is_correct === false && this.props.answer && !this.answerArrow) {
-            this.renderAnswer();
+            if (this.props.answer.xComponent && this.props.answer.yComponent) {
+                this.renderAnswer();
+            } else {
+                isAnswer = true;
+            }
         } else if (this.answerArrow) {
             this.answerArrow.delete();
             this.answerArrow = null;
@@ -329,26 +404,20 @@ class VectorCanvas extends React.Component {
             canvasStyle['pointerEvents'] = 'none';
             $('.upper-canvas').css('pointer-events', 'none');
         } else {
-            if (this.arrow) {
+            if (this.arrow && this.arrow instanceof CanvasArrow) {
                 this.arrow.delete();
                 this.arrow = null;
             }
             $('.upper-canvas').css('pointer-events', '');
         }
-        if (this.props.question.answer && this.props.question.answer.allow_null) {
-            nullBox = (
-                <div id="nullVector" className="checkbox">
-                    <label id="highlightGreen">
-                        <input id="nullVectorCheckbox" type="checkbox" value=""/>
-                            Null vector
-                    </label>
-                </div>
-            );
+        if (this.props.question.answer_type == 'NULLABLE_VECTOR') {
+            nullBox = <NullCheckbox checked={this.state.checked} isAnswer={isAnswer} onChange={this.nullBoxCheck.bind(this)} />;
         }
         return (
             <div className="col-md-6 text-center">
                 <div className="bounding-box">
                     <canvas id="c" width="300" height="300" className="lower-canvas" style={canvasStyle}></canvas>
+                    {nullBox}
                     <div className="button-group" id="vectorButton">
                         <a className={buttonClass} id="checkAnswer">Check</a>
                     </div>

@@ -256,6 +256,9 @@ class Vector(BaseModel):
     y_component = models.FloatField("y-Component", null=True, blank=True)
 
     def _fill_out_fields(self):
+        if self.is_null:
+            # null vector
+            return
         if self.magnitude is None:
             self.magnitude = self._calculate_magnitude()
         if self.angle is None:
@@ -265,10 +268,21 @@ class Vector(BaseModel):
         if self.y_component is None:
             self.y_component = self._calculate_y()
 
+    @property
+    def is_null(self):
+        return (
+            self.magnitude is None and
+            self.angle is None and
+            self.x_component is None and
+            self.y_component is None
+        )
+
     def matches(self, obj):
         if isinstance(obj, Answer):
             return self.matches(obj.content)
         try:
+            if obj.is_null != self.is_null:
+                return False
             obj._fill_out_fields()
             for field in ['magnitude', 'angle', 'x_component', 'y_component']:
                 value = getattr(self, field, None)
@@ -296,8 +310,6 @@ class Vector(BaseModel):
             if x is None and y is None:
                 x = self._calculate_x(mag, angle)
                 y = self._calculate_y(mag, angle)
-
-        print('CALCULATED VECTOR:', mag, angle, x, y)
 
         return {
             'angle': angle,
