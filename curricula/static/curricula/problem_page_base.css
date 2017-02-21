@@ -282,3 +282,8 @@ border: 2px solid #686868 ;
     font-size:25px;
     font-family: TW CEN MT
 }
+
+.hintButton{
+    text-align:right;
+    font-style: italic;
+}
