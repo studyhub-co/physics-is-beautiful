@@ -536,6 +536,39 @@ class MultipleChoice extends React.Component {
 }
 
 
+class Hint extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            collapsed: true,
+        };
+    }
+
+    onChange(event) {
+        this.setState({collapsed: !this.state.collapsed});
+    }
+
+    render() {
+        var style = {};
+        if (this.state.collapsed) {
+            style["display"] = "none";
+        }
+        return (
+            <div className = "hintDiv">
+                <div className="hintButton">
+                    <a onClick={this.onChange.bind(this)}>hint</a>
+                </div>
+                <div id="demo" style={style}>
+                    {this.props.hint}
+                </div>
+            </div>
+        );
+    }
+
+}
+
+
 class Question extends React.Component {
 
     componentDidMount() {
@@ -556,15 +589,7 @@ class Question extends React.Component {
         }
         var hint = '';
         if (this.props.question.hint) {
-            hint =
-                <div className = "hintDiv">
-                    <div className="hintButton">
-                        <a href="#demo" data-toggle="collapse">hint</a>
-                    </div>
-                    <div id="demo" className="collapse">
-                        {this.props.question.hint}
-                    </div>
-                </div>;
+            hint = <Hint hint={this.props.question.hint} />;
         }
         var answerField = '';
         if (this.props.question.question_type == "SINGLE_ANSWER") {
