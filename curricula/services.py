@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.db.models import Count, Q
 from django.utils import timezone
-
+import math
 from rest_framework import serializers
 
 from .models import LessonProgress, UserResponse, Text, Vector, Answer, Lesson
@@ -57,7 +57,7 @@ class ProgressServiceBase(object):
     def check_user_response(self, user_response):
         is_correct = user_response.check_response()
         if is_correct:
-            self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
+            self.current_lesson_progress.score = math.ceil((self.current_lesson_progress.score+self.CORRECT_RESPONSE_VALUE)/10)*10
             if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
                 self.current_lesson_progress.completed_on = timezone.now()
                 # unlock the next lesson!

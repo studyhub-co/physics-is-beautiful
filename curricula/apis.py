@@ -1,5 +1,5 @@
 from django.utils import timezone
-
+import re
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -217,6 +217,16 @@ class LessonViewSet(ModelViewSet):
             data = QuestionSerializer(question, context={'progress_service': service}).data
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
+            def markup(text, dictionary, user_words):
+                text_with_markup = re.sub(
+                    r'\b(' + '|'.join(sorted(dictionary.keys(), key=len, reverse=True)) + r')\b',
+                    lambda x: '<span class="pop" style = "color:'+('orange' if x.group() not in user_words else '')+'" data-container="body" data-toggle="popover" data-placement="top" data-content="' + dictionary[x.group()] + '">' + x.group() + '</span>',
+                    text,
+                    flags=re.IGNORECASE)
+                return text_with_markup
+            dictionary = {'magnitude': 'The length of a vector'}
+            user_words = []
+            data['text'] = markup(data['text'], dictionary, user_words)
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

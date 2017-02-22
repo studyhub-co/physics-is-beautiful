@@ -536,6 +536,39 @@ class MultipleChoice extends React.Component {
 }
 
 
+class Hint extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            collapsed: true,
+        };
+    }
+
+    onChange(event) {
+        this.setState({collapsed: !this.state.collapsed});
+    }
+
+    render() {
+        var style = {};
+        if (this.state.collapsed) {
+            style["display"] = "none";
+        }
+        return (
+            <div className = "hintDiv">
+                <div className="hintButton">
+                    <a onClick={this.onChange.bind(this)}>hint</a>
+                </div>
+                <div id="demo" style={style}>
+                    {this.props.hint}
+                </div>
+            </div>
+        );
+    }
+
+}
+
+
 class Question extends React.Component {
 
     componentDidMount() {
@@ -543,6 +576,21 @@ class Question extends React.Component {
         window.onbeforeunload = function() {
             return 'Changes you made may not be saved.';
         };
+        $(".pop").popover({ trigger: "manual" , html: true, animation:false})
+            .on("mouseenter", function () {
+                var _this = this;
+                $(this).popover("show");
+                $(".popover").on("mouseleave", function () {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide");
+                }
+            }, 400);
+        });
     }
 
     componentDidUpdate() {
@@ -554,18 +602,26 @@ class Question extends React.Component {
         if (this.props.question.image) {
             image = <img src={'/' + this.props.question.image}/>;
         }
+        var hint = '';
+        if (this.props.question.hint) {
+            hint = <Hint hint={this.props.question.hint} />;
+        }
         var answerField = '';
         if (this.props.question.question_type == "SINGLE_ANSWER") {
             answerField = <VectorCanvas question={this.props.question} answer={this.props.answer}/>;
         } else if (this.props.question.question_type == "MULTIPLE_CHOICE") {
             answerField = <MultipleChoice question={this.props.question} answer={this.props.answer}/>;
         }
+        function createMarkup(text) {
+            return {__html: text};
+        }
         return (
             <div className="question" id="ajaxDiv">
                 <div className="row">
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
-                            <h1 id="ajaxDiv">{this.props.question.text + ' ' + this.props.question.hint}</h1>
+                            <h1 id="ajaxDiv" dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
+                            {hint}
                             <div className="thumbnail">
                                 {image}
                             </div>
