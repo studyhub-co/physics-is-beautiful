@@ -153,7 +153,7 @@ STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT')
 # We do this so that django's collectstatic copies or our bundles to the
 # STATIC_ROOT or syncs them to whatever storage we use.
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 SITE_ID = 1

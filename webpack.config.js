@@ -5,10 +5,13 @@ var BundleTracker = require('webpack-bundle-tracker')
 module.exports = {
     context: __dirname,
 
-    entry: './assets/js/index', // entry point of our app. assets/js/index.js should require other js modules and dependencies it needs
+    entry: {
+        curriculum: './curricula/static/curricula/js/curriculum_app', // entry point of our app. assets/js/index.js should require other js modules and dependencies it needs
+        profile: './profiles/static/profiles/js/profile_modal',
+    },
 
     output: {
-        path: path.resolve('./assets/bundles/'),
+        path: path.resolve('./static/bundles/'),
         filename: "[name]-[hash].js",
     },
 

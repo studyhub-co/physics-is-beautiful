@@ -1,3 +1,4 @@
+{% load render_bundle from webpack_loader %}
 {% load static %}
 {% load auth_tags %}
 
@@ -43,12 +44,8 @@
         </div>
         {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
         <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="nav-item">
-                    <p id="navbarUserName" class="navbar-text">
-		    {{ user.first_name }} {{ user.last_name }}
-                    </p>
-                </li>
+            <ul id="react-profile-modal" class="nav navbar-nav navbar-right">
+                {% render_bundle 'profile' %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'curricula:curriculum' %}">Dashboard</a>
                 </li>
