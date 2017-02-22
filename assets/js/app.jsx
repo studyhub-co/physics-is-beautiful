@@ -576,6 +576,21 @@ class Question extends React.Component {
         window.onbeforeunload = function() {
             return 'Changes you made may not be saved.';
         };
+        $(".pop").popover({ trigger: "manual" , html: true, animation:false})
+            .on("mouseenter", function () {
+                var _this = this;
+                $(this).popover("show");
+                $(".popover").on("mouseleave", function () {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide");
+                }
+            }, 400);
+        });
     }
 
     componentDidUpdate() {
@@ -597,12 +612,15 @@ class Question extends React.Component {
         } else if (this.props.question.question_type == "MULTIPLE_CHOICE") {
             answerField = <MultipleChoice question={this.props.question} answer={this.props.answer}/>;
         }
+        function createMarkup(text) {
+            return {__html: text};
+        }
         return (
             <div className="question" id="ajaxDiv">
                 <div className="row">
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
-                            <h1 id="ajaxDiv">{this.props.question.text}</h1>
+                            <h1 id="ajaxDiv" dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
                             {hint}
                             <div className="thumbnail">
                                 {image}
