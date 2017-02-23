@@ -2,8 +2,10 @@ import React from 'react';
 
 
 var playAudio = function(key) {
-    var audio = new Audio(soundFiles[key]);
-    audio.play();
+    if (SoundSingleton.soundEnabled) {
+        var audio = new Audio(SoundSingleton.soundFiles[key]);
+        audio.play();
+    }
 }
 
 
@@ -298,7 +300,6 @@ class VectorCanvas extends React.Component {
     }
 
     mouseDown(o) {
-        console.log(this.arrow);
         if (this.arrow) {
             if (this.arrow instanceof NullVector) {
                 this.setState({checked: false});
@@ -325,12 +326,10 @@ class VectorCanvas extends React.Component {
                 this.arrow.delete();
             }
             this.arrow = new NullVector();
-            console.log('SET: ' + this.arrow);
         } else {
             if (this.arrow) {
                 this.arrow.delete();
             }
-            console.log('DELETING: ' + this.arrow);
             this.arrow = null;
         }
         this.setState({checked: newState});

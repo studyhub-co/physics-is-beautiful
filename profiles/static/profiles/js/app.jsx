@@ -54,26 +54,6 @@ class AnonymousForm extends React.Component {
 
 class ProfileControl extends React.Component {
 
-    constructor() {
-        super();
-        this.state = {
-            show: false,
-        };
-    }
-
-    close() {
-        this.setState({show: false});
-    }
-
-    open() {
-        this.setState({show: true});
-    }
-
-    save(event) {
-        this.props.updateProfile(event);
-        this.close();
-    }
-
     render() {
         var name, form;
         if (this.props.firstName && this.props.lastName) {
@@ -85,10 +65,10 @@ class ProfileControl extends React.Component {
         }
         return (
             <li className="nav-item">
-                <a onClick={this.open.bind(this)}>
+                <a onClick={this.props.open}>
                     {name}
                 </a>
-                <Modal show={this.state.show} onHide={this.close.bind(this)} >
+                <Modal show={this.props.show} onHide={this.props.close} >
                     <Modal.Header>
                         <Modal.Title>Profile</Modal.Title>
                     </Modal.Header>
@@ -98,8 +78,8 @@ class ProfileControl extends React.Component {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button onClick={this.close.bind(this)}>Close</Button>
-                        <Button bsStyle="primary" onClick={this.save.bind(this)}>Save changes</Button>
+                        <Button onClick={this.props.close}>Close</Button>
+                        <Button bsStyle="primary" onClick={this.props.save}>Save changes</Button>
                     </Modal.Footer>
                 </Modal>
             </li>
@@ -124,6 +104,26 @@ export default class ProfileModalApp extends React.Component {
 
     toggleSound(event) {
         this.setState({soundEnabled: !this.state.soundEnabled});
+        SoundSingleton.soundEnabled = this.state.soundEnabled;
+    }
+
+    modalOpen(event) {
+        this.preSaveSoundEnabled = this.state.soundEnabled;
+        this.setState({show: true});
+    }
+
+    modalClose(event, saved) {
+        var newState = {show: false};
+        if (saved !== true) {
+            newState['soundEnabled'] = this.preSaveSoundEnabled;
+        }
+        this.setState(newState);
+        SoundSingleton.soundEnabled = this.preSaveSoundEnabled;
+    }
+
+    modalSave(event) {
+        this.updateProfile(event);
+        this.modalClose(event, true);
     }
 
     firstNameChange(event) {
@@ -140,6 +140,7 @@ export default class ProfileModalApp extends React.Component {
             lastName: profile.last_name,
             soundEnabled: profile.sound_enabled,
         });
+        SoundSingleton.soundEnabled = profile.sound_enabled;
     }
 
     fetchProfile(lookupId) {
@@ -177,7 +178,11 @@ export default class ProfileModalApp extends React.Component {
                 firstName={this.state.firstName}
                 lastName={this.state.lastName}
                 soundEnabled={this.state.soundEnabled}
+                show={this.state.show}
                 toggleSound={this.toggleSound.bind(this)}
+                open={this.modalOpen.bind(this)}
+                close={this.modalClose.bind(this)}
+                save={this.modalSave.bind(this)}
                 firstNameChange={this.firstNameChange.bind(this)}
                 lastNameChange={this.lastNameChange.bind(this)}
                 updateProfile={this.updateProfile.bind(this)}
