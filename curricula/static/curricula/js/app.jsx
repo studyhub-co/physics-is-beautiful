@@ -11,11 +11,6 @@ var playAudio = function(key) {
 
 class LockedItem extends React.Component {
     render() {
-        if (this.props.locked) {
-            divClass = "";
-            imageClass = "grayed-out-img";
-            h1Class = "module-locked";
-        }
         return (
             <div className="col-md-1">
                 <div className="thumbnail">
@@ -50,10 +45,31 @@ class UnlockedItem extends React.Component {
 }
 
 
+class CompleteItem extends React.Component {
+    render() {
+        return (
+            <div className="col-md-1">
+                <a href={this.props.item.href}>
+                    <div className="thumbnail">
+                        <img src={this.props.item.image}/>
+                    </div>
+                    <h1 className="module-completed">
+                        {this.props.item.name}
+                        <span className="glyphicon glyphicon-ok"></span>
+                    </h1>
+                </a>
+            </div>
+        );
+    }
+}
+
+
 class Item extends React.Component {
     render() {
         if (this.props.item.locked) {
             return <LockedItem item={this.props.item}/>;
+        } else if (this.props.item.complete) {
+            return <CompleteItem item={this.props.item}/>;
         } else {
             return <UnlockedItem item={this.props.item}/>;
         }
@@ -752,7 +768,7 @@ export default class CurriculumApp extends React.Component {
                 var module = unit.modules[moduleIndex];
                 var name = module.name + ' ';
                 if (!module.is_locked) {
-                    name += '(' + module.lesson_completed_count + '/' + module.lesson_count + ')';
+                    name += '(' + module.lesson_completed_count + '/' + module.lesson_count + ') ';
                 }
                 items.push({
                     name: name,
@@ -760,6 +776,7 @@ export default class CurriculumApp extends React.Component {
                     href: '/curriculum/modules/' + module.uuid,
                     uuid: module.uuid,
                     locked: module.is_locked,
+                    complete: module.is_complete,
                 });
             }
             sections.push({
@@ -790,6 +807,7 @@ export default class CurriculumApp extends React.Component {
                 href: '/curriculum/lessons/' + lesson.uuid,
                 uuid: lesson.uuid,
                 locked: lesson.is_locked,
+                complete: lesson.is_complete,
             });
         }
         var sections = [{

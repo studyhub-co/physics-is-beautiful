@@ -124,11 +124,12 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['uuid', 'name', 'image', 'module', 'is_locked']
+        fields = ['uuid', 'name', 'image', 'module', 'is_locked', 'is_complete']
 
     image = serializers.SerializerMethodField()
     module = serializers.SerializerMethodField()
     is_locked = serializers.SerializerMethodField()
+    is_complete = serializers.SerializerMethodField()
 
     def get_image(self, obj):
         return '/{}'.format(obj.image.url)
@@ -138,6 +139,9 @@ class LessonSerializer(BaseSerializer):
 
     def get_is_locked(self, obj):
         return self.context['progress_service'].check_lesson_locked(obj)
+
+    def get_is_complete(self, obj):
+        return self.context['progress_service'].check_lesson_completed(obj)
 
 
 class QuestionSerializer(BaseSerializer):
@@ -225,7 +229,10 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
 
     class Meta:
         model = Module
-        fields = ['uuid', 'name', 'image', 'lesson_count', 'lesson_completed_count', 'is_locked']
+        fields = [
+            'uuid', 'name', 'image', 'lesson_count', 'lesson_completed_count', 'is_locked',
+            'is_complete'
+        ]
         expandable_fields = {
             'lessons': (LessonSerializer, (), {'many': True}),
         }
@@ -234,6 +241,7 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
     lesson_count = serializers.IntegerField(source='lessons.count')
     lesson_completed_count = serializers.SerializerMethodField()
     is_locked = serializers.SerializerMethodField()
+    is_complete = serializers.SerializerMethodField()
 
     def get_image(self, obj):
         return '/{}'.format(obj.image.url)
@@ -249,6 +257,12 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
         first_lesson = obj.lessons.first()
         return bool(
             not first_lesson or self.context['progress_service'].check_lesson_locked(first_lesson)
+        )
+
+    def get_is_complete(self, obj):
+        first_lesson = obj.lessons.first()
+        return bool(
+            first_lesson and self.context['progress_service'].check_lesson_completed(first_lesson)
         )
 
 
