@@ -260,9 +260,8 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
         )
 
     def get_is_complete(self, obj):
-        first_lesson = obj.lessons.first()
-        return bool(
-            first_lesson and self.context['progress_service'].check_lesson_completed(first_lesson)
+        return all(
+            self.context['progress_service'].check_lesson_completed(l) for l in obj.lessons.all()
         )
 
 
