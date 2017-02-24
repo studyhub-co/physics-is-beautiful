@@ -13,10 +13,6 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = 'us-east-1'
 AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
 
-DKIM_DOMAIN = 'physicsisbeautiful.com'
-DKIM_PRIVATE_KEY = os.getenv('DKIM_PRIVATE_KEY')
-
-
 RAVEN_CONFIG = {
     'dsn': os.getenv('RAVEN_DSN'),
     # If you are using git, you can also automatically configure the
