@@ -5,8 +5,6 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from rest_framework.authtoken.models import Token
 
-from profiles.models import Profile
-
 from .models import User
 
 
@@ -36,7 +34,6 @@ class UserCreationForm(forms.ModelForm):
         user.set_password(self.cleaned_data["password1"])
         # ignoring the commit flag so that we can create account and token here
         user.save()
-        Profile.objects.create(user=user)
         return user
 
 

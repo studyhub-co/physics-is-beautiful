@@ -8,9 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 class UserManager(BaseUserManager):
 
     def create(self, *args, **kwargs):
-        from profiles.models import Profile
         user = super(UserManager, self).create(*args, **kwargs)
-        Profile.objects.create(user=user)
         return user
 
     def create_user(self, username, first_name, last_name, email, password=None):
@@ -18,7 +16,6 @@ class UserManager(BaseUserManager):
         Creates and saves a User with the given username, first_name,
         last_name, email and password.
         """
-        from profiles.models import Profile
         if not username:
             raise ValueError('Users must have a username')
         if not email:
@@ -33,7 +30,6 @@ class UserManager(BaseUserManager):
 
         user.set_password(password)
         user.save(using=self._db)
-        Profile.objects.create(user=user)
         return user
 
     def create_superuser(self, username, first_name, last_name, email, password):
