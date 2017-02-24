@@ -29,8 +29,8 @@ class LockedItem extends React.Component {
 class UnlockedItem extends React.Component {
     render() {
         return (
-            <div className="col-md-1 module-accessible-block">
-                <a href={this.props.item.href}>
+            <a href={this.props.item.href}>
+                <div className="col-md-1 module-accessible-block">
                     <div className="thumbnail">
                         <img src={this.props.item.image}/>
                     </div>
@@ -38,8 +38,8 @@ class UnlockedItem extends React.Component {
                         {this.props.item.name}
                         <span></span>
                     </h1>
-                </a>
-            </div>
+                </div>
+            </a>
         );
     }
 }
@@ -48,8 +48,8 @@ class UnlockedItem extends React.Component {
 class CompleteItem extends React.Component {
     render() {
         return (
-            <div className="col-md-1">
-                <a href={this.props.item.href}>
+            <a href={this.props.item.href}>
+                <div className="col-md-1">
                     <div className="thumbnail">
                         <img src={this.props.item.image}/>
                     </div>
@@ -57,8 +57,8 @@ class CompleteItem extends React.Component {
                         {this.props.item.name}
                         <span className="glyphicon glyphicon-ok"></span>
                     </h1>
-                </a>
-            </div>
+                </div>
+            </a>
         );
     }
 }
@@ -84,7 +84,7 @@ class Section extends React.Component {
             items.push(<Item key={el.uuid} item={el}/>);
         });
         return (
-            <div className="row" style={{width: "100%"}}>
+            <div>
                 <div className="section-title"><h1>{this.props.name}</h1></div>
                 <div className="row">
                     {items}
