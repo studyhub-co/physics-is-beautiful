@@ -59,14 +59,15 @@ class ProgressServiceTests(TestCase):
 
     def test_get_next_question_anonymouse_user(self):
         mock_session = {}
-        service = AnonymousProgressService(Mock(), self.lesson, session=mock_session)
+        service = AnonymousProgressService(Mock(), session=mock_session, current_lesson=self.lesson)
         self._run_service_test(service)
 
     def test_get_next_question_authed_user(self):
         mock_request = Mock()
         mock_request.user = profile_factories.User()
         self.profile = mock_request.user.profile
-        service = ProgressService(mock_request, self.lesson)
+        service = ProgressService(mock_request, current_lesson=self.lesson)
+        service.unlock_lesson(self.lesson)
         self._run_service_test(service)
         # we responded to each question twice
         self.assertEqual(UserResponse.objects.count(), len(self.questions) * 2)

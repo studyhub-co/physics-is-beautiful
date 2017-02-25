@@ -12,6 +12,16 @@ from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
 
 
+def get_earliest_gap(seq):
+    """
+    Find the earliest gap in `seq` which should be a list of
+    sequential numbers.
+    """
+    for i in range(len(seq) + 1):
+        if i not in seq:
+            return i
+
+
 class BaseModel(models.Model):
 
     class Meta:
@@ -73,6 +83,14 @@ class Unit(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Unit.objects.filter(curriculum=self.curriculum).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
+        super(Unit, self).save(*args, **kwargs)
+
     def __str__(self):
         return 'Unit: {}'.format(self.name)
 
@@ -89,6 +107,14 @@ class Module(BaseModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField()
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Module.objects.filter(unit=self.unit).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
+        super(Module, self).save(*args, **kwargs)
 
     def __str__(self):
         return 'Module: {}'.format(self.name)
@@ -110,6 +136,14 @@ class Lesson(BaseModel):
     @property
     def is_start(self):
         return self.position == 0 and self.module.position == 0 and self.module.unit.position == 0
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Lesson.objects.filter(module=self.module).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
+        super(Lesson, self).save(*args, **kwargs)
 
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
@@ -160,6 +194,11 @@ class Question(BaseModel):
         return self.answers.correct()
 
     def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Question.objects.filter(lesson=self.lesson).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
         if self.pk:
             db_instance = self.instance_from_db()
             if db_instance.answer_type != self.answer_type:
