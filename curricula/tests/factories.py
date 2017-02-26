@@ -48,6 +48,34 @@ class Vector(DjangoModelFactory):
     y_component = fuzzy.FuzzyInteger(0)
 
 
+class MagnitudeVector(Vector):
+
+    angle = None
+    x_component = None
+    y_component = None
+
+
+class AngleVector(Vector):
+
+    magnitude = None
+    x_component = None
+    y_component = None
+
+
+class ComponentVector(Vector):
+
+    angle = None
+    magnitude = None
+
+
+class NullVector(Vector):
+
+    magnitude = None
+    angle = None
+    x_component = None
+    y_component = None
+
+
 class Text(DjangoModelFactory):
 
     class Meta:

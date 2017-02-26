@@ -191,7 +191,7 @@ class Question(BaseModel):
 
     @cached_property
     def correct_answer(self):
-        return self.answers.correct()
+        return self.answers.get_correct()
 
     def save(self, *args, **kwargs):
         if self.position is None:
@@ -218,10 +218,10 @@ class Question(BaseModel):
 
 class AnswerQuerySet(models.QuerySet):
 
-    def correct(self):
+    def get_correct(self):
         # Right now we assume there to only be a single correct answer to a
         # question.
-        return super(AnswerQuerySet, self).get(is_correct=True)
+        return self.get(is_correct=True)
 
 
 class Answer(BaseModel):
@@ -314,10 +314,10 @@ class Vector(BaseModel):
     @property
     def is_null(self):
         return (
-            self.magnitude is None and
+            not self.magnitude and
             self.angle is None and
-            self.x_component is None and
-            self.y_component is None
+            not self.x_component and
+            not self.y_component
         )
 
     def matches(self, obj):
