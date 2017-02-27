@@ -207,7 +207,7 @@ class Question(BaseModel):
                     self.question_type == self.QuestionType.SINGLE_ANSWER):
                 self.answers.filter(position__gt=0).delete()
                 answer = self.answers.first()
-                if not answer.is_correct:
+                if answer and not answer.is_correct:
                     answer.is_correct = True
                     answer.save()
         super(Question, self).save(*args, **kwargs)

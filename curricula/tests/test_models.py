@@ -96,6 +96,16 @@ class QuestionTests(PositionTestMixin, TestCase):
         a = q.answers.first()
         self.assertTrue(a.is_correct)
 
+    def test_question_type_switch_no_answer(self):
+        q = factories.Question(
+            answer_type=Question.AnswerType.TEXT,
+            question_type=Question.QuestionType.MULTIPLE_CHOICE,
+        )
+        q.question_type=Question.QuestionType.SINGLE_ANSWER
+        q.save()
+        q.refresh_from_db()
+        self.assertEqual(q.question_type, Question.QuestionType.SINGLE_ANSWER)
+
 
 class AnswerTests(TestCase):
 
