@@ -405,7 +405,7 @@ class VectorCanvas extends React.Component {
     render() {
         var isAnswer = false;
         if (this.props.question.is_correct === false && this.props.answer && !this.answerArrow) {
-            if (this.props.answer.xComponent && this.props.answer.yComponent) {
+            if (this.props.answer.xComponent !== null && this.props.answer.yComponent !== null) {
                 this.renderAnswer();
             } else {
                 isAnswer = true;
