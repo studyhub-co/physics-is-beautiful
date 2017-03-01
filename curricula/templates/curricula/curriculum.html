@@ -9,13 +9,15 @@
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
 {% endif %}
 <script type="text/javascript">
-var soundFiles = {
-    "correct": "{% static 'curricula/audio/correct.mp3' %}",
-    "incorrect": "{% static 'curricula/audio/incorrect.mp3' %}",
-    "continue": "{% static 'curricula/audio/continue.mp3' %}",
-    "complete": "{% static 'curricula/audio/complete.mp3' %}",
-    "exam_start": "{% static 'curricula/audio/exam_start.mp3' %}",
-    "exam_correct": "{% static 'curricula/audio/exam_correct.mp3' %}",
+var SoundSingleton = {
+    soundFiles: {
+        "correct": "{% static 'curricula/audio/correct.mp3' %}",
+        "incorrect": "{% static 'curricula/audio/incorrect.mp3' %}",
+        "continue": "{% static 'curricula/audio/continue.mp3' %}",
+        "complete": "{% static 'curricula/audio/complete.mp3' %}",
+        "exam_start": "{% static 'curricula/audio/exam_start.mp3' %}",
+        "exam_correct": "{% static 'curricula/audio/exam_correct.mp3' %}",
+    }
 };
 function getCookie(name) {
     var cookieValue = null;
@@ -50,6 +52,6 @@ $.ajaxSetup({
 
 {% block content %}
 <div id="react-app"></div>
-    {% render_bundle 'main' %}
+    {% render_bundle 'curriculum' %}
 </div>
 {% endblock %}

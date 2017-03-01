@@ -19,4 +19,5 @@ from django.conf.urls import include
 
 urlpatterns = [
     url(r'^curricula/', include('curricula.urls_api')),
+    url(r'^profiles/', include('profiles.urls_api')),
 ]

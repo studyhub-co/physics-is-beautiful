@@ -124,10 +124,12 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     y_component = forms.FloatField(required=False)
 
     def __init__(self, *args, **kwargs):
+        super(VectorAnswerForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance')
         if instance and instance.question.question_type == Question.QuestionType.SINGLE_ANSWER:
-            instance.is_correct = True
-        super(VectorAnswerForm, self).__init__(*args, **kwargs)
+            field = self.fields['is_correct']
+            field.initial = True
+            field.widget.attrs['disabled'] = True
 
     def clean(self):
         cleaned_data = super(VectorAnswerForm, self).clean()

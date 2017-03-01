@@ -12,6 +12,16 @@ from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
 
 
+def get_earliest_gap(seq):
+    """
+    Find the earliest gap in `seq` which should be a list of
+    sequential numbers.
+    """
+    for i in range(len(seq) + 1):
+        if i not in seq:
+            return i
+
+
 class BaseModel(models.Model):
 
     class Meta:
@@ -73,6 +83,14 @@ class Unit(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Unit.objects.filter(curriculum=self.curriculum).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
+        super(Unit, self).save(*args, **kwargs)
+
     def __str__(self):
         return 'Unit: {}'.format(self.name)
 
@@ -89,6 +107,14 @@ class Module(BaseModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField()
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Module.objects.filter(unit=self.unit).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
+        super(Module, self).save(*args, **kwargs)
 
     def __str__(self):
         return 'Module: {}'.format(self.name)
@@ -110,6 +136,14 @@ class Lesson(BaseModel):
     @property
     def is_start(self):
         return self.position == 0 and self.module.position == 0 and self.module.unit.position == 0
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Lesson.objects.filter(module=self.module).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
+        super(Lesson, self).save(*args, **kwargs)
 
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
@@ -157,9 +191,14 @@ class Question(BaseModel):
 
     @cached_property
     def correct_answer(self):
-        return self.answers.correct()
+        return self.answers.get_correct()
 
     def save(self, *args, **kwargs):
+        if self.position is None:
+            taken_positions = list(
+                Question.objects.filter(lesson=self.lesson).values_list('position', flat=True)
+            )
+            self.position = get_earliest_gap(taken_positions)
         if self.pk:
             db_instance = self.instance_from_db()
             if db_instance.answer_type != self.answer_type:
@@ -168,7 +207,7 @@ class Question(BaseModel):
                     self.question_type == self.QuestionType.SINGLE_ANSWER):
                 self.answers.filter(position__gt=0).delete()
                 answer = self.answers.first()
-                if not answer.is_correct:
+                if answer and not answer.is_correct:
                     answer.is_correct = True
                     answer.save()
         super(Question, self).save(*args, **kwargs)
@@ -179,10 +218,10 @@ class Question(BaseModel):
 
 class AnswerQuerySet(models.QuerySet):
 
-    def correct(self):
+    def get_correct(self):
         # Right now we assume there to only be a single correct answer to a
         # question.
-        return super(AnswerQuerySet, self).get(is_correct=True)
+        return self.get(is_correct=True)
 
 
 class Answer(BaseModel):
@@ -275,10 +314,10 @@ class Vector(BaseModel):
     @property
     def is_null(self):
         return (
-            self.magnitude is None and
+            not self.magnitude and
             self.angle is None and
-            self.x_component is None and
-            self.y_component is None
+            not self.x_component and
+            not self.y_component
         )
 
     def matches(self, obj):
@@ -414,6 +453,7 @@ class LessonProgress(BaseModel):
 
     class Meta:
         db_table = 'curricula_lesson_progress'
+        unique_together = [('profile', 'lesson')]
 
     profile = models.ForeignKey(
         'profiles.Profile', related_name='lesson_progress', on_delete=models.CASCADE

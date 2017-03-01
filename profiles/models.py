@@ -17,3 +17,4 @@ class Profile(BaseModel):
         db_table = 'profiles_profiles'
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    sound_enabled = models.BooleanField(default=True)

@@ -96,5 +96,8 @@ MEDIA/
 # npm
 node_modules/
 
+# webpack
+webpack-stats.json
+
 # bundles
-assets/bundles/
+static/bundles/

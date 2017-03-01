@@ -34,6 +34,7 @@ AUTHENTICATION_BACKENDS = (
 # Application definition
 
 INSTALLED_APPS = [
+    'raven.contrib.django.raven_compat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -153,7 +154,7 @@ STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT')
 # We do this so that django's collectstatic copies or our bundles to the
 # STATIC_ROOT or syncs them to whatever storage we use.
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 SITE_ID = 1
@@ -162,11 +163,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = 'Physics is Beautiful <no-reply@physicsisbeautiful.com>'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_SIGNUP_FORM_CLASS = 'profiles.forms.SignupForm'
+ACCOUNT_SIGNUP_FORM_CLASS = 'pib_auth.forms.SignupForm'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialLoginAdapter'
 SOCIALACCOUNT_EMAIL_VERIFICATION = False
-SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 LOGIN_REDIRECT_URL = 'curricula:curriculum'
 

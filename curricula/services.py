@@ -20,7 +20,7 @@ def get_progress_service(request, current_lesson=None):
     if request.user.is_authenticated():
         return ProgressService(request, current_lesson=current_lesson)
     else:
-        return AnonymousProgressService(request, current_lesson=current_lesson, session=request.session)
+        return AnonymousProgressService(request, session=request.session, current_lesson=current_lesson)
 
 
 class ProgressServiceBase(object):
@@ -97,7 +97,7 @@ class ProgressService(ProgressServiceBase):
                 raise LessonLocked()
 
     def unlock_lesson(self, lesson):
-        lp = LessonProgress.objects.create(
+        lp = LessonProgress.objects.get_or_create(
             lesson=lesson,
             profile=self.user.profile
         )
@@ -179,8 +179,8 @@ class AnonymousProgressService(ProgressServiceBase):
 
     DEFAULT_LESSON_STORE = {'score': 0, 'completed_on': None, 'responses': []}
 
-    def __init__(self, user, current_lesson, session):
-        super(AnonymousProgressService, self).__init__(user, current_lesson)
+    def __init__(self, request, session, current_lesson=None):
+        super(AnonymousProgressService, self).__init__(request, current_lesson=current_lesson)
         self.session = session
 
     @cached_property

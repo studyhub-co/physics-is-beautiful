@@ -1,9 +1,9 @@
 @font-face {
 	font-family: 'Tw Cen MT';
-	src: url('/typeface/hinted-TwCenMT-Regular.eot');
-	src: url('/typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
-		url('/typeface/hinted-TwCenMT-Regular.woff') format('woff'),
-		url('/typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+	src: url('/static/curricula/typeface/hinted-TwCenMT-Regular.eot');
+	src: url('/static/curricula/typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+		url('/static/curricula/typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+		url('/static/curricula/typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -96,11 +96,10 @@ html, body {
 
 .bounding-box {
 	border-radius: 25px;
-	padding: 2vh;
+	padding: 40px;
 	background-color: white;
 	box-shadow: 0 0 10px #d8d8d8;
-        margin: 2vh;
-	padding-bottom: 3vh;
+        height: 150px;
 }
 
 .thumbnail {
@@ -146,6 +145,15 @@ img.grayed-out-img {
 	padding: 0;
 	text-transform: capitalize;
 	height: 40px;
+}
+
+.exam-banner {
+	height: 60px;
+	padding-top: 50px;
+	color: #FA0;
+	font-size: 20px;
+	opacity: 0;
+	display: none;
 }
 
 .module-completed {
