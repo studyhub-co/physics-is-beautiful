@@ -97,7 +97,7 @@ class ProgressService(ProgressServiceBase):
                 raise LessonLocked()
 
     def unlock_lesson(self, lesson):
-        lp = LessonProgress.objects.create(
+        lp = LessonProgress.objects.get_or_create(
             lesson=lesson,
             profile=self.user.profile
         )

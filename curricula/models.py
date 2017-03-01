@@ -453,6 +453,7 @@ class LessonProgress(BaseModel):
 
     class Meta:
         db_table = 'curricula_lesson_progress'
+        unique_together = [('profile', 'lesson')]
 
     profile = models.ForeignKey(
         'profiles.Profile', related_name='lesson_progress', on_delete=models.CASCADE

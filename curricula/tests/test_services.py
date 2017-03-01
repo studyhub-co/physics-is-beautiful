@@ -71,3 +71,6 @@ class ProgressServiceTests(TestCase):
         self._run_service_test(service)
         # we responded to each question twice
         self.assertEqual(UserResponse.objects.count(), len(self.questions) * 2)
+
+    # TODO: Test multiple completion / unlock doesn't create multiple lesson
+    # progress objects.
