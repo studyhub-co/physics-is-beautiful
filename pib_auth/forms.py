@@ -1,7 +1,5 @@
 from django import forms
 
-from .models import Profile
-
 
 class SignupForm(forms.Form):
 
@@ -12,4 +10,3 @@ class SignupForm(forms.Form):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
-        Profile.objects.create(user=user)
