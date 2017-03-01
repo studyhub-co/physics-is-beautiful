@@ -461,3 +461,30 @@ class LessonProgress(BaseModel):
     lesson = models.ForeignKey(Lesson, related_name='progress', on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0)
     completed_on = models.DateTimeField(null=True, blank=True)
+
+class Dictionary(BaseModel):
+    class Meta:
+        verbose_name_plural = "Dictionaries"
+    uuid = ShortUUIDField()
+    name = models.CharField(max_length=200)
+    def __str__(self):
+        return self.name
+
+class Word(BaseModel):
+    uuid = ShortUUIDField()
+    dictionary = models.ForeignKey(Dictionary, related_name='words', on_delete=models.CASCADE)
+    word = models.CharField(max_length=200, db_index=True)
+    definition = models.CharField(max_length=200, db_index=True)
+    wikipedia_link = models.URLField(max_length=200, db_index=True, null=True, blank=True)
+    internal_link = models.URLField(max_length=200, db_index=True, null=True, blank=True)
+    def __str__(self):
+        return self.word
+
+class UserVocab(BaseModel):
+    profile = models.ForeignKey(
+        'profiles.Profile', related_name='vocab', on_delete=models.CASCADE
+    )
+    word = models.ForeignKey(Word, related_name='user_vocab', on_delete=models.CASCADE)
+    learned_on = models.DateTimeField(null=True, blank=True)
+    def __str__(self):
+        return '{} : {}'.format(self.profile, self.word)

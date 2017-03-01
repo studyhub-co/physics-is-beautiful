@@ -11,7 +11,7 @@ from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
     Image
 )
-from .services import get_progress_service
+from .services import get_progress_service, markup, get_user_dictionary
 
 
 class BaseSerializer(serializers.ModelSerializer):
@@ -221,16 +221,10 @@ class LessonViewSet(ModelViewSet):
             data = QuestionSerializer(question, context={'progress_service': service}).data
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
-            def markup(text, dictionary, user_words):
-                text_with_markup = re.sub(
-                    r'\b(' + '|'.join(sorted(dictionary.keys(), key=len, reverse=True)) + r')\b',
-                    lambda x: '<span class="pop" style = "color:'+('orange' if x.group() not in user_words else '')+'" data-container="body" data-toggle="popover" data-placement="top" data-content="' + dictionary[x.group()] + '">' + x.group() + '</span>',
-                    text,
-                    flags=re.IGNORECASE)
-                return text_with_markup
-            dictionary = {'magnitude': 'The length of a vector'}
-            user_words = []
-            data['text'] = markup(data['text'], dictionary, user_words)
+            #dictionary = {'magnitude': 'The length of a vector'}
+            #dictionaryuser = get_user_dictionary(request)
+            #user_words = []
+            #data['text'] = markup(data['text'], dictionary, user_words) + str(dictionaryuser)
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

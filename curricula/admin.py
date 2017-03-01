@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
-from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image
+from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, Word, Dictionary, UserVocab
 
 admin.AdminSite.site_header = 'Physics is Beautiful Admin'
 admin.AdminSite.site_title = admin.AdminSite.site_header
@@ -288,3 +288,6 @@ admin.site.register(Unit, UnitAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Question, QuestionAdmin)
+admin.site.register(Word)
+admin.site.register(Dictionary)
+admin.site.register(UserVocab)

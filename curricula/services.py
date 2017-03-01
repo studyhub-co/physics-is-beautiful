@@ -15,6 +15,21 @@ class LessonLocked(Exception):
     def __init__(self, message=None):
         self.message = message or 'message', 'Lesson is locked!'
 
+def markup(text, dictionary, user_words):
+    text_with_markup = re.sub(
+        r'\b(' + '|'.join(sorted(dictionary.keys(), key=len, reverse=True)) + r')\b',
+        lambda x: '<span class="pop" style = "color:' + ('orange' if x.group() not in user_words else '') + '" data-container="body" data-toggle="popover" data-placement="top" data-content="' +dictionary[x.group()] + '">' + x.group() + '</span>',
+        text,
+        flags=re.IGNORECASE)
+    return text_with_markup
+
+def get_user_dictionary(request):
+    if request.user.is_authenticated():
+        #user_vocab = UserVocab.objects.all().values('word')
+        #(          profile = request.user.profile,      )
+        return {}
+    else:
+        return {}
 
 def get_progress_service(request, current_lesson=None):
     if request.user.is_authenticated():
