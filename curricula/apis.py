@@ -221,10 +221,10 @@ class LessonViewSet(ModelViewSet):
             data = QuestionSerializer(question, context={'progress_service': service}).data
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
-            #dictionary = {'magnitude': 'The length of a vector'}
+            dictionary = {'magnitude': 'The length of a vector'}
             #dictionaryuser = get_user_dictionary(request)
-            #user_words = []
-            #data['text'] = markup(data['text'], dictionary, user_words) + str(dictionaryuser)
+            user_words = []
+            data['text'] = markup(data['text'], dictionary, user_words)+str(get_user_dictionary(request))
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

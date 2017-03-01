@@ -201,12 +201,15 @@ export class Question extends React.Component {
         } else if (this.props.question.question_type == "MULTIPLE_CHOICE") {
             answerField = <MultipleChoice question={this.props.question} answer={this.props.answer}/>;
         }
+        function createMarkup(text) {
+            return {__html: text};
+        }
         return (
             <div className="question" id="ajaxDiv">
                 <div className="row">
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
-                            <h1 id="ajaxDiv">{this.props.question.text}</h1>
+                             <h1 id="ajaxDiv" dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
                             {hint}
                             <div className="thumbnail">
                                 {image}

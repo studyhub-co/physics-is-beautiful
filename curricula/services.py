@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+import re
 from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
 from django.db.models import Count, Q
@@ -7,7 +7,7 @@ from django.utils import timezone
 import math
 from rest_framework import serializers
 
-from .models import LessonProgress, UserResponse, Text, Vector, Answer, Lesson
+from .models import LessonProgress, UserResponse, Text, Vector, Answer, Lesson, UserVocab, Word
 
 
 class LessonLocked(Exception):
@@ -25,9 +25,9 @@ def markup(text, dictionary, user_words):
 
 def get_user_dictionary(request):
     if request.user.is_authenticated():
-        #user_vocab = UserVocab.objects.all().values('word')
-        #(          profile = request.user.profile,      )
-        return {}
+        user_words = UserVocab.objects.all().filter(profile = request.user.profile,)
+        user_vocab =[u.word for u in user_words]
+        return user_vocab
     else:
         return {}
 
