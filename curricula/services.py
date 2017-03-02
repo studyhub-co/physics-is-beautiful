@@ -27,7 +27,7 @@ def get_dictionary():
     user_vocab = Word.objects.values('word', 'definition')
     user_dict = {}
     for element in user_vocab:
-        user_dict[element['word'].lower()] =element['definition']
+        user_dict[element['word'].lower()] = element['definition']
     return user_dict
 
 
