@@ -23,11 +23,20 @@ def markup(text, dictionary, user_words):
         flags=re.IGNORECASE)
     return text_with_markup
 
+def get_dictionary():
+    user_vocab = Word.objects.values('word', 'definition')
+    user_dict = {}
+    for element in user_vocab:
+        user_dict[element['word'].lower()] =element['definition']
+    return user_dict
+
+
 def get_user_dictionary(request):
     if request.user.is_authenticated():
-        user_words = UserVocab.objects.all().filter(profile = request.user.profile,)
-        user_vocab =[u.word for u in user_words]
-        return user_vocab
+        user_words = UserVocab.objects.filter(profile = request.user.profile,).values_list('word_id')
+        user_vocab = Word.objects.filter(pk__in=user_words).values('word')
+        user_dict = [word['word'].lower() for word in user_vocab]
+        return user_dict
     else:
         return {}
 
