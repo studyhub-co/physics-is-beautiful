@@ -11,7 +11,7 @@ from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
     Image
 )
-from .services import get_progress_service
+from .services import get_progress_service, LessonLocked
 
 
 class BaseSerializer(serializers.ModelSerializer):
@@ -43,7 +43,7 @@ class ImageSerializer(BaseSerializer):
     image = serializers.SerializerMethodField()
 
     def get_image(self, obj):
-        return '/{}'.format(obj.image.url)
+        return '/{}'.format(obj.image.url) if obj.image else None
 
 
 class VectorSerializer(BaseSerializer):
@@ -88,7 +88,7 @@ class UserResponseSerializer(BaseSerializer):
 
     vector = VectorSerializer(required=False)
     text = TextSerializer(required=False)
-    image= ImageSerializer(required=False)
+    image = ImageSerializer(required=False)
     answer = AnswerSerializer(required=False)
 
     def validate_answer(self, value):
@@ -132,7 +132,7 @@ class LessonSerializer(BaseSerializer):
     is_complete = serializers.SerializerMethodField()
 
     def get_image(self, obj):
-        return '/{}'.format(obj.image.url)
+        return '/{}'.format(obj.image.url) if obj.image else None
 
     def get_module(self, obj):
         return obj.module.uuid
@@ -148,7 +148,9 @@ class QuestionSerializer(BaseSerializer):
 
     class Meta:
         model = Question
-        fields = ['uuid', 'text', 'hint', 'image', 'question_type', 'answer_type', 'choices', 'lesson']
+        fields = [
+            'uuid', 'text', 'hint', 'image', 'question_type', 'answer_type', 'choices', 'lesson'
+        ]
 
     question_type = serializers.ChoiceField(
         source='question_type_name', choices=Question.QuestionType.choices_inverse
@@ -189,7 +191,10 @@ class QuestionViewSet(ModelViewSet):
             kwargs['profile'] = request.user.profile
         user_response = sr.get_response(**kwargs)
         service = get_progress_service(request, question.lesson)
-        is_correct = service.check_user_response(user_response)
+        try:
+            is_correct = service.check_user_response(user_response)
+        except LessonLocked as e:
+            raise serializers.ValidationError(e)
         data = LessonProgressSerializer(service.current_lesson_progress).data
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
@@ -216,9 +221,14 @@ class LessonViewSet(ModelViewSet):
         previous_question_uuid = request.query_params.get('previous_question')
         if previous_question_uuid:
             previous_question = Question.objects.filter(uuid=previous_question_uuid).first()
-        question = service.get_next_question(previous_question)
+        try:
+            question = service.get_next_question(previous_question)
+        except LessonLocked as e:
+            raise serializers.ValidationError(e)
         if question:
             data = QuestionSerializer(question, context={'progress_service': service}).data
+            # TODO: it might make more sense for these fields to be on the
+            # lesson. Or a separate lesson_profress object.
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)
@@ -244,7 +254,7 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
     is_complete = serializers.SerializerMethodField()
 
     def get_image(self, obj):
-        return '/{}'.format(obj.image.url)
+        return '/{}'.format(obj.image.url) if obj.image else None
 
     def get_lesson_completed_count(self, obj):
         count = 0

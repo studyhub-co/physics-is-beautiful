@@ -276,7 +276,7 @@ class Image(BaseModel):
     class Meta:
         db_table = 'curricula_images'
 
-    image =  models.ImageField(blank=True)
+    image = models.ImageField(blank=True)
 
     def matches(self, obj):
         if isinstance(obj, Answer):
@@ -361,7 +361,6 @@ class Vector(BaseModel):
             'y_component': y,
         }
 
-
     def _calculate_magnitude(self):
         return math.sqrt(self.x_component ** 2 + self.y_component ** 2)
 
@@ -395,7 +394,9 @@ class Vector(BaseModel):
     def validate_fields(self):
         if (self.x_component is None and self.y_component is not None or
                 self.y_component is None and self.x_component is not None):
-            raise ValidationError('If you specify an X component or a Y component, you must specify both!')
+            raise ValidationError(
+                'If you specify an X component or a Y component, you must specify both!'
+            )
 
     def save(self, *args, **kwargs):
         self.validate_fields()

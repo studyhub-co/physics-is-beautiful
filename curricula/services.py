@@ -1,8 +1,5 @@
-from collections import defaultdict
-
-from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.utils import timezone
 
 from rest_framework import serializers
@@ -20,7 +17,9 @@ def get_progress_service(request, current_lesson=None):
     if request.user.is_authenticated():
         return ProgressService(request, current_lesson=current_lesson)
     else:
-        return AnonymousProgressService(request, session=request.session, current_lesson=current_lesson)
+        return AnonymousProgressService(
+            request, session=request.session, current_lesson=current_lesson
+        )
 
 
 class ProgressServiceBase(object):
@@ -102,13 +101,14 @@ class ProgressService(ProgressServiceBase):
             profile=self.user.profile
         )
         self.lesson_completion_map[lesson.uuid] = None
+        return lp
 
     @cached_property
     def lesson_completion_map(self):
         return {
             lp.lesson.uuid: lp.completed_on for lp in LessonProgress.objects.filter(
                 profile=self.user.profile
-            ).only('lesson_id', 'completed_on')
+            ).select_related('lesson').only('lesson__uuid', 'completed_on')
         }
 
     def _check_lesson_locked(self, lesson):
@@ -124,6 +124,9 @@ class ProgressService(ProgressServiceBase):
             response.content = obj
             response.save()
         self.user_responses = []
+        if self.current_lesson_progress.completed_on:
+            self.lesson_completion_map[self.current_lesson_progress.lesson.uuid] = \
+                self.current_lesson_progress.completed_on
         self.current_lesson_progress.save()
 
 

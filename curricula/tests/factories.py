@@ -1,5 +1,6 @@
 from factory import DjangoModelFactory, SubFactory, Sequence, fuzzy
 
+from profiles.tests.factories import Profile
 from curricula import models
 
 
@@ -120,3 +121,12 @@ class TextAnswer(Answer):
 class VectorAnswer(Answer):
 
     content = SubFactory(Vector)
+
+
+class LessonProgress(DjangoModelFactory):
+
+    class Meta:
+        model = models.LessonProgress
+
+    lesson = SubFactory(Lesson)
+    profile = SubFactory(Profile)

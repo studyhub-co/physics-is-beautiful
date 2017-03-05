@@ -1,7 +1,6 @@
 import math
 
 from django.test import TestCase
-from django.core.exceptions import ValidationError
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse
 
@@ -104,7 +103,7 @@ class QuestionTests(PositionTestMixin, TestCase):
             answer_type=Question.AnswerType.TEXT,
             question_type=Question.QuestionType.MULTIPLE_CHOICE,
         )
-        q.question_type=Question.QuestionType.SINGLE_ANSWER
+        q.question_type = Question.QuestionType.SINGLE_ANSWER
         q.save()
         q.refresh_from_db()
         self.assertEqual(q.question_type, Question.QuestionType.SINGLE_ANSWER)
@@ -229,7 +228,7 @@ class VectorTests(TestCase):
                     else:
                         self.assertFalse(mv.matches(cv))
 
-        answers = [
+        [
             [
                 factories.VectorAnswer(content=component_vectors[0][0]),
                 factories.VectorAnswer(content=component_vectors[0][1]),
@@ -385,7 +384,6 @@ class VectorTests(TestCase):
         self.assertEqual(int(v['y_component']), 1)
 
 
-
 class UserResponseTest(TestCase):
 
     def test_single_answer(self):
@@ -393,7 +391,7 @@ class UserResponseTest(TestCase):
             question_type=Question.QuestionType.SINGLE_ANSWER,
             answer_type=Question.AnswerType.VECTOR,
         )
-        answer = factories.VectorAnswer(question=question, content__angle=90)
+        factories.VectorAnswer(question=question, content__angle=90)
         wrong = factories.Vector(angle=10)
         right = factories.Vector(angle=90)
         wrong_response = UserResponse.objects.create(

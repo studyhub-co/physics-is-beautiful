@@ -3,7 +3,6 @@ from django.contrib.contenttypes.models import ContentType
 
 from allauth.account.signals import user_signed_up
 
-from profiles.models import Profile
 from .services import AnonymousProgressService
 from .models import Lesson, UserResponse, Answer
 
@@ -14,7 +13,7 @@ def transfer_lesson_progress(request, user, **kwargs):
     Method for transitioning all the tracking data from the session to the
     tracking models.
     """
-    #TODO: optimize for bulk create queries.
+    # TODO: optimize for bulk create queries.
     profile = user.profile
     lessons = Lesson.objects.filter(uuid__in=request.session.get('lessons', {}).keys())
     service = AnonymousProgressService(request, session=request.session)

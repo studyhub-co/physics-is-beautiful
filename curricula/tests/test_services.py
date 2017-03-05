@@ -72,5 +72,53 @@ class ProgressServiceTests(TestCase):
         # we responded to each question twice
         self.assertEqual(UserResponse.objects.count(), len(self.questions) * 2)
 
-    # TODO: Test multiple completion / unlock doesn't create multiple lesson
-    # progress objects.
+    def _run_completion_test(self, service, second_service, second_lesson):
+        # first lesson gets unlocked automagically
+        self.assertFalse(service.check_lesson_locked(self.lesson))
+        self.assertFalse(service.check_lesson_completed(self.lesson))
+
+        # other lesson
+        self.assertTrue(second_service.check_lesson_locked(second_lesson))
+        self.assertFalse(second_service.check_lesson_completed(second_lesson))
+
+        second_service.unlock_lesson(second_lesson)
+        self.assertFalse(second_service.check_lesson_locked(second_lesson))
+        self.assertFalse(second_service.check_lesson_completed(second_lesson))
+
+        q = self.questions[0]
+        user_response = UserResponse(
+            question=q,
+            content=q.answers.first().content,
+            profile=self.profile,
+            answered_on=timezone.now()
+        )
+        second_service.check_user_response(user_response)
+        second_service.save()
+        self.assertFalse(second_service.check_lesson_locked(second_lesson))
+        self.assertFalse(second_service.check_lesson_completed(second_lesson))
+
+        # let's complte this lesson
+        for _ in range(10):
+            second_service.check_user_response(user_response)
+            second_service.save()
+
+        self.assertFalse(second_service.check_lesson_locked(second_lesson))
+        self.assertTrue(second_service.check_lesson_completed(second_lesson))
+
+    def test_lesson_locking_completion_anonymous_user(self):
+        mock_session = {}
+        service = AnonymousProgressService(Mock(), session=mock_session, current_lesson=self.lesson)
+        lesson = factories.Lesson(module=self.lesson.module)
+        second_service = AnonymousProgressService(
+            Mock(), session=mock_session, current_lesson=lesson
+        )
+        self._run_completion_test(service, second_service, lesson)
+
+    def test_lesson_locking_completion_authed_user(self):
+        mock_request = Mock()
+        mock_request.user = profile_factories.User()
+        self.profile = mock_request.user.profile
+        service = ProgressService(mock_request, current_lesson=self.lesson)
+        lesson = factories.Lesson(module=self.lesson.module)
+        second_service = ProgressService(mock_request, current_lesson=lesson)
+        self._run_completion_test(service, second_service, lesson)
