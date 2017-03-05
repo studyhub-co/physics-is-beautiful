@@ -343,9 +343,9 @@ class Vector(BaseModel):
 
         if angle is not None or mag is not None or x is not None or y is not None:
             if angle is None and mag is not None:
-                angle = 0
+                angle = 0.0
             elif mag is None and angle is not None:
-                mag = 1
+                mag = 1.0
             elif angle is None and mag is None:
                 angle = self._calculate_angle()
                 mag = self._calculate_magnitude()
@@ -383,13 +383,13 @@ class Vector(BaseModel):
         return calculated_angle
 
     def _calculate_x(self, mag=None, angle=None):
-        mag = mag or self.magnitude
-        angle = angle or self.angle
+        mag = mag if mag is not None else self.magnitude
+        angle = angle if angle is not None else self.angle
         return mag * math.cos(math.radians(angle))
 
     def _calculate_y(self, mag=None, angle=None):
-        mag = mag or self.magnitude
-        angle = angle or self.angle
+        mag = mag if mag is not None else self.magnitude
+        angle = angle if angle is not None else self.angle
         return mag * math.sin(math.radians(angle))
 
     def validate_fields(self):

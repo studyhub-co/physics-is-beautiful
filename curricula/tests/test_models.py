@@ -1,9 +1,12 @@
+import math
+
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
-from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
+from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse
 
 from curricula.tests import factories
+import profiles.tests.factories as profile_factories
 
 
 class CurriculumTests(TestCase):
@@ -252,12 +255,190 @@ class VectorTests(TestCase):
         for v in null_like_vectors:
             self.assertTrue(null_vector.matches(v))
 
-    def test_for_display(self):
-        # TODO: implement
-        pass
+    def test_angle_vector_for_display(self):
+        av = factories.AngleVector(angle=0)
+        self.assertEqual(av.angle, 0)
+        self.assertIsNone(av.magnitude)
+        self.assertIsNone(av.x_component)
+        self.assertIsNone(av.y_component)
+        v = av.for_display()
+        self.assertEqual(v['angle'], 0)
+        self.assertEqual(v['magnitude'], 1)
+        self.assertEqual(v['x_component'], 1)
+        self.assertEqual(v['y_component'], 0)
+
+        av = factories.AngleVector(angle=90)
+        self.assertEqual(av.angle, 90)
+        self.assertIsNone(av.magnitude)
+        self.assertIsNone(av.x_component)
+        self.assertIsNone(av.y_component)
+
+        v = av.for_display()
+        self.assertEqual(v['angle'], 90)
+        self.assertEqual(v['magnitude'], 1)
+        self.assertEqual(int(v['x_component']), 0)
+        self.assertEqual(int(v['y_component']), 1)
+
+        av = factories.AngleVector(angle=180)
+        self.assertEqual(av.angle, 180)
+        self.assertIsNone(av.magnitude)
+        self.assertIsNone(av.x_component)
+        self.assertIsNone(av.y_component)
+        v = av.for_display()
+        self.assertEqual(v['angle'], 180)
+        self.assertEqual(v['magnitude'], 1)
+        self.assertEqual(int(v['x_component']), -1)
+        self.assertEqual(int(v['y_component']), 0)
+
+        av = factories.AngleVector(angle=270)
+        self.assertEqual(av.angle, 270)
+        self.assertIsNone(av.magnitude)
+        self.assertIsNone(av.x_component)
+        self.assertIsNone(av.y_component)
+        v = av.for_display()
+        self.assertEqual(v['angle'], 270)
+        self.assertEqual(v['magnitude'], 1)
+        self.assertEqual(int(v['x_component']), 0)
+        self.assertEqual(int(v['y_component']), -1)
+
+    def test_magnitude_vector_for_display(self):
+        mv = factories.MagnitudeVector(magnitude=0.0)
+        self.assertTrue(mv.is_null)
+
+        mv = factories.MagnitudeVector(magnitude=1.0)
+        self.assertIsNone(mv.angle)
+        self.assertIsNone(mv.x_component)
+        self.assertIsNone(mv.y_component)
+        v = mv.for_display()
+        self.assertEqual(v['magnitude'], 1)
+        self.assertEqual(v['angle'], 0)
+        self.assertEqual(int(v['x_component']), 1)
+        self.assertEqual(int(v['y_component']), 0)
+
+        mv = factories.MagnitudeVector(magnitude=2.0)
+        self.assertIsNone(mv.angle)
+        self.assertIsNone(mv.x_component)
+        self.assertIsNone(mv.y_component)
+        v = mv.for_display()
+        self.assertEqual(v['magnitude'], 2)
+        self.assertEqual(v['angle'], 0)
+        self.assertEqual(int(v['x_component']), 2)
+        self.assertEqual(int(v['y_component']), 0)
+
+    def test_component_vector_for_display(self):
+        cv = factories.ComponentVector(x_component=0, y_component=0)
+        self.assertTrue(cv.is_null)
+
+        cv = factories.ComponentVector(x_component=1, y_component=0)
+        self.assertIsNone(cv.angle)
+        self.assertIsNone(cv.magnitude)
+        self.assertIsNotNone(cv.x_component)
+        self.assertIsNotNone(cv.y_component)
+        v = cv.for_display()
+        self.assertEqual(int(v['angle']), 0)
+        self.assertEqual(int(v['magnitude']), 1)
+        self.assertEqual(int(v['x_component']), 1)
+        self.assertEqual(int(v['y_component']), 0)
+
+        cv = factories.ComponentVector(x_component=0, y_component=1)
+        self.assertIsNone(cv.angle)
+        self.assertIsNone(cv.magnitude)
+        self.assertIsNotNone(cv.x_component)
+        self.assertIsNotNone(cv.y_component)
+        v = cv.for_display()
+        self.assertEqual(int(v['angle']), 90)
+        self.assertEqual(int(v['magnitude']), 1)
+        self.assertEqual(int(v['x_component']), 0)
+        self.assertEqual(int(v['y_component']), 1)
+
+        cv = factories.ComponentVector(x_component=-1, y_component=0)
+        self.assertIsNone(cv.angle)
+        self.assertIsNone(cv.magnitude)
+        self.assertIsNotNone(cv.x_component)
+        self.assertIsNotNone(cv.y_component)
+        v = cv.for_display()
+        self.assertEqual(int(v['angle']), 180)
+        self.assertEqual(int(v['magnitude']), 1)
+        self.assertEqual(int(v['x_component']), -1)
+        self.assertEqual(int(v['y_component']), 0)
+
+        cv = factories.ComponentVector(x_component=0, y_component=-1)
+        self.assertIsNone(cv.angle)
+        self.assertIsNone(cv.magnitude)
+        self.assertIsNotNone(cv.x_component)
+        self.assertIsNotNone(cv.y_component)
+        v = cv.for_display()
+        self.assertEqual(int(v['angle']), 270)
+        self.assertEqual(int(v['magnitude']), 1)
+        self.assertEqual(int(v['x_component']), 0)
+        self.assertEqual(int(v['y_component']), -1)
+
+        cv = factories.ComponentVector(x_component=1, y_component=1)
+        self.assertIsNone(cv.angle)
+        self.assertIsNone(cv.magnitude)
+        self.assertIsNotNone(cv.x_component)
+        self.assertIsNotNone(cv.y_component)
+        v = cv.for_display()
+        self.assertEqual(v['angle'], 45)
+        self.assertEqual(v['magnitude'], math.sqrt(2))
+        self.assertEqual(int(v['x_component']), 1)
+        self.assertEqual(int(v['y_component']), 1)
+
 
 
 class UserResponseTest(TestCase):
 
-    # TODO: implement
-    pass
+    def test_single_answer(self):
+        question = factories.Question(
+            question_type=Question.QuestionType.SINGLE_ANSWER,
+            answer_type=Question.AnswerType.VECTOR,
+        )
+        answer = factories.VectorAnswer(question=question, content__angle=90)
+        wrong = factories.Vector(angle=10)
+        right = factories.Vector(angle=90)
+        wrong_response = UserResponse.objects.create(
+            profile=profile_factories.User().profile,
+            question=question,
+            content=wrong
+        )
+        self.assertFalse(wrong_response.check_response())
+        self.assertFalse(wrong_response.is_correct)
+        self.assertIsNotNone(wrong_response.answered_on)
+        right_response = UserResponse.objects.create(
+            profile=profile_factories.User().profile,
+            question=question,
+            content=right
+        )
+        self.assertTrue(right_response.check_response())
+        self.assertTrue(right_response.is_correct)
+        self.assertIsNotNone(right_response.answered_on)
+
+    def test_multiple_choice(self):
+        question = factories.Question(
+            question_type=Question.QuestionType.MULTIPLE_CHOICE,
+            answer_type=Question.AnswerType.TEXT,
+        )
+        a1 = factories.TextAnswer(question=question, content__text='One', is_correct=True)
+        a2 = factories.TextAnswer(question=question, content__text='Two')
+        a3 = factories.TextAnswer(question=question, content__text='Three')
+        a4 = factories.TextAnswer(question=question, content__text='Four')
+        wrong_responses = [
+            UserResponse.objects.create(
+                profile=profile_factories.User().profile,
+                question=question,
+                content=a,
+            ) for a in [a2, a3, a4]
+        ]
+        right_response = UserResponse.objects.create(
+            profile=profile_factories.User().profile,
+            question=question,
+            content=a1,
+        )
+        for r in wrong_responses:
+            self.assertFalse(r.check_response())
+            self.assertFalse(r.is_correct)
+            self.assertIsNotNone(r.answered_on)
+
+        self.assertTrue(right_response.check_response())
+        self.assertTrue(right_response.is_correct)
+        self.assertIsNotNone(right_response.answered_on)
