@@ -26,8 +26,8 @@
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ redirect_to }}" />
                 <div clas="form-group row">
-                    <label for="id_login">Username:</label>
-                    <input name="login" type="text" class="form-control" id="id_login" placeholder="username" required>
+                    <label for="id_login">Email:</label>
+                    <input name="login" type="text" class="form-control" id="id_login" placeholder="email" required>
                 </div>
                 <div clas="form-group row">
                     <label for="id_password">Password:</label>
@@ -80,10 +80,6 @@
                 <div clas="form-group row">
                     <label for="id_lastname">Last Name:</label>
                     <input name="last_name" type="text" class="form-control" id="id_lastname" placeholder="Last" required>
-                </div>
-                <div clas="form-group row">
-                    <label for="id_username">Username:</label>
-                    <input name="username" type="text" class="form-control" id="id_username" placeholder="username" required>
                 </div>
                 <div clas="form-group row">
                     <label for="id_email">E-mail:</label>

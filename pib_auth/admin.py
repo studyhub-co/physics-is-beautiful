@@ -3,8 +3,6 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from rest_framework.authtoken.models import Token
-
 from .models import User
 
 
@@ -18,7 +16,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'password1', 'password2']
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -47,7 +45,7 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'username', 'email', 'password', 'first_name', 'last_name', 'is_active', 'is_superuser'
+            'email', 'password', 'first_name', 'last_name', 'is_active', 'is_superuser'
         ]
 
     def clean_password(self):
@@ -65,10 +63,10 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ['username', 'email', 'full_name', 'is_superuser']
+    list_display = ['email', 'full_name', 'is_superuser']
     list_filter = ['is_superuser']
     fieldsets = [
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_superuser', )}),
     ]
@@ -79,13 +77,14 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 'classes': ('wide',),
-                'fields': ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+                'fields': ['first_name', 'last_name', 'email', 'password1', 'password2']
             }
         ),
     ]
-    search_fields = ['username', 'email']
-    ordering = ['username', 'email']
+    search_fields = ['email']
+    ordering = ['email']
     filter_horizontal = ()
+
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)

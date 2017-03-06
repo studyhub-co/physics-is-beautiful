@@ -55,12 +55,11 @@ class User(PermissionsMixin, AbstractBaseUser):
     Custom Authentication User
     """
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     objects = UserManager()
 
-    username = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=127)
     last_name = models.CharField(max_length=127)
     email = models.EmailField(max_length=255, unique=True)
