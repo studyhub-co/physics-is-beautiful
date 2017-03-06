@@ -68,7 +68,7 @@ class ProfileControl extends React.Component {
                 <a onClick={this.props.open}>
                     {name}
                 </a>
-                <Modal show={this.props.show} onHide={this.props.close} >
+                <Modal show={this.props.show} onHide={this.props.close} aria-labelledby="ModalHeader">
                     <Modal.Header>
                         <Modal.Title>Profile</Modal.Title>
                     </Modal.Header>

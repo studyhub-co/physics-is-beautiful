@@ -28,12 +28,12 @@
         <div class="navbar-header">
             {# Physics is Beautiful logo #}
             <a class="navbar-brand" href="/">
-				<span class="nb-drop-level-1">
-					Physics is
-				</span>
+                <span class="nb-drop-level-1">
+                    Physics is
+                </span>
                 <span style="white-space: nowrap;">
-					<span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul.</span>
-				</span>
+                    <span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul.</span>
+                </span>
             </a>
             {# Toggle which appears only on small screens/mobile with three icon-bar lines #}
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -54,7 +54,7 @@
 		    {% if user.is_authenticated %}
 			<a id="logout-action" href="#">Logout</a>
 		    {% else %}
-			<a data-toggle="modal" data-target="#signup-modal">Login / Signup</a>
+			<a id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Login / Signup</a>
 		    {% endif %}
                 </li>
             </ul>

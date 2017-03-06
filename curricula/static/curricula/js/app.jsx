@@ -156,6 +156,9 @@ export default class CurriculumApp extends React.Component {
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
+            // We must block on this call so that the audio works on mobile
+            // (audio must be a result of a click).
+            async: false,
             context: this,
             success: function(data, status, jqXHR) {
                 this.question.response = obj;

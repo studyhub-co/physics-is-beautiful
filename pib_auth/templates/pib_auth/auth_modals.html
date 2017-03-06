@@ -6,6 +6,7 @@
 
 
 <script type="text/javascript" src="{% static "pib_auth/js/modal.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'pib_auth/css/auth.css' %}" />
 {% if user.is_authenticated %}
     <div class="hidden">
         <form id="logout-form" method="POST" action="{% url 'account_logout' %}">
