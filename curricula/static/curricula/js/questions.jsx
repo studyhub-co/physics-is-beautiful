@@ -9,10 +9,10 @@ class TextChoice extends React.Component {
         var disabled = '';
         if (this.props.hasAnswer) {
             disabled = ' disabled';
-            if (this.props.is_answer) {
+            if (this.props.isAnswer) {
                 style["backgroundColor"] = "rgb(79, 212, 24)";
                 style["borderColor"] = "rgb(79, 212, 24)";
-            } else if (this.props.was_response) {
+            } else if (this.props.wasResponse) {
                 style["backgroundColor"] = "rgb(255, 0, 0)";
                 style["borderColor"] = "rgb(255, 0, 0)";
             }
