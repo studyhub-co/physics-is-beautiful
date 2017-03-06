@@ -10,7 +10,6 @@ class User(DjangoModelFactory):
     class Meta:
         model = settings.AUTH_USER_MODEL
 
-    username = Sequence(lambda n: 'user{}'.format(n))
     email = Sequence(lambda n: 'user{}@pib.com'.format(n))
 
 
