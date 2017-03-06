@@ -554,6 +554,18 @@ class Question extends React.Component {
         if (this.props.question.image) {
             image = <img src={'/' + this.props.question.image}/>;
         }
+        var hint = '';
+        if (this.props.question.hint) {
+            hint =
+                <div className = "hintDiv">
+                    <div className="hintButton">
+                        <a href="#demo" data-toggle="collapse">hint</a>
+                    </div>
+                    <div id="demo" className="collapse">
+                        {this.props.question.hint}
+                    </div>
+                </div>;
+        }
         var answerField = '';
         if (this.props.question.question_type == "SINGLE_ANSWER") {
             answerField = <VectorCanvas question={this.props.question} answer={this.props.answer}/>;
@@ -566,6 +578,7 @@ class Question extends React.Component {
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
                             <h1 id="ajaxDiv">{this.props.question.text + ' ' + this.props.question.hint}</h1>
+                            {hint}
                             <div className="thumbnail">
                                 {image}
                             </div>
