@@ -124,12 +124,11 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['uuid', 'name', 'image', 'module', 'is_locked', 'is_complete']
+        fields = ['uuid', 'name', 'image', 'module', 'status']
 
     image = serializers.SerializerMethodField()
     module = serializers.SerializerMethodField()
-    is_locked = serializers.SerializerMethodField()
-    is_complete = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
 
     def get_image(self, obj):
         return '/{}'.format(obj.image.url) if obj.image else None
@@ -137,11 +136,10 @@ class LessonSerializer(BaseSerializer):
     def get_module(self, obj):
         return obj.module.uuid
 
-    def get_is_locked(self, obj):
-        return self.context['progress_service'].check_lesson_locked(obj)
-
-    def get_is_complete(self, obj):
-        return self.context['progress_service'].check_lesson_completed(obj)
+    def get_status(self, obj):
+        return LessonProgress.Status.get_name(
+            self.context['progress_service'].get_lesson_status(obj)
+        ).lower()
 
 
 class QuestionSerializer(BaseSerializer):
@@ -240,8 +238,7 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Module
         fields = [
-            'uuid', 'name', 'image', 'lesson_count', 'lesson_completed_count', 'is_locked',
-            'is_complete'
+            'uuid', 'name', 'image', 'lesson_count', 'lesson_completed_count', 'status',
         ]
         expandable_fields = {
             'lessons': (LessonSerializer, (), {'many': True}),
@@ -250,8 +247,7 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
     image = serializers.SerializerMethodField()
     lesson_count = serializers.IntegerField(source='lessons.count')
     lesson_completed_count = serializers.SerializerMethodField()
-    is_locked = serializers.SerializerMethodField()
-    is_complete = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
 
     def get_image(self, obj):
         return '/{}'.format(obj.image.url) if obj.image else None
@@ -259,20 +255,26 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
     def get_lesson_completed_count(self, obj):
         count = 0
         for lesson in obj.lessons.all():
-            if self.context['progress_service'].check_lesson_completed(lesson):
+            if (self.context['progress_service'].get_lesson_status(lesson) ==
+                    LessonProgress.Status.COMPLETE):
                 count += 1
         return count
 
-    def get_is_locked(self, obj):
-        first_lesson = obj.lessons.first()
-        return bool(
-            not first_lesson or self.context['progress_service'].check_lesson_locked(first_lesson)
-        )
-
-    def get_is_complete(self, obj):
-        return all(
-            self.context['progress_service'].check_lesson_completed(l) for l in obj.lessons.all()
-        )
+    def get_status(self, obj):
+        lesson_statuses = {
+            self.context['progress_service'].get_lesson_status(lesson)
+            for lesson in obj.lessons.all()
+        }
+        sequential_check = [
+            LessonProgress.Status.NEW,
+            LessonProgress.Status.UNLOCKED,
+            LessonProgress.Status.LOCKED,
+            LessonProgress.Status.COMPLETE,
+        ]
+        for status in sequential_check:
+            if status in lesson_statuses:
+                break
+        return LessonProgress.Status.get_name(status).lower()
 
 
 class ModuleViewSet(ModelViewSet):

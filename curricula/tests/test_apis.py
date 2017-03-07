@@ -2,7 +2,7 @@ from django.utils import timezone
 
 from django_webtest import WebTest
 
-from curricula.models import Curriculum, Question
+from curricula.models import Curriculum, Question, LessonProgress
 from curricula.services import ProgressServiceBase
 
 import profiles.tests.factories as profile_factories
@@ -48,8 +48,7 @@ class ValidateLessonsMixin(object):
         # These fields cannot be verified without the request. This logic is
         # tested in the services tests. And in Module API tests that
         # specifically test these values.
-        lesson_response.pop('is_complete')
-        lesson_response.pop('is_locked')
+        lesson_response.pop('status')
         self.assertFalse(lesson_response)
 
 
@@ -64,8 +63,7 @@ class ValidateModulesMixin(object):
         # tested in the services tests. And in Module API tests that
         # specifically test these values.
         module_response.pop('lesson_completed_count')
-        module_response.pop('is_complete')
-        module_response.pop('is_locked')
+        module_response.pop('status')
         self.assertFalse(module_response)
 
 
@@ -137,11 +135,6 @@ class CurriculumViewSetTests(ValidateModulesMixin, ValidateUnitsMixin, WebTest):
 
 class ModuleViewSetTests(ValidateLessonsMixin, ValidateModulesMixin, WebTest):
 
-    # TODO: Test THESE:
-    # lesson_completed_count
-    # is_complete
-    # is_locked
-
     def setUp(self):
         self.module = factories.Module()
         self.lessons = factories.Lesson.create_batch(2, module=self.module)
@@ -161,58 +154,43 @@ class ModuleViewSetTests(ValidateLessonsMixin, ValidateModulesMixin, WebTest):
 
     def test_get_module_with_lessons_lock_complete(self):
         user = profile_factories.User()
-        # try with no unlocks / completions
+        # first moudle auto-unlocks
         r = self.app.get(self.url.format(self.module.uuid), {'expand': 'lessons'}, user=user)
         m = r.json
         lessons = m.pop('lessons')
-        self.assertTrue(m['is_locked'])
-        self.assertFalse(m['is_complete'])
+        self.assertEqual(m['status'], 'unlocked')
         self.assertEqual(m['lesson_completed_count'], 0)
+        self.assertEqual(lessons[0]['status'], 'unlocked')
+        self.assertEqual(lessons[1]['status'], 'locked')
         for lesson_response, lesson in zip(lessons, self.lessons):
-            self.assertTrue(lesson_response['is_locked'])
-            self.assertFalse(lesson_response['is_complete'])
             self.validate_lesson(lesson_response, lesson)
         self.validate_module(m, self.module)
 
-        # Now let's unlock the first lesson
-        lp1 = factories.LessonProgress(lesson=self.lessons[0], profile=user.profile)
+        # complete the first lesson
+        LessonProgress.objects.filter(
+            profile=user.profile,
+            lesson=self.lessons[0]
+        ).update(status=LessonProgress.Status.COMPLETE, completed_on=timezone.now())
         r = self.app.get(self.url.format(self.module.uuid), {'expand': 'lessons'}, user=user)
         m = r.json
         lessons = m.pop('lessons')
-        self.assertFalse(m['is_locked'])
-        self.assertFalse(m['is_complete'])
-        self.assertEqual(m['lesson_completed_count'], 0)
-        self.assertFalse(lessons[0]['is_locked'])
-        self.assertFalse(lessons[0]['is_complete'])
-        self.assertTrue(lessons[1]['is_locked'])
-        self.assertFalse(lessons[1]['is_complete'])
-
-        lp1.completed_on = timezone.now()
-        lp1.save()
-        lp2 = factories.LessonProgress(lesson=self.lessons[1], profile=user.profile)
-        r = self.app.get(self.url.format(self.module.uuid), {'expand': 'lessons'}, user=user)
-        m = r.json
-        lessons = m.pop('lessons')
-        self.assertFalse(m['is_locked'])
-        self.assertFalse(m['is_complete'])
+        self.assertEqual(m['status'], 'unlocked')
         self.assertEqual(m['lesson_completed_count'], 1)
-        self.assertFalse(lessons[0]['is_locked'])
-        self.assertTrue(lessons[0]['is_complete'])
-        self.assertFalse(lessons[1]['is_locked'])
-        self.assertFalse(lessons[1]['is_complete'])
+        self.assertEqual(lessons[0]['status'], 'complete')
+        self.assertEqual(lessons[1]['status'], 'unlocked')
 
-        lp2.completed_on = timezone.now()
-        lp2.save()
+        # complete the second lesson
+        LessonProgress.objects.filter(
+            profile=user.profile,
+            lesson=self.lessons[1]
+        ).update(status=LessonProgress.Status.COMPLETE, completed_on=timezone.now())
         r = self.app.get(self.url.format(self.module.uuid), {'expand': 'lessons'}, user=user)
         m = r.json
         lessons = m.pop('lessons')
-        self.assertFalse(m['is_locked'])
-        self.assertTrue(m['is_complete'])
+        self.assertEqual(m['status'], 'complete')
         self.assertEqual(m['lesson_completed_count'], 2)
-        self.assertFalse(lessons[0]['is_locked'])
-        self.assertTrue(lessons[0]['is_complete'])
-        self.assertFalse(lessons[1]['is_locked'])
-        self.assertTrue(lessons[1]['is_complete'])
+        self.assertEqual(lessons[0]['status'], 'complete')
+        self.assertEqual(lessons[1]['status'], 'complete')
 
 
 class LessonViewSetTests(ValidateLessonsMixin, ValidateQuestionsMixin, WebTest):
@@ -225,9 +203,6 @@ class LessonViewSetTests(ValidateLessonsMixin, ValidateQuestionsMixin, WebTest):
 
     def test_get_next_question(self):
         user = profile_factories.User()
-        # can't get question because lesson is locked
-        r = self.app.get(self.url.format(self.lesson.uuid), user=user, status=400)
-        factories.LessonProgress(profile=user.profile, lesson=self.lesson)
         r = self.app.get(self.url.format(self.lesson.uuid), user=user)
         q = r.json
         self.validate_lesson(q.pop('lesson'), self.lesson)
@@ -294,10 +269,6 @@ class QuestionViewSetTests(WebTest):
             'vector': {'x_component': 0, 'y_component': 1}
         }
         last_score = 0
-        # lesson locked
-        r = self.app.post_json(self.url.format(self.question.uuid), data, user=user, status=400)
-
-        factories.LessonProgress(lesson=self.question.lesson, profile=user.profile)
         r = self.app.post_json(self.url.format(self.question.uuid), data, user=user)
         self.assertTrue(r.json['was_correct'])
         self.assertEqual(r.json['score'], last_score + ProgressServiceBase.CORRECT_RESPONSE_VALUE)

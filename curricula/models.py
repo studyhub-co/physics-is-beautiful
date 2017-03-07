@@ -137,6 +137,26 @@ class Lesson(BaseModel):
     def is_start(self):
         return self.position == 0 and self.module.position == 0 and self.module.unit.position == 0
 
+    def get_previous_lesson(self):
+        return Lesson.objects.filter(
+            models.Q(position__lt=self.position, module=self.module) |
+            models.Q(module__position__lt=self.module.position, module__unit=self.module.unit) |
+            models.Q(
+                module__unit__position__lt=self.module.unit.position,
+                module__unit__curriculum=self.module.unit.curriculum
+            )
+        ).order_by('-module__unit__position', '-module__position', '-position').first()
+
+    def get_next_lesson(self):
+        return Lesson.objects.filter(
+            models.Q(position__gt=self.position, module=self.module) |
+            models.Q(module__position__gt=self.module.position, module__unit=self.module.unit) |
+            models.Q(
+                module__unit__position__gt=self.module.unit.position,
+                module__unit__curriculum=self.module.unit.curriculum
+            )
+        ).order_by('module__unit__position', 'module__position', 'position').first()
+
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -456,9 +476,20 @@ class LessonProgress(BaseModel):
         db_table = 'curricula_lesson_progress'
         unique_together = [('profile', 'lesson')]
 
+    class Status(enum.Enum):
+        LOCKED = 0
+        NEW = 10
+        UNLOCKED = 20
+        COMPLETE = 30
+
     profile = models.ForeignKey(
         'profiles.Profile', related_name='lesson_progress', on_delete=models.CASCADE
     )
     lesson = models.ForeignKey(Lesson, related_name='progress', on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0)
     completed_on = models.DateTimeField(null=True, blank=True)
+    status = enum.EnumField(Status)
+
+    def complete(self):
+        self.status = self.Status.COMPLETE
+        self.completed_on = timezone.now()

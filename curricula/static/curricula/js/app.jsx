@@ -44,8 +44,7 @@ export default class CurriculumApp extends React.Component {
                     image: module.image,
                     href: '/curriculum/modules/' + module.uuid,
                     uuid: module.uuid,
-                    locked: module.is_locked,
-                    complete: module.is_complete,
+                    status: module.status,
                 });
             }
             sections.push({
@@ -75,8 +74,7 @@ export default class CurriculumApp extends React.Component {
                 image: lesson.image,
                 href: '/curriculum/lessons/' + lesson.uuid,
                 uuid: lesson.uuid,
-                locked: lesson.is_locked,
-                complete: lesson.is_complete,
+                status: lesson.status,
             });
         }
         var sections = [{

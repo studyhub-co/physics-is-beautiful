@@ -15,7 +15,7 @@ def transfer_lesson_progress(request, user, **kwargs):
     """
     # TODO: optimize for bulk create queries.
     profile = user.profile
-    lessons = Lesson.objects.filter(uuid__in=request.session.get('lessons', {}).keys())
+    lessons = Lesson.objects.filter(pk__in=request.session.get('lessons', {}).keys())
     service = AnonymousProgressService(request, session=request.session)
     for lesson in lessons:
         lesson_progress = service.get_lesson_progress(lesson)

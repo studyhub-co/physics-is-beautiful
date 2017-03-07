@@ -36,8 +36,9 @@ class ReceiverTests(TestCase):
                     'answered_on': timezone.now().isoformat()
                 } for q in questions
             ]
-            mock_session['lessons'][l.uuid] = {
+            mock_session['lessons'][l.pk] = {
                 'score': 0,
+                'status': 0,
                 'completed_on': None,
                 'responses': responses,
             }

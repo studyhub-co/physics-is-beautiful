@@ -18,3 +18,7 @@ class Profile(BaseModel):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     sound_enabled = models.BooleanField(default=True)
+    all_lessons_unlocked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return 'Profile: {}'.format(self.user.email)

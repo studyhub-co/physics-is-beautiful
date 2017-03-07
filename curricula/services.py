@@ -1,10 +1,8 @@
 from django.utils.functional import cached_property
-from django.db.models import Q
-from django.utils import timezone
 
 from rest_framework import serializers
 
-from .models import LessonProgress, UserResponse, Text, Vector, Answer, Lesson
+from .models import LessonProgress, UserResponse, Text, Vector, Answer
 
 
 class LessonLocked(Exception):
@@ -33,6 +31,7 @@ class ProgressServiceBase(object):
         self.user = request.user
         self.current_lesson = current_lesson
         self.user_responses = []
+        self._dirty_lesson_progresses = {}
 
     def get_next_question(self, current_question=None):
         qs = self.current_lesson.questions
@@ -46,28 +45,64 @@ class ProgressServiceBase(object):
             self.save()
         return question
 
-    def check_lesson_locked(self, lesson):
-        is_locked = self._check_lesson_locked(lesson)
-        if is_locked and lesson.is_start:
-            self.unlock_lesson(lesson)
-            return False
-        return is_locked
+    def _allow_override(self):
+        return False
+
+    @cached_property
+    def current_lesson_progress(self):
+        if self.current_lesson:
+            if self.get_lesson_status(self.current_lesson) == LessonProgress.Status.LOCKED:
+                raise LessonLocked()
+            return self.get_lesson_progress(self.current_lesson)
+
+    def unlock_lesson(self, lesson):
+        lesson_progress = self.get_lesson_progress(lesson)
+        if lesson_progress.status != LessonProgress.Status.UNLOCKED:
+            lesson_progress.status = LessonProgress.Status.UNLOCKED
+            self._dirty_lesson_progresses[lesson.pk] = lesson_progress
+        return lesson_progress
+
+    def get_lesson_progress(self, lesson):
+        return self._dirty_lesson_progresses.get(lesson.pk, self._get_lesson_progress(lesson))
+
+    def mark_new(self, lesson):
+        lesson_progress = self.get_lesson_progress(lesson)
+        if lesson_progress.status != LessonProgress.Status.NEW:
+            lesson_progress.status = LessonProgress.Status.NEW
+            self._dirty_lesson_progresses[lesson.pk] = lesson_progress
+        return lesson_progress
+
+    def get_lesson_status(self, lesson, auto_unlock=True):
+        lesson_progress = self.get_lesson_progress(lesson)
+        if lesson_progress.status == LessonProgress.Status.LOCKED:
+            if self._allow_override():
+                return LessonProgress.Status.UNLOCKED
+            elif auto_unlock:
+                previous_lesson = lesson.get_previous_lesson()
+                if (not previous_lesson or
+                        self.get_lesson_status(previous_lesson, auto_unlock=False) ==
+                        LessonProgress.Status.COMPLETE):
+                    next_lesson = lesson.get_next_lesson()
+                    if (next_lesson and
+                            self.get_lesson_status(next_lesson, auto_unlock=False) !=
+                            LessonProgress.Status.LOCKED):
+                        # if both our previous and next lessons are not locked, we
+                        # should indicate this as a newly inserted lesson.
+                        return self.mark_new(lesson).status
+                    else:
+                        # if only our previous lesson is locked, then let's just
+                        # auto-unlock this.
+                        return self.unlock_lesson(lesson).status
+        return lesson_progress.status
 
     def check_user_response(self, user_response):
         is_correct = user_response.check_response()
         if is_correct:
             self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
             if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
-                self.current_lesson_progress.completed_on = timezone.now()
+                self.current_lesson_progress.complete()
                 # unlock the next lesson!
-                next_lesson = Lesson.objects.filter(
-                    Q(position__gt=self.current_lesson.position,
-                      module=self.current_lesson.module) |
-                    Q(module__position__gt=self.current_lesson.module.position,
-                      module__unit=self.current_lesson.module.unit) |
-                    Q(module__unit__position__gt=self.current_lesson.module.unit.position,
-                      module__unit__curriculum=self.current_lesson.module.unit.curriculum)
-                ).order_by('module__unit__position', 'module__position', 'position').first()
+                next_lesson = self.current_lesson.get_next_lesson()
                 if next_lesson:
                     self.unlock_lesson(next_lesson)
         else:
@@ -82,40 +117,11 @@ class ProgressServiceBase(object):
 
 class ProgressService(ProgressServiceBase):
 
-    @cached_property
-    def current_lesson_progress(self):
-        if self.current_lesson:
-            try:
-                return LessonProgress.objects.get(
-                    lesson=self.current_lesson,
-                    profile=self.user.profile,
-                )
-            except LessonProgress.DoesNotExist:
-                if self.current_lesson.is_start:
-                    return self.unlock_lesson(self.current_lesson)
-                raise LessonLocked()
+    def _get_lesson_progress(self, lesson):
+        return LessonProgress.objects.get_or_create(lesson=lesson, profile=self.user.profile)[0]
 
-    def unlock_lesson(self, lesson):
-        lp = LessonProgress.objects.get_or_create(
-            lesson=lesson,
-            profile=self.user.profile
-        )
-        self.lesson_completion_map[lesson.uuid] = None
-        return lp
-
-    @cached_property
-    def lesson_completion_map(self):
-        return {
-            lp.lesson.uuid: lp.completed_on for lp in LessonProgress.objects.filter(
-                profile=self.user.profile
-            ).select_related('lesson').only('lesson__uuid', 'completed_on')
-        }
-
-    def _check_lesson_locked(self, lesson):
-        return bool(not lesson or lesson.uuid not in self.lesson_completion_map)
-
-    def check_lesson_completed(self, lesson):
-        return bool(lesson and self.lesson_completion_map.get(lesson.uuid, False))
+    def _allow_override(self):
+        return self.user.profile.all_lessons_unlocked
 
     def save(self):
         for response in self.user_responses:
@@ -123,10 +129,9 @@ class ProgressService(ProgressServiceBase):
             obj.save()
             response.content = obj
             response.save()
+        for lesson_progress in self._dirty_lesson_progresses.values():
+            lesson_progress.save()
         self.user_responses = []
-        if self.current_lesson_progress.completed_on:
-            self.lesson_completion_map[self.current_lesson_progress.lesson.uuid] = \
-                self.current_lesson_progress.completed_on
         self.current_lesson_progress.save()
 
 
@@ -134,7 +139,7 @@ class LessonProgressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LessonProgress
-        fields = ['score', 'completed_on']
+        fields = ['score', 'status', 'completed_on']
 
 
 class TextSerializer(serializers.ModelSerializer):
@@ -180,7 +185,12 @@ class UserResponseSerializer(serializers.ModelSerializer):
 
 class AnonymousProgressService(ProgressServiceBase):
 
-    DEFAULT_LESSON_STORE = {'score': 0, 'completed_on': None, 'responses': []}
+    DEFAULT_LESSON_STORE = {
+        'score': 0,
+        'status': LessonProgress.Status.LOCKED,
+        'completed_on': None,
+        'responses': [],
+    }
 
     def __init__(self, request, session, current_lesson=None):
         super(AnonymousProgressService, self).__init__(request, current_lesson=current_lesson)
@@ -190,57 +200,35 @@ class AnonymousProgressService(ProgressServiceBase):
     def lessons_store(self):
         return self.session.setdefault('lessons', {})
 
+    def get_lesson_store(self, lesson):
+        return self.lessons_store.setdefault(lesson.pk, self.DEFAULT_LESSON_STORE)
+
     def get_lesson_responses_store(self, lesson):
-        try:
-            return self.lessons_store[lesson.uuid]['responses']
-        except KeyError:
-            if lesson and lesson.is_start:
-                return self.unlock_lesson(lesson)
-            raise LessonLocked()
+        return self.get_lesson_store(lesson)['responses']
 
     @cached_property
     def current_lesson_responses_store(self):
         if self.current_lesson:
             return self.get_lesson_responses_store(self.current_lesson)
 
-    def unlock_lesson(self, lesson):
-        self.lessons_store.setdefault(lesson.uuid, self.DEFAULT_LESSON_STORE)
-        return self.get_lesson_progress(lesson)
-
-    def _check_lesson_locked(self, lesson):
-        return lesson.uuid not in self.lessons_store
-
-    def check_lesson_completed(self, lesson):
-        try:
-            return bool(self.get_lesson_progress(lesson).completed_on)
-        except LessonLocked:
-            return False
-
-    def get_lesson_progress(self, lesson):
-        try:
-            lesson_progress = self.lessons_store[lesson.uuid]
-        except KeyError:
-            if lesson and lesson.is_start:
-                return self.unlock_lesson(lesson)
-            raise LessonLocked()
+    def _get_lesson_progress(self, lesson):
+        lesson_progress = self.get_lesson_store(lesson)
         return LessonProgress(
             lesson=lesson,
             score=lesson_progress['score'],
+            status=lesson_progress['status'],
             completed_on=lesson_progress['completed_on'],
         )
 
-    @cached_property
-    def current_lesson_progress(self):
-        if self.current_lesson:
-            return self.get_lesson_progress(self.current_lesson)
-
     def save(self):
-        lesson_raw = LessonProgressSerializer(
-            self.current_lesson_progress
-        ).data
-        responses_raw = UserResponseSerializer(self.user_responses, many=True).data
-        self.current_lesson_responses_store.extend(responses_raw)
-        lesson_raw['responses'] = self.current_lesson_responses_store
-        self.user_responses = []
-        self.lessons_store[self.current_lesson_progress.lesson.uuid] = lesson_raw
+        if self.current_lesson:
+            lesson_raw = LessonProgressSerializer(self.current_lesson_progress).data
+            responses_raw = UserResponseSerializer(self.user_responses, many=True).data
+            self.current_lesson_responses_store.extend(responses_raw)
+            lesson_raw['responses'] = self.current_lesson_responses_store
+            self.user_responses = []
+            self.lessons_store[self.current_lesson_progress.lesson.pk] = lesson_raw
+        for lesson_pk, lesson_progress in self._dirty_lesson_progresses.items():
+            raw = LessonProgressSerializer(lesson_progress).data
+            self.lessons_store[lesson_pk] = raw
         self.session['lessons'] = self.lessons_store
