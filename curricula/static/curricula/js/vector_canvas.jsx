@@ -368,7 +368,7 @@ export class Canvas extends React.Component {
             } else {
                 isAnswer = true;
             }
-        } else if (this.answerArrow) {
+        } else if (this.props.question.is_correct === undefined && this.answerArrow) {
             this.answerArrow.delete();
             this.answerArrow = null;
             this.canvas.remove(this.answerText);
