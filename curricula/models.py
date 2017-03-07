@@ -346,6 +346,8 @@ class Vector(BaseModel):
         try:
             if obj.is_null != self.is_null:
                 return False
+            elif self.is_null:
+                return True
             obj._fill_out_fields()
             for field in ['magnitude', 'angle', 'x_component', 'y_component']:
                 value = getattr(self, field, None)

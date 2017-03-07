@@ -252,7 +252,9 @@ class VectorTests(TestCase):
         ]
 
         for v in null_like_vectors:
-            self.assertTrue(null_vector.matches(v))
+            self.assertTrue(v.is_null)
+            self.assertTrue(null_vector.matches(v)), '{} != {}'.format(null_vector, v)
+            self.assertTrue(v.matches(null_vector), '{} != {}'.format(v, null_vector))
 
     def test_angle_vector_for_display(self):
         av = factories.AngleVector(angle=0)

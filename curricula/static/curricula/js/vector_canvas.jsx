@@ -289,7 +289,7 @@ export class Canvas extends React.Component {
         this.arrow.complete(this.canvas.getPointer(o.e));
         if (this.arrow.getYComponent() === 0 && this.arrow.getXComponent() === 0) {
             this.arrow.delete();
-            this.arrow = null;
+            this.arrow = new NullVector();
             this.nullBoxCheck();
         }
     }
@@ -361,12 +361,13 @@ export class Canvas extends React.Component {
     }
 
     render() {
-        var isAnswer = false;
+        var nullIsAnswer = false;
         if (this.props.question.is_correct === false && this.props.answer && !this.answerArrow) {
-            if (this.props.answer.xComponent !== null && this.props.answer.yComponent !== null) {
-                this.renderAnswer();
+            if ((this.props.answer.xComponent === null || this.props.answer.yComponent !== null) ||
+                (this.props.answer.xComponent === 0 || this.props.answer.yComponent !== 0)){
+                nullIsAnswer = true;
             } else {
-                isAnswer = true;
+                this.renderAnswer();
             }
         } else if (this.props.question.is_correct === undefined && this.answerArrow) {
             this.answerArrow.delete();
@@ -390,7 +391,7 @@ export class Canvas extends React.Component {
             $('.upper-canvas').css('pointer-events', '');
         }
         if (this.props.question.answer_type == 'NULLABLE_VECTOR') {
-            nullBox = <NullCheckbox checked={this.state.checked} isAnswer={isAnswer} onChange={this.nullBoxCheck.bind(this)} />;
+            nullBox = <NullCheckbox checked={this.state.checked} isAnswer={nullIsAnswer} onChange={this.nullBoxCheck.bind(this)} />;
         }
         return (
             <div className="bounding-box">
