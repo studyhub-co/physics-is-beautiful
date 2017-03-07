@@ -363,8 +363,8 @@ export class Canvas extends React.Component {
     render() {
         var nullIsAnswer = false;
         if (this.props.question.is_correct === false && this.props.answer && !this.answerArrow) {
-            if ((this.props.answer.xComponent === null || this.props.answer.yComponent !== null) ||
-                (this.props.answer.xComponent === 0 || this.props.answer.yComponent !== 0)){
+            if ((this.props.answer.xComponent === null || this.props.answer.yComponent === null) ||
+                (this.props.answer.xComponent === 0 && this.props.answer.yComponent === 0)){
                 nullIsAnswer = true;
             } else {
                 this.renderAnswer();
