@@ -287,6 +287,11 @@ export class Canvas extends React.Component {
 
     mouseUp(o) {
         this.arrow.complete(this.canvas.getPointer(o.e));
+        if (this.arrow.getYComponent() === 0 && this.arrow.getXComponent() === 0) {
+            this.arrow.delete();
+            this.arrow = null;
+            this.nullBoxCheck();
+        }
     }
 
     nullBoxCheck(event) {
@@ -316,6 +321,7 @@ export class Canvas extends React.Component {
                     }
                 }
             );
+            this.setState({checked: false});
         }
     }
 
