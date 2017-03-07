@@ -11,18 +11,15 @@ class UserManager(BaseUserManager):
         user = super(UserManager, self).create(*args, **kwargs)
         return user
 
-    def create_user(self, username, first_name, last_name, email, password=None):
+    def create_user(self, email, first_name=None, last_name=None, password=None):
         """
         Creates and saves a User with the given username, first_name,
         last_name, email and password.
         """
-        if not username:
-            raise ValueError('Users must have a username')
         if not email:
             raise ValueError('Users must have an email address')
 
         user = self.model(
-            username=username,
             first_name=first_name,
             last_name=last_name,
             email=self.normalize_email(email),
@@ -32,13 +29,12 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, first_name, last_name, email, password):
+    def create_superuser(self, email, first_name, last_name, password):
         """
         Creates and saves a User with the given username, first_name,
         last_name, email and password.
         """
         user = self.create_user(
-            username=username,
             first_name=first_name,
             last_name=last_name,
             email=email,
@@ -60,9 +56,9 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     objects = UserManager()
 
-    first_name = models.CharField(max_length=127)
-    last_name = models.CharField(max_length=127)
     email = models.EmailField(max_length=255, unique=True)
+    first_name = models.CharField(max_length=127, blank=True)
+    last_name = models.CharField(max_length=127, blank=True)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -82,13 +78,16 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @property
     def full_name(self):
-        return '{} {}'.format(self.first_name, self.last_name)
+        if self.first_name or self.last_name:
+            return '{} {}'.format(self.first_name, self.last_name)
+        else:
+            return self.email
 
     def get_full_name(self):
         return self.full_name
 
     def get_short_name(self):
-        return self.first_name
+        return self.first_name or self.email
 
     def __str__(self):
         return '{} <{}>'.format(self.full_name, self.email)
