@@ -328,7 +328,7 @@ export class Canvas extends React.Component {
     calcAnswerComponent(value) {
         if (value > 2 * GRID) {
             return GRID;
-        }else if (value < -2 * GRID) {
+        } else if (value < -2 * GRID) {
             return 5 * GRID;
         } else {
             return 3 * GRID;

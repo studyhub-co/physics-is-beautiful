@@ -101,3 +101,8 @@ webpack-stats.json
 
 # bundles
 static/bundles/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
