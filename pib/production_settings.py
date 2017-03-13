@@ -1,5 +1,5 @@
 import os
-import raven
+# import raven
 
 
 DEBUG = False
@@ -21,5 +21,5 @@ RAVEN_CONFIG = {
     'dsn': os.getenv('RAVEN_DSN'),
     # If you are using git, you can also automatically configure the
     # release based on the git info.
-    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+    # 'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
 }
