@@ -23,7 +23,7 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = AWS_REGION
 AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
 
-# django-s3-storages
+# django-s3-storage
 AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_BUCKET_AUTH = False
 AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
