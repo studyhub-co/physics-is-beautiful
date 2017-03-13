@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # assets
+    'django_s3_storage',
     # For allauth
     'django.contrib.sites',
     'allauth',
