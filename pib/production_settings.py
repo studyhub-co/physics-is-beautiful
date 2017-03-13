@@ -7,8 +7,9 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'physicsisbeautiful.com',
-    'www.physicsisbeautiful.com'
-    'dev.physicsisbeautiful.com'
+    'www.physicsisbeautiful.com',
+    'dev.physicsisbeautiful.com',
+    '.compute-1.amazonaws.com',
 ]
 
 
