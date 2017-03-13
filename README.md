@@ -2,14 +2,54 @@
 
 ## Installation
 
-Requires Python 2.7, recommended to run in a virtual environment (virtualenv, consider using virtualenvwrapper to manage your virutal environments)
+Rquires MySql
+
+* install mysql:
+```
+brew install mysql
+```
+* create a db named `pib_development` (either use mysql command line or sequel pro - like program: https://www.sequelpro.com, ex:
+
+```
+mysql -h 127.0.0.1
+create database pib_development;
+exit;
+```
+
+Requires Python 3.5, recommended to run in a virtual environment (virtualenv, consider using virtualenvwrapper to manage your virutal environments)
 
 * install requirements:
 ```
 pip install -r requirements.txt
 ```
 
+* install npm:
+```
+brew install node
+```
+
+* get packages (from root directory):
+```
+npm install
+```
+
 ## To run locally
+
+* Build the front-end
+```
+./node_modules/.bin/webpack --config webpack.config.js
+```
+(if you want to reload automatically when changes are made, you can run):
+```
+./node_modules/.bin/webpack --config webpack.config.js --watch
+```
+
+* Setup the db:
+```
+./manage.py migrate
+```
+
+* Act
 
 * Activate your virtual environment
 * Run:

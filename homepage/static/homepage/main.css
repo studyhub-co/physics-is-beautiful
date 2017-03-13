@@ -83,6 +83,20 @@ z-index:-1;
 	margin-top: 10px;
 }
 
+#getStartedButton {
+	background: rgba(0,0,0,0.25);
+	color: white;
+	font-family: Tw Cen MT;
+	font-weight: 200;
+	font-size: 22px;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	border-color: white;
+	padding: 0px 30px;
+        margin: auto;
+	margin-top: 100px;
+}
+
 .account-button {
 	/*border-radius: 10px;*/
 }

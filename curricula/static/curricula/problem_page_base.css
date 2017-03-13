@@ -1,0 +1,284 @@
+@font-face {
+    font-family: 'Tw Cen MT';
+    src: url('/curricula/typeface/hinted-TwCenMT-Regular.eot');
+    src: url('/curricula/typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+    url('/curricula/typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+    url('/curricula/typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+html,
+
+body {
+
+    background-color: #f1f1f1;
+
+}
+/*
+.navbar.navbar-default {
+    background: #1caff6;
+    background-image: linear-gradient(to bottom, #20a8e9, rgba(30,158,220,0.5));
+    background-position-x: initial;
+    background-position-y: initial;
+    background-size: initial;
+    background-repeat-x: repeat;
+    background-repeat-y: no-repeat;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: rgba(32,166,231,0.8);
+    height: auto;
+    min-height: 70px;
+    background-color: rgba(32,166,231,0.8);
+    background-image: -moz-linear-gradient(top, #20a8e9, rgba(30,158,220,0.5));
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#20a8e9), to(rgba(30,158,220,0.5)));
+    background-image: -webkit-linear-gradient(top, #20a8e9, rgba(30,158,220,0.5));
+    background-image: -o-linear-gradient(top, #20a8e9, rgba(30,158,220,0.5));
+    background-image: linear-gradient(to bottom, #20a8e9, rgba(30,158,220,0.5));
+    background-repeat: repeat-x;
+
+}
+.navbar.navbar-default a {
+	color:white;
+	font-size:250%;
+    font-family: Tw Cen MT;
+}
+
+.nav.navbar-nav.navbar-right a{
+height: 5 px;
+padding: 1 px;
+margin-top: 6px;
+margin-right: 5px;
+margin-left: 10px;
+color:white;
+font-size:150%;
+font-family: Tw Cen MT;
+border-radius: 15px;
+border: 2px solid white;
+	}
+.nav.navbar-nav.navbar-right a:hover{
+color:#686868 ;
+cursor: pointer;
+border: 2px solid #686868 ;
+}*/
+.problem-sheet{
+    position:relative;
+    min-width: 80vw;
+    margin-top: 1%;
+    border-radius: 15px;
+    min-height: 80vh;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    padding-bottom:8vh
+}
+.problem-sheet h1{font-size:120%;}
+
+.bounding-box{
+    border-radius: 25px;
+    padding: 2vh;
+    background-color: white;
+    box-shadow: 0px 0px 10px #d8d8d8;
+    margin: 2vh;
+    padding-bottom: 3vh;
+}
+
+@media all and (max-width: 355px) { /*iPhone 5 optimization*/
+    .bounding-box {
+        margin: 0;
+        margin-bottom: 1vh;
+        margin-top: 1vh;
+        border-radius: 0px;
+        box-shadow: 0px 2px 4px #d8d8d8;
+    }
+    .problem-sheet {
+        border-radius: 0px;
+        box-shadow: none;
+    }
+}
+
+.bounding-box a{
+    margin:3px;
+
+}
+.progress-bottom-container{
+    position: relative;
+    bottom: 0;
+    float: left;
+    padding-bottom: 10;
+    padding-left: 10;
+    width: 45vw;
+}
+
+.btn-group-lg>.btn, .btn-lg {
+    white-space: normal;
+    padding: 8px 10px;
+    font-size: 18px;
+}
+
+.progress{
+    background: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(214, 214, 214, 1);
+    border-radius: 4px;
+    margin-bottom:0px;
+}
+
+
+.thumbnail {
+    border: 0 none;
+    box-shadow: none;
+    margin-bottom:0vh;
+}
+
+.thumbnail > img {
+    display: block;
+    max-height: 43vh;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+.btn-circle.btn-xl {
+    width: 60px;
+    height: 60px;
+    padding: 10px 10px;
+    font-size: 24px;
+    line-height: 1.33;
+    border-radius: 35px;
+}
+
+.canvas-container {
+    width: 100%;
+    height: auto;
+    margin: auto;
+}
+.btn-danger{
+    background-color:rgb(255, 0, 0);
+    border-color:rgb(255, 0, 0);
+    box-shadow:none;
+    pointer-events: none;
+}
+#name{
+    color:white;
+    font-family: Tw Cen MT;
+    font-weight: normal;
+    font-size:25px;
+    padding: 0px 30px;
+    margin: 16px 0;
+}
+#spacer{
+    float:left;
+    bottom:0;
+    left:0;
+    right:0;
+    border-radius: 0 0 15px 15px;
+    background-color: #C0C0C0;
+    margin-top:5px;
+}
+#footer{
+    float:left;
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    border-radius: 0 0 15px 15px;
+    background-color: #dbdbdb;
+    margin-top:5px;
+}
+#checkMarks{
+    float:right;
+    position: absolute;
+    bottom: 6px;
+    right: 5px;
+}
+#checkContainer{
+    position: absolute;
+    bottom: 20px;
+    right: 80px
+}
+#checkButton{
+    padding-top: 11px;
+    padding-bottom: 12px;
+    color: #FFFFFF;
+    font-size: 160%;
+    border-radius: 20px;
+    border: 2px solid rgba(0, 0, 0, 0);
+    margin-bottom:-16px;
+    background: #28A8E7;
+    font-family: Tw Cen MT;
+}
+#checkButton:hover{
+    /*background-color:rgba(255,255,255,0.4);*/
+    background:#888;
+}
+#vectorButton{
+
+}
+
+#blockRight{
+    float:right;
+    min-width:30vw;
+    margin-right:100px;
+    padding-top:4px;
+    padding-left: 10px;
+}
+#correctMessage{
+    display: inline-block;
+    max-width:300px;
+    padding-right: 21px;
+    text-align: center;
+    font-size:18;
+}
+#modalContainer{
+    display: inline-block;
+    padding-right:100px;
+}
+#modal{
+    border: none;
+    border-radius: 10px;
+    background-color:white;
+}
+
+.inline-picture {
+    display: inline-block;
+    width: 150px;
+    margin: 3px;
+    box-shadow: 0 0 1px #d8d8d8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+.inline-picture:hover{
+    box-shadow: 0 0 10px #d8d8d8;
+    cursor:pointer
+}
+
+@media screen and (max-width: 767px){
+    #footer{
+        width:100vw;
+        position:relative;
+    }
+    .problem-sheet{
+        padding:0px;
+    }
+}
+
+#correct{
+    color:rgb(90, 200, 100);
+    font-size: 58px;
+}
+#incorrect{
+    color:rgb(210, 50, 50);
+    font-size: 58px;
+}
+
+.ajax-banner{
+    color:#DDD;
+    font-size:25px;
+    font-family: TW CEN MT
+}

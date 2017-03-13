@@ -1,9 +1,8 @@
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views import generic
-from django.utils import timezone
 
 
 def homepage(request):
+    if request.user.is_authenticated():
+        return redirect(reverse('curricula:curriculum'))
     return render(request, 'homepage/homepage.html')

@@ -1,0 +1,57 @@
+{% extends "curricula/navbar.html" %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block ExtraHead %}
+{% if 'lessons' in request.path %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/problem_page_base.css' %}" />
+{% else %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+{% endif %}
+<script type="text/javascript">
+var SoundSingleton = {
+    soundFiles: {
+        "correct": "{% static 'curricula/audio/correct.mp3' %}",
+        "incorrect": "{% static 'curricula/audio/incorrect.mp3' %}",
+        "continue": "{% static 'curricula/audio/continue.mp3' %}",
+        "complete": "{% static 'curricula/audio/complete.mp3' %}",
+        "exam_start": "{% static 'curricula/audio/exam_start.mp3' %}",
+        "exam_correct": "{% static 'curricula/audio/exam_correct.mp3' %}",
+    }
+};
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+</script>
+<script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div id="react-app"></div>
+    {% render_bundle 'curriculum' %}
+</div>
+{% endblock %}

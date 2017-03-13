@@ -1,0 +1,122 @@
+{% load i18n %}
+{% load static %}
+{% load account socialaccount %}
+
+{% get_providers as socialaccount_providers %}
+
+
+<script type="text/javascript" src="{% static "pib_auth/js/modal.js" %}"></script>
+{% if user.is_authenticated %}
+    <div class="modal fade profile-modal" id="profile-modal" role="dialog">
+        <div class="modal-dialog" role"document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Profile</h4>
+            </div>
+            <div class="modal-body">
+            <div>
+            <form action="{% url 'account_login' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ redirect_to }}" />
+                <div clas="form-group row">
+                    <label for="id_first_name">First Name:</label>
+                    <input name="first_name" type="text" class="form-control" id="id_first_name" placeholder="First" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_last_name">Password:</label>
+                    <input name="last_name" type="text" class="form-control" id="id_last_name" placeholder="Last" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_remember">Remember Me:</label>
+                    <input name="remember" type="checkbox" class="form-check" id="id_remember">
+                </div>
+                <input class="btn btn-primary" type="submit" value="Login"/>
+		<a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+            </form>
+            </div>
+	    <div class="container">OR</div>
+	    <div>
+                <a title="{{socialaccount_providers.0.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
+                        href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
+                    {{ socialaccount_providers.0.name }}
+                </a>
+                /
+                <a title="{{socialaccount_providers.1.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
+                        href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
+                    {{ socialaccount_providers.1.name }}
+                </a>
+            </div>
+
+            </div>
+            <div class="modal-footer">
+                Don't have an account?
+                <button class="btn btn-primary auth-modal-swap" data-toggle="modal">Signup &#62;&#62;</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade auth-modal" id="signup-modal" role="dialog">
+        <div class="modal-dialog" role"document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Signup</h4>
+            </div>
+            <div class="modal-body">
+            <div>
+            <form action="{% url 'account_signup' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ redirect_to }}" />
+                <div clas="form-group row">
+                    <label for="id_firstname">First Name:</label>
+                    <input name="first_name" type="text" class="form-control" id="id_firstname" placeholder="First" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_lastname">Last Name:</label>
+                    <input name="last_name" type="text" class="form-control" id="id_lastname" placeholder="Last" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_username">Username:</label>
+                    <input name="username" type="text" class="form-control" id="id_username" placeholder="username" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_email">E-mail:</label>
+                    <input name="email" type="text" class="form-control" id="id_email" placeholder="e-mail address" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_password1">Password:</label>
+                    <input name="password1" type="password" class="form-control" id="id_password1" placeholder="password" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_password2">Password (again):</label>
+                    <input name="password2" type="password" class="form-control" id="id_password2" placeholder="password (again)" required>
+                </div>
+                <div clas="form-group row">
+                    <label for="id_remember">Remember Me:</label>
+                    <input name="remember" type="checkbox" class="form-check" id="id_remember">
+                </div>
+                <button class="btn btn-primary" type="submit">Signup</button>
+            </form>
+            </div>
+	    <div class="container">OR</div>
+	    <div>
+                <a title="{{socialaccount_providers.0.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
+                        href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
+                    {{ socialaccount_providers.0.name }}
+                </a>
+                /
+                <a title="{{socialaccount_providers.1.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
+                        href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
+                    {{ socialaccount_providers.1.name }}
+                </a>
+            </div>
+
+            </div>
+            <div class="modal-footer">
+                Already have an account?
+                <button class="btn btn-primary auth-modal-swap" data-toggle="modal">Login &#62;&#62;</button>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
