@@ -179,7 +179,7 @@ LOGIN_REDIRECT_URL = 'curricula:curriculum'
 
 
 MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT')
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

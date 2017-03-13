@@ -40,11 +40,6 @@ class ImageSerializer(BaseSerializer):
         model = Image
         fields = ['image']
 
-    image = serializers.SerializerMethodField()
-
-    def get_image(self, obj):
-        return '/{}'.format(obj.image.url) if obj.image else None
-
 
 class VectorSerializer(BaseSerializer):
 
@@ -126,12 +121,8 @@ class LessonSerializer(BaseSerializer):
         model = Lesson
         fields = ['uuid', 'name', 'image', 'module', 'status']
 
-    image = serializers.SerializerMethodField()
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
-
-    def get_image(self, obj):
-        return '/{}'.format(obj.image.url) if obj.image else None
 
     def get_module(self, obj):
         return obj.module.uuid
@@ -244,13 +235,9 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
             'lessons': (LessonSerializer, (), {'many': True}),
         }
 
-    image = serializers.SerializerMethodField()
     lesson_count = serializers.IntegerField(source='lessons.count')
     lesson_completed_count = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
-
-    def get_image(self, obj):
-        return '/{}'.format(obj.image.url) if obj.image else None
 
     def get_lesson_completed_count(self, obj):
         count = 0
