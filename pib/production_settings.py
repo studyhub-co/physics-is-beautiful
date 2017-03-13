@@ -5,7 +5,11 @@ import os
 DEBUG = False
 
 
-ALLOWED_HOSTS = ['physicsisbeautiful.com', 'physicsisbeautiful.com:8000']
+ALLOWED_HOSTS = [
+    'physicsisbeautiful.com',
+    'www.physicsisbeautiful.com'
+    'dev.physicsisbeautiful.com'
+]
 
 
 from pib.common_settings import *  # noqa: E402, F401
