@@ -15,6 +15,10 @@ class CanvasVector {
             pointer.x,
             pointer.y
         ];
+        this.startPointer = {
+            x: pointer.x,
+            y: pointer.y,
+        };
         this.onCanvas = false;
         this.line = new fabric.Line(points, {
             strokeWidth: 5,
@@ -81,6 +85,10 @@ class CanvasVector {
     }
 
     complete(pointer) {
+        this.endPointer = {
+            x: pointer.x,
+            y: pointer.y,
+        };
         this.drawing = false;
         var snappedxCoordinate = Math.round(pointer.x / GRID) * GRID;
         var snappedyCoordinate = Math.round(pointer.y / GRID) * GRID;
@@ -325,32 +333,41 @@ export class Canvas extends React.Component {
         }
     }
 
-    calcAnswerComponent(value) {
-        if (value > 2 * GRID) {
-            return GRID;
-        } else if (value < -2 * GRID) {
+    calcAnswerXStart(value) {
+        if (value > 2) {
+            return 2 * GRID;
+        } else if (value < -2) {
             return 5 * GRID;
         } else {
             return 3 * GRID;
         }
     }
 
+    calcAnswerYStart(value) {
+        if (value > 2) {
+            return 4 * GRID;
+        } else if (value < -2) {
+            return 1 * GRID;
+        } else {
+            return 3 * GRID;
+        }
+    }
     renderAnswer() {
         var answer = this.props.answer;
         var pointer = {
-            x: this.calcAnswerComponent(answer.xComponent),
-            y: this.calcAnswerComponent(answer.yComponent),
+            x: this.calcAnswerXStart(answer.xComponent),
+            y: this.calcAnswerYStart(answer.yComponent),
         }
-        var end_pointer = {
+        var endPointer = {
             x: pointer['x'] + answer.xComponent * GRID,
             y: pointer['y'] - answer.yComponent * GRID,
         }
         this.answerArrow = new CanvasVector(this.canvas, pointer, 'green');
-        this.answerArrow.complete(end_pointer);
+        this.answerArrow.complete(endPointer);
 
         this.answerText = new fabric.Text('correct\nsolution', {
-            left: end_pointer.x - .65 * GRID + answer.xComponent,
-            top: end_pointer.y - answer.yComponent - GRID,
+            left: endPointer.x - .65 * GRID + answer.xComponent,
+            top: endPointer.y - answer.yComponent - GRID,
             fontSize: 20,
             textAlign: 'center',
             lineHeight: .7,
@@ -363,6 +380,11 @@ export class Canvas extends React.Component {
     render() {
         var nullIsAnswer = false;
         if (this.props.question.is_correct === false && this.props.answer && !this.answerArrow) {
+            var newArrow = new CanvasVector(this.canvas, this.arrow.startPointer, "#ffcccc");
+            newArrow.complete(this.arrow.endPointer);
+            this.arrow.delete();
+            this.arrow = newArrow;
+
             if ((this.props.answer.xComponent === null || this.props.answer.yComponent === null) ||
                 (this.props.answer.xComponent === 0 && this.props.answer.yComponent === 0)){
                 nullIsAnswer = true;
