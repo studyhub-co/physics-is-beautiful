@@ -63,3 +63,26 @@ npm install
 
 * We respect the rules set out by pep8 with the exception of a 100 character line limit.
 * We use the flake8 python script for linting.
+
+## Deployment
+
+www.physicsisbeautiful.com and dev.physicsisbeautiful.com are hosted on Elastic Beanstalk.
+
+To Setup:
+
+* install AWS CLI (http://docs.aws.amazon.com/cli/latest/userguide/installing.html):
+```
+brew install awscli
+```
+* install AWS EB CLI (http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html):
+```
+brew install awsebcli
+```
+* run `eb init`
+* on git `develop` branch run `eb use pib-dev`
+* on git `master` branch run `eb use pib-prod`
+
+To Deploy:
+
+* `eb deploy`
+It will deploy to the proper environment depending on what branch you are on.

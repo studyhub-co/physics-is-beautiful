@@ -42,8 +42,11 @@ class AnonymousForm extends React.Component {
         return (
             <form>
                 <FormGroup>
-                    <ControlLabel>Sound Enabled</ControlLabel>
-                    <Checkbox checked={this.props.soundEnabled} onChange={this.props.toggleSound}/>
+                    <ControlLabel>Sound settings</ControlLabel>
+                    <Checkbox checked={this.props.soundEnabled} onChange={this.props.toggleSound}>
+                        Sound enabled
+                    </Checkbox>
+
                 </FormGroup>
             </form>
         );
@@ -65,11 +68,11 @@ class ProfileControl extends React.Component {
         }
         return (
             <li className="nav-item">
-                <a onClick={this.props.open}>
+                <a className = 'settings' onClick={this.props.open}>
                     {name}
                 </a>
-                <Modal show={this.props.show} onHide={this.props.close} aria-labelledby="ModalHeader">
-                    <Modal.Header>
+                <Modal className = 'settings-modal' show={this.props.show} onHide={this.props.close} aria-labelledby="ModalHeader">
+                    <Modal.Header closeButton>
                         <Modal.Title>Profile</Modal.Title>
                     </Modal.Header>
 
@@ -78,7 +81,6 @@ class ProfileControl extends React.Component {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button onClick={this.props.close}>Close</Button>
                         <Button bsStyle="primary" onClick={this.props.save}>Save changes</Button>
                     </Modal.Footer>
                 </Modal>

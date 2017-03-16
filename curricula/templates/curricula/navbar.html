@@ -3,9 +3,10 @@
 {% load auth_tags %}
 
 <head>
+    <link rel="shortcut icon" type="image/png" href="{% static 'curricula/images/favicon/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'curricula/navbar.css' %}" />
 
-    {# Mathjac#}
+    {# Mathjax#}
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     {# JQuery #}
@@ -45,17 +46,14 @@
         </div>
         {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
         <div id="navbar" class="navbar-collapse collapse">
-            <ul id="react-profile-modal" class="nav navbar-nav navbar-right">
+            <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">
                 {% render_bundle 'profile' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'curricula:curriculum' %}">Dashboard</a>
-                </li>
-                <li class="nav-item">
-		    {% if user.is_authenticated %}
-			<a id="logout-action" href="#">Logout</a>
-		    {% else %}
-			<a id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Login / Signup</a>
-		    {% endif %}
+                    {% if user.is_authenticated %}
+                        <a id="logout-action" href="#">Logout</a>
+                    {% else %}
+                        <a id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Create a profile</a>
+                    {% endif %}
                 </li>
             </ul>
         </div><!--/.nav-collapse -->
