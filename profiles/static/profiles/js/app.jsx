@@ -65,7 +65,7 @@ class ProfileControl extends React.Component {
         }
         return (
             <li className="nav-item">
-                <a onClick={this.props.open}>
+                <a className = 'settings' onClick={this.props.open}>
                     {name}
                 </a>
                 <Modal show={this.props.show} onHide={this.props.close} aria-labelledby="ModalHeader">
