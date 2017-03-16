@@ -2,8 +2,8 @@
 	font-family: 'Tw Cen MT';
 	src: url('typeface/hinted-TwCenMT-Regular.eot');
 	src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
-		url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
-		url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+	url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+	url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -82,6 +82,16 @@ z-index:-1;
 	padding: 0px 30px;
 	margin-top: 10px;
 }
+#loginButton:active {
+	background: rgba(255,255,255,.2);
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#loginButton:hover {
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#loginButton:focus {
+	outline:none;
+}
 
 #getStartedButton {
 	background: rgba(0,0,0,0.25);
@@ -93,8 +103,19 @@ z-index:-1;
 	border-radius: 20px;
 	border-color: white;
 	padding: 0px 30px;
-        margin: auto;
+	margin: auto;
 	margin-top: 100px;
+}
+
+#getStartedButton:active {
+	background: rgba(255,255,255,.2);
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#getStartedButton:hover {
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#getStartedButton:focus {
+	outline:none;
 }
 
 .account-button {
