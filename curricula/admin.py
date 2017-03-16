@@ -7,6 +7,9 @@ from nested_admin import NestedTabularInline, NestedModelAdmin
 from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image
 
 
+admin.AdminSite.site_header = 'Physics is Beautiful Admin'
+admin.AdminSite.site_title = admin.AdminSite.site_header
+
 def link_to_obj(name):
     def link(obj):
         return '<a href="{}">{}</a>'.format(obj.get_admin_url(), str(obj))
