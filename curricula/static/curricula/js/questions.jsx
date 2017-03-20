@@ -189,7 +189,7 @@ export class Question extends React.Component {
     render() {
         var image = '';
         if (this.props.question.image) {
-            image = <img src={'/' + this.props.question.image}/>;
+            image = <img src={this.props.question.image}/>;
         }
         var hint = '';
         if (this.props.question.hint) {
