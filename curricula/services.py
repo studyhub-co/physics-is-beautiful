@@ -59,17 +59,20 @@ class ProgressServiceBase(object):
         lesson_progress = self.get_lesson_progress(lesson)
         if lesson_progress.status != LessonProgress.Status.UNLOCKED:
             lesson_progress.status = LessonProgress.Status.UNLOCKED
-            self._dirty_lesson_progresses[lesson.pk] = lesson_progress
+            self._dirty_lesson_progresses[str(lesson.pk)] = lesson_progress
         return lesson_progress
 
     def get_lesson_progress(self, lesson):
-        return self._dirty_lesson_progresses.get(lesson.pk, self._get_lesson_progress(lesson))
+        return self._dirty_lesson_progresses.setdefault(
+            str(lesson.pk),
+            self._get_lesson_progress(lesson)
+        )
 
     def mark_new(self, lesson):
         lesson_progress = self.get_lesson_progress(lesson)
         if lesson_progress.status != LessonProgress.Status.NEW:
             lesson_progress.status = LessonProgress.Status.NEW
-            self._dirty_lesson_progresses[lesson.pk] = lesson_progress
+            self._dirty_lesson_progresses[str(lesson.pk)] = lesson_progress
         return lesson_progress
 
     def get_lesson_status(self, lesson, auto_unlock=True):
@@ -201,7 +204,7 @@ class AnonymousProgressService(ProgressServiceBase):
         return self.session.setdefault('lessons', {})
 
     def get_lesson_store(self, lesson):
-        return self.lessons_store.setdefault(lesson.pk, self.DEFAULT_LESSON_STORE)
+        return self.lessons_store.setdefault(str(lesson.pk), self.DEFAULT_LESSON_STORE.copy())
 
     def get_lesson_responses_store(self, lesson):
         return self.get_lesson_store(lesson)['responses']
@@ -221,14 +224,14 @@ class AnonymousProgressService(ProgressServiceBase):
         )
 
     def save(self):
+        for lesson_pk, lesson_progress in self._dirty_lesson_progresses.items():
+            raw = LessonProgressSerializer(lesson_progress).data
+            self.lessons_store.setdefault(lesson_pk, {}).update(raw)
         if self.current_lesson:
             lesson_raw = LessonProgressSerializer(self.current_lesson_progress).data
             responses_raw = UserResponseSerializer(self.user_responses, many=True).data
             self.current_lesson_responses_store.extend(responses_raw)
             lesson_raw['responses'] = self.current_lesson_responses_store
             self.user_responses = []
-            self.lessons_store[self.current_lesson_progress.lesson.pk] = lesson_raw
-        for lesson_pk, lesson_progress in self._dirty_lesson_progresses.items():
-            raw = LessonProgressSerializer(lesson_progress).data
-            self.lessons_store[lesson_pk] = raw
+            self.lessons_store[str(self.current_lesson.pk)] = lesson_raw
         self.session['lessons'] = self.lessons_store
