@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block ExtraHead %}
-<link rel="stylesheet" type="text/css" href="{% static 'blog/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/style.css' %}" />
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    let's try this out!!
-</div>
+    <div class="container">
+       Link to <a href="{% url 'blog:college_scorecard' %}">collegescorecard analysis</a>
+    </div>
 {% endblock %}
