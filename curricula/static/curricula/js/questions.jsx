@@ -140,37 +140,37 @@ class SingleAnswer extends React.Component {
 }
 
 
-class Hint extends React.Component {
-
-    constructor() {
-        super();
-        this.state = {
-            collapsed: true,
-        };
-    }
-
-    onChange(event) {
-        this.setState({collapsed: !this.state.collapsed});
-    }
-
-    render() {
-        var style = {};
-        if (this.state.collapsed) {
-            style["display"] = "none";
-        }
-        return (
-            <div className = "hintDiv">
-                <div className="hintButton">
-                    <a onClick={this.onChange.bind(this)}>hint</a>
-                </div>
-                <div id="demo" style={style}>
-                    {this.props.hint}
-                </div>
-            </div>
-        );
-    }
-
-}
+// class Hint extends React.Component {
+//
+//     constructor() {
+//         super();
+//         this.state = {
+//             collapsed: true,
+//         };
+//     }
+//
+//     onChange(event) {
+//         this.setState({collapsed: !this.state.collapsed});
+//     }
+//
+//     render() {
+//         var style = {};
+//         if (this.state.collapsed) {
+//             style["display"] = "none";
+//         }
+//         return (
+//             <div className = "hintDiv">
+//                 <div className="hintButton">
+//                     <a onClick={this.onChange.bind(this)}>hint</a>
+//                 </div>
+//                 <div id="demo" style={style}>
+//                     {this.props.hint}
+//                 </div>
+//             </div>
+//         );
+//     }
+//
+// }
 
 
 export class Question extends React.Component {
@@ -193,7 +193,15 @@ export class Question extends React.Component {
         }
         var hint = '';
         if (this.props.question.hint) {
-            hint = <Hint hint={this.props.question.hint} />;
+            hint =
+                <div className = "hintDiv">
+                    <div className="hintButton">
+                        <a href="#demo" data-toggle="collapse">hint</a>
+                    </div>
+                    <div id="demo" className="collapse">
+                        {this.props.question.hint}
+                    </div>
+                </div>;
         }
         var answerField = '';
         if (this.props.question.question_type == "SINGLE_ANSWER") {
@@ -201,12 +209,15 @@ export class Question extends React.Component {
         } else if (this.props.question.question_type == "MULTIPLE_CHOICE") {
             answerField = <MultipleChoice question={this.props.question} answer={this.props.answer}/>;
         }
+        function createMarkup(text) {
+            return {__html: text};
+        }
         return (
             <div className="question" id="ajaxDiv">
                 <div className="row">
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
-                            <h1 id="ajaxDiv">{this.props.question.text}</h1>
+                            <h1 id="ajaxDiv"dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
                             {hint}
                             <div className="thumbnail">
                                 {image}
