@@ -92,6 +92,7 @@ db.sqlite3
 
 # ignore media dir
 MEDIA/
+media/
 
 # npm
 node_modules/
@@ -106,3 +107,7 @@ static/bundles/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# pycharm
+library_test
+.idea
