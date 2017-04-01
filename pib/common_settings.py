@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'homepage.apps.HomepageConfig',
     'curricula.apps.CurriculaConfig',
+    # blog
+    'blog',
 ]
 
 MIDDLEWARE = [
