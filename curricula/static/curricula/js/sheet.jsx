@@ -35,7 +35,7 @@ class LessonCompleteSheet extends React.Component {
     render() {
         return (
             <div className="container problem-sheet">
-                <LessonComplete lesson={this.props.question.lesson}/>;
+                <LessonComplete lesson={this.props.question.lesson}/>
                 <div></div>
             </div>
         );
@@ -49,7 +49,7 @@ class QuestionSheet extends React.Component {
     render() {
         return (
             <div className="container problem-sheet">
-                <Question question={this.props.question} answer={this.props.answer}/>;
+                <Question question={this.props.question} answer={this.props.answer}/>
                 <Footer
                     progress={this.props.progress}
                     correct={this.props.question.is_correct}
