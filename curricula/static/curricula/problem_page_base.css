@@ -286,4 +286,5 @@ border: 2px solid #686868 ;
 .hintButton{
     text-align:right;
     font-style: italic;
+    cursor:pointer;
 }

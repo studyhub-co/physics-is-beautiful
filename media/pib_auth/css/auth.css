@@ -1,0 +1,12 @@
+#login-signup-link {
+    cursor: pointer;
+}
+.settings{
+    cursor: pointer;
+}
+.social-image:hover{
+    box-shadow: 0 0 16px 0 rgba(0, 116, 255, 0.42), 0 17px 50px 0 rgba(0, 116, 255, 0.19);
+}
+.social-image{
+    max-width: 191px;
+}
