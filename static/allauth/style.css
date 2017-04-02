@@ -1,0 +1,45 @@
+@font-face {
+    font-family: 'Tw Cen MT';
+    src: url('typeface/hinted-TwCenMT-Regular.eot');
+    src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+    url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+    url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+html, body {
+    background-color: #f1f1f1;
+    width: 100%;
+    height: 100%;
+}
+
+.container{
+    position:relative;
+    width:80%;
+    margin-top: 10px;
+    border-radius: 15px;
+    padding: 60px;
+    min-height: 80%;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+}
+
+.headline{
+    padding-bottom: 10px;
+}
+.byline-dateline{
+    padding-bottom: 16px;
+    padding-top: 14px;
+    border-bottom-color: rgb(226, 226, 226);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-top-color: rgb(226, 226, 226);
+    border-top-style: solid;
+    border-top-width: 1px;
+}
+.byline{
+    font-weight: bold;
+}
+.dateline{
+    margin-left: 15px;
+}

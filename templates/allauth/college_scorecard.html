@@ -1,0 +1,19 @@
+{% extends "blog/navbar.html" %}
+{% load static %}
+
+{% block ExtraHead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 id='headline' class="headline">Analysis of the College Scorecard Data</h1>
+        <div id = "story-meta-footer" class="story-meta-footer">
+            <p id = "byline-dateline" class="byline-dateline">
+                <span class="byline">By NICOLAS SCOZZARO</span><time class="dateline">March 18, 2017</time>
+            </p>
+        </div>
+        <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" />
+        <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}" />
+    </div>
+{% endblock %}

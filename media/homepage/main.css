@@ -1,0 +1,178 @@
+@font-face {
+	font-family: 'Tw Cen MT';
+	src: url('typeface/hinted-TwCenMT-Regular.eot');
+	src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+	url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+	url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+html {
+	height: 100%;
+	min-height: 100%;
+}
+
+body {
+	background: url('images/Prague.jpg');
+	background-size: cover;
+	/*background-size: contain; */
+	/*background-size: auto 100%;*/
+	background-attachment: fixed;
+	background-position: center center;@media (max-width: @iphone-screen) {
+	background-attachment: scroll;
+	min-height:100%;
+}
+
+z-index:-1;
+
+}
+
+.dropdown-menu {
+	text-align: center;
+	background: rgba(255,255,255,0.3);
+	font-family: Tw Cen MT;
+	font-weight: bold;
+	left: 0px;
+}
+
+.btn.btn-primary.btn-lg {
+	color: white;
+	text-transform: none;
+	margin-bottom: 10px;
+	font-family: Tw Cen MT;
+	font-weight: normal;
+}
+.btn.btn-primary.btn-lg.noAccount {
+	background: rgba(255, 187, 153, 0.46);
+	border-color: #ffddcc;
+}
+.jumbotron {
+	background-color: transparent;
+}
+
+.jumbotron h1 {
+	color: #f7f7f7;
+	font-size: 100px;
+	text-align: center;
+	font-family: Tw Cen MT;
+	font-weight: bold;
+}
+
+.jumbotron p {
+	font-size: 40px;
+	color: #fff;
+	text-align: center;
+	text-shadow: 1px 1px 28px #AAA;
+}
+#facebookLogin {
+	width: 92%; /* you can use % */
+	height: auto;
+	margin-bottom: 5px;
+}
+#loginButton {
+	background: rgba(0,0,0,0.05);
+	color: white;
+	font-family: Tw Cen MT;
+	font-weight: normal;
+	font-size: 22px;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	border-color: white;
+	padding: 0px 30px;
+	margin-top: 10px;
+}
+#loginButton:active {
+	background: rgba(255,255,255,.2);
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#loginButton:hover {
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#loginButton:focus {
+	outline:none;
+}
+
+#getStartedButton {
+	background: rgba(0,0,0,0.25);
+	color: white;
+	font-family: Tw Cen MT;
+	font-weight: 200;
+	font-size: 22px;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	border-color: white;
+	padding: 0px 30px;
+	margin: auto;
+	margin-top: 100px;
+}
+
+#getStartedButton:active {
+	background: rgba(255,255,255,.2);
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#getStartedButton:hover {
+	box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+#getStartedButton:focus {
+	outline:none;
+}
+
+.account-button {
+	/*border-radius: 10px;*/
+}
+
+.modal-content{
+	background-color: rgba(255, 255, 255, 0.9);
+}
+
+
+
+@media all and (max-width: 1000px) {
+	.jumbotron h1 {
+		font-size: 75px;
+	}
+	.jumbotron p {
+		font-size: 30px;
+	}
+}
+
+@media all and (max-width: 600px) {
+	.jumbotron h1 {
+		font-size: 50px;
+	}
+	.jumbotron p {
+		font-size: 20px;
+	}
+}
+
+@media all and (max-width: 210px) {
+	.jumbotron h1 {
+		font-size: 30px;
+	}
+	.jumbotron p {
+		font-size: 12px;
+	}
+}
+
+/*.buttonSocial {
+	height: 40px !important;
+	width: 40px !important;
+	margin-bottom: 0px !important;
+}*/
+
+/*.glowButton:hover {
+	-webkit-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
+	-moz-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
+	box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
+	background-color: rgba(168,245,255,1);
+}*/
+
+.account-button img:hover {
+	/*-webkit-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
+	-moz-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
+	box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
+	background-color: rgba(168,245,255,1);*/
+	-webkit-filter: brightness(120%); /* Chrome, Safari, Opera */
+	filter: brightness(120%);
+}
