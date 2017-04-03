@@ -5,3 +5,6 @@ def BlogHomepage(request):
 
 def CollegeScorecard(request):
     return render(request, 'blog/college_scorecard.html')
+
+def Shankar(request):
+    return render(request, 'blog/shankar.html')
