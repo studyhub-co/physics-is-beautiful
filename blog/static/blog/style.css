@@ -19,9 +19,29 @@ html, body {
     margin-top: 10px;
     border-radius: 15px;
     padding: 60px;
+    padding-top: 20px;
+    padding-left: 15%;
+    padding-right: 15%;
     min-height: 80%;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
+}
+@media all and (max-width: 355px) { /*iPhone 5 optimization*/
+    .container {
+        margin: 0;
+        width: 100%;
+        padding:5px;
+    }
+    .blog-title{
+        margin: 5px;
+    }
+    body .blog-entry-image{
+        width:100%;
+    }
+
+    #navTopOfScreen{
+        margin-bottom: 10px;
+    }
 }
 
 .headline{
@@ -43,3 +63,27 @@ html, body {
 .dateline{
     margin-left: 15px;
 }
+
+.blog-title{
+    color: #0fa5ff;
+    font-family: Tw Cen MT;
+    text-align: center;
+    font-size: 40;
+}
+
+.blog-entry-image{
+    width:100%;
+}
+
+.navbar.navbar-default button {
+    background-color: rgba(240, 248, 255, 0);
+}
+
+.navbar-default .navbar-toggle {
+    border-color: rgba(221, 221, 221, 0);
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+

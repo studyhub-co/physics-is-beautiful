@@ -7,6 +7,26 @@
 
 {% block content %}
     <div class="container">
-       Link to <a href="{% url 'blog:college_scorecard' %}">collegescorecard analysis</a>
+        <h1 class="blog-title">
+            <span class="nb-drop-level-1">
+                    Physics is
+                </span>
+            <span style="white-space: nowrap;">
+                    <span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul blog.</span>
+                </span>
+        </h1>
+        <a href="{% url 'blog:college_scorecard' %}">
+            <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" class = "blog-entry-image"/>
+        </a>
+        <br>
+        <a href = "{% url 'blog:college_scorecard' %}">
+            <h2>Analysis of the College Scorecard data</h2>
+        </a>
+        In September of 2015, President Obama announced the release of data on all universities in the United States.
+        The data includes "how much each school’s graduates earn,
+        how much debt they graduate with, and what percentage of a school’s students can pay back their loans –
+        which will help all of us see which schools do the best job of preparing America for success," said Obama.
+        <br>
+        <a href="{% url 'blog:college_scorecard' %}">READ MORE <span>»</span></a>
     </div>
 {% endblock %}

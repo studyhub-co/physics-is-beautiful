@@ -23,7 +23,18 @@ html, body {
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
 }
+@media all and (max-width: 355px) {
+    /*iPhone 5 optimization*/
+    .container {
+        margin: 0;
+        width: 100%;
+        padding: 5px;
+    }
 
+    .blog-title {
+        text-align: center;
+    }
+}
 .headline{
     padding-bottom: 10px;
 }
