@@ -155,13 +155,14 @@ class Hint extends React.Component {
 
     render() {
         var style = {};
-        if (this.state.collapsed) {
+        console.log(this.props.hintCollapsed);
+        if (this.props.hintCollapsed) {
             style["display"] = "none";
         }
         return (
             <div className = "hintDiv">
                 <div className="hintButton">
-                    <a onClick={this.onChange.bind(this)}>hint</a>
+                    <a onClick={this.props.onClick}>hint</a>
                 </div>
                 <div id="demo" style={style}>
                     {this.props.hint}
@@ -193,7 +194,7 @@ export class Question extends React.Component {
         }
         var hint = '';
         if (this.props.question.hint) {
-            hint = <Hint hint={this.props.question.hint} />;
+            hint = <Hint hint={this.props.question.hint} hintCollapsed={this.props.question.hintCollapsed} onClick={this.props.hintClick} />;
                 {/*<div className = "hintDiv">*/}
                     {/*<div className="hintButton">*/}
                         {/*<a href="#demo" data-toggle="collapse">hint</a>*/}
