@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^$', views.BlogHomepage, name='bloghomepage'),
     url(r'^college_scorecard/$', views.CollegeScorecard, name='college_scorecard'),
     url(r'^shankar/$', views.Shankar, name='shankar'),
+    url(r'^graph/$', views.graph, name='graph'),
 ]
