@@ -126,16 +126,25 @@ class Lesson(BaseModel):
         ordering = ['position']
         db_table = 'curricula_lessons'
 
+    class LessonType(enum.Enum):
+        DEFAULT = 0
+        GAME = 1
+
     uuid = ShortUUIDField()
     module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField()
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+    lesson_type = enum.EnumField(LessonType)
 
     @property
     def is_start(self):
         return self.position == 0 and self.module.position == 0 and self.module.unit.position == 0
+
+    @property
+    def lesson_type_name(self):
+        return self.LessonType.get_name(self.lesson_type)
 
     def get_previous_lesson(self):
         return Lesson.objects.filter(
@@ -164,9 +173,26 @@ class Lesson(BaseModel):
             )
             self.position = get_earliest_gap(taken_positions)
         super(Lesson, self).save(*args, **kwargs)
+        if self.lesson_type == self.LessonType.GAME and not hasattr(self, 'game'):
+            Game.objects.create(lesson=self)
+        elif self.lesson_type != self.LessonType.GAME and hasattr(self, 'game'):
+            self.game.delete()
 
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
+
+
+class Game(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_games'
+
+    uuid = ShortUUIDField()
+    lesson = models.OneToOneField(Lesson, related_name='game')
+    slug = models.SlugField(null=True, blank=True)
+
+    def __str__(self):
+        return 'Game: {}'.format(self.slug)
 
 
 class Question(BaseModel):

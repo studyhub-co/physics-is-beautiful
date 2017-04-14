@@ -79,7 +79,7 @@ class SectionSheet extends React.Component {
             sections.push(<Section key={el.uuid} name={el.name} items={el.items}/>);
         });
         return (
-            <div className="container problem-sheet">
+            <div className="container section-sheet">
                 {backLink}
                 {sections}
             </div>
