@@ -19,12 +19,6 @@ def Shankar(request):
 def CollegeMap(request):
     return render(request, 'blog/collegemap.html')
 
-
-# def CollegeScorecardApp(request):
-#     vals = list(Collegescorecard.objects.values('instnm')[:5])
-#     html = "<html><body>{0}</body></html>".format(vals)
-#     return HttpResponse(html)
-
 def CollegeScorecardApp(request):
     def load_data(years, x_axis, y_axis, selected_sectors, selected_institutions):
         axis_dict = {
@@ -183,6 +177,7 @@ def CollegeScorecardApp(request):
         p = figure(plot_width=800,
                    #x_range=(-650, 65000),
                    #y_range=(-2500, 250000),
+                   sizing_mode='scale_both',
                    tools=[hover, "save,pan,wheel_zoom,box_zoom,reset,tap"],
                    x_axis_label=axis_dict[x_axis][0] + (" ($)" if "$" in axis_dict[x_axis] else ""),
                    y_axis_label=axis_dict[y_axis][0] + (" ($)" if "$" in axis_dict[y_axis] else ""),
