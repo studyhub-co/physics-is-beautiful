@@ -11,7 +11,7 @@ def BlogHomepage(request):
     return render(request, 'blog/blog_homepage.html')
 
 def CollegeScorecard(request):
-    return render(request, 'blog/college_scorecard.html')
+    return render(request, 'blog/collegescorecard-analysis.html')
 
 def Shankar(request):
     return render(request, 'blog/shankar.html')
