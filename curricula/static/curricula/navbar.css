@@ -105,6 +105,9 @@ span.community-name {
         top: -1px;
     }
 }
+.nav.navbar-nav.navbar-right a {
+    background: rgba(241, 241, 241, 0);
+}
 
 @media all and (max-width: 280px) {
     .navbar.navbar-default a {

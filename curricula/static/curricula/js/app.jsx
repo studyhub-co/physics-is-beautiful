@@ -95,6 +95,7 @@ export default class CurriculumApp extends React.Component {
         if (!this.question) {
             return;
         }
+        console.log(this.question.hintCollapsed);
         this.setState({
             sections: null,
             backLink: null,
@@ -141,6 +142,7 @@ export default class CurriculumApp extends React.Component {
                 this.progress = data['score'] / data['required_score'] * 100;
                 data.submitAnswer = this.submitAnswer.bind(this);
                 this.question = data;
+                this.question.hintCollapsed = true;
                 this.answer = null;
                 this.loadQuestion();
             }
@@ -195,6 +197,12 @@ export default class CurriculumApp extends React.Component {
         this.fetchProblem(this.state.currentId);
     }
 
+    hintClick() {
+        this.question.hintCollapsed = !this.question.hintCollapsed;
+        console.log(this.question.hintCollapsed);
+        this.loadQuestion();
+    }
+
     fetchState() {
         switch(this.state.currentView) {
             case 'curriculum':
@@ -210,7 +218,6 @@ export default class CurriculumApp extends React.Component {
     }
 
     render() {
-        var continueAction = this.continueAction.bind(this);
         return (
             <Sheet
                 backLink={this.state.backLink}
@@ -218,7 +225,8 @@ export default class CurriculumApp extends React.Component {
                 question={this.state.question}
                 answer={this.state.answer}
                 progress={this.state.progress}
-                continueAction={continueAction}
+                continueAction={this.continueAction.bind(this)}
+                hintClick={this.hintClick.bind(this)}
             />
         );
     }

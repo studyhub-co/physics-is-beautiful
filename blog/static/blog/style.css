@@ -13,6 +13,11 @@ html, body {
     height: 100%;
 }
 
+.article-date{
+    float:right;
+    font-weight: bold;
+    font-size: smaller;
+}
 .container{
     position:relative;
     width:80%;
@@ -62,6 +67,11 @@ html, body {
 }
 .dateline{
     margin-left: 15px;
+}
+
+.border-bottom{
+    border-bottom: 3px solid #0fa5ff;
+    margin-bottom: 25px;
 }
 
 .blog-title{
