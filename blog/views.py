@@ -5,7 +5,6 @@ import pandas as pd
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
 from bokeh.models import HoverTool, CategoricalColorMapper, NumeralTickFormatter
-from bokeh.palettes import d3
 import numpy as np
 
 def BlogHomepage(request):
@@ -187,7 +186,7 @@ def CollegeScorecardApp(request):
                    title=axis_dict[y_axis][0] + ' vs. ' + axis_dict[x_axis][0] + ' (year ' + ', '.join(
                        str(year) for year in years) + ')',
                    )
-        color_mapper = CategoricalColorMapper(palette=d3['Category10'][6], factors=sorted(sectors, reverse=True))
+        color_mapper = CategoricalColorMapper(palette=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'], factors=sorted(sectors, reverse=True))
         p.scatter(x_axis,
                   y_axis,
                   source=source,
