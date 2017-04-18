@@ -1,5 +1,2 @@
 bpython==0.16
 flake8==3.2.1
-bokeh==0.12.4
-numpy==1.12.0
-pandas==0.19.2
