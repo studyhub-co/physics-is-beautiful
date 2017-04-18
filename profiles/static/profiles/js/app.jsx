@@ -67,24 +67,24 @@ class ProfileControl extends React.Component {
             form = <AnonymousForm {...this.props} />;
         }
         return (
-            <li className="nav-item">
-                <a className = 'settings' onClick={this.props.open}>
-                    {name}
-                </a>
-                <Modal className = 'settings-modal' show={this.props.show} onHide={this.props.close} aria-labelledby="ModalHeader">
-                    <Modal.Header closeButton>
-                        <Modal.Title>Profile</Modal.Title>
-                    </Modal.Header>
+                <li className="nav-item">
+                    <a className = 'settings' onClick={this.props.open}>
+                        {name}
+                    </a>
+                    <Modal className = 'settings-modal' show={this.props.show} onHide={this.props.close} aria-labelledby="ModalHeader">
+                        <Modal.Header closeButton>
+                            <Modal.Title>Profile</Modal.Title>
+                        </Modal.Header>
 
-                    <Modal.Body>
-                        {form}
-                    </Modal.Body>
+                        <Modal.Body>
+                            {form}
+                        </Modal.Body>
 
-                    <Modal.Footer>
-                        <Button bsStyle="primary" onClick={this.props.save}>Save changes</Button>
-                    </Modal.Footer>
-                </Modal>
-            </li>
+                        <Modal.Footer>
+                            <Button bsStyle="primary" onClick={this.props.save}>Save changes</Button>
+                        </Modal.Footer>
+                    </Modal>
+                </li>
         );
     }
 
