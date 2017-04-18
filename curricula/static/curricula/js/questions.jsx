@@ -155,7 +155,6 @@ class Hint extends React.Component {
 
     render() {
         var style = {};
-        console.log(this.props.hintCollapsed);
         if (this.props.hintCollapsed) {
             style["display"] = "none";
         }
@@ -178,9 +177,9 @@ export class Question extends React.Component {
 
     componentDidMount() {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        window.onbeforeunload = function() {
-            return 'Changes you made may not be saved.';
-        };
+        // window.onbeforeunload = function() {
+        //     return 'Changes you made may not be saved.';
+        // };
     }
 
     componentDidUpdate() {

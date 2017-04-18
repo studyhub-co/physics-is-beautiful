@@ -1,4 +1,5 @@
 import React from 'react';
+import {Prompt} from 'react-router-dom';
 import {Section} from './navigation';
 import {Question, Footer} from './questions';
 import {playAudio} from './audio';
@@ -49,6 +50,7 @@ class QuestionSheet extends React.Component {
     render() {
         return (
             <div className="container problem-sheet">
+                <Prompt message="Changes you made may not be saved." />
                 <Question question={this.props.question} answer={this.props.answer} hintClick={this.props.hintClick} />
                 <Footer
                     progress={this.props.progress}
@@ -63,7 +65,7 @@ class QuestionSheet extends React.Component {
 }
 
 
-class SectionSheet extends React.Component {
+export class SectionSheet extends React.Component {
 
     render() {
         var backLink = '';
@@ -89,18 +91,18 @@ class SectionSheet extends React.Component {
 }
 
 
-export default class Sheet extends React.Component {
+export class Sheet extends React.Component {
 
     render() {
-        var Component;
-        if (this.props.sections) {
-            Component = SectionSheet;
-        } else if (this.props.question) {
+        var Component = null;
+        if (this.props.question) {
             if (this.props.progress >= 100) {
                 Component = LessonCompleteSheet;
             } else {
                 Component = QuestionSheet;
             }
+        } else {
+            return <div><Prompt message="Changes you made may not be saved." /></div>;
         }
         return (
             <Component {...this.props} />

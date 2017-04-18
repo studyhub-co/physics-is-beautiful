@@ -1,17 +1,15 @@
 import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
-import Sheet from './sheet';
+import {SectionSheet, Sheet} from './sheet';
 import {playAudio} from './audio';
 
 
 class CurriculumApp extends React.Component {
 
-    constructor() {
+    constructor(obj) {
         super();
-        var urlPath = window.location.pathname.split('/');
         this.state = {
-            currentView: urlPath[2] || urlPath[1],
-            currentId: urlPath[3] || 'default',
+            currentId: obj.match.params.currentId || 'default',
             sections: [],
         };
         this.fetchState();
@@ -20,7 +18,6 @@ class CurriculumApp extends React.Component {
     }
 
     load() {
-        console.log('LOADING');
         if (!this.curriculum) {
             return;
         }
@@ -58,13 +55,11 @@ class CurriculumApp extends React.Component {
     }
 
     fetchState() {
-        console.log('FETCHING');
         $.ajax({
             url: '/api/v1/curricula/curricula/' + this.state.currentId,
             data: {'expand': 'units.modules'},
             context: this,
             success: function(data, status, jqXHR) {
-                console.log('FETCHED');
                 this.curriculum = data;
                 this.load();
             }
@@ -73,7 +68,7 @@ class CurriculumApp extends React.Component {
 
     render() {
         return (
-            <Sheet
+            <SectionSheet
                 sections={this.state.sections}
             />
         );
@@ -84,12 +79,10 @@ class CurriculumApp extends React.Component {
 
 class ModulesApp extends React.Component {
 
-    constructor() {
+    constructor(obj) {
         super();
-        var urlPath = window.location.pathname.split('/');
         this.state = {
-            currentView: urlPath[2] || urlPath[1],
-            currentId: urlPath[3] || 'default',
+            currentId: obj.match.params.currentId || 'default',
             sections: [],
         };
         this.fetchState();
@@ -142,7 +135,7 @@ class ModulesApp extends React.Component {
 
     render() {
         return (
-            <Sheet
+            <SectionSheet
                 backLink={this.state.backLink}
                 sections={this.state.sections}
             />
@@ -154,15 +147,11 @@ class ModulesApp extends React.Component {
 
 class LessonsApp extends React.Component {
 
-    constructor() {
+    constructor(obj) {
         super();
-        var urlPath = window.location.pathname.split('/');
         this.state = {
-            currentView: urlPath[2] || urlPath[1],
-            currentId: urlPath[3] || 'default',
-            sections: [],
+            currentId: obj.match.params.currentId || 'default',
             question: null,
-            backLink: null,
             progress: 0,
         };
         this.fetchState();
@@ -179,8 +168,6 @@ class LessonsApp extends React.Component {
             return;
         }
         this.setState({
-            sections: null,
-            backLink: null,
             question: this.question,
             progress: this.progress,
             answer: this.answer,
@@ -263,8 +250,6 @@ class LessonsApp extends React.Component {
     render() {
         return (
             <Sheet
-                backLink={this.state.backLink}
-                sections={this.state.sections}
                 question={this.state.question}
                 answer={this.state.answer}
                 progress={this.state.progress}
@@ -283,8 +268,8 @@ export default class CurriculumRouter extends React.Component {
         return (
             <BrowserRouter basename="/curriculum">
                 <Switch>
-                    <Route path='/lessons/*' component={LessonsApp} />
-                    <Route path='/modules/*' component={ModulesApp} />
+                    <Route path='/lessons/:currentId' component={LessonsApp} />
+                    <Route path='/modules/:currentId' component={ModulesApp} />
                     <Route path='/' component={CurriculumApp} />
                 </Switch>
             </BrowserRouter>
