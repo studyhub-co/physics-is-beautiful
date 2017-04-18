@@ -55,7 +55,15 @@
         </div>
         {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
         <div id="navbar" class="navbar-collapse collapse">
-
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'blog:bloghomepage' %}">Blog</a></li>
+                <li><a href="{% url 'curricula:curriculum' %}">
+                    <span class="nb-drop-level-1">
+                        Physics is
+                    </span>
+                    <span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul App</span>
+                    </span></a></li>
+            </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>

@@ -13,7 +13,11 @@
                 <span class="byline">By NICOLAS SCOZZARO</span><time class="dateline">March 18, 2017</time>
             </p>
         </div>
-        <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" />
+        <figure>
+            <img src="{% static 'blog/images/college_scorecard/gif_of_salary_and_tuition/bokeh_plot.gif' %}"  width="100%" />
+            <figcaption style="text-align: center;"><b>Fig. 1</b>  Dynamic plot of faculty salary vs in-state tuition and fees from 2001 to 2014. For comparison, due to inflation, $1 in 2001 is equivalent to $1.34 in 2014.</figcaption>
+        </figure>
+        <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" width="100%"/>
         <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}" />
     </div>
 {% endblock %}
