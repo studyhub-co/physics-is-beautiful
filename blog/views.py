@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from blog.models import NcesDb
+from blog.models import Collegescorecard
+from django.http import HttpResponse
 import pandas as pd
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
 from bokeh.models import HoverTool, CategoricalColorMapper, NumeralTickFormatter
+import numpy as np
 
 def BlogHomepage(request):
     return render(request, 'blog/blog_homepage.html')
@@ -14,99 +16,167 @@ def CollegeScorecard(request):
 def Shankar(request):
     return render(request, 'blog/shankar.html')
 
-def graph(request):
+def CollegeMap(request):
+    return render(request, 'blog/collegemap.html')
+
+
+# def CollegeScorecardApp(request):
+#     vals = list(Collegescorecard.objects.values('instnm')[:5])
+#     html = "<html><body>{0}</body></html>".format(vals)
+#     return HttpResponse(html)
+
+def CollegeScorecardApp(request):
     def load_data(years, x_axis, y_axis, selected_sectors, selected_institutions):
         axis_dict = {
-            'fte_count': ["Full-time student enrollment"],
-            'tuition03': ["Total revenue from tuition and fees", "$"],
-            'loan_avg_amount': ["Average loan amount", "$"],
-            'tuitionfee01_tf': ["In-district tuition and fees", "$"],
-            'tuitionfee02_tf': ["In-state tuition and fees", "$"],
-            'tuitionfee03_tf': ["Out-of-state tuition and fees", "$"],
-            'inst_grant_avg_amount': ["Institutional grant avg. amount", "$"],
-            'inst_grant_pct': ["Institutional grant percentage"],
-            'loan_pct': ["Loan percentage"],
-            'fed_grant_pct': ["Percentage of students receiving federal grants"],
-            'fed_grant_avg_amount': ["Federal grant avg amount", "$"],
-            'state_grant_pct': ["State grant percentage"],
-            'state_grant_avg_amount': ["State grant avg amount", "$"],
-            'research01_fasb': ["Expenditures for research", "$"],
-            'gross_operating_margin': ["Net profit", "$"],
-            'assets06': ["Total assets", "$"],
-            'grad_rate_150_p': ["Graduation rate", "<1"],
-            'ptretention_rate': ["Retention rate", "<1"],
-            'total_undergraduates': ["Total number of undergraduate students"],
-            'total_graduates': ["Total number of graduate students"],
-            'total_enrollment': ["Total number of students"],
-            'total_enrollment_amin_tot': ["Total american indian enrollment"],
-            'total_enrollment_asian_tot': ["Total asian enrollment"],
-            'total_enrollment_black_tot': ["Total black enrollment"],
-            'total_enrollment_hisp_tot': ["Total hispanic enrollment"],
-            'total_enrollment_white_tot': ["Total white enrollment"],
-            'total_enrollment_multi_tot': ["Total multi-ethnic enrollment"],
-            'total_enrollment_unkn_tot': ["Total unknown race enrollment"],
-            'total_enrollment_nonres_tot': ["Total non-resident enrollment"],
-            'applcn': ["Total number of applications"],
-            'applcnm': ["Number of male applicants"],
-            'applcnw': ["Number of female applicants"],
-            'admssn': ["Total number admitted"],
-            'admssnm': ["Number of males admitted"],
-            'admssnw': ["Number of females admitted"],
-            'actcm25': ["ACT composite 25th percentile score"],
-            'actcm75': ["ACT composite 75th percentile score"],
-            'acten25': ["ACT english 25th percentile score"],
-            'acten75': ["ACT english 75th percentile score"],
-            'actmt25': ["ACT math 25th percentile score"],
-            'actmt75': ["ACT math 75th percentile score"],
-            'satmt25': ["SAT math 25th percentile score"],
-            'satmt75': ["SAT math 75th percentile score"],
-            'satvr25': ["SAT critical reading 25th percentile score"],
-            'satvr75': ["SAT critical reading 75th percentile score"],
-            'ft_faculty_salary': ["Faculty salary"],
-            'govt_reliance_c': ["Government reliance", "<1"],
+            #'unitid': ['Institution ID'],
+            #'instnm': ['Institution name'],
+            #'city': ['City'],
+            #'stabbr':['State'],
+            #'zip':['Zip code'],
+            #'accredagency':['Accreditation agency'],
+            #'insturl':['Institution URL'],
+            #'npcurl':["URL for institution's net price calculator"],
+            #'sch_deg':['Predominant degree awarded'],
+            #'hcm2':['Schools that are on Heightened Cash Monitoring 2 by the Department of Education'],
+            #'main':['Flag for main campus'],
+            #'numbranch':['Number of branch campuses'],
+            #'preddeg':['Predominant undergraduate degree awarded'],
+            #'highdeg':['Highest degree awarded'],
+            #'control':['Control of institution'],
+            #'region':['Region'],
+            #'locale':['Locale'],
+            #'latitude':['Latitude'],
+            #'longitude':['Longitude'],
+            #'ccbasic':['Carnegie Classification -- basic'],
+            #'ccugprof':['Carnegie Classification -- undergraduate profile'],
+            #'ccsizset':['Carnegie Classification -- size and setting'],
+            #'hbcu':['Historically Black College and University'],
+            #'pbi':['Predominantly black institution'],
+            #'annhi':['Alaska Native Native Hawaiian serving institution'],
+            #'tribal':['Tribal college and university'],
+            #'aanapii':['Asian American Native American Pacific Islander-serving institution'],
+            #'hsi':['Hispanic-serving institution'],
+            #'nanti':['Native American non-tribal institution'],
+            #'menonlyv':['Men-only college'],
+            #'womenonly':['Women-only college'],
+            #'relaffil':['Religious affiliation'],
+            'adm_rate':['Admission rate', "<1"],
+            'sat_avg': ['Average SAT equivalent score of students admitted'],
+            'satvrmid':['Midpoint of SAT scores at the institution (critical reading)'],
+            'satmtmid':['Midpoint of SAT scores at the institution (math)'],
+            'satwrmid':['Midpoint of SAT scores at the institution (writing)'],
+            'actcmmid':['Midpoint of the ACT cumulative score'],
+            'actenmid':['Midpoint of the ACT English score'],
+            'actmtmid':['Midpoint of the ACT math score'],
+            'actwrmid':['Midpoint of the ACT writing score'],
+            'ugds':['Undergraduate enrollment'],
+            'ugds_white':['Percent of undergraduates who are white', '<1'],
+            'ugds_black':['Percent of undergraduates who are black', '<1'],
+            'ugds_hisp':['Percent of undergraduates who are hispanic', '<1'],
+            'ugds_asian':['Percent of undergraduates who are asian', '<1'],
+            'ugds_aian':['Percent of undergraduates who are American Indian/Alaska Native', '<1'],
+            'ugds_nhpi':['Percent of undergraduates who are Native Hawaiian/Pacific Islander', '<1'],
+            'ugds_2mor':['Percent of undergraduates who are two or more races','<1'],
+            'ugds_nra':['Percent of undergraduates who are non-resident aliens','<1'],
+            'ugds_men': ['Percent of undergraduates who are men','<1'],
+            'ugds_women': ['Percent of undergraduates who are women','<1'],
+            'pptug_ef':['Percent of undergraduates students who are part-time','<1'],
+            #'curroper':['Currently operating'],
+            #'npt4_pub':['Average net price for Title IV institutions (public institutions)'],
+            #'npt4_priv':['Average net price for Title IV institutions (private for-profit and nonprofit institutions)'],
+            #'npt41_pub':['Average net price for $0-$30,000 family income (public institutions)'],
+            #'npt45_pub':['Average net price for $110,000+ family income (public institutions)'],
+            #'npt41_priv':['Average net price for $0-$30,000 family income (private institutions)'],
+            #'npt45_priv':['Average net price for $110,000+ family income (private institutions)'],
+            #'npt4_048_pub':['Average net price for $0-$48,000 family income (public institutions)'],
+            #'npt4_048_priv':['Average net price for $0-$48,000 family income (private institutions)'],
+            #'num4_pub':['Number of Title IV students (public institutions)'],
+            #'num4_priv':['Number of Title IV students (private institutions)'],
+            #'num41_pub':['Number of Title IV students, $0-$30,000 family income (public institutions)'],
+            #'num45_pub':['Number of Title IV students, $110,000+ family income (public institutions)'],
+            #'num41_priv':['Number of Title IV students, $0-$30,000 family income (private institutions)'],
+            #'num45_priv':['Number of Title IV students, $110,000+ family income (private institutions)'],
+            'costt4_a':['Average cost of attendance'],
+            #'costt4_p':['Institution ID'],
+            'tuitionfee_in':['In-state tuition and fees', '$'],
+            'tuitionfee_out':['Out-of-state tuition and fees','$'],
+            'tuitfte':['Net tuition revenue per full-time equivalent student', '$'],
+            'inexpfte':['Instructional expenditures per full-time equivalent student', '$'],
+            'avgfacsal':['Average faculty salary', '$'],
+            'pftfac':['Proportion of faculty that is full-time','<1'],
+            'pctpell':['Percentage of undergraduates who receive a Pell Grant','<1'],
+            'c150_4':['Completion rate at four-year institutions'],
+            #'c150_l4':['Completion rate at less-than-four-year institutions'],
+            #'ret_ft4':['Full-time retention rate at four-year institutions'],
+            #'ret_ftl4':['Full-time retention rate at less-than-four-year institutions'],
+            #'ret_pt4':['Part-time student retention rate at four-year institutions'],
+            #'ret_ptl4':['Part-time student retention rate at less-than-four-year institutions'],
+            'pctfloan':['Percent of all undergraduates receiving a federal student loan','<1'],
+            'ug25abv':['Percentage of undergraduates aged 25 and above','<1'],
+            'cdr3':['Three-year default rate'],
+            'death_yr8_rt':['Percent died within 8 years at original institution','<1'],
+            'comp_orig_yr8_rt':['Percent completed within 8 years at original institution','<1'],
+            'compl_rpy_7yr_rt':['Seven-year repayment rate for completers'],
+            'noncom_rpy_7yr_rt':['Seven-year repayment rate for non-completers'],
+            'dep_inc_avg':['Average family income of dependent students in real 2015 dollars','$'],
+            'ind_inc_avg':['Average family income of independent students in real 2015 dollars','$'],
+            'debt_mdn':['Median debt upon entering repayment','$'],
+            'grad_debt_mdn':['Median debt for students who have completed','$'],
+            'wdraw_debt_mdn':['Median debt for students who have withdrawn','$'],
+            'lo_inc_debt_mdn':['Median debt for students with family income between $0-$30,000'],
+            'hi_inc_debt_mdn':['Median debt for students with family income $75,001+'],
+            'dep_debt_mdn':['Median debt for dependent students'],
+            'ind_debt_mdn':['Median debt for independent students'],
+            'md_earn_wne_p10':['Median earnings of students 10 years after entry'],
+            'sd_earn_wne_p10':['Standard deviation of earnings of students 10 years after entry'],
+            'gt_25k_p10':['Percent of students earning over $25,000/year 10 years after entry','<1',],
+            #'alias':['Institution alias'],
+            #'academicyear':['Year'],
         }
-        sectors = ["Administrative unit",
-                   "Public 4-year",
+        sectors = ["Public 4-year",
                    "Private nonprofit 4-year",
                    "Private for-profit 4-year ",
                    "Public 2-Year",
                    "Private nonprofit 2-year",
                    "Private for-profit 2-year",
-                   "Public <2-year",
-                   "Private nonprofit <2-year",
-                   "Private for-profit <2-year",
-                   "Sector unknown",
                    ]
         numbered_selected_sectors = []
         for sector in selected_sectors:
             numbered_selected_sectors.append(sectors.index(sector))
-        year_list = map(str, reversed(range(2000,2014)))
-        x_filter = x_axis + '__isnull'
-        y_filter = y_axis + '__isnull'
+        year_list = map(str, reversed(range(1996,2015)))
         df = pd.DataFrame.from_records(
-            NcesDb.objects.all().values('academicyear',
-                                        x_axis,
-                                        y_axis,
-                                        'instname',
-                                        'sector_revised',
-                                        ).filter(academicyear__in=years
-                                                 ).filter(sector_revised__in=numbered_selected_sectors
-                                                          ))
-        df['sector_revised'] = df['sector_revised'].replace([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 99], sectors)
+            Collegescorecard.objects.all().values('academicyear',
+                                                  x_axis,
+                                                  y_axis,
+                                                  'instnm',
+                                                  'control',
+                                                  'preddeg',
+                                                  ).filter(academicyear__in=years
+                                                           ).filter(control__in=[1,2,3]
+                                                                    ).filter(preddeg__in=[2,3])
+        )
+        df['sector'] = (df['control'].map(str) + df['preddeg'].map(str)).map(int)
+        df['sector'] = df['sector'].replace([12, 13, 22, 23, 32, 33], sectors)
+        df = df.replace('', np.nan).dropna().reset_index(drop=True)
+        if 'avgfacsal' in df:
+            df['avgfacsal']= pd.to_numeric(df['avgfacsal'])*9.5
+        if 'death_yr8_rt' in df:
+            df['death_yr8_rt']= pd.to_numeric(df['death_yr8_rt'],errors='coerce')*100
         source = ColumnDataSource(df)
+        selected_institutions_indices = df[df['instnm'].isin(selected_institutions)].index.tolist()
         source.selected = {
             '0d': {"indices": [0]},
-            '1d': {"indices": df[df['instname'].isin(selected_institutions)].index.tolist()},
+            '1d': {"indices": selected_institutions_indices},
             '2d': {"indices": [0]}
         }
         # Send the data to the Bokeh plot
         hover = HoverTool(
             tooltips=[
-                ("Institution", "@instname"),
+                ("Institution", "@instnm"),
                 (axis_dict[x_axis][0], (" $" if "$" in axis_dict[x_axis] else " ") + "@" + x_axis + (
-                "{0.2a}" if "<1" in axis_dict[x_axis] else "{0a}")),
+                    "{0.2a}" if "<1" in axis_dict[x_axis] else "{0a}")),
                 (axis_dict[y_axis][0], (" $" if "$" in axis_dict[y_axis] else " ") + "@" + y_axis + (
-                "{0.2a}" if "<1" in axis_dict[y_axis] else "{0a}")),
+                    "{0.2a}" if "<1" in axis_dict[y_axis] else "{0a}")),
                 ("Year", "@academicyear"),
             ]
         )
@@ -119,13 +189,13 @@ def graph(request):
                    title=axis_dict[y_axis][0] + ' vs. ' + axis_dict[x_axis][0] + ' (year ' + ', '.join(
                        str(year) for year in years) + ')',
                    )
-        color_mapper = CategoricalColorMapper(palette=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22'], factors=sectors[1:10])
+        color_mapper = CategoricalColorMapper(palette=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'], factors=sorted(sectors, reverse=True))
         p.scatter(x_axis,
                   y_axis,
                   source=source,
-                  fill_color={'field': 'sector_revised', 'transform': color_mapper},
+                  fill_color={'field': 'sector', 'transform': color_mapper},
                   line_color=None,
-                  legend={'field': 'sector_revised'},
+                  legend={'field': 'sector'},
                   nonselection_fill_color="grey",
                   nonselection_fill_alpha=0.1,
                   nonselection_line_alpha=0,
@@ -139,8 +209,12 @@ def graph(request):
 
         script, div = components(p)
         form_dict = {}
-        form_dict['script'] = script
-        form_dict['div'] = div
+        if not df.empty:
+            form_dict['div'] = div
+            form_dict['script'] = script
+        else:
+            form_dict['div'] = 'No data available for your query'
+            form_dict['script'] = ''
         form_dict['axis_options'] = axis_dict
         form_dict['selected'] = {
             'years': years,
@@ -150,28 +224,28 @@ def graph(request):
             'institutions':selected_institutions,
         }
         form_dict['year_list'] = year_list
-        sectors.remove("Administrative unit")
-        sectors.remove("Sector unknown")
         form_dict['sector_list'] = sectors
         instnames = pd.DataFrame.from_records(
-            NcesDb.objects.all().values('instname').filter(sector_revised__in=numbered_selected_sectors).distinct())
-        form_dict['institutions'] = instnames['instname'].tolist()
+            Collegescorecard.objects.all().values('instnm').filter(control__in=[1,2,3]
+                                                                   ).filter(preddeg__in=[2,3]
+                                                                            ).distinct())
+        form_dict['institutions'] = instnames['instnm'].tolist()
         return form_dict
 
     # IF THE USER SELECTS OPTIONS AND PRESSES "SUBMIT"
     if request.method == 'POST':
         years = request.POST.getlist('years')
         if not years:
-            years = [2013]
+            years = [2014]
         x_axis = request.POST.get('xaxis')
         y_axis = request.POST.get('yaxis')
         selected_sectors = request.POST.getlist('sectors')
         selected_institutions = request.POST.getlist('institutions')
         form_dict = load_data(years, x_axis, y_axis, selected_sectors,selected_institutions)
-        return render(request, 'blog/graph.html', context=form_dict)
+        return render(request, 'blog/collegescorecard.html', context=form_dict)
     else:
-    # Settings for the initial load (GET instead of POST)
-        years = ['2013']
+        # Settings for the initial load (GET instead of POST)
+        years = ['2014']
         selected_sectors = ["Public 4-year",
                             "Private nonprofit 4-year",
                             "Private for-profit 4-year ",
@@ -179,8 +253,8 @@ def graph(request):
                             "Private nonprofit 2-year",
                             "Private for-profit 2-year",
                             ]
-        x_axis = 'tuitionfee02_tf'
-        y_axis = 'ft_faculty_salary'
+        x_axis = 'tuitionfee_in'
+        y_axis = 'avgfacsal'
         selected_institutions = []
         form_dict = load_data(years, x_axis, y_axis, selected_sectors, selected_institutions)
-        return render(request, 'blog/graph.html', context=form_dict)
+        return render(request, 'blog/collegescorecard.html', context=form_dict)
