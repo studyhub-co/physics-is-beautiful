@@ -16,6 +16,9 @@ def CollegeScorecard(request):
 def Shankar(request):
     return render(request, 'blog/shankar.html')
 
+def CollegeMap(request):
+    return render(request, 'blog/collegemap.html')
+
 
 # def CollegeScorecardApp(request):
 #     vals = list(Collegescorecard.objects.values('instnm')[:5])
