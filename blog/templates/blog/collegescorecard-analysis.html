@@ -13,10 +13,32 @@
                 <span class="byline">By NICOLAS SCOZZARO</span><time class="dateline">March 18, 2017</time>
             </p>
         </div>
+        <p>
+            In September of 2015, President Obama <a href="https://youtu.be/Tpaj9Sm7i7I">announced</a> the release of data on all universities in the United States. The data includes "how much each school’s graduates earn, how much debt they graduate with, and what percentage of a school’s students can pay back their loans – which will help all of us see which schools do the best job of preparing America for success."
+        </p>
+        <p>
+            So let's jump into the data and see what it tells us about how much each school’s graduates earn, how much debt they graduate with, and what percentage of a school’s students can pay back their loans. But first, to get some perspective on the issue of college debt, I want to address something we've all heard a lot about: the rising cost of college tuition.
+            There are many articles about this subject in publications such as the New York Times (ref <a href="https://nyti.ms/2oJYPq0">1</a>, <a href="https://nyti.ms/2jDbkDz">2</a>), The Washington Post (<a href="https://www.washingtonpost.com/news/wonk/wp/2015/04/07/college-tuition-is-getting-more-expensive-heres-whos-actually-to-blame/">ref</a>), Time Magazine (<a href="http://time.com/4472261/college-cost-history/">ref</a>), and many others.
+        </p>
+        <p>
+            In fig. 1 I plot the average faculty salary vs the in-state tuition and fees at nearly every university in the United States. I've color-coded the universities by sector in order to make better sense of the data.
+            An interactive version of this plot can be found on the app page <a href="{% url 'blog:collegescorecard' %}">here</a>.
+        </p>
         <figure>
             <img src="{% static 'blog/images/college_scorecard/gif_of_salary_and_tuition/bokeh_plot.gif' %}"  width="100%" />
-            <figcaption style="text-align: center;"><b>Fig. 1</b>  Dynamic plot of faculty salary vs in-state tuition and fees from 2001 to 2014. For comparison, due to inflation, $1 in 2001 is equivalent to $1.34 in 2014.</figcaption>
+            <figcaption style="text-align: center;font-size:smaller;">
+                <b>Fig. 1</b>  Dynamic plot of faculty salary vs in-state tuition and fees from 2001 to 2014. The dot colors are blue: public 2 year; green: public 4 year; orange: non-profit 4 year; red: non-profit 2 year; purple: for-profit 4 year; and brown: for-profit 2 year colleges. The tuition and fees at the most expensive schools in 2001 were about $28k/year in 2001, compared to around $50k in 2014. This is an increase in sticker price of roughly 80%, compared to inflation which caused a net increase of 34% from 2001 to 2014. An interactive version of the plot is on the app page <a href="{% url 'blog:collegescorecard' %}">here</a>.
+            </figcaption>
         </figure>
+        <br>
+        <p>
+            The increase in tuition and faculty salaries is striking. Take for example Columbia University in New York. In 2001, tuition and fees was $27k/year.
+            In 2014 that number grew to $51k/year, an 89% increase. If
+        </p>
+        <p>
+            What immediately catches my eye in fig. 1 is the linearity of the non-profit 4 year college (orange) data.
+        </p>
+        <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" width="100%"/>
         <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" width="100%"/>
         <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}" />
     </div>
