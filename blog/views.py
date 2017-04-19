@@ -151,6 +151,7 @@ def CollegeScorecardApp(request):
         )
         df['sector'] = (df['control'].map(str) + df['preddeg'].map(str)).map(int)
         df['sector'] = df['sector'].replace([12, 13, 22, 23, 32, 33], sectors)
+        df = df[df['sector'].isin(selected_sectors)]
         df = df.replace('', np.nan).dropna().reset_index(drop=True)
         if 'avgfacsal' in df:
             df['avgfacsal']= pd.to_numeric(df['avgfacsal'])*9.5
