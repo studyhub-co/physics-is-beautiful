@@ -21,7 +21,7 @@
             There are many articles about this subject in publications such as the New York Times (ref <a href="https://nyti.ms/2oJYPq0">1</a>, <a href="https://nyti.ms/2jDbkDz">2</a>), The Washington Post (<a href="https://www.washingtonpost.com/news/wonk/wp/2015/04/07/college-tuition-is-getting-more-expensive-heres-whos-actually-to-blame/">ref</a>), Time Magazine (<a href="http://time.com/4472261/college-cost-history/">ref</a>), and others.
         </p>
         <p class="justify">
-            In fig. 1 I plot the average faculty salary vs the in-state tuition and fees at nearly every university in the United States. I've color-coded the universities by sector in order to make better sense of the data.
+            In figure 1 I plot the average faculty salary vs the in-state tuition and fees at nearly every university in the United States. I've color-coded the universities by sector in order to make better sense of the data.
             An interactive version of this plot can be found on the app page <a href="{% url 'blog:collegescorecard' %}">here</a>.
         </p>
         <figure>
@@ -36,8 +36,8 @@
             In 2014 that number grew to $51k/year, an 89% increase. In the same period, inflation rose the value of the dollar by just 39%.
         </p>
         <p class="justify">
-            Something else that catches the eye in fig. 1 is the linearity of the non-profit 4 year college (orange) data.
-            If we fit a line to the data, shown in fig. 2, we find a slope of 1.62 -- this means that if tuition is raised by one dollar, on average the faculty salaries are raised by $1.62.
+            Something else that catches the eye in figure 1 is the linearity of the non-profit 4 year college (orange) data.
+            If we fit a line to the data, shown in figure 2, we find a slope of 1.62 -- this means that if tuition is raised by one dollar, on average the faculty salaries are raised by $1.62.
             This raises the question of how many students there are there per faculty member on average... when there's a tuition increase, what fraction of the additional revenue goes to faculty salaries?
             Although the CollegeScorecard data does not include the number of faculty per university (surprisingly it isn't one of the 1745 columns!), this information can be found in the Delta Cost Project database.
             The data reveals that for non-profit 4 year colleges there are on average 16.22 students per full time faculty member in 2012.
@@ -58,7 +58,7 @@
             For brevity I'll refer to these as "earnings" and "debt", respectively. Note that here are many variations of these columns in the dataset if you're interested in exploring further.
         </p>
         <p class="justify">
-            In fig. 3 I plot earnings vs debt for all universities in the United States.
+            In figure 3 I plot earnings vs debt for all universities in the United States.
             This plot appears much more scattered, with less clumping by sector compared to the faculty salary vs tuition plot above.
             To interact with the data, please visit the interactive page <a href="{% url 'blog:collegescorecard' %}">here</a>, and select the appropriate columns.
         </p>
@@ -67,7 +67,14 @@
             I assumed that the Ivy-League schools would pepper the top of this plot, but I was incorrect.
             In fact, the schools that produce the top-earners are medically-associated colleges.
             At the top of the list is the Louisiana State University Health Sciences Center-Shreveport, although this is slightly misleading considering they have a very small number of undergraduates (50 in 2012, currently 35 <a href="https://collegescorecard.ed.gov/school/?435000-Louisiana-State-University-Health-Sciences-Center-Shreveport">ref</a>).
-            A list of the top-earning universities is given in table 1.
+            A list of the top-earning universities is given in table 1 (click the button below to show).
+        </p>
+        <p class="justify">
+            The next question may be what does the opposite table look like?
+            I.e., which universities are at the bottom of the list in terms of student earnings?
+            Inspecting the bottom earning schools, I found that a number of schools in the bottom 30 listed "PrivacySuppressed", which means that the sample size was very small;
+            so small, that a person might be able to identify the people whose salary data was used.
+            I have excluded these universities from the list in table 2.
         </p>
 
         <figure>
@@ -309,7 +316,7 @@
         <a href="#bottom" class="btn btn-info" data-toggle="collapse">Bottom 30 universities by student earnings</a>
         <div id="bottom" class="collapse">
             <table border="1" style="text-align: center;" >
-                <caption style="text-align: center; color:black;"><b>Table 1:</b> Bottom 30 universities by student earnings</caption>
+                <caption style="text-align: center; color:black;"><b>Table 2:</b> Bottom 30 universities by student earnings</caption>
                 <thead style="text-align: center;">
                 <tr style="text-align: center;">
 
@@ -537,21 +544,48 @@
         <br>
         <br>
         <p class="justify">
-            The next question may be what does the opposite table look like?
-            I.e., which universities are at the bottom of the list in terms of student earnings?
-            In inspecting the data by hand, I found that
+            The data show that Clinton College (South Carolina, historically black college) is at the very bottom of the list in terms of student earnings.
+            The second is Gallipolis Career College, and I've included an image <a href="#gallipolis" data-toggle="collapse">here.</a>
+        <div id="gallipolis" class="collapse">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m0!3m2!1sen!2sus!4v1492633418213!6m8!1m7!1suUt4YFfEaTVoaCelAIb_Ow!2m2!1d38.84247699323196!2d-82.2565103772694!3f327.6927794833026!4f-2.246546574696765!5f2.4123002856815123" width="600" height="450" frameborder="0" style="border:0" allowfullscreen>
+            </iframe>
+        </div>
+
         </p>
-
-
+        <p class="justify">
+            There are also a handful of schools in Puerto Rico, tribal colleges, and a few "business" schools filling the list.
+            But something else caught my eye, from exploring the interactive version of the graph.
+            In figure 4 I have filtered for university names that contain art, design, music, or conservatory in the name of the university.
+            It's readily seen that most of these universities fall below $50k in earnings, and in fact the average value is $36,203.
+        </p>
         <figure>
-            <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}" width="100%"/>
+            <img id="art-school" src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}" width="100%"/>
             <figcaption style="text-align: center;font-size:smaller;">
                 <b>Fig. 4</b>  Earnings vs. debt for universities that contain art, design, music, or conservatory in the name of the university.
             </figcaption>
         </figure>
-
-
-
+        <br>
+        <p class="justify">
+            The last piece that I would like to investigate is what fraction of students can pay back their loans at each university, but I'll have to save it for another post.
+            This can give us an indication of which universities are taking advantage of students who can't afford the loans that they take out.
+        </p>
+        <p class="justify">
+            In conclusion, these data show that rising tuition costs are far out-pacing inflation.
+            Furthermore, they expose that the median salaries for students who attend undergraduate medical/nursing schools are amongst the highest; some even higher than Ivy-League graduates.
+            And lastly, they show that in fact going to art or music school probably isn't the best decision if you're looking to maximize your future earning potential.
+            The choice is yours!
+        </p>
+    <script>
+   $("#art-school").click(function(){
+    if (!$(this).hasClass('play')) {
+        $(this).attr('src', '{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_with_legend.png' %}');
+        $(this).addClass('play');
+    } else  {
+        $(this).attr('src', '{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}');
+        $(this).removeClass('play');
+    }
+});
+    </script>
 
     </div>
 {% endblock %}
