@@ -127,12 +127,12 @@ def CollegeScorecardApp(request):
             #'alias':['Institution alias'],
             #'academicyear':['Year'],
         }
-        sectors = ["Public 4-year",
-                   "Private nonprofit 4-year",
-                   "Private for-profit 4-year ",
-                   "Public 2-Year",
+        sectors = ["Public 2-Year",
+                   "Public 4-year",
                    "Private nonprofit 2-year",
+                   "Private nonprofit 4-year",
                    "Private for-profit 2-year",
+                   "Private for-profit 4-year",
                    ]
         numbered_selected_sectors = []
         for sector in selected_sectors:
@@ -184,7 +184,15 @@ def CollegeScorecardApp(request):
                    title=axis_dict[y_axis][0] + ' vs. ' + axis_dict[x_axis][0] + ' (year ' + ', '.join(
                        str(year) for year in years) + ')',
                    )
-        color_mapper = CategoricalColorMapper(palette=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'], factors=sorted(sectors, reverse=True))
+        color_mapper = CategoricalColorMapper(
+            palette=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', ], factors=[
+                "Public 4-year",
+                "Private nonprofit 4-year",
+                "Public 2-Year",
+                "Private for-profit 2-year",
+                "Private nonprofit 2-year",
+                "Private for-profit 4-year",
+            ])
         p.scatter(x_axis,
                   y_axis,
                   source=source,
@@ -197,6 +205,7 @@ def CollegeScorecardApp(request):
                   )
         p.legend.background_fill_alpha = 0
         p.legend.border_line_alpha = 0
+        #p.legend.click_policy = "hide"
         p.toolbar.logo = None
         p.toolbar.active_drag = None
         p.yaxis.formatter = NumeralTickFormatter(format=("0.2a" if "<1" in axis_dict[y_axis] else "3a"))
@@ -243,7 +252,7 @@ def CollegeScorecardApp(request):
         years = ['2014']
         selected_sectors = ["Public 4-year",
                             "Private nonprofit 4-year",
-                            "Private for-profit 4-year ",
+                            "Private for-profit 4-year",
                             "Public 2-Year",
                             "Private nonprofit 2-year",
                             "Private for-profit 2-year",

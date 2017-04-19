@@ -76,15 +76,16 @@
                 <b>Fig. 3</b>  Earnings vs. debt at all U.S. universities for which there is data in the year 2012.
             </figcaption>
         </figure>
-
+        <br>
+        <br>
 
         <table border="1" style="text-align: center;" >
-            <caption style="text-align: center; color:black;"><b>Table 1:</b> Earnings  </caption>
+            <caption style="text-align: center; color:black;"><b>Table 1:</b> Top 30 universities by student earnings</caption>
             <thead style="text-align: center;">
             <tr style="text-align: center;">
                 <th></th>
                 <th style="text-align: center;">Institution name</th>
-                <th style="text-align: center;">Earnings ($)</th>
+                <th style="text-align: center;">Median earnings ($)</th>
                 <th style="text-align: center;">Total number of undergrads at institution</th>
                 <th style="text-align: center;">Sample size for earnings</th>
             </tr>
@@ -302,12 +303,22 @@
             </tr>
             </tbody>
         </table>
+        <br>
+        <br>
+        <p class="justify">
+            The next question may be what does the opposite table look like?
+            I.e., which universities are at the bottom of the list in terms of student earnings?
+            In inspecting the data by hand, I found that
+        </p>
+        <figure>
+            <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}" width="100%"/>
+            <figcaption style="text-align: center;font-size:smaller;">
+                <b>Fig. 4</b>  Earnings vs. debt for universities that contain art, design, music, or conservatory in the name of the university.
+            </figcaption>
+        </figure>
 
 
 
 
-
-
-        <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}" />
     </div>
 {% endblock %}
