@@ -27,4 +27,4 @@ requests==2.13.0
 simplejson==3.10.0
 six==1.10.0
 tornado==4.4.2
-bokeh==0.12.4
+bokeh==0.12.5
