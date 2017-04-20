@@ -7,26 +7,34 @@
 
 {% block content %}
     <div class="container">
-        <h1 class="blog-title">
+        <div class = "border-bottom">
+            <h1 class="blog-title">
             <span class="nb-drop-level-1">
                     Physics is
                 </span>
-            <span style="white-space: nowrap;">
+                <span style="white-space: nowrap;">
                     <span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul blog.</span>
                 </span>
-        </h1>
-        <a href="{% url 'blog:college_scorecard' %}">
-            <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" class = "blog-entry-image"/>
-        </a>
+            </h1>
+        </div>
+{#        <a href="{% url 'blog:college_scorecard' %}">#}
+{#            <img src="{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt.png' %}" class = "blog-entry-image"/>#}
+{#        </a>#}
         <br>
-        <a href = "{% url 'blog:college_scorecard' %}">
+        <a href = "{% url 'blog:collegescorecard' %}">
+            <h2>College Scorecard Data Visualization App</h2>
+        </a>
+        By NICOLAS SCOZZARO - For my capstone project at <a href="https://www.thedataincubator.com/">The Data Incubator</a> I decided to create an app that enables easy visualization of the <a href = "https://collegescorecard.ed.gov/data/">College Scorecard data</a> (approximately 2 GB of data with 1745 columns) released by the Obama administration in late 2015. I have hand-selected 50 of the columns that I find most interesting and relevant. College debt and future earnings have a large impact on many peoples' lives, and my hope is that this app may help people to make more informed college choices by seeing how universities compare.
+        <br>
+        <a href="{% url 'blog:collegescorecard' %}">EXPLORE<span>»</span></a>
+
+        <div class="article-date">April 18th, 2016</div>
+        <a href = "{% url 'blog:collegescorecard-analysis' %}">
             <h2>Analysis of the College Scorecard data</h2>
         </a>
-        In September of 2015, President Obama announced the release of data on all universities in the United States.
-        The data includes "how much each school’s graduates earn,
-        how much debt they graduate with, and what percentage of a school’s students can pay back their loans –
-        which will help all of us see which schools do the best job of preparing America for success," said Obama.
+        In September of 2015, President Obama announced the release of data on all universities in the United States. The data includes "how much each school’s graduates earn, how much debt they graduate with, and what percentage of a school’s students can pay back their loans – which will help all of us see which schools do the best job of preparing America for success."
         <br>
-        <a href="{% url 'blog:college_scorecard' %}">READ MORE <span>»</span></a>
+        <a href="{% url 'blog:collegescorecard-analysis' %}">READ MORE <span>»</span></a>
+        <div class="article-date">April 18th, 2016</div>
     </div>
 {% endblock %}

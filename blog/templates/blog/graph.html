@@ -1,0 +1,75 @@
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.4.min.css" rel="stylesheet" type="text/css">
+    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.4.min.css" rel="stylesheet" type="text/css">
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.5.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    {{ script | safe }}
+    {% load static %}
+    <script type = "text/javascript"  src="{% static 'blog/chosen_v1.6.2/chosen.jquery.min.js' %}" async></script>
+    <link rel="stylesheet" href="{% static 'blog/chosen_v1.6.2/chosen.min.css' %}">
+    <script type = "text/javascript"  src="{% static 'blog/js/nces.js' %}"></script>
+</head>
+
+<body>
+<form id='input' method='post' action='{% url 'blog:graph' %}' class="form-group">
+    {% csrf_token %}
+    <label for="yaxis">y-axis:</label>
+    <select class="form-control" name = "yaxis" id="yaxis">
+        {% for key, value in axis_options.items|dictsort:0 %}
+            <option value = "{{ key }}"
+                    {% if key == selected.y_axis %}
+                    selected
+                    {% endif %}
+            >{{ value.0 }}</option>
+        {% endfor %}
+    </select>
+    <label for="xaxis">x-axis:</label>
+    <select class="form-control" name = "xaxis" id="xaxis">
+        {% for key, value in axis_options.items|dictsort:0%}
+            <option value = "{{ key }}"
+                    {% if key == selected.x_axis %}
+                    selected
+                    {% endif %}
+            >{{ value.0 }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label for="years">Year(s):</label>
+    <select multiple class="form-control" name = "years" id="years">
+        {% for year in year_list %}
+            <option {% if year in selected.years %}selected{% endif %}>{{ year }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    Sectors
+    {% for sector in sector_list %}
+        <div class="checkbox">
+            <label>
+                <input
+                        type="checkbox"
+                        name = "sectors"
+                        id = "sectors"
+                        value="{{ sector }}"
+                        {% if sector in selected.sectors %} checked {% endif %}
+                >
+                {{ sector }}
+            </label>
+        </div>
+    {% endfor %}
+    <label for="institutions">Add universities to highlight:</label>
+    <select multiple class="form-control chosen" name = "institutions" id = "institutions" >
+        {% for institution in institutions %}
+            <option {% if institution in selected.institutions %}selected{% endif %}>{{ institution }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" class="btn btn-default" value="Submit">
+</form>
+<div>
+    {{ div | safe }}
+</div>
+</body>

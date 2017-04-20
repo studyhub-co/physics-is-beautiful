@@ -6,6 +6,8 @@ app_name = 'blog'
 
 urlpatterns = [
     url(r'^$', views.BlogHomepage, name='bloghomepage'),
-    url(r'^college_scorecard/$', views.CollegeScorecard, name='college_scorecard'),
+    url(r'^collegescorecard-analysis/$', views.CollegeScorecard, name='collegescorecard-analysis'),
     url(r'^shankar/$', views.Shankar, name='shankar'),
+    url(r'^collegescorecard/$', views.CollegeScorecardApp, name='collegescorecard'),
+    url(r'^collegemap/$', views.CollegeMap, name='collegemap'),
 ]
