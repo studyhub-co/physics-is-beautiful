@@ -3,11 +3,7 @@
 {% load static %}
 
 {% block ExtraHead %}
-{% if 'lessons' in request.path %}
-<link rel="stylesheet" type="text/css" href="{% static 'curricula/problem_page_base.css' %}" />
-{% else %}
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
-{% endif %}
 <script type="text/javascript">
 var SoundSingleton = {
     soundFiles: {

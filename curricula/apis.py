@@ -119,10 +119,14 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['uuid', 'name', 'image', 'module', 'status']
+        fields = ['uuid', 'name', 'image', 'module', 'status', 'lesson_type', 'game_slug']
 
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+    lesson_type = serializers.ChoiceField(
+        source='lesson_type_name', choices=Lesson.LessonType.choices_inverse
+    )
+    game_slug = serializers.SlugField(source='game.slug')
 
     def get_module(self, obj):
         return obj.module.uuid

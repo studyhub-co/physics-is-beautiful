@@ -3,6 +3,22 @@
 
 {% block ExtraHead %}
     <link rel="stylesheet" type="text/css" href="{% static 'blog/style.css' %}" />
+    <style>
+        #pretty_table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #pretty_table td, #pretty_table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #pretty_table tr:nth-child(even){background-color: #f2f2f2;}
+
+        #pretty_table tr:hover {background-color: #ddd;}
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -87,7 +103,7 @@
         <br>
         <a href="#top" class="btn btn-info" data-toggle="collapse">Top 30 universities by student earnings</a>
         <div id="top" class="collapse">
-            <table border="1" style="text-align: center;" >
+            <table border="1" style="text-align: center;" id = "pretty_table">
                 <caption style="text-align: center; color:black;"><b>Table 1:</b> Top 30 universities by student earnings</caption>
                 <thead style="text-align: center;">
                 <tr style="text-align: center;">
@@ -315,16 +331,15 @@
         </div>
         <a href="#bottom" class="btn btn-info" data-toggle="collapse">Bottom 30 universities by student earnings</a>
         <div id="bottom" class="collapse">
-            <table border="1" style="text-align: center;" >
+            <table border="1" style="text-align: center;" id = "pretty_table">
                 <caption style="text-align: center; color:black;"><b>Table 2:</b> Bottom 30 universities by student earnings</caption>
                 <thead style="text-align: center;">
                 <tr style="text-align: center;">
-
                     <th></th>
-                    <th>INSTNM</th>
-                    <th>MD_EARN_WNE_P10</th>
-                    <th>UGDS</th>
-                    <th>DEBT_N</th>
+                    <th style="text-align: center;">Institution name</th>
+                    <th style="text-align: center;">Median earnings ($)</th>
+                    <th style="text-align: center;">Total number of undergrads at institution</th>
+                    <th style="text-align: center;">Sample size for earnings</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -566,26 +581,197 @@
         </figure>
         <br>
         <p class="justify">
+            I next used scikit-learn to predict the next colleges that are most likely to fail.
+            My approach is to use the data about universities that have closed in order to predict which other universities which are most like them, and thus likely to fail.
+            I used a K nearest neighbors model which I trained using a grid search.
+        </p>
+        <a href="#fail" class="btn btn-info" data-toggle="collapse">Universities most likely to fail</a>
+        <div id="fail" class="collapse">
+            <table border="1" id="pretty_table">
+                <thead>
+                <tr style="text-align: right;" >
+                    <th></th>
+                    <th>INSTNM</th>
+                    <th>predictions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>3046</th>
+                    <td>Lincoln College of Technology-Marietta</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <th>2120</th>
+                    <td>Brightwood Career Institute-Pittsburgh</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <th>2900</th>
+                    <td>Center for Advanced Legal Studies</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <th>529</th>
+                    <td>Emmanuel College</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <th>210</th>
+                    <td>John F. Kennedy University</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <th>2314</th>
+                    <td>Presentation College</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <th>1795</th>
+                    <td>Saint Augustine's University</td>
+                    <td>0.1</td>
+                </tr>
+                <tr>
+                    <th>2253</th>
+                    <td>Benedict College</td>
+                    <td>0.2</td>
+                </tr>
+                <tr>
+                    <th>1641</th>
+                    <td>St Joseph's College of Nursing at St Joseph's ...</td>
+                    <td>0.2</td>
+                </tr>
+                <tr>
+                    <th>1756</th>
+                    <td>Johnson C Smith University</td>
+                    <td>0.2</td>
+                </tr>
+                <tr>
+                    <th>2894</th>
+                    <td>Vista College-Online</td>
+                    <td>0.3</td>
+                </tr>
+                <tr>
+                    <th>2909</th>
+                    <td>Los Angeles ORT College-Van Nuys Campus</td>
+                    <td>0.3</td>
+                </tr>
+                <tr>
+                    <th>2988</th>
+                    <td>College of Business and Technology-Kendall</td>
+                    <td>0.3</td>
+                </tr>
+                <tr>
+                    <th>1771</th>
+                    <td>University of Mount Olive</td>
+                    <td>0.3</td>
+                </tr>
+                <tr>
+                    <th>1290</th>
+                    <td>Missouri Valley College</td>
+                    <td>0.3</td>
+                </tr>
+                <tr>
+                    <th>2629</th>
+                    <td>Bastyr University</td>
+                    <td>0.3</td>
+                </tr>
+                <tr>
+                    <th>2877</th>
+                    <td>Bryan University</td>
+                    <td>0.4</td>
+                </tr>
+                <tr>
+                    <th>612</th>
+                    <td>Harrington College of Design</td>
+                    <td>0.4</td>
+                </tr>
+                <tr>
+                    <th>1908</th>
+                    <td>Lourdes University</td>
+                    <td>0.4</td>
+                </tr>
+                <tr>
+                    <th>3188</th>
+                    <td>Ave Maria University</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>333</th>
+                    <td>Redstone College</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>3213</th>
+                    <td>Eagle Gate College-Layton</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>1182</th>
+                    <td>Argosy University-Twin Cities</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>545</th>
+                    <td>Herzing University-Atlanta</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>2707</th>
+                    <td>Bryant &amp; Stratton College-Milwaukee</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>3038</th>
+                    <td>Carolinas College of Health Sciences</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>2873</th>
+                    <td>Nossi College of Art</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>2423</th>
+                    <td>Huston-Tillotson University</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>2194</th>
+                    <td>Pittsburgh Technical Institute</td>
+                    <td>0.5</td>
+                </tr>
+                <tr>
+                    <th>1724</th>
+                    <td>Belmont Abbey College</td>
+                    <td>0.5</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="justify">
             The last piece that I would like to investigate is what fraction of students can pay back their loans at each university, but I'll have to save it for another post.
             This can give us an indication of which universities are taking advantage of students who can't afford the loans that they take out.
         </p>
+
         <p class="justify">
             In conclusion, these data show that rising tuition costs are far out-pacing inflation.
             Furthermore, they expose that the median salaries for students who attend undergraduate medical/nursing schools are amongst the highest; some even higher than Ivy-League graduates.
             And lastly, they show that in fact going to art or music school probably isn't the best decision if you're looking to maximize your future earning potential.
             The choice is yours!
         </p>
-    <script>
-   $("#art-school").click(function(){
-    if (!$(this).hasClass('play')) {
-        $(this).attr('src', '{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_with_legend.png' %}');
-        $(this).addClass('play');
-    } else  {
-        $(this).attr('src', '{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}');
-        $(this).removeClass('play');
-    }
-});
-    </script>
+        <script>
+            $("#art-school").click(function(){
+                if (!$(this).hasClass('play')) {
+                    $(this).attr('src', '{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_with_legend.png' %}');
+                    $(this).addClass('play');
+                } else  {
+                    $(this).attr('src', '{% static 'blog/images/college_scorecard/earnings_vs_debt/earnings_vs_debt_art_schools.png' %}');
+                    $(this).removeClass('play');
+                }
+            });
+        </script>
 
     </div>
 {% endblock %}

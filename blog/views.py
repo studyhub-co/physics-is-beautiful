@@ -17,7 +17,16 @@ def Shankar(request):
     return render(request, 'blog/shankar.html')
 
 def CollegeMap(request):
-    return render(request, 'blog/collegemap.html')
+    intensity_variable = 'tuitionfee_in'
+    df = pd.DataFrame.from_records(
+        Collegescorecard.objects.all().values('latitude','longitude',intensity_variable,
+                                              ).filter(academicyear__in=[2014,]
+                                                       ))
+    df = df.convert_objects(convert_numeric=True)
+    df= df.replace('', np.nan).dropna().reset_index(drop=True)
+    df[intensity_variable]=df[intensity_variable]/df[intensity_variable].max()
+    context={'addressPoints': df.values.tolist() }
+    return render(request, 'blog/collegemap.html', context = context)
 
 def CollegeScorecardApp(request):
     def load_data(years, x_axis, y_axis, selected_sectors, selected_institutions):
