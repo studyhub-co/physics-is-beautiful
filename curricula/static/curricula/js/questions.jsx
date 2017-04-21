@@ -155,7 +155,6 @@ class Hint extends React.Component {
 
     render() {
         var style = {};
-        console.log(this.props.hintCollapsed);
         if (this.props.hintCollapsed) {
             style["display"] = "none";
         }
@@ -178,9 +177,9 @@ export class Question extends React.Component {
 
     componentDidMount() {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        window.onbeforeunload = function() {
-            return 'Changes you made may not be saved.';
-        };
+        // window.onbeforeunload = function() {
+        //     return 'Changes you made may not be saved.';
+        // };
     }
 
     componentDidUpdate() {
@@ -190,7 +189,11 @@ export class Question extends React.Component {
     render() {
         var image = '';
         if (this.props.question.image) {
-            image = <img src={this.props.question.image}/>;
+            image = (
+                <div className="thumbnail question-thumbnail">
+                    <img src={this.props.question.image}/>
+                </div>
+            );
         }
         var hint = '';
         if (this.props.question.hint) {
@@ -220,9 +223,7 @@ export class Question extends React.Component {
                         <div className="bounding-box">
                             <h1 id="ajaxDiv"dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
                             {hint}
-                            <div className="thumbnail">
-                                {image}
-                            </div>
+                            {image}
                         </div>
                     </div>
                     {answerField}

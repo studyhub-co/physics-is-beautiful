@@ -1,11 +1,12 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 
 class LockedItem extends React.Component {
     render() {
         return (
             <div className="col-md-1">
-                <div className="thumbnail">
+                <div className="thumbnail section-thumbnail">
                     <img className="grayed-out-img" src={this.props.item.image}/>
                 </div>
                 <h1 className="module-locked">
@@ -27,9 +28,9 @@ class UnlockedItem extends React.Component {
             span = <span></span>;
         }
         return (
-            <a href={this.props.item.href}>
+            <Link to={this.props.item.href}>
                 <div className="col-md-1 module-accessible-block">
-                    <div className="thumbnail">
+                    <div className="thumbnail section-thumbnail">
                         <img src={this.props.item.image}/>
                     </div>
                     <h1 className="module-accessible">
@@ -37,7 +38,7 @@ class UnlockedItem extends React.Component {
                         {span}
                     </h1>
                 </div>
-            </a>
+            </Link>
         );
     }
 }
@@ -46,9 +47,9 @@ class UnlockedItem extends React.Component {
 class CompleteItem extends React.Component {
     render() {
         return (
-            <a href={this.props.item.href}>
+            <Link to={this.props.item.href}>
                 <div className="col-md-1">
-                    <div className="thumbnail">
+                    <div className="thumbnail section-thumbnail">
                         <img src={this.props.item.image}/>
                     </div>
                     <h1 className="module-completed">
@@ -56,7 +57,7 @@ class CompleteItem extends React.Component {
                         <span className="glyphicon glyphicon-ok"></span>
                     </h1>
                 </div>
-            </a>
+            </Link>
         );
     }
 }

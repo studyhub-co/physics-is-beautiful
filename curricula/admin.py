@@ -10,6 +10,7 @@ from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, 
 admin.AdminSite.site_header = 'Physics is Beautiful Admin'
 admin.AdminSite.site_title = admin.AdminSite.site_header
 
+
 def link_to_obj(name):
     def link(obj):
         return '<a href="{}">{}</a>'.format(obj.get_admin_url(), str(obj))
@@ -239,11 +240,43 @@ class ModuleAdmin(NestedModelAdmin):
 _backlink_to_module = link_to_field('module')
 
 
+class LessonForm(forms.ModelForm):
+
+    class Meta:
+        model = Lesson
+        fields = [
+            'module', 'name', 'published_on', 'image', 'position', 'lesson_type', 'game_slug',
+        ]
+
+    game_slug = forms.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(LessonForm, self).__init__(*args, **kwargs)
+        if hasattr(self.instance, 'game'):
+            self.initial['game_slug'] = self.instance.game.slug
+
+    def save(self, commit=True):
+        instance = super(LessonForm, self).save(commit)
+        if 'game_slug' in self.cleaned_data and self.cleaned_data['game_slug']:
+            instance.game.slug = self.cleaned_data['game_slug']
+            instance.game.save()
+        return instance
+
+
 class LessonAdmin(NestedModelAdmin):
 
+    form = LessonForm
     inlines = [QuestionInline]
-    fields = ['module', _backlink_to_module, 'name', 'published_on', 'image', 'position']
+    fields = [
+        'module', _backlink_to_module, 'name', 'published_on', 'image', 'position', 'lesson_type'
+    ]
     readonly_fields = [_backlink_to_module, 'position']
+
+    def get_fields(self, request, obj=None):
+        extra_fields = []
+        if obj.lesson_type == Lesson.LessonType.GAME:
+            extra_fields.append('game_slug')
+        return self.fields + extra_fields
 
 
 _backlink_to_lesson = link_to_field('lesson')

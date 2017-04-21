@@ -1,31 +1,23 @@
 import React from 'react';
-import Sheet from './sheet';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
+import {SectionSheet, Sheet} from './sheet';
 import {playAudio} from './audio';
 
 
-export default class CurriculumApp extends React.Component {
+class CurriculumApp extends React.Component {
 
-    constructor() {
+    constructor(obj) {
         super();
-        var urlPath = window.location.pathname.split('/');
         this.state = {
-            currentView: urlPath[2] || urlPath[1],
-            currentId: urlPath[3] || 'default',
+            currentId: obj.match.params.currentId || 'default',
             sections: [],
-            question: null,
-            backLink: null,
-            progress: 0,
         };
         this.fetchState();
 
         this.curriculum = null;
-        this.module = null;
-        this.question = null;
-        this.progress = 0;
-        this.answer = null;
     }
 
-    loadCurriculum() {
+    load() {
         if (!this.curriculum) {
             return;
         }
@@ -42,7 +34,7 @@ export default class CurriculumApp extends React.Component {
                 items.push({
                     name: name,
                     image: module.image,
-                    href: '/curriculum/modules/' + module.uuid,
+                    href: '/modules/' + module.uuid,
                     uuid: module.uuid,
                     status: module.status,
                 });
@@ -62,7 +54,44 @@ export default class CurriculumApp extends React.Component {
         });
     }
 
-    loadModule() {
+    fetchState() {
+        $.ajax({
+            url: '/api/v1/curricula/curricula/' + this.state.currentId,
+            data: {'expand': 'units.modules'},
+            context: this,
+            success: function(data, status, jqXHR) {
+                this.curriculum = data;
+                this.load();
+            }
+        });
+    }
+
+    render() {
+        return (
+            <SectionSheet
+                sections={this.state.sections}
+            />
+        );
+    }
+
+}
+
+
+class ModulesApp extends React.Component {
+
+    constructor(obj) {
+        super();
+        this.state = {
+            currentId: obj.match.params.currentId || 'default',
+            sections: [],
+        };
+        this.fetchState();
+
+        this.curriculum = null;
+        this.module = null;
+    }
+
+    load() {
         if (!this.module) {
             return;
         }
@@ -72,7 +101,8 @@ export default class CurriculumApp extends React.Component {
             items.push({
                 name: lesson.name + ' ',
                 image: lesson.image,
-                href: '/curriculum/lessons/' + lesson.uuid,
+                href: '/lessons/' + lesson.uuid,
+                // action: this.getLessonAction(lesson),
                 uuid: lesson.uuid,
                 status: lesson.status,
             });
@@ -91,61 +121,56 @@ export default class CurriculumApp extends React.Component {
         });
     }
 
-    loadQuestion() {
-        if (!this.question) {
-            return;
-        }
-        console.log(this.question.hintCollapsed);
-        this.setState({
-            sections: null,
-            backLink: null,
-            question: this.question,
-            progress: this.progress,
-            answer: this.answer,
-        });
-    }
-
-    fetchCurriculum(lookupId) {
+    fetchState() {
         $.ajax({
-            url: '/api/v1/curricula/curricula/' + lookupId,
-            data: {'expand': 'units.modules'},
-            context: this,
-            success: function(data, status, jqXHR) {
-                this.curriculum = data;
-                this.loadCurriculum();
-            }
-        });
-    }
-
-    fetchModule(lookupId) {
-        $.ajax({
-            url: '/api/v1/curricula/modules/' + lookupId,
+            url: '/api/v1/curricula/modules/' + this.state.currentId,
             data: {'expand': 'lessons'},
             context: this,
             success: function(data, status, jqXHR) {
                 this.module = data;
-                this.loadModule();
+                this.load();
             }
         });
     }
 
-    fetchProblem(lookupId) {
-        var data = {};
-        if (this.question) {
-            data['previous_question'] = this.question.uuid
+    render() {
+        return (
+            <SectionSheet
+                backLink={this.state.backLink}
+                sections={this.state.sections}
+            />
+        );
+    }
+
+}
+
+
+class LessonsApp extends React.Component {
+
+    constructor(obj) {
+        super();
+        this.state = {
+            currentId: obj.match.params.currentId || 'default',
+            question: null,
+            progress: 0,
+        };
+        this.fetchState();
+
+        this.curriculum = null;
+        this.module = null;
+        this.question = null;
+        this.progress = 0;
+        this.answer = null;
+    }
+
+    load() {
+        if (!this.question) {
+            return;
         }
-        $.ajax({
-            url: '/api/v1/curricula/lessons/' + lookupId + '/next-question',
-            context: this,
-            data: data,
-            success: function(data, status, jqXHR) {
-                this.progress = data['score'] / data['required_score'] * 100;
-                data.submitAnswer = this.submitAnswer.bind(this);
-                this.question = data;
-                this.question.hintCollapsed = true;
-                this.answer = null;
-                this.loadQuestion();
-            }
+        this.setState({
+            question: this.question,
+            progress: this.progress,
+            answer: this.answer,
         });
     }
 
@@ -179,11 +204,11 @@ export default class CurriculumApp extends React.Component {
                     }
                     playAudio('incorrect');
                 }
-                this.loadQuestion();
+                this.load();
                 if (data.was_correct) {
                     setTimeout(
                         function() {
-                            this.fetchProblem(this.state.currentId);
+                            this.fetchState(this.state.currentId);
                         }.bind(this),
                         500
                     );
@@ -194,40 +219,60 @@ export default class CurriculumApp extends React.Component {
 
     continueAction() {
         playAudio('continue');
-        this.fetchProblem(this.state.currentId);
+        this.fetchState();
     }
 
     hintClick() {
         this.question.hintCollapsed = !this.question.hintCollapsed;
-        console.log(this.question.hintCollapsed);
-        this.loadQuestion();
+        this.load();
     }
 
     fetchState() {
-        switch(this.state.currentView) {
-            case 'curriculum':
-                this.fetchCurriculum(this.state.currentId);
-                break;
-            case 'modules':
-                this.fetchModule(this.state.currentId);
-                break;
-            case 'lessons':
-                this.fetchProblem(this.state.currentId);
-                break;
+        var data = {};
+        if (this.question) {
+            data['previous_question'] = this.question.uuid
         }
+        $.ajax({
+            url: '/api/v1/curricula/lessons/' + this.state.currentId + '/next-question',
+            context: this,
+            data: data,
+            success: function(data, status, jqXHR) {
+                this.progress = data['score'] / data['required_score'] * 100;
+                data.submitAnswer = this.submitAnswer.bind(this);
+                this.question = data;
+                this.question.hintCollapsed = true;
+                this.answer = null;
+                this.load();
+            }
+        });
     }
 
     render() {
         return (
             <Sheet
-                backLink={this.state.backLink}
-                sections={this.state.sections}
                 question={this.state.question}
                 answer={this.state.answer}
                 progress={this.state.progress}
                 continueAction={this.continueAction.bind(this)}
                 hintClick={this.hintClick.bind(this)}
             />
+        );
+    }
+
+}
+
+
+export default class CurriculumRouter extends React.Component {
+
+    render() {
+        return (
+            <BrowserRouter basename="/curriculum">
+                <Switch>
+                    <Route path='/lessons/:currentId' component={LessonsApp} />
+                    <Route path='/modules/:currentId' component={ModulesApp} />
+                    <Route path='/' component={CurriculumApp} />
+                </Switch>
+            </BrowserRouter>
         );
     }
 
