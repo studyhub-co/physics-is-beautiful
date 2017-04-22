@@ -1,0 +1,21 @@
+{% extends "blog/navbar.html" %}
+{% load static %}
+
+{% block ExtraHead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class = "border-bottom">
+            <h1 class="blog-title">
+                ABOUT US
+            </h1>
+        </div>
+        <h4>
+            Physics Is Beautiful is a free, interactive, easy way to learn physics for people of all backgrounds.
+            Our physics curriculum currently starts with
+            algebra & calculus-based physics, AP, high-school & university, and for the casual learner
+        </h4>
+    </div>
+{% endblock %}

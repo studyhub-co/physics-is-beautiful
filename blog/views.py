@@ -108,7 +108,7 @@ def CollegeScorecardApp(request):
             'avgfacsal':['Average faculty salary', '$'],
             'pftfac':['Proportion of faculty that is full-time','<1'],
             'pctpell':['Percentage of undergraduates who receive a Pell Grant','<1'],
-            'c150_4':['Completion rate at four-year institutions'],
+            'c150_4':['Completion rate at four-year institutions','<1'],
             #'c150_l4':['Completion rate at less-than-four-year institutions'],
             #'ret_ft4':['Full-time retention rate at four-year institutions'],
             #'ret_ftl4':['Full-time retention rate at less-than-four-year institutions'],
