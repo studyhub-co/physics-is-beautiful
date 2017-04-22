@@ -100,7 +100,6 @@ class ModulesApp extends React.Component {
         for(var lessonIndex = 0; lessonIndex < this.module.lessons.length; lessonIndex++) {
             var lesson = this.module.lessons[lessonIndex];
             var href;
-            console.log(lesson.lesson_type);
             if (lesson.lesson_type == 'GAME') {
                 href = '/games/' + lesson.game_slug;
             } else {
