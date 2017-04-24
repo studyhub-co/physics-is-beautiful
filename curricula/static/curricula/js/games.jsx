@@ -2,7 +2,7 @@ import React from 'react';
 import MathJax from 'react-mathjax';
 import {Link, Prompt} from 'react-router-dom';
 import ReactCountdownClock from 'react-countdown-clock';
-import {VectorCanvas} from './vector_canvas';
+import {VectorCanvas, CanvasVector, CanvasText} from './vector_canvas';
 
 
 class ScoreBoard extends React.Component {
@@ -22,6 +22,7 @@ class ScoreBoard extends React.Component {
         // when to reset, there is additional juggling that has to be done
         // here.
         if (this.props.state == GameState.NEW && !this.state.didReset) {
+            console.log('RESETTING');
             this.setState({clockKey: this.state.clockKey + 1, didReset: true});
         }
         if (this.props.state != GameState.NEW && this.state.didReset) {
@@ -87,6 +88,15 @@ class ScoreBoard extends React.Component {
 class QuestionBoard extends React.Component {
 
     render() {
+        var objects = [];
+        var fade = false;
+        if (this.props.answerVector) {
+            fade = true;
+            objects.push(this.props.answerVector);
+        }
+        if (this.props.answerText) {
+            objects.push(this.props.answerText);
+        }
         return (
             <div className="text-center">
                 <MathJax.Context><h1>{this.props.question}</h1></MathJax.Context>
@@ -94,7 +104,9 @@ class QuestionBoard extends React.Component {
                     allowNull={true}
                     onComplete={this.props.arrowComplete}
                     clear={this.props.clear}
+                    objects={objects}
                     allowInput={this.props.state != GameState.GAME_OVER}
+                    fade={fade}
                 />
             </div>
         );
@@ -132,6 +144,8 @@ class VectorGameBoard extends React.Component {
                     arrowComplete={this.props.arrowComplete}
                     clear={[GameState.NEW, GameState.QUESTION].indexOf(this.props.state) >= 0}
                     state={this.props.state}
+                    answerVector={this.props.answerVector}
+                    answerText={this.props.answerText}
                 />
             </div>
         );
@@ -167,11 +181,12 @@ export class VectorGame extends React.Component {
             question: null,
             x: null,
             y: null,
+            answerVector: null,
         };
     }
 
     componentDidMount() {
-        this.generateQuestion();
+        this.setState(this.generateQuestion());
     }
 
     getRandomInt(min, max) {
@@ -192,10 +207,25 @@ export class VectorGame extends React.Component {
                 newLevel = 4;
                 this.setState({score: newScore, level: newLevel, state: newState});
             } else {
-                this.generateQuestion(newScore, newLevel);
+                this.setState(this.generateQuestion(newScore, newLevel));
             }
         } else {
-            this.gameOver();
+            var pointer = {
+                x: VectorCanvas.calcVectorXStart(this.state.x),
+                y: VectorCanvas.calcVectorYStart(this.state.y),
+            }
+            var endPointer = {
+                x: pointer['x'] + VectorCanvas.calcCanvasMagnitude(this.state.x),
+                y: pointer['y'] - VectorCanvas.calcCanvasMagnitude(this.state.y),
+            }
+            var vector = new CanvasVector(null, pointer, 'green');
+            vector.complete(endPointer);
+            var textPoint = {
+                left: endPointer.x - VectorCanvas.calcCanvasMagnitude(.65) + this.state.x,
+                top: endPointer.y - this.state.y - VectorCanvas.calcCanvasMagnitude(1),
+            }
+            var text = new CanvasText(null, textPoint, "correct\nsolution")
+            this.gameOver(vector, text);
         }
     }
 
@@ -204,7 +234,7 @@ export class VectorGame extends React.Component {
         newScore = newScore || this.state.score;
         newLevel = newLevel || this.state.level;
         switch(newLevel) {
-            case 4:
+            case 1:
                 var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
                 var sign = ['', '-'][this.getRandomInt(0, 1)];
                 if ([xHat, iHat].indexOf(char) >= 0) {
@@ -230,7 +260,7 @@ export class VectorGame extends React.Component {
                 y = this.getRandomInt(-4, 4);
                 question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
                 break;
-            case 1:
+            case 4:
                 var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
                 var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
                 var x1 = this.getRandomInt(-2, 2);
@@ -256,26 +286,32 @@ export class VectorGame extends React.Component {
                 }
                 break;
         }
-        this.setState({
+        return {
             score: newScore,
             level: newLevel,
             question: question,
             x: x,
             y: y,
             state: GameState.QUESTION,
-        });
+        };
     }
 
-    gameOver() {
-        this.setState({state: GameState.GAME_OVER});
+    gameOver(vector, text) {
+        this.setState({state: GameState.GAME_OVER, answerVector: vector, answerText: text});
     }
 
     restart() {
-        this.setState({
-            state: GameState.NEW,
-            score: 0,
-            level: 1,
-        });
+        var state = Object.assign(
+            {
+                score: 0,
+                level: 1,
+                answerVector: null,
+                answerText: null,
+            },
+            this.generateQuestion(),
+            {state: GameState.NEW},
+        );
+        this.setState(state);
     }
 
     render() {
@@ -285,6 +321,8 @@ export class VectorGame extends React.Component {
                 score={this.state.score}
                 level={this.state.level}
                 question={this.state.question}
+                answerVector={this.state.answerVector}
+                answerText={this.state.answerText}
                 timesUp={this.timesUp.bind(this)}
                 arrowComplete={this.checkAnswer.bind(this)}
                 restart={this.restart.bind(this)}

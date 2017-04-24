@@ -4,7 +4,7 @@ import React from 'react';
 var GRID = 50;
 
 
-class CanvasVector {
+export class CanvasVector {
 
     constructor(canvas, pointer, color) {
         this.canvas = canvas;
@@ -49,8 +49,10 @@ class CanvasVector {
             height: 20,
             fill: color
         });
-        this.canvas.add(this.line, this.triangle);
-        this.drawing = true;
+        if (this.canvas) {
+            this.canvas.add(this.line, this.triangle);
+            this.drawing = true;
+        }
     }
 
     calcArrowAngle(x1, y1, x2, y2) {
@@ -80,7 +82,9 @@ class CanvasVector {
                     this.line.y2
                 )
             });
-            this.canvas.renderAll();
+            if (this.canvas) {
+                this.canvas.renderAll();
+            }
         }
     }
 
@@ -137,15 +141,17 @@ class CanvasVector {
                 snappedyCoordinate
             )
         });
-        if (this.getVectorMagnitude() == 0) {
-            this.canvas.remove(this.line);
-            this.triangle.set({
-                'left': snappedxCoordinateArrowhead,
-                'top': snappedyCoordinateArrowhead,
-                'angle': 0
-            });
+        if (this.canvas) {
+            if (this.getVectorMagnitude() == 0) {
+                this.canvas.remove(this.line);
+                this.triangle.set({
+                    'left': snappedxCoordinateArrowhead,
+                    'top': snappedyCoordinateArrowhead,
+                    'angle': 0
+                });
+            }
+            this.canvas.renderAll();
         }
-        this.canvas.renderAll();
     }
 
     getVectorMagnitude() {
@@ -181,8 +187,17 @@ class CanvasVector {
         return Math.round((this.line.y1 - this.line.y2) / GRID);
     }
 
+    addToCanvas(canvas) {
+        this.canvas = canvas;
+        if (this.startPointer && this.endPointer) {
+            this.canvas.add(this.line, this.triangle);
+        }
+    }
+
     delete() {
-        this.canvas.remove(this.line, this.triangle);
+        if (this.canvas) {
+            this.canvas.remove(this.line, this.triangle);
+        }
     }
 
     isOutOfBounds() {
@@ -190,6 +205,41 @@ class CanvasVector {
             return true;
         }
         return false;
+    }
+
+}
+
+
+const canvasTextDefaults = {
+    fontSize: 20,
+    textAlign: 'center',
+    lineHeight: .7,
+    fontFamily: 'Helvetica',
+    fill: 'green',
+}
+
+
+export class CanvasText {
+
+    constructor(canvas, point, text, renderInfo) {
+        renderInfo = renderInfo || {};
+        var data = Object.assign({}, canvasTextDefaults, point, renderInfo);
+        this.canvas = canvas;
+        this.answerText = new fabric.Text(text, data);
+        if (this.canvas) {
+            this.canvas.add(this.answerText);
+        }
+    }
+
+    addToCanvas(canvas) {
+        this.canvas = canvas;
+        this.canvas.add(this.answerText);
+    }
+
+    delete() {
+        if (this.canvas) {
+            this.canvas.remove(this.answerText);
+        }
     }
 
 }
@@ -443,9 +493,12 @@ export class VectorCanvas extends React.Component {
 
     constructor() {
         super();
+        this.objects = [];
         this.state = {
             checked: false,
         }
+        this.drawColor = "red";
+        this.fadedColor = "#ffcccc";
     }
 
     componentDidMount() {
@@ -490,7 +543,7 @@ export class VectorCanvas extends React.Component {
             }
             this.arrow.delete();
         }
-        this.arrow = new CanvasVector(this.canvas, this.canvas.getPointer(o.e));
+        this.arrow = new CanvasVector(this.canvas, this.canvas.getPointer(o.e), this.getColor());
     }
 
     mouseMove(o) {
@@ -533,12 +586,65 @@ export class VectorCanvas extends React.Component {
         this.setState({checked: newState});
     }
 
+    static calcVectorXStart(value) {
+        if (value > 2) {
+            return 2 * GRID;
+        } else if (value < -2) {
+            return 5 * GRID;
+        } else {
+            return 3 * GRID;
+        }
+    }
+
+    static calcVectorYStart(value) {
+        if (value > 2) {
+            return 4 * GRID;
+        } else if (value < -2) {
+            return 1 * GRID;
+        } else {
+            return 3 * GRID;
+        }
+    }
+
+    static calcCanvasMagnitude(value) {
+        return value * GRID;
+    }
+
+    getColor() {
+        if (this.props.fade) {
+            return this.fadedColor;
+        } else {
+            return this.drawColor;
+        }
+    }
+
     render() {
         if (this.props.clear) {
             if (this.arrow) {
                 this.arrow.delete();
             }
             this.arrow = null;
+            for (var i = 0; i <  this.objects.length; i++) {
+                this.objects[i].delete();
+            }
+            this.objects = [];
+        }
+        if (this.arrow && this.arrow instanceof CanvasVector) {
+            var newArrow = new CanvasVector(this.canvas, this.arrow.startPointer, this.getColor());
+            newArrow.complete(this.arrow.endPointer);
+            this.arrow.delete();
+            this.arrow = newArrow;
+        }
+        if (this.props.objects && this.props.objects.length) {
+            var oldVectors = this.objects || [];
+            this.objects = [];
+            for (var i = 0; i < this.props.objects.length; i++) {
+                this.props.objects[i].addToCanvas(this.canvas);
+                this.objects.push(this.props.objects[i]);
+            }
+            for (var i = 0; i <  oldVectors.length; i++) {
+                oldVectors[i].delete();
+            }
         }
         var canvasStyle = {
             border: "1px solid #ccc",
