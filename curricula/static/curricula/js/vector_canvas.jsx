@@ -4,7 +4,7 @@ import React from 'react';
 var GRID = 50;
 
 
-class CanvasVector {
+export class CanvasVector {
 
     constructor(canvas, pointer, color) {
         this.canvas = canvas;
@@ -49,8 +49,10 @@ class CanvasVector {
             height: 20,
             fill: color
         });
-        this.canvas.add(this.line, this.triangle);
-        this.drawing = true;
+        if (this.canvas) {
+            this.canvas.add(this.line, this.triangle);
+            this.drawing = true;
+        }
     }
 
     calcArrowAngle(x1, y1, x2, y2) {
@@ -80,20 +82,23 @@ class CanvasVector {
                     this.line.y2
                 )
             });
-            this.canvas.renderAll();
+            if (this.canvas) {
+                this.canvas.renderAll();
+            }
         }
     }
 
     complete(pointer) {
-        this.endPointer = {
-            x: pointer.x,
-            y: pointer.y,
-        };
         this.drawing = false;
         var snappedxCoordinate = Math.round(pointer.x / GRID) * GRID;
         var snappedyCoordinate = Math.round(pointer.y / GRID) * GRID;
         var snappedxCoordinateArrowhead = Math.round((pointer.x + this.deltaX) / GRID) * GRID;
         var snappedyCoordinateArrowhead = Math.round((pointer.y + this.deltaY) / GRID) * GRID;
+
+        this.endPointer = {
+            x: snappedxCoordinate,
+            y: snappedyCoordinate,
+        };
 
         this.line.set({
             x2: snappedxCoordinate - 4 * Math.sin(
@@ -136,15 +141,17 @@ class CanvasVector {
                 snappedyCoordinate
             )
         });
-        if (this.getVectorMagnitude() == 0) {
-            this.canvas.remove(this.line);
-            this.triangle.set({
-                'left': snappedxCoordinateArrowhead,
-                'top': snappedyCoordinateArrowhead,
-                'angle': 0
-            });
+        if (this.canvas) {
+            if (this.getVectorMagnitude() == 0) {
+                this.canvas.remove(this.line);
+                this.triangle.set({
+                    'left': snappedxCoordinateArrowhead,
+                    'top': snappedyCoordinateArrowhead,
+                    'angle': 0
+                });
+            }
+            this.canvas.renderAll();
         }
-        this.canvas.renderAll();
     }
 
     getVectorMagnitude() {
@@ -180,9 +187,61 @@ class CanvasVector {
         return Math.round((this.line.y1 - this.line.y2) / GRID);
     }
 
-    delete() {
-        this.canvas.remove(this.line, this.triangle);
+    addToCanvas(canvas) {
+        this.canvas = canvas;
+        if (this.startPointer && this.endPointer) {
+            this.canvas.add(this.line, this.triangle);
+        }
     }
+
+    delete() {
+        if (this.canvas) {
+            this.canvas.remove(this.line, this.triangle);
+        }
+    }
+
+    isOutOfBounds() {
+        if (this.endPointer && (this.endPointer.x > 300 || this.endPointer.x < 0 || this.endPointer.y > 300 || this.endPointer.y < 0)) {
+            return true;
+        }
+        return false;
+    }
+
+}
+
+
+const canvasTextDefaults = {
+    fontSize: 20,
+    textAlign: 'center',
+    lineHeight: .7,
+    fontFamily: 'Helvetica',
+    fill: 'green',
+}
+
+
+export class CanvasText {
+
+    constructor(canvas, point, text, renderInfo) {
+        renderInfo = renderInfo || {};
+        var data = Object.assign({}, canvasTextDefaults, point, renderInfo);
+        this.canvas = canvas;
+        this.answerText = new fabric.Text(text, data);
+        if (this.canvas) {
+            this.canvas.add(this.answerText);
+        }
+    }
+
+    addToCanvas(canvas) {
+        this.canvas = canvas;
+        this.canvas.add(this.answerText);
+    }
+
+    delete() {
+        if (this.canvas) {
+            this.canvas.remove(this.answerText);
+        }
+    }
+
 }
 
 
@@ -215,6 +274,8 @@ class NullCheckbox extends React.Component {
             divStyle["pointerEvents"] = "none";
             labelStyle["backgroundColor"] = "rgb(127, 250, 127)";
             checked = true;
+        } else if (!this.props.allowInput) {
+            divStyle["pointerEvents"] = "none";
         }
         return (
             <div id="nullVector" className="checkbox" style={divStyle}>
@@ -425,4 +486,191 @@ export class Canvas extends React.Component {
             </div>
         );
     }
+}
+
+
+export class VectorCanvas extends React.Component {
+
+    constructor() {
+        super();
+        this.objects = [];
+        this.state = {
+            checked: false,
+        }
+        this.drawColor = "red";
+        this.fadedColor = "#ffcccc";
+    }
+
+    componentDidMount() {
+        this.canvas = new fabric.Canvas('c', {
+            selection: false,
+            hasControls: false
+        });
+        this.drawGrid();
+        this.canvas.on('mouse:down', this.mouseDown.bind(this));
+        this.canvas.on('mouse:move', this.mouseMove.bind(this));
+        this.canvas.on('mouse:up', this.mouseUp.bind(this));
+        // $('#checkAnswer').click(this.checkAnswer.bind(this));
+    }
+
+    componentDidUpdate() {
+        if (this.props.clear && this.state.checked) {
+            this.setState({checked: false});
+        }
+    }
+
+    drawGrid() {
+        for (var i = 1; i < (600 / GRID); i++) {
+            this.canvas.add(new fabric.Line([i * GRID, 0, i * GRID, 600], {
+                stroke: '#ccc',
+                hasControls: false,
+                hasBorders: false,
+                selectable: false
+            }));
+            this.canvas.add(new fabric.Line([0, i * GRID, 600, i * GRID], {
+                stroke: '#ccc',
+                hasControls: false,
+                hasBorders: false,
+                selectable: false
+            }))
+        }
+    }
+
+    mouseDown(o) {
+        if (this.arrow) {
+            if (this.arrow instanceof NullVector) {
+                this.setState({checked: false});
+            }
+            this.arrow.delete();
+        }
+        this.arrow = new CanvasVector(this.canvas, this.canvas.getPointer(o.e), this.getColor());
+    }
+
+    mouseMove(o) {
+        if (this.arrow && this.arrow instanceof CanvasVector) {
+            this.arrow.draw(this.canvas.getPointer(o.e));
+        }
+    }
+
+    mouseUp(o) {
+        this.arrow.complete(this.canvas.getPointer(o.e));
+        if (this.arrow.isOutOfBounds()) {
+            this.arrow.delete()
+            this.arrow = null;
+        } else if (this.arrow.getYComponent() === 0 && this.arrow.getXComponent() === 0) {
+            this.arrow.delete();
+            this.arrow = new NullVector();
+            this.nullBoxCheck();
+        } else if (this.props.onComplete) {
+            this.props.onComplete(this.arrow);
+        }
+    }
+
+    nullBoxCheck(event) {
+        var newState = !this.state.checked;
+        if (newState) {
+            if (this.arrow) {
+                this.arrow.delete();
+            }
+            this.arrow = new NullVector();
+
+            if (this.props.onComplete) {
+                this.props.onComplete(this.arrow);
+            }
+        } else {
+            if (this.arrow) {
+                this.arrow.delete();
+            }
+            this.arrow = null;
+        }
+        this.setState({checked: newState});
+    }
+
+    static calcVectorXStart(value) {
+        if (value > 2) {
+            return 2 * GRID;
+        } else if (value < -2) {
+            return 5 * GRID;
+        } else {
+            return 3 * GRID;
+        }
+    }
+
+    static calcVectorYStart(value) {
+        if (value > 2) {
+            return 4 * GRID;
+        } else if (value < -2) {
+            return 1 * GRID;
+        } else {
+            return 3 * GRID;
+        }
+    }
+
+    static calcCanvasMagnitude(value) {
+        return value * GRID;
+    }
+
+    getColor() {
+        if (this.props.fade) {
+            return this.fadedColor;
+        } else {
+            return this.drawColor;
+        }
+    }
+
+    render() {
+        if (this.props.clear) {
+            if (this.arrow) {
+                this.arrow.delete();
+            }
+            this.arrow = null;
+            for (var i = 0; i <  this.objects.length; i++) {
+                this.objects[i].delete();
+            }
+            this.objects = [];
+        }
+        if (this.arrow && this.arrow instanceof CanvasVector) {
+            var newArrow = new CanvasVector(this.canvas, this.arrow.startPointer, this.getColor());
+            newArrow.complete(this.arrow.endPointer);
+            this.arrow.delete();
+            this.arrow = newArrow;
+        }
+        if (this.props.objects && this.props.objects.length) {
+            var oldVectors = this.objects || [];
+            this.objects = [];
+            for (var i = 0; i < this.props.objects.length; i++) {
+                this.props.objects[i].addToCanvas(this.canvas);
+                this.objects.push(this.props.objects[i]);
+            }
+            for (var i = 0; i <  oldVectors.length; i++) {
+                oldVectors[i].delete();
+            }
+        }
+        var canvasStyle = {
+            border: "1px solid #ccc",
+        }
+        if (!this.props.allowInput) {
+            canvasStyle['pointerEvents'] = 'none';
+            $('.upper-canvas').css('pointer-events', 'none');
+        } else {
+            $('.upper-canvas').css('pointer-events', '');
+        }
+        var nullBox = '';
+        if (this.props.allowNull) {
+            nullBox = (
+                <NullCheckbox
+                    allowInput={this.props.allowInput}
+                    checked={this.state.checked}
+                    onChange={this.nullBoxCheck.bind(this)}
+                />
+            );
+        }
+        return (
+            <div>
+                <canvas id="c" width="300" height="300" className="lower-canvas" style={canvasStyle}></canvas>
+                {nullBox}
+            </div>
+        );
+    }
+
 }

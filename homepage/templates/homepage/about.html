@@ -1,0 +1,70 @@
+{% extends "homepage/navbar.html" %}
+{% load static %}
+
+{% block ExtraHead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class = "border-bottom">
+            <h1 class="blog-title">
+                ABOUT US
+            </h1>
+        </div>
+        <h2 style="text-align: center">
+            Let’s be honest. Physics isn’t easy.
+        </h2>
+        <h3 style="text-align: center">
+            Physics Is Beautiful is a free, interactive, easy way to learn physics for people of all backgrounds.
+        </h3>
+        <br>
+        <p style="text-align: justify">
+            Hiran Wijesinghe and Nicolas Scozzaro are dedicated to making physics more interactive, accessible and fun.
+            They have created "Physics is Beautiful," an app of gamified physics lessons that cover standard curriculum in an interactive way.
+            Think of it like Duolingo for physics.
+        </p>
+        <p style="text-align: justify">
+            They are making physics more efficient and enjoyable by eliminating the dry textbooks and problem sets from the equation.
+            With the $2000 in funding provided through winning a <a href="https://techhub.osu.edu/news/2016/11/16/and-grant-goes-2016-student-project-grant-winners">Tech Hub Tech Grant</a>, they are developing a web app that will offer free, quality physics instruction to be used in classes around the world.
+        </p>
+        <p style="text-align: justify">
+            Their ultimate goal is to enable people to learn physics in a fraction of the time than it takes today, and enjoy the learning process much more.
+            Their aim is for their content to be thorough enough that students may eventually be able to pass the AP physics exam or even college courses by using only the app.
+        </p>
+        <p style="text-align: justify">
+            The physics curriculum currently covers (listed in order) vectors, motion diagrams, position-, velocity- and acceleration versus time graphs, Newton's Laws, forces, and free-body diagrams.
+            The structure is a series of lessons that consist of questions that build on one another, sometimes referred to as an "inductive-chain."
+            After a few lessons learning new material, there are "game-review" lessons reviews the previous lessons in a game format which requires speed and accuracy to beat.
+            They are dedicated to developing new lessons and improving current lessons, to allow people to learn physics as efficiently as possible.
+        </p>
+        <p style="text-align: justify">
+            Physics is Beautiful was successfully used as part of the required homework in The Ohio State University's summer intro physics course (physics 1200) during the summer of 2016.
+            It can also be used by high school physics teachers as a supplement for algebra & calculus-based physics (AP).
+            Or it can be used just for fun!
+        </p>
+    <div class="row">
+    <div class="col-md-4">
+      <div class="thumbnail">
+        <a href="https://www.linkedin.com/in/nscozzaro" target="_blank">
+          <img src="{% static 'homepage/images/about/nicolas.jpg' %}"  style="width:100%">
+          <div class="caption">
+            <p>Nicolas Scozzaro</p>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="thumbnail">
+        <a href="https://www.linkedin.com/in/webfarer/" target="_blank">
+          <img src="{% static 'homepage/images/about/hiran.png' %}"  style="width:100%">
+          <div class="caption">
+            <p>Hiran Wijesinghe</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+    </div>
+{% endblock %}

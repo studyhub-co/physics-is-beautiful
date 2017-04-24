@@ -52,6 +52,20 @@ html, body {
 }
 .problem-sheet h1 {font-size: 120%;}
 
+.game-sheet {
+    position: relative;
+    width: 80%;
+    margin-top: 30px;
+    border-radius: 15px;
+    padding: 60px;
+    height: 80%;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    margin-bottom: 60px;
+    height: auto;
+}
+.section-sheet h1 {font-size: 100%;}
+
 @media screen and (max-width: 767px){
     #footer{
         width:100vw;

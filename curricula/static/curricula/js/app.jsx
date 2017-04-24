@@ -2,6 +2,7 @@ import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import {SectionSheet, Sheet} from './sheet';
 import {playAudio} from './audio';
+import {VectorGame} from './games';
 
 
 class CurriculumApp extends React.Component {
@@ -98,11 +99,16 @@ class ModulesApp extends React.Component {
         var items = [];
         for(var lessonIndex = 0; lessonIndex < this.module.lessons.length; lessonIndex++) {
             var lesson = this.module.lessons[lessonIndex];
+            var href;
+            if (lesson.lesson_type == 'GAME') {
+                href = '/games/' + lesson.game_slug;
+            } else {
+                href = '/lessons/' + lesson.uuid;
+            }
             items.push({
                 name: lesson.name + ' ',
                 image: lesson.image,
-                href: '/lessons/' + lesson.uuid,
-                // action: this.getLessonAction(lesson),
+                href: href,
                 uuid: lesson.uuid,
                 status: lesson.status,
             });
@@ -262,6 +268,27 @@ class LessonsApp extends React.Component {
 }
 
 
+class GamesApp extends React.Component {
+
+    constructor(obj) {
+        super();
+        this.state = {
+            slug: obj.match.params.slug,
+        };
+    }
+
+    render() {
+        var Game;
+        switch(this.state.slug) {
+            case 'vector-game':
+                Game = VectorGame;
+        }
+        return <Game />;
+    }
+
+}
+
+
 export default class CurriculumRouter extends React.Component {
 
     render() {
@@ -270,6 +297,7 @@ export default class CurriculumRouter extends React.Component {
                 <Switch>
                     <Route path='/lessons/:currentId' component={LessonsApp} />
                     <Route path='/modules/:currentId' component={ModulesApp} />
+                    <Route path='/games/:slug' component={GamesApp} />
                     <Route path='/' component={CurriculumApp} />
                 </Switch>
             </BrowserRouter>

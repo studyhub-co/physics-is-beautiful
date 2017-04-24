@@ -274,7 +274,7 @@ class LessonAdmin(NestedModelAdmin):
 
     def get_fields(self, request, obj=None):
         extra_fields = []
-        if obj.lesson_type == Lesson.LessonType.GAME:
+        if obj and obj.lesson_type == Lesson.LessonType.GAME:
             extra_fields.append('game_slug')
         return self.fields + extra_fields
 
