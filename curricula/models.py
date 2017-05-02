@@ -1,4 +1,5 @@
 import math
+from sympy import simplify, trigsimp
 
 from django.db import models
 from django.core import urlresolvers
@@ -10,6 +11,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
+
+from piblib.latex2sympy.process_latex import process_sympy
 
 
 def get_earliest_gap(seq):
@@ -212,6 +215,7 @@ class Question(BaseModel):
         VECTOR = 20
         NULLABLE_VECTOR = 30
         IMAGE = 40
+        MATHEMATICAL_EXPRESSION = 50
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
@@ -317,6 +321,28 @@ class Text(BaseModel):
         return 'Text: {}'.format(self.text)
 
 
+class MathematicalExpression(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_mathematical_expressions'
+
+    representation = models.CharField(max_length=255)
+
+    def matches(self, obj):
+        if isinstance(obj, Answer):
+            return self.matches(obj.content)
+        # parse latex into sympy and then compare (use `.expand`, `simplify`
+        # and `trigsimp` to get to a canonical form)
+        left_side = process_sympy(self.representation)
+        right_side = process_sympy(obj.representation)
+        print('LEFT:', left_side, left_side.expand())
+        print('RIGHT:', right_side, right_side.expand())
+        return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
+
+    def __str__(self):
+        return 'Mathematical Expression: {}'.format(self.representation)
+
+
 class Image(BaseModel):
 
     class Meta:
@@ -336,7 +362,6 @@ class Image(BaseModel):
 class Vector(BaseModel):
 
     class Meta:
-        # TODO: rename
         db_table = 'curricula_vectors'
 
     magnitude = models.FloatField("Magnitude", null=True, blank=True)

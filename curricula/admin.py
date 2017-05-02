@@ -4,7 +4,9 @@ from django.utils.html import escape
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
-from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image
+from .models import (
+    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression
+)
 
 
 admin.AdminSite.site_header = 'Physics is Beautiful Admin'
@@ -191,6 +193,27 @@ class TextAnswerInline(AnswerTabularInline):
         return obj.text
 
 
+class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['representation']
+    SPECIAL_MODEL = MathematicalExpression
+
+    class Meta:
+        model = Answer
+        fields = ['representation', 'is_correct', 'position']
+
+    representation = forms.CharField()
+
+
+class MathematicalExpressionAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Mathematical Expression Answers'
+    model = Answer
+    form = MathematicalExpressionAnswerForm
+
+    def representation(self, obj):
+        return obj.representation
+
+
 class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     FIELDS = ['image']
@@ -284,7 +307,9 @@ _backlink_to_lesson = link_to_field('lesson')
 
 class QuestionAdmin(NestedModelAdmin):
 
-    inlines = [TextAnswerInline, VectorAnswerInline, ImageAnswerInline]
+    inlines = [
+        TextAnswerInline, VectorAnswerInline, ImageAnswerInline, MathematicalExpressionAnswerInline
+    ]
     fields = [
         'lesson', _backlink_to_lesson, 'text', 'hint', 'published_on', 'image', 'question_type',
         'answer_type', 'position'
@@ -295,6 +320,7 @@ class QuestionAdmin(NestedModelAdmin):
         Question.AnswerType.IMAGE: ImageAnswerInline,
         Question.AnswerType.VECTOR: VectorAnswerInline,
         Question.AnswerType.NULLABLE_VECTOR: VectorAnswerInline,
+        Question.AnswerType.MATHEMATICAL_EXPRESSION: MathematicalExpressionAnswerInline,
     }
 
     def get_inline_instances(self, request, obj=None):

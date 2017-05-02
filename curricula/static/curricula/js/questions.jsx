@@ -126,13 +126,79 @@ class MultipleChoice extends React.Component {
 }
 
 
-class SingleAnswer extends React.Component {
+class SingleVectorAnswer extends React.Component {
 
     render() {
         // Right now we only support Vector problems for single answer.
+        return <Canvas {...this.props} />;
+    }
+
+}
+
+
+class SingleMathematicalExpressionAnswer extends React.Component {
+
+    componentDidMount() {
+        var MQ = MathQuill.getInterface(2);
+        var answer = MQ.MathField($('#math-field-answer')[0], {
+            handlers: {
+                spaceBehavesLikeTab: true,
+                edit: () => {
+                    this.data = answer.latex();
+                    console.log(this.data);
+                }
+            }
+        });
+    }
+
+    checkAnswer() {
+        this.props.question.submitAnswer(
+            this.props.question.uuid,
+            {
+                mathematical_expression: {representation: this.data},
+            },
+        );
+    }
+
+    render() {
+        return (
+            <div className="bounding-box">
+                <p><span id="math-field-answer" style={{width: "140px", height: "30px"}}></span></p>
+                <div className="button-group" id="vectorButton">
+                    <a className="btn btn-primary" id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
+                </div>
+            </div>
+        );
+    }
+
+}
+
+
+class SingleAnswer extends React.Component {
+
+    render() {
+        var Component;
+        switch (this.props.question.answer_type) {
+            case 'VECTOR':
+            case 'NULLABLE_VECTOR':
+                Component = SingleVectorAnswer;
+                break;
+            case 'MATHEMATICAL_EXPRESSION':
+                Component = SingleMathematicalExpressionAnswer;
+                break;
+            default:
+                return (
+                    <div className="col-md-6 text-center">
+                        <div className="bounding-box">
+                            <h1>Unrecognized answer type: {this.props.question.answer_type}.</h1>
+                        </div>
+                    </div>
+                );
+        }
+
         return (
             <div className="col-md-6 text-center">
-                <Canvas {...this.props} />
+                <Component {...this.props} />
             </div>
         );
     }
