@@ -583,172 +583,219 @@
         <p class="justify">
             I next used scikit-learn to predict the next colleges that are most likely to fail.
             My approach is to use the data about universities that have closed in order to predict which other universities which are most like them, and thus likely to fail.
-            I used a K nearest neighbors model which I trained using a grid search.
+            I trained a Random Forest model which I trained using a grid search, and which yields about 96% overall accuracy.
         </p>
         <a href="#fail" class="btn btn-info" data-toggle="collapse">Universities most likely to fail</a>
         <div id="fail" class="collapse">
-            <table border="1" id="pretty_table">
-                <thead>
-                <tr style="text-align: right;" >
+            <table border="1" style="text-align: center;" id = "pretty_table">
+                <caption style="text-align: center; color:black;"><b>Table 1:</b> Top 30 universities by student earnings</caption>
+                <thead style="text-align: center;">
+                <tr style="text-align: center;">
                     <th></th>
-                    <th>INSTNM</th>
-                    <th>predictions</th>
+                    <th>Institution name</th>
+                    <th>Heightened cash monitoring</th>
+                    <th>Probability closed</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <th>3046</th>
-                    <td>Lincoln College of Technology-Marietta</td>
-                    <td>0.1</td>
+                    <th>1</th>
+                    <td>Southern California University SOMA</td>
+                    <td>1.0</td>
+                    <td>0.806655</td>
                 </tr>
                 <tr>
-                    <th>2120</th>
-                    <td>Brightwood Career Institute-Pittsburgh</td>
-                    <td>0.1</td>
+                    <th>2</th>
+                    <td>Institute of Clinical Acupuncture &amp; Oriental Med</td>
+                    <td>0.0</td>
+                    <td>0.514355</td>
                 </tr>
                 <tr>
-                    <th>2900</th>
-                    <td>Center for Advanced Legal Studies</td>
-                    <td>0.1</td>
+                    <th>3</th>
+                    <td>American National University-Lexington</td>
+                    <td>1.0</td>
+                    <td>0.429721</td>
                 </tr>
                 <tr>
-                    <th>529</th>
-                    <td>Emmanuel College</td>
-                    <td>0.1</td>
+                    <th>4</th>
+                    <td>Ultrasound Medical Institute</td>
+                    <td>1.0</td>
+                    <td>0.426612</td>
                 </tr>
                 <tr>
-                    <th>210</th>
-                    <td>John F. Kennedy University</td>
-                    <td>0.1</td>
+                    <th>5</th>
+                    <td>Monroe College</td>
+                    <td>0.0</td>
+                    <td>0.421557</td>
                 </tr>
                 <tr>
-                    <th>2314</th>
-                    <td>Presentation College</td>
-                    <td>0.1</td>
+                    <th>6</th>
+                    <td><a href="http://wsau.com/news/articles/2016/dec/23/globe-university-closing-wis-schools/">Globe University–Wausau</a> </td>
+                    <td>0.0</td>
+                    <td>0.322627</td>
                 </tr>
                 <tr>
-                    <th>1795</th>
-                    <td>Saint Augustine's University</td>
-                    <td>0.1</td>
+                    <th>7</th>
+                    <td>Instituto Tecnologico de Puerto Rico-Recinto d...</td>
+                    <td>0.0</td>
+                    <td>0.322036</td>
                 </tr>
                 <tr>
-                    <th>2253</th>
-                    <td>Benedict College</td>
-                    <td>0.2</td>
+                    <th>8</th>
+                    <td><a href="http://5newsonline.com/2017/01/06/ecclesia-college-responds-to-reports-of-involvement-in-bribery-scheme-investigation/">Ecclesia College</a> </td>
+                    <td>1.0</td>
+                    <td>0.303765</td>
                 </tr>
                 <tr>
-                    <th>1641</th>
-                    <td>St Joseph's College of Nursing at St Joseph's ...</td>
-                    <td>0.2</td>
+                    <th>9</th>
+                    <td>Globe University-Madison East</td>
+                    <td>0.0</td>
+                    <td>0.301356</td>
                 </tr>
                 <tr>
-                    <th>1756</th>
-                    <td>Johnson C Smith University</td>
-                    <td>0.2</td>
+                    <th>10</th>
+                    <td>Globe University-Sioux Falls</td>
+                    <td>0.0</td>
+                    <td>0.296969</td>
                 </tr>
                 <tr>
-                    <th>2894</th>
-                    <td>Vista College-Online</td>
-                    <td>0.3</td>
+                    <th>11</th>
+                    <td>Brown Mackie College-Miami</td>
+                    <td>0.0</td>
+                    <td>0.289619</td>
                 </tr>
                 <tr>
-                    <th>2909</th>
-                    <td>Los Angeles ORT College-Van Nuys Campus</td>
-                    <td>0.3</td>
+                    <th>12</th>
+                    <td>Stevens-Henager College</td>
+                    <td>0.0</td>
+                    <td>0.287017</td>
                 </tr>
                 <tr>
-                    <th>2988</th>
-                    <td>College of Business and Technology-Kendall</td>
-                    <td>0.3</td>
+                    <th>13</th>
+                    <td>Oxford Graduate School</td>
+                    <td>0.0</td>
+                    <td>0.270720</td>
                 </tr>
                 <tr>
-                    <th>1771</th>
-                    <td>University of Mount Olive</td>
-                    <td>0.3</td>
+                    <th>14</th>
+                    <td>Fortis College-Centerville</td>
+                    <td>0.0</td>
+                    <td>0.269408</td>
                 </tr>
                 <tr>
-                    <th>1290</th>
-                    <td>Missouri Valley College</td>
-                    <td>0.3</td>
+                    <th>15</th>
+                    <td>IGlobal University</td>
+                    <td>0.0</td>
+                    <td>0.265926</td>
                 </tr>
                 <tr>
-                    <th>2629</th>
-                    <td>Bastyr University</td>
-                    <td>0.3</td>
+                    <th>16</th>
+                    <td>Instituto Tecnologico de Puerto Rico-Recinto d...</td>
+                    <td>0.0</td>
+                    <td>0.256295</td>
                 </tr>
                 <tr>
-                    <th>2877</th>
-                    <td>Bryan University</td>
-                    <td>0.4</td>
-                </tr>
-                <tr>
-                    <th>612</th>
-                    <td>Harrington College of Design</td>
-                    <td>0.4</td>
-                </tr>
-                <tr>
-                    <th>1908</th>
-                    <td>Lourdes University</td>
-                    <td>0.4</td>
-                </tr>
-                <tr>
-                    <th>3188</th>
-                    <td>Ave Maria University</td>
-                    <td>0.5</td>
-                </tr>
-                <tr>
-                    <th>333</th>
-                    <td>Redstone College</td>
-                    <td>0.5</td>
-                </tr>
-                <tr>
-                    <th>3213</th>
-                    <td>Eagle Gate College-Layton</td>
-                    <td>0.5</td>
-                </tr>
-                <tr>
-                    <th>1182</th>
-                    <td>Argosy University-Twin Cities</td>
-                    <td>0.5</td>
-                </tr>
-                <tr>
-                    <th>545</th>
+                    <th>17</th>
                     <td>Herzing University-Atlanta</td>
-                    <td>0.5</td>
+                    <td>0.0</td>
+                    <td>0.253669</td>
                 </tr>
                 <tr>
-                    <th>2707</th>
-                    <td>Bryant &amp; Stratton College-Milwaukee</td>
-                    <td>0.5</td>
+                    <th>18</th>
+                    <td>Technical Career Institutes</td>
+                    <td>0.0</td>
+                    <td>0.250084</td>
                 </tr>
                 <tr>
-                    <th>3038</th>
-                    <td>Carolinas College of Health Sciences</td>
-                    <td>0.5</td>
+                    <th>19</th>
+                    <td>American InterContinental University-Atlanta</td>
+                    <td>0.0</td>
+                    <td>0.244845</td>
                 </tr>
                 <tr>
-                    <th>2873</th>
-                    <td>Nossi College of Art</td>
-                    <td>0.5</td>
+                    <th>20</th>
+                    <td>Los Angeles Film School</td>
+                    <td>0.0</td>
+                    <td>0.241422</td>
                 </tr>
                 <tr>
-                    <th>2423</th>
-                    <td>Huston-Tillotson University</td>
-                    <td>0.5</td>
+                    <th>21</th>
+                    <td>DeVry University-Oklahoma</td>
+                    <td>0.0</td>
+                    <td>0.239483</td>
                 </tr>
                 <tr>
-                    <th>2194</th>
-                    <td>Pittsburgh Technical Institute</td>
-                    <td>0.5</td>
+                    <th>22</th>
+                    <td>University of Phoenix-Connecticut</td>
+                    <td>0.0</td>
+                    <td>0.235022</td>
                 </tr>
                 <tr>
-                    <th>1724</th>
-                    <td>Belmont Abbey College</td>
-                    <td>0.5</td>
+                    <th>23</th>
+                    <td>DeVry University-Pennsylvania</td>
+                    <td>0.0</td>
+                    <td>0.232032</td>
+                </tr>
+                <tr>
+                    <th>24</th>
+                    <td>Expression College for Digital Arts</td>
+                    <td>0.0</td>
+                    <td>0.228275</td>
+                </tr>
+                <tr>
+                    <th>25</th>
+                    <td>The Art Institute of New York City</td>
+                    <td>0.0</td>
+                    <td>0.222006</td>
+                </tr>
+                <tr>
+                    <th>26</th>
+                    <td>Sanford-Brown College-Chicago</td>
+                    <td>0.0</td>
+                    <td>0.219967</td>
+                </tr>
+                <tr>
+                    <th>27</th>
+                    <td>Institute of Production and Recording</td>
+                    <td>0.0</td>
+                    <td>0.218016</td>
+                </tr>
+                <tr>
+                    <th>28</th>
+                    <td>The Art Institute of Atlanta</td>
+                    <td>0.0</td>
+                    <td>0.212843</td>
+                </tr>
+                <tr>
+                    <th>29</th>
+                    <td>Rabbinical College of Ohr Shimon Yisroel</td>
+                    <td>0.0</td>
+                    <td>0.212571</td>
+                </tr>
+                <tr>
+                    <th>30</th>
+                    <td>Strayer University-Mississippi</td>
+                    <td>0.0</td>
+                    <td>0.211138</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
+        <p class="justify">
+            To look at the importance of the different variables that are most important, I retrained the model with just one variable at a time.
+            For example, I retrained the model using just tuition, and looked at the average score, then with faculty salary, etc.
+            I find that the most important variables are as follows:
+        <ol>
+            <li>Heightened cash monitoring</li>
+            <li>Tuition</li>
+            <li>Total cost</li>
+            <li>Three-year student default rate</li>
+            <li>Percent Pell grant recipients</li>
+            <li>Institution educational expenditures per student</li>
+        </ol>
+        </p>
+
 
         <p class="justify">
             The last piece that I would like to investigate is what fraction of students can pay back their loans at each university, but I'll have to save it for another post.
