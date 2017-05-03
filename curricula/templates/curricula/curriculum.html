@@ -4,6 +4,7 @@
 
 {% block ExtraHead %}
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>
 <script type="text/javascript">
 var SoundSingleton = {
     soundFiles: {
@@ -43,6 +44,7 @@ $.ajaxSetup({
     }
 });
 </script>
+<script src="{% static 'curricula/mathquill-0.10.1/mathquill.js' %}"></script>
 <script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>
 {% endblock %}
 

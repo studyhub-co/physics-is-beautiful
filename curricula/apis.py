@@ -9,7 +9,7 @@ from expander import ExpanderSerializerMixin
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
-    Image
+    Image, MathematicalExpression
 )
 from .services import get_progress_service, LessonLocked
 
@@ -32,6 +32,13 @@ class TextSerializer(BaseSerializer):
     class Meta:
         model = Text
         fields = ['text']
+
+
+class MathematicalExpressionSerializer(BaseSerializer):
+
+    class Meta:
+        model = MathematicalExpression
+        fields = ['representation']
 
 
 class ImageSerializer(BaseSerializer):
@@ -57,6 +64,7 @@ class AnswerSerializer(BaseSerializer):
         Text.__name__.lower(): TextSerializer,
         Image.__name__.lower(): ImageSerializer,
         Vector.__name__.lower(): VectorSerializer,
+        MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
     }
 
     class Meta:
@@ -78,11 +86,15 @@ class UserResponseSerializer(BaseSerializer):
 
     class Meta:
         model = UserResponse
-        fields = ['profile', 'question', 'vector', 'text', 'image', 'answer', 'answered_on']
+        fields = [
+            'profile', 'question', 'vector', 'text', 'mathematical_expression', 'image', 'answer',
+            'answered_on'
+        ]
         extra_kwargs = {'profile': {'required': False}}
 
     vector = VectorSerializer(required=False)
     text = TextSerializer(required=False)
+    mathematical_expression = MathematicalExpressionSerializer(required=False)
     image = ImageSerializer(required=False)
     answer = AnswerSerializer(required=False)
 
