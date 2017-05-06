@@ -8,7 +8,7 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u";\u01a2\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
+        buf.write(u";\u019a\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
         buf.write(u"\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r")
         buf.write(u"\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4")
         buf.write(u"\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30")
@@ -39,30 +39,29 @@ def serializedATN():
         buf.write(u"\3\32\3\32\3\32\3\32\3\32\3\33\3\33\3\34\3\34\5\34\u0122")
         buf.write(u"\n\34\3\34\5\34\u0125\n\34\3\34\5\34\u0128\n\34\3\34")
         buf.write(u"\5\34\u012b\n\34\5\34\u012d\n\34\3\34\3\34\3\34\3\34")
-        buf.write(u"\3\34\5\34\u0134\n\34\3\34\3\34\5\34\u0138\n\34\3\34")
-        buf.write(u"\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\5")
-        buf.write(u"\34\u0145\n\34\3\34\5\34\u0148\n\34\3\34\3\34\3\34\5")
-        buf.write(u"\34\u014d\n\34\3\34\3\34\3\34\3\34\3\34\5\34\u0154\n")
-        buf.write(u"\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34")
-        buf.write(u"\3\34\5\34\u0161\n\34\3\34\3\34\3\34\3\34\3\34\3\34\5")
-        buf.write(u"\34\u0169\n\34\3\35\3\35\3\35\3\35\3\35\5\35\u0170\n")
-        buf.write(u"\35\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36\5\36")
-        buf.write(u"\u017b\n\36\3\36\3\36\3\37\3\37\3\37\3\37\3\37\5\37\u0184")
-        buf.write(u"\n\37\3 \3 \3!\3!\3!\3!\3!\3!\5!\u018e\n!\3\"\3\"\3\"")
-        buf.write(u"\3\"\3\"\3\"\5\"\u0196\n\"\3#\3#\3#\3#\3#\3$\3$\3$\3")
-        buf.write(u"$\3$\3$\2\b\4\n\f\16 \"%\2\4\6\b\n\f\16\20\22\24\26\30")
-        buf.write(u"\32\34\36 \"$&(*,.\60\62\64\668:<>@BDF\2\b\3\2\659\3")
-        buf.write(u"\2\5\6\5\2\7\b*,\61\61\4\2\63\63;;\3\2\25(\3\2\23\24")
-        buf.write(u"\2\u01b9\2H\3\2\2\2\4J\3\2\2\2\6U\3\2\2\2\bY\3\2\2\2")
-        buf.write(u"\n[\3\2\2\2\ff\3\2\2\2\16q\3\2\2\2\20\u0083\3\2\2\2\22")
-        buf.write(u"\u008e\3\2\2\2\24\u0090\3\2\2\2\26\u0097\3\2\2\2\30\u00a0")
-        buf.write(u"\3\2\2\2\32\u00a2\3\2\2\2\34\u00aa\3\2\2\2\36\u00b2\3")
-        buf.write(u"\2\2\2 \u00ba\3\2\2\2\"\u00ce\3\2\2\2$\u00e7\3\2\2\2")
-        buf.write(u"&\u00ed\3\2\2\2(\u00fb\3\2\2\2*\u00fd\3\2\2\2,\u0108")
-        buf.write(u"\3\2\2\2.\u010a\3\2\2\2\60\u0112\3\2\2\2\62\u0115\3\2")
-        buf.write(u"\2\2\64\u011d\3\2\2\2\66\u0168\3\2\2\28\u016f\3\2\2\2")
-        buf.write(u":\u0171\3\2\2\2<\u0183\3\2\2\2>\u0185\3\2\2\2@\u0187")
-        buf.write(u"\3\2\2\2B\u018f\3\2\2\2D\u0197\3\2\2\2F\u019c\3\2\2\2")
+        buf.write(u"\3\34\5\34\u0134\n\34\3\34\3\34\3\34\3\34\3\34\3\34\3")
+        buf.write(u"\34\5\34\u013d\n\34\3\34\5\34\u0140\n\34\3\34\3\34\3")
+        buf.write(u"\34\5\34\u0145\n\34\3\34\3\34\3\34\3\34\3\34\5\34\u014c")
+        buf.write(u"\n\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3")
+        buf.write(u"\34\3\34\5\34\u0159\n\34\3\34\3\34\3\34\3\34\3\34\3\34")
+        buf.write(u"\5\34\u0161\n\34\3\35\3\35\3\35\3\35\3\35\5\35\u0168")
+        buf.write(u"\n\35\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36\5")
+        buf.write(u"\36\u0173\n\36\3\36\3\36\3\37\3\37\3\37\3\37\3\37\5\37")
+        buf.write(u"\u017c\n\37\3 \3 \3!\3!\3!\3!\3!\3!\5!\u0186\n!\3\"\3")
+        buf.write(u"\"\3\"\3\"\3\"\3\"\5\"\u018e\n\"\3#\3#\3#\3#\3#\3$\3")
+        buf.write(u"$\3$\3$\3$\3$\2\b\4\n\f\16 \"%\2\4\6\b\n\f\16\20\22\24")
+        buf.write(u"\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDF\2\b\3\2")
+        buf.write(u"\659\3\2\5\6\5\2\7\b*,\61\61\4\2\63\63;;\3\2\25(\3\2")
+        buf.write(u"\23\24\2\u01af\2H\3\2\2\2\4J\3\2\2\2\6U\3\2\2\2\bY\3")
+        buf.write(u"\2\2\2\n[\3\2\2\2\ff\3\2\2\2\16q\3\2\2\2\20\u0083\3\2")
+        buf.write(u"\2\2\22\u008e\3\2\2\2\24\u0090\3\2\2\2\26\u0097\3\2\2")
+        buf.write(u"\2\30\u00a0\3\2\2\2\32\u00a2\3\2\2\2\34\u00aa\3\2\2\2")
+        buf.write(u"\36\u00b2\3\2\2\2 \u00ba\3\2\2\2\"\u00ce\3\2\2\2$\u00e7")
+        buf.write(u"\3\2\2\2&\u00ed\3\2\2\2(\u00fb\3\2\2\2*\u00fd\3\2\2\2")
+        buf.write(u",\u0108\3\2\2\2.\u010a\3\2\2\2\60\u0112\3\2\2\2\62\u0115")
+        buf.write(u"\3\2\2\2\64\u011d\3\2\2\2\66\u0160\3\2\2\28\u0167\3\2")
+        buf.write(u"\2\2:\u0169\3\2\2\2<\u017b\3\2\2\2>\u017d\3\2\2\2@\u017f")
+        buf.write(u"\3\2\2\2B\u0187\3\2\2\2D\u018f\3\2\2\2F\u0194\3\2\2\2")
         buf.write(u"HI\5\4\3\2I\3\3\2\2\2JK\b\3\1\2KL\5\b\5\2LR\3\2\2\2M")
         buf.write(u"N\f\4\2\2NO\t\2\2\2OQ\5\4\3\5PM\3\2\2\2QT\3\2\2\2RP\3")
         buf.write(u"\2\2\2RS\3\2\2\2S\5\3\2\2\2TR\3\2\2\2UV\5\b\5\2VW\7\65")
@@ -155,57 +154,53 @@ def serializedATN():
         buf.write(u"\u0133\3\2\2\2\u012e\u012f\7\t\2\2\u012f\u0130\5<\37")
         buf.write(u"\2\u0130\u0131\7\n\2\2\u0131\u0134\3\2\2\2\u0132\u0134")
         buf.write(u"\5> \2\u0133\u012e\3\2\2\2\u0133\u0132\3\2\2\2\u0134")
-        buf.write(u"\u0169\3\2\2\2\u0135\u0137\t\5\2\2\u0136\u0138\5@!\2")
-        buf.write(u"\u0137\u0136\3\2\2\2\u0137\u0138\3\2\2\2\u0138\u0139")
-        buf.write(u"\3\2\2\2\u0139\u013a\7\t\2\2\u013a\u013b\58\35\2\u013b")
-        buf.write(u"\u013c\7\n\2\2\u013c\u0169\3\2\2\2\u013d\u0144\7\22\2")
-        buf.write(u"\2\u013e\u013f\5@!\2\u013f\u0140\5B\"\2\u0140\u0145\3")
-        buf.write(u"\2\2\2\u0141\u0142\5B\"\2\u0142\u0143\5@!\2\u0143\u0145")
-        buf.write(u"\3\2\2\2\u0144\u013e\3\2\2\2\u0144\u0141\3\2\2\2\u0144")
-        buf.write(u"\u0145\3\2\2\2\u0145\u014c\3\2\2\2\u0146\u0148\5\n\6")
-        buf.write(u"\2\u0147\u0146\3\2\2\2\u0147\u0148\3\2\2\2\u0148\u0149")
-        buf.write(u"\3\2\2\2\u0149\u014d\7\62\2\2\u014a\u014d\5\62\32\2\u014b")
-        buf.write(u"\u014d\5\n\6\2\u014c\u0147\3\2\2\2\u014c\u014a\3\2\2")
-        buf.write(u"\2\u014c\u014b\3\2\2\2\u014d\u0169\3\2\2\2\u014e\u0153")
-        buf.write(u"\7)\2\2\u014f\u0150\7\r\2\2\u0150\u0151\5\b\5\2\u0151")
-        buf.write(u"\u0152\7\16\2\2\u0152\u0154\3\2\2\2\u0153\u014f\3\2\2")
-        buf.write(u"\2\u0153\u0154\3\2\2\2\u0154\u0155\3\2\2\2\u0155\u0156")
-        buf.write(u"\7\13\2\2\u0156\u0157\5\b\5\2\u0157\u0158\7\f\2\2\u0158")
-        buf.write(u"\u0169\3\2\2\2\u0159\u0160\t\7\2\2\u015a\u015b\5D#\2")
-        buf.write(u"\u015b\u015c\5B\"\2\u015c\u0161\3\2\2\2\u015d\u015e\5")
-        buf.write(u"B\"\2\u015e\u015f\5D#\2\u015f\u0161\3\2\2\2\u0160\u015a")
-        buf.write(u"\3\2\2\2\u0160\u015d\3\2\2\2\u0161\u0162\3\2\2\2\u0162")
-        buf.write(u"\u0163\5\f\7\2\u0163\u0169\3\2\2\2\u0164\u0165\7\20\2")
-        buf.write(u"\2\u0165\u0166\5:\36\2\u0166\u0167\5\f\7\2\u0167\u0169")
-        buf.write(u"\3\2\2\2\u0168\u011f\3\2\2\2\u0168\u0135\3\2\2\2\u0168")
-        buf.write(u"\u013d\3\2\2\2\u0168\u014e\3\2\2\2\u0168\u0159\3\2\2")
-        buf.write(u"\2\u0168\u0164\3\2\2\2\u0169\67\3\2\2\2\u016a\u016b\5")
-        buf.write(u"\b\5\2\u016b\u016c\7\3\2\2\u016c\u016d\58\35\2\u016d")
-        buf.write(u"\u0170\3\2\2\2\u016e\u0170\5\b\5\2\u016f\u016a\3\2\2")
-        buf.write(u"\2\u016f\u016e\3\2\2\2\u01709\3\2\2\2\u0171\u0172\7/")
-        buf.write(u"\2\2\u0172\u0173\7\13\2\2\u0173\u0174\t\5\2\2\u0174\u0175")
-        buf.write(u"\7\21\2\2\u0175\u017a\5\b\5\2\u0176\u0177\7\60\2\2\u0177")
-        buf.write(u"\u0178\7\13\2\2\u0178\u0179\t\3\2\2\u0179\u017b\7\f\2")
-        buf.write(u"\2\u017a\u0176\3\2\2\2\u017a\u017b\3\2\2\2\u017b\u017c")
-        buf.write(u"\3\2\2\2\u017c\u017d\7\f\2\2\u017d;\3\2\2\2\u017e\u0184")
-        buf.write(u"\5\b\5\2\u017f\u0180\5\b\5\2\u0180\u0181\7\3\2\2\u0181")
-        buf.write(u"\u0182\5<\37\2\u0182\u0184\3\2\2\2\u0183\u017e\3\2\2")
-        buf.write(u"\2\u0183\u017f\3\2\2\2\u0184=\3\2\2\2\u0185\u0186\5\16")
-        buf.write(u"\b\2\u0186?\3\2\2\2\u0187\u018d\7/\2\2\u0188\u018e\5")
-        buf.write(u",\27\2\u0189\u018a\7\13\2\2\u018a\u018b\5\b\5\2\u018b")
-        buf.write(u"\u018c\7\f\2\2\u018c\u018e\3\2\2\2\u018d\u0188\3\2\2")
-        buf.write(u"\2\u018d\u0189\3\2\2\2\u018eA\3\2\2\2\u018f\u0195\7\60")
-        buf.write(u"\2\2\u0190\u0196\5,\27\2\u0191\u0192\7\13\2\2\u0192\u0193")
-        buf.write(u"\5\b\5\2\u0193\u0194\7\f\2\2\u0194\u0196\3\2\2\2\u0195")
-        buf.write(u"\u0190\3\2\2\2\u0195\u0191\3\2\2\2\u0196C\3\2\2\2\u0197")
-        buf.write(u"\u0198\7/\2\2\u0198\u0199\7\13\2\2\u0199\u019a\5\6\4")
-        buf.write(u"\2\u019a\u019b\7\f\2\2\u019bE\3\2\2\2\u019c\u019d\7/")
-        buf.write(u"\2\2\u019d\u019e\7\13\2\2\u019e\u019f\5\6\4\2\u019f\u01a0")
-        buf.write(u"\7\f\2\2\u01a0G\3\2\2\2.Rcny\u0081\u0083\u008b\u008e")
+        buf.write(u"\u0161\3\2\2\2\u0135\u013c\7\22\2\2\u0136\u0137\5@!\2")
+        buf.write(u"\u0137\u0138\5B\"\2\u0138\u013d\3\2\2\2\u0139\u013a\5")
+        buf.write(u"B\"\2\u013a\u013b\5@!\2\u013b\u013d\3\2\2\2\u013c\u0136")
+        buf.write(u"\3\2\2\2\u013c\u0139\3\2\2\2\u013c\u013d\3\2\2\2\u013d")
+        buf.write(u"\u0144\3\2\2\2\u013e\u0140\5\n\6\2\u013f\u013e\3\2\2")
+        buf.write(u"\2\u013f\u0140\3\2\2\2\u0140\u0141\3\2\2\2\u0141\u0145")
+        buf.write(u"\7\62\2\2\u0142\u0145\5\62\32\2\u0143\u0145\5\n\6\2\u0144")
+        buf.write(u"\u013f\3\2\2\2\u0144\u0142\3\2\2\2\u0144\u0143\3\2\2")
+        buf.write(u"\2\u0145\u0161\3\2\2\2\u0146\u014b\7)\2\2\u0147\u0148")
+        buf.write(u"\7\r\2\2\u0148\u0149\5\b\5\2\u0149\u014a\7\16\2\2\u014a")
+        buf.write(u"\u014c\3\2\2\2\u014b\u0147\3\2\2\2\u014b\u014c\3\2\2")
+        buf.write(u"\2\u014c\u014d\3\2\2\2\u014d\u014e\7\13\2\2\u014e\u014f")
+        buf.write(u"\5\b\5\2\u014f\u0150\7\f\2\2\u0150\u0161\3\2\2\2\u0151")
+        buf.write(u"\u0158\t\7\2\2\u0152\u0153\5D#\2\u0153\u0154\5B\"\2\u0154")
+        buf.write(u"\u0159\3\2\2\2\u0155\u0156\5B\"\2\u0156\u0157\5D#\2\u0157")
+        buf.write(u"\u0159\3\2\2\2\u0158\u0152\3\2\2\2\u0158\u0155\3\2\2")
+        buf.write(u"\2\u0159\u015a\3\2\2\2\u015a\u015b\5\f\7\2\u015b\u0161")
+        buf.write(u"\3\2\2\2\u015c\u015d\7\20\2\2\u015d\u015e\5:\36\2\u015e")
+        buf.write(u"\u015f\5\f\7\2\u015f\u0161\3\2\2\2\u0160\u011f\3\2\2")
+        buf.write(u"\2\u0160\u0135\3\2\2\2\u0160\u0146\3\2\2\2\u0160\u0151")
+        buf.write(u"\3\2\2\2\u0160\u015c\3\2\2\2\u0161\67\3\2\2\2\u0162\u0163")
+        buf.write(u"\5\b\5\2\u0163\u0164\7\3\2\2\u0164\u0165\58\35\2\u0165")
+        buf.write(u"\u0168\3\2\2\2\u0166\u0168\5\b\5\2\u0167\u0162\3\2\2")
+        buf.write(u"\2\u0167\u0166\3\2\2\2\u01689\3\2\2\2\u0169\u016a\7/")
+        buf.write(u"\2\2\u016a\u016b\7\13\2\2\u016b\u016c\t\5\2\2\u016c\u016d")
+        buf.write(u"\7\21\2\2\u016d\u0172\5\b\5\2\u016e\u016f\7\60\2\2\u016f")
+        buf.write(u"\u0170\7\13\2\2\u0170\u0171\t\3\2\2\u0171\u0173\7\f\2")
+        buf.write(u"\2\u0172\u016e\3\2\2\2\u0172\u0173\3\2\2\2\u0173\u0174")
+        buf.write(u"\3\2\2\2\u0174\u0175\7\f\2\2\u0175;\3\2\2\2\u0176\u017c")
+        buf.write(u"\5\b\5\2\u0177\u0178\5\b\5\2\u0178\u0179\7\3\2\2\u0179")
+        buf.write(u"\u017a\5<\37\2\u017a\u017c\3\2\2\2\u017b\u0176\3\2\2")
+        buf.write(u"\2\u017b\u0177\3\2\2\2\u017c=\3\2\2\2\u017d\u017e\5\16")
+        buf.write(u"\b\2\u017e?\3\2\2\2\u017f\u0185\7/\2\2\u0180\u0186\5")
+        buf.write(u",\27\2\u0181\u0182\7\13\2\2\u0182\u0183\5\b\5\2\u0183")
+        buf.write(u"\u0184\7\f\2\2\u0184\u0186\3\2\2\2\u0185\u0180\3\2\2")
+        buf.write(u"\2\u0185\u0181\3\2\2\2\u0186A\3\2\2\2\u0187\u018d\7\60")
+        buf.write(u"\2\2\u0188\u018e\5,\27\2\u0189\u018a\7\13\2\2\u018a\u018b")
+        buf.write(u"\5\b\5\2\u018b\u018c\7\f\2\2\u018c\u018e\3\2\2\2\u018d")
+        buf.write(u"\u0188\3\2\2\2\u018d\u0189\3\2\2\2\u018eC\3\2\2\2\u018f")
+        buf.write(u"\u0190\7/\2\2\u0190\u0191\7\13\2\2\u0191\u0192\5\6\4")
+        buf.write(u"\2\u0192\u0193\7\f\2\2\u0193E\3\2\2\2\u0194\u0195\7/")
+        buf.write(u"\2\2\u0195\u0196\7\13\2\2\u0196\u0197\5\6\4\2\u0197\u0198")
+        buf.write(u"\7\f\2\2\u0198G\3\2\2\2-Rcny\u0081\u0083\u008b\u008e")
         buf.write(u"\u0094\u009b\u00a0\u00a8\u00ae\u00b6\u00c4\u00c7\u00cb")
         buf.write(u"\u00d8\u00db\u00df\u00e7\u00ed\u00fb\u0103\u0108\u0112")
-        buf.write(u"\u0121\u0124\u0127\u012a\u012c\u0133\u0137\u0144\u0147")
-        buf.write(u"\u014c\u0153\u0160\u0168\u016f\u017a\u0183\u018d\u0195")
+        buf.write(u"\u0121\u0124\u0127\u012a\u012c\u0133\u013c\u013f\u0144")
+        buf.write(u"\u014b\u0158\u0160\u0167\u0172\u017b\u0185\u018d")
         return buf.getvalue()
 
 
@@ -220,17 +215,17 @@ class PSParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     literalNames = [ u"<INVALID>", u"','", u"<INVALID>", u"'+'", u"'-'", 
-                     u"'*'", u"'/'", u"'('", u"')'", u"'{'", u"'}'", u"'['", 
-                     u"']'", u"'|'", u"'\\lim'", u"<INVALID>", u"'\\int'", 
-                     u"'\\sum'", u"'\\prod'", u"'\\log'", u"'\\ln'", u"'\\sin'", 
-                     u"'\\cos'", u"'\\tan'", u"'\\csc'", u"'\\sec'", u"'\\cot'", 
-                     u"'\\arcsin'", u"'\\arccos'", u"'\\arctan'", u"'\\arccsc'", 
-                     u"'\\arcsec'", u"'\\arccot'", u"'\\sinh'", u"'\\cosh'", 
-                     u"'\\tanh'", u"'\\arsinh'", u"'\\arcosh'", u"'\\artanh'", 
-                     u"'\\sqrt'", u"'\\times'", u"'\\cdot'", u"'\\div'", 
-                     u"'\\frac'", u"'\\mathit'", u"'_'", u"'^'", u"':'", 
-                     u"<INVALID>", u"<INVALID>", u"<INVALID>", u"'='", u"'<'", 
-                     u"'\\leq'", u"'>'", u"'\\geq'", u"'!'" ]
+                     u"'*'", u"'/'", u"<INVALID>", u"<INVALID>", u"'{'", 
+                     u"'}'", u"'['", u"']'", u"'|'", u"'\\lim'", u"<INVALID>", 
+                     u"'\\int'", u"'\\sum'", u"'\\prod'", u"'\\log'", u"'\\ln'", 
+                     u"'\\sin'", u"'\\cos'", u"'\\tan'", u"'\\csc'", u"'\\sec'", 
+                     u"'\\cot'", u"'\\arcsin'", u"'\\arccos'", u"'\\arctan'", 
+                     u"'\\arccsc'", u"'\\arcsec'", u"'\\arccot'", u"'\\sinh'", 
+                     u"'\\cosh'", u"'\\tanh'", u"'\\arsinh'", u"'\\arcosh'", 
+                     u"'\\artanh'", u"'\\sqrt'", u"'\\times'", u"'\\cdot'", 
+                     u"'\\div'", u"'\\frac'", u"'\\mathit'", u"'_'", u"'^'", 
+                     u"':'", u"<INVALID>", u"<INVALID>", u"<INVALID>", u"'='", 
+                     u"'<'", u"'\\leq'", u"'>'", u"'\\geq'", u"'!'" ]
 
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"WS", u"ADD", u"SUB", 
                       u"MUL", u"DIV", u"L_PAREN", u"R_PAREN", u"L_BRACE", 
@@ -1689,37 +1684,34 @@ class PSParser ( Parser ):
         try:
             self.state = 229
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,20,self._ctx)
-            if la_ == 1:
+            token = self._input.LA(1)
+            if token in [PSParser.L_PAREN, PSParser.L_BRACE, PSParser.L_BRACKET]:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 224
                 self.group()
                 pass
-
-            elif la_ == 2:
+            elif token in [PSParser.BAR]:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 225
                 self.abs_group()
                 pass
-
-            elif la_ == 3:
+            elif token in [PSParser.FUNC_LIM, PSParser.FUNC_INT, PSParser.FUNC_SUM, PSParser.FUNC_PROD, PSParser.FUNC_LOG, PSParser.FUNC_LN, PSParser.FUNC_SIN, PSParser.FUNC_COS, PSParser.FUNC_TAN, PSParser.FUNC_CSC, PSParser.FUNC_SEC, PSParser.FUNC_COT, PSParser.FUNC_ARCSIN, PSParser.FUNC_ARCCOS, PSParser.FUNC_ARCTAN, PSParser.FUNC_ARCCSC, PSParser.FUNC_ARCSEC, PSParser.FUNC_ARCCOT, PSParser.FUNC_SINH, PSParser.FUNC_COSH, PSParser.FUNC_TANH, PSParser.FUNC_ARSINH, PSParser.FUNC_ARCOSH, PSParser.FUNC_ARTANH, PSParser.FUNC_SQRT]:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 226
                 self.func()
                 pass
-
-            elif la_ == 4:
+            elif token in [PSParser.CMD_MATHIT, PSParser.DIFFERENTIAL, PSParser.LETTER, PSParser.NUMBER, PSParser.SYMBOL]:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 227
                 self.atom()
                 pass
-
-            elif la_ == 5:
+            elif token in [PSParser.CMD_FRAC]:
                 self.enterOuterAlt(localctx, 5)
                 self.state = 228
                 self.frac()
                 pass
-
+            else:
+                raise NoViableAltException(self)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -2349,16 +2341,6 @@ class PSParser ( Parser ):
             return self.getTypedRuleContext(PSParser.SupexprContext,0)
 
 
-        def args(self):
-            return self.getTypedRuleContext(PSParser.ArgsContext,0)
-
-
-        def LETTER(self):
-            return self.getToken(PSParser.LETTER, 0)
-
-        def SYMBOL(self):
-            return self.getToken(PSParser.SYMBOL, 0)
-
         def FUNC_INT(self):
             return self.getToken(PSParser.FUNC_INT, 0)
 
@@ -2436,7 +2418,7 @@ class PSParser ( Parser ):
         self.enterRule(localctx, 52, self.RULE_func)
         self._la = 0 # Token type
         try:
-            self.state = 358
+            self.state = 350
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [PSParser.FUNC_LOG, PSParser.FUNC_LN, PSParser.FUNC_SIN, PSParser.FUNC_COS, PSParser.FUNC_TAN, PSParser.FUNC_CSC, PSParser.FUNC_SEC, PSParser.FUNC_COT, PSParser.FUNC_ARCSIN, PSParser.FUNC_ARCCOS, PSParser.FUNC_ARCTAN, PSParser.FUNC_ARCCSC, PSParser.FUNC_ARCSEC, PSParser.FUNC_ARCCOT, PSParser.FUNC_SINH, PSParser.FUNC_COSH, PSParser.FUNC_TANH, PSParser.FUNC_ARSINH, PSParser.FUNC_ARCOSH, PSParser.FUNC_ARTANH]:
@@ -2504,141 +2486,117 @@ class PSParser ( Parser ):
 
 
                 pass
-            elif token in [PSParser.LETTER, PSParser.SYMBOL]:
+            elif token in [PSParser.FUNC_INT]:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 307
-                _la = self._input.LA(1)
-                if not(_la==PSParser.LETTER or _la==PSParser.SYMBOL):
-                    self._errHandler.recoverInline(self)
-                else:
-                    self._errHandler.reportMatch(self)
-                    self.consume()
-                self.state = 309
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                if _la==PSParser.UNDERSCORE:
-                    self.state = 308
-                    self.subexpr()
-
-
-                self.state = 311
-                self.match(PSParser.L_PAREN)
-                self.state = 312
-                self.args()
-                self.state = 313
-                self.match(PSParser.R_PAREN)
-                pass
-            elif token in [PSParser.FUNC_INT]:
-                self.enterOuterAlt(localctx, 3)
-                self.state = 315
                 self.match(PSParser.FUNC_INT)
-                self.state = 322
+                self.state = 314
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [PSParser.UNDERSCORE]:
-                    self.state = 316
+                    self.state = 308
                     self.subexpr()
-                    self.state = 317
+                    self.state = 309
                     self.supexpr()
                     pass
                 elif token in [PSParser.CARET]:
-                    self.state = 319
+                    self.state = 311
                     self.supexpr()
-                    self.state = 320
+                    self.state = 312
                     self.subexpr()
                     pass
                 elif token in [PSParser.ADD, PSParser.SUB, PSParser.L_PAREN, PSParser.L_BRACE, PSParser.L_BRACKET, PSParser.BAR, PSParser.FUNC_LIM, PSParser.FUNC_INT, PSParser.FUNC_SUM, PSParser.FUNC_PROD, PSParser.FUNC_LOG, PSParser.FUNC_LN, PSParser.FUNC_SIN, PSParser.FUNC_COS, PSParser.FUNC_TAN, PSParser.FUNC_CSC, PSParser.FUNC_SEC, PSParser.FUNC_COT, PSParser.FUNC_ARCSIN, PSParser.FUNC_ARCCOS, PSParser.FUNC_ARCTAN, PSParser.FUNC_ARCCSC, PSParser.FUNC_ARCSEC, PSParser.FUNC_ARCCOT, PSParser.FUNC_SINH, PSParser.FUNC_COSH, PSParser.FUNC_TANH, PSParser.FUNC_ARSINH, PSParser.FUNC_ARCOSH, PSParser.FUNC_ARTANH, PSParser.FUNC_SQRT, PSParser.CMD_FRAC, PSParser.CMD_MATHIT, PSParser.DIFFERENTIAL, PSParser.LETTER, PSParser.NUMBER, PSParser.SYMBOL]:
                     pass
                 else:
                     pass
-                self.state = 330
+                self.state = 322
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input,35,self._ctx)
+                la_ = self._interp.adaptivePredict(self._input,34,self._ctx)
                 if la_ == 1:
-                    self.state = 325
+                    self.state = 317
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input,34,self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input,33,self._ctx)
                     if la_ == 1:
-                        self.state = 324
+                        self.state = 316
                         self.additive(0)
 
 
-                    self.state = 327
+                    self.state = 319
                     self.match(PSParser.DIFFERENTIAL)
                     pass
 
                 elif la_ == 2:
-                    self.state = 328
+                    self.state = 320
                     self.frac()
                     pass
 
                 elif la_ == 3:
-                    self.state = 329
+                    self.state = 321
                     self.additive(0)
                     pass
 
 
                 pass
             elif token in [PSParser.FUNC_SQRT]:
-                self.enterOuterAlt(localctx, 4)
-                self.state = 332
+                self.enterOuterAlt(localctx, 3)
+                self.state = 324
                 self.match(PSParser.FUNC_SQRT)
-                self.state = 337
+                self.state = 329
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if _la==PSParser.L_BRACKET:
-                    self.state = 333
+                    self.state = 325
                     self.match(PSParser.L_BRACKET)
-                    self.state = 334
+                    self.state = 326
                     localctx.root = self.expr()
-                    self.state = 335
+                    self.state = 327
                     self.match(PSParser.R_BRACKET)
 
 
-                self.state = 339
+                self.state = 331
                 self.match(PSParser.L_BRACE)
-                self.state = 340
+                self.state = 332
                 localctx.base = self.expr()
-                self.state = 341
+                self.state = 333
                 self.match(PSParser.R_BRACE)
                 pass
             elif token in [PSParser.FUNC_SUM, PSParser.FUNC_PROD]:
-                self.enterOuterAlt(localctx, 5)
-                self.state = 343
+                self.enterOuterAlt(localctx, 4)
+                self.state = 335
                 _la = self._input.LA(1)
                 if not(_la==PSParser.FUNC_SUM or _la==PSParser.FUNC_PROD):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 350
+                self.state = 342
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [PSParser.UNDERSCORE]:
-                    self.state = 344
+                    self.state = 336
                     self.subeq()
-                    self.state = 345
+                    self.state = 337
                     self.supexpr()
                     pass
                 elif token in [PSParser.CARET]:
-                    self.state = 347
+                    self.state = 339
                     self.supexpr()
-                    self.state = 348
+                    self.state = 340
                     self.subeq()
                     pass
                 else:
                     raise NoViableAltException(self)
 
-                self.state = 352
+                self.state = 344
                 self.mp(0)
                 pass
             elif token in [PSParser.FUNC_LIM]:
-                self.enterOuterAlt(localctx, 6)
-                self.state = 354
+                self.enterOuterAlt(localctx, 5)
+                self.state = 346
                 self.match(PSParser.FUNC_LIM)
-                self.state = 355
+                self.state = 347
                 self.limit_sub()
-                self.state = 356
+                self.state = 348
                 self.mp(0)
                 pass
             else:
@@ -2685,22 +2643,22 @@ class PSParser ( Parser ):
         localctx = PSParser.ArgsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 54, self.RULE_args)
         try:
-            self.state = 365
+            self.state = 357
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,39,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,38,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 360
+                self.state = 352
                 self.expr()
-                self.state = 361
+                self.state = 353
                 self.match(PSParser.T__0)
-                self.state = 362
+                self.state = 354
                 self.args()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 364
+                self.state = 356
                 self.expr()
                 pass
 
@@ -2777,41 +2735,41 @@ class PSParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 367
+            self.state = 359
             self.match(PSParser.UNDERSCORE)
-            self.state = 368
+            self.state = 360
             self.match(PSParser.L_BRACE)
-            self.state = 369
+            self.state = 361
             _la = self._input.LA(1)
             if not(_la==PSParser.LETTER or _la==PSParser.SYMBOL):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
                 self.consume()
-            self.state = 370
+            self.state = 362
             self.match(PSParser.LIM_APPROACH_SYM)
-            self.state = 371
+            self.state = 363
             self.expr()
-            self.state = 376
+            self.state = 368
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==PSParser.CARET:
-                self.state = 372
+                self.state = 364
                 self.match(PSParser.CARET)
-                self.state = 373
+                self.state = 365
                 self.match(PSParser.L_BRACE)
-                self.state = 374
+                self.state = 366
                 _la = self._input.LA(1)
                 if not(_la==PSParser.ADD or _la==PSParser.SUB):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 375
+                self.state = 367
                 self.match(PSParser.R_BRACE)
 
 
-            self.state = 378
+            self.state = 370
             self.match(PSParser.R_BRACE)
         except RecognitionException as re:
             localctx.exception = re
@@ -2854,22 +2812,22 @@ class PSParser ( Parser ):
         localctx = PSParser.Func_argContext(self, self._ctx, self.state)
         self.enterRule(localctx, 58, self.RULE_func_arg)
         try:
-            self.state = 385
+            self.state = 377
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,41,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,40,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 380
+                self.state = 372
                 self.expr()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 381
+                self.state = 373
                 self.expr()
-                self.state = 382
+                self.state = 374
                 self.match(PSParser.T__0)
-                self.state = 383
+                self.state = 375
                 self.func_arg()
                 pass
 
@@ -2912,7 +2870,7 @@ class PSParser ( Parser ):
         self.enterRule(localctx, 60, self.RULE_func_arg_noparens)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 387
+            self.state = 379
             self.mp_nofunc(0)
         except RecognitionException as re:
             localctx.exception = re
@@ -2965,21 +2923,21 @@ class PSParser ( Parser ):
         self.enterRule(localctx, 62, self.RULE_subexpr)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 389
+            self.state = 381
             self.match(PSParser.UNDERSCORE)
-            self.state = 395
+            self.state = 387
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [PSParser.CMD_MATHIT, PSParser.DIFFERENTIAL, PSParser.LETTER, PSParser.NUMBER, PSParser.SYMBOL]:
-                self.state = 390
+                self.state = 382
                 self.atom()
                 pass
             elif token in [PSParser.L_BRACE]:
-                self.state = 391
+                self.state = 383
                 self.match(PSParser.L_BRACE)
-                self.state = 392
+                self.state = 384
                 self.expr()
-                self.state = 393
+                self.state = 385
                 self.match(PSParser.R_BRACE)
                 pass
             else:
@@ -3036,21 +2994,21 @@ class PSParser ( Parser ):
         self.enterRule(localctx, 64, self.RULE_supexpr)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 397
+            self.state = 389
             self.match(PSParser.CARET)
-            self.state = 403
+            self.state = 395
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [PSParser.CMD_MATHIT, PSParser.DIFFERENTIAL, PSParser.LETTER, PSParser.NUMBER, PSParser.SYMBOL]:
-                self.state = 398
+                self.state = 390
                 self.atom()
                 pass
             elif token in [PSParser.L_BRACE]:
-                self.state = 399
+                self.state = 391
                 self.match(PSParser.L_BRACE)
-                self.state = 400
+                self.state = 392
                 self.expr()
-                self.state = 401
+                self.state = 393
                 self.match(PSParser.R_BRACE)
                 pass
             else:
@@ -3103,13 +3061,13 @@ class PSParser ( Parser ):
         self.enterRule(localctx, 66, self.RULE_subeq)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 405
+            self.state = 397
             self.match(PSParser.UNDERSCORE)
-            self.state = 406
+            self.state = 398
             self.match(PSParser.L_BRACE)
-            self.state = 407
+            self.state = 399
             self.equality()
-            self.state = 408
+            self.state = 400
             self.match(PSParser.R_BRACE)
         except RecognitionException as re:
             localctx.exception = re
@@ -3158,13 +3116,13 @@ class PSParser ( Parser ):
         self.enterRule(localctx, 68, self.RULE_supeq)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 410
+            self.state = 402
             self.match(PSParser.UNDERSCORE)
-            self.state = 411
+            self.state = 403
             self.match(PSParser.L_BRACE)
-            self.state = 412
+            self.state = 404
             self.equality()
-            self.state = 413
+            self.state = 405
             self.match(PSParser.R_BRACE)
         except RecognitionException as re:
             localctx.exception = re
