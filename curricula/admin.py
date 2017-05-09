@@ -321,6 +321,7 @@ class QuestionAdmin(NestedModelAdmin):
         Question.AnswerType.VECTOR: VectorAnswerInline,
         Question.AnswerType.NULLABLE_VECTOR: VectorAnswerInline,
         Question.AnswerType.MATHEMATICAL_EXPRESSION: MathematicalExpressionAnswerInline,
+        Question.AnswerType.VECTOR_COMPONENTS: VectorAnswerInline,
     }
 
     def get_inline_instances(self, request, obj=None):

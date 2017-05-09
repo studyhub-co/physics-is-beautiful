@@ -510,6 +510,7 @@ export class VectorCanvas extends React.Component {
         this.canvas.on('mouse:down', this.mouseDown.bind(this));
         this.canvas.on('mouse:move', this.mouseMove.bind(this));
         this.canvas.on('mouse:up', this.mouseUp.bind(this));
+        this.setState({checked: false});
         // $('#checkAnswer').click(this.checkAnswer.bind(this));
     }
 
@@ -635,7 +636,7 @@ export class VectorCanvas extends React.Component {
             this.arrow.delete();
             this.arrow = newArrow;
         }
-        if (this.props.objects && this.props.objects.length) {
+        if (this.canvas && this.props.objects && this.props.objects.length) {
             var oldVectors = this.objects || [];
             this.objects = [];
             for (var i = 0; i < this.props.objects.length; i++) {

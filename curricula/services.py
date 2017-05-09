@@ -2,7 +2,7 @@ from django.utils.functional import cached_property
 
 from rest_framework import serializers
 
-from .models import LessonProgress, UserResponse, Text, Vector, Answer
+from .models import LessonProgress, UserResponse, Text, Vector, Answer, MathematicalExpression
 
 
 class LessonLocked(Exception):
@@ -152,6 +152,13 @@ class TextSerializer(serializers.ModelSerializer):
         fields = ['text']
 
 
+class MathematicalExpressionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MathematicalExpression
+        fields = ['representation']
+
+
 class VectorSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -174,6 +181,7 @@ class UserResponseSerializer(serializers.ModelSerializer):
         Text.__name__.lower(): TextSerializer,
         Vector.__name__.lower(): VectorSerializer,
         Answer.__name__.lower(): AnswerSerializer,
+        MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
     }
 
     class Meta:

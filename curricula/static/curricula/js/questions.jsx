@@ -1,5 +1,9 @@
 import React from 'react';
-import {Canvas} from './vector_canvas';
+import {Canvas, VectorCanvas, CanvasVector} from './vector_canvas';
+
+
+// Note that Canvas is deprecated and should ultimately be replaced by
+// VectorCanvas
 
 
 class TextChoice extends React.Component {
@@ -163,7 +167,7 @@ class SingleMathematicalExpressionAnswer extends React.Component {
     render() {
         return (
             <div className="bounding-box">
-                <p><span id="math-field-answer" style={{width: "140px", height: "30px"}}></span></p>
+                <p><span id="math-field-answer" style={{width: "140px"}}></span></p>
                 <div className="button-group" id="vectorButton">
                     <a className="btn btn-primary" id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
                 </div>
@@ -184,6 +188,7 @@ class SingleAnswer extends React.Component {
                 Component = SingleVectorAnswer;
                 break;
             case 'MATHEMATICAL_EXPRESSION':
+            case 'VECTOR_COMPONENTS':
                 Component = SingleMathematicalExpressionAnswer;
                 break;
             default:
@@ -243,9 +248,9 @@ export class Question extends React.Component {
 
     componentDidMount() {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        // window.onbeforeunload = function() {
-        //     return 'Changes you made may not be saved.';
-        // };
+        window.onbeforeunload = function() {
+            return 'Changes you made may not be saved.';
+        };
     }
 
     componentDidUpdate() {
@@ -261,6 +266,23 @@ export class Question extends React.Component {
                 </div>
             );
         }
+        var vector = '';
+        if (this.props.question.vector) {
+            var point = {
+                x: VectorCanvas.calcVectorXStart(this.props.question.vector.x_component),
+                y: VectorCanvas.calcVectorXStart(this.props.question.vector.y_component),
+            };
+            var endPoint = {
+                x: point.x + VectorCanvas.calcCanvasMagnitude(this.props.question.vector.x_component),
+                y: point.y - VectorCanvas.calcCanvasMagnitude(this.props.question.vector.y_component),
+            }
+            var cVector = new CanvasVector(null, point);
+            cVector.complete(endPoint);
+            vector = (
+                <VectorCanvas objects={[cVector]}/>
+            );
+        }
+        console.log(vector);
         var hint = '';
         if (this.props.question.hint) {
             hint = <Hint hint={this.props.question.hint} hintCollapsed={this.props.question.hintCollapsed} onClick={this.props.hintClick} />;
@@ -290,6 +312,7 @@ export class Question extends React.Component {
                             <h1 id="ajaxDiv"dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
                             {hint}
                             {image}
+                            {vector}
                         </div>
                     </div>
                     {answerField}

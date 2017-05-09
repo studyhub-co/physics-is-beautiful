@@ -310,6 +310,14 @@
 .mq-math-mode .mq-vector-stem {
   display: block;
 }
+.mq-math-mode .mq-hat-prefix {
+  display: block;
+  text-align: center;
+  margin-bottom: -0.8em;
+}
+.mq-math-mode .mq-hat-stem {
+  display: block;
+}
 .mq-math-mode .mq-large-operator {
   text-align: center;
 }
