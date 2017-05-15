@@ -331,9 +331,9 @@ class MathematicalExpression(BaseModel):
     representation = models.CharField(max_length=255)
 
     vector_regex = re.compile(
-        r'((?P<first_component>-?\d+)\s*\\hat\{(?P<first_symbol>[xyij])\})?'
-        r'(?P<operator>[+-])'
-        r'((?P<second_component>-?\d+)\s*\\hat\{(?P<second_symbol>[xyij])\})?',
+        r'((?P<first_component>-?\d+)?\s*\\hat\{(?P<first_symbol>[xyij])\})?'
+        r'(?P<operator>[+-])?'
+        r'((?P<second_component>-?\d+)?\s*\\hat\{(?P<second_symbol>[xyij])\})?',
         re.I,
     )
 
@@ -357,14 +357,20 @@ class MathematicalExpression(BaseModel):
         if match:
             first = match.group('first_symbol')
             second = match.group('second_symbol')
-            if is_xy(first) is is_xy(second):
+            if is_xy(first) is is_xy(second) or second is None:
                 multiplier = -1 if match.group('operator') == '-' else 1
                 if is_x(first) and is_y(second):
-                    x = int(match.group('first_component'))
-                    y = int(match.group('second_component')) * multiplier
+                    x = int(match.group('first_component') or 1)
+                    y = int(match.group('second_component') or 1) * multiplier
                 elif is_x(second) and is_y(first):
-                    y = int(match.group('first_component'))
-                    x = int(match.group('second_component')) * multiplier
+                    y = int(match.group('first_component') or 1)
+                    x = int(match.group('second_component') or 1) * multiplier
+                elif is_x(first):
+                    x = int(match.group('first_component') or 1)
+                    y = 0
+                elif is_y(first):
+                    y = int(match.group('first_component') or 1)
+                    x = 0
                 return Vector(x_component=x, y_component=y)
         raise ValueError('Unrecognized vector format')
 

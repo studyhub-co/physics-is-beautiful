@@ -1,9 +1,22 @@
 import React from 'react';
+import RMathJax from 'react-mathjax';
 import {Canvas, VectorCanvas, CanvasVector} from './vector_canvas';
 
 
 // Note that Canvas is deprecated and should ultimately be replaced by
 // VectorCanvas
+
+
+var DEFAULT_MATHJAX_OPTIONS = {
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+};
 
 
 class TextChoice extends React.Component {
@@ -142,14 +155,18 @@ class SingleVectorAnswer extends React.Component {
 
 class SingleMathematicalExpressionAnswer extends React.Component {
 
+    constructor() {
+        super();
+        this.questionId = null;
+    }
+
     componentDidMount() {
         var MQ = MathQuill.getInterface(2);
-        var answer = MQ.MathField($('#math-field-answer')[0], {
+        this.answer = MQ.MathField($('#math-field-answer')[0], {
             handlers: {
                 spaceBehavesLikeTab: true,
                 edit: () => {
-                    this.data = answer.latex();
-                    console.log(this.data);
+                    this.data = this.answer.latex();
                 }
             }
         });
@@ -164,9 +181,40 @@ class SingleMathematicalExpressionAnswer extends React.Component {
         );
     }
 
+    insertXHat() {
+        this.answer.latex(this.answer.latex() + '\\hat{x}');
+    }
+
+    insertYHat() {
+        this.answer.latex(this.answer.latex() + '\\hat{y}');
+    }
+
     render() {
+        if (this.questionId && this.props.question.uuid != this.questionId) {
+            this.answer.latex('');
+        } else {
+            this.questionId = this.props.question.uuid;
+        }
         return (
             <div className="bounding-box">
+                <RMathJax.Context {...DEFAULT_MATHJAX_OPTIONS}>
+                    <div>
+                        <a
+                            className={"btn btn-primary btn-lg"}
+                            style={{minHeight: "40px"}}
+                            onClick={this.insertXHat.bind(this)}
+                        >
+                            <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
+                        </a>
+                        <a
+                            className={"btn btn-primary btn-lg"}
+                            style={{minHeight: "40px"}}
+                            onClick={this.insertYHat.bind(this)}
+                        >
+                            <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
+                        </a>
+                    </div>
+                </RMathJax.Context>
                 <p><span id="math-field-answer" style={{width: "140px"}}></span></p>
                 <div className="button-group" id="vectorButton">
                     <a className="btn btn-primary" id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
@@ -247,6 +295,7 @@ class Hint extends React.Component {
 export class Question extends React.Component {
 
     componentDidMount() {
+        MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         window.onbeforeunload = function() {
             return 'Changes you made may not be saved.';
@@ -254,6 +303,7 @@ export class Question extends React.Component {
     }
 
     componentDidUpdate() {
+        MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     }
 
@@ -282,7 +332,6 @@ export class Question extends React.Component {
                 <VectorCanvas objects={[cVector]}/>
             );
         }
-        console.log(vector);
         var hint = '';
         if (this.props.question.hint) {
             hint = <Hint hint={this.props.question.hint} hintCollapsed={this.props.question.hintCollapsed} onClick={this.props.hintClick} />;
@@ -309,7 +358,7 @@ export class Question extends React.Component {
                 <div className="row">
                     <div className="col-md-6 text-center">
                         <div className="bounding-box">
-                            <h1 id="ajaxDiv"dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
+                            <h1 id="ajaxDiv" dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
                             {hint}
                             {image}
                             {vector}
