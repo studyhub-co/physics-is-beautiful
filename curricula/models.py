@@ -371,6 +371,8 @@ class MathematicalExpression(BaseModel):
                 elif is_y(first):
                     y = int(match.group('first_component') or 1)
                     x = 0
+                else:
+                    raise ValueError('Unrecognized vector format')
                 return Vector(x_component=x, y_component=y)
         raise ValueError('Unrecognized vector format')
 

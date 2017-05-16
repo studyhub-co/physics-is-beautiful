@@ -182,15 +182,17 @@ class SingleMathematicalExpressionAnswer extends React.Component {
     }
 
     insertXHat() {
-        this.answer.latex(this.answer.latex() + '\\hat{x}');
+        this.answer.focus();
+        this.answer.write('\\hat{x}');
     }
 
     insertYHat() {
-        this.answer.latex(this.answer.latex() + '\\hat{y}');
+        this.answer.focus();
+        this.answer.write('\\hat{y}');
     }
 
     render() {
-        if (this.questionId && this.props.question.uuid != this.questionId) {
+        if (this.questionId && this.props.question.uuid && this.props.question.uuid != this.questionId) {
             this.answer.latex('');
         } else {
             this.questionId = this.props.question.uuid;
