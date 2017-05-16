@@ -193,28 +193,39 @@ class SingleMathematicalExpressionAnswer extends React.Component {
 
     render() {
         if (this.questionId && this.props.question.uuid && this.props.question.uuid != this.questionId) {
+            console.log(this.questionId);
+            console.log(this.props.question.uuid);
             this.answer.latex('');
-        } else {
-            this.questionId = this.props.question.uuid;
+        }
+        this.questionId = this.props.question.uuid;
+        var x, y;
+        if (this.props.xHat) {
+            x = (
+                <a
+                    className={"btn btn-primary btn-lg"}
+                    style={{minHeight: "40px"}}
+                    onClick={this.insertXHat.bind(this)}
+                >
+                    <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
+                </a>
+            );
+        }
+        if (this.props.yHat) {
+            y = (
+                <a
+                    className={"btn btn-primary btn-lg"}
+                    style={{minHeight: "40px"}}
+                    onClick={this.insertYHat.bind(this)}
+                >
+                    <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
+                </a>
+            );
         }
         return (
             <div className="bounding-box">
                 <RMathJax.Context {...DEFAULT_MATHJAX_OPTIONS}>
                     <div>
-                        <a
-                            className={"btn btn-primary btn-lg"}
-                            style={{minHeight: "40px"}}
-                            onClick={this.insertXHat.bind(this)}
-                        >
-                            <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
-                        </a>
-                        <a
-                            className={"btn btn-primary btn-lg"}
-                            style={{minHeight: "40px"}}
-                            onClick={this.insertYHat.bind(this)}
-                        >
-                            <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
-                        </a>
+                        {x}{y}
                     </div>
                 </RMathJax.Context>
                 <p><span id="math-field-answer" style={{width: "140px"}}></span></p>
@@ -232,13 +243,16 @@ class SingleAnswer extends React.Component {
 
     render() {
         var Component;
+        var options = {};
         switch (this.props.question.answer_type) {
             case 'VECTOR':
             case 'NULLABLE_VECTOR':
                 Component = SingleVectorAnswer;
                 break;
-            case 'MATHEMATICAL_EXPRESSION':
             case 'VECTOR_COMPONENTS':
+                options['xHat'] = true;
+                options['yHat'] = true;
+            case 'MATHEMATICAL_EXPRESSION':
                 Component = SingleMathematicalExpressionAnswer;
                 break;
             default:
@@ -253,7 +267,7 @@ class SingleAnswer extends React.Component {
 
         return (
             <div className="col-md-6 text-center">
-                <Component {...this.props} />
+                <Component {...this.props} {...options}/>
             </div>
         );
     }
