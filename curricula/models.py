@@ -348,8 +348,10 @@ class MathematicalExpression(BaseModel):
         """
         def is_x(x):
             return x in ('x', 'i')
+
         def is_y(y):
             return y in ('y', 'j')
+
         def is_xy(component):
             return component in ('x', 'y')
         rep = self.representation.replace('\ ', '')

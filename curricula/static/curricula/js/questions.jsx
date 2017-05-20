@@ -158,6 +158,9 @@ class SingleMathematicalExpressionAnswer extends React.Component {
     constructor() {
         super();
         this.questionId = null;
+        this.state = {
+            processing: false
+        }
     }
 
     componentDidMount() {
@@ -173,12 +176,15 @@ class SingleMathematicalExpressionAnswer extends React.Component {
     }
 
     checkAnswer() {
-        this.props.question.submitAnswer(
-            this.props.question.uuid,
-            {
-                mathematical_expression: {representation: this.data},
-            },
-        );
+        if (this.data) {
+            this.setState({processing: true});
+            this.props.question.submitAnswer(
+                this.props.question.uuid,
+                {
+                    mathematical_expression: {representation: this.data},
+                },
+            );
+        }
     }
 
     insertXHat() {
@@ -191,11 +197,22 @@ class SingleMathematicalExpressionAnswer extends React.Component {
         this.answer.write('\\hat{y}');
     }
 
+    reset() {
+        this.answer.latex('');
+        this.setState({processing: false});
+    }
+
     render() {
+        var disabled = '';
+        if (this.props.answer) {
+            this.setState({processing: false});
+            disabled = ' disabled';
+        }
+        if (this.state.processing) {
+            disabled = ' disabled';
+        }
         if (this.questionId && this.props.question.uuid && this.props.question.uuid != this.questionId) {
-            console.log(this.questionId);
-            console.log(this.props.question.uuid);
-            this.answer.latex('');
+            this.reset();
         }
         this.questionId = this.props.question.uuid;
         var x, y;
@@ -230,7 +247,7 @@ class SingleMathematicalExpressionAnswer extends React.Component {
                 </RMathJax.Context>
                 <p><span id="math-field-answer" style={{width: "140px"}}></span></p>
                 <div className="button-group" id="vectorButton">
-                    <a className="btn btn-primary" id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
+                    <a className={"btn btn-primary" + disabled} id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
                 </div>
             </div>
         );
