@@ -1,6 +1,7 @@
 import React from 'react';
 import RMathJax from 'react-mathjax';
-import {Canvas, VectorCanvas, CanvasVector} from './vector_canvas';
+import {Canvas, Vector, VectorCanvas, CanvasVector} from './vector_canvas';
+import {Text, Expression} from './app.jsx'
 
 
 // Note that Canvas is deprecated and should ultimately be replaced by
@@ -158,6 +159,7 @@ class SingleMathematicalExpressionAnswer extends React.Component {
     constructor() {
         super();
         this.questionId = null;
+        this.stoppedProcessing = false;
         this.state = {
             processing: false
         }
@@ -173,6 +175,13 @@ class SingleMathematicalExpressionAnswer extends React.Component {
                 }
             }
         });
+    }
+
+    componentDidUpdate() {
+        if (this.stoppedProcessing) {
+            this.stoppedProcessing = false;
+            this.setState({processing: false});
+        }
     }
 
     checkAnswer() {
@@ -199,13 +208,12 @@ class SingleMathematicalExpressionAnswer extends React.Component {
 
     reset() {
         this.answer.latex('');
-        this.setState({processing: false});
+        this.stoppedProcessing = true;
     }
 
     render() {
         var disabled = '';
         if (this.props.answer) {
-            this.setState({processing: false});
             disabled = ' disabled';
         }
         if (this.state.processing) {
@@ -405,7 +413,102 @@ export class Question extends React.Component {
 }
 
 
+class VectorAnswer extends React.Component {
+
+    render() {
+        var x, y, xComponent, yComponent = '';
+        if (this.props.answer.y) {
+            y = <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>;
+            yComponent = this.props.answer.y;
+            if (this.props.answer.x && this.props.answer.y > 0) {
+                yComponent = '+' + yComponent;
+            }
+        }
+        if (this.props.answer.x) {
+            xComponent = this.x;
+            x = <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>;
+        }
+        return (
+            <div>
+                <RMathJax.Context>
+                    <div>
+                        <span>{xComponent}</span>
+                        {x}
+                        <span>{yComponent}</span>
+                        {y}
+                    </div>
+                </RMathJax.Context>
+            </div>
+        );
+    }
+
+}
+
+
+class TextAnswer extends React.Component {
+
+    render () {
+        console.log(this.props.answer);
+        return <span>{this.props.answer.text}</span>
+    }
+
+}
+
+
+class MathematicaExpressionAnswer extends React.Component {
+
+    render () {
+        return <span>{this.props.answer.expression}</span>
+    }
+
+}
+
+
+class DefaultAnswer extends React.Component {
+
+    render () {
+        console.log(this.props.answer);
+        return <div>{this.props.answer.text}</div>;
+    }
+
+}
+
+
+class Answer extends React.Component {
+    render () {
+        var Component;
+        switch (this.props.answer.constructor) {
+            case Vector:
+                Component = VectorAnswer;
+                break;
+            case Text:
+                Component = TextAnswer;
+                break;
+            case Expression:
+                Component = MathematicaExpressionAnswer;
+                break;
+            default:
+                Component = DefaultAnswer;
+                break;
+        }
+        return <Component {...this.props} />;
+    }
+}
+
+
 export class Footer extends React.Component {
+
+    componentDidMount() {
+        console.log('first mount');
+        MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+
+    componentDidUpdate() {
+        console.log('update');
+        MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
 
     render () {
         var checkMarks = '';
@@ -416,7 +519,7 @@ export class Footer extends React.Component {
             correctMessage = 'Correct';
         } else if (this.props.correct === false) {
             checkMarks = (<span id="incorrect" className="glyphicon glyphicon-remove-sign pull-right"></span>);
-            correctMessage = 'Incorrect';
+            correctMessage = <div><span>Incorrect, the correct answer is: <br/></span><Answer answer={this.props.answer} /></div>;
             continueButton = (
                 <button id="checkButton" type="button" onClick={this.props.continueAction}>
                     Continue

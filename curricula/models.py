@@ -388,8 +388,12 @@ class MathematicalExpression(BaseModel):
                 return False
         # parse latex into sympy and then compare (use `.expand`, `simplify`
         # and `trigsimp` to get to a canonical form)
-        left_side = process_sympy(self.representation)
-        right_side = process_sympy(obj.representation)
+        try:
+            left_side = process_sympy(self.representation)
+            right_side = process_sympy(obj.representation)
+        except Exception:
+            # if we fail to parse it, then it's not valid
+            return False
         return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
 
     def __str__(self):

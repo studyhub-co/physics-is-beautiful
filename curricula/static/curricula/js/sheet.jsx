@@ -55,6 +55,7 @@ class QuestionSheet extends React.Component {
                 <Footer
                     progress={this.props.progress}
                     correct={this.props.question.is_correct}
+                    answer={this.props.answer}
                     continueAction={this.props.continueAction}
                 />
                 <div></div>

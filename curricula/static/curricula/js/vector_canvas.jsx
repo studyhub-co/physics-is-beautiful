@@ -4,6 +4,16 @@ import React from 'react';
 var GRID = 50;
 
 
+export class Vector {
+
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+}
+
+
 export class CanvasVector {
 
     constructor(canvas, pointer, color) {
