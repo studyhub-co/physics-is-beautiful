@@ -74,6 +74,9 @@ html, body {
     .section-sheet{
         padding:0px;
     }
+    .game-sheet{
+        padding:0px;
+    }
 }
 
 @media all and (max-width: 770px) { /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
@@ -82,6 +85,10 @@ html, body {
 		padding: 30px;
 	}
 	.section-sheet {
+		width: 95%;
+		padding: 30px;
+	}
+	.game-sheet {
 		width: 95%;
 		padding: 30px;
 	}
@@ -97,6 +104,11 @@ html, body {
 		margin-top: -15px;
 	}
 	.section-sheet {
+		width: 99%;
+		padding: 20px;
+		margin-top: -15px;
+	}
+	.game-sheet {
 		width: 99%;
 		padding: 20px;
 		margin-top: -15px;

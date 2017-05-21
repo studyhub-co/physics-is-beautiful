@@ -57,25 +57,40 @@ class ScoreBoard extends React.Component {
             default:
                 paused = false;
                 score = (
-                    <div className="col-md-4 text-center">
-                        <h1>Score: {this.props.score}</h1>
-                        <h1>Level: {this.props.level}</h1>
+                    <div>
+                        <div className="col-md-4 text-center">
+                            <h1>Score: {this.props.score}</h1>
+                        </div>
+                        <div className="col-md-4 text-center">
+                            <h1>Level: {this.props.level}</h1>
+                        </div>
                     </div>
                 );
         }
+        var clockStyle = {
+            height: 100,
+            width: 100,
+            top: "50%",
+            left: "50%",
+            display: "block",
+            marginLeft: -100,
+            position: "relative",
+        }
         return (
             <div className="row text-center">
-                <div className="col-md-4 text-center" style={{height: 100}} >
-                    <ReactCountdownClock
-                        key={this.state.clockKey}
-                        seconds={60}
-                        color="#777777"
-                        alpha={0.9}
-                        size={100}
-                        weight={10}
-                        paused={paused}
-                        onComplete={this.props.timesUp}
-                    />
+                <div className="col-md-4 text-center">
+                    <div style={clockStyle}>
+                        <ReactCountdownClock
+                            key={this.state.clockKey}
+                            seconds={60}
+                            color="#777777"
+                            alpha={0.9}
+                            size={100}
+                            weight={10}
+                            paused={paused}
+                            onComplete={this.props.timesUp}
+                        />
+                    </div>
                 </div>
                 {score}
              </div>
