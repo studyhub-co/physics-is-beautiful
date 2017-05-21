@@ -129,6 +129,17 @@ class VectorGameBoard extends React.Component {
 
     render() {
         var style = {backgroundColor: this.levelColorMap[this.props.level]};
+        if (this.props.state == GameState.NEW) {
+            return (
+                <div className="container game-sheet" style={style}>
+                    <div className="col-md-4" />
+                    <div className="col-md-4 text-center">
+                        <span><h1>Vector Game</h1></span>
+                        <button onClick={this.props.start}>Start</button>
+                    </div>
+                </div>
+            );
+        }
         return (
             <div className="container game-sheet" style={style}>
                 <Prompt when={this.props.state == GameState.QUESTiON} message="Changes you made may not be saved." />
@@ -183,10 +194,6 @@ export class VectorGame extends React.Component {
             y: null,
             answerVector: null,
         };
-    }
-
-    componentDidMount() {
-        this.setState(this.generateQuestion());
     }
 
     getRandomInt(min, max) {
@@ -309,15 +316,20 @@ export class VectorGame extends React.Component {
                 answerText: null,
             },
             this.generateQuestion(),
-            {state: GameState.NEW},
         );
         this.setState(state);
+    }
+
+    start() {
+        console.log('HERE');
+        this.setState(this.generateQuestion());
     }
 
     render() {
         return (
             <VectorGameBoard
                 state={this.state.state}
+                start={this.start.bind(this)}
                 score={this.state.score}
                 level={this.state.level}
                 question={this.state.question}
