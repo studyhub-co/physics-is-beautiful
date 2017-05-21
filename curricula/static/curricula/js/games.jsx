@@ -211,6 +211,10 @@ export class VectorGame extends React.Component {
         };
     }
 
+    componentWillUnmount() {
+        window.onbeforeunload = null;
+    }
+
     getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -228,6 +232,7 @@ export class VectorGame extends React.Component {
                 var newState = GameState.WON;
                 this.props.gameWon();
                 newLevel = 4;
+                window.onbeforeunload = null;
                 this.setState({score: newScore, level: newLevel, state: newState});
             } else {
                 this.setState(this.generateQuestion(newScore, newLevel));
@@ -321,6 +326,7 @@ export class VectorGame extends React.Component {
 
     gameOver(vector, text) {
         this.setState({state: GameState.GAME_OVER, answerVector: vector, answerText: text});
+        window.onbeforeunload = null;
     }
 
     restart() {
@@ -338,6 +344,9 @@ export class VectorGame extends React.Component {
     }
 
     start() {
+        window.onbeforeunload = function() {
+            return 'Changes you made may not be saved.';
+        };
         this.setState(this.generateQuestion());
     }
 
