@@ -209,7 +209,7 @@ export class VectorGame extends React.Component {
             this.state.y == (arrow.getYComponent() || 0)) {
             var newScore = this.state.score + 100;
             var newLevel = Math.floor(newScore / 400) + 1;
-            if (newLevel > 0) {
+            if (newLevel > 4) {
                 var newState = GameState.WON;
                 this.props.gameWon();
                 newLevel = 4;
