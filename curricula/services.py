@@ -117,6 +117,13 @@ class ProgressServiceBase(object):
         self.save()
         return is_correct
 
+    def game_success(self, game):
+        self.current_lesson_progress.complete()
+        next_lesson = game.lesson.get_next_lesson()
+        if next_lesson:
+            self.unlock_lesson(next_lesson)
+        self.save()
+
 
 class ProgressService(ProgressServiceBase):
 

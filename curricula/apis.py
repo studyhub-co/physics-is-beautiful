@@ -3,13 +3,15 @@ from django.utils import timezone
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
 
 from expander import ExpanderSerializerMixin
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
-    Image, MathematicalExpression
+    Image, MathematicalExpression, Game
 )
 from .services import get_progress_service, LessonLocked
 
@@ -246,6 +248,15 @@ class LessonViewSet(ModelViewSet):
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def game_success(request, slug):
+    game = Game.objects.get(slug=slug)
+    service = get_progress_service(request, game.lesson)
+    service.game_success(game)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):

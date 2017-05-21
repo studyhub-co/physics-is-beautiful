@@ -304,13 +304,25 @@ class GamesApp extends React.Component {
         };
     }
 
+    gameWon() {
+        $.ajax({
+            url: '/api/v1/curricula/games/' + this.state.slug + '/success',
+            context: this,
+            type: "POST",
+            data: {},
+            success: function(data, status, jqXHR) {
+                return;
+            }
+        });
+    }
+
     render() {
         var Game;
         switch(this.state.slug) {
             case 'vector-game':
                 Game = VectorGame;
         }
-        return <Game />;
+        return <Game gameWon={this.gameWon.bind(this)}/>;
     }
 
 }

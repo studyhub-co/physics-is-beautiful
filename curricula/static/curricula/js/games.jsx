@@ -209,8 +209,9 @@ export class VectorGame extends React.Component {
             this.state.y == (arrow.getYComponent() || 0)) {
             var newScore = this.state.score + 100;
             var newLevel = Math.floor(newScore / 400) + 1;
-            if (newLevel > 4) {
+            if (newLevel > 0) {
                 var newState = GameState.WON;
+                this.props.gameWon();
                 newLevel = 4;
                 this.setState({score: newScore, level: newLevel, state: newState});
             } else {
@@ -309,19 +310,19 @@ export class VectorGame extends React.Component {
 
     restart() {
         var state = Object.assign(
+            this.generateQuestion(),
             {
                 score: 0,
                 level: 1,
                 answerVector: null,
                 answerText: null,
+                state: GameState.NEW
             },
-            this.generateQuestion(),
         );
         this.setState(state);
     }
 
     start() {
-        console.log('HERE');
         this.setState(this.generateQuestion());
     }
 
