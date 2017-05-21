@@ -1,5 +1,6 @@
 import React from 'react';
 import RMathJax from 'react-mathjax';
+import ReactHover from 'react-hover';
 import {Canvas, Vector, VectorCanvas, CanvasVector} from './vector_canvas';
 import {Text, Expression} from './app.jsx'
 
@@ -224,6 +225,15 @@ class SingleMathematicalExpressionAnswer extends React.Component {
         }
         this.questionId = this.props.question.uuid;
         var x, y;
+        var hoverStyle = {
+            height: "30px",
+            overflowY: 'auto',
+            outline: '1px solid black',
+            width: '80px',
+            background: '#E8E27E',
+            position: 'absolute',
+            color: "black"
+        }
         if (this.props.xHat) {
             x = (
                 <a
@@ -231,7 +241,14 @@ class SingleMathematicalExpressionAnswer extends React.Component {
                     style={{minHeight: "40px"}}
                     onClick={this.insertXHat.bind(this)}
                 >
-                    <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
+                    <ReactHover options={{shiftX: 200, shiftY: 200}}>
+                        <ReactHover.Trigger>
+                            <RMathJax.Node inline>{"\\hat{x}"}</RMathJax.Node>
+                        </ReactHover.Trigger>
+                        <ReactHover.Hover>
+                            <span style={hoverStyle}>"\hat x"</span>
+                        </ReactHover.Hover>
+                    </ReactHover>
                 </a>
             );
         }
@@ -242,7 +259,14 @@ class SingleMathematicalExpressionAnswer extends React.Component {
                     style={{minHeight: "40px"}}
                     onClick={this.insertYHat.bind(this)}
                 >
-                    <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
+                    <ReactHover options={{shiftX: 200, shiftY: 200}}>
+                        <ReactHover.Trigger>
+                            <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
+                        </ReactHover.Trigger>
+                        <ReactHover.Hover>
+                            <span style={hoverStyle}>"\hat y"</span>
+                        </ReactHover.Hover>
+                    </ReactHover>
                 </a>
             );
         }
