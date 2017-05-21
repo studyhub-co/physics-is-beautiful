@@ -156,7 +156,7 @@ class QuestionSerializer(BaseSerializer):
     class Meta:
         model = Question
         fields = [
-            'uuid', 'text', 'hint', 'image', 'vector', 'question_type', 'answer_type', 'choices',
+            'uuid', 'text', 'hint', 'image', 'vectors', 'question_type', 'answer_type', 'choices',
             'lesson'
         ]
 
@@ -168,17 +168,11 @@ class QuestionSerializer(BaseSerializer):
     )
     choices = serializers.SerializerMethodField()
     lesson = LessonSerializer()
-    vector = serializers.SerializerMethodField()
+    vectors = VectorSerializer(many=True)
 
     def get_choices(self, obj):
         if obj.question_type == Question.QuestionType.MULTIPLE_CHOICE:
             return AnswerSerializer(obj.answers, many=True).data
-
-    def get_vector(self, obj):
-        if obj.answer_type == Question.AnswerType.VECTOR_COMPONENTS:
-            answer = obj.answers.first()
-            if answer:
-                return VectorSerializer(answer.content).data
 
 
 class LessonProgressSerializer(serializers.ModelSerializer):

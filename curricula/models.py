@@ -227,7 +227,8 @@ class Question(BaseModel):
     image = models.ImageField(blank=True)
     question_type = enum.EnumField(QuestionType)
     answer_type = enum.EnumField(AnswerType)
-    position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+    position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
+    vectors = models.ManyToManyField('Vector', related_name='questions')
 
     @property
     def question_type_name(self):

@@ -382,19 +382,24 @@ export class Question extends React.Component {
             );
         }
         var vector = '';
-        if (this.props.question.vector) {
-            var point = {
-                x: VectorCanvas.calcVectorXStart(this.props.question.vector.x_component),
-                y: VectorCanvas.calcVectorXStart(this.props.question.vector.y_component),
-            };
-            var endPoint = {
-                x: point.x + VectorCanvas.calcCanvasMagnitude(this.props.question.vector.x_component),
-                y: point.y - VectorCanvas.calcCanvasMagnitude(this.props.question.vector.y_component),
+        if (this.props.question.vectors.length) {
+            var vectors = [];
+            for (var i = 0; i < this.props.question.vectors.length; i++) {
+                var iVector = this.props.question.vectors[i];
+                var point = {
+                    x: VectorCanvas.calcVectorXStart(iVector.x_component),
+                    y: VectorCanvas.calcVectorXStart(iVector.y_component),
+                };
+                var endPoint = {
+                    x: point.x + VectorCanvas.calcCanvasMagnitude(iVector.x_component),
+                    y: point.y - VectorCanvas.calcCanvasMagnitude(iVector.y_component),
+                }
+                var cVector = new CanvasVector(null, point);
+                cVector.complete(endPoint);
+                vectors.push(cVector);
             }
-            var cVector = new CanvasVector(null, point);
-            cVector.complete(endPoint);
             vector = (
-                <VectorCanvas objects={[cVector]}/>
+                <VectorCanvas objects={vectors}/>
             );
         }
         var hint = '';
@@ -472,7 +477,6 @@ class VectorAnswer extends React.Component {
 class TextAnswer extends React.Component {
 
     render () {
-        console.log(this.props.answer);
         return <span>{this.props.answer.text}</span>
     }
 
@@ -491,7 +495,6 @@ class MathematicaExpressionAnswer extends React.Component {
 class DefaultAnswer extends React.Component {
 
     render () {
-        console.log(this.props.answer);
         return <div>{this.props.answer.text}</div>;
     }
 
@@ -523,13 +526,11 @@ class Answer extends React.Component {
 export class Footer extends React.Component {
 
     componentDidMount() {
-        console.log('first mount');
         MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     }
 
     componentDidUpdate() {
-        console.log('update');
         MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     }

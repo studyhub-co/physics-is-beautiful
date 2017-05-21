@@ -22,7 +22,6 @@ class ScoreBoard extends React.Component {
         // when to reset, there is additional juggling that has to be done
         // here.
         if (this.props.state == GameState.NEW && !this.state.didReset) {
-            console.log('RESETTING');
             this.setState({clockKey: this.state.clockKey + 1, didReset: true});
         }
         if (this.props.state != GameState.NEW && this.state.didReset) {
