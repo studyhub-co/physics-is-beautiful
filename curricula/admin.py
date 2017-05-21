@@ -368,8 +368,9 @@ _backlink_to_lesson = link_to_field('lesson')
 class QuestionAdmin(NestedModelAdmin):
 
     inlines = [
-        TextAnswerInline, VectorAnswerInline, ImageAnswerInline, MathematicalExpressionAnswerInline,
-        VectorQuestionsInline,
+        VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
+        MathematicalExpressionAnswerInline,
+
     ]
     fields = [
         'lesson', _backlink_to_lesson, 'text', 'hint', 'published_on', 'image', 'question_type',
@@ -386,7 +387,7 @@ class QuestionAdmin(NestedModelAdmin):
     }
 
     def get_inline_instances(self, request, obj=None):
-        inline_classes = [VectorQuestionsInline]
+        inline_classes = []
         if obj:
             db_instance = obj.instance_from_db()
             if db_instance.answer_type == obj.answer_type:
