@@ -81,7 +81,7 @@ class ScoreBoard extends React.Component {
                     <div style={clockStyle}>
                         <ReactCountdownClock
                             key={this.state.clockKey}
-                            seconds={60}
+                            seconds={120}
                             color="#777777"
                             alpha={0.9}
                             size={100}
@@ -149,6 +149,7 @@ class VectorGameBoard extends React.Component {
                     <div className="col-md-4" />
                     <div className="col-md-4 text-center">
                         <span><h1>Vector Game</h1></span>
+                        <p><span>Draw the vector! Beat a score of 1600 to graduate to the next lesson. Wrong answers end the game.</span></p>
                         <button onClick={this.props.start}>Start</button>
                     </div>
                 </div>
@@ -257,62 +258,67 @@ export class VectorGame extends React.Component {
     }
 
     generateQuestion(newScore, newLevel) {
-        var question, x = 0, y = 0;
+        var question;
+        var x = 0, y = 0;
         newScore = newScore || this.state.score;
         newLevel = newLevel || this.state.level;
-        switch(newLevel) {
-            case 1:
-                var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
-                var sign = ['', '-'][this.getRandomInt(0, 1)];
-                if ([xHat, iHat].indexOf(char) >= 0) {
-                    x = (sign == '') ? 1 : -1;
-                } else {
-                    y = (sign == '') ? 1 : -1;
-                }
-                question = <span>{"Draw " + sign}{char}</span>;
-                break;
-            case 2:
-                var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
-                if ([xHat, iHat].indexOf(char) >= 0) {
+        do {
+            switch(newLevel) {
+                case 1:
+                    var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
+                    var sign = ['', '-'][this.getRandomInt(0, 1)];
+                    if ([xHat, iHat].indexOf(char) >= 0) {
+                        x = (sign == '') ? 1 : -1;
+                    } else {
+                        y = (sign == '') ? 1 : -1;
+                    }
+                    question = <span>{"Draw " + sign}{char}</span>;
+                    break;
+                case 2:
+                    var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
+                    if ([xHat, iHat].indexOf(char) >= 0) {
+                        x = this.getRandomInt(-4, 4);
+                        question = <span>{"Draw " + x}{char}</span>;
+                    } else {
+                        y = this.getRandomInt(-4, 4);
+                        question = <span>{"Draw " + y}{char}</span>;
+                    }
+                    break;
+                case 3:
+                    var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
                     x = this.getRandomInt(-4, 4);
-                    question = <span>{"Draw " + x}{char}</span>;
-                } else {
                     y = this.getRandomInt(-4, 4);
-                    question = <span>{"Draw " + y}{char}</span>;
-                }
-                break;
-            case 3:
-                var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-                x = this.getRandomInt(-4, 4);
-                y = this.getRandomInt(-4, 4);
-                question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
-                break;
-            case 4:
-                var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-                var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
-                var x1 = this.getRandomInt(-2, 2);
-                var y1 = this.getRandomInt(-2, 2);
-                var x2 = this.getRandomInt(-2, 2);
-                var y2 = this.getRandomInt(-2, 2);
-                x = (sign == ' + ') ? x1 + x2 : x1 - x2;
-                y = (sign == ' + ') ? y1 + y2 : y1 - y2;
-                var draw = <span>{"Draw "}{vectorA}{sign}{vectorB}</span>;
-                var vA = <span>{vectorA}{" = " + x1}{chars[0]}{" + " + y1}{chars[1]}</span>;
-                var vB = <span>{vectorB}{" = " + x2}{chars[0]}{" + " + y2}{chars[1]}</span>;
+                    question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
+                    break;
+                case 4:
+                    var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
+                    var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
+                    var x1 = this.getRandomInt(-2, 2);
+                    var y1 = this.getRandomInt(-2, 2);
+                    var x2 = this.getRandomInt(-2, 2);
+                    var y2 = this.getRandomInt(-2, 2);
+                    x = (sign == ' + ') ? x1 + x2 : x1 - x2;
+                    y = (sign == ' + ') ? y1 + y2 : y1 - y2;
+                    var draw = <span>{"Draw "}{vectorA}{sign}{vectorB}</span>;
+                    var vA = <span>{vectorA}{" = " + x1}{chars[0]}{" + " + y1}{chars[1]}</span>;
+                    var vB = <span>{vectorB}{" = " + x2}{chars[0]}{" + " + y2}{chars[1]}</span>;
 
-                question = <div>{draw}<br/>{vA}<br/>{vB}</div>;
-                break;
-            default:
-                var char = ['x', 'y', 'i', 'j'][this.getRandomInt(0, 3)]
-                if (['x', 'i'].indexOf(char) >= 0) {
-                    x = this.getRandomInt(-4, 4);
-                    question = "Draw " + x + char;
-                } else {
-                    y = this.getRandomInt(-4, 4);
-                    question = "Draw " + y + char;
-                }
-                break;
-        }
+                    question = <div>{draw}<br/>{vA}<br/>{vB}</div>;
+                    break;
+                default:
+                    var char = ['x', 'y', 'i', 'j'][this.getRandomInt(0, 3)]
+                    if (['x', 'i'].indexOf(char) >= 0) {
+                        x = this.getRandomInt(-4, 4);
+                        question = "Draw " + x + char;
+                    } else {
+                        y = this.getRandomInt(-4, 4);
+                        question = "Draw " + y + char;
+                    }
+                    break;
+            }
+        // Let's make sure we don't get the same question twice in a row.
+        } while (this.state.x === x && this.state.y === y);
+        this.lastQuestion = question;
         return {
             score: newScore,
             level: newLevel,
