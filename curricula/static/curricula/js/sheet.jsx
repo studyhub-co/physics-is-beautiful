@@ -2,7 +2,6 @@ import React from 'react';
 import {Prompt} from 'react-router-dom';
 import {Section} from './navigation';
 import {Question, Footer} from './questions';
-import {playAudio} from './audio';
 
 
 class LessonComplete extends React.Component {

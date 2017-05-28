@@ -14,8 +14,40 @@ var SoundSingleton = {
         "complete": "{% static 'curricula/audio/complete.mp3' %}",
         "exam_start": "{% static 'curricula/audio/exam_start.mp3' %}",
         "exam_correct": "{% static 'curricula/audio/exam_correct.mp3' %}",
+        "rainbow": "{% static 'curricula/audio/doublerainbow.mp3' %}",
     }
 };
+var bgAudio = null;
+var playAudio = function(key) {
+    if (SoundSingleton.soundEnabled) {
+        var audio = new Audio(SoundSingleton.soundFiles[key]);
+        audio.play();
+    }
+}
+var playBackgroundAudio = function(key) {
+    stopBackgroundAudio();
+    if (SoundSingleton.soundEnabled) {
+        bgAudio = new Audio(SoundSingleton.soundFiles[key]);
+        bgAudio.loop = true;
+        bgAudio.play();
+    }
+}
+var pauseBackgroundAudio = function() {
+    if (bgAudio) {
+        bgAudio.pause();
+    }
+}
+var unpauseBackgroundAudio = function() {
+    if (bgAudio) {
+        bgAudio.play();
+    }
+}
+var stopBackgroundAudio = function() {
+    if (bgAudio) {
+        bgAudio.pause();
+        bgAudio = null;
+    }
+}
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {

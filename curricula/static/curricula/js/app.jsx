@@ -1,7 +1,6 @@
 import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import {SectionSheet, Sheet} from './sheet';
-import {playAudio} from './audio';
 import {VectorGame} from './games';
 import {Vector} from './vector_canvas';
 

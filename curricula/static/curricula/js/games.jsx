@@ -4,7 +4,6 @@ import MediaQuery from 'react-responsive';
 import {Link, Prompt} from 'react-router-dom';
 import ReactCountdownClock from 'react-countdown-clock';
 import {VectorCanvas, CanvasVector, CanvasText} from './vector_canvas';
-import {playAudio} from './audio';
 
 
 class ScoreBoard extends React.Component {
@@ -314,8 +313,10 @@ export class VectorGame extends React.Component {
     pauseToggle() {
         if ([GameState.PAUSED, GameState.QUESTION].indexOf(this.state.state) > -1) {
             if (this.state.state !== GameState.PAUSED) {
+                pauseBackgroundAudio();
                 this.setState({state: GameState.PAUSED, pausedOnState: this.state.state});
             } else {
+                unpauseBackgroundAudio();
                 this.setState({state: this.state.pausedOnState, pausedOnState: null});
             }
         }
@@ -329,6 +330,7 @@ export class VectorGame extends React.Component {
             var newLevel = Math.floor(newScore / 400) + 1;
             if (newLevel > 4) {
                 var newState = GameState.WON;
+                stopBackgroundAudio();
                 this.props.gameWon();
                 newLevel = 4;
                 window.onbeforeunload = null;
@@ -432,6 +434,7 @@ export class VectorGame extends React.Component {
 
     gameOver(vector, text) {
         this.setState({state: GameState.GAME_OVER, answerVector: vector, answerText: text});
+        stopBackgroundAudio();
         window.onbeforeunload = null;
     }
 
@@ -453,6 +456,7 @@ export class VectorGame extends React.Component {
         window.onbeforeunload = function() {
             return 'Changes you made may not be saved.';
         };
+        playBackgroundAudio('rainbow');
         this.setState(this.generateQuestion());
     }
 
