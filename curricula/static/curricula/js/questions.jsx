@@ -357,6 +357,14 @@ class Hint extends React.Component {
 }
 
 
+var VECTOR_COLORS  = [
+    'red',
+    'blue',
+    'green',
+    'yellow',
+]
+
+
 export class Question extends React.Component {
 
     componentDidMount() {
@@ -388,13 +396,13 @@ export class Question extends React.Component {
                 var iVector = this.props.question.vectors[i];
                 var point = {
                     x: VectorCanvas.calcVectorXStart(iVector.x_component),
-                    y: VectorCanvas.calcVectorXStart(iVector.y_component),
+                    y: VectorCanvas.calcVectorYStart(iVector.y_component),
                 };
                 var endPoint = {
                     x: point.x + VectorCanvas.calcCanvasMagnitude(iVector.x_component),
                     y: point.y - VectorCanvas.calcCanvasMagnitude(iVector.y_component),
                 }
-                var cVector = new CanvasVector(null, point);
+                var cVector = new CanvasVector(null, point, VECTOR_COLORS[i]);
                 cVector.complete(endPoint);
                 vectors.push(cVector);
             }
