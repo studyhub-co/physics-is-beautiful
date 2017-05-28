@@ -3,6 +3,7 @@ import MathJax from 'react-mathjax';
 import {Link, Prompt} from 'react-router-dom';
 import ReactCountdownClock from 'react-countdown-clock';
 import {VectorCanvas, CanvasVector, CanvasText} from './vector_canvas';
+import {playAudio} from './audio';
 
 
 class ScoreBoard extends React.Component {
@@ -32,6 +33,7 @@ class ScoreBoard extends React.Component {
     render() {
         var score;
         var paused;
+        var pauseButton = '';
         switch(this.props.state) {
             case GameState.GAME_OVER:
                 paused = true;
@@ -47,21 +49,34 @@ class ScoreBoard extends React.Component {
                 paused = true;
                 score = (
                     <div className="col-md-4 text-center">
-                        <h1>Score: {this.props.score}</h1>
+                        <h2>Score: {this.props.score}</h2>
                         <h1>You Won!</h1>
                         <button><Link to={'/'}>Continue</Link></button>
                     </div>
                 )
                 break;
+            case GameState.PAUSED:
+                paused = true;
+                score = (
+                    <div>
+                        <div className="col-md-2 text-center">
+                            <h2>Score: {this.props.score}</h2>
+                        </div>
+                        <div className="col-md-2 text-center">
+                            <h2>Level: {this.props.level}</h2>
+                        </div>
+                    </div>
+                );
+                break;
             default:
                 paused = false;
                 score = (
                     <div>
-                        <div className="col-md-4 text-center">
-                            <h1>Score: {this.props.score}</h1>
+                        <div className="col-md-2 text-center">
+                            <h2>Score: {this.props.score}</h2>
                         </div>
-                        <div className="col-md-4 text-center">
-                            <h1>Level: {this.props.level}</h1>
+                        <div className="col-md-2 text-center">
+                            <h2>Level: {this.props.level}</h2>
                         </div>
                     </div>
                 );
@@ -77,7 +92,9 @@ class ScoreBoard extends React.Component {
         }
         return (
             <div className="row text-center">
-                <div className="col-md-4 text-center">
+                <div className="col-md-2">
+                </div>
+                <div className="col-md-2 text-center">
                     <div style={clockStyle}>
                         <ReactCountdownClock
                             key={this.state.clockKey}
@@ -88,6 +105,7 @@ class ScoreBoard extends React.Component {
                             weight={10}
                             paused={paused}
                             onComplete={this.props.timesUp}
+                            onClick={this.props.pause}
                         />
                     </div>
                 </div>
@@ -113,7 +131,7 @@ class QuestionBoard extends React.Component {
         }
         return (
             <div className="text-center">
-                <MathJax.Context><h1>{this.props.question}</h1></MathJax.Context>
+                <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
                 <VectorCanvas
                     allowNull={true}
                     onComplete={this.props.arrowComplete}
@@ -143,17 +161,37 @@ class VectorGameBoard extends React.Component {
 
     render() {
         var style = {backgroundColor: this.levelColorMap[this.props.level]};
-        if (this.props.state == GameState.NEW) {
-            return (
-                <div className="container game-sheet" style={style}>
-                    <div className="col-md-4" />
-                    <div className="col-md-4 text-center">
-                        <span><h1>Vector Game</h1></span>
-                        <p><span>Draw the vector! Beat a score of 1600 to graduate to the next lesson. Wrong answers end the game.</span></p>
-                        <button onClick={this.props.start}>Start</button>
+        switch (this.props.state) {
+            case GameState.NEW:
+                return (
+                    <div className="container game-sheet" style={style}>
+                        <div className="col-md-4" />
+                        <div className="col-md-4 text-center">
+                            <span><h1>Vector Game</h1></span>
+                            <p><span>Draw the vector! Beat a score of 1600 to graduate to the next lesson. Wrong answers end the game.</span></p>
+                            <button onClick={this.props.start}>Start</button>
+                        </div>
                     </div>
-                </div>
-            );
+                );
+            case GameState.PAUSED:
+                return (
+                    <div className="container game-sheet" style={style}>
+                        <Prompt when={this.props.state == GameState.QUESTiON} message="Changes you made may not be saved." />
+                        <ScoreBoard
+                            state={this.props.state}
+                            score={this.props.score}
+                            level={this.props.level}
+                            timesUp={this.props.timesUp}
+                            pause={this.props.pause}
+                            restart={this.props.restart}
+                        />
+                        <div className="col-md-4" />
+                        <div className="col-md-4 text-center">
+                            <span><h1>Vector Game</h1></span>
+                            <p><span><h1>PAUSED</h1></span></p>
+                        </div>
+                    </div>
+                );
         }
         return (
             <div className="container game-sheet" style={style}>
@@ -163,6 +201,7 @@ class VectorGameBoard extends React.Component {
                     score={this.props.score}
                     level={this.props.level}
                     timesUp={this.props.timesUp}
+                    pause={this.props.pause}
                     restart={this.props.restart}
                 />
                 <QuestionBoard
@@ -183,6 +222,7 @@ class VectorGameBoard extends React.Component {
 const GameState = {
     NEW: 'NEW',
     QUESTION: 'QUESTION',
+    PAUSED: 'PAUSED',
     GAME_OVER: 'GAME OVER',
     WON: 'WON',
 }
@@ -202,12 +242,14 @@ export class VectorGame extends React.Component {
         super();
         this.state = {
             state: GameState.NEW,
+            pausedOnState: null,
             score: 0,
             level: 1,
             question: null,
             x: null,
             y: null,
             answerVector: null,
+            paused: true,
         };
     }
 
@@ -223,9 +265,19 @@ export class VectorGame extends React.Component {
         this.gameOver();
     }
 
+    pauseToggle() {
+        console.log(this.state.state);
+        if (this.state.state !== GameState.PAUSED) {
+            this.setState({state: GameState.PAUSED, pausedOnState: this.state.state});
+        } else {
+            this.setState({state: this.state.pausedOnState, pausedOnState: null});
+        }
+    }
+
     checkAnswer(arrow) {
         if (this.state.x == (arrow.getXComponent() || 0) &&
             this.state.y == (arrow.getYComponent() || 0)) {
+            playAudio('correct');
             var newScore = this.state.score + 100;
             var newLevel = Math.floor(newScore / 400) + 1;
             if (newLevel > 4) {
@@ -238,6 +290,7 @@ export class VectorGame extends React.Component {
                 this.setState(this.generateQuestion(newScore, newLevel));
             }
         } else {
+            playAudio('incorrect');
             var pointer = {
                 x: VectorCanvas.calcVectorXStart(this.state.x),
                 y: VectorCanvas.calcVectorYStart(this.state.y),
@@ -263,6 +316,7 @@ export class VectorGame extends React.Component {
         newScore = newScore || this.state.score;
         newLevel = newLevel || this.state.level;
         do {
+            x = y = 0;
             switch(newLevel) {
                 case 1:
                     var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
@@ -366,6 +420,7 @@ export class VectorGame extends React.Component {
                 answerVector={this.state.answerVector}
                 answerText={this.state.answerText}
                 timesUp={this.timesUp.bind(this)}
+                pause={this.pauseToggle.bind(this)}
                 arrowComplete={this.checkAnswer.bind(this)}
                 restart={this.restart.bind(this)}
             />
