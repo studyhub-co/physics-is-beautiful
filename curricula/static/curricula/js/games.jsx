@@ -1,5 +1,6 @@
 import React from 'react';
 import MathJax from 'react-mathjax';
+import MediaQuery from 'react-responsive';
 import {Link, Prompt} from 'react-router-dom';
 import ReactCountdownClock from 'react-countdown-clock';
 import {VectorCanvas, CanvasVector, CanvasText} from './vector_canvas';
@@ -58,12 +59,20 @@ class ScoreBoard extends React.Component {
                 paused = true;
                 score = (
                     <div>
-                        <div className="col-md-2 text-center">
-                            <h2>Score: {this.props.score}</h2>
-                        </div>
-                        <div className="col-md-2 text-center">
-                            <h2>Level: {this.props.level}</h2>
-                        </div>
+                        <MediaQuery minDeviceWidth={736}>
+                            <div className="col-md-2 text-center">
+                                <h2>Score: {this.props.score}</h2>
+                            </div>
+                            <div className="col-md-2 text-center">
+                                <h2>Level: {this.props.level}</h2>
+                            </div>
+                        </MediaQuery>
+                        <MediaQuery maxDeviceWidth={736}>
+                          <div className="col-md-2 text-center">
+                              <h4>Score: {this.props.score}</h4>
+                              <h4>Level: {this.props.level}</h4>
+                          </div>
+                        </MediaQuery>
                     </div>
                 );
                 break;
@@ -71,12 +80,19 @@ class ScoreBoard extends React.Component {
                 paused = false;
                 score = (
                     <div>
-                        <div className="col-md-2 text-center">
-                            <h2>Score: {this.props.score}</h2>
-                        </div>
-                        <div className="col-md-2 text-center">
-                            <h2>Level: {this.props.level}</h2>
-                        </div>
+                        <MediaQuery minDeviceWidth={736}>
+                            <div className="col-md-2 text-center">
+                                <h2>Score: {this.props.score}</h2>
+                            </div>
+                            <div className="col-md-2 text-center">
+                                <h2>Level: {this.props.level}</h2>
+                            </div>
+                        </MediaQuery>
+                        <MediaQuery maxDeviceWidth={736}>
+                          <div className="col-md-2 text-center">
+                              <h4>Score: {this.props.score} Level: {this.props.level}</h4>
+                          </div>
+                        </MediaQuery>
                     </div>
                 );
         }
@@ -89,24 +105,50 @@ class ScoreBoard extends React.Component {
             marginLeft: -100,
             position: "relative",
         }
+        var smallClockStyle = {
+            height: 50,
+            width: 50,
+            top: "50%",
+            left: "50%",
+            display: "block",
+            marginLeft: -50,
+            position: "relative",
+        }
         return (
             <div className="row text-center">
                 <div className="col-md-2">
                 </div>
                 <div className="col-md-2 text-center">
-                    <div style={clockStyle}>
-                        <ReactCountdownClock
-                            key={this.state.clockKey}
-                            seconds={120}
-                            color="#777777"
-                            alpha={0.9}
-                            size={100}
-                            weight={10}
-                            paused={paused}
-                            onComplete={this.props.timesUp}
-                            onClick={this.props.pause}
-                        />
-                    </div>
+                    <MediaQuery minDeviceWidth={736}>
+                        <div style={clockStyle}>
+                            <ReactCountdownClock
+                                key={this.state.clockKey}
+                                seconds={120}
+                                color="#777777"
+                                alpha={0.9}
+                                size={100}
+                                weight={10}
+                                paused={paused}
+                                onComplete={this.props.timesUp}
+                                onClick={this.props.pause}
+                            />
+                        </div>
+                    </MediaQuery>
+                    <MediaQuery maxDeviceWidth={736}>
+                        <div style={smallClockStyle}>
+                            <ReactCountdownClock
+                                key={this.state.clockKey}
+                                seconds={120}
+                                color="#777777"
+                                alpha={0.9}
+                                size={50}
+                                weight={10}
+                                paused={paused}
+                                onComplete={this.props.timesUp}
+                                onClick={this.props.pause}
+                            />
+                        </div>
+                    </MediaQuery>
                 </div>
                 {score}
              </div>
@@ -130,7 +172,12 @@ class QuestionBoard extends React.Component {
         }
         return (
             <div className="text-center">
-                <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+                <MediaQuery minDeviceWidth={736}>
+                    <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+                </MediaQuery>
+                <MediaQuery maxDeviceWidth={736}>
+                    <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
+                </MediaQuery>
                 <VectorCanvas
                     allowNull={true}
                     onComplete={this.props.arrowComplete}
