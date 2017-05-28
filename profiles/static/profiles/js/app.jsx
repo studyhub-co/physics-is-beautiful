@@ -113,7 +113,6 @@ export default class ProfileModalApp extends React.Component {
         } else {
             pauseBackgroundAudio();
         }
-        console.log('Sound enabled: ' + SoundSingleton.soundEnabled);
     }
 
     modalOpen(event) {
