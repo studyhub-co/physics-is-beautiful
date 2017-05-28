@@ -33,7 +33,6 @@ class ScoreBoard extends React.Component {
     render() {
         var score;
         var paused;
-        var pauseButton = '';
         switch(this.props.state) {
             case GameState.GAME_OVER:
                 paused = true;
@@ -266,11 +265,12 @@ export class VectorGame extends React.Component {
     }
 
     pauseToggle() {
-        console.log(this.state.state);
-        if (this.state.state !== GameState.PAUSED) {
-            this.setState({state: GameState.PAUSED, pausedOnState: this.state.state});
-        } else {
-            this.setState({state: this.state.pausedOnState, pausedOnState: null});
+        if ([GameState.PAUSED, GameState.QUESTION].indexOf(this.state.state) > -1) {
+            if (this.state.state !== GameState.PAUSED) {
+                this.setState({state: GameState.PAUSED, pausedOnState: this.state.state});
+            } else {
+                this.setState({state: this.state.pausedOnState, pausedOnState: null});
+            }
         }
     }
 
