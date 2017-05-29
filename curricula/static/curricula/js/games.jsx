@@ -169,6 +169,7 @@ class QuestionBoard extends React.Component {
         if (this.props.answerText) {
             objects.push(this.props.answerText);
         }
+        var disabled = !([GameState.GAME_OVER, GameState.WON].indexOf(this.props.state) > -1);
         return (
             <div className="text-center">
                 <MediaQuery minDeviceWidth={736}>
@@ -182,7 +183,7 @@ class QuestionBoard extends React.Component {
                     onComplete={this.props.arrowComplete}
                     clear={this.props.clear}
                     objects={objects}
-                    allowInput={this.props.state != GameState.GAME_OVER}
+                    allowInput={disabled}
                     fade={fade}
                 />
             </div>
@@ -233,7 +234,7 @@ class VectorGameBoard extends React.Component {
                         <div className="col-md-4" />
                         <div className="col-md-4 text-center">
                             <span><h1>Vector Game</h1></span>
-                            <p><span><h1>PAUSED</h1></span></p>
+                            <span><h1>PAUSED</h1></span>
                         </div>
                     </div>
                 );
