@@ -105,8 +105,14 @@ export default class ProfileModalApp extends React.Component {
     }
 
     toggleSound(event) {
-        this.setState({soundEnabled: !this.state.soundEnabled});
-        SoundSingleton.soundEnabled = this.state.soundEnabled;
+        var newState = !this.state.soundEnabled;
+        this.setState({soundEnabled: newState});
+        SoundSingleton.soundEnabled = newState;
+        if (SoundSingleton.soundEnabled) {
+            unpauseBackgroundAudio();
+        } else {
+            pauseBackgroundAudio();
+        }
     }
 
     modalOpen(event) {

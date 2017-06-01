@@ -2,7 +2,6 @@ import React from 'react';
 import {Prompt} from 'react-router-dom';
 import {Section} from './navigation';
 import {Question, Footer} from './questions';
-import {playAudio} from './audio';
 
 
 class LessonComplete extends React.Component {
@@ -55,6 +54,7 @@ class QuestionSheet extends React.Component {
                 <Footer
                     progress={this.props.progress}
                     correct={this.props.question.is_correct}
+                    answer={this.props.answer}
                     continueAction={this.props.continueAction}
                 />
                 <div></div>

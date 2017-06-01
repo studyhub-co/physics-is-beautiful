@@ -1,5 +1,6 @@
 import React from 'react';
 import MathJax from 'react-mathjax';
+import MediaQuery from 'react-responsive';
 import {Link, Prompt} from 'react-router-dom';
 import ReactCountdownClock from 'react-countdown-clock';
 import {VectorCanvas, CanvasVector, CanvasText} from './vector_canvas';
@@ -22,7 +23,6 @@ class ScoreBoard extends React.Component {
         // when to reset, there is additional juggling that has to be done
         // here.
         if (this.props.state == GameState.NEW && !this.state.didReset) {
-            console.log('RESETTING');
             this.setState({clockKey: this.state.clockKey + 1, didReset: true});
         }
         if (this.props.state != GameState.NEW && this.state.didReset) {
@@ -48,34 +48,106 @@ class ScoreBoard extends React.Component {
                 paused = true;
                 score = (
                     <div className="col-md-4 text-center">
-                        <h1>Score: {this.props.score}</h1>
+                        <h2>Score: {this.props.score}</h2>
                         <h1>You Won!</h1>
                         <button><Link to={'/'}>Continue</Link></button>
                     </div>
                 )
                 break;
+            case GameState.PAUSED:
+                paused = true;
+                score = (
+                    <div>
+                        <MediaQuery minDeviceWidth={736}>
+                            <div className="col-md-2 text-center">
+                                <h2>Score: {this.props.score}</h2>
+                            </div>
+                            <div className="col-md-2 text-center">
+                                <h2>Level: {this.props.level}</h2>
+                            </div>
+                        </MediaQuery>
+                        <MediaQuery maxDeviceWidth={736}>
+                          <div className="col-md-2 text-center">
+                              <h4>Score: {this.props.score}</h4>
+                              <h4>Level: {this.props.level}</h4>
+                          </div>
+                        </MediaQuery>
+                    </div>
+                );
+                break;
             default:
                 paused = false;
                 score = (
-                    <div className="col-md-4 text-center">
-                        <h1>Score: {this.props.score}</h1>
-                        <h1>Level: {this.props.level}</h1>
+                    <div>
+                        <MediaQuery minDeviceWidth={736}>
+                            <div className="col-md-2 text-center">
+                                <h2>Score: {this.props.score}</h2>
+                            </div>
+                            <div className="col-md-2 text-center">
+                                <h2>Level: {this.props.level}</h2>
+                            </div>
+                        </MediaQuery>
+                        <MediaQuery maxDeviceWidth={736}>
+                          <div className="col-md-2 text-center">
+                              <h4>Score: {this.props.score} Level: {this.props.level}</h4>
+                          </div>
+                        </MediaQuery>
                     </div>
                 );
         }
+        var clockStyle = {
+            height: 100,
+            width: 100,
+            top: "50%",
+            left: "50%",
+            display: "block",
+            marginLeft: -100,
+            position: "relative",
+        }
+        var smallClockStyle = {
+            height: 50,
+            width: 50,
+            top: "50%",
+            left: "50%",
+            display: "block",
+            marginLeft: -50,
+            position: "relative",
+        }
         return (
             <div className="row text-center">
-                <div className="col-md-4 text-center" style={{height: 100}} >
-                    <ReactCountdownClock
-                        key={this.state.clockKey}
-                        seconds={60}
-                        color="#777777"
-                        alpha={0.9}
-                        size={100}
-                        weight={10}
-                        paused={paused}
-                        onComplete={this.props.timesUp}
-                    />
+                <div className="col-md-2">
+                </div>
+                <div className="col-md-2 text-center">
+                    <MediaQuery minDeviceWidth={736}>
+                        <div style={clockStyle}>
+                            <ReactCountdownClock
+                                key={this.state.clockKey}
+                                seconds={120}
+                                color="#777777"
+                                alpha={0.9}
+                                size={100}
+                                weight={10}
+                                paused={paused}
+                                onComplete={this.props.timesUp}
+                                onClick={this.props.pause}
+                            />
+                        </div>
+                    </MediaQuery>
+                    <MediaQuery maxDeviceWidth={736}>
+                        <div style={smallClockStyle}>
+                            <ReactCountdownClock
+                                key={this.state.clockKey}
+                                seconds={120}
+                                color="#777777"
+                                alpha={0.9}
+                                size={50}
+                                weight={10}
+                                paused={paused}
+                                onComplete={this.props.timesUp}
+                                onClick={this.props.pause}
+                            />
+                        </div>
+                    </MediaQuery>
                 </div>
                 {score}
              </div>
@@ -97,15 +169,21 @@ class QuestionBoard extends React.Component {
         if (this.props.answerText) {
             objects.push(this.props.answerText);
         }
+        var disabled = !([GameState.GAME_OVER, GameState.WON].indexOf(this.props.state) > -1);
         return (
             <div className="text-center">
-                <MathJax.Context><h1>{this.props.question}</h1></MathJax.Context>
+                <MediaQuery minDeviceWidth={736}>
+                    <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+                </MediaQuery>
+                <MediaQuery maxDeviceWidth={736}>
+                    <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
+                </MediaQuery>
                 <VectorCanvas
                     allowNull={true}
                     onComplete={this.props.arrowComplete}
                     clear={this.props.clear}
                     objects={objects}
-                    allowInput={this.props.state != GameState.GAME_OVER}
+                    allowInput={disabled}
                     fade={fade}
                 />
             </div>
@@ -129,6 +207,38 @@ class VectorGameBoard extends React.Component {
 
     render() {
         var style = {backgroundColor: this.levelColorMap[this.props.level]};
+        switch (this.props.state) {
+            case GameState.NEW:
+                return (
+                    <div className="container game-sheet" style={style}>
+                        <div className="col-md-4" />
+                        <div className="col-md-4 text-center">
+                            <span><h1>Vector Game</h1></span>
+                            <p><span>Draw the vector! Beat a score of 1600 to graduate to the next lesson. Wrong answers end the game.</span></p>
+                            <button onClick={this.props.start}>Start</button>
+                        </div>
+                    </div>
+                );
+            case GameState.PAUSED:
+                return (
+                    <div className="container game-sheet" style={style}>
+                        <Prompt when={this.props.state == GameState.QUESTiON} message="Changes you made may not be saved." />
+                        <ScoreBoard
+                            state={this.props.state}
+                            score={this.props.score}
+                            level={this.props.level}
+                            timesUp={this.props.timesUp}
+                            pause={this.props.pause}
+                            restart={this.props.restart}
+                        />
+                        <div className="col-md-4" />
+                        <div className="col-md-4 text-center">
+                            <span><h1>Vector Game</h1></span>
+                            <span><h1>PAUSED</h1></span>
+                        </div>
+                    </div>
+                );
+        }
         return (
             <div className="container game-sheet" style={style}>
                 <Prompt when={this.props.state == GameState.QUESTiON} message="Changes you made may not be saved." />
@@ -137,6 +247,7 @@ class VectorGameBoard extends React.Component {
                     score={this.props.score}
                     level={this.props.level}
                     timesUp={this.props.timesUp}
+                    pause={this.props.pause}
                     restart={this.props.restart}
                 />
                 <QuestionBoard
@@ -157,6 +268,7 @@ class VectorGameBoard extends React.Component {
 const GameState = {
     NEW: 'NEW',
     QUESTION: 'QUESTION',
+    PAUSED: 'PAUSED',
     GAME_OVER: 'GAME OVER',
     WON: 'WON',
 }
@@ -176,17 +288,19 @@ export class VectorGame extends React.Component {
         super();
         this.state = {
             state: GameState.NEW,
+            pausedOnState: null,
             score: 0,
             level: 1,
             question: null,
             x: null,
             y: null,
             answerVector: null,
+            paused: true,
         };
     }
 
-    componentDidMount() {
-        this.setState(this.generateQuestion());
+    componentWillUnmount() {
+        window.onbeforeunload = null;
     }
 
     getRandomInt(min, max) {
@@ -197,19 +311,36 @@ export class VectorGame extends React.Component {
         this.gameOver();
     }
 
+    pauseToggle() {
+        if ([GameState.PAUSED, GameState.QUESTION].indexOf(this.state.state) > -1) {
+            if (this.state.state !== GameState.PAUSED) {
+                pauseBackgroundAudio();
+                this.setState({state: GameState.PAUSED, pausedOnState: this.state.state});
+            } else {
+                unpauseBackgroundAudio();
+                this.setState({state: this.state.pausedOnState, pausedOnState: null});
+            }
+        }
+    }
+
     checkAnswer(arrow) {
         if (this.state.x == (arrow.getXComponent() || 0) &&
             this.state.y == (arrow.getYComponent() || 0)) {
+            playAudio('correct');
             var newScore = this.state.score + 100;
             var newLevel = Math.floor(newScore / 400) + 1;
             if (newLevel > 4) {
                 var newState = GameState.WON;
+                stopBackgroundAudio();
+                this.props.gameWon();
                 newLevel = 4;
+                window.onbeforeunload = null;
                 this.setState({score: newScore, level: newLevel, state: newState});
             } else {
                 this.setState(this.generateQuestion(newScore, newLevel));
             }
         } else {
+            playAudio('incorrect');
             var pointer = {
                 x: VectorCanvas.calcVectorXStart(this.state.x),
                 y: VectorCanvas.calcVectorYStart(this.state.y),
@@ -230,62 +361,68 @@ export class VectorGame extends React.Component {
     }
 
     generateQuestion(newScore, newLevel) {
-        var question, x = 0, y = 0;
+        var question;
+        var x = 0, y = 0;
         newScore = newScore || this.state.score;
         newLevel = newLevel || this.state.level;
-        switch(newLevel) {
-            case 1:
-                var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
-                var sign = ['', '-'][this.getRandomInt(0, 1)];
-                if ([xHat, iHat].indexOf(char) >= 0) {
-                    x = (sign == '') ? 1 : -1;
-                } else {
-                    y = (sign == '') ? 1 : -1;
-                }
-                question = <span>{"Draw " + sign}{char}</span>;
-                break;
-            case 2:
-                var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
-                if ([xHat, iHat].indexOf(char) >= 0) {
+        do {
+            x = y = 0;
+            switch(newLevel) {
+                case 1:
+                    var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
+                    var sign = ['', '-'][this.getRandomInt(0, 1)];
+                    if ([xHat, iHat].indexOf(char) >= 0) {
+                        x = (sign == '') ? 1 : -1;
+                    } else {
+                        y = (sign == '') ? 1 : -1;
+                    }
+                    question = <span>{"Draw " + sign}{char}</span>;
+                    break;
+                case 2:
+                    var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
+                    if ([xHat, iHat].indexOf(char) >= 0) {
+                        x = this.getRandomInt(-4, 4);
+                        question = <span>{"Draw " + x}{char}</span>;
+                    } else {
+                        y = this.getRandomInt(-4, 4);
+                        question = <span>{"Draw " + y}{char}</span>;
+                    }
+                    break;
+                case 3:
+                    var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
                     x = this.getRandomInt(-4, 4);
-                    question = <span>{"Draw " + x}{char}</span>;
-                } else {
                     y = this.getRandomInt(-4, 4);
-                    question = <span>{"Draw " + y}{char}</span>;
-                }
-                break;
-            case 3:
-                var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-                x = this.getRandomInt(-4, 4);
-                y = this.getRandomInt(-4, 4);
-                question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
-                break;
-            case 4:
-                var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-                var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
-                var x1 = this.getRandomInt(-2, 2);
-                var y1 = this.getRandomInt(-2, 2);
-                var x2 = this.getRandomInt(-2, 2);
-                var y2 = this.getRandomInt(-2, 2);
-                x = (sign == ' + ') ? x1 + x2 : x1 - x2;
-                y = (sign == ' + ') ? y1 + y2 : y1 - y2;
-                var draw = <span>{"Draw "}{vectorA}{sign}{vectorB}</span>;
-                var vA = <span>{vectorA}{" = " + x1}{chars[0]}{" + " + y1}{chars[1]}</span>;
-                var vB = <span>{vectorB}{" = " + x2}{chars[0]}{" + " + y2}{chars[1]}</span>;
+                    question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
+                    break;
+                case 4:
+                    var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
+                    var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
+                    var x1 = this.getRandomInt(-2, 2);
+                    var y1 = this.getRandomInt(-2, 2);
+                    var x2 = this.getRandomInt(-2, 2);
+                    var y2 = this.getRandomInt(-2, 2);
+                    x = (sign == ' + ') ? x1 + x2 : x1 - x2;
+                    y = (sign == ' + ') ? y1 + y2 : y1 - y2;
+                    var draw = <span>{"Draw "}{vectorA}{sign}{vectorB}</span>;
+                    var vA = <span>{vectorA}{" = " + x1}{chars[0]}{" + " + y1}{chars[1]}</span>;
+                    var vB = <span>{vectorB}{" = " + x2}{chars[0]}{" + " + y2}{chars[1]}</span>;
 
-                question = <div>{draw}<br/>{vA}<br/>{vB}</div>;
-                break;
-            default:
-                var char = ['x', 'y', 'i', 'j'][this.getRandomInt(0, 3)]
-                if (['x', 'i'].indexOf(char) >= 0) {
-                    x = this.getRandomInt(-4, 4);
-                    question = "Draw " + x + char;
-                } else {
-                    y = this.getRandomInt(-4, 4);
-                    question = "Draw " + y + char;
-                }
-                break;
-        }
+                    question = <div>{draw}<br/>{vA}<br/>{vB}</div>;
+                    break;
+                default:
+                    var char = ['x', 'y', 'i', 'j'][this.getRandomInt(0, 3)]
+                    if (['x', 'i'].indexOf(char) >= 0) {
+                        x = this.getRandomInt(-4, 4);
+                        question = "Draw " + x + char;
+                    } else {
+                        y = this.getRandomInt(-4, 4);
+                        question = "Draw " + y + char;
+                    }
+                    break;
+            }
+        // Let's make sure we don't get the same question twice in a row.
+        } while (this.state.x === x && this.state.y === y);
+        this.lastQuestion = question;
         return {
             score: newScore,
             level: newLevel,
@@ -298,32 +435,44 @@ export class VectorGame extends React.Component {
 
     gameOver(vector, text) {
         this.setState({state: GameState.GAME_OVER, answerVector: vector, answerText: text});
+        stopBackgroundAudio();
+        window.onbeforeunload = null;
     }
 
     restart() {
         var state = Object.assign(
+            this.generateQuestion(),
             {
                 score: 0,
                 level: 1,
                 answerVector: null,
                 answerText: null,
+                state: GameState.NEW
             },
-            this.generateQuestion(),
-            {state: GameState.NEW},
         );
         this.setState(state);
+    }
+
+    start() {
+        window.onbeforeunload = function() {
+            return 'Changes you made may not be saved.';
+        };
+        playBackgroundAudio('rainbow');
+        this.setState(this.generateQuestion());
     }
 
     render() {
         return (
             <VectorGameBoard
                 state={this.state.state}
+                start={this.start.bind(this)}
                 score={this.state.score}
                 level={this.state.level}
                 question={this.state.question}
                 answerVector={this.state.answerVector}
                 answerText={this.state.answerText}
                 timesUp={this.timesUp.bind(this)}
+                pause={this.pauseToggle.bind(this)}
                 arrowComplete={this.checkAnswer.bind(this)}
                 restart={this.restart.bind(this)}
             />

@@ -74,10 +74,21 @@ html, body {
     .section-sheet{
         padding:0px;
     }
+    .game-sheet{
+        padding:0px;
+    }
 }
 
 @media all and (max-width: 770px) { /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
 	.problem-sheet {
+		width: 95%;
+		padding: 30px;
+	}
+	.section-sheet {
+		width: 95%;
+		padding: 30px;
+	}
+	.game-sheet {
 		width: 95%;
 		padding: 30px;
 	}
@@ -88,6 +99,16 @@ html, body {
 
 @media all and (max-width: 410px) { /*iPhone 6 optimization*/
 	.problem-sheet {
+		width: 99%;
+		padding: 20px;
+		margin-top: -15px;
+	}
+	.section-sheet {
+		width: 99%;
+		padding: 20px;
+		margin-top: -15px;
+	}
+	.game-sheet {
 		width: 99%;
 		padding: 20px;
 		margin-top: -15px;
@@ -123,12 +144,18 @@ html, body {
 
 @media all and (max-width: 313px) { /*Small screen optimization 1*/
 	.problem-sheet {
-		padding: 40px;
+            padding: 40px;
 	}
+        .section-sheet {
+            padding: 40px;
+        }
 }
 
 @media all and (max-width: 292px) { /*Small screen optimization 2*/
 	.problem-sheet {
+		padding: 30px;
+	}
+	.section-sheet {
 		padding: 30px;
 	}
 }

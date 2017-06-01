@@ -4,7 +4,9 @@ from django.utils.html import escape
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
-from .models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image
+from .models import (
+    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression
+)
 
 
 admin.AdminSite.site_header = 'Physics is Beautiful Admin'
@@ -152,7 +154,73 @@ class AnswerTabularInline(NestedTabularInline):
             return None
 
 
+class VectorQuestionForm(forms.ModelForm):
+
+    FIELDS = ['magnitude', 'angle', 'x_component', 'y_component']
+
+    class Meta:
+        model = Question.vectors.through
+        fields = ['magnitude', 'angle', 'x_component', 'y_component']
+
+    magnitude = forms.FloatField(required=False)
+    angle = forms.FloatField(required=False)
+    x_component = forms.FloatField(required=False)
+    y_component = forms.FloatField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(VectorQuestionForm, self).__init__(*args, **kwargs)
+        if self.instance.id:
+            for field in self.FIELDS:
+                self.initial[field] = getattr(self.instance.vector, field)
+
+    def clean(self):
+        print('CLEANING:', self.cleaned_data)
+        cleaned_data = super(VectorQuestionForm, self).clean()
+        kwargs = {field: cleaned_data[field] for field in self.FIELDS}
+        instance = Vector(**kwargs)
+        instance.validate_fields()
+        return cleaned_data
+
+    def save(self, commit=True):
+        print('WTF:', self.cleaned_data)
+        if self.cleaned_data.pop('DELETE', False):
+            print('WHAT DO WE DO NOW?')
+        question = self.cleaned_data.pop('question')
+        if 'id' in self.cleaned_data:
+            question_vector = self.cleaned_data.pop('id')
+            for k, v in self.cleaned_data.items():
+                setattr(question_vector.vector, k, v)
+            question_vector.vector.save()
+        else:
+            vector = Vector.objects.create(**self.cleaned_data)
+            question.vectors.add(vector)
+        return question
+
+
+class VectorQuestionsInline(NestedTabularInline):
+
+    extra = 0
+    classes = ['collapse']
+    verbose_name_plural = 'Edit Vectors to Display with Question'
+    model = Question.vectors.through
+    form = VectorQuestionForm
+    sortable_field_name = None
+
+    def magnitude(self, obj):
+        return obj.vector.magnitude
+
+    def angle(self, obj):
+        return obj.vector.angle
+
+    def x_component(self, obj):
+        return obj.vector.x_component
+
+    def y_component(self, obj):
+        return obj.vector.y_component
+
+
 class VectorAnswerInline(AnswerTabularInline):
+
     verbose_name_plural = 'Edit Vector Answers'
     model = Answer
     form = VectorAnswerForm
@@ -189,6 +257,27 @@ class TextAnswerInline(AnswerTabularInline):
 
     def text(self, obj):
         return obj.text
+
+
+class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['representation']
+    SPECIAL_MODEL = MathematicalExpression
+
+    class Meta:
+        model = Answer
+        fields = ['representation', 'is_correct', 'position']
+
+    representation = forms.CharField()
+
+
+class MathematicalExpressionAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Mathematical Expression Answers'
+    model = Answer
+    form = MathematicalExpressionAnswerForm
+
+    def representation(self, obj):
+        return obj.representation
 
 
 class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
@@ -284,17 +373,23 @@ _backlink_to_lesson = link_to_field('lesson')
 
 class QuestionAdmin(NestedModelAdmin):
 
-    inlines = [TextAnswerInline, VectorAnswerInline, ImageAnswerInline]
+    inlines = [
+        VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
+        MathematicalExpressionAnswerInline,
+
+    ]
     fields = [
         'lesson', _backlink_to_lesson, 'text', 'hint', 'published_on', 'image', 'question_type',
         'answer_type', 'position'
     ]
     readonly_fields = [_backlink_to_lesson, 'position']
     inline_map = {
-        Question.AnswerType.TEXT: TextAnswerInline,
-        Question.AnswerType.IMAGE: ImageAnswerInline,
-        Question.AnswerType.VECTOR: VectorAnswerInline,
-        Question.AnswerType.NULLABLE_VECTOR: VectorAnswerInline,
+        Question.AnswerType.TEXT: [TextAnswerInline],
+        Question.AnswerType.IMAGE: [ImageAnswerInline],
+        Question.AnswerType.VECTOR: [VectorAnswerInline],
+        Question.AnswerType.NULLABLE_VECTOR: [VectorAnswerInline],
+        Question.AnswerType.MATHEMATICAL_EXPRESSION: [MathematicalExpressionAnswerInline],
+        Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline]
     }
 
     def get_inline_instances(self, request, obj=None):
@@ -302,9 +397,10 @@ class QuestionAdmin(NestedModelAdmin):
         if obj:
             db_instance = obj.instance_from_db()
             if db_instance.answer_type == obj.answer_type:
-                inline = self.inline_map.get(obj.answer_type)
-                if inline and inline not in inline_classes:
-                    inline_classes.append(inline)
+                inlines = self.inline_map.get(obj.answer_type)
+                for inline in inlines:
+                    if inline and inline not in inline_classes:
+                        inline_classes.append(inline)
         return filter(
             lambda i: inline_classes and isinstance(i, tuple(inline_classes)),
             super(QuestionAdmin, self).get_inline_instances(request)
