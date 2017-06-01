@@ -123,7 +123,7 @@ class ScoreBoard extends React.Component {
                             <ReactCountdownClock
                                 key={this.state.clockKey}
                                 seconds={120}
-                                color="#777777"
+                                color="#1baff6"
                                 alpha={0.9}
                                 size={100}
                                 weight={10}
@@ -138,7 +138,7 @@ class ScoreBoard extends React.Component {
                             <ReactCountdownClock
                                 key={this.state.clockKey}
                                 seconds={120}
-                                color="#777777"
+                                color="#1baff6"
                                 alpha={0.9}
                                 size={50}
                                 weight={10}
@@ -198,7 +198,7 @@ class VectorGameBoard extends React.Component {
     constructor() {
         super();
         this.levelColorMap = {
-            1: '#E6E6E6',
+            1: '#ffffff',
             2: '#fee',
             3: '#eef',
             4: '#ffa',
@@ -214,7 +214,7 @@ class VectorGameBoard extends React.Component {
                         <div className="col-md-4" />
                         <div className="col-md-4 text-center">
                             <span><h1>Vector Game</h1></span>
-                            <p><span>Draw the vector! Beat a score of 1600 to graduate to the next lesson. Wrong answers end the game.</span></p>
+                            <p><span>Draw the vector! Beat a score of 1600 to unlock the next lesson. Wrong answers end the game.</span></p>
                             <button onClick={this.props.start}>Start</button>
                         </div>
                     </div>
@@ -457,7 +457,7 @@ export class VectorGame extends React.Component {
         window.onbeforeunload = function() {
             return 'Changes you made may not be saved.';
         };
-        playBackgroundAudio('rainbow');
+        playBackgroundAudio('rainbow',0.2);
         this.setState(this.generateQuestion());
     }
 
