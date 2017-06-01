@@ -4,15 +4,15 @@ options {
     language=Python2;
 }
 
-WS: [ \t\r\n]+ -> skip;
+WS: [ \t\r\n\\]+ -> skip;
 
 ADD: '+';
 SUB: '-';
 MUL: '*';
 DIV: '/';
 
-L_PAREN: '(';
-R_PAREN: ')';
+L_PAREN: '(' | '\\left(';
+R_PAREN: ')' | '\\right)';
 L_BRACE: '{';
 R_BRACE: '}';
 L_BRACKET: '[';
@@ -152,7 +152,7 @@ comp_nofunc:
     | frac;
 
 group:
-    L_PAREN expr R_PAREN 
+    L_PAREN expr R_PAREN
     | L_BRACKET expr R_BRACKET
     | L_BRACE expr R_BRACE;
 
@@ -184,8 +184,8 @@ func:
     (subexpr? supexpr? | supexpr? subexpr?)
     (L_PAREN func_arg R_PAREN | func_arg_noparens)
 
-    | (LETTER | SYMBOL) subexpr? // e.g. f(x)
-    L_PAREN args R_PAREN
+    /* | (LETTER | SYMBOL) subexpr? // e.g. f(x) */
+    /* L_PAREN args R_PAREN */
 
     | FUNC_INT
     (subexpr supexpr | supexpr subexpr)?

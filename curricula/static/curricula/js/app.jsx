@@ -1,8 +1,8 @@
 import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import {SectionSheet, Sheet} from './sheet';
-import {playAudio} from './audio';
 import {VectorGame} from './games';
+import {Vector} from './vector_canvas';
 
 
 class CurriculumApp extends React.Component {
@@ -151,6 +151,24 @@ class ModulesApp extends React.Component {
 }
 
 
+export class Expression {
+
+    constructor(representation) {
+        this.expression = representation;
+    }
+
+}
+
+
+export class Text {
+
+    constructor(text) {
+        this.text = text;
+    }
+
+}
+
+
 class LessonsApp extends React.Component {
 
     constructor(obj) {
@@ -199,14 +217,22 @@ class LessonsApp extends React.Component {
                     playAudio('correct');
                 } else {
                     this.question.is_correct = false;
-                    if (data.correct_answer.type == 'vector') {
-                        this.answer = {
-                            type: 'vector',
-                            xComponent: data.correct_answer.content.x_component,
-                            yComponent: data.correct_answer.content.y_component,
-                        };
-                    } else {
-                        this.answer = data.correct_answer;
+                    switch (data.correct_answer.type) {
+                        case 'vector':
+                            this.answer = new Vector(
+                                data.correct_answer.content.x_component,
+                                data.correct_answer.content.y_component,
+                            );
+                            break;
+                        case 'text':
+                            this.answer = new Text(data.correct_answer.content.text);
+                            break;
+                        case 'mathematicalexpression':
+                            this.answer = new Expression(data.correct_answer.content.representation);
+                            break;
+                        default:
+                            this.answer = data.correct_answer;
+                            break;
                     }
                     playAudio('incorrect');
                 }
@@ -277,13 +303,25 @@ class GamesApp extends React.Component {
         };
     }
 
+    gameWon() {
+        $.ajax({
+            url: '/api/v1/curricula/games/' + this.state.slug + '/success',
+            context: this,
+            type: "POST",
+            data: {},
+            success: function(data, status, jqXHR) {
+                return;
+            }
+        });
+    }
+
     render() {
         var Game;
         switch(this.state.slug) {
             case 'vector-game':
                 Game = VectorGame;
         }
-        return <Game />;
+        return <Game gameWon={this.gameWon.bind(this)}/>;
     }
 
 }
