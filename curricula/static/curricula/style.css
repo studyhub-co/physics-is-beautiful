@@ -472,3 +472,29 @@ img.grayed-out-img {
     cursor:pointer
 }
 
+.game-title{
+    font-family: Tw Cen MT;
+    color:#1caff6;
+}
+
+.hover-button{
+    border-radius: 12rem;
+    border: .2rem solid #1caff6;
+    padding-left: 15;
+    padding-right: 15;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: rgba(255, 255, 255, 0);
+    color: #1caff6;
+    transition: color .3s,border .3s;
+}
+.hover-button:hover{
+    color: #105e84;
+    border: .2rem solid #105e84;
+}
+.TwCenMT{
+    font-family: "TW CEN MT"
+}
+.align-left{
+    text-align: left;
+}

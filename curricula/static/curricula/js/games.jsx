@@ -37,20 +37,20 @@ class ScoreBoard extends React.Component {
             case GameState.GAME_OVER:
                 paused = true;
                 score = (
-                    <div className="col-md-4 text-center">
-                        <h1>Game Over!</h1>
-                        <button onClick={this.props.restart}>Try Again</button>
-                        <button><Link to={'/'}>Exit</Link></button>
+                    <div className="col-md-4">
+                        <h1 className="TwCenMT">Game Over!</h1>
+                        <button className="hover-button" onClick={this.props.restart}>Try Again</button>
+                        <button className="hover-button"><Link to={'/'}>Exit</Link></button>
                     </div>
                 );
                 break;
             case GameState.WON:
                 paused = true;
                 score = (
-                    <div className="col-md-4 text-center">
-                        <h2>Score: {this.props.score}</h2>
-                        <h1>You Won!</h1>
-                        <button><Link to={'/'}>Continue</Link></button>
+                    <div className="col-md-4">
+                        <h2 className="TwCenMT">Score: {this.props.score}</h2>
+                        <h1 className="TwCenMT">You Won!</h1>
+                        <button className="hover-button"><Link to={'/'}>Continue</Link></button>
                     </div>
                 )
                 break;
@@ -59,17 +59,17 @@ class ScoreBoard extends React.Component {
                 score = (
                     <div>
                         <MediaQuery minDeviceWidth={736}>
-                            <div className="col-md-2 text-center">
-                                <h2>Score: {this.props.score}</h2>
+                            <div className="col-md-3 align-left">
+                                <h2 className="TwCenMT">Score: {this.props.score}</h2>
                             </div>
-                            <div className="col-md-2 text-center">
-                                <h2>Level: {this.props.level}</h2>
+                            <div className="col-md-3 align-left">
+                                <h2 className="TwCenMT">Level: {this.props.level}</h2>
                             </div>
                         </MediaQuery>
                         <MediaQuery maxDeviceWidth={736}>
-                          <div className="col-md-2 text-center">
-                              <h4>Score: {this.props.score}</h4>
-                              <h4>Level: {this.props.level}</h4>
+                          <div className="col-md-3">
+                              <h4 className="TwCenMT text-center">Score: {this.props.score}</h4>
+                              <h4 className="TwCenMT text-center">Level: {this.props.level}</h4>
                           </div>
                         </MediaQuery>
                     </div>
@@ -80,16 +80,16 @@ class ScoreBoard extends React.Component {
                 score = (
                     <div>
                         <MediaQuery minDeviceWidth={736}>
-                            <div className="col-md-2 text-center">
-                                <h2>Score: {this.props.score}</h2>
+                            <div className="col-md-3 align-left">
+                                <h2 className="TwCenMT">Score: {this.props.score}</h2>
                             </div>
-                            <div className="col-md-2 text-center">
-                                <h2>Level: {this.props.level}</h2>
+                            <div className="col-md-3 align-left">
+                                <h2 className="TwCenMT">Level: {this.props.level}</h2>
                             </div>
                         </MediaQuery>
                         <MediaQuery maxDeviceWidth={736}>
-                          <div className="col-md-2 text-center">
-                              <h4>Score: {this.props.score} Level: {this.props.level}</h4>
+                          <div className="col-md-3 text-center">
+                              <h4 className="TwCenMT">Score: {this.props.score} Level: {this.props.level}</h4>
                           </div>
                         </MediaQuery>
                     </div>
@@ -213,16 +213,16 @@ class VectorGameBoard extends React.Component {
                     <div className="container game-sheet" style={style}>
                         <div className="col-md-4" />
                         <div className="col-md-4 text-center">
-                            <span><h1>Vector Game</h1></span>
-                            <p><span>Draw the vector! Beat a score of 1600 to unlock the next lesson. Wrong answers end the game.</span></p>
-                            <button onClick={this.props.start}>Start</button>
+                            <span><h1 className="game-title">Vector Game</h1></span>
+                            <p><span>Beat a score of 1600 to unlock the next lesson. Wrong answers end the game.</span></p>
+                            <button className="hover-button" onClick={this.props.start}>Start</button>
                         </div>
                     </div>
                 );
             case GameState.PAUSED:
                 return (
                     <div className="container game-sheet" style={style}>
-                        <Prompt when={this.props.state == GameState.QUESTiON} message="Changes you made may not be saved." />
+                        <Prompt when={this.props.state == GameState.QUESTION} message="Changes you made may not be saved." />
                         <ScoreBoard
                             state={this.props.state}
                             score={this.props.score}
@@ -241,7 +241,7 @@ class VectorGameBoard extends React.Component {
         }
         return (
             <div className="container game-sheet" style={style}>
-                <Prompt when={this.props.state == GameState.QUESTiON} message="Changes you made may not be saved." />
+                <Prompt when={this.props.state == GameState.QUESTION} message="Changes you made may not be saved." />
                 <ScoreBoard
                     state={this.props.state}
                     score={this.props.score}
