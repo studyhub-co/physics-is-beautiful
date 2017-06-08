@@ -186,8 +186,8 @@ class VectorQuestionForm(forms.ModelForm):
         if self.cleaned_data.pop('DELETE', False):
             print('WHAT DO WE DO NOW?')
         question = self.cleaned_data.pop('question')
-        if 'id' in self.cleaned_data:
-            question_vector = self.cleaned_data.pop('id')
+        question_vector = self.cleaned_data.pop('id', None)
+        if question_vector:
             for k, v in self.cleaned_data.items():
                 setattr(question_vector.vector, k, v)
             question_vector.vector.save()

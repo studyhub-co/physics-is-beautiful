@@ -1,7 +1,7 @@
 import React from 'react';
 import RMathJax from 'react-mathjax';
 import ReactHover from 'react-hover';
-import {Canvas, Vector, VectorCanvas, CanvasVector} from './vector_canvas';
+import {Vector, VectorCanvas, CanvasVector, CanvasText} from './vector_canvas';
 import {Text, Expression} from './app.jsx'
 
 
@@ -149,7 +149,42 @@ class SingleVectorAnswer extends React.Component {
 
     render() {
         // Right now we only support Vector problems for single answer.
-        return <Canvas {...this.props} />;
+        var allowInput = true;
+        var objects = [];
+        if (this.props.answer) {
+            allowInput = false;
+            var pointer = {
+                x: VectorCanvas.calcVectorXStart(this.props.answer.x),
+                y: VectorCanvas.calcVectorYStart(this.props.answer.y),
+            }
+            var endPointer = {
+                x: pointer['x'] + VectorCanvas.calcCanvasMagnitude(this.props.answer.x),
+                y: pointer['y'] - VectorCanvas.calcCanvasMagnitude(this.props.answer.y),
+            }
+            var vector = new CanvasVector(null, pointer, 'green');
+            vector.complete(endPointer);
+            var textPoint = {
+                left: endPointer.x - VectorCanvas.calcCanvasMagnitude(.65) + this.props.answer.x,
+                top: endPointer.y - this.props.answer.y - VectorCanvas.calcCanvasMagnitude(1),
+            }
+            var text = new CanvasText(null, textPoint, "correct\nsolution");
+            objects.push(vector);
+            objects.push(text);
+        }
+        var allowNull = false;
+        if (this.props.question.answer_type == 'NULLABLE_VECTOR') {
+            allowNull = true;
+        }
+        return (
+            <div className="bounding-box">
+                <VectorCanvas {...this.props}
+                    allowInput={allowInput}
+                    manualCheck={true}
+                    objects={objects}
+                    allowNull={allowNull}
+                />
+            </div>
+        );
     }
 
 }
@@ -462,7 +497,7 @@ class VectorAnswer extends React.Component {
             }
         }
         if (this.props.answer.x) {
-            xComponent = this.x;
+            xComponent = this.props.answer.x;
             x = <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>;
         }
         return (

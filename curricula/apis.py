@@ -209,6 +209,7 @@ class QuestionViewSet(ModelViewSet):
         data['was_correct'] = is_correct
         if not is_correct:
             data['correct_answer'] = AnswerSerializer(user_response.get_correct_answer()).data
+            print('WTF:', data['correct_answer'])
         return Response(data)
 
 
