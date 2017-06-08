@@ -174,7 +174,6 @@ class VectorQuestionForm(forms.ModelForm):
                 self.initial[field] = getattr(self.instance.vector, field)
 
     def clean(self):
-        print('CLEANING:', self.cleaned_data)
         cleaned_data = super(VectorQuestionForm, self).clean()
         kwargs = {field: cleaned_data[field] for field in self.FIELDS}
         instance = Vector(**kwargs)
@@ -182,9 +181,7 @@ class VectorQuestionForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        print('WTF:', self.cleaned_data)
-        if self.cleaned_data.pop('DELETE', False):
-            print('WHAT DO WE DO NOW?')
+        self.cleaned_data.pop('DELETE', False)
         question = self.cleaned_data.pop('question')
         question_vector = self.cleaned_data.pop('id', None)
         if question_vector:
