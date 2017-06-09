@@ -219,6 +219,7 @@ class LessonsApp extends React.Component {
                     this.question.is_correct = false;
                     switch (data.correct_answer.type) {
                         case 'vector':
+                            console.log('x: ' + data.correct_answer.content.x_component + ', y: ' + data.correct_answer.content.y_component);
                             this.answer = new Vector(
                                 data.correct_answer.content.x_component,
                                 data.correct_answer.content.y_component,

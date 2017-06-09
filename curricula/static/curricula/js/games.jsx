@@ -355,7 +355,7 @@ export class VectorGame extends React.Component {
                 left: endPointer.x - VectorCanvas.calcCanvasMagnitude(.65) + this.state.x,
                 top: endPointer.y - this.state.y - VectorCanvas.calcCanvasMagnitude(1),
             }
-            var text = new CanvasText(null, textPoint, "correct\nsolution")
+            var text = new CanvasText(null, textPoint, "correct\nsolution");
             this.gameOver(vector, text);
         }
     }

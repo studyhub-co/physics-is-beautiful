@@ -256,6 +256,8 @@ class Question(BaseModel):
             db_instance = self.instance_from_db()
             if db_instance.answer_type != self.answer_type:
                 self.answers.all().delete()
+                if db_instance.answer_type == self.AnswerType.VECTOR_COMPONENTS:
+                    self.vectors.all().delete()
             if (db_instance.question_type != self.question_type and
                     self.question_type == self.QuestionType.SINGLE_ANSWER):
                 self.answers.filter(position__gt=0).delete()
@@ -491,10 +493,10 @@ class Vector(BaseModel):
                 y = self._calculate_y(mag, angle)
 
         return {
-            'angle': angle,
-            'magnitude': mag,
-            'x_component': x,
-            'y_component': y,
+            'angle': round(angle, 2),
+            'magnitude': round(mag, 2),
+            'x_component': round(x, 2),
+            'y_component': round(y, 2),
         }
 
     def _calculate_magnitude(self):
