@@ -182,6 +182,7 @@ class SingleVectorAnswer extends React.Component {
                     manualCheck={true}
                     objects={objects}
                     allowNull={allowNull}
+                    clear={!this.props.answer}
                 />
             </div>
         );
