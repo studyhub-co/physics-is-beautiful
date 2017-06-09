@@ -335,7 +335,7 @@ export class VectorCanvas extends React.Component {
         if (this.props.clear && this.state.checked) {
             this.setState({checked: false});
         }
-        if (this.props.submitted && !this.props.answer) {
+        if (this.state.submitted && this.props.clear) {
             this.setState({submitted: false});
         }
     }
