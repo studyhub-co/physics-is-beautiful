@@ -4,6 +4,7 @@
 
 {% block ExtraHead %}
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>
 <script type="text/javascript">
 var SoundSingleton = {
     soundFiles: {
@@ -13,8 +14,42 @@ var SoundSingleton = {
         "complete": "{% static 'curricula/audio/complete.mp3' %}",
         "exam_start": "{% static 'curricula/audio/exam_start.mp3' %}",
         "exam_correct": "{% static 'curricula/audio/exam_correct.mp3' %}",
+        "rainbow": "{% static 'curricula/audio/doublerainbow.mp3' %}",
     }
 };
+var bgAudio = null;
+var playAudio = function(key, volume = 1) {
+    if (SoundSingleton.soundEnabled) {
+        var audio = new Audio(SoundSingleton.soundFiles[key]);
+        audio.volume = volume;
+        audio.play();
+    }
+}
+var playBackgroundAudio = function(key, volume = 1) {
+    stopBackgroundAudio();
+    if (SoundSingleton.soundEnabled) {
+        bgAudio = new Audio(SoundSingleton.soundFiles[key]);
+        bgAudio.loop = true;
+        bgAudio.volume = volume;
+        bgAudio.play();
+    }
+}
+var pauseBackgroundAudio = function() {
+    if (bgAudio) {
+        bgAudio.pause();
+    }
+}
+var unpauseBackgroundAudio = function() {
+    if (bgAudio) {
+        bgAudio.play();
+    }
+}
+var stopBackgroundAudio = function() {
+    if (bgAudio) {
+        bgAudio.pause();
+        bgAudio = null;
+    }
+}
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -43,6 +78,7 @@ $.ajaxSetup({
     }
 });
 </script>
+<script src="{% static 'curricula/mathquill-0.10.1/mathquill.js' %}"></script>
 <script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>
 {% endblock %}
 

@@ -3,13 +3,15 @@ from django.utils import timezone
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
 
 from expander import ExpanderSerializerMixin
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
-    Image
+    Image, MathematicalExpression, Game
 )
 from .services import get_progress_service, LessonLocked
 
@@ -32,6 +34,13 @@ class TextSerializer(BaseSerializer):
     class Meta:
         model = Text
         fields = ['text']
+
+
+class MathematicalExpressionSerializer(BaseSerializer):
+
+    class Meta:
+        model = MathematicalExpression
+        fields = ['representation']
 
 
 class ImageSerializer(BaseSerializer):
@@ -57,6 +66,7 @@ class AnswerSerializer(BaseSerializer):
         Text.__name__.lower(): TextSerializer,
         Image.__name__.lower(): ImageSerializer,
         Vector.__name__.lower(): VectorSerializer,
+        MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
     }
 
     class Meta:
@@ -78,11 +88,15 @@ class UserResponseSerializer(BaseSerializer):
 
     class Meta:
         model = UserResponse
-        fields = ['profile', 'question', 'vector', 'text', 'image', 'answer', 'answered_on']
+        fields = [
+            'profile', 'question', 'vector', 'text', 'mathematical_expression', 'image', 'answer',
+            'answered_on'
+        ]
         extra_kwargs = {'profile': {'required': False}}
 
     vector = VectorSerializer(required=False)
     text = TextSerializer(required=False)
+    mathematical_expression = MathematicalExpressionSerializer(required=False)
     image = ImageSerializer(required=False)
     answer = AnswerSerializer(required=False)
 
@@ -142,7 +156,8 @@ class QuestionSerializer(BaseSerializer):
     class Meta:
         model = Question
         fields = [
-            'uuid', 'text', 'hint', 'image', 'question_type', 'answer_type', 'choices', 'lesson'
+            'uuid', 'text', 'hint', 'image', 'vectors', 'question_type', 'answer_type', 'choices',
+            'lesson'
         ]
 
     question_type = serializers.ChoiceField(
@@ -153,6 +168,7 @@ class QuestionSerializer(BaseSerializer):
     )
     choices = serializers.SerializerMethodField()
     lesson = LessonSerializer()
+    vectors = VectorSerializer(many=True)
 
     def get_choices(self, obj):
         if obj.question_type == Question.QuestionType.MULTIPLE_CHOICE:
@@ -226,6 +242,15 @@ class LessonViewSet(ModelViewSet):
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def game_success(request, slug):
+    game = Game.objects.get(slug=slug)
+    service = get_progress_service(request, game.lesson)
+    service.game_success(game)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):

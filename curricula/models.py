@@ -1,4 +1,6 @@
+import re
 import math
+from sympy import simplify, trigsimp
 
 from django.db import models
 from django.core import urlresolvers
@@ -10,6 +12,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
+
+from piblib.latex2sympy.process_latex import process_sympy
 
 
 def get_earliest_gap(seq):
@@ -212,6 +216,8 @@ class Question(BaseModel):
         VECTOR = 20
         NULLABLE_VECTOR = 30
         IMAGE = 40
+        MATHEMATICAL_EXPRESSION = 50
+        VECTOR_COMPONENTS = 60
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
@@ -221,7 +227,8 @@ class Question(BaseModel):
     image = models.ImageField(blank=True)
     question_type = enum.EnumField(QuestionType)
     answer_type = enum.EnumField(AnswerType)
-    position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+    position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
+    vectors = models.ManyToManyField('Vector', related_name='questions')
 
     @property
     def question_type_name(self):
@@ -249,6 +256,8 @@ class Question(BaseModel):
             db_instance = self.instance_from_db()
             if db_instance.answer_type != self.answer_type:
                 self.answers.all().delete()
+                if db_instance.answer_type == self.AnswerType.VECTOR_COMPONENTS:
+                    self.vectors.all().delete()
             if (db_instance.question_type != self.question_type and
                     self.question_type == self.QuestionType.SINGLE_ANSWER):
                 self.answers.filter(position__gt=0).delete()
@@ -317,6 +326,83 @@ class Text(BaseModel):
         return 'Text: {}'.format(self.text)
 
 
+class MathematicalExpression(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_mathematical_expressions'
+
+    representation = models.CharField(max_length=255)
+
+    vector_regex = re.compile(
+        r'((?P<first_component>-?\d+)?\s*\\hat\{(?P<first_symbol>[xyij])\})?'
+        r'(?P<operator>[+-])?'
+        r'((?P<second_component>-?\d+)?\s*\\hat\{(?P<second_symbol>[xyij])\})?',
+        re.I,
+    )
+
+    def convert_to_vector(self):
+        """
+        For now we assume that the vector must come in the format:
+            A\hat{x|i} ± B\hat{y|j}
+        where A and B are the x and y components of the
+        vector, respsectively.
+        Note that each space specified in the typing is escaped by the `\`
+        character, so we must account for those as well.
+        """
+        def is_x(x):
+            return x in ('x', 'i')
+
+        def is_y(y):
+            return y in ('y', 'j')
+
+        def is_xy(component):
+            return component in ('x', 'y')
+        rep = self.representation.replace('\ ', '')
+        match = self.vector_regex.match(rep)
+        if match:
+            first = match.group('first_symbol')
+            second = match.group('second_symbol')
+            if is_xy(first) is is_xy(second) or second is None:
+                multiplier = -1 if match.group('operator') == '-' else 1
+                if is_x(first) and is_y(second):
+                    x = int(match.group('first_component') or 1)
+                    y = int(match.group('second_component') or 1) * multiplier
+                elif is_x(second) and is_y(first):
+                    y = int(match.group('first_component') or 1)
+                    x = int(match.group('second_component') or 1) * multiplier
+                elif is_x(first):
+                    x = int(match.group('first_component') or 1)
+                    y = 0
+                elif is_y(first):
+                    y = int(match.group('first_component') or 1)
+                    x = 0
+                else:
+                    raise ValueError('Unrecognized vector format')
+                return Vector(x_component=x, y_component=y)
+        raise ValueError('Unrecognized vector format')
+
+    def matches(self, obj):
+        if isinstance(obj, Answer):
+            return self.matches(obj.content)
+        elif isinstance(obj, Vector):
+            try:
+                return self.convert_to_vector().matches(obj)
+            except ValueError:
+                return False
+        # parse latex into sympy and then compare (use `.expand`, `simplify`
+        # and `trigsimp` to get to a canonical form)
+        try:
+            left_side = process_sympy(self.representation)
+            right_side = process_sympy(obj.representation)
+        except Exception:
+            # if we fail to parse it, then it's not valid
+            return False
+        return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
+
+    def __str__(self):
+        return 'Mathematical Expression: {}'.format(self.representation)
+
+
 class Image(BaseModel):
 
     class Meta:
@@ -336,7 +422,6 @@ class Image(BaseModel):
 class Vector(BaseModel):
 
     class Meta:
-        # TODO: rename
         db_table = 'curricula_vectors'
 
     magnitude = models.FloatField("Magnitude", null=True, blank=True)
@@ -369,6 +454,11 @@ class Vector(BaseModel):
     def matches(self, obj):
         if isinstance(obj, Answer):
             return self.matches(obj.content)
+        elif isinstance(obj, MathematicalExpression):
+            try:
+                return self.matches(obj.convert_to_vector())
+            except ValueError:
+                return False
         try:
             if obj.is_null != self.is_null:
                 return False
@@ -403,10 +493,10 @@ class Vector(BaseModel):
                 y = self._calculate_y(mag, angle)
 
         return {
-            'angle': angle,
-            'magnitude': mag,
-            'x_component': x,
-            'y_component': y,
+            'angle': round(angle, 2),
+            'magnitude': round(mag, 2),
+            'x_component': round(x, 2),
+            'y_component': round(y, 2),
         }
 
     def _calculate_magnitude(self):
