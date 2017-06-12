@@ -147,6 +147,11 @@ class MultipleChoice extends React.Component {
 
 class SingleVectorAnswer extends React.Component {
 
+    constructor() {
+        super();
+        this.unanswered = true;
+    }
+
     render() {
         // Right now we only support Vector problems for single answer.
         var allowInput = true;
@@ -171,6 +176,15 @@ class SingleVectorAnswer extends React.Component {
             objects.push(vector);
             objects.push(text);
         }
+        var clear = false;
+        if (this.props.answer || this.props.question.is_correct) {
+            this.unanswered = false;
+        } else if (!this.unanswered) {
+            this.unanswered = true;
+            clear = true;
+        }
+        if (!clear) {
+        }
         var allowNull = false;
         if (this.props.question.answer_type == 'NULLABLE_VECTOR') {
             allowNull = true;
@@ -182,7 +196,7 @@ class SingleVectorAnswer extends React.Component {
                     manualCheck={true}
                     objects={objects}
                     allowNull={allowNull}
-                    clear={!this.props.answer}
+                    clear={clear}
                 />
             </div>
         );
