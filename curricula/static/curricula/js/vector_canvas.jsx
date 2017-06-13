@@ -327,16 +327,20 @@ export class VectorCanvas extends React.Component {
         this.canvas.on('mouse:down', this.mouseDown.bind(this));
         this.canvas.on('mouse:move', this.mouseMove.bind(this));
         this.canvas.on('mouse:up', this.mouseUp.bind(this));
-        this.setState({checked: false});
+        // this.setState({checked: false});
         // $('#checkAnswer').click(this.checkAnswer.bind(this));
     }
 
     componentDidUpdate() {
+        var newState = {};
         if (this.props.clear && this.state.checked) {
-            this.setState({checked: false});
+            newState.checked = false;
         }
         if (this.state.submitted && this.props.clear) {
-            this.setState({submitted: false});
+            newState.submitted = false;
+        }
+        if (Object.keys(newState).length > 0) {
+            this.setState(newState);
         }
     }
 
@@ -518,8 +522,8 @@ export class VectorCanvas extends React.Component {
         return (
             <div>
                 <canvas id="c" width="300" height="300" className="lower-canvas" style={canvasStyle}></canvas>
-                {nullBox}
-                {checkButton}
+                <div>{nullBox}</div>
+                <div>{checkButton}</div>
             </div>
         );
     }
