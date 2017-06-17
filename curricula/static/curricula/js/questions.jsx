@@ -149,7 +149,20 @@ class SingleVectorAnswer extends React.Component {
 
     constructor() {
         super();
+        this.state = {clear: false};
         this.unanswered = true;
+    }
+
+    componentDidUpdate() {
+        if (this.props.answer || this.props.question.is_correct) {
+            this.unanswered = false;
+        } else if (!this.unanswered) {
+            this.unanswered = true;
+            this.setState({clear: true});
+        }
+        if (this.state.clear) {
+            this.setState({clear: false});
+        }
     }
 
     render() {
@@ -176,15 +189,6 @@ class SingleVectorAnswer extends React.Component {
             objects.push(vector);
             objects.push(text);
         }
-        var clear = false;
-        if (this.props.answer || this.props.question.is_correct) {
-            this.unanswered = false;
-        } else if (!this.unanswered) {
-            this.unanswered = true;
-            clear = true;
-        }
-        if (!clear) {
-        }
         var allowNull = false;
         if (this.props.question.answer_type == 'NULLABLE_VECTOR') {
             allowNull = true;
@@ -196,7 +200,7 @@ class SingleVectorAnswer extends React.Component {
                     manualCheck={true}
                     objects={objects}
                     allowNull={allowNull}
-                    clear={clear}
+                    clear={this.state.clear}
                 />
             </div>
         );
