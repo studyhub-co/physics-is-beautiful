@@ -28,5 +28,4 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
-    url(r'^about/', include('homepage.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
