@@ -335,7 +335,6 @@ export class VectorCanvas extends React.Component {
         var newState = {};
         if (this.props.clear && this.state.checked) {
             newState.checked = false;
-            console.log('CLEARING CHECK');
         }
         if (this.state.submitted && this.props.clear) {
             newState.submitted = false;
@@ -394,7 +393,6 @@ export class VectorCanvas extends React.Component {
 
     nullBoxCheck(event) {
         var newState = !this.state.checked;
-        console.log('NEW STATE: ' + newState);
         if (newState) {
             if (this.arrow) {
                 this.arrow.delete();
