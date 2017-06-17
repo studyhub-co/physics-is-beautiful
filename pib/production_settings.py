@@ -30,7 +30,7 @@ AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
 
 
 DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
-STATICFILES_STORAGE = 'django_s3_storage.storage.StaticS3Storage'
+STATICFILES_STORAGE = 'django_s3_storage.storage.ManifestStaticS3Storage'
 
 AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
     'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
