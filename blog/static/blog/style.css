@@ -34,24 +34,6 @@ p.justify{
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
 }
-@media all and (max-width: 355px) { /*iPhone 5 optimization*/
-    .container {
-        margin: 0;
-        width: 100%;
-        padding:5px;
-    }
-    .blog-title{
-        margin: 5px;
-    }
-    body .blog-entry-image{
-        width:100%;
-    }
-
-    #navTopOfScreen{
-        margin-bottom: 10px;
-    }
-}
-
 .headline{
     padding-bottom: 10px;
 }
@@ -99,4 +81,23 @@ p.justify{
 .navbar-default .navbar-toggle .icon-bar {
     background-color: #fff;
 }
+@media all and (max-width: 720px) { /*iPhone 5 optimization*/
+    .container {
+        margin: 0;
+        width: 100%;
+        padding:20px;
+    }
+    .blog-title{
+        margin: 5px;
+    }
+    body .blog-entry-image{
+        width:100%;
+    }
+
+    #navTopOfScreen{
+        margin-bottom: 10px;
+    }
+}
+
+
 
