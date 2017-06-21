@@ -2,7 +2,7 @@
 
 ## Installation
 
-Rquires MySql
+Requires MySql
 
 * install mysql:
 ```
@@ -93,10 +93,10 @@ It will deploy to the proper environment depending on what branch you are on.
 To save money, the dev environment will not always be up. To launch the dev environment, from the `develop` branch, run the following command:
 
 ```
-eb create --branch_default --cfg pib-dev
+eb create --branch_default --cfg pib-dev --timeout 40
 ```
 
-Follow the directions (using defaults should be fine).
+Follow the directions, and use "pib-dev" instead of the default "physicsisbeautiful-dev".
 
 This will take several minutes to run. If the command fails, you can try to run, `eb deploy` from the `develop` branch. Otherwise you may need to go on the aws console (Elastic Beanstalk) and rebuild the environment. The only other piece is that if you change the dns from `pib-dev.us-east-1.elasticbeanstalk.com` then you will need to go to the Google Domains and modify the DNS for `dev.physicsisbeautiful.com` to point at the new URL of the new dev environment.
 
