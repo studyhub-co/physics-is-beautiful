@@ -394,7 +394,7 @@ class QuestionAdmin(NestedModelAdmin):
         if obj:
             db_instance = obj.instance_from_db()
             if db_instance.answer_type == obj.answer_type:
-                inlines = self.inline_map.get(obj.answer_type)
+                inlines = self.inline_map.get(obj.answer_type, [])
                 for inline in inlines:
                     if inline and inline not in inline_classes:
                         inline_classes.append(inline)
