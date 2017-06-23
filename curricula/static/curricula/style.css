@@ -8,6 +8,16 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Benton Sans';
+    src: url('typeface/Benton-Sans/benton-sans-regular.eot');
+    src: url('typeface/Benton-Sans/benton-sans-regular.eot?#iefix') format('embedded-opentype'),
+         url('typeface/Benton-Sans/benton-sans-regular.woff') format('woff'),
+         url('typeface/Benton-Sans/benton-sans-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body {
     background-color: #f1f1f1;
 }
@@ -294,15 +304,15 @@ img.grayed-out-img {
     right: 80px
 }
 #checkButton{
-    padding-top: 11px;
-    padding-bottom: 12px;
-    color: #FFFFFF;
-    font-size: 160%;
-    border-radius: 20px;
-    border: 2px solid rgba(0, 0, 0, 0);
-    margin-bottom:-16px;
-    background: #28A8E7;
-    font-family: Tw Cen MT;
+    border-radius: 12rem;
+    border: .2rem solid #1caff6;
+    padding-left: 15;
+    padding-right: 15;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: rgba(255, 255, 255, 0);
+    color: #1caff6;
+    transition: color .3s,border .3s;
 }
 #checkButton:hover{
     /*background-color:rgba(255,255,255,0.4);*/
