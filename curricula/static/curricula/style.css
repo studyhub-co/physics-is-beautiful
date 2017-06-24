@@ -93,6 +93,7 @@ html, body {
     box-shadow: 0px 0px 10px #d8d8d8;
     margin: 2vh;
     padding-bottom: 2vh;
+    font-family: "Benton Sans";
 }
 .bounding-box a{
     margin:3px;
@@ -308,15 +309,15 @@ img.grayed-out-img {
     border: .2rem solid #1caff6;
     padding-left: 15;
     padding-right: 15;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 9px;
+    padding-bottom: 9px;
     background: rgba(255, 255, 255, 0);
     color: #1caff6;
     transition: color .3s,border .3s;
 }
 #checkButton:hover{
-    /*background-color:rgba(255,255,255,0.4);*/
-    background:#888;
+    color: #105e84;
+    border: .2rem solid #105e84;
 }
 #vectorButton{
 
@@ -448,4 +449,19 @@ img.grayed-out-img {
 }
 .align-left{
     text-align: left;
+}
+.mathClickEntryButton{
+    border: .2rem solid #337ab7;
+    padding-left: 15;
+    padding-right: 15;
+    padding-top: 7px;
+    padding-bottom: 5px;
+    background: rgba(255, 255, 255, 0);
+    color: #000000;
+    transition: color .3s,border .3s;
+}
+.mathClickEntryButton:hover{
+    border: .2rem solid #105e84;
+    color: #000000;
+    background-color: #ffffff;
 }

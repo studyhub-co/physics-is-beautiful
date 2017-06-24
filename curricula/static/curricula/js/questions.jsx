@@ -196,11 +196,11 @@ class SingleVectorAnswer extends React.Component {
         return (
             <div className="bounding-box">
                 <VectorCanvas {...this.props}
-                    allowInput={allowInput}
-                    manualCheck={true}
-                    objects={objects}
-                    allowNull={allowNull}
-                    clear={this.state.clear}
+                              allowInput={allowInput}
+                              manualCheck={true}
+                              objects={objects}
+                              allowNull={allowNull}
+                              clear={this.state.clear}
                 />
             </div>
         );
@@ -283,15 +283,15 @@ class SingleMathematicalExpressionAnswer extends React.Component {
             height: "30px",
             overflowY: 'auto',
             outline: '1px solid black',
-            width: '80px',
-            background: '#E8E27E',
+            width: '60px',
+            background: '#ffffff',
             position: 'absolute',
             color: "black"
         }
         if (this.props.xHat) {
             x = (
                 <a
-                    className={"btn btn-primary btn-lg"}
+                    className={"btn btn-primary btn-lg mathClickEntryButton"}
                     style={{minHeight: "40px"}}
                     onClick={this.insertXHat.bind(this)}
                 >
@@ -300,7 +300,7 @@ class SingleMathematicalExpressionAnswer extends React.Component {
                             <RMathJax.Node inline>{"\\hat{x}"}</RMathJax.Node>
                         </ReactHover.Trigger>
                         <ReactHover.Hover>
-                            <span style={hoverStyle}>"\hat x"</span>
+                            <span style={hoverStyle}>\hat x</span>
                         </ReactHover.Hover>
                     </ReactHover>
                 </a>
@@ -309,7 +309,7 @@ class SingleMathematicalExpressionAnswer extends React.Component {
         if (this.props.yHat) {
             y = (
                 <a
-                    className={"btn btn-primary btn-lg"}
+                    className={"btn btn-primary btn-lg mathClickEntryButton"}
                     style={{minHeight: "40px"}}
                     onClick={this.insertYHat.bind(this)}
                 >
@@ -318,22 +318,26 @@ class SingleMathematicalExpressionAnswer extends React.Component {
                             <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
                         </ReactHover.Trigger>
                         <ReactHover.Hover>
-                            <span style={hoverStyle}>"\hat y"</span>
+                            <span style={hoverStyle}>\hat y</span>
                         </ReactHover.Hover>
                     </ReactHover>
                 </a>
             );
         }
+        var mathFieldStyle = {
+            width:200,
+            fontSize:30
+        }
         return (
             <div className="bounding-box">
+                <p style={{marginBottom:5}}><span id="math-field-answer" style={mathFieldStyle}></span></p>
                 <RMathJax.Context {...DEFAULT_MATHJAX_OPTIONS}>
-                    <div>
+                    <div style={{marginBottom:10}}>
                         {x}{y}
                     </div>
                 </RMathJax.Context>
-                <p><span id="math-field-answer" style={{width: "140px"}}></span></p>
                 <div className="button-group" id="vectorButton">
-                    <a className={"btn btn-primary" + disabled} id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
+                    <a className={"btn btn-primary" + disabled } id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
                 </div>
             </div>
         );
@@ -467,14 +471,14 @@ export class Question extends React.Component {
         var hint = '';
         if (this.props.question.hint) {
             hint = <Hint hint={this.props.question.hint} hintCollapsed={this.props.question.hintCollapsed} onClick={this.props.hintClick} />;
-                {/*<div className = "hintDiv">*/}
-                    {/*<div className="hintButton">*/}
-                        {/*<a href="#demo" data-toggle="collapse">hint</a>*/}
-                    {/*</div>*/}
-                    {/*<div id="demo" className="collapse">*/}
-                        {/*{this.props.question.hint}*/}
-                    {/*</div>*/}
-                {/*</div>;*/}
+            {/*<div className = "hintDiv">*/}
+            {/*<div className="hintButton">*/}
+            {/*<a href="#demo" data-toggle="collapse">hint</a>*/}
+            {/*</div>*/}
+            {/*<div id="demo" className="collapse">*/}
+            {/*{this.props.question.hint}*/}
+            {/*</div>*/}
+            {/*</div>;*/}
         }
         var answerField = '';
         if (this.props.question.question_type == "SINGLE_ANSWER") {
