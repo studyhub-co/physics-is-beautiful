@@ -201,6 +201,7 @@ export class CanvasVector {
         this.canvas = canvas;
         if (this.startPointer && this.endPointer) {
             this.canvas.add(this.line, this.triangle);
+            this.canvas.bringToFront(this.line, this.triangle);
         }
     }
 
@@ -323,6 +324,7 @@ export class VectorCanvas extends React.Component {
             selection: false,
             hasControls: false
         });
+        this.drawObjects();
         this.drawGrid();
         this.canvas.on('mouse:down', this.mouseDown.bind(this));
         this.canvas.on('mouse:move', this.mouseMove.bind(this));
@@ -346,18 +348,22 @@ export class VectorCanvas extends React.Component {
 
     drawGrid() {
         for (var i = 1; i < (600 / GRID); i++) {
-            this.canvas.add(new fabric.Line([i * GRID, 0, i * GRID, 600], {
+            var line = new fabric.Line([i * GRID, 0, i * GRID, 600], {
                 stroke: '#ccc',
                 hasControls: false,
                 hasBorders: false,
                 selectable: false
-            }));
-            this.canvas.add(new fabric.Line([0, i * GRID, 600, i * GRID], {
+            });
+            this.canvas.add(line);
+            this.canvas.sendToBack(line);
+            line = new fabric.Line([0, i * GRID, 600, i * GRID], {
                 stroke: '#ccc',
                 hasControls: false,
                 hasBorders: false,
                 selectable: false
-            }))
+            });
+            this.canvas.add(line);
+            this.canvas.sendToBack(line);
         }
     }
 
@@ -459,6 +465,20 @@ export class VectorCanvas extends React.Component {
         }
     }
 
+    drawObjects() {
+        if (this.canvas && this.props.objects && this.props.objects.length) {
+            var oldVectors = this.objects || [];
+            this.objects = [];
+            for (var i = 0; i < this.props.objects.length; i++) {
+                this.props.objects[i].addToCanvas(this.canvas);
+                this.objects.push(this.props.objects[i]);
+            }
+            for (var i = 0; i <  oldVectors.length; i++) {
+                oldVectors[i].delete();
+            }
+        }
+    }
+
     render() {
         if (this.props.clear) {
             if (this.arrow) {
@@ -476,17 +496,7 @@ export class VectorCanvas extends React.Component {
             this.arrow.delete();
             this.arrow = newArrow;
         }
-        if (this.canvas && this.props.objects && this.props.objects.length) {
-            var oldVectors = this.objects || [];
-            this.objects = [];
-            for (var i = 0; i < this.props.objects.length; i++) {
-                this.props.objects[i].addToCanvas(this.canvas);
-                this.objects.push(this.props.objects[i]);
-            }
-            for (var i = 0; i <  oldVectors.length; i++) {
-                oldVectors[i].delete();
-            }
-        }
+        this.drawObjects();
         var canvasStyle = {
             border: "1px solid #ccc",
         }
