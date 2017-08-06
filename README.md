@@ -2,6 +2,14 @@
 
 ## Installation
 
+
+Requires Python 3.5, recommended to run in a virtual environment (virtualenv, consider using virtualenvwrapper to manage your virutal environments)
+
+* install requirements:
+```
+pip install -r requirements.txt
+```
+
 Requires MySql
 
 * install mysql:
@@ -11,16 +19,10 @@ brew install mysql
 * create a db named `pib_development` (either use mysql command line or sequel pro - like program: https://www.sequelpro.com, ex:
 
 ```
-mysql -h 127.0.0.1
+mysql.server start
+mysql -h 127.0.0.1 -u root
 create database pib_development;
 exit;
-```
-
-Requires Python 3.5, recommended to run in a virtual environment (virtualenv, consider using virtualenvwrapper to manage your virutal environments)
-
-* install requirements:
-```
-pip install -r requirements.txt
 ```
 
 * install npm:
@@ -58,6 +60,14 @@ npm install
 ```
 
 * You should find the site running on `http://localhost:8000`
+
+* To create an admin account run `/manage.py createsuperuser`
+
+* To login to the admin account go to `http://localhost:8000/admin`
+
+* pib will look for a default curriculum named `Default Curriculum`
+
+* TODO: add game
 
 ## Development
 
