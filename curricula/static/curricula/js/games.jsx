@@ -567,25 +567,26 @@ class UnitConversionCanvas extends React.Component {
     render() {
         var disabled = '';
         var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden', display: 'table-cell', verticalAlign:'middle'};
-        var tdStyle = {'border': '1px solid black', 'padding':2}
+        var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding':2}
+        var topRight = {'border': '1px solid black', borderTop: 'none', borderRight: 'none', 'padding':2}
+        var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding':2}
+        var bottomRight = {'border': '1px solid black', borderBottom: 'none', borderRight: 'none', 'padding':2}
 
         return (
-            <div style = {{display: 'table'}}>
+            <div style = {{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
                 <table style = {style}>
                     <tbody>
                     <tr>
-                        <td style = {tdStyle}>0.001 cm</td>
-                        <td style = {tdStyle}>
+                        <td style = {topLeft}>0.001 cm</td>
+                        <td style = {topRight}>
                             <MathquillBox
                                 mathFieldID={1}
                             />
                         </td>
                     </tr>
                     <tr>
-                        <td style = {tdStyle}>
-
-                        </td>
-                        <td style = {tdStyle}>
+                        <td style = {bottomLeft}></td>
+                        <td style = {bottomRight}>
                             <MathquillBox
                                 mathFieldID={3}
                             />
