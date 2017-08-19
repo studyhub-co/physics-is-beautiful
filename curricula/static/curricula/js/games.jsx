@@ -594,7 +594,10 @@ class UnitConversionCanvas extends React.Component {
                     </tr>
                     </tbody>
                 </table>
-                <div style ={{fontSize:30, display: 'table-cell', verticalAlign:'middle'}}>
+                <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
+                    <button className="hover-button" style = {{padding:2}} onClick={this.props.start}>+Add Step</button>
+                </div>
+                <div style ={{fontSize:30, display: 'table-cell', verticalAlign:'middle', paddingLeft:15, paddingRight:15}}>
                     =
                 </div>
                 <div style ={{display: 'table-cell', verticalAlign:'middle'}}>
