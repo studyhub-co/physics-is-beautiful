@@ -561,41 +561,105 @@ class MathquillBox extends React.Component {
 
 }
 
+class ConversionTable extends React.Component{
+    render(){
+        var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden', display: 'table-cell', verticalAlign:'middle'};
+        var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding':2}
+        var topMiddle = {'border': '1px solid black', borderTop: 'none', 'padding':2}
+        var topRight = {'border': '1px solid black', borderTop: 'none', borderRight: 'none', 'padding':2}
+        var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding':2}
+        var bottomMiddle = {'border': '1px solid black', borderBottom: 'none', 'padding':2}
+        var bottomRight = {'border': '1px solid black', borderBottom: 'none', borderRight: 'none', 'padding':2}
+        switch (this.props.numColumns) {
+            case 1:
+                return (
+                    <div>
+                        <table style={style}>
+                            <tbody>
+                            <tr>
+                                <td style={topLeft}>0.001 cm</td>
+                                <td style={topRight}>
+                                    <MathquillBox
+                                        mathFieldID={1}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={bottomLeft}></td>
+                                <td style={bottomRight}>
+                                    <MathquillBox
+                                        mathFieldID={3}
+                                    />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                );
+            case 2:
+                return(
+                    <div>
+                        <table style={style}>
+                            <tbody>
+                            <tr>
+                                <td style={topLeft}>0.001 cm</td>
+                                <td style={topMiddle}>
+                                    <MathquillBox
+                                        mathFieldID={1}
+                                    />
+                                </td>
+                                <td style={topRight}>
+                                    <MathquillBox
+                                        mathFieldID={2}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={bottomLeft}></td>
+                                <td style={bottomMiddle}>
+                                    <MathquillBox
+                                        mathFieldID={3}
+                                    />
+                                </td>
+                                <td style={bottomRight}>
+                                    <MathquillBox
+                                        mathFieldID={4}
+                                    />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>);
+        }
+    }
+}
+
+
+
 class UnitConversionCanvas extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            numColumns:1
+        }
+        this.addColumn = this.addColumn.bind(this);
+    }
     checkAnswer() {
+    }
+    addColumn(type) {
+        this.setState({
+            numColumns: 2
+        });
     }
     render() {
         var disabled = '';
-        var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden', display: 'table-cell', verticalAlign:'middle'};
-        var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding':2}
-        var topRight = {'border': '1px solid black', borderTop: 'none', borderRight: 'none', 'padding':2}
-        var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding':2}
-        var bottomRight = {'border': '1px solid black', borderBottom: 'none', borderRight: 'none', 'padding':2}
-
         return (
             <div style = {{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
-                <table style = {style}>
-                    <tbody>
-                    <tr>
-                        <td style = {topLeft}>0.001 cm</td>
-                        <td style = {topRight}>
-                            <MathquillBox
-                                mathFieldID={1}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style = {bottomLeft}></td>
-                        <td style = {bottomRight}>
-                            <MathquillBox
-                                mathFieldID={3}
-                            />
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <ConversionTable
+                    numColumns = {this.state.numColumns}
+                />
                 <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
-                    <button className="hover-button" style = {{padding:2}} onClick={this.props.start}>+Add Step</button>
+                    <button className="hover-button" style = {{padding:2}} onClick={this.addColumn} >+Add Step</button>
                 </div>
                 <div style ={{fontSize:30, display: 'table-cell', verticalAlign:'middle', paddingLeft:15, paddingRight:15}}>
                     =
