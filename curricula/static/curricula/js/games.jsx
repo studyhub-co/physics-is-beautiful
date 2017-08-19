@@ -503,19 +503,60 @@ var DEFAULT_MATHJAX_OPTIONS = {
     "HTML-CSS": { availableFonts: ["TeX"] }
 };
 
-class MathquillBox extends React.Component{
-    render(){
+class MathquillBox extends React.Component {
+
+    constructor() {
+        super();
+        this.questionId = null;
+        this.stoppedProcessing = false;
+        this.state = {
+            processing: false
+
+        }
+    }
+
+    componentDidMount() {
+        var MQ = MathQuill.getInterface(2);
+        this.answer = MQ.MathField($('#' + this.props.mathFieldID )[0], {
+            handlers: {
+                spaceBehavesLikeTab: true,
+                edit: () => {
+                    this.data = this.answer.latex();
+                }
+            }
+        });
+    }
+
+    componentDidUpdate() {
+        if (this.stoppedProcessing) {
+            this.stoppedProcessing = false;
+            this.setState({processing: false});
+        }
+    }
+
+    checkAnswer() {
+
+    }
+
+
+    render() {
+        var disabled = '';
+        if (this.props.answer) {
+            disabled = ' disabled';
+        }
+        if (this.state.processing) {
+            disabled = ' disabled';
+        }
+
         var mathFieldStyle = {
-            width:200,
+            width:100,
             fontSize:30
         }
         return (
             <div>
-                <p style={{marginBottom:5}}><span id="math-field-answer" style={mathFieldStyle}></span></p>
-                <RMathJax.Context {...DEFAULT_MATHJAX_OPTIONS}>
-                </RMathJax.Context>
+                <p style={{marginBottom:5}}><span id={this.props.mathFieldID} style={mathFieldStyle}></span></p>
             </div>
-        )
+        );
     }
 
 }
@@ -525,23 +566,43 @@ class UnitConversionCanvas extends React.Component {
     }
     render() {
         var disabled = '';
-        var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden'};
+        var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden', display: 'table-cell', verticalAlign:'middle'};
+        var tdStyle = {'border': '1px solid black', 'padding':2}
+
         return (
-            <div>
+            <div style = {{display: 'table'}}>
                 <table style = {style}>
+                    <tbody>
                     <tr>
-                        <td><MathquillBox/></td>
-                        <td>Smith</td>
+                        <td style = {tdStyle}>0.001 cm</td>
+                        <td style = {tdStyle}>
+                            <MathquillBox
+                                mathFieldID={1}
+                            />
+                        </td>
                     </tr>
                     <tr>
-                        <td>Eve</td>
-                        <td>Jackson</td>
+                        <td style = {tdStyle}>
+
+                        </td>
+                        <td style = {tdStyle}>
+                            <MathquillBox
+                                mathFieldID={3}
+                            />
+                        </td>
                     </tr>
+                    </tbody>
                 </table>
-                <div className="button-group" id="vectorButton">
-                    <a className={"btn btn-primary" + disabled } id="checkAnswer" onClick={this.checkAnswer.bind(this)}>Check</a>
+                <div style ={{fontSize:30, display: 'table-cell', verticalAlign:'middle'}}>
+                    =
+                </div>
+                <div style ={{display: 'table-cell', verticalAlign:'middle'}}>
+                    <MathquillBox
+                        mathFieldID={4}
+                    />
                 </div>
             </div>
+
         );
     }
 }
