@@ -680,8 +680,6 @@ class ConversionTable extends React.Component{
     }
 }
 
-
-
 class UnitConversionCanvas extends React.Component {
     constructor(props) {
         super(props);
@@ -703,39 +701,103 @@ class UnitConversionCanvas extends React.Component {
             numColumns: this.state.numColumns - 1
         });
     }
+
+    submitAnswer(questionId, obj) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/curricula/questions/' + questionId + '/response',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            // We must block on this call so that the audio works on mobile
+            // (audio must be a result of a click).
+            async: false,
+            context: this,
+            success: function(data, status, jqXHR) {
+                this.question.response = obj;
+                this.progress = data['score'] / data['required_score'] * 100;
+                if (data.was_correct) {
+                    this.question.is_correct = true;
+                    playAudio('correct');
+                } else {
+                    this.question.is_correct = false;
+                    switch (data.correct_answer.type) {
+                        case 'vector':
+                            this.answer = new Vector(
+                                data.correct_answer.content.x_component,
+                                data.correct_answer.content.y_component,
+                            );
+                            break;
+                        case 'text':
+                            this.answer = new Text(data.correct_answer.content.text);
+                            break;
+                        case 'mathematicalexpression':
+                            this.answer = new Expression(data.correct_answer.content.representation);
+                            break;
+                        default:
+                            this.answer = data.correct_answer;
+                            break;
+                    }
+                    playAudio('incorrect');
+                }
+                this.load();
+                if (data.was_correct) {
+                    setTimeout(
+                        function() {
+                            this.fetchState(this.state.currentId);
+                        }.bind(this),
+                        500
+                    );
+                }
+            }
+        });
+        }
+
+
     render() {
         var disabled = '';
         var buttonStyle = {
             padding: 2,
             display:'block',
-            margin: 'auto'
+            margin: 'auto',
+            marginTop:1,
+            marginBottom:1
         }
         var disabledButtonStyle = {
             padding: 2,
             display:'block',
             margin: 'auto',
+            marginTop:1,
+            marginBottom:1,
             cursor: 'not-allowed',
             pointerEvents: 'none',
             color: '#c0c0c0',
             border:'.2rem solid #c0c0c0',
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
         }
         return (
-            <div style = {{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
-                <ConversionTable
-                    numColumns = {this.state.numColumns}
-                />
-                <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
-                    <button className="hover-button" style = {this.state.numColumns==3?disabledButtonStyle:buttonStyle} onClick={this.addColumn}>+Add Step</button>
-                    <button className="hover-button" style = {this.state.numColumns==1?disabledButtonStyle:buttonStyle} onClick={this.removeColumn} disabled={this.state.numColumns==1}>-Remove Step</button>
+            <div>
+                <div style = {{display:'block'}}>
+                    <div style = {{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
+                        <ConversionTable
+                            numColumns = {this.state.numColumns}
+                        />
+                        <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
+                            <button className="hover-button" style = {this.state.numColumns==3?disabledButtonStyle:buttonStyle} onClick={this.addColumn}>+Add Step</button>
+                            <button className="hover-button" style = {this.state.numColumns==1?disabledButtonStyle:buttonStyle} onClick={this.removeColumn} disabled={this.state.numColumns==1}>-Remove Step</button>
+                        </div>
+                        <div style ={{fontSize:30, display: 'table-cell', verticalAlign:'middle', paddingLeft:15, paddingRight:15}}>
+                            =
+                        </div>
+                        <div style ={{display: 'table-cell', verticalAlign:'middle'}}>
+                            <MathquillBox
+                                mathFieldID={4}
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div style ={{fontSize:30, display: 'table-cell', verticalAlign:'middle', paddingLeft:15, paddingRight:15}}>
-                    =
-                </div>
-                <div style ={{display: 'table-cell', verticalAlign:'middle'}}>
-                    <MathquillBox
-                        mathFieldID={4}
-                    />
+                <div style={{display:'block'}}>
+                    <button className="hover-button" style = {{marginTop:15}} onClick={this.addColumn}>Submit</button>
                 </div>
             </div>
         );
