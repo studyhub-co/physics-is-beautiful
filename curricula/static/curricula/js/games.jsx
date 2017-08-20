@@ -580,7 +580,7 @@ class ConversionTable extends React.Component{
                                 <td style={topLeft}>0.001 cm</td>
                                 <td style={topRight}>
                                     <MathquillBox
-                                        mathFieldID={1}
+                                        mathFieldID={11}
                                     />
                                 </td>
                             </tr>
@@ -588,7 +588,7 @@ class ConversionTable extends React.Component{
                                 <td style={bottomLeft}></td>
                                 <td style={bottomRight}>
                                     <MathquillBox
-                                        mathFieldID={3}
+                                        mathFieldID={21}
                                     />
                                 </td>
                             </tr>
@@ -605,12 +605,12 @@ class ConversionTable extends React.Component{
                                 <td style={topLeft}>0.001 cm</td>
                                 <td style={topMiddle}>
                                     <MathquillBox
-                                        mathFieldID={1}
+                                        mathFieldID={11}
                                     />
                                 </td>
                                 <td style={topRight}>
                                     <MathquillBox
-                                        mathFieldID={2}
+                                        mathFieldID={12}
                                     />
                                 </td>
                             </tr>
@@ -618,18 +618,64 @@ class ConversionTable extends React.Component{
                                 <td style={bottomLeft}></td>
                                 <td style={bottomMiddle}>
                                     <MathquillBox
-                                        mathFieldID={3}
+                                        mathFieldID={21}
                                     />
                                 </td>
                                 <td style={bottomRight}>
                                     <MathquillBox
-                                        mathFieldID={4}
+                                        mathFieldID={22}
                                     />
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                    </div>);
+                    </div>
+                );
+            case 3:
+                return(
+                    <div>
+                        <table style={style}>
+                            <tbody>
+                            <tr>
+                                <td style={topLeft}>0.001 cm</td>
+                                <td style={topMiddle}>
+                                    <MathquillBox
+                                        mathFieldID={11}
+                                    />
+                                </td>
+                                <td style={topMiddle}>
+                                    <MathquillBox
+                                        mathFieldID={12}
+                                    />
+                                </td>
+                                <td style={topRight}>
+                                    <MathquillBox
+                                        mathFieldID={13}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={bottomLeft}></td>
+                                <td style={bottomMiddle}>
+                                    <MathquillBox
+                                        mathFieldID={21}
+                                    />
+                                </td>
+                                <td style={bottomMiddle}>
+                                    <MathquillBox
+                                        mathFieldID={22}
+                                    />
+                                </td>
+                                <td style={bottomRight}>
+                                    <MathquillBox
+                                        mathFieldID={23}
+                                    />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                );
         }
     }
 }
@@ -643,23 +689,45 @@ class UnitConversionCanvas extends React.Component {
             numColumns:1
         }
         this.addColumn = this.addColumn.bind(this);
+        this.removeColumn = this.removeColumn.bind(this);
     }
     checkAnswer() {
     }
     addColumn(type) {
         this.setState({
-            numColumns: 2
+            numColumns: this.state.numColumns + 1
+        });
+    }
+    removeColumn(type) {
+        this.setState({
+            numColumns: this.state.numColumns - 1
         });
     }
     render() {
         var disabled = '';
+        var buttonStyle = {
+            padding: 2,
+            display:'block',
+            margin: 'auto'
+        }
+        var disabledButtonStyle = {
+            padding: 2,
+            display:'block',
+            margin: 'auto',
+            cursor: 'not-allowed',
+            pointerEvents: 'none',
+            color: '#c0c0c0',
+            border:'.2rem solid #c0c0c0',
+            backgroundColor: '#ffffff'
+        }
         return (
             <div style = {{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
                 <ConversionTable
                     numColumns = {this.state.numColumns}
                 />
                 <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
-                    <button className="hover-button" style = {{padding:2}} onClick={this.addColumn} >+Add Step</button>
+                    <button className="hover-button" style = {this.state.numColumns==3?disabledButtonStyle:buttonStyle} onClick={this.addColumn}>+Add Step</button>
+                    <button className="hover-button" style = {this.state.numColumns==1?disabledButtonStyle:buttonStyle} onClick={this.removeColumn} disabled={this.state.numColumns==1}>-Remove Step</button>
                 </div>
                 <div style ={{fontSize:30, display: 'table-cell', verticalAlign:'middle', paddingLeft:15, paddingRight:15}}>
                     =
@@ -670,7 +738,6 @@ class UnitConversionCanvas extends React.Component {
                     />
                 </div>
             </div>
-
         );
     }
 }
