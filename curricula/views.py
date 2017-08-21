@@ -1,4 +1,5 @@
 from django.views import generic
+from django.http import HttpResponse
 
 from .models import Unit, Module, Lesson, Question
 
@@ -22,3 +23,7 @@ class LessonPageView(generic.DetailView):
 class QuestionView(generic.DetailView):
     model = Question
     template_name = 'curricula/problem_templates/question.html'
+
+def ProcessMath(request):
+    html = "I am a string"
+    return HttpResponse(html)

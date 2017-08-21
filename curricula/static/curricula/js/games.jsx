@@ -688,8 +688,7 @@ class UnitConversionCanvas extends React.Component {
         }
         this.addColumn = this.addColumn.bind(this);
         this.removeColumn = this.removeColumn.bind(this);
-    }
-    checkAnswer() {
+        this.submit = this.submit.bind(this);
     }
     addColumn(type) {
         this.setState({
@@ -701,59 +700,20 @@ class UnitConversionCanvas extends React.Component {
             numColumns: this.state.numColumns - 1
         });
     }
-
-    submitAnswer(questionId, obj) {
+    submit(answerJSON) {
         $.ajax({
             type: 'POST',
-            url: '/api/v1/curricula/questions/' + questionId + '/response',
-            dataType: 'json',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            // We must block on this call so that the audio works on mobile
-            // (audio must be a result of a click).
-            async: false,
+            url: '/curriculum/convertmath/',
+            // dataType: 'json',
+            // contentType: "application/json; charset=utf-8",
+            data: answerJSON,
+            // async: false,
             context: this,
-            success: function(data, status, jqXHR) {
-                this.question.response = obj;
-                this.progress = data['score'] / data['required_score'] * 100;
-                if (data.was_correct) {
-                    this.question.is_correct = true;
-                    playAudio('correct');
-                } else {
-                    this.question.is_correct = false;
-                    switch (data.correct_answer.type) {
-                        case 'vector':
-                            this.answer = new Vector(
-                                data.correct_answer.content.x_component,
-                                data.correct_answer.content.y_component,
-                            );
-                            break;
-                        case 'text':
-                            this.answer = new Text(data.correct_answer.content.text);
-                            break;
-                        case 'mathematicalexpression':
-                            this.answer = new Expression(data.correct_answer.content.representation);
-                            break;
-                        default:
-                            this.answer = data.correct_answer;
-                            break;
-                    }
-                    playAudio('incorrect');
-                }
-                this.load();
-                if (data.was_correct) {
-                    setTimeout(
-                        function() {
-                            this.fetchState(this.state.currentId);
-                        }.bind(this),
-                        500
-                    );
-                }
+            success: function (data, status, jqXHR) {
+                alert(data);
             }
         });
-        }
-
-
+    }
     render() {
         var disabled = '';
         var buttonStyle = {
@@ -797,7 +757,7 @@ class UnitConversionCanvas extends React.Component {
                     </div>
                 </div>
                 <div style={{display:'block'}}>
-                    <button className="hover-button" style = {{marginTop:15}} onClick={this.addColumn}>Submit</button>
+                    <button className="hover-button" style = {{marginTop:15}} onClick={() => this.submit('test')}>Submit</button>
                 </div>
             </div>
         );
