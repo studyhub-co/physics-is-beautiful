@@ -505,63 +505,49 @@ var DEFAULT_MATHJAX_OPTIONS = {
 
 class MathquillBox extends React.Component {
 
-    constructor() {
-        super();
-        this.questionId = null;
-        this.stoppedProcessing = false;
-        this.state = {
-            processing: false
-
-        }
+    constructor(props) {
+        super(props);
+        this.state = {data:''}
+        this.handleChange = this.handleChange.bind(this);
     }
-
     componentDidMount() {
         var MQ = MathQuill.getInterface(2);
         this.answer = MQ.MathField($('#' + this.props.mathFieldID )[0], {
             handlers: {
                 spaceBehavesLikeTab: true,
                 edit: () => {
-                    this.data = this.answer.latex();
+                    this.state.data = this.answer.latex();
+                    this.handleChange(this.state.data);
                 }
             }
         });
     }
-
-    componentDidUpdate() {
-        if (this.stoppedProcessing) {
-            this.stoppedProcessing = false;
-            this.setState({processing: false});
-        }
+    handleChange(data) {
+        this.props.onMathQuillChange(data);
     }
-
-    checkAnswer() {
-
-    }
-
-
     render() {
-        var disabled = '';
-        if (this.props.answer) {
-            disabled = ' disabled';
-        }
-        if (this.state.processing) {
-            disabled = ' disabled';
-        }
-
         var mathFieldStyle = {
             width:100,
             fontSize:30
         }
         return (
             <div>
-                <p style={{marginBottom:5}}><span id={this.props.mathFieldID} style={mathFieldStyle}></span></p>
+                <p style={{marginBottom:5}}>
+                    <span id={this.props.mathFieldID} style={mathFieldStyle}></span>
+                </p>
             </div>
         );
     }
-
 }
 
 class ConversionTable extends React.Component{
+    constructor(props) {
+        super(props);
+        this.onMathQuillChange = this.onMathQuillChange.bind(this);
+    }
+    onMathQuillChange(data) {
+        alert(data);
+    }
     render(){
         var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden', display: 'table-cell', verticalAlign:'middle'};
         var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding':2}
@@ -581,6 +567,7 @@ class ConversionTable extends React.Component{
                                 <td style={topRight}>
                                     <MathquillBox
                                         mathFieldID={11}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                             </tr>
@@ -589,6 +576,7 @@ class ConversionTable extends React.Component{
                                 <td style={bottomRight}>
                                     <MathquillBox
                                         mathFieldID={21}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                             </tr>
@@ -606,11 +594,13 @@ class ConversionTable extends React.Component{
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                                 <td style={topRight}>
                                     <MathquillBox
                                         mathFieldID={12}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                             </tr>
@@ -619,11 +609,13 @@ class ConversionTable extends React.Component{
                                 <td style={bottomMiddle}>
                                     <MathquillBox
                                         mathFieldID={21}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                                 <td style={bottomRight}>
                                     <MathquillBox
                                         mathFieldID={22}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                             </tr>
@@ -641,16 +633,19 @@ class ConversionTable extends React.Component{
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={12}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                                 <td style={topRight}>
                                     <MathquillBox
                                         mathFieldID={13}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                             </tr>
@@ -659,16 +654,19 @@ class ConversionTable extends React.Component{
                                 <td style={bottomMiddle}>
                                     <MathquillBox
                                         mathFieldID={21}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                                 <td style={bottomMiddle}>
                                     <MathquillBox
                                         mathFieldID={22}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                                 <td style={bottomRight}>
                                     <MathquillBox
                                         mathFieldID={23}
+                                        onMathQuillChange={this.onMathQuillChange}
                                     />
                                 </td>
                             </tr>
@@ -757,7 +755,7 @@ class UnitConversionCanvas extends React.Component {
                     </div>
                 </div>
                 <div style={{display:'block'}}>
-                    <button className="hover-button" style = {{marginTop:15}} onClick={() => this.submit('test')}>Submit</button>
+                    <button className="hover-button" style = {{marginTop:15}} onClick={() => this.submit("test")}>Submit</button>
                 </div>
             </div>
         );
