@@ -517,13 +517,13 @@ class MathquillBox extends React.Component {
                 spaceBehavesLikeTab: true,
                 edit: () => {
                     this.state.data = this.answer.latex();
-                    this.handleChange(this.state.data);
+                    this.handleChange(this.state.data, this.props.mathFieldID);
                 }
             }
         });
     }
-    handleChange(data) {
-        this.props.onMathQuillChange(data);
+    handleChange(data,mathFieldID) {
+        this.props.onMathQuillChange(data,mathFieldID);
     }
     render() {
         var mathFieldStyle = {
@@ -545,8 +545,8 @@ class ConversionTable extends React.Component{
         super(props);
         this.onMathQuillChange = this.onMathQuillChange.bind(this);
     }
-    onMathQuillChange(data) {
-        alert(data);
+    onMathQuillChange(data,mathFieldID) {
+        this.props.onMathQuillChange(data,mathFieldID);
     }
     render(){
         var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden', display: 'table-cell', verticalAlign:'middle'};
@@ -682,7 +682,14 @@ class UnitConversionCanvas extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            numColumns:1
+            numColumns:1,
+            mathquillbox11:'',
+            mathquillbox12:'',
+            mathquillbox13:'',
+            mathquillbox21:'',
+            mathquillbox22:'',
+            mathquillbox23:'',
+            mathquillbox4:''
         }
         this.addColumn = this.addColumn.bind(this);
         this.removeColumn = this.removeColumn.bind(this);
@@ -697,6 +704,10 @@ class UnitConversionCanvas extends React.Component {
         this.setState({
             numColumns: this.state.numColumns - 1
         });
+    }
+    onMathQuillChange(data,mathFieldID) {
+        alert(data+mathFieldID);
+        // this.setState({mathquillBox})
     }
     submit(answerJSON) {
         $.ajax({
@@ -739,6 +750,7 @@ class UnitConversionCanvas extends React.Component {
                     <div style = {{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
                         <ConversionTable
                             numColumns = {this.state.numColumns}
+                            onMathQuillChange={this.onMathQuillChange}
                         />
                         <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
                             <button className="hover-button" style = {this.state.numColumns==3?disabledButtonStyle:buttonStyle} onClick={this.addColumn}>+Add Step</button>
