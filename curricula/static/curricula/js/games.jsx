@@ -764,12 +764,13 @@ class UnitConversionCanvas extends React.Component {
                         <div style ={{display: 'table-cell', verticalAlign:'middle'}}>
                             <MathquillBox
                                 mathFieldID={4}
+                                onMathQuillChange={this.onMathQuillChange}
                             />
                         </div>
                     </div>
                 </div>
                 <div style={{display:'block'}}>
-                    <button className="hover-button" style = {{marginTop:15}} onClick={() => this.submit("test")}>Submit</button>
+                    <button className="hover-button" style = {{marginTop:15}} onClick={() => this.submit(this.state)}>Submit</button>
                 </div>
             </div>
         );

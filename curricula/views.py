@@ -1,7 +1,10 @@
 from django.views import generic
 from django.http import HttpResponse
-
 from .models import Unit, Module, Lesson, Question
+import re
+import math
+from sympy import simplify, trigsimp
+from piblib.latex2sympy.process_latex import process_sympy
 
 
 class CurriculumView(generic.ListView):
@@ -25,5 +28,5 @@ class QuestionView(generic.DetailView):
     template_name = 'curricula/problem_templates/question.html'
 
 def ProcessMath(request):
-    html = "I am a string"
-    return HttpResponse(html)
+    submittedState = request.POST
+    return HttpResponse(submittedState['mathquillBox11'])
