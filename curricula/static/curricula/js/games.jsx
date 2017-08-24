@@ -683,17 +683,18 @@ class UnitConversionCanvas extends React.Component {
         super(props);
         this.state = {
             numColumns:1,
-            mathquillbox11:'',
-            mathquillbox12:'',
-            mathquillbox13:'',
-            mathquillbox21:'',
-            mathquillbox22:'',
-            mathquillbox23:'',
-            mathquillbox4:''
+            mathquillBox11:'',
+            mathquillBox12:'',
+            mathquillBox13:'',
+            mathquillBox21:'',
+            mathquillBox22:'',
+            mathquillBox23:'',
+            mathquillBox4:''
         }
         this.addColumn = this.addColumn.bind(this);
         this.removeColumn = this.removeColumn.bind(this);
         this.submit = this.submit.bind(this);
+        this.onMathQuillChange = this.onMathQuillChange.bind(this);
     }
     addColumn(type) {
         this.setState({
@@ -706,8 +707,9 @@ class UnitConversionCanvas extends React.Component {
         });
     }
     onMathQuillChange(data,mathFieldID) {
-        alert(data+mathFieldID);
-        // this.setState({mathquillBox})
+        var currentBox = 'mathquillBox'+mathFieldID;
+        this.setState({[currentBox]:data});
+        console.log(this.state);
     }
     submit(answerJSON) {
         $.ajax({
