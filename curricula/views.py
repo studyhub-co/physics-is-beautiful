@@ -66,6 +66,6 @@ def ProcessMath(request):
         third_column = '*' + mathquillBox13
     else:
         third_column = '*' + mathquillBox13+'/('+mathquillBox23+')'
-
-    mathquillBox11 = trigsimp(simplify(process_sympy(first_column+second_column+third_column).expand()))
-    return HttpResponse(mathquillBox11)
+    all_columns = first_column+second_column+third_column
+    all_columns_parsed = trigsimp(simplify(process_sympy(all_columns).expand()))
+    return HttpResponse(all_columns_parsed)

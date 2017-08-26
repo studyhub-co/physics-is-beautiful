@@ -701,9 +701,11 @@ class UnitConversionCanvas extends React.Component {
             numColumns: this.state.numColumns + 1
         });
     }
-    removeColumn(type) {
+    removeColumn() {
         this.setState({
-            numColumns: this.state.numColumns - 1
+            numColumns: this.state.numColumns - 1,
+            ['mathquillBox1'+this.state.numColumns]: '',
+            ['mathquillBox2'+this.state.numColumns]: ''
         });
     }
     onMathQuillChange(data,mathFieldID) {
