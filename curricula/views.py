@@ -29,9 +29,14 @@ class QuestionView(generic.DetailView):
 
 def ProcessMath(request):
     submittedState = request.POST
-    mathquillBox11 = submittedState['mathquillBox11'].replace('\ ','').strip()
-    mathquillBox21 = submittedState['mathquillBox21'].replace('\ ','').strip()
+    mathquillBox11 = submittedState['mathquillBox11'].replace('\ ', '').strip()
+    mathquillBox21 = submittedState['mathquillBox21'].replace('\ ', '').strip()
+    mathquillBox12 = submittedState['mathquillBox12'].replace('\ ', '').strip()
+    mathquillBox22 = submittedState['mathquillBox22'].replace('\ ', '').strip()
+    mathquillBox13 = submittedState['mathquillBox13'].replace('\ ', '').strip()
+    mathquillBox23 = submittedState['mathquillBox23'].replace('\ ', '').strip()
     print(mathquillBox11)
+
     if mathquillBox11=='':
         if mathquillBox21=='':
             first_column = ''
@@ -41,5 +46,26 @@ def ProcessMath(request):
         first_column = mathquillBox11
     else:
         first_column = mathquillBox11+'/('+mathquillBox21+')'
-    mathquillBox11 = trigsimp(simplify(process_sympy(first_column).expand()))
+
+    if mathquillBox12=='':
+        if mathquillBox22=='':
+            second_column = ''
+        else:
+            second_column = '*1/('+mathquillBox22+')'
+    elif mathquillBox22=='':
+        second_column = '*' + mathquillBox12
+    else:
+        second_column = '*' + mathquillBox12+'/('+mathquillBox22+')'
+
+    if mathquillBox13=='':
+        if mathquillBox23=='':
+            third_column = ''
+        else:
+            third_column = '*1/('+mathquillBox23+')'
+    elif mathquillBox23=='':
+        third_column = '*' + mathquillBox13
+    else:
+        third_column = '*' + mathquillBox13+'/('+mathquillBox23+')'
+
+    mathquillBox11 = trigsimp(simplify(process_sympy(first_column+second_column+third_column).expand()))
     return HttpResponse(mathquillBox11)
