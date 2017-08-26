@@ -29,4 +29,17 @@ class QuestionView(generic.DetailView):
 
 def ProcessMath(request):
     submittedState = request.POST
-    return HttpResponse(submittedState['mathquillBox11'])
+    mathquillBox11 = submittedState['mathquillBox11'].replace('\ ','').strip()
+    mathquillBox21 = submittedState['mathquillBox21'].replace('\ ','').strip()
+    print(mathquillBox11)
+    if mathquillBox11=='':
+        if mathquillBox21=='':
+            first_column = ''
+        else:
+            first_column = '1/('+mathquillBox21+')'
+    elif mathquillBox21=='':
+        first_column = mathquillBox11
+    else:
+        first_column = mathquillBox11+'/('+mathquillBox21+')'
+    mathquillBox11 = trigsimp(simplify(process_sympy(first_column).expand()))
+    return HttpResponse(mathquillBox11)

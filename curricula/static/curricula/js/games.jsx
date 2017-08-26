@@ -709,7 +709,7 @@ class UnitConversionCanvas extends React.Component {
     onMathQuillChange(data,mathFieldID) {
         var currentBox = 'mathquillBox'+mathFieldID;
         this.setState({[currentBox]:data});
-        console.log(this.state);
+        // console.log(this.state);
     }
     submit(answerJSON) {
         $.ajax({
