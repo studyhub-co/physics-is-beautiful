@@ -563,7 +563,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>0.001 cm</td>
+                                <td style={topLeft}>{this.props.number}{this.props.unit}</td>
                                 <td style={topRight}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -590,7 +590,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>0.001 cm</td>
+                                <td style={topLeft}>{this.props.number}{this.props.unit}</td>
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -629,7 +629,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>0.001 cm</td>
+                                <td style={topLeft}>{this.props.number}{this.props.unit}</td>
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -755,6 +755,8 @@ class UnitConversionCanvas extends React.Component {
                         <ConversionTable
                             numColumns = {this.state.numColumns}
                             onMathQuillChange={this.onMathQuillChange}
+                            number={this.props.number}
+                            unit={this.props.unit}
                         />
                         <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
                             <button className="hover-button" style = {this.state.numColumns==3?disabledButtonStyle:buttonStyle} onClick={this.addColumn}>+Add Step</button>
@@ -801,6 +803,8 @@ class UnitConversionQuestionBoard extends React.Component {
                     <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
                 </MediaQuery>
                 <UnitConversionCanvas
+                    number={this.props.number}
+                    unit={this.props.unit}
                 />
             </div>
         );
@@ -866,6 +870,8 @@ class UnitConversionGameBoard extends React.Component {
                     restart={this.props.restart}
                 />
                 <UnitConversionQuestionBoard
+                    number={this.props.number}
+                    unit={this.props.unit}
                     question={this.props.question}
                     arrowComplete={this.props.arrowComplete}
                     clear={[GameState.NEW, GameState.QUESTION].indexOf(this.props.state) >= 0}
@@ -889,9 +895,9 @@ export class UnitConversionGame extends React.Component {
             score: 0,
             level: 1,
             question: null,
-            x: null,
-            y: null,
-            answerVector: null,
+            unit: null,
+            number: null,
+            answer: null,
             paused: true,
         };
     }
@@ -902,6 +908,10 @@ export class UnitConversionGame extends React.Component {
 
     getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    getRandomNumber() {
+        return (Math.floor(Math.random() * 9)+1) * Math.pow(10,(Math.random()<=0.5?-Math.floor(Math.random() * 4):Math.floor(Math.random() * 4)));
     }
 
     timesUp(obj) {
@@ -959,21 +969,15 @@ export class UnitConversionGame extends React.Component {
 
     generateQuestion(newScore, newLevel) {
         var question;
-        var x = 0, y = 0;
+        var number = 0, unit = '';
         newScore = newScore || this.state.score;
         newLevel = newLevel || this.state.level;
         do {
-            x = y = 0;
             switch(newLevel) {
                 case 1:
-                    var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
-                    var sign = ['', '-'][this.getRandomInt(0, 1)];
-                    if ([xHat, iHat].indexOf(char) >= 0) {
-                        x = (sign == '') ? 1 : -1;
-                    } else {
-                        y = (sign == '') ? 1 : -1;
-                    }
-                    question = <span>{"Draw " + sign}{char}</span>;
+                    number = this.getRandomNumber();
+                    unit = ['cm', 'weeks', 'oz', 'km/hr'][this.getRandomInt(0, 3)];
+                    question = <span>{'Convert ' + number.toString() +' '+ unit +' to SI units.'}</span>;
                     break;
                 case 2:
                     var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
@@ -1018,14 +1022,14 @@ export class UnitConversionGame extends React.Component {
                     break;
             }
             // Let's make sure we don't get the same question twice in a row.
-        } while (this.state.x === x && this.state.y === y);
+        } while (this.state.unit === unit && this.state.number === number);
         this.lastQuestion = question;
         return {
             score: newScore,
             level: newLevel,
             question: question,
-            x: x,
-            y: y,
+            number: number,
+            unit: unit,
             state: GameState.QUESTION,
         };
     }
@@ -1065,6 +1069,8 @@ export class UnitConversionGame extends React.Component {
                 start={this.start.bind(this)}
                 score={this.state.score}
                 level={this.state.level}
+                number={this.state.number}
+                unit={this.state.unit}
                 question={this.state.question}
                 answerVector={this.state.answerVector}
                 answerText={this.state.answerText}
