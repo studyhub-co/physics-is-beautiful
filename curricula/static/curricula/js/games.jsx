@@ -549,8 +549,15 @@ class ConversionTable extends React.Component{
         this.props.onMathQuillChange(data,mathFieldID);
     }
     render(){
-        var style = {marginLeft: 'auto', marginRight: 'auto',  borderCollapse: 'collapse', borderStyle: 'hidden', display: 'table-cell', verticalAlign:'middle'};
-        var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding':2}
+        var style = {
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            borderCollapse: 'collapse',
+            borderStyle: 'hidden',
+            display: 'table-cell',
+            verticalAlign:'middle'
+        };
+        var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding':2, fontFamily: 'symbola', fontSize:30}
         var topMiddle = {'border': '1px solid black', borderTop: 'none', 'padding':2}
         var topRight = {'border': '1px solid black', borderTop: 'none', borderRight: 'none', 'padding':2}
         var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding':2}
@@ -563,7 +570,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>{this.props.number}{this.props.unit}</td>
+                                <td style={topLeft}>{this.props.number} <span style={{fontStyle:'italic', fontFamily:'Times New Roman', textDecoration:(this.props.strikethrough?'line-through':'none')}}>{this.props.unit}</span></td>
                                 <td style={topRight}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -590,7 +597,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>{this.props.number}{this.props.unit}</td>
+                                <td style={topLeft}>{this.props.number} <span style={{fontStyle:'italic', fontFamily:'Times New Roman'}}>{this.props.unit}</span></td>
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -629,7 +636,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>{this.props.number}{this.props.unit}</td>
+                                <td style={topLeft}>{this.props.number} <span style={{fontStyle:'italic', fontFamily:'Times New Roman'}}>{this.props.unit}</span></td>
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -683,6 +690,9 @@ class UnitConversionCanvas extends React.Component {
         super(props);
         this.state = {
             numColumns:1,
+            number:this.props.number,
+            unit:this.props.unit,
+            strikethrough:false,
             mathquillBox11:'',
             mathquillBox12:'',
             mathquillBox13:'',
@@ -711,6 +721,12 @@ class UnitConversionCanvas extends React.Component {
     onMathQuillChange(data,mathFieldID) {
         var currentBox = 'mathquillBox'+mathFieldID;
         this.setState({[currentBox]:data});
+        if (data.includes(this.state.unit)) {
+            this.setState({strikethrough:true});
+        }else{
+            this.setState({strikethrough:false});
+        }
+
         // console.log(this.state);
     }
     submit(answerJSON) {
@@ -757,6 +773,7 @@ class UnitConversionCanvas extends React.Component {
                             onMathQuillChange={this.onMathQuillChange}
                             number={this.props.number}
                             unit={this.props.unit}
+                            strikethrough={this.state.strikethrough}
                         />
                         <div style ={{fontSize:10, display: 'table-cell', verticalAlign:'middle', paddingLeft:0, paddingRight:0}}>
                             <button className="hover-button" style = {this.state.numColumns==3?disabledButtonStyle:buttonStyle} onClick={this.addColumn}>+Add Step</button>
@@ -911,7 +928,8 @@ export class UnitConversionGame extends React.Component {
     }
 
     getRandomNumber() {
-        return (Math.floor(Math.random() * 9)+1) * Math.pow(10,(Math.random()<=0.5?-Math.floor(Math.random() * 4):Math.floor(Math.random() * 4)));
+        var rando = (Math.floor(Math.random() * 9)+1) * Math.pow(10,(Math.random()<=0.5?-Math.floor(Math.random() * 4):Math.floor(Math.random() * 4)))
+        return rando;
     }
 
     timesUp(obj) {

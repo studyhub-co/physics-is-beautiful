@@ -465,3 +465,11 @@ img.grayed-out-img {
     color: #000000;
     background-color: #ffffff;
 }
+
+.myclass {
+background-color: #5A8;
+border-radius: 5px;
+padding: 4px;
+font-weight:bold;
+color:gold;
+}

@@ -29,13 +29,13 @@ class QuestionView(generic.DetailView):
 
 def ProcessMath(request):
     submittedState = request.POST
+    number_unit = submittedState['number']+submittedState['unit']
     mathquillBox11 = submittedState['mathquillBox11'].replace('\ ', '').strip()
     mathquillBox21 = submittedState['mathquillBox21'].replace('\ ', '').strip()
     mathquillBox12 = submittedState['mathquillBox12'].replace('\ ', '').strip()
     mathquillBox22 = submittedState['mathquillBox22'].replace('\ ', '').strip()
     mathquillBox13 = submittedState['mathquillBox13'].replace('\ ', '').strip()
     mathquillBox23 = submittedState['mathquillBox23'].replace('\ ', '').strip()
-    print(mathquillBox11)
 
     if mathquillBox11=='':
         if mathquillBox21=='':
@@ -66,6 +66,6 @@ def ProcessMath(request):
         third_column = '*' + mathquillBox13
     else:
         third_column = '*' + mathquillBox13+'/('+mathquillBox23+')'
-    all_columns = first_column+second_column+third_column
+    all_columns = number_unit+first_column+second_column+third_column
     all_columns_parsed = trigsimp(simplify(process_sympy(all_columns).expand()))
     return HttpResponse(all_columns_parsed)
