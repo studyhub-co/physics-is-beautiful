@@ -557,12 +557,14 @@ class ConversionTable extends React.Component{
             display: 'table-cell',
             verticalAlign:'middle'
         };
+        var unitStyle = {fontStyle:'italic', fontFamily:'Times New Roman', textDecoration:(this.props.strikethrough?'line-through':'none')}
         var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding':2, fontFamily: 'symbola', fontSize:30}
         var topMiddle = {'border': '1px solid black', borderTop: 'none', 'padding':2}
         var topRight = {'border': '1px solid black', borderTop: 'none', borderRight: 'none', 'padding':2}
         var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding':2}
         var bottomMiddle = {'border': '1px solid black', borderBottom: 'none', 'padding':2}
         var bottomRight = {'border': '1px solid black', borderBottom: 'none', borderRight: 'none', 'padding':2}
+
         switch (this.props.numColumns) {
             case 1:
                 return (
@@ -570,7 +572,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>{this.props.number} <span style={{fontStyle:'italic', fontFamily:'Times New Roman', textDecoration:(this.props.strikethrough?'line-through':'none')}}>{this.props.unit}</span></td>
+                                <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
                                 <td style={topRight}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -597,7 +599,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>{this.props.number} <span style={{fontStyle:'italic', fontFamily:'Times New Roman'}}>{this.props.unit}</span></td>
+                                <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -636,7 +638,7 @@ class ConversionTable extends React.Component{
                         <table style={style}>
                             <tbody>
                             <tr>
-                                <td style={topLeft}>{this.props.number} <span style={{fontStyle:'italic', fontFamily:'Times New Roman'}}>{this.props.unit}</span></td>
+                                <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
                                 <td style={topMiddle}>
                                     <MathquillBox
                                         mathFieldID={11}
@@ -936,8 +938,8 @@ export class UnitConversionGame extends React.Component {
     }
 
     getRandomNumber() {
-        var rando = (Math.floor(Math.random() * 9)+1) * Math.pow(10,(Math.random()<=0.5?-Math.floor(Math.random() * 4):Math.floor(Math.random() * 4)))
-        return rando;
+        var rando = (Math.floor(Math.random() * 9)+1) * Math.pow(10,(Math.random()<=0.5?-Math.floor(Math.random() * 4):Math.floor(Math.random() * 4)));
+        return (rando.toString().length>3?rando.toPrecision(3):rando);
     }
 
     timesUp(obj) {
