@@ -517,13 +517,13 @@ class MathquillBox extends React.Component {
                 spaceBehavesLikeTab: true,
                 edit: () => {
                     this.state.data = this.answer.latex();
-                    this.handleChange(this.state.data, this.props.mathFieldID);
+                    this.handleChange(this.state.data, this.props.mathFieldID, this.answer);
                 }
             }
         });
     }
-    handleChange(data,mathFieldID) {
-        this.props.onMathQuillChange(data,mathFieldID);
+    handleChange(data,mathFieldID, mathquillObj) {
+        this.props.onMathQuillChange(data,mathFieldID, mathquillObj);
     }
     render() {
         var mathFieldStyle = {
@@ -545,8 +545,8 @@ class ConversionTable extends React.Component{
         super(props);
         this.onMathQuillChange = this.onMathQuillChange.bind(this);
     }
-    onMathQuillChange(data,mathFieldID) {
-        this.props.onMathQuillChange(data,mathFieldID);
+    onMathQuillChange(data,mathFieldID, mathquillObj) {
+        this.props.onMathQuillChange(data,mathFieldID, mathquillObj);
     }
     render(){
         var style = {
@@ -699,12 +699,14 @@ class UnitConversionCanvas extends React.Component {
             mathquillBox21:'',
             mathquillBox22:'',
             mathquillBox23:'',
-            mathquillBox4:''
+            mathquillBox4:'',
+            counter: 0
         }
         this.addColumn = this.addColumn.bind(this);
         this.removeColumn = this.removeColumn.bind(this);
         this.submit = this.submit.bind(this);
         this.onMathQuillChange = this.onMathQuillChange.bind(this);
+
     }
     addColumn(type) {
         this.setState({
@@ -718,10 +720,16 @@ class UnitConversionCanvas extends React.Component {
             ['mathquillBox2'+this.state.numColumns]: ''
         });
     }
-    onMathQuillChange(data,mathFieldID) {
+    onMathQuillChange(data,mathFieldID, mathquillObj) {
         var currentBox = 'mathquillBox'+mathFieldID;
+        var unitLength = this.state.unit.length;
         this.setState({[currentBox]:data});
         if (data.includes(this.state.unit)) {
+            if(this.state.counter==0){
+                this.setState({counter:1});
+                mathquillObj.keystroke('Backspace '.repeat(unitLength));
+                mathquillObj.write('\\class{strikethrough}{'+this.state.unit+'}');
+            }
             this.setState({strikethrough:true});
         }else{
             this.setState({strikethrough:false});
