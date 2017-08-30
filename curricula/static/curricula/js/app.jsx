@@ -2,6 +2,7 @@ import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import {SectionSheet, Sheet} from './sheet';
 import {VectorGame} from './games';
+import {UnitConversionGame} from './games';
 import {Vector} from './vector_canvas';
 
 
@@ -320,6 +321,8 @@ class GamesApp extends React.Component {
         switch(this.state.slug) {
             case 'vector-game':
                 Game = VectorGame;
+            case 'unit-conversion':
+                Game = UnitConversionGame
         }
         return <Game gameWon={this.gameWon.bind(this)}/>;
     }
