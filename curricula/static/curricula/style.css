@@ -465,3 +465,7 @@ img.grayed-out-img {
     color: #000000;
     background-color: #ffffff;
 }
+
+.strikethrough {
+    text-decoration: line-through;
+}
