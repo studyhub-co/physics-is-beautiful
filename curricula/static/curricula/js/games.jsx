@@ -23,6 +23,7 @@ export class ScoreBoard extends React.Component {
         // want...so I have to force it by giving it a new `key`. But to know
         // when to reset, there is additional juggling that has to be done
         // here.
+
         if (this.props.state == GameState.NEW && !this.state.didReset) {
             this.setState({clockKey: this.state.clockKey + 1, didReset: true});
         }
@@ -124,7 +125,7 @@ export class ScoreBoard extends React.Component {
                         <div style={clockStyle}>
                             <ReactCountdownClock
                                 key={this.state.clockKey}
-                                seconds={120}
+                                seconds={this.props.clockSeconds}
                                 color="#1baff6"
                                 alpha={0.9}
                                 size={100}
@@ -139,7 +140,7 @@ export class ScoreBoard extends React.Component {
                         <div style={smallClockStyle}>
                             <ReactCountdownClock
                                 key={this.state.clockKey}
-                                seconds={120}
+                                seconds={this.props.clockSeconds}
                                 color="#1baff6"
                                 alpha={0.9}
                                 size={50}
@@ -156,6 +157,9 @@ export class ScoreBoard extends React.Component {
         );
     }
 
+}
+ScoreBoard.defaultProps = {
+    clockSeconds: 120
 }
 
 

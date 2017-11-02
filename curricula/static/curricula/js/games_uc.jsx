@@ -16,6 +16,39 @@ const GameState = {// seem it can changed from games/GameState
   WON: 'WON'
 }
 
+const units = {
+  DISTANCE: {
+    'mm': 'millimeters',
+    'cm': 'centimeter',
+    'km': 'kilometers',
+    'ft': 'foots',
+    'mi': 'miles'
+  },
+  TIME: {
+    'ms': 'milliseconds',
+    'min': 'minutes',
+    'hr': 'hours',
+    'd': 'days',
+    'wk': 'weeks'
+  },
+  MASS: {
+    'mg': 'milligrams',
+    'g': 'grams',
+    'oz': 'ounces',
+  },
+  SPEED: {
+    'km/s': 'milligrams',
+    'mi/s': 'grams',
+    'ft/s': 'ounces',
+    'km/hr': 'ounces',
+    'mi/hr': 'ounces',
+    'm/hr': 'ounces',
+    'ft/hr': 'ounces',
+    'm/min': 'ounces',
+    'ft/min': 'ounces'
+  }
+}
+
 // var DEFAULT_MATHJAX_OPTIONS = {
 //     extensions: ["tex2jax.js"],
 //     jax: ["input/TeX", "output/HTML-CSS"],
@@ -406,6 +439,7 @@ class UnitConversionGameBoard extends React.Component {
       3: '#eef',
       4: '#ffa'
     }
+    this.state = {clockSeconds: 480}
   }
 
   render () {
@@ -417,7 +451,7 @@ class UnitConversionGameBoard extends React.Component {
             <div className='col-md-4' />
             <div className='col-md-4 text-center'>
               <span><h1 className='game-title'>Unit Conversion Game</h1></span>
-              <p><span>Beat a score of 1600 to unlock the next lesson. Wrong answers end the game.</span></p>
+              <p><span>Beat a score of 2500 to unlock the next lesson. Wrong answers end the game.</span></p>
               <button className='hover-button' onClick={this.props.start}>Start</button>
             </div>
           </div>
@@ -433,6 +467,7 @@ class UnitConversionGameBoard extends React.Component {
               timesUp={this.props.timesUp}
               pause={this.props.pause}
               restart={this.props.restart}
+              clockSeconds={this.state.clockSeconds}
             />
             <div className='col-md-4' />
             <div className='col-md-4 text-center'>
@@ -453,6 +488,7 @@ class UnitConversionGameBoard extends React.Component {
           timesUp={this.props.timesUp}
           pause={this.props.pause}
           restart={this.props.restart}
+          clockSeconds={this.state.clockSeconds}
         />
         <UnitConversionQuestionBoard
           number={this.props.number}
@@ -510,8 +546,11 @@ export class UnitConversionGame extends React.Component {
   }
 
   getRandomNumber () {
-    var random = (Math.floor(Math.random() * 9) + 1) * Math.pow(10, (Math.random() <= 0.5 ? -Math.floor(Math.random() * 4) : Math.floor(Math.random() * 4)))
-    return (random.toString().length > 3 ? random.toPrecision(3) : random)
+    // var random = (Math.floor(Math.random() * 9) + 1) * Math.pow(10, (Math.random() <= 0.5 ? -Math.floor(Math.random() * 4) : Math.floor(Math.random() * 4)))
+    // return (random.toString().length > 3 ? random.toPrecision(3) : random)
+    var arrayRandoms = [(Math.random() * 10000).toFixed(2), (Math.random()).toFixed(3)]
+    var toReturn = arrayRandoms[Math.floor(Math.random() * arrayRandoms.length)] // return random 1-9999 or 0.0000-0.9999
+    return Number(toReturn) === 0 ? 1 : toReturn // if number is 0, return 1
   }
 
   timesUp (obj) {
@@ -679,6 +718,7 @@ export class UnitConversionGame extends React.Component {
         pause={this.pauseToggle.bind(this)}
         arrowComplete={this.checkAnswer.bind(this)}
         restart={this.restart.bind(this)}
+
       />
     )
   }
