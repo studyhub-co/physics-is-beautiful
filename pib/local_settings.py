@@ -20,3 +20,7 @@ MEDIA_ROOT = 'media/'
 
 # email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# if 'WEBPACK_LOADER' in locals():
+#     WEBPACK_LOADER["DEFAULT"]["CACHE"] = not DEBUG
+#     WEBPACK_LOADER["DEFAULT"]["POLL_INTERVAL"] = 0.1
