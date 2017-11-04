@@ -16,10 +16,10 @@ const GameState = {// seem it can changed from games/GameState
   WON: 'WON'
 }
 
-const units = {
+const UNITS = {
   DISTANCE: {
     'mm': 'millimeters',
-    'cm': 'centimeter',
+    'cm': 'centimeters',
     'km': 'kilometers',
     'ft': 'foots',
     'mi': 'miles'
@@ -34,18 +34,18 @@ const units = {
   MASS: {
     'mg': 'milligrams',
     'g': 'grams',
-    'oz': 'ounces',
+    'oz': 'ounces'
   },
   SPEED: {
-    'km/s': 'milligrams',
-    'mi/s': 'grams',
-    'ft/s': 'ounces',
-    'km/hr': 'ounces',
-    'mi/hr': 'ounces',
-    'm/hr': 'ounces',
-    'ft/hr': 'ounces',
-    'm/min': 'ounces',
-    'ft/min': 'ounces'
+    'km/s': 'kilometers/second',
+    'mi/s': 'miles/second',
+    'ft/s': 'ounces/second',
+    'km/hr': 'kilometers/hour',
+    'mi/hr': 'miles/hour',
+    'm/hr': 'meters/second',
+    'ft/hr': 'foots/hour',
+    'm/min': 'meters/minute',
+    'ft/min': 'foots/hour'
   }
 }
 
@@ -69,19 +69,19 @@ class MathquillBox extends React.Component {
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
 
-    // this.answer = MQ.MathField($('#' + this.props.mathFieldID)[0], { // we must to avoid using jQuery
-    this.answer = MQ.MathField(document.getElementById('' + this.props.mathFieldID), {
+    //this.answer = MQ.MathField(document.getElementById('' + this.props.mathFieldID), {
+    this.answer = MQ.MathField(document.getElementById('' + this.props.row + this.props.column), {
       handlers: {
         spaceBehavesLikeTab: true,
         edit: () => {
           this.state.data = this.answer.latex()
-          this.handleChange(this.state.data, this.props.mathFieldID, this.answer)
+          this.handleChange(this.state.data, this.props.row, this.props.column, this.answer)
         }
       }
     })
   }
-  handleChange (data, mathFieldID, mathquillObj) {
-    this.props.onMathQuillChange(data, mathFieldID, mathquillObj)
+  handleChange (data, row, col, mathquillObj) {
+    this.props.onMathQuillChange(data, row, col, mathquillObj)
   }
   render () {
     var mathFieldStyle = {
@@ -91,7 +91,8 @@ class MathquillBox extends React.Component {
     return (
       <div>
         <p style={{marginBottom: 5}}>
-          <span id={this.props.mathFieldID} style={mathFieldStyle} />
+          {/* <span id={this.props.mathFieldID} style={mathFieldStyle} /> */}
+          <span id={'' + this.props.row + this.props.column} style={mathFieldStyle} />
         </p>
       </div>
     )
@@ -99,18 +100,46 @@ class MathquillBox extends React.Component {
 }
 
 MathquillBox.propTypes = {
-  mathFieldID: React.PropTypes.number,
-  onMathQuillChange: React.PropTypes.func
+  onMathQuillChange: React.PropTypes.func,
+  row: React.PropTypes.number.isRequired,
+  column: React.PropTypes.number.isRequired
 }
 
 class ConversionTable extends React.Component {
+
   constructor (props) {
     super(props)
     this.onMathQuillChange = this.onMathQuillChange.bind(this)
   }
-  onMathQuillChange (data, mathFieldID, mathquillObj) {
-    this.props.onMathQuillChange(data, mathFieldID, mathquillObj)
+
+  onMathQuillChange (data, row, col, mathquillObj) {
+    this.props.onMathQuillChange(data, row, col, mathquillObj)
   }
+
+  getColumns (row) {
+    var border = {'border': '1px solid black', 'padding': 2}
+    var noTop = {borderTop: 'none'}
+    var noBottom = {borderBottom: 'none'}
+    var noRight = {borderRight: 'none'}
+
+    var tdColumns = []
+    for (var i = 0; i < this.props.numColumns; i++) {
+      var styles = border
+      if (row === 1) { styles = Object.assign(styles, noTop) }
+      if (row === 2) { styles = Object.assign(styles, noBottom) }
+      if (i === 3) { styles = Object.assign(styles, noRight) } // TODO make it configurable max numbers of columns
+      tdColumns.push(
+        <td style={styles} key={i}>
+          <MathquillBox
+            row={row}
+            column={i + 1}
+            onMathQuillChange={this.onMathQuillChange}
+          />
+        </td>)
+    }
+    return tdColumns
+  }
+
   render () {
     var style = {
       marginLeft: 'auto',
@@ -125,132 +154,26 @@ class ConversionTable extends React.Component {
       fontFamily: 'Times New Roman',
       textDecoration: (this.props.strikethrough ? 'line-through' : 'none')
     }
-    var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding': 2, fontFamily: 'symbola', fontSize: 30}
-    var topMiddle = {'border': '1px solid black', borderTop: 'none', 'padding': 2}
-    var topRight = {'border': '1px solid black', borderTop: 'none', borderRight: 'none', 'padding': 2}
-    var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding': 2}
-    var bottomMiddle = {'border': '1px solid black', borderBottom: 'none', 'padding': 2}
-    var bottomRight = {'border': '1px solid black', borderBottom: 'none', borderRight: 'none', 'padding': 2}
 
-    switch (this.props.numColumns) {
-      case 1:
-        return (
-          <div>
-            <table style={style}>
-              <tbody>
-                <tr>
-                  <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
-                  <td style={topRight}>
-                    <MathquillBox
-                      mathFieldID={11}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={bottomLeft} />
-                  <td style={bottomRight}>
-                    <MathquillBox
-                      mathFieldID={21}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )
-      case 2:
-        return (
-          <div>
-            <table style={style}>
-              <tbody>
-                <tr>
-                  <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
-                  <td style={topMiddle}>
-                    <MathquillBox
-                      mathFieldID={11}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                  <td style={topRight}>
-                    <MathquillBox
-                      mathFieldID={12}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={bottomLeft} />
-                  <td style={bottomMiddle}>
-                    <MathquillBox
-                      mathFieldID={21}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                  <td style={bottomRight}>
-                    <MathquillBox
-                      mathFieldID={22}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )
-      case 3:
-        return (
-          <div>
-            <table style={style}>
-              <tbody>
-                <tr>
-                  <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
-                  <td style={topMiddle}>
-                    <MathquillBox
-                      mathFieldID={11}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                  <td style={topMiddle}>
-                    <MathquillBox
-                      mathFieldID={12}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                  <td style={topRight}>
-                    <MathquillBox
-                      mathFieldID={13}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={bottomLeft} />
-                  <td style={bottomMiddle}>
-                    <MathquillBox
-                      mathFieldID={21}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                  <td style={bottomMiddle}>
-                    <MathquillBox
-                      mathFieldID={22}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                  <td style={bottomRight}>
-                    <MathquillBox
-                      mathFieldID={23}
-                      onMathQuillChange={this.onMathQuillChange}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )
-    }
+    var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding': 2, fontFamily: 'symbola', fontSize: 30}
+    var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding': 2}
+
+    return (
+      <div>
+        <table style={style}>
+          <tbody>
+            <tr>
+              <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
+              {this.getColumns(1)}
+            </tr>
+            <tr>
+              <td style={bottomLeft} />
+              {this.getColumns(2)}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    )
   }
 }
 
@@ -270,13 +193,13 @@ class UnitConversionCanvas extends React.Component {
       number: this.props.number,
       unit: this.props.unit,
       strikethrough: false,
-      mathquillBox11: '',
-      mathquillBox12: '',
-      mathquillBox13: '',
-      mathquillBox21: '',
-      mathquillBox22: '',
-      mathquillBox23: '',
-      mathquillBox4: '',
+      // mathquillBox11: '',
+      // mathquillBox12: '',
+      // mathquillBox13: '',
+      // mathquillBox21: '',
+      // mathquillBox22: '',
+      // mathquillBox23: '',
+      // mathquillBox4: '',
       counter: 0
     }
     this.addColumn = this.addColumn.bind(this)
@@ -296,20 +219,22 @@ class UnitConversionCanvas extends React.Component {
       ['mathquillBox2' + this.state.numColumns]: ''
     })
   }
-  onMathQuillChange (data, mathFieldID, mathquillObj) {
-    var currentBox = 'mathquillBox' + mathFieldID
-    var unitLength = this.state.unit.length
-    this.setState({[currentBox]: data})
-    if (data.includes(this.state.unit)) {
-      if (this.state.counter === 0) {
-        this.setState({counter: 1})
-        mathquillObj.keystroke('Backspace '.repeat(unitLength))
-        mathquillObj.write('\\class{strikethrough}{' + this.state.unit + '}')
-      }
-      this.setState({strikethrough: true})
-    } else {
-      this.setState({strikethrough: false})
-    }
+  //onMathQuillChange (data, mathFieldID, mathquillObj) {
+  onMathQuillChange (data, row, col, mathquillObj) {
+    //console.log(mathquillObj)
+    // var currentBox = 'mathquillBox' + mathFieldID
+    // var unitLength = this.state.unit.length
+    // this.setState({[currentBox]: data})
+    // if (data.includes(this.state.unit)) {
+    //   if (this.state.counter === 0) {
+    //     this.setState({counter: 1})
+    //     mathquillObj.keystroke('Backspace '.repeat(unitLength))
+    //     mathquillObj.write('\\class{strikethrough}{' + this.state.unit + '}')
+    //   }
+    //   this.setState({strikethrough: true})
+    // } else {
+    //   this.setState({strikethrough: false})
+    // }
   }
   submit (answerJSON) {
     $.ajax({ // TODO avoid using jQuery
@@ -360,7 +285,7 @@ class UnitConversionCanvas extends React.Component {
             <div style={{fontSize: 10, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 0, paddingRight: 0}}>
               <button
                 className='hover-button'
-                style={this.state.numColumns === 3 ? disabledButtonStyle : buttonStyle}
+                style={this.state.numColumns === 4 ? disabledButtonStyle : buttonStyle}
                 onClick={this.addColumn}>+Add Step</button>
               <button
                 className='hover-button'
@@ -374,7 +299,8 @@ class UnitConversionCanvas extends React.Component {
             </div>
             <div style={{display: 'table-cell', verticalAlign: 'middle'}}>
               <MathquillBox
-                mathFieldID={4}
+                row={0}
+                column={0}
                 onMathQuillChange={this.onMathQuillChange}
               />
             </div>
@@ -421,7 +347,6 @@ class UnitConversionQuestionBoard extends React.Component {
     )
   }
 }
-
 UnitConversionQuestionBoard.propTypes = {
   question: React.PropTypes.any,
   number: React.PropTypes.any,
@@ -439,7 +364,7 @@ class UnitConversionGameBoard extends React.Component {
       3: '#eef',
       4: '#ffa'
     }
-    this.state = {clockSeconds: 480}
+    this.state = {clockSeconds: 600}
   }
 
   render () {
@@ -504,7 +429,6 @@ class UnitConversionGameBoard extends React.Component {
     )
   }
 }
-
 UnitConversionGameBoard.propTypes = {
   number: React.PropTypes.any,
   unit: React.PropTypes.string,
@@ -541,15 +465,19 @@ export class UnitConversionGame extends React.Component {
     window.onbeforeunload = null
   }
 
-  getRandomInt (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min
+  // getRandomInt (min, max) {
+  //   return Math.floor(Math.random() * (max - min + 1)) + min
+  // }
+
+  getRandomFromArray (myArray) {
+    return myArray[Math.floor(Math.random() * myArray.length)]
   }
 
   getRandomNumber () {
     // var random = (Math.floor(Math.random() * 9) + 1) * Math.pow(10, (Math.random() <= 0.5 ? -Math.floor(Math.random() * 4) : Math.floor(Math.random() * 4)))
     // return (random.toString().length > 3 ? random.toPrecision(3) : random)
     var arrayRandoms = [(Math.random() * 10000).toFixed(2), (Math.random()).toFixed(3)]
-    var toReturn = arrayRandoms[Math.floor(Math.random() * arrayRandoms.length)] // return random 1-9999 or 0.0000-0.9999
+    var toReturn = this.getRandomFromArray(arrayRandoms) // return random 1-9999 or 0.0000-0.9999
     return Number(toReturn) === 0 ? 1 : toReturn // if number is 0, return 1
   }
 
@@ -607,62 +535,81 @@ export class UnitConversionGame extends React.Component {
   }
 
   generateQuestion (newScore, newLevel) {
-    var question
-    var number = 0
-    var unit = ''
+    var number = this.getRandomNumber()
+    var unit, unitFull
+
     newScore = newScore || this.state.score
     newLevel = newLevel || this.state.level
-    do {
-      switch (newLevel) {
-        case 1:
-          number = this.getRandomNumber()
-          unit = ['cm', 'weeks', 'oz', 'km/hr'][this.getRandomInt(0, 3)]
-          question = <span>{'Convert ' + number.toString() + ' ' + unit + ' to SI units.'}</span>
-          break
-        case 2:
-          // var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
-          // if ([xHat, iHat].indexOf(char) >= 0) {
-          //     x = this.getRandomInt(-4, 4);
-          //     question = <span>{"Draw " + x}{char}</span>;
-          // } else {
-          //     y = this.getRandomInt(-4, 4);
-          //     question = <span>{"Draw " + y}{char}</span>;
-          // }
-          break
-        case 3:
-          // var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-          // x = this.getRandomInt(-4, 4);
-          // y = this.getRandomInt(-4, 4);
-          // question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
-          break
-        case 4:
-          // var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-          // var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
-          // var x1 = this.getRandomInt(-2, 2);
-          // var y1 = this.getRandomInt(-2, 2);
-          // var x2 = this.getRandomInt(-2, 2);
-          // var y2 = this.getRandomInt(-2, 2);
-          // x = (sign == ' + ') ? x1 + x2 : x1 - x2;
-          // y = (sign == ' + ') ? y1 + y2 : y1 - y2;
-          // var draw = <span>{"Draw "}{vectorA}{sign}{vectorB}</span>;
-          // var vA = <span>{vectorA}{" = " + x1}{chars[0]}{" + " + y1}{chars[1]}</span>;
-          // var vB = <span>{vectorB}{" = " + x2}{chars[0]}{" + " + y2}{chars[1]}</span>;
-          //
-          // question = <div>{draw}<br/>{vA}<br/>{vB}</div>;
-          break
-        default:
-          // var char = ['x', 'y', 'i', 'j'][this.getRandomInt(0, 3)]
-          // if (['x', 'i'].indexOf(char) >= 0) {
-          //     x = this.getRandomInt(-4, 4);
-          //     question = "Draw " + x + char;
-          // } else {
-          //     y = this.getRandomInt(-4, 4);
-          //     question = "Draw " + y + char;
-          // }
-          break
-      }
-      // Let's make sure we don't get the same question twice in a row.
-    } while (this.state.unit === unit && this.state.number === number)
+
+    if (newLevel === 1) {
+      unit = this.getRandomFromArray(Object.keys(UNITS.DISTANCE))
+      unitFull = UNITS.DISTANCE[unit]
+    } else if (newLevel === 2) {
+      unit = this.getRandomFromArray(Object.keys(UNITS.TIME))
+      unitFull = UNITS.TIME[unit]
+    } else if (newLevel === 3) {
+      unit = this.getRandomFromArray(Object.keys(UNITS.MASS))
+      unitFull = UNITS.MASS[unit]
+    } else if (newLevel === 4) {
+      unit = this.getRandomFromArray(Object.keys(UNITS.SPEED))
+      unitFull = UNITS.SPEED[unit]
+    }
+
+    var question = <span>{'Convert ' + number.toString() + ' ' + unitFull + ' to SI units.'}</span>
+
+    // newScore = newScore || this.state.score
+    // newLevel = newLevel || this.state.level
+    // do {
+    //   switch (newLevel) {
+    //     case 1:
+    //       number = this.getRandomNumber()
+    //       unit = ['cm', 'weeks', 'oz', 'km/hr'][this.getRandomInt(0, 3)]
+    //       question = <span>{'Convert ' + number.toString() + ' ' + unit + ' to SI units.'}</span>
+    //       break
+    //     case 2:
+    //       // var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
+    //       // if ([xHat, iHat].indexOf(char) >= 0) {
+    //       //     x = this.getRandomInt(-4, 4);
+    //       //     question = <span>{"Draw " + x}{char}</span>;
+    //       // } else {
+    //       //     y = this.getRandomInt(-4, 4);
+    //       //     question = <span>{"Draw " + y}{char}</span>;
+    //       // }
+    //       break
+    //     case 3:
+    //       // var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
+    //       // x = this.getRandomInt(-4, 4);
+    //       // y = this.getRandomInt(-4, 4);
+    //       // question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
+    //       break
+    //     case 4:
+    //       // var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
+    //       // var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
+    //       // var x1 = this.getRandomInt(-2, 2);
+    //       // var y1 = this.getRandomInt(-2, 2);
+    //       // var x2 = this.getRandomInt(-2, 2);
+    //       // var y2 = this.getRandomInt(-2, 2);
+    //       // x = (sign == ' + ') ? x1 + x2 : x1 - x2;
+    //       // y = (sign == ' + ') ? y1 + y2 : y1 - y2;
+    //       // var draw = <span>{"Draw "}{vectorA}{sign}{vectorB}</span>;
+    //       // var vA = <span>{vectorA}{" = " + x1}{chars[0]}{" + " + y1}{chars[1]}</span>;
+    //       // var vB = <span>{vectorB}{" = " + x2}{chars[0]}{" + " + y2}{chars[1]}</span>;
+    //       //
+    //       // question = <div>{draw}<br/>{vA}<br/>{vB}</div>;
+    //       break
+    //     default:
+    //       // var char = ['x', 'y', 'i', 'j'][this.getRandomInt(0, 3)]
+    //       // if (['x', 'i'].indexOf(char) >= 0) {
+    //       //     x = this.getRandomInt(-4, 4);
+    //       //     question = "Draw " + x + char;
+    //       // } else {
+    //       //     y = this.getRandomInt(-4, 4);
+    //       //     question = "Draw " + y + char;
+    //       // }
+    //       break
+    //   }
+    //   // Let's make sure we don't get the same question twice in a row.
+    // } while (this.state.unit === unit && this.state.number === number)
     this.lastQuestion = question
     return {
       score: newScore,
