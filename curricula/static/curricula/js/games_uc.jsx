@@ -221,15 +221,15 @@ class UnitConversionCanvas extends React.Component {
       answersSteps: this.state.answersSteps.slice(0, -1)
       // ['mathquillBox1' + this.state.numColumns]: '',
       // ['mathquillBox2' + this.state.numColumns]: ''
+    }, function () {
+      this.reDrawStrikes()
     })
   }
-  // onMathQuillChange (data, mathFieldID, mathquillObj) {
-  onMathQuillChange (data, row, col, mathquillObj) {
 
-    // store value in matrix
+  resetStrikeAnswers () {
     var answers = this.state.answersSteps
-    answers[col - 1][row - 1] = {'data': data, 'box': mathquillObj}
 
+    this.state.strikethrough = false
     var resetStrike = function (answer) {
       var tmpData = answer['data']
 
@@ -249,17 +249,19 @@ class UnitConversionCanvas extends React.Component {
 
     // reset all strikethrough after update
     for (var column = 0; column < answers.length; column++) { // walk through numerators
-      resetStrike(answers[column][0]) // must be before split
-      for (var column2 = 0; column2 < answers.length; column2++) { // walk through denominators
-        resetStrike(answers[column2][1])
-      }
+      resetStrike(answers[column][0])
+      resetStrike(answers[column][1])
     }
-    this.state.strikethrough = false
+    return answers
+  }
+
+  reDrawStrikes () {
+    var answers = this.resetStrikeAnswers()
 
     // TODO it is really need to check for unit exist in UNITS const
     // strikethrough units Numerator and Denominator
     numeratorsC:
-    for (column = -1; column < answers.length; column++) { // walk through numerators
+    for (var column = -1; column < answers.length; column++) { // walk through numerators
       var splitNumerator
 
       if (column === -1) {
@@ -269,7 +271,7 @@ class UnitConversionCanvas extends React.Component {
       } // "2 cm"
 
       if (splitNumerator && typeof splitNumerator[1] !== 'undefined') {
-        for (column2 = 0; column2 < answers.length; column2++) { // walk through denominators
+        for (var column2 = 0; column2 < answers.length; column2++) { // walk through denominators
           var splitDenominator = answers[column2][1]['data'].match(/\S+/g)
           if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
             // cross start unit
@@ -305,11 +307,24 @@ class UnitConversionCanvas extends React.Component {
         }
       }
     }
-
     this.setState({
       answersSteps: answers
     })
   }
+
+  // onMathQuillChange (data, mathFieldID, mathquillObj) {
+  onMathQuillChange (data, row, col, mathquillObj) {
+    // store value in matrix
+    var answers = this.state.answersSteps
+    this.state.answersSteps[col - 1][row - 1] = {'data': data, 'box': mathquillObj}
+
+    this.setState({
+      answersSteps: answers
+    }, function () {
+      this.reDrawStrikes()
+    })
+  }
+
   submit (answerJSON) {
 
     // check for
