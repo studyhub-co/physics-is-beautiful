@@ -42,6 +42,7 @@
     "eslint-config-standard-react": "^5.0.0"
   },
   "dependencies": {
-    "react-bootstrap": "^0.30.7"
+    "react-bootstrap": "^0.30.7",
+    "js-quantities": "^1.7.0"
   }
 }

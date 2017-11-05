@@ -69,11 +69,13 @@ class MathquillBox extends React.Component {
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
 
-    //this.answer = MQ.MathField(document.getElementById('' + this.props.mathFieldID), {
     this.answer = MQ.MathField(document.getElementById('' + this.props.row + this.props.column), {
       handlers: {
         spaceBehavesLikeTab: true,
         edit: () => {
+          // if change by API (not user), then not fire
+          if (this.answer.fromJsCall) {return;}
+
           this.state.data = this.answer.latex()
           this.handleChange(this.state.data, this.props.row, this.props.column, this.answer)
         }
@@ -98,7 +100,6 @@ class MathquillBox extends React.Component {
     )
   }
 }
-
 MathquillBox.propTypes = {
   onMathQuillChange: React.PropTypes.func,
   row: React.PropTypes.number.isRequired,
@@ -127,7 +128,7 @@ class ConversionTable extends React.Component {
       var styles = border
       if (row === 1) { styles = Object.assign(styles, noTop) }
       if (row === 2) { styles = Object.assign(styles, noBottom) }
-      if (i === 3) { styles = Object.assign(styles, noRight) } // TODO make it configurable max numbers of columns
+      if (i === (this.props.numColumns - 1)) { styles = Object.assign(styles, noRight) }
       tdColumns.push(
         <td style={styles} key={i}>
           <MathquillBox
@@ -193,6 +194,8 @@ class UnitConversionCanvas extends React.Component {
       number: this.props.number,
       unit: this.props.unit,
       strikethrough: false,
+      answersSteps: [[{'data': '', 'box': null}, {'data': '', 'box': null}]], // first column set by default
+      counter: 0
       // mathquillBox11: '',
       // mathquillBox12: '',
       // mathquillBox13: '',
@@ -200,7 +203,6 @@ class UnitConversionCanvas extends React.Component {
       // mathquillBox22: '',
       // mathquillBox23: '',
       // mathquillBox4: '',
-      counter: 0
     }
     this.addColumn = this.addColumn.bind(this)
     this.removeColumn = this.removeColumn.bind(this)
@@ -209,46 +211,121 @@ class UnitConversionCanvas extends React.Component {
   }
   addColumn (type) {
     this.setState({
-      numColumns: this.state.numColumns + 1
+      numColumns: this.state.numColumns + 1,
+      answersSteps: [...this.state.answersSteps, [{'data': '', 'box': null}, {'data': '', 'box': null}]]
     })
   }
   removeColumn () {
     this.setState({
       numColumns: this.state.numColumns - 1,
-      ['mathquillBox1' + this.state.numColumns]: '',
-      ['mathquillBox2' + this.state.numColumns]: ''
+      answersSteps: this.state.answersSteps.slice(0, -1)
+      // ['mathquillBox1' + this.state.numColumns]: '',
+      // ['mathquillBox2' + this.state.numColumns]: ''
     })
   }
-  //onMathQuillChange (data, mathFieldID, mathquillObj) {
+  // onMathQuillChange (data, mathFieldID, mathquillObj) {
   onMathQuillChange (data, row, col, mathquillObj) {
-    //console.log(mathquillObj)
-    // var currentBox = 'mathquillBox' + mathFieldID
-    // var unitLength = this.state.unit.length
-    // this.setState({[currentBox]: data})
-    // if (data.includes(this.state.unit)) {
-    //   if (this.state.counter === 0) {
-    //     this.setState({counter: 1})
-    //     mathquillObj.keystroke('Backspace '.repeat(unitLength))
-    //     mathquillObj.write('\\class{strikethrough}{' + this.state.unit + '}')
-    //   }
-    //   this.setState({strikethrough: true})
-    // } else {
-    //   this.setState({strikethrough: false})
-    // }
+
+    // store value in matrix
+    var answers = this.state.answersSteps
+    answers[col - 1][row - 1] = {'data': data, 'box': mathquillObj}
+
+    var resetStrike = function (answer) {
+      var tmpData = answer['data']
+
+      var startI = tmpData.lastIndexOf('\\class{strikethrough}{')
+      var endI = tmpData.lastIndexOf('}')
+
+      if (startI < 0 || endI < 0) { return }
+      startI += '\\class{strikethrough}{'.length
+      var tmpUnit = tmpData.substring(startI, endI)
+      var resetTxt = tmpData.replace('\\class{strikethrough}{' + tmpUnit + '}', tmpUnit)
+
+      answer['box'].fromJsCall = true
+      answer['data'] = resetTxt
+      answer['box'].latex(resetTxt)
+      answer['box'].fromJsCall = false
+    }
+
+    // reset all strikethrough after update
+    for (var column = 0; column < answers.length; column++) { // walk through numerators
+      resetStrike(answers[column][0]) // must be before split
+      for (var column2 = 0; column2 < answers.length; column2++) { // walk through denominators
+        resetStrike(answers[column2][1])
+      }
+    }
+    this.state.strikethrough = false
+
+    // TODO it is really need to check for unit exist in UNITS const
+    // strikethrough units Numerator and Denominator
+    numeratorsC:
+    for (column = -1; column < answers.length; column++) { // walk through numerators
+      var splitNumerator
+
+      if (column === -1) {
+        splitNumerator = ['', this.state.unit] // main unit
+      } else {
+        splitNumerator = answers[column][0]['data'].match(/\S+/g)
+      } // "2 cm"
+
+      if (splitNumerator && typeof splitNumerator[1] !== 'undefined') {
+        for (column2 = 0; column2 < answers.length; column2++) { // walk through denominators
+          var splitDenominator = answers[column2][1]['data'].match(/\S+/g)
+          if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
+            // cross start unit
+            if (splitDenominator[1] === this.state.unit) {
+              this.state.strikethrough = true
+            }
+
+            // numeratorBoxes boxes
+            if (splitNumerator[1] === splitDenominator[1]) { // second one in "1.23 cm"
+              // strikethrough Numerator
+              if (column === -1) {
+                this.state.strikethrough = true
+              } else {
+                var numeratorBox = answers[column][0]['box']
+                var newLatexN = answers[column][0]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
+                numeratorBox.fromJsCall = true
+                answers[column][0]['data'] = newLatexN
+                numeratorBox.latex(newLatexN)
+                numeratorBox.fromJsCall = false
+              }
+
+              // strikethrough denominator
+              var denominatorBox = answers[column2][1]['box']
+              var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
+              answers[column2][1]['data'] = newLatexDN // to reset available
+              denominatorBox.fromJsCall = true
+              denominatorBox.latex(newLatexDN)
+              denominatorBox.fromJsCall = false
+
+              continue numeratorsC // need for stop search 2nd and more denominator with current unit
+            }
+          }
+        }
+      }
+    }
+
+    this.setState({
+      answersSteps: answers
+    })
   }
   submit (answerJSON) {
-    $.ajax({ // TODO avoid using jQuery
-      type: 'POST',
-      url: '/curriculum/convertmath/',
-      // dataType: 'json',
-      // contentType: "application/json; charset=utf-8",
-      data: answerJSON,
-      // async: false,
-      context: this,
-      success: function (data, status, jqXHR) {
-        console.log(data)
-      }
-    })
+
+    // check for
+
+    // $.ajax({ // TODO avoid using jQuery
+    //   type: 'POST',
+    //   url: '/curriculum/convertmath/',
+    //   // dataType: 'json',
+    //   // contentType: "application/json; charset=utf-8",
+    //   data: answerJSON,
+    //   // async: false,
+    //   context: this,
+    //   success: function (data, status, jqXHR) {
+    //     console.log(data)
+    //   }
+    // })
   }
   render () {
     // var disabled = '';
@@ -419,7 +496,7 @@ class UnitConversionGameBoard extends React.Component {
           number={this.props.number}
           unit={this.props.unit}
           question={this.props.question}
-          arrowComplete={this.props.arrowComplete}
+          submitQuestion={this.props.submitQuestion}
           clear={[GameState.NEW, GameState.QUESTION].indexOf(this.props.state) >= 0}
           state={this.props.state}
           answerVector={this.props.answerVector}
@@ -441,13 +518,18 @@ UnitConversionGameBoard.propTypes = {
   restart: React.PropTypes.func,
   answerText: React.PropTypes.string,
   answerVector: React.PropTypes.string,
-  arrowComplete: React.PropTypes.func,
+  submitQuestion: React.PropTypes.func,
   question: React.PropTypes.any
 }
 
 export class UnitConversionGame extends React.Component {
   constructor () {
     super()
+    this.timesUp = this.timesUp.bind(this)
+    this.start = this.start.bind(this)
+    this.pauseToggle = this.pauseToggle.bind(this)
+    this.checkAnswer = this.checkAnswer.bind(this)
+    this.restart = this.restart.bind(this)
     this.state = {
       state: GameState.NEW,
       pausedOnState: null,
@@ -536,26 +618,26 @@ export class UnitConversionGame extends React.Component {
 
   generateQuestion (newScore, newLevel) {
     var number = this.getRandomNumber()
-    var unit, unitFull
+    var unit, unitLong
 
     newScore = newScore || this.state.score
     newLevel = newLevel || this.state.level
 
     if (newLevel === 1) {
       unit = this.getRandomFromArray(Object.keys(UNITS.DISTANCE))
-      unitFull = UNITS.DISTANCE[unit]
+      unitLong = UNITS.DISTANCE[unit]
     } else if (newLevel === 2) {
       unit = this.getRandomFromArray(Object.keys(UNITS.TIME))
-      unitFull = UNITS.TIME[unit]
+      unitLong = UNITS.TIME[unit]
     } else if (newLevel === 3) {
       unit = this.getRandomFromArray(Object.keys(UNITS.MASS))
-      unitFull = UNITS.MASS[unit]
+      unitLong = UNITS.MASS[unit]
     } else if (newLevel === 4) {
       unit = this.getRandomFromArray(Object.keys(UNITS.SPEED))
-      unitFull = UNITS.SPEED[unit]
+      unitLong = UNITS.SPEED[unit]
     }
 
-    var question = <span>{'Convert ' + number.toString() + ' ' + unitFull + ' to SI units.'}</span>
+    var question = <span>{'Convert ' + number.toString() + ' ' + unitLong + ' to SI units.'}</span>
 
     // newScore = newScore || this.state.score
     // newLevel = newLevel || this.state.level
@@ -653,7 +735,7 @@ export class UnitConversionGame extends React.Component {
     return (
       <UnitConversionGameBoard
         state={this.state.state}
-        start={this.start.bind(this)}
+        start={this.start}
         score={this.state.score}
         level={this.state.level}
         number={this.state.number}
@@ -661,11 +743,10 @@ export class UnitConversionGame extends React.Component {
         question={this.state.question}
         answerVector={this.state.answerVector}
         answerText={this.state.answerText}
-        timesUp={this.timesUp.bind(this)}
-        pause={this.pauseToggle.bind(this)}
-        arrowComplete={this.checkAnswer.bind(this)}
-        restart={this.restart.bind(this)}
-
+        timesUp={this.timesUp}
+        pause={this.pauseToggle}
+        submitQuestion={this.checkAnswer}
+        restart={this.restart}
       />
     )
   }
