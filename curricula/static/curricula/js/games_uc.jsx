@@ -7,6 +7,7 @@ import MathJax from 'react-mathjax'
 import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
 import {ScoreBoard} from './games'
+var Qty = require('js-quantities')
 
 const GameState = {// seem it can changed from games/GameState
   NEW: 'NEW',
@@ -63,7 +64,6 @@ const UNITS = {
 class MathquillBox extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {data: ''}
     this.handleChange = this.handleChange.bind(this)
   }
   componentDidMount () {
@@ -74,10 +74,10 @@ class MathquillBox extends React.Component {
         spaceBehavesLikeTab: true,
         edit: () => {
           // if change by API (not user), then not fire
-          if (this.answer.fromJsCall) {return;}
+          if (this.answer.fromJsCall) { return }
+          // TODO need wait for a user typing, because m, mi and mm start from m, and fire wrong strikethrough
 
-          this.state.data = this.answer.latex()
-          this.handleChange(this.state.data, this.props.row, this.props.column, this.answer)
+          this.handleChange(this.answer.latex(), this.props.row, this.props.column, this.answer)
         }
       }
     })
@@ -177,7 +177,6 @@ class ConversionTable extends React.Component {
     )
   }
 }
-
 ConversionTable.propTypes = {
   onMathQuillChange: React.PropTypes.func,
   strikethrough: React.PropTypes.bool,
@@ -189,38 +188,51 @@ ConversionTable.propTypes = {
 class UnitConversionCanvas extends React.Component {
   constructor (props) {
     super(props)
+
     this.state = {
       numColumns: 1,
       number: this.props.number,
       unit: this.props.unit,
       strikethrough: false,
-      answersSteps: [[{'data': '', 'box': null}, {'data': '', 'box': null}]], // first column set by default
+      //answersSteps: [[{'data': '', 'box': MQ(document.getElementById('11'))}, {'data': '', 'box': MQ(document.getElementById('21'))}]], // first column set by default
+      answer: '',
       counter: 0
-      // mathquillBox11: '',
-      // mathquillBox12: '',
-      // mathquillBox13: '',
-      // mathquillBox21: '',
-      // mathquillBox22: '',
-      // mathquillBox23: '',
-      // mathquillBox4: '',
     }
     this.addColumn = this.addColumn.bind(this)
     this.removeColumn = this.removeColumn.bind(this)
-    this.submit = this.submit.bind(this)
+    this.submitQuestion = this.submitQuestion.bind(this)
     this.onMathQuillChange = this.onMathQuillChange.bind(this)
+    this.onResultChange = this.onResultChange.bind(this)
+    this.resetStrikeAnswers = this.resetStrikeAnswers.bind(this)
+    this.reDrawStrikes = this.reDrawStrikes.bind(this)
   }
-  addColumn (type) {
+
+  componentDidMount () {
+    var MQ = MathQuill.getInterface(2)
     this.setState({
-      numColumns: this.state.numColumns + 1,
-      answersSteps: [...this.state.answersSteps, [{'data': '', 'box': null}, {'data': '', 'box': null}]]
+      answersSteps: [[{'data': '', 'box': MQ(document.getElementById('11'))}, {
+        'data': '',
+        'box': MQ(document.getElementById('21'))
+      }]] // first column set by default
+    })
+  }
+
+  addColumn () {
+    var MQ = MathQuill.getInterface(2)
+    var newColumns = this.state.numColumns + 1
+
+    this.setState({
+      numColumns: newColumns,
+      answersSteps: [...this.state.answersSteps, [
+        { 'data': '', 'box': MQ(document.getElementById('1' + newColumns)) },
+        { 'data': '', 'box': MQ(document.getElementById('2' + newColumns)) }]
+      ]
     })
   }
   removeColumn () {
     this.setState({
       numColumns: this.state.numColumns - 1,
       answersSteps: this.state.answersSteps.slice(0, -1)
-      // ['mathquillBox1' + this.state.numColumns]: '',
-      // ['mathquillBox2' + this.state.numColumns]: ''
     }, function () {
       this.reDrawStrikes()
     })
@@ -247,8 +259,8 @@ class UnitConversionCanvas extends React.Component {
       answer['box'].fromJsCall = false
     }
 
-    // reset all strikethrough after update
-    for (var column = 0; column < answers.length; column++) { // walk through numerators
+    // reset all strikethrough after update any value
+    for (var column = 0; column < answers.length; column++) { // walk through columns
       resetStrike(answers[column][0])
       resetStrike(answers[column][1])
     }
@@ -274,7 +286,7 @@ class UnitConversionCanvas extends React.Component {
         for (var column2 = 0; column2 < answers.length; column2++) { // walk through denominators
           var splitDenominator = answers[column2][1]['data'].match(/\S+/g)
           if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
-            // cross start unit
+            // strikethrough start unit
             if (splitDenominator[1] === this.state.unit) {
               this.state.strikethrough = true
             }
@@ -288,7 +300,7 @@ class UnitConversionCanvas extends React.Component {
                 var numeratorBox = answers[column][0]['box']
                 var newLatexN = answers[column][0]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
                 numeratorBox.fromJsCall = true
-                answers[column][0]['data'] = newLatexN
+                answers[column][0]['data'] = newLatexN // data will not fill, because edit event not fire onMathQuillChange
                 numeratorBox.latex(newLatexN)
                 numeratorBox.fromJsCall = false
               }
@@ -296,7 +308,7 @@ class UnitConversionCanvas extends React.Component {
               // strikethrough denominator
               var denominatorBox = answers[column2][1]['box']
               var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
-              answers[column2][1]['data'] = newLatexDN // to reset available
+              answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
               denominatorBox.fromJsCall = true
               denominatorBox.latex(newLatexDN)
               denominatorBox.fromJsCall = false
@@ -312,7 +324,6 @@ class UnitConversionCanvas extends React.Component {
     })
   }
 
-  // onMathQuillChange (data, mathFieldID, mathquillObj) {
   onMathQuillChange (data, row, col, mathquillObj) {
     // store value in matrix
     var answers = this.state.answersSteps
@@ -325,22 +336,112 @@ class UnitConversionCanvas extends React.Component {
     })
   }
 
-  submit (answerJSON) {
+  // result change
+  onResultChange (data, row, col, mathquillObj) {
+    this.setState({
+      answer: {'data': data, 'box': mathquillObj}
+    })
+  }
 
-    // check for
+  submitGame () {
+    this.props.submitGame()
+  }
 
-    // $.ajax({ // TODO avoid using jQuery
-    //   type: 'POST',
-    //   url: '/curriculum/convertmath/',
-    //   // dataType: 'json',
-    //   // contentType: "application/json; charset=utf-8",
-    //   data: answerJSON,
-    //   // async: false,
-    //   context: this,
-    //   success: function (data, status, jqXHR) {
-    //     console.log(data)
-    //   }
-    // })
+  // fixes strikethrough and whitespace
+  clearDataText (tmpData) {
+    var startI = tmpData.lastIndexOf('\\class{strikethrough}{')
+    var endI = tmpData.lastIndexOf('}')
+    if (startI > 0 || endI > 0) {
+      startI += '\\class{strikethrough}{'.length
+      var tmpUnit = tmpData.substring(startI, endI)
+      tmpData = tmpData.replace('\\class{strikethrough}{' + tmpUnit + '}', tmpUnit)
+    }
+    tmpData = tmpData.replace(/\\ /g, '') // fast fix to remove backslash and whitespace
+    return tmpData
+  }
+
+  submitQuestion () {
+    var answers = this.state.answersSteps
+    var qNumber = this.state.number
+    var qUnit = this.state.unit
+    var qQty = new Qty(Number(qNumber), qUnit)
+    var spanNElement = null
+    var spanDElement = null
+
+    var isRightAnswer = true
+
+    // check units converions
+    for (var column = 0; column < answers.length; column++) { // walk through columns
+      var numerator = answers[column][0]
+      if (numerator['box']) {
+        spanNElement = numerator['box'].__controller.container[0]
+      }
+      var denominator = answers[column][1]
+      if (denominator['box']) {
+        spanDElement = denominator['box'].__controller.container[0]
+      }
+      var qnQty, qdQty
+      if (this.clearDataText(numerator['data']) === '' || this.clearDataText(denominator['data']) === '') { // catch emtpy text
+        qnQty = null
+        qdQty = null
+      } else {
+        try {
+          qnQty = new Qty(this.clearDataText(numerator['data']))
+        } catch (err) {
+          qnQty = null
+        }
+        try {
+          qdQty = new Qty(this.clearDataText(denominator['data']))
+        } catch (err) {
+          qdQty = null
+        }
+      }
+
+      // check steps
+      if (qnQty && qdQty && qnQty.isCompatible(qdQty) && qnQty.eq(qdQty)) { // TODO may be we need change precision
+        if (spanNElement) { spanNElement.classList.add('green-border') }
+        if (spanDElement) { spanDElement.classList.add('green-border') }
+      } else {
+        isRightAnswer = false
+        if (spanNElement) { spanNElement.classList.add('red-border') }
+        if (spanDElement) { spanDElement.classList.add('red-border') }
+      }
+    }
+    // check answer
+    var answerQty
+    try {
+      answerQty = new Qty(this.clearDataText(this.state.answer['data']))
+    } catch (err) { answerQty = null }
+
+    var initialQty = new Qty(Number(this.state.number), this.state.unit)
+
+    var answerSpan = document.getElementById('15')
+
+    // set precision of intial SI to 0.0001
+    if (initialQty && answerQty) {
+      var precInitialQty = new Qty(initialQty.toBase().toPrec(0.0001))
+      var precAnswerQty = new Qty(answerQty.toPrec(0.0001))
+
+      console.log(precInitialQty);
+      console.log(precAnswerQty);
+    }
+
+    //if (answerQty && answerQty.isCompatible(initialQty) && answerQty.eq(initialQty)) {
+    if (precAnswerQty && precAnswerQty.isCompatible(precInitialQty) && precAnswerQty.eq(precInitialQty)) {
+      answerSpan.classList.add('green-border')
+    } else {
+      isRightAnswer = false
+      answerSpan.classList.add('red-border')
+    }
+
+    if (isRightAnswer === true) {
+      // todo go to next question
+      console.log('right');
+    } else {
+      // go to game over
+      console.log('not rigth');
+    }
+
   }
   render () {
     // var disabled = '';
@@ -391,38 +492,40 @@ class UnitConversionCanvas extends React.Component {
             </div>
             <div style={{display: 'table-cell', verticalAlign: 'middle'}}>
               <MathquillBox
-                row={0}
-                column={0}
-                onMathQuillChange={this.onMathQuillChange}
+                onMathQuillChange={this.onResultChange}
+                row={1}
+                column={5}
               />
             </div>
           </div>
         </div>
-        <div style={{display: 'block'}}>
-          <button className='hover-button' style={{marginTop: 15}} onClick={() => this.submit(this.state)}>Submit</button>
+        <div style={this.props.gameState === GameState.GAME_OVER ? {display: 'none'} : {display: 'block'}}>
+          <button className='hover-button' style={{marginTop: 15}} onClick={() => this.submitQuestion()}>Submit</button>
         </div>
       </div>
     )
   }
 }
-
 UnitConversionCanvas.propTypes = {
   number: React.PropTypes.any,
-  unit: React.PropTypes.string
+  unit: React.PropTypes.string,
+  submitGame: React.PropTypes.func.isRequired,
+  gameState: React.PropTypes.string
 }
 
 class UnitConversionQuestionBoard extends React.Component {
   render () {
-    var objects = []
-    // var fade = false
-    if (this.props.answerVector) {
-      // fade = true
-      objects.push(this.props.answerVector)
-    }
-    if (this.props.answerText) {
-      objects.push(this.props.answerText)
-    }
+    // var objects = []
+    // // var fade = false
+    // if (this.props.answerVector) {
+    //   // fade = true
+    //   objects.push(this.props.answerVector)
+    // }
+    // if (this.props.answerText) {
+    //   objects.push(this.props.answerText)
+    // }
     // var disabled = !([GameState.GAME_OVER, GameState.WON].indexOf(this.props.state) > -1);
+    // TODO UnitConversionCanvas must be move to UnitConversionGameBoard
     return (
       <div className='text-center'>
         <MediaQuery minDeviceWidth={736}>
@@ -434,6 +537,8 @@ class UnitConversionQuestionBoard extends React.Component {
         <UnitConversionCanvas
           number={this.props.number}
           unit={this.props.unit}
+          submitGame={this.props.submitGame}
+          gameState={this.props.gameState}
         />
       </div>
     )
@@ -443,8 +548,10 @@ UnitConversionQuestionBoard.propTypes = {
   question: React.PropTypes.any,
   number: React.PropTypes.any,
   unit: React.PropTypes.string,
-  answerText: React.PropTypes.string,
-  answerVector: React.PropTypes.string
+  submitGame: React.PropTypes.func.isRequired,
+  gameState: React.PropTypes.string
+  // answerText: React.PropTypes.string,
+  // answerVector: React.PropTypes.string
 }
 
 class UnitConversionGameBoard extends React.Component {
@@ -511,11 +618,12 @@ class UnitConversionGameBoard extends React.Component {
           number={this.props.number}
           unit={this.props.unit}
           question={this.props.question}
-          submitQuestion={this.props.submitQuestion}
+          // submitQuestion={this.props.submitQuestion}
+          submitGame={this.props.submitGame}
           clear={[GameState.NEW, GameState.QUESTION].indexOf(this.props.state) >= 0}
-          state={this.props.state}
-          answerVector={this.props.answerVector}
-          answerText={this.props.answerText}
+          gameState={this.props.state}
+          // answerVector={this.props.answerVector}
+          // answerText={this.props.answerText}
         />
       </div>
     )
@@ -525,15 +633,14 @@ UnitConversionGameBoard.propTypes = {
   number: React.PropTypes.any,
   unit: React.PropTypes.string,
   level: React.PropTypes.number,
-  state: React.PropTypes.string,
+  state: React.PropTypes.string, // TODO don't use 'state' name for anything, but react component state. rename to gameState
   start: React.PropTypes.func,
   score: React.PropTypes.number,
   timesUp: React.PropTypes.func,
   pause: React.PropTypes.func,
   restart: React.PropTypes.func,
-  answerText: React.PropTypes.string,
-  answerVector: React.PropTypes.string,
-  submitQuestion: React.PropTypes.func,
+  // submitQuestion: React.PropTypes.func,
+  submitGame: React.PropTypes.func,
   question: React.PropTypes.any
 }
 
@@ -545,6 +652,7 @@ export class UnitConversionGame extends React.Component {
     this.pauseToggle = this.pauseToggle.bind(this)
     this.checkAnswer = this.checkAnswer.bind(this)
     this.restart = this.restart.bind(this)
+    this.submitGame = this.submitGame.bind(this)
     this.state = {
       state: GameState.NEW,
       pausedOnState: null,
@@ -592,6 +700,12 @@ export class UnitConversionGame extends React.Component {
         this.setState({state: this.state.pausedOnState, pausedOnState: null})
       }
     }
+  }
+
+  submitGame () {
+    // send ajax to server with steps of convert and time
+    // TODO if we need more secure we must send ajax on start game
+    console.log('game submited');
   }
 
   checkAnswer (arrow) {
@@ -719,7 +833,7 @@ export class UnitConversionGame extends React.Component {
   }
 
   gameOver (vector, text) {
-    this.setState({state: GameState.GAME_OVER, answerVector: vector, answerText: text})
+    this.setState({state: GameState.GAME_OVER})
     stopBackgroundAudio()
     window.onbeforeunload = null
   }
@@ -756,11 +870,12 @@ export class UnitConversionGame extends React.Component {
         number={this.state.number}
         unit={this.state.unit}
         question={this.state.question}
-        answerVector={this.state.answerVector}
-        answerText={this.state.answerText}
+        // answerVector={this.state.answerVector}
+        // answerText={this.state.answerText}
         timesUp={this.timesUp}
         pause={this.pauseToggle}
-        submitQuestion={this.checkAnswer}
+        submitGame={this.submitGame}
+        // submitQuestion={this.checkAnswer}
         restart={this.restart}
       />
     )
