@@ -191,8 +191,8 @@ class UnitConversionCanvas extends React.Component {
 
     this.state = {
       numColumns: 1,
-      number: this.props.number,
-      unit: this.props.unit,
+      //number: this.props.number,
+      //unit: this.props.unit,
       strikethrough: false,
       //answersSteps: [[{'data': '', 'box': MQ(document.getElementById('11'))}, {'data': '', 'box': MQ(document.getElementById('21'))}]], // first column set by default
       answer: '',
@@ -210,10 +210,37 @@ class UnitConversionCanvas extends React.Component {
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
     this.setState({
-      answersSteps: [[{'data': '', 'box': MQ(document.getElementById('11'))}, {
-        'data': '',
-        'box': MQ(document.getElementById('21'))
-      }]] // first column set by default
+      answersSteps: [[
+        {'data': '', 'box': MQ(document.getElementById('11'))},
+        {'data': '', 'box': MQ(document.getElementById('21'))}
+      ]] // first column set by default
+    })
+  }
+
+  reset () {
+    var MQ = MathQuill.getInterface(2)
+
+    var resetBox = function (id) {
+      var span = document.getElementById(id)
+      if (!span) return
+      var mq = MQ(span)
+      mq.fromJsCall = true
+      mq.latex('')
+      mq.fromJsCall = false
+      span.classList.remove('red-border', 'green-border')
+    }
+
+    var ids = ['11', '21', '15']
+    ids.forEach(function (item, i, arr) {
+      resetBox(item)
+    })
+
+    this.setState({
+      numColumns: 1,
+      answersSteps: [[
+        {'data': '', 'box': MQ(document.getElementById('11'))},
+        {'data': '', 'box': MQ(document.getElementById('12'))}
+      ]] // first column set by default
     })
   }
 
@@ -243,6 +270,7 @@ class UnitConversionCanvas extends React.Component {
 
     this.state.strikethrough = false
     var resetStrike = function (answer) {
+
       var tmpData = answer['data']
 
       var startI = tmpData.lastIndexOf('\\class{strikethrough}{')
@@ -360,11 +388,16 @@ class UnitConversionCanvas extends React.Component {
     return tmpData
   }
 
+  sigFigs (n, sig) { // TODO move to  utils
+    var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1)
+    return Math.round(n * mult) / mult
+  }
+
   submitQuestion () {
     var answers = this.state.answersSteps
-    var qNumber = this.state.number
-    var qUnit = this.state.unit
-    var qQty = new Qty(Number(qNumber), qUnit)
+    var qNumber = this.props.number
+    var qUnit = this.props.unit
+
     var spanNElement = null
     var spanDElement = null
 
@@ -396,9 +429,8 @@ class UnitConversionCanvas extends React.Component {
           qdQty = null
         }
       }
-
       // check steps
-      if (qnQty && qdQty && qnQty.isCompatible(qdQty) && qnQty.eq(qdQty)) { // TODO may be we need change precision
+      if (qnQty && qdQty && qnQty.isCompatible(qdQty) && this.sigFigs(qnQty.baseScalar, 4) === this.sigFigs(qdQty.baseScalar, 4)) {
         if (spanNElement) { spanNElement.classList.add('green-border') }
         if (spanDElement) { spanDElement.classList.add('green-border') }
       } else {
@@ -413,35 +445,31 @@ class UnitConversionCanvas extends React.Component {
       answerQty = new Qty(this.clearDataText(this.state.answer['data']))
     } catch (err) { answerQty = null }
 
-    var initialQty = new Qty(Number(this.state.number), this.state.unit)
-
+    var initialQty = new Qty(Number(qNumber), qUnit)
     var answerSpan = document.getElementById('15')
 
-    // set precision of intial SI to 0.0001
     if (initialQty && answerQty) {
-      var precInitialQty = new Qty(initialQty.toBase().toPrec(0.0001))
-      var precAnswerQty = new Qty(answerQty.toPrec(0.0001))
+      var asf = this.sigFigs(answerQty.baseScalar, 4)
+      var isf = this.sigFigs(initialQty.baseScalar, 4)
 
-      console.log(precInitialQty);
-      console.log(precAnswerQty);
-    }
+      // console.log(isf);
+      // console.log(asf);
 
-    //if (answerQty && answerQty.isCompatible(initialQty) && answerQty.eq(initialQty)) {
-    if (precAnswerQty && precAnswerQty.isCompatible(precInitialQty) && precAnswerQty.eq(precInitialQty)) {
-      answerSpan.classList.add('green-border')
-    } else {
-      isRightAnswer = false
-      answerSpan.classList.add('red-border')
+      if (answerQty && answerQty.isCompatible(initialQty) && asf === isf) {
+        answerSpan.classList.add('green-border')
+      } else {
+        isRightAnswer = false
+        answerSpan.classList.add('red-border')
+      }
     }
 
     if (isRightAnswer === true) {
-      // todo go to next question
-      console.log('right');
+      this.reset()
+      this.props.nextQuestion(500)
     } else {
       // go to game over
-      console.log('not rigth');
+      console.log('not right');
     }
-
   }
   render () {
     // var disabled = '';
@@ -510,7 +538,8 @@ UnitConversionCanvas.propTypes = {
   number: React.PropTypes.any,
   unit: React.PropTypes.string,
   submitGame: React.PropTypes.func.isRequired,
-  gameState: React.PropTypes.string
+  gameState: React.PropTypes.string,
+  nextQuestion: React.PropTypes.func
 }
 
 class UnitConversionQuestionBoard extends React.Component {
@@ -537,6 +566,7 @@ class UnitConversionQuestionBoard extends React.Component {
         <UnitConversionCanvas
           number={this.props.number}
           unit={this.props.unit}
+          nextQuestion={this.props.nextQuestion}
           submitGame={this.props.submitGame}
           gameState={this.props.gameState}
         />
@@ -549,7 +579,8 @@ UnitConversionQuestionBoard.propTypes = {
   number: React.PropTypes.any,
   unit: React.PropTypes.string,
   submitGame: React.PropTypes.func.isRequired,
-  gameState: React.PropTypes.string
+  gameState: React.PropTypes.string,
+  nextQuestion: React.PropTypes.func
   // answerText: React.PropTypes.string,
   // answerVector: React.PropTypes.string
 }
@@ -618,12 +649,10 @@ class UnitConversionGameBoard extends React.Component {
           number={this.props.number}
           unit={this.props.unit}
           question={this.props.question}
-          // submitQuestion={this.props.submitQuestion}
           submitGame={this.props.submitGame}
           clear={[GameState.NEW, GameState.QUESTION].indexOf(this.props.state) >= 0}
           gameState={this.props.state}
-          // answerVector={this.props.answerVector}
-          // answerText={this.props.answerText}
+          nextQuestion={this.props.nextQuestion}
         />
       </div>
     )
@@ -641,7 +670,8 @@ UnitConversionGameBoard.propTypes = {
   restart: React.PropTypes.func,
   // submitQuestion: React.PropTypes.func,
   submitGame: React.PropTypes.func,
-  question: React.PropTypes.any
+  question: React.PropTypes.any,
+  nextQuestion: React.PropTypes.func
 }
 
 export class UnitConversionGame extends React.Component {
@@ -650,7 +680,8 @@ export class UnitConversionGame extends React.Component {
     this.timesUp = this.timesUp.bind(this)
     this.start = this.start.bind(this)
     this.pauseToggle = this.pauseToggle.bind(this)
-    this.checkAnswer = this.checkAnswer.bind(this)
+    this.generateQuestion = this.generateQuestion.bind(this)
+    this.nextQuestion = this.nextQuestion.bind(this)
     this.restart = this.restart.bind(this)
     this.submitGame = this.submitGame.bind(this)
     this.state = {
@@ -708,41 +739,8 @@ export class UnitConversionGame extends React.Component {
     console.log('game submited');
   }
 
-  checkAnswer (arrow) {
-    // if (this.state.x == (arrow.getXComponent() || 0) &&
-    //     this.state.y == (arrow.getYComponent() || 0)) {
-    //     playAudio('correct');
-    //     var newScore = this.state.score + 100;
-    //     var newLevel = Math.floor(newScore / 400) + 1;
-    //     if (newLevel > 4) {
-    //         var newState = GameState.WON;
-    //         stopBackgroundAudio();
-    //         this.props.gameWon();
-    //         newLevel = 4;
-    //         window.onbeforeunload = null;
-    //         this.setState({score: newScore, level: newLevel, state: newState});
-    //     } else {
-    //         this.setState(this.generateQuestion(newScore, newLevel));
-    //     }
-    // } else {
-    //     playAudio('incorrect');
-    //     var pointer = {
-    //         x: VectorCanvas.calcVectorXStart(this.state.x),
-    //         y: VectorCanvas.calcVectorYStart(this.state.y),
-    //     }
-    //     var endPointer = {
-    //         x: pointer['x'] + VectorCanvas.calcCanvasMagnitude(this.state.x),
-    //         y: pointer['y'] - VectorCanvas.calcCanvasMagnitude(this.state.y),
-    //     }
-    //     var vector = new CanvasVector(null, pointer, 'green');
-    //     vector.complete(endPointer);
-    //     var textPoint = {
-    //         left: endPointer.x - VectorCanvas.calcCanvasMagnitude(.65) + this.state.x,
-    //         top: endPointer.y - this.state.y - VectorCanvas.calcCanvasMagnitude(1),
-    //     }
-    //     var text = new CanvasText(null, textPoint, "correct\nsolution");
-    //     this.gameOver(vector, text);
-    // }
+  nextQuestion (adScore) {
+    this.setState(this.generateQuestion(this.state.score + adScore, this.state.level + 1))
   }
 
   generateQuestion (newScore, newLevel) {
@@ -767,58 +765,6 @@ export class UnitConversionGame extends React.Component {
     }
 
     var question = <span>{'Convert ' + number.toString() + ' ' + unitLong + ' to SI units.'}</span>
-
-    // newScore = newScore || this.state.score
-    // newLevel = newLevel || this.state.level
-    // do {
-    //   switch (newLevel) {
-    //     case 1:
-    //       number = this.getRandomNumber()
-    //       unit = ['cm', 'weeks', 'oz', 'km/hr'][this.getRandomInt(0, 3)]
-    //       question = <span>{'Convert ' + number.toString() + ' ' + unit + ' to SI units.'}</span>
-    //       break
-    //     case 2:
-    //       // var char = [xHat, yHat, iHat, jHat][this.getRandomInt(0, 3)];
-    //       // if ([xHat, iHat].indexOf(char) >= 0) {
-    //       //     x = this.getRandomInt(-4, 4);
-    //       //     question = <span>{"Draw " + x}{char}</span>;
-    //       // } else {
-    //       //     y = this.getRandomInt(-4, 4);
-    //       //     question = <span>{"Draw " + y}{char}</span>;
-    //       // }
-    //       break
-    //     case 3:
-    //       // var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-    //       // x = this.getRandomInt(-4, 4);
-    //       // y = this.getRandomInt(-4, 4);
-    //       // question = <span>{"Draw " + x}{chars[0]}{' + ' + y}{chars[1]}</span>;
-    //       break
-    //     case 4:
-    //       // var chars = [[xHat, yHat], [iHat, jHat]][this.getRandomInt(0, 1)];
-    //       // var sign = [' + ', ' - '][this.getRandomInt(0, 1)];
-    //       // var x1 = this.getRandomInt(-2, 2);
-    //       // var y1 = this.getRandomInt(-2, 2);
-    //       // var x2 = this.getRandomInt(-2, 2);
-    //       // var y2 = this.getRandomInt(-2, 2);
-    //       // x = (sign == ' + ') ? x1 + x2 : x1 - x2;
-    //       // y = (sign == ' + ') ? y1 + y2 : y1 - y2;
-    //       // var draw = <span>{"Draw "}{vectorA}{sign}{vectorB}</span>;
-    //       // var vA = <span>{vectorA}{" = " + x1}{chars[0]}{" + " + y1}{chars[1]}</span>;
-    //       // var vB = <span>{vectorB}{" = " + x2}{chars[0]}{" + " + y2}{chars[1]}</span>;
-    //       //
-    //       // question = <div>{draw}<br/>{vA}<br/>{vB}</div>;
-    //       break
-    //     default:
-    //       // var char = ['x', 'y', 'i', 'j'][this.getRandomInt(0, 3)]
-    //       // if (['x', 'i'].indexOf(char) >= 0) {
-    //       //     x = this.getRandomInt(-4, 4);
-    //       //     question = "Draw " + x + char;
-    //       // } else {
-    //       //     y = this.getRandomInt(-4, 4);
-    //       //     question = "Draw " + y + char;
-    //       // }
-    //       break
-    //   }
     //   // Let's make sure we don't get the same question twice in a row.
     // } while (this.state.unit === unit && this.state.number === number)
     this.lastQuestion = question
@@ -844,8 +790,8 @@ export class UnitConversionGame extends React.Component {
       {
         score: 0,
         level: 1,
-        answerVector: null,
-        answerText: null,
+        // answerVector: null,
+        // answerText: null,
         state: GameState.NEW
       }
     )
@@ -875,7 +821,7 @@ export class UnitConversionGame extends React.Component {
         timesUp={this.timesUp}
         pause={this.pauseToggle}
         submitGame={this.submitGame}
-        // submitQuestion={this.checkAnswer}
+        nextQuestion={this.nextQuestion}
         restart={this.restart}
       />
     )
