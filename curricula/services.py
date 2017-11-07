@@ -117,8 +117,8 @@ class ProgressServiceBase(object):
         self.save()
         return is_correct
 
-    def game_success(self, game):
-        self.current_lesson_progress.complete()
+    def game_success(self, game, duration=None, score=None):
+        self.current_lesson_progress.complete(duration, score)
         next_lesson = game.lesson.get_next_lesson()
         if next_lesson:
             self.unlock_lesson(next_lesson)
@@ -144,7 +144,11 @@ class ProgressService(ProgressServiceBase):
         self.user_responses = []
         self.current_lesson_progress.save()
 
+    @staticmethod
+    def get_score_board_qs(lesson):
+        return LessonProgress.objects.filter(lesson=lesson, status=LessonProgress.Status.COMPLETE).order_by('duration')
 
+# TODO:  move all serializers to serializers.py
 class LessonProgressSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -250,3 +254,7 @@ class AnonymousProgressService(ProgressServiceBase):
             self.user_responses = []
             self.lessons_store[str(self.current_lesson.pk)] = lesson_raw
         self.session['lessons'] = self.lessons_store
+
+    @staticmethod
+    def get_score_board_qs(lesson):
+        raise NotImplementedError
