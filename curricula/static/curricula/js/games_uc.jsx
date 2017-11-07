@@ -464,7 +464,12 @@ class UnitConversionCanvas extends React.Component {
       }
     } // end for
     // check answer
-    var answerQty = Qty.parse(this.clearDataText(this.state.answer['data']))
+    var answerQty
+    if (this.state.answer['data'] && this.clearDataText(this.state.answer['data']) !== '') {
+      answerQty = Qty.parse(this.clearDataText(this.state.answer['data']))
+    } else {
+      answerQty = null
+    }
 
     var initialQty = new Qty(Number(qNumber), qUnit)
     var answerSpan = document.getElementById('15')
