@@ -406,7 +406,7 @@ class UnitConversionCanvas extends React.Component {
     var minLength = 0
     minLength = firstQty.baseScalar.toString().length
     if (secondQty.toString().length < minLength) {
-      minLength = firstQty.toString().length
+      minLength = secondQty.toString().length
     }
 
     var asf = this.sigFigs(firstQty.baseScalar, minLength)
@@ -415,14 +415,15 @@ class UnitConversionCanvas extends React.Component {
     // substring to length number equal
     minLength = 0
     minLength = asf.toString().length
-    if (asf.toString().length < minLength) {
-      minLength = asf.toString().length
+    if (isf.toString().length < minLength) {
+      minLength = isf.toString().length
     }
     isf = isf.toString().substring(0, minLength)
     asf = asf.toString().substring(0, minLength)
-
-    // console.log(isf)
-    // console.log(asf)
+    
+    // console.log("minLength: " + minLength)
+    // console.log("isf: " + isf)
+    // console.log("asf: " + asf)
 
     return isf === asf
   }
