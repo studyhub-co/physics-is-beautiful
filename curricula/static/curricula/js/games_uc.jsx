@@ -438,6 +438,7 @@ class UnitConversionCanvas extends React.Component {
     var isRightAnswer = true
 
     // check units converions
+
     for (var column = 0; column < answers.length; column++) { // walk through columns
       var numerator = answers[column][0]
       if (numerator['box']) {
@@ -462,6 +463,9 @@ class UnitConversionCanvas extends React.Component {
         if (spanNElement) { spanNElement.classList.add('green-border') }
         if (spanDElement) { spanDElement.classList.add('green-border') }
       } else {
+        this.setState({
+          incorrectConversion: true
+        })
         isRightAnswer = false
         if (spanNElement) { spanNElement.classList.add('red-border') }
         if (spanDElement) { spanDElement.classList.add('red-border') }
@@ -481,10 +485,13 @@ class UnitConversionCanvas extends React.Component {
     if (answerQty && answerQty.isCompatible(initialQty) && this.compareWithSigFigs(initialQty, answerQty)) {
       answerSpan.classList.add('green-border')
     } else {
+      this.setState({
+        incorrectAnswer: true,
+        correctAnswer: initialQty.toBase().toString()
+      })
       isRightAnswer = false
       answerSpan.classList.add('red-border')
     }
-
 
     if (isRightAnswer === true) {
       this.reset()
@@ -525,6 +532,11 @@ class UnitConversionCanvas extends React.Component {
               unit={this.props.unit}
               strikethrough={this.state.strikethrough}
             />
+            {this.state.incorrectConversion ?
+              <div style={{border: '.1rem solid black'}}>
+                <div style={{color: 'red'}}>Incorrect Unit Conversion</div>
+              </div>
+              : null}
             {this.props.level > 4 ? null :
               <div style={{fontSize: 10, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 0, paddingRight: 0}}>
                 <button
@@ -548,6 +560,12 @@ class UnitConversionCanvas extends React.Component {
                 row={1}
                 column={5}
               />
+              {this.state.incorrectAnswer ?
+                <div style={{border: '.1rem solid black'}}>
+                  <div style={{color: 'red'}}>Incorrect answer</div>
+                  <div style={{color: 'green'}}>Correct answer: {this.state.correctAnswer}</div>
+                </div>
+                : null}
             </div>
           </div>
         </div>
