@@ -262,11 +262,14 @@ class UnitConversionCanvas extends React.Component {
     var newColumns = this.state.numColumns + 1
 
     this.setState({
-      numColumns: newColumns,
-      answersSteps: [...this.state.answersSteps, [
-        { 'data': '', 'box': MQ(document.getElementById('1' + newColumns)) },
-        { 'data': '', 'box': MQ(document.getElementById('2' + newColumns)) }]
-      ]
+      numColumns: newColumns
+    }, function () { // need wait mount mathquill span!
+      this.setState({
+        answersSteps: [...this.state.answersSteps, [
+          { 'data': '', 'box': MQ(document.getElementById('1' + newColumns)) },
+          { 'data': '', 'box': MQ(document.getElementById('2' + newColumns)) }]
+        ]
+      })
     })
   }
   removeColumn () {
@@ -283,16 +286,14 @@ class UnitConversionCanvas extends React.Component {
 
     this.state.strikethrough = false
     var resetStrike = function (answer) {
-
       var tmpData = answer['data']
+      var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
 
-      var startI = tmpData.lastIndexOf('\\class{strikethrough}{')
-      var endI = tmpData.lastIndexOf('}')
-
-      if (startI < 0 || endI < 0) { return }
-      startI += '\\class{strikethrough}{'.length
-      var tmpUnit = tmpData.substring(startI, endI)
-      var resetTxt = tmpData.replace('\\class{strikethrough}{' + tmpUnit + '}', tmpUnit)
+      resetTxt = resetTxt.replace(/class{(\S+)}/, function (match, find) { // class set by mathquill after backspace
+        if (find && find.length > 1) { // remove last char ot unit
+          return find.slice(0, -1)
+        } else { return find }
+      })
 
       answer['box'].fromJsCall = true
       answer['data'] = resetTxt
@@ -311,7 +312,7 @@ class UnitConversionCanvas extends React.Component {
   reDrawStrikes () {
     var answers = this.resetStrikeAnswers()
 
-    // TODO it is really need to check for unit exist in UNITS const
+    // TODO it is really need to check for unit exist in UNITS const?
     // strikethrough units Numerator and Denominator
     numeratorsC:
     for (var column = -1; column < answers.length; column++) { // walk through numerators
@@ -368,7 +369,7 @@ class UnitConversionCanvas extends React.Component {
   onMathQuillChange (data, row, col, mathquillObj) {
     // store value in matrix
     var answers = this.state.answersSteps
-    this.state.answersSteps[col - 1][row - 1] = {'data': data, 'box': mathquillObj}
+    answers[col - 1][row - 1] = {'data': data, 'box': mathquillObj}
 
     this.setState({
       answersSteps: answers
