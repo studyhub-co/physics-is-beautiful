@@ -287,12 +287,15 @@ class UnitConversionCanvas extends React.Component {
     this.state.strikethrough = false
     var resetStrike = function (answer) {
       var tmpData = answer['data']
+      if (!tmpData) return
+
       var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
 
       resetTxt = resetTxt.replace(/class{(\S+)}/, function (match, find) { // class set by mathquill after backspace
+
         if (find && find.length > 1) { // remove last char ot unit
           return find.slice(0, -1)
-        } else { return find }
+        } else { return '' } // remove unit if it is one char
       })
 
       answer['box'].fromJsCall = true
