@@ -510,9 +510,18 @@ class UnitConversionCanvas extends React.Component {
     if (answerQty && answerQty.isCompatible(initialQty) && this.compareWithSigFigs(initialQty, answerQty)) {
       answerSpan.classList.add('green-border')
     } else {
+      var correctAnswer
+
+      if (initialQty.toBase().scalar < 1) {
+        // leave just significant figures for answer
+        correctAnswer = this.sigFigs(initialQty.toBase().scalar, 4)
+      } else {
+        correctAnswer = initialQty.toBase().scalar.toFixed(2)
+      }
+
       this.setState({
         incorrectAnswer: true,
-        correctAnswer: initialQty.toBase().toString()
+        correctAnswer: correctAnswer + ' ' + initialQty.toBase().toString().split(' ')[1]
       })
       isRightAnswer = false
       answerSpan.classList.add('red-border')
