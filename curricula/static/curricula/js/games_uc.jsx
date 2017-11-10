@@ -496,9 +496,11 @@ class UnitConversionCanvas extends React.Component {
     }
 
     if (isRightAnswer === true) {
+      playAudio('correct');
       this.reset()
       this.props.nextQuestion(500)
     } else {
+      playAudio('incorrect');
       this.props.gameOver()
     }
   }
