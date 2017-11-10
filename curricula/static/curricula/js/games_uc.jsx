@@ -75,7 +75,8 @@ class MathquillBox extends React.Component {
     var MQ = MathQuill.getInterface(2)
 
     this.answer = MQ.MathField(document.getElementById('' + this.props.row + this.props.column), {
-      autoOperatorNames: 'pi', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
+      autoCommands: 'class',
+      autoOperatorNames: 'no', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
       handlers: {
         edit: () => {
           // if change by API (not user), then not fire
@@ -289,13 +290,7 @@ class UnitConversionCanvas extends React.Component {
       var tmpData = answer['data']
       if (!tmpData) return
 
-      var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
-
-      resetTxt = resetTxt.replace(/class{(\S+)}/, function (match, find) { // class set by mathquill after backspace
-        if (find && find.length > 1) { // remove last char ot unit
-          return find.slice(0, -1)
-        } else { return '' } // remove unit if it is one char
-      })
+      var resetTxt = tmpData .replace(/\\class{strikethrough}{(\S+)}/, '$1') // replace if with whitespaces
 
       answer['box'].fromJsCall = true
       answer['data'] = resetTxt
@@ -323,12 +318,12 @@ class UnitConversionCanvas extends React.Component {
       if (column === -1) {
         splitNumerator = ['', this.props.unit] // main unit
       } else {
-        splitNumerator = answers[column][0]['data'].match(/\S+/g)
+        splitNumerator = answers[column][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm,'').match(/\S+/g)
       } // "2 cm"
 
       if (splitNumerator && typeof splitNumerator[1] !== 'undefined') {
         for (var column2 = 0; column2 < answers.length; column2++) { // walk through denominators
-          var splitDenominator = answers[column2][1]['data'].match(/\S+/g)
+          var splitDenominator = answers[column2][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm,'').match(/\S+/g)
           if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
             // strikethrough start unit
             if (splitDenominator[1] === this.props.unit) {
@@ -343,6 +338,7 @@ class UnitConversionCanvas extends React.Component {
               } else {
                 var numeratorBox = answers[column][0]['box']
                 var newLatexN = answers[column][0]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
+
                 numeratorBox.fromJsCall = true
                 answers[column][0]['data'] = newLatexN // data will not fill, because edit event not fire onMathQuillChange
                 numeratorBox.latex(newLatexN)
@@ -356,7 +352,6 @@ class UnitConversionCanvas extends React.Component {
               denominatorBox.fromJsCall = true
               denominatorBox.latex(newLatexDN)
               denominatorBox.fromJsCall = false
-
               continue numeratorsC // need for stop search 2nd and more denominator with current unit
             }
           }
@@ -369,6 +364,14 @@ class UnitConversionCanvas extends React.Component {
   }
 
   onMathQuillChange (data, row, col, mathquillObj) {
+    // if data contain strikethrough with end of line remove it (fix for we can delete 'class' from mathquill))
+    // we must replace it only in currently edited mathquill box
+    data = data.replace(/\\class{strikethrough}{(\S+)}$/, function (match, find) {
+      if (find && find.length > 1) { // remove last char ot unit
+        return find.slice(0, -1)
+      } else { return '' } // remove unit if it is one char
+    })
+
     // store value in matrix
     var answers = this.state.answersSteps
     answers[col - 1][row - 1] = {'data': data, 'box': mathquillObj}
