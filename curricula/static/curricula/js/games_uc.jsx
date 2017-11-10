@@ -45,7 +45,7 @@ const UNITS = {
   SPEED: {
     'km/s': 'kilometers/second',
     'mi/s': 'miles/second',
-    'ft/s': 'ounces/second',
+    'ft/s': 'foots/second',
     'km/hr': 'kilometers/hour',
     'mi/hr': 'miles/hour',
     'm/hr': 'meters/hour',
@@ -158,23 +158,31 @@ class ConversionTable extends React.Component {
     }
     var unitStyle = {
       fontStyle: 'italic',
-      fontFamily: 'Times New Roman',
-      textDecoration: (this.props.strikethrough ? 'line-through' : 'none')
+      fontFamily: 'Times New Roman'
+    }
+
+    var strikethroughStyleN = {
+      textDecoration: (this.props.strikethroughN ? 'line-through' : 'none')
+    }
+
+    var strikethroughStyleD = {
+      textDecoration: (this.props.strikethroughD ? 'line-through' : 'none')
     }
 
     var topLeft = {'border': '1px solid black', borderTop: 'none', borderLeft: 'none', 'padding': 2, fontFamily: 'symbola', fontSize: 30}
-    var bottomLeft = {'border': '1px solid black', borderBottom: 'none', borderLeft: 'none', 'padding': 2}
+    var bottomRight = {'border': '1px solid black', borderBottom: 'none', textAlign: 'right',
+      borderLeft: 'none', 'padding': 2, fontFamily: 'symbola', fontSize: 30}
 
     return (
       <div>
         <table style={style}>
           <tbody>
             <tr>
-              <td style={topLeft}>{this.props.number} <span style={unitStyle}>{this.props.unit}</span></td>
+              <td style={topLeft}>{this.props.number} <span style={Object.assign({}, unitStyle, strikethroughStyleN)}>{this.props.unit.split('/')[0]}</span></td>
               {this.getColumns(1)}
             </tr>
             <tr>
-              <td style={bottomLeft} />
+              <td style={bottomRight}><span style={Object.assign({}, unitStyle, strikethroughStyleD)}>{this.props.unit.split('/')[1]}</span></td>
               {this.getColumns(2)}
             </tr>
           </tbody>
@@ -185,7 +193,8 @@ class ConversionTable extends React.Component {
 }
 ConversionTable.propTypes = {
   onMathQuillChange: React.PropTypes.func,
-  strikethrough: React.PropTypes.bool,
+  strikethroughN: React.PropTypes.bool,
+  strikethroughD: React.PropTypes.bool,
   numColumns: React.PropTypes.number,
   number: React.PropTypes.any,
   unit: React.PropTypes.string
@@ -202,7 +211,8 @@ class UnitConversionCanvas extends React.Component {
 
     this.state = {
       numColumns: numColumns,
-      strikethrough: false,
+      strikethroughD: false,
+      strikethroughN: false,
       answer: '',
       counter: 0
     }
@@ -285,7 +295,8 @@ class UnitConversionCanvas extends React.Component {
   resetStrikeAnswers () {
     var answers = this.state.answersSteps
 
-    this.state.strikethrough = false
+    this.state.strikethroughN = false
+    this.state.strikethroughD = false
     var resetStrike = function (answer) {
       var tmpData = answer['data']
       if (!tmpData) return
@@ -314,27 +325,36 @@ class UnitConversionCanvas extends React.Component {
     numeratorsC:
     for (var column = -1; column < answers.length; column++) { // walk through numerators
       var splitNumerator
-
       if (column === -1) {
-        splitNumerator = ['', this.props.unit] // main unit
+        splitNumerator = ['', this.props.unit.split('/')[0]] // main unit
       } else {
-        splitNumerator = answers[column][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm,'').match(/\S+/g)
+        splitNumerator = answers[column][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
       } // "2 cm"
 
       if (splitNumerator && typeof splitNumerator[1] !== 'undefined') {
-        for (var column2 = 0; column2 < answers.length; column2++) { // walk through denominators
-          var splitDenominator = answers[column2][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm,'').match(/\S+/g)
+        for (var column2 = -1; column2 < answers.length; column2++) { // walk through denominators
+          var splitDenominator
+
+          if (column2 === -1) {
+            if (this.props.unit.split('/')[1]) {
+              splitDenominator = ['', this.props.unit.split('/')[1]] // km/hr
+            } else { splitDenominator = null }
+          } else {
+            splitDenominator = answers[column2][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+          }
           if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
             // strikethrough start unit
-            if (splitDenominator[1] === this.props.unit) {
-              this.state.strikethrough = true
-            }
-
+            // if (splitDenominator[1] === this.props.unit) {
+            //   this.state.strikethroughN = true
+            // }
+            // if (splitNumerator[1] === this.props.unit) {
+            //   this.state.strikethroughN = true
+            // }
             // numeratorBoxes boxes
             if (splitNumerator[1] === splitDenominator[1]) { // second one in "1.23 cm"
               // strikethrough Numerator
               if (column === -1) {
-                this.state.strikethrough = true
+                this.setState({strikethroughN: true})
               } else {
                 var numeratorBox = answers[column][0]['box']
                 var newLatexN = answers[column][0]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
@@ -344,15 +364,18 @@ class UnitConversionCanvas extends React.Component {
                 numeratorBox.latex(newLatexN)
                 numeratorBox.fromJsCall = false
               }
-
-              // strikethrough denominator
-              var denominatorBox = answers[column2][1]['box']
-              var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
-              answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
-              denominatorBox.fromJsCall = true
-              denominatorBox.latex(newLatexDN)
-              denominatorBox.fromJsCall = false
-              continue numeratorsC // need for stop search 2nd and more denominator with current unit
+              if (column2 === -1) {
+                this.setState({strikethroughD: true})
+              } else {
+                // strikethrough denominator
+                var denominatorBox = answers[column2][1]['box']
+                var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
+                answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
+                denominatorBox.fromJsCall = true
+                denominatorBox.latex(newLatexDN)
+                denominatorBox.fromJsCall = false
+                continue numeratorsC // need for stop search 2nd and more denominator with current unit
+              }
             }
           }
         }
@@ -496,11 +519,11 @@ class UnitConversionCanvas extends React.Component {
     }
 
     if (isRightAnswer === true) {
-      playAudio('correct');
+      playAudio('correct')
       this.reset()
       this.props.nextQuestion(500)
     } else {
-      playAudio('incorrect');
+      playAudio('incorrect')
       this.props.gameOver()
     }
   }
@@ -534,7 +557,8 @@ class UnitConversionCanvas extends React.Component {
               onMathQuillChange={this.onMathQuillChange}
               number={this.props.number}
               unit={this.props.unit}
-              strikethrough={this.state.strikethrough}
+              strikethroughN={this.state.strikethroughN}
+              strikethroughD={this.state.strikethroughD}
             />
             {this.state.incorrectConversion ?
               <div style={{border: '.1rem solid black'}}>
