@@ -75,8 +75,8 @@ class MathquillBox extends React.Component {
     var MQ = MathQuill.getInterface(2)
 
     this.answer = MQ.MathField(document.getElementById('' + this.props.row + this.props.column), {
+      autoOperatorNames: 'pi', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
       handlers: {
-        spaceBehavesLikeTab: true,
         edit: () => {
           // if change by API (not user), then not fire
           if (this.answer.fromJsCall) { return }
@@ -292,7 +292,6 @@ class UnitConversionCanvas extends React.Component {
       var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
 
       resetTxt = resetTxt.replace(/class{(\S+)}/, function (match, find) { // class set by mathquill after backspace
-
         if (find && find.length > 1) { // remove last char ot unit
           return find.slice(0, -1)
         } else { return '' } // remove unit if it is one char
@@ -393,7 +392,7 @@ class UnitConversionCanvas extends React.Component {
     tmpData = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
     tmpData = tmpData.replace(/\\ /g, '') // fast fix to remove backslash and whitespace
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
-    tmpData = tmpData.replace(/\\/g, '') // fix for \min
+    //tmpData = tmpData.replace(/\\/g, '') // fix for \min // no needed it see autoOperatorNames of Mathquill config
     return tmpData
   }
 
@@ -420,8 +419,7 @@ class UnitConversionCanvas extends React.Component {
     }
     isf = isf.toString().substring(0, minLength)
     asf = asf.toString().substring(0, minLength)
-    
-    // console.log("minLength: " + minLength)
+
     // console.log("isf: " + isf)
     // console.log("asf: " + asf)
 
@@ -535,7 +533,7 @@ class UnitConversionCanvas extends React.Component {
             />
             {this.state.incorrectConversion ?
               <div style={{border: '.1rem solid black'}}>
-                <div style={{color: 'red'}}>Incorrect Unit Conversion</div>
+                <div style={{color: 'red'}}>Incorrect unit conversion</div>
               </div>
               : null}
             {this.props.level > 4 ? null :
@@ -838,7 +836,7 @@ export class UnitConversionGame extends React.Component {
       stopBackgroundAudio()
       // TODO add more secure, i.e. server token when game starts, etc
       // this.props.gameWon()
-      // TODO move it to games.jsx (replace jQuery), remove ajaxSetup remove ajaxSetup from main page
+      // TODO move it to games.jsx (replace jQuery), remove ajaxSetup from main page
       clearInterval(this.state.timer)
       axios.post('/api/v1/curricula/games/unit-conversion/success', {
         duration: this.state.elapsed,
