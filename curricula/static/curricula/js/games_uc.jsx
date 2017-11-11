@@ -76,7 +76,7 @@ class MathquillBox extends React.Component {
 
     this.answer = MQ.MathField(document.getElementById('' + this.props.row + this.props.column), {
       autoCommands: 'class',
-      autoOperatorNames: 'no', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
+      autoOperatorNames: 'pi', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
       handlers: {
         edit: () => {
           // if change by API (not user), then not fire
@@ -389,6 +389,7 @@ class UnitConversionCanvas extends React.Component {
   onMathQuillChange (data, row, col, mathquillObj) {
     // if data contain strikethrough with end of line remove it (fix for we can delete 'class' from mathquill))
     // we must replace it only in currently edited mathquill box
+    // TODO check cursor position: if it not at the end - does not remove
     data = data.replace(/\\class{strikethrough}{(\S+)}$/, function (match, find) {
       if (find && find.length > 1) { // remove last char ot unit
         return find.slice(0, -1)
@@ -413,11 +414,23 @@ class UnitConversionCanvas extends React.Component {
     })
   }
 
-  // fixes strikethrough,  whitespace and latex
+  // fix latex mathquill data
   clearDataText (tmpData) {
+    // remove  strikethrough
     tmpData = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
-    tmpData = tmpData.replace(/\\ /g, '') // fast fix to remove backslash and whitespace
+    // remove backslash with whitespace
+    tmpData = tmpData.replace(/\\ /g, ' ')
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
+    // convert scientific notation
+    tmpData = tmpData.replace(/\\cdot/, '\*')
+    tmpData = tmpData.replace(/\^{(\S+)}/, '**$1')
+    tmpData = tmpData.replace(/\^(\S+)/, '**$1')
+    var value = eval(tmpData.split(' ')[0])
+    if(value && tmpData.split(' ')[1]) {
+      tmpData = value + ' ' + tmpData.split(' ')[1]
+    }
+    // end convert
+
     //tmpData = tmpData.replace(/\\/g, '') // fix for \min // no needed it see autoOperatorNames of Mathquill config
     return tmpData
   }
@@ -428,6 +441,8 @@ class UnitConversionCanvas extends React.Component {
   }
 
   compareWithSigFigs (firstQty, secondQty) {
+
+    // TODO We need to determine the minimum of minLength, so 3341.24 mm == 3 m now (minLength = 1)
     var minLength = 0
     minLength = firstQty.baseScalar.toString().length
     if (secondQty.toString().length < minLength) {
@@ -624,16 +639,6 @@ UnitConversionCanvas.propTypes = {
 
 class UnitConversionQuestionBoard extends React.Component {
   render () {
-    // var objects = []
-    // // var fade = false
-    // if (this.props.answerVector) {
-    //   // fade = true
-    //   objects.push(this.props.answerVector)
-    // }
-    // if (this.props.answerText) {
-    //   objects.push(this.props.answerText)
-    // }
-    // var disabled = !([GameState.GAME_OVER, GameState.WON].indexOf(this.props.state) > -1);
     return (
       <div className='text-center'>
         <MediaQuery minDeviceWidth={736}>
@@ -873,7 +878,6 @@ export class UnitConversionGame extends React.Component {
     if (newLevel > 5) {
       stopBackgroundAudio()
       // TODO add more secure, i.e. server token when game starts, etc
-      // this.props.gameWon()
       // TODO move it to games.jsx (replace jQuery), remove ajaxSetup from main page
       clearInterval(this.state.timer)
       axios.post('/api/v1/curricula/games/unit-conversion/success', {
