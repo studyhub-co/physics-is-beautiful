@@ -9,6 +9,7 @@ import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
 import {ScoreBoard} from './games'
 
+var math = require('mathjs')
 var Qty = require('js-quantities')
 
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -423,11 +424,18 @@ class UnitConversionCanvas extends React.Component {
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/, '\*')
-    tmpData = tmpData.replace(/\^{(\S+)}/, '**$1')
-    tmpData = tmpData.replace(/\^(\S+)/, '**$1')
-    var value = eval(tmpData.split(' ')[0])
-    if(value && tmpData.split(' ')[1]) {
-      tmpData = value + ' ' + tmpData.split(' ')[1]
+    // tmpData = tmpData.replace(/\^{(\S+)}/, '**$1') //not need for math.parser()
+    // tmpData = tmpData.replace(/\^(\S+)/, '**$1')
+    //var value = eval(tmpData.split(' ')[0]) // not safe, rewrited with mathjs bottom
+    if(tmpData.split(' ')[0]) {
+      var parser = math.parser()
+      try{
+        var value = parser.eval(tmpData.split(' ')[0])
+        if (value && tmpData.split(' ')[1]) {
+          tmpData = value + ' ' + tmpData.split(' ')[1]
+        }}
+        catch(e){
+        } // catch SyntaxError
     }
     // end convert
 
