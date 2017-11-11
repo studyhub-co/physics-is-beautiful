@@ -426,7 +426,7 @@ class UnitConversionCanvas extends React.Component {
     tmpData = tmpData.replace(/\\cdot/, '\*')
     // tmpData = tmpData.replace(/\^{(\S+)}/, '**$1') //not need for math.parser()
     // tmpData = tmpData.replace(/\^(\S+)/, '**$1')
-    //var value = eval(tmpData.split(' ')[0]) // not safe, rewrited with mathjs bottom
+    //var value = eval(tmpData.split(' ')[0]) // not safe, rewritten with mathjs below
     if(tmpData.split(' ')[0]) {
       var parser = math.parser()
       try{
@@ -485,6 +485,9 @@ class UnitConversionCanvas extends React.Component {
 
     var isRightAnswer = true
 
+    var initialQty = new Qty(Number(qNumber), qUnit)
+    var answerSpan = document.getElementById('15')
+
     // check units converions
 
     for (var column = 0; column < answers.length; column++) { // walk through columns
@@ -506,14 +509,27 @@ class UnitConversionCanvas extends React.Component {
         qdQty = Qty.parse(this.clearDataText(denominator['data']))
       }
 
+      //check for kind
+      var incorrectKind = false
+      if(qnQty && qdQty){
+         incorrectKind = initialQty.kind() !== (qnQty.kind() && qdQty.kind())
+      }
+
       // check steps
-      if (qnQty && qdQty && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
+      if (qnQty && qdQty && !incorrectKind && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
         if (spanNElement) { spanNElement.classList.add('green-border') }
         if (spanDElement) { spanDElement.classList.add('green-border') }
       } else {
-        this.setState({
-          incorrectConversion: true
-        })
+        if(incorrectKind){
+          this.setState({
+              incorrectUnitType: true
+          })
+        }
+        else{
+          this.setState({
+            incorrectConversion: true
+          })
+        }
         isRightAnswer = false
         if (spanNElement) { spanNElement.classList.add('red-border') }
         if (spanDElement) { spanDElement.classList.add('red-border') }
@@ -527,8 +543,7 @@ class UnitConversionCanvas extends React.Component {
       answerQty = null
     }
 
-    var initialQty = new Qty(Number(qNumber), qUnit)
-    var answerSpan = document.getElementById('15')
+
 
     if (answerQty && answerQty.isCompatible(initialQty) && this.compareWithSigFigs(initialQty, answerQty)) {
       answerSpan.classList.add('green-border')
@@ -595,6 +610,11 @@ class UnitConversionCanvas extends React.Component {
             {this.state.incorrectConversion ?
               <div style={{border: '.1rem solid black'}}>
                 <div style={{color: 'red'}}>Incorrect unit conversion</div>
+              </div>
+              : null}
+             {this.state.incorrectUnitType ?
+              <div style={{border: '.1rem solid black'}}>
+                <div style={{color: 'red'}}>Incorrect unit type</div>
               </div>
               : null}
             {this.props.level > 4 ? null :
