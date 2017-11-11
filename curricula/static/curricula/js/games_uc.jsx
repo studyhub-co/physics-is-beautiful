@@ -431,7 +431,7 @@ class UnitConversionCanvas extends React.Component {
     var minLength = 0
     minLength = firstQty.baseScalar.toString().length
     if (secondQty.toString().length < minLength) {
-      minLength = secondQty.toString().length
+      minLength = secondQty.baseScalar.toString().length
     }
 
     var asf = this.sigFigs(firstQty.baseScalar, minLength)
