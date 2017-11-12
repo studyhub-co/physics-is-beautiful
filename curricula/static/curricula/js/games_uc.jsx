@@ -332,7 +332,11 @@ class UnitConversionCanvas extends React.Component {
         splitNumerator = answers[column][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
       } // "2 cm"
 
-      if (splitNumerator && typeof splitNumerator[1] !== 'undefined') {
+      //if (splitNumerator && typeof splitNumerator[1] !== 'undefined') {
+      if (splitNumerator) {
+        if(typeof splitNumerator[1] === 'undefined'){ // if user input is only "cm"
+          splitNumerator[1] = splitNumerator[0]
+        }
         for (var column2 = -1; column2 < answers.length; column2++) { // walk through denominators
           var splitDenominator
 
@@ -343,14 +347,13 @@ class UnitConversionCanvas extends React.Component {
           } else {
             splitDenominator = answers[column2][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
           }
-          if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
-            // strikethrough start unit
-            // if (splitDenominator[1] === this.props.unit) {
-            //   this.state.strikethroughN = true
-            // }
-            // if (splitNumerator[1] === this.props.unit) {
-            //   this.state.strikethroughN = true
-            // }
+          //if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
+            if (splitDenominator) {
+
+            if(typeof splitDenominator[1] === 'undefined'){
+              splitDenominator[1] = splitDenominator[0]
+            }
+
             // numeratorBoxes boxes
             if (splitNumerator[1] === splitDenominator[1]) { // second one in "1.23 cm"
               // strikethrough Numerator
@@ -485,8 +488,6 @@ class UnitConversionCanvas extends React.Component {
 
     var isRightAnswer = true
 
-
-
     // check units converions
 
     for (var column = 0; column < answers.length; column++) { // walk through columns
@@ -566,8 +567,6 @@ class UnitConversionCanvas extends React.Component {
     } else {
       answerQty = null
     }
-
-
 
     if (answerQty && answerQty.isCompatible(initialQty) && this.compareWithSigFigs(initialQty, answerQty)) {
       answerSpan.classList.add('green-border')
