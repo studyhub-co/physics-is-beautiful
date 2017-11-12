@@ -485,8 +485,7 @@ class UnitConversionCanvas extends React.Component {
 
     var isRightAnswer = true
 
-    var initialQty = new Qty(Number(qNumber), qUnit)
-    var answerSpan = document.getElementById('15')
+
 
     // check units converions
 
@@ -509,11 +508,32 @@ class UnitConversionCanvas extends React.Component {
         qdQty = Qty.parse(this.clearDataText(denominator['data']))
       }
 
-      //check for kind
+
       var incorrectKind = false
-      if(qnQty && qdQty){
-         incorrectKind = initialQty.kind() !== (qnQty.kind() && qdQty.kind())
+      var incorrectCount = 0
+
+      if(qnQty && qdQty) {
+
+        //check for kind
+        var correctQsUnits = [qUnit.split("/")[0]]
+
+        if(qUnit.split("/")[1]){ // km/s
+          correctQsUnits.push(qUnit.split("/")[1])
+        }
+
+        for (var i = 0; i < correctQsUnits.length; i++) {
+          var initialUnitQty = Qty.parse(correctQsUnits[i])
+          if (initialUnitQty.kind() !== (qnQty.kind() && qdQty.kind() )) {
+            incorrectCount++
+          }
+        }
+        if (incorrectCount > (correctQsUnits.length - 1)) { // for km/s can be only one incorrect
+          incorrectKind = true
+        }
       }
+      // if(qnQty && qdQty){
+      //    incorrectKind = initialQty.kind() !== (qnQty.kind() && qdQty.kind())
+      // }
 
       // check steps
       if (qnQty && qdQty && !incorrectKind && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
@@ -536,6 +556,10 @@ class UnitConversionCanvas extends React.Component {
       }
     } // end for
     // check answer
+
+    var initialQty = new Qty(Number(qNumber), qUnit)
+    var answerSpan = document.getElementById('15')
+
     var answerQty
     if (this.state.answer['data'] && this.clearDataText(this.state.answer['data']) !== '') {
       answerQty = Qty.parse(this.clearDataText(this.state.answer['data']))
@@ -822,7 +846,7 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      // level: 5,
+      // level: 4,
       level: 1,
       elapsed: 0,
       question: null,
