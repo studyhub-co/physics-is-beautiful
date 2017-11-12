@@ -424,7 +424,8 @@ class UnitConversionCanvas extends React.Component {
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/, '\*')
-    // tmpData = tmpData.replace(/\^{(\S+)}/, '**$1') //not need for math.parser()
+    tmpData = tmpData.replace(/\^{(\S+)}/, '^($1)') //fix for math.parser()
+    //tmpData = tmpData.replace(/\^{(\S+)}/, '**$1') //not need for math.parser()
     // tmpData = tmpData.replace(/\^(\S+)/, '**$1')
     //var value = eval(tmpData.split(' ')[0]) // not safe, rewritten with mathjs below
     if(tmpData.split(' ')[0]) {
@@ -439,7 +440,6 @@ class UnitConversionCanvas extends React.Component {
     }
     // end convert
 
-    //tmpData = tmpData.replace(/\\/g, '') // fix for \min // no needed it see autoOperatorNames of Mathquill config
     return tmpData
   }
 
