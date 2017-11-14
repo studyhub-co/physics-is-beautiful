@@ -393,12 +393,14 @@ class UnitConversionCanvas extends React.Component {
   onMathQuillChange (data, row, col, mathquillObj) {
     // if data contain strikethrough with end of line remove it (fix for we can delete 'class' from mathquill))
     // we must replace it only in currently edited mathquill box
-    // TODO check cursor position: if it not at the end - does not remove
-    data = data.replace(/\\class{strikethrough}{(\S+)}$/, function (match, find) {
-      if (find && find.length > 1) { // remove last char ot unit
-        return find.slice(0, -1)
-      } else { return '' } // remove unit if it is one char
-    })
+    // check cursor position: if it not at the end - does not remove
+    if(mathquillObj.__controller.cursor[1] === 0) {
+      data = data.replace(/\\class{strikethrough}{(\S+)}$/, function (match, find) {
+        if (find && find.length > 1) { // remove last char ot unit
+          return find.slice(0, -1)
+        } else { return '' } // remove unit if it is one char
+      })
+    }
 
     // store value in matrix
     var answers = this.state.answersSteps
