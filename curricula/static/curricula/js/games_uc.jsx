@@ -302,12 +302,14 @@ class UnitConversionCanvas extends React.Component {
       var tmpData = answer['data']
       if (!tmpData) return
 
-      var resetTxt = tmpData .replace(/\\class{strikethrough}{(\S+)}/, '$1') // replace if with whitespaces
+      var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1') // replace if with whitespaces
 
-      answer['box'].fromJsCall = true
-      answer['data'] = resetTxt
-      answer['box'].latex(resetTxt)
-      answer['box'].fromJsCall = false
+      if(resetTxt != tmpData) { // replace only if changed
+        answer['box'].fromJsCall = true
+        answer['data'] = resetTxt
+        answer['box'].latex(resetTxt)
+        answer['box'].fromJsCall = false
+      }
     }
 
     // reset all strikethrough after update any value
@@ -391,15 +393,22 @@ class UnitConversionCanvas extends React.Component {
   }
 
   onMathQuillChange (data, row, col, mathquillObj) {
-    // if data contain strikethrough with end of line remove it (fix for we can delete 'class' from mathquill))
-    // we must replace it only in currently edited mathquill box
     // check cursor position: if it not at the end - does not remove
     if(mathquillObj.__controller.cursor[1] === 0) {
-      data = data.replace(/\\class{strikethrough}{(\S+)}$/, function (match, find) {
+      // if data contain strikethrough with end of line remove it (fix for we can delete 'class' from mathquill))
+      // we must replace it only in currently edited mathquill box
+      var tmpData;
+      tmpData = data.replace(/\\class{strikethrough}{(\S+)}$/, function (match, find) {
         if (find && find.length > 1) { // remove last char ot unit
           return find.slice(0, -1)
         } else { return '' } // remove unit if it is one char
       })
+      if(tmpData !== data) {
+        data = tmpData
+        mathquillObj.fromJsCall = true
+        mathquillObj.latex(data)
+        mathquillObj.fromJsCall = false
+      }
     }
 
     // store value in matrix
