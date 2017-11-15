@@ -506,19 +506,41 @@ class UnitConversionCanvas extends React.Component {
     var asf = this.sigFigs(firstQty.baseScalar, minLength)
     var isf = this.sigFigs(secondQty.baseScalar, minLength)
 
-    // substring to length number equal
-    minLength = 0
-    minLength = asf.toString().length
-    if (isf.toString().length < minLength) {
-      minLength = isf.toString().length
+    function decimalPlaces(num) {
+      var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+      if (!match) { return 0; }
+      return Math.max(
+           0,
+           // Number of digits right of decimal point.
+           (match[1] ? match[1].length : 0)
+           // Adjust for scientific notation.
+           - (match[2] ? +match[2] : 0));
     }
-    isf = isf.toString().substring(0, minLength)
-    asf = asf.toString().substring(0, minLength)
 
-    // console.log("isf: " + isf)
-    // console.log("asf: " + asf)
+    var decPlaces = 0;
+    decPlaces = decimalPlaces(asf);
+    if (decimalPlaces(isf) < decPlaces) {
+       decPlaces = decimalPlaces(isf)
+    }
 
-    return isf === asf
+    // substring to length number equal
+    // minLength = 0
+    // minLength = asf.toString().length
+    // if (isf.toString().length < minLength) {
+    //   minLength = isf.toString().length
+    // }
+    // isf = isf.toString().substring(0, minLength)
+    // asf = asf.toString().substring(0, minLength)
+    //return isf === asf
+
+    var floorX = function floorN(x, n)
+    {
+      var mult = Math.pow(10, n);
+      return Math.floor(x * mult) / mult;
+    }
+
+    return '' + floorX(isf) === '' + floorX(asf)
+
   }
 
   submitQuestion () {
@@ -633,10 +655,12 @@ class UnitConversionCanvas extends React.Component {
         }
       }
       // compare answer and remain unit
-      var answerText = this.clearDataText(this.state.answer['data']).replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+      if(this.state.answer['data']) {
+        var answerText = this.clearDataText(this.state.answer['data']).replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
 
-      if(typeof answerText[1] !== 'indefined' && answerText[1] === remainUnit) {
-        incompleteConversion = false
+        if (typeof answerText[1] !== 'indefined' && answerText[1] === remainUnit) {
+          incompleteConversion = false
+        }
       }
     }
 
@@ -917,8 +941,8 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      level: 4,
-      // level: 1,
+      // level: 4,
+      level: 1,
       elapsed: 0,
       question: null,
       unit: null,
