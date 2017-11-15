@@ -214,8 +214,8 @@ class UnitConversionCanvas extends React.Component {
       numColumns: numColumns,
       strikethroughD: false,
       strikethroughN: false,
-      answer: '',
-      counter: 0
+      // answer: '',
+      // counter: 0,
     }
     this.addColumn = this.addColumn.bind(this)
     this.removeColumn = this.removeColumn.bind(this)
@@ -266,7 +266,7 @@ class UnitConversionCanvas extends React.Component {
         {'data': '', 'box': MQ(document.getElementById('11'))},
         {'data': '', 'box': MQ(document.getElementById('12'))}
       ]] // first column set by default
-    })
+   })
   }
 
   addColumn () {
@@ -322,6 +322,25 @@ class UnitConversionCanvas extends React.Component {
 
   reDrawStrikes () {
     var answers = this.resetStrikeAnswers()
+    var uncrossedUnits = {'nums':[], 'denoms':[]}
+
+    // fill uncrossedUnits
+    for(var col = 0; col < answers.length; col++){
+      splitNumerator = answers[col][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+      if(splitNumerator) {
+        if (typeof splitNumerator[1] === 'undefined') { // if user is input only "cm"
+          splitNumerator[1] = splitNumerator[0]
+        }
+        if(splitNumerator[1]) { uncrossedUnits['nums'].push(splitNumerator[1]) }
+      }
+      splitDenominator = answers[col][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+      if(splitDenominator) {
+        if (typeof splitDenominator[1] === 'undefined') { // if user is input only "cm"
+          splitDenominator[1] = splitDenominator[0]
+        }
+        if (splitDenominator[1]) { uncrossedUnits['denoms'].push(splitDenominator[1]) }
+      }
+    }
 
     // TODO it is really need to check for unit exist in UNITS const?
     // strikethrough units Numerator and Denominator
@@ -334,9 +353,8 @@ class UnitConversionCanvas extends React.Component {
         splitNumerator = answers[column][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
       } // "2 cm"
 
-      //if (splitNumerator && typeof splitNumerator[1] !== 'undefined') {
       if (splitNumerator) {
-        if(typeof splitNumerator[1] === 'undefined'){ // if user input is only "cm"
+        if(typeof splitNumerator[1] === 'undefined'){ // if user is input only "cm"
           splitNumerator[1] = splitNumerator[0]
         }
         for (var column2 = -1; column2 < answers.length; column2++) { // walk through denominators
@@ -352,7 +370,7 @@ class UnitConversionCanvas extends React.Component {
           //if (splitDenominator && typeof splitDenominator[1] !== 'undefined') {
             if (splitDenominator) {
 
-            if(typeof splitDenominator[1] === 'undefined'){
+            if(typeof splitDenominator[1] === 'undefined'){ // if user is input only "cm"
               splitDenominator[1] = splitDenominator[0]
             }
 
@@ -369,6 +387,12 @@ class UnitConversionCanvas extends React.Component {
                 answers[column][0]['data'] = newLatexN // data will not fill, because edit event not fire onMathQuillChange
                 numeratorBox.latex(newLatexN)
                 numeratorBox.fromJsCall = false
+
+                // remove numerator unit from uncrossed out
+                var toRemoveI = uncrossedUnits['nums'].indexOf(splitNumerator[1]);
+                if (toRemoveI != -1) {
+                  uncrossedUnits['nums'].splice(toRemoveI , 1);
+                }
               }
               if (column2 === -1) {
                 this.setState({strikethroughD: true})
@@ -380,15 +404,24 @@ class UnitConversionCanvas extends React.Component {
                 denominatorBox.fromJsCall = true
                 denominatorBox.latex(newLatexDN)
                 denominatorBox.fromJsCall = false
+
+                // remove denominator unit from uncrossed out
+                var toRemoveI = uncrossedUnits['denoms'].indexOf(splitNumerator[1]);
+                if (toRemoveI != -1) {
+                  uncrossedUnits['denoms'].splice(toRemoveI , 1);
+                }
+
                 continue numeratorsC // need for stop search 2nd and more denominator with current unit
               }
             }
           }
-        }
+        } // end for denominators
       }
-    }
+    } // end for numerators
+
     this.setState({
-      answersSteps: answers
+      answersSteps: answers,
+      uncrossedUnits: uncrossedUnits
     })
   }
 
@@ -439,9 +472,8 @@ class UnitConversionCanvas extends React.Component {
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/, '\*')
     tmpData = tmpData.replace(/\^{(\S+)}/, '^($1)') //fix for math.parser()
-    //tmpData = tmpData.replace(/\^{(\S+)}/, '**$1') //not need for math.parser()
+    // tmpData = tmpData.replace(/\^{(\S+)}/, '**$1') //not need for math.parser()
     // tmpData = tmpData.replace(/\^(\S+)/, '**$1')
-    //var value = eval(tmpData.split(' ')[0]) // not safe, rewritten with mathjs below
     if(tmpData.split(' ')[0]) {
       var parser = math.parser()
       try{
@@ -491,6 +523,7 @@ class UnitConversionCanvas extends React.Component {
 
   submitQuestion () {
     var answers = this.state.answersSteps
+    var uncrossedUnits = this.state.uncrossedUnits
     var qNumber = this.props.number
     var qUnit = this.props.unit
 
@@ -499,8 +532,7 @@ class UnitConversionCanvas extends React.Component {
 
     var isRightAnswer = true
 
-    // check units converions
-
+    // checking for correct units conversions
     for (var column = 0; column < answers.length; column++) { // walk through columns
       var numerator = answers[column][0]
       if (numerator['box']) {
@@ -543,11 +575,8 @@ class UnitConversionCanvas extends React.Component {
           incorrectKind = true
         }
       }
-      // if(qnQty && qdQty){
-      //    incorrectKind = initialQty.kind() !== (qnQty.kind() && qdQty.kind())
-      // }
 
-      // check steps
+      // check conversions steps
       if (qnQty && qdQty && !incorrectKind && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
         if (spanNElement) { spanNElement.classList.add('green-border') }
         if (spanDElement) { spanDElement.classList.add('green-border') }
@@ -567,13 +596,13 @@ class UnitConversionCanvas extends React.Component {
         if (spanDElement) { spanDElement.classList.add('red-border') }
       }
     } // end for
-    // check answer
 
+    // check answer
     var initialQty = new Qty(Number(qNumber), qUnit)
     var answerSpan = document.getElementById('15')
 
     var answerQty
-    if (this.state.answer['data'] && this.clearDataText(this.state.answer['data']) !== '') {
+    if (this.state.answer && this.state.answer['data'] && this.clearDataText(this.state.answer['data']) !== '') {
       answerQty = Qty.parse(this.clearDataText(this.state.answer['data']))
     } else {
       answerQty = null
@@ -584,19 +613,46 @@ class UnitConversionCanvas extends React.Component {
     } else {
       var correctAnswer
 
-      if (initialQty.toBase().scalar < 1) {
-        // leave just significant figures for answer
-        correctAnswer = this.sigFigs(initialQty.toBase().scalar, 4)
-      } else {
-        correctAnswer = initialQty.toBase().scalar.toFixed(2)
-      }
+    if (initialQty.toBase().scalar < 1) {
+      // leave just significant figures for answer
+      correctAnswer = this.sigFigs(initialQty.toBase().scalar, 4)
+    } else {
+      correctAnswer = initialQty.toBase().scalar.toFixed(2)
+    }
 
-      this.setState({
-        incorrectAnswer: true,
-        correctAnswer: correctAnswer + ' ' + initialQty.toBase().toString().split(' ')[1]
-      })
+    var incompleteConversion = true
+    // checking for incomplete units conversions
+    if(uncrossedUnits && uncrossedUnits['nums'].length === 1 &&  uncrossedUnits['denoms'].length <= 1){
+      var remainUnit = uncrossedUnits['nums'][0]
+      if (uncrossedUnits['denoms'].length === 1) {
+        remainUnit += "/" + uncrossedUnits['denoms']
+      }
+      else { // try to use initial denominator
+        if( typeof qUnit.split('/')[1] !== 'undefined' ){
+          remainUnit += "/" + qUnit.split('/')[1]
+        }
+      }
+      // compare answer and remain unit
+      var answerText = this.clearDataText(this.state.answer['data']).replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+
+      if(typeof answerText[1] !== 'indefined' && answerText[1] === remainUnit) {
+        incompleteConversion = false
+      }
+    }
+
+    if (incompleteConversion) {
       isRightAnswer = false
-      answerSpan.classList.add('red-border')
+      this.setState({
+        incompleteConversion: true
+      })
+    }
+
+    this.setState({
+      incorrectAnswer: true,
+      correctAnswer: correctAnswer + ' ' + initialQty.toBase().toString().split(' ')[1]
+    })
+    isRightAnswer = false
+    answerSpan.classList.add('red-border')
     }
 
     if (isRightAnswer === true) {
@@ -641,6 +697,11 @@ class UnitConversionCanvas extends React.Component {
               strikethroughN={this.state.strikethroughN}
               strikethroughD={this.state.strikethroughD}
             />
+            {this.state.incompleteConversion ?
+              <div style={{border: '.1rem solid black'}}>
+                <div style={{color: 'red'}}>Incorrect: incomplete conversion</div>
+              </div>
+              : null}
             {this.state.incorrectConversion ?
               <div style={{border: '.1rem solid black'}}>
                 <div style={{color: 'red'}}>Incorrect unit conversion</div>
@@ -856,8 +917,8 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      // level: 4,
-      level: 1,
+      level: 4,
+      // level: 1,
       elapsed: 0,
       question: null,
       unit: null,
