@@ -328,14 +328,14 @@ class UnitConversionCanvas extends React.Component {
     for(var col = 0; col < answers.length; col++){
       splitNumerator = answers[col][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
       if(splitNumerator) {
-        if (typeof splitNumerator[1] === 'undefined') { // if user is input only "cm"
+        if (typeof splitNumerator[1] === 'undefined') { // if user input is only "cm"
           splitNumerator[1] = splitNumerator[0]
         }
         if(splitNumerator[1]) { uncrossedUnits['nums'].push(splitNumerator[1]) }
       }
       splitDenominator = answers[col][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
       if(splitDenominator) {
-        if (typeof splitDenominator[1] === 'undefined') { // if user is input only "cm"
+        if (typeof splitDenominator[1] === 'undefined') { // if user input si only "cm"
           splitDenominator[1] = splitDenominator[0]
         }
         if (splitDenominator[1]) { uncrossedUnits['denoms'].push(splitDenominator[1]) }
@@ -655,7 +655,7 @@ class UnitConversionCanvas extends React.Component {
         }
       }
       // compare answer and remain unit
-      if(this.state.answer['data']) {
+      if(this.state.answer) {
         var answerText = this.clearDataText(this.state.answer['data']).replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
 
         if (typeof answerText[1] !== 'indefined' && answerText[1] === remainUnit) {
