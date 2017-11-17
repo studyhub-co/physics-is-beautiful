@@ -2,6 +2,8 @@
  * Created by LennyLip on 01.11.17.
  */
 
+/* global MathQuill, playAudio, pauseBackgroundAudio, unpauseBackgroundAudio, stopBackgroundAudio, playBackgroundAudio */
+
 import React from 'react'
 import axios from 'axios'
 import MathJax from 'react-mathjax'
@@ -55,8 +57,10 @@ const UNITS = {
     'ft/min': 'foots/hour'
   }
 }
-const SI_UNITS = ['s', 'm', 'kg']
-const INPUT_UNITS = SI_UNITS.concat(Object.keys(UNITS.DISTANCE), Object.keys(UNITS.MASS), Object.keys(UNITS.SPEED))
+var INPUT_UNITS = ['s', 'm', 'kg']
+Object.keys(UNITS).forEach(function (key) {
+  INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
+})
 
 class MathquillBox extends React.Component {
   constructor (props) {
@@ -318,6 +322,26 @@ class UnitConversionCanvas extends React.Component {
     return answers
   }
 
+  parseToValueUnit (input) {
+    // trim backslash and spaces
+    input = input.replace(/^[\\\s]+|[\\\s]+$/gm, '')
+
+    var unitsArr = INPUT_UNITS
+    // check for longer unit name firstly
+    unitsArr.sort(function (a, b) {
+      return b.length - a.length
+    })
+
+    for (var i = 0; i < unitsArr.length; i++) {
+      var unit = unitsArr[i]
+      var foundIndex = input.indexOf(unit, input.length - unit.length)
+      if (foundIndex !== -1) {
+        return [input.substring(0, foundIndex).replace(/^[\\\s]+|[\\\s]+$/gm, ''), unit]
+      }
+    }
+    return null
+  }
+
   reDrawStrikes () {
     var answers = this.resetStrikeAnswers()
     var uncrossedUnits = {'nums': [], 'denoms': []}
@@ -325,50 +349,37 @@ class UnitConversionCanvas extends React.Component {
     // fill uncrossedUnits
     var splitNumerator, splitDenominator
     for (var col = 0; col < answers.length; col++) {
-      splitNumerator = answers[col][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
-      if (splitNumerator) {
-        if (typeof splitNumerator[1] === 'undefined') { // if user input is only "cm"
-          splitNumerator[1] = splitNumerator[0]
-        }
-        if (splitNumerator[1]) { uncrossedUnits['nums'].push(splitNumerator[1]) }
+      splitNumerator = answers[col][0]['splitData']
+      if (splitNumerator && splitNumerator[1]) {
+        uncrossedUnits['nums'].push(splitNumerator[1])
       }
-      splitDenominator = answers[col][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
-      if (splitDenominator) {
-        if (typeof splitDenominator[1] === 'undefined') { // if user input is only "cm"
-          splitDenominator[1] = splitDenominator[0]
-        }
-        if (splitDenominator[1]) { uncrossedUnits['denoms'].push(splitDenominator[1]) }
+      splitDenominator = answers[col][1]['splitData']
+      if (splitDenominator && splitDenominator[1]) {
+        uncrossedUnits['denoms'].push(splitDenominator[1])
       }
     }
 
-    // TODO it is really need to check for unit exist in UNITS const?
-    // strikethrough units Numerator and Denominator
+    // strikethrough units
     numeratorsC:
     for (var column = -1; column < answers.length; column++) { // walk through numerators
       if (column === -1) {
         splitNumerator = ['', this.props.unit.split('/')[0]] // main unit
       } else {
-        splitNumerator = answers[column][0]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+        splitNumerator = answers[column][0]['splitData']
       } // "2 cm"
 
       if (splitNumerator) {
-        if (typeof splitNumerator[1] === 'undefined') { // if user is input only "cm"
-          splitNumerator[1] = splitNumerator[0]
-        }
         for (var column2 = -1; column2 < answers.length; column2++) { // walk through denominators
           if (column2 === -1) {
             if (this.props.unit.split('/')[1]) {
               splitDenominator = ['', this.props.unit.split('/')[1]] // km/hr
             } else { splitDenominator = null }
           } else {
-            splitDenominator = answers[column2][1]['data'].replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+            splitDenominator = answers[column2][1]['splitData']
           }
           if (splitDenominator) {
-            if (typeof splitDenominator[1] === 'undefined') { // if user is input only "cm"
-              splitDenominator[1] = splitDenominator[0]
-            }
-
             // numeratorBoxes boxes
+
             if (splitNumerator[1] === splitDenominator[1]) { // second one in "1.23 cm"
               var toRemoveI
               // strikethrough Numerator
@@ -441,7 +452,10 @@ class UnitConversionCanvas extends React.Component {
 
     // store value in matrix
     var answers = this.state.answersSteps
-    answers[col - 1][row - 1] = {'data': data, 'box': mathquillObj}
+    answers[col - 1][row - 1] = {
+      'data': data,
+      'splitData': this.parseToValueUnit(this.clearDataText(data)),
+      'box': mathquillObj}
 
     this.setState({
       answersSteps: answers
@@ -457,8 +471,7 @@ class UnitConversionCanvas extends React.Component {
     })
   }
 
-  // fix latex mathquill data
-  clearDataText (tmpData) {
+  clearDataText (tmpData) { // clear data before js-q parse
     // remove  strikethrough
     tmpData = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
     // remove backslash with whitespace
@@ -468,16 +481,17 @@ class UnitConversionCanvas extends React.Component {
     tmpData = tmpData.replace(/\\cdot/, '*')
     tmpData = tmpData.replace(/\^{(\S+)}/, '^($1)') // fix for math.parser()
 
-    if (tmpData.split(' ')[0]) {
+    var parsedToValUnit = this.parseToValueUnit(tmpData)
+
+    if (parsedToValUnit && parsedToValUnit[0]) {
       var parser = math.parser()
       try {
-        var value = parser.eval(tmpData.split(' ')[0])
-        if (value && tmpData.split(' ')[1]) {
-          tmpData = value + ' ' + tmpData.split(' ')[1]
+        var value = parser.eval(parsedToValUnit[0])
+        if (value && parsedToValUnit[1]) {
+          tmpData = value + ' ' + parsedToValUnit[1]
         }
       } catch (e) {} // catch SyntaxError
     }
-    // end convert
 
     return tmpData
   }
@@ -488,7 +502,6 @@ class UnitConversionCanvas extends React.Component {
   }
 
   compareWithSigFigs (firstQty, secondQty) {
-
     // TODO We need to determine the minimum of minLength, so 3341.24 mm == 3 m now (minLength = 1)
     var minLength = 0
     minLength = firstQty.baseScalar.toString().length
@@ -513,12 +526,12 @@ class UnitConversionCanvas extends React.Component {
       decPlaces = decimalPlaces(isf)
     }
 
-    var floorX = function floorN (x, n) {
+    function roundX (x, n) {
       var mult = Math.pow(10, n)
-      return Math.floor(x * mult) / mult
+      return Math.round(x * mult) / mult
     }
 
-    return '' + floorX(isf) === '' + floorX(asf)
+    return '' + roundX(isf, decPlaces) === '' + roundX(asf, decPlaces)
   }
 
   submitQuestion () {
@@ -575,7 +588,7 @@ class UnitConversionCanvas extends React.Component {
       }
 
       // check conversions steps
-      if (qnQty && qdQty && !incorrectKind && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
+      if (qnQty && qdQty && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
         if (spanNElement) { spanNElement.classList.add('green-border') }
         if (spanDElement) { spanDElement.classList.add('green-border') }
       } else {
@@ -1045,12 +1058,9 @@ export class UnitConversionGame extends React.Component {
       {
         score: 0,
         level: 1,
-        // answerVector: null,
-        // answerText: null,
         state: GameState.NEW
       }
     )
-    this.setState(state)
     this.setState(state)
   }
 
