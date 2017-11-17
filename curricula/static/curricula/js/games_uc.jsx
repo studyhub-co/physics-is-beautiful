@@ -479,7 +479,7 @@ class UnitConversionCanvas extends React.Component {
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/, '*')
-    tmpData = tmpData.replace(/\^{(\S+)}/, '^($1)') // fix for math.parser()
+    tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
 
     var parsedToValUnit = this.parseToValueUnit(tmpData)
 
@@ -588,7 +588,7 @@ class UnitConversionCanvas extends React.Component {
       }
 
       // check conversions steps
-      if (qnQty && qdQty && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
+      if (qnQty && qdQty && !incorrectKind && qnQty.isCompatible(qdQty) && this.compareWithSigFigs(qnQty, qdQty)) {
         if (spanNElement) { spanNElement.classList.add('green-border') }
         if (spanDElement) { spanDElement.classList.add('green-border') }
       } else {
