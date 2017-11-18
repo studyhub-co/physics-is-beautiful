@@ -30,7 +30,7 @@ const UNITS = {
     'mm': 'millimeters',
     'cm': 'centimeters',
     'km': 'kilometers',
-    'ft': 'foots',
+    'ft': 'feet',
     'mi': 'miles'
   },
   TIME: {
@@ -48,13 +48,13 @@ const UNITS = {
   SPEED: {
     'km/s': 'kilometers/second',
     'mi/s': 'miles/second',
-    'ft/s': 'foots/second',
+    'ft/s': 'feet/second',
     'km/hr': 'kilometers/hour',
     'mi/hr': 'miles/hour',
     'm/hr': 'meters/hour',
-    'ft/hr': 'foots/hour',
+    'ft/hr': 'feet/hour',
     'm/min': 'meters/minute',
-    'ft/min': 'foots/hour'
+    'ft/min': 'feet/hour'
   }
 }
 var INPUT_UNITS = ['s', 'm', 'kg']
