@@ -643,9 +643,9 @@ class UnitConversionCanvas extends React.Component {
         }
         // compare answer and remain unit
         if (this.state.answer) {
-          var answerText = this.clearDataText(this.state.answer['data']).replace(/^[\\\s]+|[\\\s]+$/gm, '').match(/\S+/g)
+          var answerText = this.parseToValueUnit(this.clearDataText(this.state.answer['data']))
 
-          if (typeof answerText[1] !== 'undefined' && answerText[1] === remainUnit) {
+          if (answerText && typeof answerText[1] !== 'undefined' && answerText[1] === remainUnit) {
             incompleteConversion = false
           }
         }
