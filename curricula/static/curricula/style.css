@@ -469,3 +469,11 @@ img.grayed-out-img {
 .strikethrough {
     text-decoration: line-through;
 }
+
+.red-border {
+    border: .3rem solid red !important;;
+}
+
+.green-border {
+    border: .3rem solid green !important;
+}

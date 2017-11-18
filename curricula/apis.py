@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils import timezone
 
 from rest_framework import serializers, status
@@ -175,6 +177,20 @@ class QuestionSerializer(BaseSerializer):
             return AnswerSerializer(obj.answers, many=True).data
 
 
+class ProfileUserField(serializers.RelatedField):
+    def to_representation(self, value):
+        return '%s %s' % (value.user.first_name, value.user.last_name)
+
+
+class ScoreBoardSerializer(serializers.ModelSerializer):
+    row_num = serializers.IntegerField(read_only=True)
+    profile = ProfileUserField(read_only=True)
+
+    class Meta:
+        model = LessonProgress
+        fields = ['score', 'duration', 'profile', 'row_num']
+
+
 class LessonProgressSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -247,9 +263,42 @@ class LessonViewSet(ModelViewSet):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def game_success(request, slug):
-    game = Game.objects.get(slug=slug)
+    game = Game.objects.get(slug=slug)  # TODO here is raise exception is game not found by slug
     service = get_progress_service(request, game.lesson)
-    service.game_success(game)
+
+    duration_ms = request.data.get('duration', None)
+    score = request.data.get('score', None)
+    if duration_ms:
+        dur = datetime.timedelta(milliseconds=duration_ms)
+    else:
+        dur = None
+
+    service.game_success(game, dur, score)
+
+    if game.slug == 'unit-conversion':  # temp fix
+        # get score list for auth user
+        try:
+            scores = service.get_score_board_qs(game.lesson)
+            data_scores_list = []
+            current_user_in_score_list = False
+
+            for row_num, row in enumerate(scores[:10]):
+                setattr(row, 'row_num', row_num + 1)
+                if request.user.id == row.profile_id:
+                    current_user_in_score_list = True
+                data_scores_list.append(row)
+
+            if not current_user_in_score_list:
+                currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+                position = service.get_score_board_qs(game.lesson).filter(duration__lt=currrent_user_score.duration).count()
+                setattr(currrent_user_score, 'row_num', position + 1)
+                data_scores_list.append(currrent_user_score)
+
+            data = ScoreBoardSerializer(data_scores_list, many=True).data
+            return Response(data)
+        except NotImplementedError:
+            pass
+
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
