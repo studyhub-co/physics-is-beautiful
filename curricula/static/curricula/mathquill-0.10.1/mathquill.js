@@ -3854,15 +3854,15 @@ LatexCmds.operatorname = P(MathCommand, function(_) {
   };
 });
 
-LatexCmds.f = P(Letter, function(_, super_) {
-  _.init = function() {
-    Symbol.p.init.call(this, this.letter = 'f', '<var class="mq-f">f</var>');
-  };
-  _.italicize = function(bool) {
-    this.jQ.html('f').toggleClass('mq-f', bool);
-    return super_.italicize.apply(this, arguments);
-  };
-});
+// LatexCmds.f = P(Letter, function(_, super_) {
+//   _.init = function() {
+//     Symbol.p.init.call(this, this.letter = 'f', '<var class="mq-f">f</var>');
+//   };
+//   _.italicize = function(bool) {
+//     this.jQ.html('f').toggleClass('mq-f', bool);
+//     return super_.italicize.apply(this, arguments);
+//   };
+// });
 
 // VanillaSymbol's
 LatexCmds[' '] = LatexCmds.space = bind(VanillaSymbol, '\\ ', '&nbsp;');
@@ -4247,12 +4247,20 @@ var Class = LatexCmds['class'] = P(MathCommand, function(_, super_) {
       .then(regex(/^[-\w\s\\\xA0-\xFF]*/))
       .skip(string('}'))
       .then(function(cls) {
+        self.cls = cls || '';
         self.htmlTemplate = '<span class="mq-class '+cls+'">&0</span>';
         return super_.parser.call(self);
       })
     ;
   };
+  _.latex = function() {
+    return '\\class{' + this.cls + '}{' + this.blocks[0].latex() + '}';
+  };
+  _.isStyleBlock = function() {
+    return true;
+  };
 });
+
 
 var SupSub = P(MathCommand, function(_, super_) {
   _.ctrlSeq = '_{...}^{...}';
