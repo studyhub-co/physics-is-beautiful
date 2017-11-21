@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import math
 from sympy import simplify, trigsimp
@@ -613,8 +614,12 @@ class LessonProgress(BaseModel):
     lesson = models.ForeignKey(Lesson, related_name='progress', on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0)
     completed_on = models.DateTimeField(null=True, blank=True)
+    duration = models.DurationField(null=True, blank=True)
     status = enum.EnumField(Status)
 
-    def complete(self):
+    def complete(self, duration=None, score=None):
         self.status = self.Status.COMPLETE
         self.completed_on = timezone.now()
+        self.score = score
+        if duration:
+            self.duration = duration

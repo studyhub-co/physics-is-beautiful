@@ -36,4 +36,7 @@ module.exports = {
         modulesDirectories: ['node_modules', 'bower_components'],
         extensions: ['', '.js', '.jsx']
     },
+    watchOptions: { // fix watch for Windows
+        poll: 1000
+    }
 }
