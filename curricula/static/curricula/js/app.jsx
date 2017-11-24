@@ -1,10 +1,9 @@
-import React from 'react';
-import {BrowserRouter, Switch, Route} from 'react-router-dom';
-import {SectionSheet, Sheet} from './sheet';
-import {VectorGame} from './games';
-import {UnitConversionGame} from './games_uc';
-import {Vector} from './vector_canvas';
-
+import React from 'react'
+import {BrowserRouter, Switch, Route} from 'react-router-dom'
+import {SectionSheet, Sheet} from './containers/sheet'
+import {VectorGame} from './games/vector'
+import {UnitConversionGame} from './games/unit_conversion'
+import {Vector} from './vector_canvas'
 
 class CurriculumApp extends React.Component {
 
@@ -214,7 +213,8 @@ class LessonsApp extends React.Component {
                 this.question.response = obj;
                 this.progress = data['score'] / data['required_score'] * 100;
                 if (data.was_correct) {
-                    this.question.is_correct = true;
+                    this.question.is_correct = true
+                    this.answer = 'correct' // set answer is exit and not null
                     playAudio('correct');
                 } else {
                     this.question.is_correct = false;
@@ -239,12 +239,12 @@ class LessonsApp extends React.Component {
                 }
                 this.load();
                 if (data.was_correct) {
-                    setTimeout(
-                        function() {
-                            this.fetchState(this.state.currentId);
-                        }.bind(this),
-                        500
-                    );
+                    // setTimeout(
+                    //     function() {
+                    //         this.fetchState(this.state.currentId);
+                    //     }.bind(this),
+                    //     500
+                    // );
                 }
             }
         });
@@ -297,37 +297,37 @@ class LessonsApp extends React.Component {
 
 class GamesApp extends React.Component {
 
-    constructor(obj) {
-        super();
-        this.state = {
-            slug: obj.match.params.slug,
-        };
-    }
+  constructor(obj) {
+    super();
+    this.state = {
+      slug: obj.match.params.slug,
+    };
+  }
 
-    gameWon() {
-        $.ajax({
-            url: '/api/v1/curricula/games/' + this.state.slug + '/success',
-            context: this,
-            type: "POST",
-            data: {},
-            success: function(data, status, jqXHR) {
-                return;
-            }
-        });
-    }
+  gameWon () {
+    $.ajax({
+      url: '/api/v1/curricula/games/' + this.state.slug + '/success',
+      context: this,
+      type: "POST",
+      data: {},
+      success: function(data, status, jqXHR) {
+        return;
+      }
+    });
+  }
 
-    render() {
-        var Game;
-        switch(this.state.slug) {
-            case 'vector-game':
-                Game = VectorGame
-                break
-            case 'unit-conversion':
-                Game = UnitConversionGame
-                break
-        }
-        return <Game gameWon={this.gameWon.bind(this)}/>;
+  render() {
+    var Game;
+    switch(this.state.slug) {
+      case 'vector-game':
+        Game = VectorGame
+        break
+      case 'unit-conversion':
+        Game = UnitConversionGame
+        break
     }
+    return <Game gameWon={this.gameWon.bind(this)}/>;
+  }
 
 }
 

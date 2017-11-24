@@ -9,21 +9,14 @@ import axios from 'axios'
 import MathJax from 'react-mathjax'
 import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
-import {ScoreBoard} from './games'
+import {ScoreBoard} from './score_board'
+import {GameState} from '../constants'
 
 var math = require('mathjs')
 var Qty = require('js-quantities')
 
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
-
-const GameState = {// seem it can changed from games/GameState
-  NEW: 'NEW',
-  QUESTION: 'QUESTION',
-  PAUSED: 'PAUSED',
-  GAME_OVER: 'GAME OVER',
-  WON: 'WON'
-}
 
 const UNITS = {
   DISTANCE: {
