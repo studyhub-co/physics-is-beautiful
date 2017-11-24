@@ -524,7 +524,7 @@ export class VectorCanvas extends React.Component {
                 buttonClass += ' disabled';
             }
             checkButton = (
-                <div className="button-group" id="vectorButton">
+                <div className={'button-group' + (this.props.answer === null ? '' : ' hidden')} id='vectorButton'>
                     <a className={buttonClass} onClick={this.checkAnswer.bind(this)}>Check</a>
                 </div>
             );
@@ -534,6 +534,7 @@ export class VectorCanvas extends React.Component {
                 <canvas id="c" width="300" height="300" className="lower-canvas" style={canvasStyle}></canvas>
                 <div>{nullBox}</div>
                 <div>{checkButton}</div>
+                {typeof this.props.continueBtn !== 'undefined' ? this.props.continueBtn : ''}
             </div>
         );
     }
