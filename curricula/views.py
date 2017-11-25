@@ -27,7 +27,8 @@ class QuestionView(generic.DetailView):
     model = Question
     template_name = 'curricula/problem_templates/question.html'
 
-def ProcessMath(request):
+
+def ProcessMath(request):  # TODO are we use this? remove?
     submittedState = request.POST
     number_unit = submittedState['number']+submittedState['unit']
     mathquillBox11 = submittedState['mathquillBox11'].replace('\ ', '').strip()
