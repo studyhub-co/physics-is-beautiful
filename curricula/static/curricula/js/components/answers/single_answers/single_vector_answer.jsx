@@ -1,6 +1,5 @@
 import React from 'react'
 import {VectorCanvas, CanvasVector, CanvasText} from '../../../vector_canvas'
-import {ContinueButton} from '../../utils/continue_button'
 
 export class SingleVectorAnswer extends React.Component {
   constructor () {
@@ -49,13 +48,14 @@ export class SingleVectorAnswer extends React.Component {
     if (this.props.question.answer_type == 'NULLABLE_VECTOR') {
       allowNull = true
     }
-    var continueBtn = <ContinueButton continueClick={this.props.continueAction} hidden={this.props.answer === null} />
+    // var continueBtn = <ContinueButton continueClick={this.props.continueAction} hidden={this.props.answer === null} />
     return (
       <div className='bounding-box'>
         <VectorCanvas {...this.props}
-          continueBtn={continueBtn}
+          // continueBtn={continueBtn}
           allowInput={allowInput}
-          manualCheck={true}
+          // manualCheck={true} TODO seems it not used, remove?
+          updateAnswer={this.props.updateAnswer}
           objects={objects}
           allowNull={allowNull}
           clear={this.state.clear}
@@ -63,4 +63,7 @@ export class SingleVectorAnswer extends React.Component {
       </div>
     )
   }
+}
+SingleVectorAnswer.propTypes = {
+  updateAnswer: React.PropTypes.func.isRequired
 }

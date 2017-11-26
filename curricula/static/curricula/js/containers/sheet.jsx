@@ -34,8 +34,8 @@ class LessonCompleteSheet extends React.Component {
   render () {
     return (
       <div className='container problem-sheet'>
-        <LessonComplete lesson={this.props.question.lesson}/>
-        <div></div>
+        <LessonComplete lesson={this.props.question.lesson} />
+        {/* <div></div> */}
       </div>
     )
   }
@@ -43,22 +43,41 @@ class LessonCompleteSheet extends React.Component {
 
 class QuestionSheet extends React.Component {
 
+  constructor () {
+    super()
+    this.updateAnswer = this.updateAnswer.bind(this)
+    this.checkAnswer = this.checkAnswer.bind(this)
+    this.answer = null
+  }
+
+  updateAnswer (answer) {
+    this.answer = answer
+  }
+
+  checkAnswer () {
+    if (this.answer) {
+      this.props.question.submitAnswer(...this.answer)
+    }
+  }
+
   render () {
     return (
       <div className='container problem-sheet'>
         <Prompt message='Changes you made may not be saved.' />
         <Question
           question={this.props.question}
-          answer={this.props.answer}
+          correct_answer={this.props.correct_answer}
           hintClick={this.props.hintClick}
-          continueAction={this.props.continueAction}
+          // continueAction={this.props.continueAction}
+          updateAnswer={this.updateAnswer}
           correct={this.props.question.is_correct}
         />
         <Footer
           progress={this.props.progress}
           correct={this.props.question.is_correct}
-          answer={this.props.answer}
+          correct_answer={this.props.correct_answer}
           continueAction={this.props.continueAction}
+          checkAction={this.checkAnswer}
         />
       </div>
     )

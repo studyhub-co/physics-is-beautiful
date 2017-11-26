@@ -1,7 +1,7 @@
 import React from 'react'
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
-import {Answer} from './answers/right_answers/right_answer'
-import {ContinueButton} from './utils/continue_button'
+import {Answer} from './answers/correct_answers/correct_answer'
+import {CheckContinueButton} from './utils/check_continue_button'
 
 /* global MathJax */
 
@@ -19,7 +19,7 @@ export class Footer extends React.Component {
   render () {
     var checkMarks = ''
     var correctMessage = ''
-    var continueButton = ''
+    // var continueButton = ''
     if (this.props.correct === true) {
       checkMarks = (<span id='correct' className='glyphicon glyphicon-ok-sign pull-right'></span>)
       correctMessage = 'Correct'
@@ -27,21 +27,24 @@ export class Footer extends React.Component {
       checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right'></span>)
       correctMessage = <div>
         <span>Incorrect, the correct answer is: <br /></span>
-        <Answer answer={this.props.answer} />
+        <Answer answer={this.props.correct_answer} />
       </div>
-      continueButton = (
-        <button id='checkButton' type='button' onClick={this.props.continueAction}>
-            Continue
-        </button>
-      )
+      // continueButton = (
+      //   <button id='checkButton' type='button' onClick={this.props.continueAction}>
+      //       Continue
+      //   </button>
+      // )
     }
 
     return (
       <div id='footer'>
         <div id='checkMarks'>{checkMarks}</div>
         <div id='checkContainer'>
-          {continueButton}
-          <ContinueButton continueClick={this.props.continueAction} hidden={!this.props.correct} />
+          {/* {continueButton} */}
+          <CheckContinueButton
+            checkAction={this.props.checkAction}
+            continueAction={this.props.continueAction}
+            isCheck={typeof this.props.correct === 'undefined'} />
         </div>
         <div id='blockRight'>
           <div id='correctMessage'>{correctMessage}</div>
@@ -64,4 +67,8 @@ export class Footer extends React.Component {
       </div>
     )
   }
+}
+Footer.propTypes = {
+  continueAction: React.PropTypes.func.isRequired,
+  checkAction: React.PropTypes.func.isRequired
 }

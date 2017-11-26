@@ -1,5 +1,5 @@
 import React from 'react'
-import {VectorAnswer, TextAnswer, MathematicalExpressionAnswer, DefaultAnswer} from './rights_answers'
+import {VectorAnswer, TextAnswer, MathematicalExpressionAnswer, DefaultAnswer} from './correct_answers'
 import {Text, Expression} from '../../../app'
 import {Vector} from '../../../vector_canvas'
 

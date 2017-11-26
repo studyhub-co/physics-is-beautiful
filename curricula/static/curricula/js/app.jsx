@@ -77,7 +77,6 @@ class CurriculumApp extends React.Component {
 
 }
 
-
 class ModulesApp extends React.Component {
 
     constructor(obj) {
@@ -150,24 +149,17 @@ class ModulesApp extends React.Component {
 
 }
 
-
 export class Expression {
-
-    constructor(representation) {
-        this.expression = representation;
-    }
-
+  constructor (representation) {
+    this.expression = representation
+  }
 }
-
 
 export class Text {
-
-    constructor(text) {
-        this.text = text;
-    }
-
+  constructor (text) {
+    this.text = text
+  }
 }
-
 
 class LessonsApp extends React.Component {
 
@@ -184,7 +176,7 @@ class LessonsApp extends React.Component {
         this.module = null;
         this.question = null;
         this.progress = 0;
-        this.answer = null;
+        this.correct_answer = null;
     }
 
     load() {
@@ -194,7 +186,7 @@ class LessonsApp extends React.Component {
         this.setState({
             question: this.question,
             progress: this.progress,
-            answer: this.answer,
+            correct_answer: this.correct_answer
         });
     }
 
@@ -214,25 +206,24 @@ class LessonsApp extends React.Component {
                 this.progress = data['score'] / data['required_score'] * 100;
                 if (data.was_correct) {
                     this.question.is_correct = true
-                    this.answer = 'correct' // set answer is exit and not null
                     playAudio('correct');
                 } else {
                     this.question.is_correct = false;
                     switch (data.correct_answer.type) {
                         case 'vector':
-                            this.answer = new Vector(
+                            this.correct_answer = new Vector(
                                 data.correct_answer.content.x_component,
                                 data.correct_answer.content.y_component,
                             );
                             break;
                         case 'text':
-                            this.answer = new Text(data.correct_answer.content.text);
+                            this.correct_answer = new Text(data.correct_answer.content.text);
                             break;
                         case 'mathematicalexpression':
-                            this.answer = new Expression(data.correct_answer.content.representation);
+                            this.correct_answer = new Expression(data.correct_answer.content.representation);
                             break;
                         default:
-                            this.answer = data.correct_answer;
+                            this.correct_answer = data.correct_answer;
                             break;
                     }
                     playAudio('incorrect');
@@ -274,7 +265,7 @@ class LessonsApp extends React.Component {
                 data.submitAnswer = this.submitAnswer.bind(this);
                 this.question = data;
                 this.question.hintCollapsed = true;
-                this.answer = null;
+                this.correct_answer = null;
                 this.load();
             }
         });
@@ -284,7 +275,7 @@ class LessonsApp extends React.Component {
         return (
             <Sheet
                 question={this.state.question}
-                answer={this.state.answer}
+                correct_answer={this.state.correct_answer}
                 progress={this.state.progress}
                 continueAction={this.continueAction.bind(this)}
                 hintClick={this.hintClick.bind(this)}
