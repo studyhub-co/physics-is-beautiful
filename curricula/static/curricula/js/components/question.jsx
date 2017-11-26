@@ -1,8 +1,9 @@
 import React from 'react'
-import RMathJax from 'react-mathjax'
-import ReactHover from 'react-hover'
-import {Vector, VectorCanvas, CanvasVector, CanvasText} from '../vector_canvas'
-import {Text, Expression} from '../app'
+// import RMathJax from 'react-mathjax'
+// import ReactHover from 'react-hover'
+// import {Vector, VectorCanvas, CanvasVector, CanvasText} from '../vector_canvas'
+// import {Text, Expression} from '../app'
+import {VectorCanvas, CanvasVector} from '../vector_canvas'
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Hint} from './utils/hint.jsx'
 import { SingleAnswer } from './answers/single_answer'
@@ -78,16 +79,17 @@ export class Question extends React.Component {
       answerField =
         <SingleAnswer
           question={this.props.question}
-          answer={this.props.answer}
-          continueAction={this.props.continueAction}
+          answer={this.props.correct_answer}
+          // continueAction={this.props.continueAction}
+          updateAnswer={this.props.updateAnswer}
           correct={this.props.correct}
         />
     } else if (this.props.question.question_type == 'MULTIPLE_CHOICE') {
       answerField =
         <MultipleAnswer
           question={this.props.question}
-          answer={this.props.answer}
-          continueAction={this.props.continueAction}
+          answer={this.props.correct_answer}
+          // continueAction={this.props.continueAction}
           correct={this.props.correct}
         />
     }
