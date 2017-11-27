@@ -69,27 +69,17 @@ class Text(BaseModel):
 
 
 class MathematicalExpressionMixin:
-
-    def matches(self, obj):
-        if isinstance(obj, Answer):
-            return self.matches(obj.content)
-        elif isinstance(obj, Vector):
-            try:
-                return self.convert_to_vector().matches(obj)
-            except ValueError:
-                return False
+    @staticmethod
+    def match_math(val1, val2):
         # parse latex into sympy and then compare (use `.expand`, `simplify`
         # and `trigsimp` to get to a canonical form)
         try:
-            left_side = process_sympy(self.representation)
-            right_side = process_sympy(obj.representation)
-        except Exception:
+            left_side = process_sympy(val1)
+            right_side = process_sympy(val2)
+        except Exception:  # TODO too broad exeption
             # if we fail to parse it, then it's not valid
             return False
         return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
-
-    def __str__(self):
-        return 'Mathematical Expression: {}'.format(self.representation)
 
 
 class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
@@ -105,6 +95,27 @@ class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
         r'((?P<second_component>-?\d*)?\s*\\hat\{(?P<second_symbol>[xyij])\})?',
         re.I,
     )
+
+    def matches(self, obj):
+        if isinstance(obj, Answer):
+            return self.matches(obj.content)
+        elif isinstance(obj, Vector):
+            try:
+                return self.convert_to_vector().matches(obj)
+            except ValueError:
+                return False
+
+        return self.match_math(self.representation, obj.representation)
+
+        # # parse latex into sympy and then compare (use `.expand`, `simplify`
+        # # and `trigsimp` to get to a canonical form)
+        # try:
+        #     left_side = process_sympy(self.representation)
+        #     right_side = process_sympy(obj.representation)
+        # except Exception:
+        #     # if we fail to parse it, then it's not valid
+        #     return False
+        # return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
 
     def convert_to_vector(self):
         """
@@ -154,9 +165,18 @@ class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
                 return Vector(x_component=x, y_component=y)
         raise ValueError('Unrecognized vector format')
 
+    def __str__(self):
+        return 'Mathematical Expression: {}'.format(self.representation)
 
-# class UnitConversionAnswer(BaseModel, MathematicalExpressionMixin):
-#     representation = models.CharField(max_length=255)
+
+class UnitConversion(BaseModel, MathematicalExpressionMixin):
+    answer = models.CharField(max_length=255)
+    numerator = models.CharField(max_length=255)
+    denominator = models.CharField(max_length=255)
+    show_answer = models.BooleanField(default=True, help_text="Set for showing answer, otherwise show fraction")
+
+    def __str__(self):
+        return 'UnitConversion: {}'.format(self.answer)
 
 
 class Image(BaseModel):

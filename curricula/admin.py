@@ -5,9 +5,9 @@ from django.utils.html import escape
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
 from .models import (
-    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression
+    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression,
+    UnitConversion
 )
-
 
 admin.AdminSite.site_header = 'Physics is Beautiful Admin'
 admin.AdminSite.site_title = admin.AdminSite.site_header
@@ -277,6 +277,34 @@ class MathematicalExpressionAnswerInline(AnswerTabularInline):
         return obj.representation
 
 
+class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['answer', 'numerator', 'denominator', 'show_answer']
+    SPECIAL_MODEL = UnitConversion
+
+    answer = forms.CharField()
+    numerator = forms.CharField()
+    denominator = forms.CharField()
+    show_answer = forms.BooleanField()
+
+    class Meta:
+        model = Answer
+        fields = ['answer', 'numerator', 'denominator', 'show_answer', 'is_correct', 'position']
+
+
+def create_fields_funcs(cls):
+    for field in UnitConversionAnswerForm.FIELDS:
+        setattr(cls, field, {'field': field})
+    return cls
+
+
+@create_fields_funcs
+class UnitConversionAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Unit Conversion Answers'
+    model = Answer
+    form = UnitConversionAnswerForm
+
+
 class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     FIELDS = ['image']
@@ -372,7 +400,7 @@ class QuestionAdmin(NestedModelAdmin):
 
     inlines = [
         VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
-        MathematicalExpressionAnswerInline,
+        MathematicalExpressionAnswerInline, UnitConversionAnswerInline
 
     ]
     fields = [
@@ -386,7 +414,8 @@ class QuestionAdmin(NestedModelAdmin):
         Question.AnswerType.VECTOR: [VectorAnswerInline],
         Question.AnswerType.NULLABLE_VECTOR: [VectorAnswerInline],
         Question.AnswerType.MATHEMATICAL_EXPRESSION: [MathematicalExpressionAnswerInline],
-        Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline]
+        Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline],
+        Question.AnswerType.UNIT_CONVERSION: [UnitConversionAnswerInline]
     }
 
     def get_inline_instances(self, request, obj=None):
