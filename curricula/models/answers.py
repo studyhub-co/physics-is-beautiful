@@ -68,7 +68,31 @@ class Text(BaseModel):
         return 'Text: {}'.format(self.text)
 
 
-class MathematicalExpression(BaseModel):
+class MathematicalExpressionMixin:
+
+    def matches(self, obj):
+        if isinstance(obj, Answer):
+            return self.matches(obj.content)
+        elif isinstance(obj, Vector):
+            try:
+                return self.convert_to_vector().matches(obj)
+            except ValueError:
+                return False
+        # parse latex into sympy and then compare (use `.expand`, `simplify`
+        # and `trigsimp` to get to a canonical form)
+        try:
+            left_side = process_sympy(self.representation)
+            right_side = process_sympy(obj.representation)
+        except Exception:
+            # if we fail to parse it, then it's not valid
+            return False
+        return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
+
+    def __str__(self):
+        return 'Mathematical Expression: {}'.format(self.representation)
+
+
+class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
 
     class Meta:
         db_table = 'curricula_mathematical_expressions'
@@ -130,26 +154,9 @@ class MathematicalExpression(BaseModel):
                 return Vector(x_component=x, y_component=y)
         raise ValueError('Unrecognized vector format')
 
-    def matches(self, obj):
-        if isinstance(obj, Answer):
-            return self.matches(obj.content)
-        elif isinstance(obj, Vector):
-            try:
-                return self.convert_to_vector().matches(obj)
-            except ValueError:
-                return False
-        # parse latex into sympy and then compare (use `.expand`, `simplify`
-        # and `trigsimp` to get to a canonical form)
-        try:
-            left_side = process_sympy(self.representation)
-            right_side = process_sympy(obj.representation)
-        except Exception:
-            # if we fail to parse it, then it's not valid
-            return False
-        return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
 
-    def __str__(self):
-        return 'Mathematical Expression: {}'.format(self.representation)
+# class UnitConversionAnswer(BaseModel, MathematicalExpressionMixin):
+#     representation = models.CharField(max_length=255)
 
 
 class Image(BaseModel):

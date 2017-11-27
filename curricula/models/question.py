@@ -27,7 +27,7 @@ class Question(BaseModel):
         IMAGE = 40
         MATHEMATICAL_EXPRESSION = 50
         VECTOR_COMPONENTS = 60
-        UNIT_CONVERSION = 80
+        UNIT_CONVERSION = 70
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
