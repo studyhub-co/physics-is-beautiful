@@ -32,6 +32,11 @@ class Question(BaseModel):
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
     text = models.CharField(max_length=255, db_index=True)
+    additional_text = models.CharField(max_length=255,
+                                       db_index=True,
+                                       null=True,
+                                       blank=True,
+                                       help_text="Enter initial value for unit conversion type")
     hint = models.CharField(max_length=1024, blank=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)

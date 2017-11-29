@@ -55,7 +55,7 @@ Object.keys(UNITS).forEach(function (key) {
   INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
 })
 
-class MathquillBox extends React.Component {
+export class MathquillBox extends React.Component {
   constructor (props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
@@ -98,7 +98,7 @@ MathquillBox.propTypes = {
   column: React.PropTypes.number.isRequired
 }
 
-class ConversionTable extends React.Component {
+export class ConversionTable extends React.Component {
   constructor (props) {
     super(props)
     this.onMathQuillChange = this.onMathQuillChange.bind(this)
@@ -198,7 +198,7 @@ ConversionTable.propTypes = {
   unit: React.PropTypes.string
 }
 
-class UnitConversionCanvas extends React.Component {
+export class UnitConversionBase extends React.Component {
   constructor (props) {
     super(props)
 
@@ -207,33 +207,15 @@ class UnitConversionCanvas extends React.Component {
       numColumns = 0
     }
 
-    this.state = {
-      numColumns: numColumns,
-      strikethroughD: false,
-      strikethroughN: false
-    }
-    this.addColumn = this.addColumn.bind(this)
-    this.removeColumn = this.removeColumn.bind(this)
-    this.submitQuestion = this.submitQuestion.bind(this)
     this.onMathQuillChange = this.onMathQuillChange.bind(this)
     this.onResultChange = this.onResultChange.bind(this)
     this.resetStrikeAnswers = this.resetStrikeAnswers.bind(this)
     this.reDrawStrikes = this.reDrawStrikes.bind(this)
-  }
 
-  componentDidMount () {
-    var MQ = MathQuill.getInterface(2)
-    if (this.props.level === 5) {
-      this.setState({
-        answersSteps: []
-      })
-    } else {
-      this.setState({
-        answersSteps: [[ // first column set by default
-          {'data': '', 'box': MQ(document.getElementById('11'))},
-          {'data': '', 'box': MQ(document.getElementById('21'))}
-        ]]
-      })
+    this.state = {
+      numColumns: numColumns,
+      strikethroughD: false,
+      strikethroughN: false
     }
   }
 
@@ -262,77 +244,6 @@ class UnitConversionCanvas extends React.Component {
         {'data': '', 'box': MQ(document.getElementById('12'))}
       ]] // first column set by default
     })
-  }
-
-  addColumn () {
-    var MQ = MathQuill.getInterface(2)
-    var newColumns = this.state.numColumns + 1
-
-    this.setState({
-      numColumns: newColumns
-    }, function () { // need wait mount mathquill span!
-      this.setState({
-        answersSteps: [...this.state.answersSteps, [
-          { 'data': '', 'box': MQ(document.getElementById('1' + newColumns)) },
-          { 'data': '', 'box': MQ(document.getElementById('2' + newColumns)) }]
-        ]
-      })
-    })
-  }
-  removeColumn () {
-    this.setState({
-      numColumns: this.state.numColumns - 1,
-      answersSteps: this.state.answersSteps.slice(0, -1)
-    }, function () {
-      this.reDrawStrikes()
-    })
-  }
-
-  resetStrikeAnswers () {
-    var answers = this.state.answersSteps
-
-    this.state.strikethroughN = false
-    this.state.strikethroughD = false
-    var resetStrike = function (answer) {
-      var tmpData = answer['data']
-      if (!tmpData) return
-
-      var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1') // replace if with whitespaces
-
-      if (resetTxt !== tmpData) { // replace only if changed
-        answer['box'].fromJsCall = true
-        answer['data'] = resetTxt
-        answer['box'].latex(resetTxt)
-        answer['box'].fromJsCall = false
-      }
-    }
-
-    // reset all strikethrough after update any value
-    for (var column = 0; column < answers.length; column++) { // walk through columns
-      resetStrike(answers[column][0])
-      resetStrike(answers[column][1])
-    }
-    return answers
-  }
-
-  parseToValueUnit (input) {
-    // trim backslash and spaces
-    input = input.replace(/^[\\\s]+|[\\\s]+$/gm, '')
-
-    var unitsArr = INPUT_UNITS
-    // check for longer unit name firstly
-    unitsArr.sort(function (a, b) {
-      return b.length - a.length
-    })
-
-    for (var i = 0; i < unitsArr.length; i++) {
-      var unit = unitsArr[i]
-      var foundIndex = input.indexOf(unit, input.length - unit.length)
-      if (foundIndex !== -1) {
-        return [input.substring(0, foundIndex).replace(/^[\\\s]+|[\\\s]+$/gm, ''), unit]
-      }
-    }
-    return null
   }
 
   reDrawStrikes () {
@@ -457,15 +368,16 @@ class UnitConversionCanvas extends React.Component {
     })
   }
 
-  // result change
+  // result answer change
   onResultChange (data, row, col, mathquillObj) {
     this.setState({
       answer: {'data': data, 'box': mathquillObj}
     })
   }
 
-  clearDataText (tmpData) { // clear data before js-q parse
-    // remove  strikethrough
+  // clear data before js-q parse
+  // remove  strikethrough
+  clearDataText (tmpData) {
     tmpData = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1')
     // remove backslash with whitespace
     tmpData = tmpData.replace(/\\ /g, ' ')
@@ -525,6 +437,107 @@ class UnitConversionCanvas extends React.Component {
     }
 
     return '' + roundX(isf, decPlaces) === '' + roundX(asf, decPlaces)
+  }
+
+  resetStrikeAnswers () {
+    var answers = this.state.answersSteps
+
+    this.state.strikethroughN = false
+    this.state.strikethroughD = false
+    var resetStrike = function (answer) {
+      var tmpData = answer['data']
+      if (!tmpData) return
+
+      var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1') // replace if with whitespaces
+
+      if (resetTxt !== tmpData) { // replace only if changed
+        answer['box'].fromJsCall = true
+        answer['data'] = resetTxt
+        answer['box'].latex(resetTxt)
+        answer['box'].fromJsCall = false
+      }
+    }
+
+    // reset all strikethrough after update any value
+    for (var column = 0; column < answers.length; column++) { // walk through columns
+      resetStrike(answers[column][0])
+      resetStrike(answers[column][1])
+    }
+    return answers
+  }
+
+  parseToValueUnit (input) {
+    // trim backslash and spaces
+    input = input.replace(/^[\\\s]+|[\\\s]+$/gm, '')
+
+    var unitsArr = INPUT_UNITS
+    // check for longer unit name firstly
+    unitsArr.sort(function (a, b) {
+      return b.length - a.length
+    })
+
+    for (var i = 0; i < unitsArr.length; i++) {
+      var unit = unitsArr[i]
+      var foundIndex = input.indexOf(unit, input.length - unit.length)
+      if (foundIndex !== -1) {
+        return [input.substring(0, foundIndex).replace(/^[\\\s]+|[\\\s]+$/gm, ''), unit]
+      }
+    }
+    return null
+  }
+}
+UnitConversionBase.propTypes = {
+  level: React.PropTypes.number,
+  unit: React.PropTypes.string
+}
+
+export class UnitConversionCanvas extends UnitConversionBase {
+  constructor (props) {
+    super(props)
+
+    this.addColumn = this.addColumn.bind(this)
+    this.removeColumn = this.removeColumn.bind(this)
+    this.submitQuestion = this.submitQuestion.bind(this)
+  }
+
+  componentDidMount () {
+    var MQ = MathQuill.getInterface(2)
+    if (this.props.level === 5) {
+      this.setState({
+        answersSteps: []
+      })
+    } else {
+      this.setState({
+        answersSteps: [[ // first column set by default
+          {'data': '', 'box': MQ(document.getElementById('11'))},
+          {'data': '', 'box': MQ(document.getElementById('21'))}
+        ]]
+      })
+    }
+  }
+
+  addColumn () {
+    var MQ = MathQuill.getInterface(2)
+    var newColumns = this.state.numColumns + 1
+
+    this.setState({
+      numColumns: newColumns
+    }, function () { // need wait mount mathquill span!
+      this.setState({
+        answersSteps: [...this.state.answersSteps, [
+          { 'data': '', 'box': MQ(document.getElementById('1' + newColumns)) },
+          { 'data': '', 'box': MQ(document.getElementById('2' + newColumns)) }]
+        ]
+      })
+    })
+  }
+  removeColumn () {
+    this.setState({
+      numColumns: this.state.numColumns - 1,
+      answersSteps: this.state.answersSteps.slice(0, -1)
+    }, function () {
+      this.reDrawStrikes()
+    })
   }
 
   submitQuestion () {
