@@ -5,7 +5,7 @@ from expander import ExpanderSerializerMixin
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
-    Image, MathematicalExpression, Game
+    Image, MathematicalExpression, UnitConversion
 )
 
 
@@ -201,14 +201,6 @@ class LessonSerializer(BaseSerializer):
 
 
 class QuestionSerializer(BaseSerializer):
-
-    class Meta:
-        model = Question
-        fields = [
-            'uuid', 'text', 'hint', 'image', 'vectors', 'question_type', 'answer_type', 'choices',
-            'lesson'
-        ]
-
     question_type = serializers.ChoiceField(
         source='question_type_name', choices=Question.QuestionType.choices_inverse
     )
@@ -216,12 +208,42 @@ class QuestionSerializer(BaseSerializer):
         source='answer_type_name', choices=Question.AnswerType.choices_inverse
     )
     choices = serializers.SerializerMethodField()
+    unit_conversion = serializers.SerializerMethodField()
     lesson = LessonSerializer()
     vectors = VectorSerializer(many=True)
+
+    def get_unit_conversion(self, obj):
+        if obj.answer_type == Question.AnswerType.UNIT_CONVERSION:
+            try:
+                answer = obj.answers.all()[0]
+            except IndexError:
+                return None
+
+            if type(answer.content) == UnitConversion:
+                if answer.content.show_answer:  # answer option
+                    return {
+                        'answer': answer.content.answer,
+                        'show_answer': answer.content.show_answer,
+                    }
+                else:
+                    return {
+                        'numerator': answer.content.numerator,
+                        'denominator': answer.content.denominator,
+                        'show_answer': answer.content.show_answer,
+                    }
+
+        return None
 
     def get_choices(self, obj):
         if obj.question_type == Question.QuestionType.MULTIPLE_CHOICE:
             return AnswerSerializer(obj.answers, many=True).data
+
+    class Meta:
+        model = Question
+        fields = [
+            'uuid', 'text', 'additional_text', 'hint', 'image', 'vectors', 'question_type', 'answer_type', 'choices',
+            'lesson', 'unit_conversion'
+        ]
 
 
 class ProfileUserField(serializers.RelatedField):

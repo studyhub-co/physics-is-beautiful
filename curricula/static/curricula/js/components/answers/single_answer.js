@@ -1,6 +1,7 @@
 import React from 'react'
 import {SingleVectorAnswer} from './single_answers/single_vector_answer'
 import {SingleMathematicalExpressionAnswer} from './single_answers/single_math_expression_answer'
+import {SingleUnitConversionAnswer} from './single_answers/single_unit_conversion_answer'
 
 export class SingleAnswer extends React.Component {
   render () {
@@ -16,6 +17,9 @@ export class SingleAnswer extends React.Component {
         options['yHat'] = true
       case 'MATHEMATICAL_EXPRESSION':
         Component = SingleMathematicalExpressionAnswer
+        break
+      case 'UNIT_CONVERSION':
+        Component = SingleUnitConversionAnswer
         break
       default:
         return (

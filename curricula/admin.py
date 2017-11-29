@@ -30,6 +30,19 @@ def link_to_field(field_name):
     return link
 
 
+def create_fields_funcs(field_cls):
+    """
+    decorator to generate NestedTabularInline functions
+    :param field_cls:
+    :return:
+    """
+    def wrapped_decorator(cls):
+        for field in field_cls.FIELDS:
+            setattr(cls, field, {'field': field})
+        return cls
+    return wrapped_decorator
+
+
 _link_to_unit = link_to_obj('Unit')
 
 
@@ -216,23 +229,24 @@ class VectorQuestionsInline(NestedTabularInline):
         return obj.vector.y_component
 
 
+@create_fields_funcs(VectorAnswerForm)
 class VectorAnswerInline(AnswerTabularInline):
 
     verbose_name_plural = 'Edit Vector Answers'
     model = Answer
     form = VectorAnswerForm
 
-    def magnitude(self, obj):
-        return obj.magnitude
-
-    def angle(self, obj):
-        return obj.angle
-
-    def x_component(self, obj):
-        return obj.x_component
-
-    def y_component(self, obj):
-        return obj.y_component
+    # def magnitude(self, obj):
+    #     return obj.magnitude
+    #
+    # def angle(self, obj):
+    #     return obj.angle
+    #
+    # def x_component(self, obj):
+    #     return obj.x_component
+    #
+    # def y_component(self, obj):
+    #     return obj.y_component
 
 
 class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
@@ -282,23 +296,17 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     FIELDS = ['answer', 'numerator', 'denominator', 'show_answer']
     SPECIAL_MODEL = UnitConversion
 
-    answer = forms.CharField()
-    numerator = forms.CharField()
-    denominator = forms.CharField()
-    show_answer = forms.BooleanField()
+    answer = forms.CharField(help_text=UnitConversion._meta.get_field('answer').help_text)
+    numerator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('numerator').help_text)
+    denominator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('denominator').help_text)
+    show_answer = forms.BooleanField(help_text=UnitConversion._meta.get_field('show_answer').help_text)
 
     class Meta:
         model = Answer
         fields = ['answer', 'numerator', 'denominator', 'show_answer', 'is_correct', 'position']
 
 
-def create_fields_funcs(cls):
-    for field in UnitConversionAnswerForm.FIELDS:
-        setattr(cls, field, {'field': field})
-    return cls
-
-
-@create_fields_funcs
+@create_fields_funcs(UnitConversionAnswerForm)
 class UnitConversionAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Unit Conversion Answers'
     model = Answer
@@ -404,7 +412,7 @@ class QuestionAdmin(NestedModelAdmin):
 
     ]
     fields = [
-        'lesson', _backlink_to_lesson, 'text', 'hint', 'published_on', 'image', 'question_type',
+        'lesson', _backlink_to_lesson, 'text', 'additional_text', 'hint', 'published_on', 'image', 'question_type',
         'answer_type', 'position'
     ]
     readonly_fields = [_backlink_to_lesson, 'position']

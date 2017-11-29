@@ -76,7 +76,7 @@ class MathematicalExpressionMixin:
         try:
             left_side = process_sympy(val1)
             right_side = process_sympy(val2)
-        except Exception:  # TODO too broad exeption
+        except Exception:  # TODO too broad exception
             # if we fail to parse it, then it's not valid
             return False
         return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
@@ -170,10 +170,13 @@ class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
 
 
 class UnitConversion(BaseModel, MathematicalExpressionMixin):
-    answer = models.CharField(max_length=255)
-    numerator = models.CharField(max_length=255)
-    denominator = models.CharField(max_length=255)
-    show_answer = models.BooleanField(default=True, help_text="Set for showing answer, otherwise show fraction")
+    answer = models.CharField(max_length=100, help_text="Correct answer with unit: m, s, kg, m/s")
+    numerator = models.CharField(blank=True, null=True,
+                                 max_length=100, help_text="Numerator value with unit: m, s, kg, m/s")
+    denominator = models.CharField(blank=True, null=True,
+                                   max_length=100, help_text="Denominator value with unit: m, s, kg, m/s")
+    show_answer = models.BooleanField(default=True,
+                                      help_text="Set for showing answer, otherwise show fraction")
 
     def __str__(self):
         return 'UnitConversion: {}'.format(self.answer)
