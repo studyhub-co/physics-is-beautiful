@@ -358,7 +358,7 @@ export class UnitConversionBase extends React.Component {
     var answers = this.state.answersSteps
     answers[col - 1][row - 1] = {
       'data': data,
-      'splitData': this.parseToValueUnit(this.clearDataText(data)),
+      'splitData': this.constructor.parseToValueUnit(this.clearDataText(data)),
       'box': mathquillObj}
 
     this.setState({
@@ -386,7 +386,7 @@ export class UnitConversionBase extends React.Component {
     tmpData = tmpData.replace(/\\cdot/, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
 
-    var parsedToValUnit = this.parseToValueUnit(tmpData)
+    var parsedToValUnit = this.constructor.parseToValueUnit(tmpData)
 
     if (parsedToValUnit && parsedToValUnit[0]) {
       var parser = math.parser()
@@ -466,7 +466,7 @@ export class UnitConversionBase extends React.Component {
     return answers
   }
 
-  parseToValueUnit (input) {
+  static parseToValueUnit (input) {
     // trim backslash and spaces
     input = input.replace(/^[\\\s]+|[\\\s]+$/gm, '')
 
@@ -649,7 +649,7 @@ export class UnitConversionCanvas extends UnitConversionBase {
         }
         // compare answer and remain unit
         if (this.state.answer) {
-          var answerText = this.parseToValueUnit(this.clearDataText(this.state.answer['data']))
+          var answerText = this.constructor.parseToValueUnit(this.clearDataText(this.state.answer['data']))
 
           if (answerText && typeof answerText[1] !== 'undefined' && answerText[1] === remainUnit) {
             incompleteConversion = false
