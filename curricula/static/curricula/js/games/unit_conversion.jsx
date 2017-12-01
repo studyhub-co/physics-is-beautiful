@@ -67,10 +67,12 @@ export class MathquillBox extends React.Component {
       autoCommands: 'class',
       autoOperatorNames: 'pi', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
       handlers: {
-        edit: () => {
+        edit: (mathField) => {
           // if change by API (not user), then not fire
-          if (this.answer.fromJsCall) { return }
-          this.handleChange(this.answer.latex(), this.props.row, this.props.column, this.answer)
+          if (mathField.data.fromJsCall) { return }
+          this.handleChange(mathField.latex(), this.props.row, this.props.column, mathField)
+          // if (this.answer.fromJsCall) { return }
+          // this.handleChange(this.answer.latex(), this.props.row, this.props.column, this.answer)
         }
       }
     })
@@ -219,26 +221,33 @@ export class UnitConversionBase extends React.Component {
     }
   }
 
+  setLatexWoFireEvent (box, text) {
+    box.data.fromJsCall = true
+    box.latex(text)
+    box.data.fromJsCall = false
+  }
+
   reset () {
     var MQ = MathQuill.getInterface(2)
 
-    var resetBox = function (id) {
+    var resetBox = function (id, setLatexWoFireEvent) {
       var span = document.getElementById(id)
       if (!span) return
       var mq = MQ(span)
-      mq.fromJsCall = true
-      mq.latex('')
-      mq.fromJsCall = false
+      setLatexWoFireEvent(mq, '')
       span.classList.remove('red-border', 'green-border')
     }
 
+    var setLatexWoFireEvent = this.setLatexWoFireEvent
     var ids = ['11', '21', '15']
     ids.forEach(function (item, i, arr) {
-      resetBox(item)
+      resetBox(item, setLatexWoFireEvent)
     })
 
     this.setState({
       numColumns: 1,
+      strikethroughD: false,
+      strikethroughN: false,
       answersSteps: [[
         {'data': '', 'box': MQ(document.getElementById('11'))},
         {'data': '', 'box': MQ(document.getElementById('12'))}
@@ -299,9 +308,7 @@ export class UnitConversionBase extends React.Component {
 
                   answers[column][0]['data'] = newLatexN // data will not fill, because edit event not fire onMathQuillChange
 
-                  numeratorBox.fromJsCall = true
-                  numeratorBox.latex(newLatexN)
-                  numeratorBox.fromJsCall = false
+                  this.setLatexWoFireEvent(numeratorBox, newLatexN)
 
                   // remove numerator unit from uncrossed out
                   toRemoveI = uncrossedUnits['nums'].indexOf(splitNumerator[1])
@@ -318,9 +325,7 @@ export class UnitConversionBase extends React.Component {
 
                   answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
 
-                  denominatorBox.fromJsCall = true
-                  denominatorBox.latex(newLatexDN)
-                  denominatorBox.fromJsCall = false
+                  this.setLatexWoFireEvent(denominatorBox, newLatexDN)
 
                   // remove denominator unit from uncrossed out
                   toRemoveI = uncrossedUnits['denoms'].indexOf(splitNumerator[1])
@@ -356,9 +361,7 @@ export class UnitConversionBase extends React.Component {
       })
       if (tmpData !== data) {
         data = tmpData
-        mathquillObj.fromJsCall = true
-        mathquillObj.latex(data)
-        mathquillObj.fromJsCall = false
+        this.setLatexWoFireEvent(mathquillObj, data)
       }
     }
 
@@ -452,24 +455,24 @@ export class UnitConversionBase extends React.Component {
 
     this.state.strikethroughN = false
     this.state.strikethroughD = false
-    var resetStrike = function (answer) {
+    var resetStrike = function (answer, setLatexWoFireEvent) {
       var tmpData = answer['data']
       if (!tmpData) return
 
       var resetTxt = tmpData.replace(/\\class{strikethrough}{(\S+)}/, '$1') // replace if with whitespaces
 
       if (resetTxt !== tmpData) { // replace only if changed
-        answer['box'].fromJsCall = true
         answer['data'] = resetTxt
-        answer['box'].latex(resetTxt)
-        answer['box'].fromJsCall = false
+        setLatexWoFireEvent(answer['box'], resetTxt)
       }
     }
 
+    var setLatexWoFireEvent = this.setLatexWoFireEvent
+
     // reset all strikethrough after update any value
     for (var column = 0; column < answers.length; column++) { // walk through columns
-      resetStrike(answers[column][0])
-      resetStrike(answers[column][1])
+      resetStrike(answers[column][0], setLatexWoFireEvent)
+      resetStrike(answers[column][1], setLatexWoFireEvent)
     }
     return answers
   }

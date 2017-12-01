@@ -299,7 +299,7 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     answer = forms.CharField(help_text=UnitConversion._meta.get_field('answer').help_text)
     numerator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('numerator').help_text)
     denominator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('denominator').help_text)
-    show_answer = forms.BooleanField(help_text=UnitConversion._meta.get_field('show_answer').help_text)
+    show_answer = forms.BooleanField(required=False, help_text=UnitConversion._meta.get_field('show_answer').help_text)
 
     class Meta:
         model = Answer

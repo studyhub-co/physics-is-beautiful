@@ -4,29 +4,36 @@ import {UnitConversionBase, ConversionTable, MathquillBox} from '../../../games/
 /* global MathQuill */
 
 class UnitConversionCanvas extends UnitConversionBase {
-
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
-    if (this.props.show_answer) {
-      // fill right hand side
+    if (this.props.show_answer) { // fill right hand side
       var answerBox = MQ(document.getElementById('15'))
-      answerBox.fromJsCall = true
-      answerBox.latex(this.props.answer)
-      answerBox.fromJsCall = true
+
       this.setState({
-        answer: { 'data': this.props.answer, 'box': MQ(document.getElementById('15')) },
+        answer: { 'data': this.props.answer, 'box': answerBox },
         answersSteps: [[
           {'data': '', 'box': MQ(document.getElementById('11'))},
           {'data': '', 'box': MQ(document.getElementById('21'))}
         ]] // column set by default]
+      }, function () {
+        this.setLatexWoFireEvent(answerBox, this.props.answer)
       })
-    } else {
-      // fill left hand side
+    } else { // fill left hand side
+      var numBox, denumBox
+      numBox = MQ(document.getElementById('11'))
+      denumBox = MQ(document.getElementById('21'))
+
       this.setState({
         answersSteps: [[
-          {'data': this.props.numerator, 'box': MQ(document.getElementById('11'))},
-          {'data': this.props.numerator, 'box': MQ(document.getElementById('21'))}
+          {'data': this.props.numerator, 'box': numBox},
+          {'data': this.props.denominator, 'box': denumBox}
         ]]
+      }, function () {
+        // this.setLatexWoFireEvent(numBox, this.props.numerator)
+        // this.setLatexWoFireEvent(denumBox, this.props.denominator)
+        // this.reDrawStrikes()
+        numBox.latex(this.props.numerator)
+        denumBox.latex(this.props.denominator)
       })
     }
   }
@@ -43,15 +50,11 @@ class UnitConversionCanvas extends UnitConversionBase {
       }
 
       if (typeof this.state.answer !== 'undefined' && emptyLeftSide) {
-        mathquillObj.fromJsCall = true
-        mathquillObj.latex(this.state.answer['data']) // disable editing answer
-        mathquillObj.fromJsCall = false
+        this.setLatexWoFireEvent(mathquillObj, this.state.answer['data']) // disable editing answer
       } else {
-        mathquillObj.fromJsCall = true
-        this.calculateAnswer()
-        mathquillObj.fromJsCall = false
+        this.setLatexWoFireEvent(mathquillObj, this.calculateAnswer()) // recalculate answer from lefside
       }
-    } else {
+    } else { // show num & denum
       this.setState({
         answer: {'data': data, 'box': mathquillObj}
       })
@@ -89,14 +92,25 @@ class UnitConversionCanvas extends UnitConversionBase {
 
   onMathQuillChange (data, row, col, mathquillObj) {
     super.onMathQuillChange(data, row, col, mathquillObj)
-
     var MQ = MathQuill.getInterface(2)
-
     if (this.props.show_answer) { // automatically fill right hand box
       var answerBox = MQ(document.getElementById('15'))
-      answerBox.fromJsCall = true
-      answerBox.latex(this.calculateAnswer())
-      answerBox.fromJsCall = false
+      this.setLatexWoFireEvent(answerBox, this.calculateAnswer())
+    } else { // disable left side editing
+      var numeratorBox = MQ(document.getElementById('11'))
+      var denominatorBox = MQ(document.getElementById('21'))
+      this.setLatexWoFireEvent(numeratorBox, this.props.numerator)
+      this.setLatexWoFireEvent(denominatorBox, this.props.denominator)
+      var answerSteps = this.state.answersSteps
+      answerSteps[0][0]['data'] = this.props.numerator
+      answerSteps[0][1]['data'] = this.props.denominator
+      answerSteps[0][0]['splitData'] = this.constructor.parseToValueUnit(this.props.numerator)
+      answerSteps[0][1]['splitData'] = this.constructor.parseToValueUnit(this.props.denominator)
+      this.setState({
+        answerSteps: answerSteps
+      }, function () {
+        this.reDrawStrikes()
+      })
     }
   }
 
@@ -154,10 +168,6 @@ export class SingleUnitConversionAnswer extends React.Component {
   constructor () {
     super()
     this.questionId = null
-  }
-
-  componentDidMount () {
-    //console.log(this.props);
   }
 
   reset () {
