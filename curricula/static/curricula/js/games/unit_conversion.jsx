@@ -263,6 +263,8 @@ export class UnitConversionBase extends React.Component {
       }
     }
 
+    var alreadyStrikeDenumIndex = []
+
     // strikethrough units
     numeratorsC:
     for (var column = -1; column < answers.length; column++) { // walk through numerators
@@ -283,45 +285,51 @@ export class UnitConversionBase extends React.Component {
           }
           if (splitDenominator) {
             // numeratorBoxes boxes
-
             if (splitNumerator[1] === splitDenominator[1]) { // second one in "1.23 cm"
-              var toRemoveI
-              // strikethrough Numerator
-              if (column === -1) {
-                this.setState({strikethroughN: true})
-              } else {
-                var numeratorBox = answers[column][0]['box']
-                var newLatexN = answers[column][0]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
+              if (alreadyStrikeDenumIndex.indexOf(column2) === -1) { // if denum not striked already
+                alreadyStrikeDenumIndex.push(column2)
 
-                numeratorBox.fromJsCall = true
-                answers[column][0]['data'] = newLatexN // data will not fill, because edit event not fire onMathQuillChange
-                numeratorBox.latex(newLatexN)
-                numeratorBox.fromJsCall = false
+                var toRemoveI
+                // strikethrough Numerator
+                if (column === -1) {
+                  this.setState({strikethroughN: true})
+                } else {
+                  var numeratorBox = answers[column][0]['box']
+                  var newLatexN = answers[column][0]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
 
-                // remove numerator unit from uncrossed out
-                toRemoveI = uncrossedUnits['nums'].indexOf(splitNumerator[1])
-                if (toRemoveI !== -1) {
-                  uncrossedUnits['nums'].splice(toRemoveI, 1)
+                  answers[column][0]['data'] = newLatexN // data will not fill, because edit event not fire onMathQuillChange
+
+                  numeratorBox.fromJsCall = true
+                  numeratorBox.latex(newLatexN)
+                  numeratorBox.fromJsCall = false
+
+                  // remove numerator unit from uncrossed out
+                  toRemoveI = uncrossedUnits['nums'].indexOf(splitNumerator[1])
+                  if (toRemoveI !== -1) {
+                    uncrossedUnits['nums'].splice(toRemoveI, 1)
+                  }
                 }
-              }
-              if (column2 === -1) {
-                this.setState({strikethroughD: true})
-              } else {
-                // strikethrough denominator
-                var denominatorBox = answers[column2][1]['box']
-                var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
-                answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
-                denominatorBox.fromJsCall = true
-                denominatorBox.latex(newLatexDN)
-                denominatorBox.fromJsCall = false
+                if (column2 === -1) {
+                  this.setState({strikethroughD: true})
+                } else {
+                  // strikethrough denominator
+                  var denominatorBox = answers[column2][1]['box']
+                  var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
 
-                // remove denominator unit from uncrossed out
-                toRemoveI = uncrossedUnits['denoms'].indexOf(splitNumerator[1])
-                if (toRemoveI !== -1) {
-                  uncrossedUnits['denoms'].splice(toRemoveI, 1)
+                  answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
+
+                  denominatorBox.fromJsCall = true
+                  denominatorBox.latex(newLatexDN)
+                  denominatorBox.fromJsCall = false
+
+                  // remove denominator unit from uncrossed out
+                  toRemoveI = uncrossedUnits['denoms'].indexOf(splitNumerator[1])
+                  if (toRemoveI !== -1) {
+                    uncrossedUnits['denoms'].splice(toRemoveI, 1)
+                  }
+
+                  continue numeratorsC // need for stop search 2nd and more denominator with current unit
                 }
-
-                continue numeratorsC // need for stop search 2nd and more denominator with current unit
               }
             }
           }
