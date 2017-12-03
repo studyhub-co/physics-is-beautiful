@@ -18,42 +18,97 @@ var Qty = require('js-quantities')
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
-const UNITS = {
-  DISTANCE: {
-    'mm': 'millimeters',
-    'cm': 'centimeters',
-    'km': 'kilometers',
-    'ft': 'feet',
-    'mi': 'miles'
-  },
-  TIME: {
-    'ms': 'milliseconds',
-    'min': 'minutes',
-    'hr': 'hours',
-    'd': 'days',
-    'wk': 'weeks'
-  },
-  MASS: {
-    'mg': 'milligrams',
-    'g': 'grams',
-    'oz': 'ounces'
-  },
-  SPEED: {
-    'km/s': 'kilometers/second',
-    'mi/s': 'miles/second',
-    'ft/s': 'feet/second',
-    'km/hr': 'kilometers/hour',
-    'mi/hr': 'miles/hour',
-    'm/hr': 'meters/hour',
-    'ft/hr': 'feet/hour',
-    'm/min': 'meters/minute',
-    'ft/min': 'feet/hour'
+class UNITS {
+  static get DISTANCE () {
+    return {
+      'mm': 'millimeters',
+      'cm': 'centimeters',
+      'km': 'kilometers',
+      'ft': 'feet',
+      'mi': 'miles'
+    }
+  }
+
+  static get TIME () {
+    return {
+      'ms': 'milliseconds',
+      'min': 'minutes',
+      'hr': 'hours',
+      'd': 'days',
+      'wk': 'weeks'
+    }
+  }
+
+  static get SPEED () {
+    var distanceO = UNITS.DISTANCE
+    distanceO['m'] = 'meters'
+    var timeO = UNITS.TIME
+    timeO['s'] = 'seconds'
+
+    var speedO = {}
+    Object.keys(distanceO).forEach(function (keyDist) {
+      Object.keys(timeO).forEach(function (keyTime) {
+        if (keyDist !== 'm' && keyTime !== 's') { // exclude SI unit
+          speedO[keyDist + '/' + keyTime] = distanceO[keyDist] + '/' + timeO[keyTime]
+        }
+      })
+    })
+
+    return speedO
   }
 }
+
 var INPUT_UNITS = ['s', 'm', 'kg']
-Object.keys(UNITS).forEach(function (key) {
-  INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
-})
+Object.getOwnPropertyNames(UNITS)
+  .map(key => [key, Object.getOwnPropertyDescriptor(UNITS, key)])
+  .filter(([key, descriptor]) => typeof descriptor.get === 'function')
+  .map(([key]) => key).forEach(function (key) {
+    INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
+  })
+
+// const UNITS = {
+//   DISTANCE: {
+//     'mm': 'millimeters',
+//     'cm': 'centimeters',
+//     'km': 'kilometers',
+//     'ft': 'feet',
+//     'mi': 'miles'
+//   },
+//   TIME: {
+//     'ms': 'milliseconds',
+//     'min': 'minutes',
+//     'hr': 'hours',
+//     'd': 'days',
+//     'wk': 'weeks'
+//   },
+//   MASS: {
+//     'mg': 'milligrams',
+//     'g': 'grams',
+//     'oz': 'ounces'
+//   },
+//   SPEED: {
+//     'km/s': 'kilometers/second',
+//     'mi/s': 'miles/second',
+//     'ft/s': 'feet/second',
+//     'km/hr': 'kilometers/hour',
+//     'mi/hr': 'miles/hour',
+//     'm/hr': 'meters/hour',
+//     'ft/hr': 'feet/hour',
+//     'm/min': 'meters/minute',
+//     'ft/min': 'feet/hour'
+//   }
+// }
+
+// Object.keys(UNITS).forEach(function (key) {
+//   INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
+// })
+
+// Limit browser support:
+// Object.entries(Object.getOwnPropertyDescriptors(UNITS))
+//   .filter(([key, descriptor]) => typeof descriptor.get === 'function')
+//   .map(([key]) => key).forEach(function (key) {
+//     INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
+//   })
 
 export class MathquillBox extends React.Component {
   constructor (props) {
