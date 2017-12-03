@@ -59,6 +59,18 @@ class UnitConversionCanvas extends UnitConversionBase {
         answer: {'data': data, 'box': mathquillObj}
       })
     }
+
+    var answerSteps = this.state.answersSteps
+    this.props.updateAnswer([
+      this.props.uuid,
+      {
+        unit_conversion: {
+          answer: this.state.answer['data'],
+          numerator: answerSteps[0][0]['data'],
+          denominator: answerSteps[0][1]['data']
+        }
+      }
+    ])
   }
 
   calculateAnswer () {
@@ -100,8 +112,6 @@ class UnitConversionCanvas extends UnitConversionBase {
     if (!this.state.strikethroughD && this.props.unit.split('/').length > 1) {
       denomUnits.push(this.props.unit.split('/')[1])
     }
-
-    console.log(this.state.uncrossedUnits);
 
     var numSplitData = this.state.answersSteps[0][0].splitData
     // test if it simple Number
@@ -152,6 +162,9 @@ class UnitConversionCanvas extends UnitConversionBase {
   onMathQuillChange (data, row, col, mathquillObj) {
     super.onMathQuillChange(data, row, col, mathquillObj)
     var MQ = MathQuill.getInterface(2)
+
+    var answerSteps = this.state.answersSteps
+
     if (this.props.show_answer) { // automatically fill right hand box
       var answerBox = MQ(document.getElementById('15'))
       this.setLatexWoFireEvent(answerBox, this.calculateAnswer())
@@ -160,17 +173,29 @@ class UnitConversionCanvas extends UnitConversionBase {
       var denominatorBox = MQ(document.getElementById('21'))
       this.setLatexWoFireEvent(numeratorBox, this.props.numerator)
       this.setLatexWoFireEvent(denominatorBox, this.props.denominator)
-      var answerSteps = this.state.answersSteps
+
       answerSteps[0][0]['data'] = this.props.numerator
       answerSteps[0][1]['data'] = this.props.denominator
       answerSteps[0][0]['splitData'] = this.constructor.parseToValueUnit(this.props.numerator)
       answerSteps[0][1]['splitData'] = this.constructor.parseToValueUnit(this.props.denominator)
+
       this.setState({
         answerSteps: answerSteps
       }, function () {
         this.reDrawStrikes()
       })
     }
+
+    this.props.updateAnswer([
+      this.props.uuid,
+      {
+        unit_conversion: {
+          answer: this.state.answer['data'],
+          numerator: answerSteps[0][0]['data'],
+          denominator: answerSteps[0][1]['data']
+        }
+      }
+    ])
   }
 
   render () {
@@ -245,6 +270,7 @@ export class SingleUnitConversionAnswer extends React.Component {
         denominator={this.props.question.unit_conversion.denominator}
         show_answer={this.props.question.unit_conversion.show_answer}
         updateAnswer={this.props.updateAnswer}
+        uuid={this.props.question.uuid}
       />
     </div>)
   }
