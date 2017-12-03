@@ -48,7 +48,7 @@ class UNITS {
     var speedO = {}
     Object.keys(distanceO).forEach(function (keyDist) {
       Object.keys(timeO).forEach(function (keyTime) {
-        if (keyDist !== 'm' && keyTime !== 's') { // exclude SI unit
+        if (!(keyDist === 'm' && keyTime === 's')) { // exclude SI unit
           speedO[keyDist + '/' + keyTime] = distanceO[keyDist] + '/' + timeO[keyTime]
         }
       })

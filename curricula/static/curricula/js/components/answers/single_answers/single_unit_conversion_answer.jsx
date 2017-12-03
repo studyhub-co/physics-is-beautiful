@@ -62,32 +62,91 @@ class UnitConversionCanvas extends UnitConversionBase {
   }
 
   calculateAnswer () {
-    if (typeof this.state.uncrossedUnits !== 'undefined') {
-      var unit = ''
-      var numValue = null
-      if (this.state.uncrossedUnits['nums'].length === 1) {
-        // GET unit from numerator
-        unit = '\\ ' + this.state.uncrossedUnits['nums'][0]
-        if (typeof this.state.answersSteps[0][0].splitData !== 'undefined' &&
-            this.state.answersSteps[0][0].splitData) {
-          numValue = this.state.answersSteps[0][0].splitData[0]
-        }
-      }
-      if (this.state.uncrossedUnits['denoms'].length === 0) { // all has been striked
-        if (typeof this.state.answersSteps[0][1].splitData !== 'undefined' &&
-            this.state.answersSteps[0][1].splitData) {
-          var denomValue = this.state.answersSteps[0][1].splitData[0]
-          if (denomValue === '') { denomValue = 1 }
+    // if (typeof this.state.uncrossedUnits !== 'undefined') {
+    //   var unit = ''
+    //   var numValue = null
+    //   if (this.state.uncrossedUnits['nums'].length === 1) {
+    //     // GET unit from numerator
+    //     unit = '\\ ' + this.state.uncrossedUnits['nums'][0]
+    //     if (typeof this.state.answersSteps[0][0].splitData !== 'undefined' &&
+    //         this.state.answersSteps[0][0].splitData) {
+    //       numValue = this.state.answersSteps[0][0].splitData[0]
+    //     }
+    //   }
+    //   if (this.state.uncrossedUnits['denoms'].length === 0) { // all has been striked
+    //     if (typeof this.state.answersSteps[0][1].splitData !== 'undefined' &&
+    //         this.state.answersSteps[0][1].splitData) {
+    //       var denomValue = this.state.answersSteps[0][1].splitData[0]
+    //       if (denomValue === '') { denomValue = 1 }
+    //
+    //       var answerValue = this.props.number / denomValue
+    //       if (numValue) {
+    //         answerValue *= numValue
+    //       }
+    //       return answerValue + unit
+    //     }
+    //   }
+    // }
 
-          var answerValue = this.props.number / denomValue
-          if (numValue) {
-            answerValue *= numValue
-          }
-          return answerValue + unit
-        }
+    var numUnits = []
+    var denomUnits = []
+
+    var answerValue = this.props.number
+
+    // exclude strikethrouth
+    if (!this.state.strikethroughN) {
+      numUnits.push(this.props.unit.split('/')[0])
+    }
+    if (!this.state.strikethroughD && this.props.unit.split('/').length > 1) {
+      denomUnits.push(this.props.unit.split('/')[1])
+    }
+
+    console.log(this.state.uncrossedUnits);
+
+    var numSplitData = this.state.answersSteps[0][0].splitData
+    // test if it simple Number
+    if (!numSplitData && (Number(this.state.answersSteps[0][0].data) === Number(this.state.answersSteps[0][0].data))) {
+      numSplitData = [Number(this.state.answersSteps[0][0].data)]
+    }
+    if (typeof numSplitData !== 'undefined' && numSplitData) {
+      var numValue = numSplitData[0]
+      if (numValue === '') { numValue = 1 }
+
+      if (numValue) {
+        answerValue *= numValue
+      }
+      if (numSplitData[1] && this.state.uncrossedUnits['nums'].length > 0) {
+        numUnits.push(numSplitData[1])
       }
     }
-    return ''
+
+    var denomSplitData = this.state.answersSteps[0][1].splitData
+    // test if it simple Number
+    if (!denomSplitData && (Number(this.state.answersSteps[0][1].data) === Number(this.state.answersSteps[0][1].data))) {
+      denomSplitData = [Number(this.state.answersSteps[0][1].data)]
+    }
+    if (typeof denomSplitData !== 'undefined' && denomSplitData) {
+      var denomValue = denomSplitData[0]
+      if (denomValue === '') { denomValue = 1 }
+
+      if (denomValue) {
+        answerValue = answerValue / denomValue
+      }
+
+      if (denomSplitData[1] && this.state.uncrossedUnits['denoms'].length > 0) {
+        denomUnits.push(denomSplitData[1])
+      }
+    }
+
+    var unit
+
+    if (denomUnits.length > 0) {
+      unit = '\\frac{' + numUnits.join('*') + '}{' + denomUnits.join('*') + '}'
+    } else {
+      unit = numUnits.join('*')
+    }
+
+    return answerValue + unit
   }
 
   onMathQuillChange (data, row, col, mathquillObj) {
@@ -176,6 +235,7 @@ export class SingleUnitConversionAnswer extends React.Component {
 
   render () {
     var [number, unit] = UnitConversionBase.parseToValueUnit(this.props.question.additional_text)
+
     return (<div className='bounding-box'>
       <UnitConversionCanvas
         answer={this.props.question.unit_conversion.answer}
