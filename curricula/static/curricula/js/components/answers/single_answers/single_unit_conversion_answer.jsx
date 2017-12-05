@@ -1,6 +1,8 @@
 import React from 'react'
 import {UnitConversionBase, ConversionTable, MathquillBox} from '../../../games/unit_conversion'
 
+var Qty = require('js-quantities')
+
 /* global MathQuill */
 
 class UnitConversionCanvas extends UnitConversionBase {
@@ -38,6 +40,40 @@ class UnitConversionCanvas extends UnitConversionBase {
     }
   }
 
+  updateExternalAnswer () {
+    var answerSteps = this.state.answersSteps
+
+    var numSplit = answerSteps[0][0]['splitData']
+    var denSplit = answerSteps[0][0]['splitData']
+
+    var numQty = null
+    var denomQty = null
+
+    if (numSplit) { numQty = this.getQtyFromSplitData(numSplit) }
+    if (denSplit) { denomQty = this.getQtyFromSplitData(denSplit) }
+
+    var answerSplit = null
+
+    if (typeof this.state.answer !== 'undefined' && this.state.answer['data']){
+      answerSplit = this.constructor.parseToValueUnit(this.state.answer['data'])
+    }
+
+    if (numQty && denomQty && answerSplit) {
+      var baseCompareLst = this.getBaseFor2Qty(numQty, denomQty)
+
+      this.props.updateAnswer([
+        this.props.uuid,
+        {
+          unit_conversion: {
+            answer: answerSplit[0] + answerSplit[1],
+            numerator: baseCompareLst[0],
+            denominator: baseCompareLst[1]
+          }
+        }
+      ])
+    }
+  }
+
   // result answer change
   onResultChange (data, row, col, mathquillObj) {
     var MQ = MathQuill.getInterface(2)
@@ -60,17 +96,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       })
     }
 
-    var answerSteps = this.state.answersSteps
-    this.props.updateAnswer([
-      this.props.uuid,
-      {
-        unit_conversion: {
-          answer: this.state.answer['data'],
-          numerator: answerSteps[0][0]['data'],
-          denominator: answerSteps[0][1]['data']
-        }
-      }
-    ])
+    this.updateExternalAnswer()
   }
 
   calculateAnswer () {
@@ -159,6 +185,13 @@ class UnitConversionCanvas extends UnitConversionBase {
     return answerValue + unit
   }
 
+  getQtyFromSplitData (splitData) { // TODO move to game
+    if (splitData) {
+      return Qty.parse(splitData[0], splitData[1])
+    }
+    return null
+  }
+
   onMathQuillChange (data, row, col, mathquillObj) {
     super.onMathQuillChange(data, row, col, mathquillObj)
     var MQ = MathQuill.getInterface(2)
@@ -186,16 +219,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       })
     }
 
-    this.props.updateAnswer([
-      this.props.uuid,
-      {
-        unit_conversion: {
-          answer: this.state.answer['data'],
-          numerator: answerSteps[0][0]['data'],
-          denominator: answerSteps[0][1]['data']
-        }
-      }
-    ])
+    this.updateExternalAnswer()
   }
 
   render () {

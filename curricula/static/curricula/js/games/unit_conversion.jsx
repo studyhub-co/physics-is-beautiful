@@ -472,7 +472,7 @@ export class UnitConversionBase extends React.Component {
     return Math.round(n * mult) / mult
   }
 
-  compareWithSigFigs (firstQty, secondQty) {
+  getBaseFor2Qty (firstQty, secondQty) {
     // TODO We need to determine the minimum of minLength, so 3341.24 mm == 3 m now (minLength = 1)
     var minLength = 0
     minLength = firstQty.baseScalar.toString().length
@@ -502,7 +502,14 @@ export class UnitConversionBase extends React.Component {
       return Math.round(x * mult) / mult
     }
 
-    return '' + roundX(isf, decPlaces) === '' + roundX(asf, decPlaces)
+    return [roundX(isf, decPlaces), roundX(asf, decPlaces)]
+
+    // return '' + roundX(isf, decPlaces) === '' + roundX(asf, decPlaces)
+  }
+
+  compareWithSigFigs (firstQty, secondQty) {
+    var baseCompareLst = this.getBaseFor2Qty(firstQty, secondQty)
+    return '' + baseCompareLst[0] === '' + baseCompareLst[1]
   }
 
   resetStrikeAnswers () {

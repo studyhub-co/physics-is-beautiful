@@ -16,55 +16,6 @@ class LessonProgressSerializer(serializers.ModelSerializer):
         fields = ['score', 'status', 'completed_on']
 
 
-# class TextSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Text
-#         fields = ['text']
-#
-#
-# class MathematicalExpressionSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = MathematicalExpression
-#         fields = ['representation']
-#
-#
-# class VectorSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Vector
-#         fields = ['magnitude', 'angle', 'x_component', 'y_component']
-#
-#
-# class AnswerSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Answer
-#         fields = ['uuid']
-#
-#     uuid = serializers.CharField()
-#
-#
-# class UserResponseSerializer(serializers.ModelSerializer):
-#
-#     CONTENT_SERIALIZER_MAP = {
-#         Text.__name__.lower(): TextSerializer,
-#         Vector.__name__.lower(): VectorSerializer,
-#         Answer.__name__.lower(): AnswerSerializer,
-#         MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
-#     }
-#
-#     class Meta:
-#         model = UserResponse
-#         fields = ['question', 'content_type', 'content', 'is_correct', 'answered_on']
-#
-#     content = serializers.SerializerMethodField()
-#
-#     def get_content(self, obj):
-#         return self.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data
-
-
 class BaseSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
@@ -109,6 +60,15 @@ class VectorSerializer(BaseSerializer):
         return super(VectorSerializer, self).to_representation(obj.for_display())
 
 
+class UnitConversionSerializer(BaseSerializer):
+    class Meta:
+        model = UnitConversion
+        fields = ['answer', 'numerator', 'denominator', 'show_answer']
+
+    # def to_representation(self, obj):
+    #     return super(UnitConversionSerializer, self).to_representation(obj.for_display())
+
+
 class AnswerSerializer(BaseSerializer):
 
     CONTENT_SERIALIZER_MAP = {
@@ -116,6 +76,7 @@ class AnswerSerializer(BaseSerializer):
         Image.__name__.lower(): ImageSerializer,
         Vector.__name__.lower(): VectorSerializer,
         MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
+        UnitConversion.__name__.lower(): UnitConversionSerializer,
     }
 
     class Meta:
@@ -138,7 +99,9 @@ class UserResponseSerializer(BaseSerializer):
     class Meta:
         model = UserResponse
         fields = [
-            'profile', 'question', 'vector', 'text', 'mathematical_expression', 'image', 'answer',
+            'question', 'vector', 'text', 'mathematical_expression', 'image', 'unit_conversion',
+            'profile',
+            'answer',
             'answered_on'
         ]
         extra_kwargs = {'profile': {'required': False}}
@@ -148,6 +111,7 @@ class UserResponseSerializer(BaseSerializer):
     mathematical_expression = MathematicalExpressionSerializer(required=False)
     image = ImageSerializer(required=False)
     answer = AnswerSerializer(required=False)
+    unit_conversion = UnitConversionSerializer(required=False)
 
     def validate_answer(self, value):
         return Answer.objects.get(uuid=value['uuid'])
@@ -260,13 +224,6 @@ class ScoreBoardSerializer(serializers.ModelSerializer):
         fields = ['score', 'duration', 'profile', 'row_num']
 
 
-# class LessonProgressSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = LessonProgress
-#         fields = ['score']
-
-
 class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
 
     class Meta:
@@ -325,3 +282,59 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),
         }
+
+
+# class LessonProgressSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = LessonProgress
+#         fields = ['score']
+#
+#
+# class TextSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Text
+#         fields = ['text']
+#
+#
+# class MathematicalExpressionSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = MathematicalExpression
+#         fields = ['representation']
+#
+#
+# class VectorSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Vector
+#         fields = ['magnitude', 'angle', 'x_component', 'y_component']
+#
+#
+# class AnswerSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Answer
+#         fields = ['uuid']
+#
+#     uuid = serializers.CharField()
+#
+#
+# class UserResponseSerializer(serializers.ModelSerializer):
+#
+#     CONTENT_SERIALIZER_MAP = {
+#         Text.__name__.lower(): TextSerializer,
+#         Vector.__name__.lower(): VectorSerializer,
+#         Answer.__name__.lower(): AnswerSerializer,
+#         MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
+#     }
+#
+#     class Meta:
+#         model = UserResponse
+#         fields = ['question', 'content_type', 'content', 'is_correct', 'answered_on']
+#
+#     content = serializers.SerializerMethodField()
+#
+#     def get_content(self, obj):
+#         return self.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data
