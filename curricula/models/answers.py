@@ -178,6 +178,29 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
     show_answer = models.BooleanField(default=True,
                                       help_text="Set for showing answer, otherwise show fraction")
 
+    def matches(self, obj):
+        if isinstance(obj, Answer):
+            return self.matches(obj.content)
+        elif isinstance(obj, UnitConversion):
+            if self.show_answer:  # check fraction
+                return self.match_math(obj.numerator, obj.denominator) and self.match_math(obj.answer, self.answer)
+            else:  # check answer
+                return self.match_math(obj.answer, self.answer)
+        # try:
+        #     if obj.is_null != self.is_null:
+        #         return False
+        #     elif self.is_null:
+        #         return True
+        #     obj._fill_out_fields()
+        #     for field in ['magnitude', 'angle', 'x_component', 'y_component']:
+        #         value = getattr(self, field, None)
+        #         if value is not None and value != getattr(obj, field):
+        #             return False
+        #     return True
+        # except AttributeError:
+        #     return False
+
+
     def __str__(self):
         return 'UnitConversion: {}'.format(self.answer)
 
