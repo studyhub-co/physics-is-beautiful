@@ -5,7 +5,7 @@ import React from 'react'
 // import {Text, Expression} from '../app'
 import {VectorCanvas, CanvasVector} from '../vector_canvas'
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
-import {Hint} from './utils/hint.jsx'
+import {Hint} from './utils/hint'
 import { SingleAnswer } from './answers/single_answer'
 import { MultipleAnswer } from './answers/multiple_answer'
 

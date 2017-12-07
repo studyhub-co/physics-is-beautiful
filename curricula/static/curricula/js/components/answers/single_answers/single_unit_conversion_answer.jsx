@@ -44,7 +44,7 @@ class UnitConversionCanvas extends UnitConversionBase {
     var answerSteps = this.state.answersSteps
 
     var numSplit = answerSteps[0][0]['splitData']
-    var denSplit = answerSteps[0][0]['splitData']
+    var denSplit = answerSteps[0][1]['splitData']
 
     var numQty = null
     var denomQty = null
@@ -54,8 +54,8 @@ class UnitConversionCanvas extends UnitConversionBase {
 
     var answerSplit = null
 
-    if (typeof this.state.answer !== 'undefined' && this.state.answer['data']){
-      answerSplit = this.constructor.parseToValueUnit(this.state.answer['data'])
+    if (typeof this.state.answer !== 'undefined' && this.state.answer['box']) {
+      answerSplit = this.constructor.parseToValueUnit(this.state.answer['box'].latex())
     }
 
     if (numQty && denomQty && answerSplit) {
