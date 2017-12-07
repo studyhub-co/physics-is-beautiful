@@ -47,3 +47,34 @@ export class DefaultAnswer extends React.Component {
     return <div>{this.props.answer.text}</div>
   }
 }
+
+export class UnitConversion {
+  constructor (answer) {
+    this.answer = answer
+  }
+}
+
+export class UnitConversionAnswer extends React.Component {
+  render () {
+    var component = ''
+
+    var answer = this.props.answer.answer
+
+    if (answer.show_answer) {
+      var data = '\\frac{' + answer.numerator + '}{' + answer.denominator + '} = ' + answer.answer
+      component = <RMathJax.Node>{data}</RMathJax.Node>
+    } else {
+      component = <RMathJax.Node>{answer.answer}</RMathJax.Node>
+    }
+
+    return (
+      <div>
+        <RMathJax.Context>
+          <div>
+            {component}
+          </div>
+        </RMathJax.Context>
+      </div>
+    )
+  }
+}

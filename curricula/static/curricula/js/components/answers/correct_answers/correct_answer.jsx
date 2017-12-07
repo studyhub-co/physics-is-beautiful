@@ -1,6 +1,8 @@
 import React from 'react'
-import {VectorAnswer, TextAnswer, MathematicalExpressionAnswer, DefaultAnswer} from './correct_answers'
-import {Text, Expression} from '../../../app'
+import {VectorAnswer, TextAnswer, UnitConversionAnswer,
+  MathematicalExpressionAnswer, DefaultAnswer,
+  UnitConversion } from './correct_answers'
+import {Text, Expression} from '../../../app' // TODO move to correct_answers.jsx
 import {Vector} from '../../../vector_canvas'
 
 export class Answer extends React.Component {
@@ -15,6 +17,9 @@ export class Answer extends React.Component {
         break
       case Expression:
         Component = MathematicalExpressionAnswer
+        break
+      case UnitConversion:
+        Component = UnitConversionAnswer
         break
       default:
         Component = DefaultAnswer
