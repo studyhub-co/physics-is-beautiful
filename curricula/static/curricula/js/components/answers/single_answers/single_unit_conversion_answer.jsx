@@ -55,7 +55,7 @@ class UnitConversionCanvas extends UnitConversionBase {
     var answerSplit = null
 
     if (typeof this.state.answer !== 'undefined' && this.state.answer['box']) {
-      answerSplit = this.constructor.parseToValueUnit(this.state.answer['box'].latex())
+      answerSplit = this.constructor.parseToValueUnit(this.clearDataText(this.state.answer['box'].latex()))
     }
 
     if (numQty && denomQty && answerSplit) {
@@ -187,7 +187,7 @@ class UnitConversionCanvas extends UnitConversionBase {
 
   getQtyFromSplitData (splitData) { // TODO move to game
     if (splitData) {
-      return Qty.parse(splitData[0], splitData[1])
+      return Qty.parse(splitData[0] + splitData[1])
     }
     return null
   }

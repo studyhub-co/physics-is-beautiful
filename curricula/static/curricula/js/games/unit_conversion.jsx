@@ -502,7 +502,7 @@ export class UnitConversionBase extends React.Component {
       return Math.round(x * mult) / mult
     }
 
-    return [roundX(isf, decPlaces), roundX(asf, decPlaces)]
+    return [roundX(asf, decPlaces), roundX(isf, decPlaces)]
 
     // return '' + roundX(isf, decPlaces) === '' + roundX(asf, decPlaces)
   }
