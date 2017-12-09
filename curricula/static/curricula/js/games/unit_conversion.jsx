@@ -467,7 +467,14 @@ export class UnitConversionBase extends React.Component {
     return tmpData
   }
 
-  sigFigs (n, sig) { // TODO move to  utils
+  getQtyFromSplitData (splitData) {
+    if (splitData) {
+      return Qty.parse(splitData[0] + splitData[1])
+    }
+    return null
+  }
+
+  sigFigs (n, sig) {
     var mult = Math.pow(10, sig - Math.floor(Math.log(n) / Math.LN10) - 1)
     return Math.round(n * mult) / mult
   }
@@ -503,8 +510,6 @@ export class UnitConversionBase extends React.Component {
     }
 
     return [roundX(asf, decPlaces), roundX(isf, decPlaces)]
-
-    // return '' + roundX(isf, decPlaces) === '' + roundX(asf, decPlaces)
   }
 
   compareWithSigFigs (firstQty, secondQty) {
