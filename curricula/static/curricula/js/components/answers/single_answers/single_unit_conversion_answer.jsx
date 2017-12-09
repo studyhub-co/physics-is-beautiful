@@ -197,9 +197,21 @@ class UnitConversionCanvas extends UnitConversionBase {
 
   render () {
     if (typeof this.props.is_correct_answer !== 'undefined') { // user gave answer
-      document.getElementById('11').style.pointerEvents = 'none'
-      document.getElementById('21').style.pointerEvents = 'none'
-      document.getElementById('15').style.pointerEvents = 'none'
+      var spanBoxes = ['11', '21', '15']
+
+      for (var i = 0; i < spanBoxes.length; i++) {
+
+        var element = document.getElementById(spanBoxes[i])
+        element.style.pointerEvents = 'none' // disable editable
+
+        if (this.props.is_correct_answer === true) {
+          element.classList.add('green-border') // green if correct
+        }
+
+        if (this.props.is_correct_answer === false) {
+          element.classList.add('red-border') // red if incorrect
+        }
+      }
     }
 
     return (<div style={{display: 'block'}}>
