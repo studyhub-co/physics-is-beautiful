@@ -560,8 +560,8 @@ export class UnitConversionBase extends React.Component {
       if (foundIndex !== -1) {
         // replace all char and spaces in value
         return [input.substring(0, foundIndex)
-          .replace(/[^0-9\\^\\.]+/g,'')
-          .replace(/^[\\\s]+|[\\\s]+$/gm, ''),
+          .replace(/[^0-9\\*\\^\\.]+/g, ''),
+          // .replace(/^[\\\s]+|[\\\s]+$/gm, ''), unnessecery now
         unit]
       }
     }
