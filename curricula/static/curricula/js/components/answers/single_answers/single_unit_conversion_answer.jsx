@@ -197,7 +197,12 @@ class UnitConversionCanvas extends UnitConversionBase {
 
   render () {
     if (typeof this.props.is_correct_answer !== 'undefined') { // user gave answer
-      var spanBoxes = ['11', '21', '15']
+      var spanBoxes = []
+      if (this.props.show_answer) {
+        spanBoxes = ['11', '21']
+      } else {
+        spanBoxes = ['15']
+      }
 
       for (var i = 0; i < spanBoxes.length; i++) {
         var element = document.getElementById(spanBoxes[i])
