@@ -66,43 +66,6 @@ Object.getOwnPropertyNames(UNITS)
     INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
   })
 
-// const UNITS = {
-//   DISTANCE: {
-//     'mm': 'millimeters',
-//     'cm': 'centimeters',
-//     'km': 'kilometers',
-//     'ft': 'feet',
-//     'mi': 'miles'
-//   },
-//   TIME: {
-//     'ms': 'milliseconds',
-//     'min': 'minutes',
-//     'hr': 'hours',
-//     'd': 'days',
-//     'wk': 'weeks'
-//   },
-//   MASS: {
-//     'mg': 'milligrams',
-//     'g': 'grams',
-//     'oz': 'ounces'
-//   },
-//   SPEED: {
-//     'km/s': 'kilometers/second',
-//     'mi/s': 'miles/second',
-//     'ft/s': 'feet/second',
-//     'km/hr': 'kilometers/hour',
-//     'mi/hr': 'miles/hour',
-//     'm/hr': 'meters/hour',
-//     'ft/hr': 'feet/hour',
-//     'm/min': 'meters/minute',
-//     'ft/min': 'feet/hour'
-//   }
-// }
-
-// Object.keys(UNITS).forEach(function (key) {
-//   INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
-// })
-
 // Limit browser support:
 // Object.entries(Object.getOwnPropertyDescriptors(UNITS))
 //   .filter(([key, descriptor]) => typeof descriptor.get === 'function')
@@ -121,13 +84,12 @@ export class MathquillBox extends React.Component {
     this.answer = MQ.MathField(document.getElementById('' + this.props.row + this.props.column), {
       autoCommands: 'class',
       autoOperatorNames: 'pi', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
+      spaceBehavesLikeTab: true,
       handlers: {
         edit: (mathField) => {
           // if change by API (not user), then not fire
           if (mathField.data.fromJsCall) { return }
           this.handleChange(mathField.latex(), this.props.row, this.props.column, mathField)
-          // if (this.answer.fromJsCall) { return }
-          // this.handleChange(this.answer.latex(), this.props.row, this.props.column, this.answer)
         }
       }
     })
@@ -137,7 +99,7 @@ export class MathquillBox extends React.Component {
   }
   render () {
     var mathFieldStyle = {
-      width: 100,
+      minWidth: 100,
       fontSize: 30
     }
     return (
