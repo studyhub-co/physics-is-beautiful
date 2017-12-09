@@ -49,8 +49,9 @@ export class DefaultAnswer extends React.Component {
 }
 
 export class UnitConversion {
-  constructor (answer) {
+  constructor (answer, question) {
     this.answer = answer
+    this.question = question
   }
 }
 
@@ -59,9 +60,17 @@ export class UnitConversionAnswer extends React.Component {
     var component = ''
 
     var answer = this.props.answer.answer
+    var originalQuestion = this.props.answer.question.additional_text.split('/')
 
     if (answer.show_answer) {
-      var data = '\\frac{' + answer.numerator + '}{' + answer.denominator + '} = ' + answer.answer
+      var qsDenom = ''
+      if (typeof originalQuestion[1] !== 'undefined') {
+        qsDenom = originalQuestion[1]
+      }
+
+      var data = '\\frac{' + originalQuestion[0] + '}{' + qsDenom + '} | ' +
+        ' \\frac{' + answer.numerator + '}{' + answer.denominator + '} = ' +
+        answer.answer
       component = <RMathJax.Node>{data}</RMathJax.Node>
     } else {
       component = <RMathJax.Node>{answer.answer}</RMathJax.Node>

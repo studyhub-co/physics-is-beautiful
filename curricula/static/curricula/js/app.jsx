@@ -224,7 +224,7 @@ class LessonsApp extends React.Component {
                             this.correct_answer = new Expression(data.correct_answer.content.representation);
                             break;
                         case 'unitconversion':
-                            this.correct_answer = new UnitConversion(data.correct_answer.content);
+                            this.correct_answer = new UnitConversion(data.correct_answer.content, this.question);
                             break;
                         default:
                             this.correct_answer = data.correct_answer;
