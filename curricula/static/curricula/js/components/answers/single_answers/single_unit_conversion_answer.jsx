@@ -200,7 +200,6 @@ class UnitConversionCanvas extends UnitConversionBase {
       var spanBoxes = ['11', '21', '15']
 
       for (var i = 0; i < spanBoxes.length; i++) {
-
         var element = document.getElementById(spanBoxes[i])
         element.style.pointerEvents = 'none' // disable editable
 
