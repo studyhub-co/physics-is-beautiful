@@ -558,7 +558,11 @@ export class UnitConversionBase extends React.Component {
       var unit = unitsArr[i]
       var foundIndex = input.indexOf(unit, input.length - unit.length)
       if (foundIndex !== -1) {
-        return [input.substring(0, foundIndex).replace(/^[\\\s]+|[\\\s]+$/gm, ''), unit]
+        // replace all char and spaces in value
+        return [input.substring(0, foundIndex)
+          .replace(/[^0-9\\^\\.]+/g,'')
+          .replace(/^[\\\s]+|[\\\s]+$/gm, ''),
+        unit]
       }
     }
     return null
