@@ -105,6 +105,7 @@ html, body {
         margin-top:3px;
     }
     .problem-sheet {
+        height: calc(100% - 60px);
 		width: 100%;
 		padding: 0px;
 		margin-top: -15px;
