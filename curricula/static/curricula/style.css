@@ -130,7 +130,7 @@ html, body {
         margin-right: 1%;
     }
     #footer{
-        position:relative;
+        /*position:relative;*/
         width: 100%;
     }
 }
