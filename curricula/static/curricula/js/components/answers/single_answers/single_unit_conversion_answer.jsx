@@ -9,6 +9,8 @@ class UnitConversionCanvas extends UnitConversionBase {
     if (this.props.show_answer) { // fill right hand side
       var answerBox = MQ(document.getElementById('15'))
 
+      document.getElementById('15').style.pointerEvents = 'none'
+
       this.setState({
         answer: { 'data': this.props.answer, 'box': answerBox },
         answersSteps: [[
@@ -22,6 +24,9 @@ class UnitConversionCanvas extends UnitConversionBase {
       var numBox, denumBox
       numBox = MQ(document.getElementById('11'))
       denumBox = MQ(document.getElementById('21'))
+
+      document.getElementById('11').style.pointerEvents = 'none'
+      document.getElementById('21').style.pointerEvents = 'none'
 
       this.setState({
         answersSteps: [[
