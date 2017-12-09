@@ -1,8 +1,6 @@
 import React from 'react'
 import {UnitConversionBase, ConversionTable, MathquillBox} from '../../../games/unit_conversion'
 
-var Qty = require('js-quantities')
-
 /* global MathQuill */
 
 class UnitConversionCanvas extends UnitConversionBase {
@@ -31,9 +29,6 @@ class UnitConversionCanvas extends UnitConversionBase {
           {'data': this.props.denominator, 'box': denumBox}
         ]]
       }, function () {
-        // this.setLatexWoFireEvent(numBox, this.props.numerator)
-        // this.setLatexWoFireEvent(denumBox, this.props.denominator)
-        // this.reDrawStrikes()
         numBox.latex(this.props.numerator)
         denumBox.latex(this.props.denominator)
       })
@@ -100,32 +95,6 @@ class UnitConversionCanvas extends UnitConversionBase {
   }
 
   calculateAnswer () {
-    // if (typeof this.state.uncrossedUnits !== 'undefined') {
-    //   var unit = ''
-    //   var numValue = null
-    //   if (this.state.uncrossedUnits['nums'].length === 1) {
-    //     // GET unit from numerator
-    //     unit = '\\ ' + this.state.uncrossedUnits['nums'][0]
-    //     if (typeof this.state.answersSteps[0][0].splitData !== 'undefined' &&
-    //         this.state.answersSteps[0][0].splitData) {
-    //       numValue = this.state.answersSteps[0][0].splitData[0]
-    //     }
-    //   }
-    //   if (this.state.uncrossedUnits['denoms'].length === 0) { // all has been striked
-    //     if (typeof this.state.answersSteps[0][1].splitData !== 'undefined' &&
-    //         this.state.answersSteps[0][1].splitData) {
-    //       var denomValue = this.state.answersSteps[0][1].splitData[0]
-    //       if (denomValue === '') { denomValue = 1 }
-    //
-    //       var answerValue = this.props.number / denomValue
-    //       if (numValue) {
-    //         answerValue *= numValue
-    //       }
-    //       return answerValue + unit
-    //     }
-    //   }
-    // }
-
     var numUnits = []
     var denomUnits = []
 
@@ -140,15 +109,18 @@ class UnitConversionCanvas extends UnitConversionBase {
     }
 
     var numSplitData = this.state.answersSteps[0][0].splitData
+    var numAnswerData = this.clearDataText(this.state.answersSteps[0][0].data)
+
     // test if it simple Number
-    if (!numSplitData && (Number(this.state.answersSteps[0][0].data) === Number(this.state.answersSteps[0][0].data))) {
-      numSplitData = [Number(this.state.answersSteps[0][0].data)]
+    if (!numSplitData && (Number(numAnswerData) === Number(numAnswerData))) {
+      numSplitData = [Number(numAnswerData)]
     }
+
     if (typeof numSplitData !== 'undefined' && numSplitData) {
       var numValue = numSplitData[0]
       if (numValue === '') { numValue = 1 }
 
-      if (numValue) {
+      if (numValue || numAnswerData === '0') {
         answerValue *= numValue
       }
       if (numSplitData[1] && this.state.uncrossedUnits['nums'].length > 0) {
@@ -157,15 +129,17 @@ class UnitConversionCanvas extends UnitConversionBase {
     }
 
     var denomSplitData = this.state.answersSteps[0][1].splitData
+    var denomAnswerData = this.clearDataText(this.state.answersSteps[0][1].data)
+
     // test if it simple Number
-    if (!denomSplitData && (Number(this.state.answersSteps[0][1].data) === Number(this.state.answersSteps[0][1].data))) {
-      denomSplitData = [Number(this.state.answersSteps[0][1].data)]
+    if (!denomSplitData && (Number(denomAnswerData) === Number(denomAnswerData))) {
+      denomSplitData = [Number(denomAnswerData)]
     }
     if (typeof denomSplitData !== 'undefined' && denomSplitData) {
       var denomValue = denomSplitData[0]
       if (denomValue === '') { denomValue = 1 }
 
-      if (denomValue) {
+      if (denomValue || denomAnswerData === '0') {
         answerValue = answerValue / denomValue
       }
 
@@ -182,14 +156,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       unit = numUnits.join('*')
     }
 
-    return answerValue + unit
-  }
-
-  getQtyFromSplitData (splitData) { // TODO move to game
-    if (splitData) {
-      return Qty.parse(splitData[0] + splitData[1])
-    }
-    return null
+    return answerValue + '\\ ' + unit
   }
 
   onMathQuillChange (data, row, col, mathquillObj) {
@@ -233,16 +200,6 @@ class UnitConversionCanvas extends UnitConversionBase {
           strikethroughN={this.state.strikethroughN}
           strikethroughD={this.state.strikethroughD}
         />
-        {this.state.incorrectConversion
-          ? <div style={{border: '.1rem solid black'}}>
-            <div style={{color: 'red'}}>Incorrect unit conversion</div>
-          </div>
-          : null}
-        {this.state.incorrectUnitType
-          ? <div style={{border: '.1rem solid black'}}>
-            <div style={{color: 'red'}}>Incorrect unit type</div>
-          </div>
-          : null}
         <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
             =
         </div>
@@ -252,12 +209,6 @@ class UnitConversionCanvas extends UnitConversionBase {
             row={1}
             column={5}
           />
-          {this.state.incorrectAnswer
-            ? <div style={{border: '.1rem solid black'}}>
-              <div style={{color: 'red'}}>Incorrect answer</div>
-              <div style={{color: 'green'}}>Correct answer: {this.state.correctAnswer}</div>
-            </div>
-            : null}
         </div>
       </div>
     </div>
