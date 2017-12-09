@@ -84,7 +84,6 @@ export class MathquillBox extends React.Component {
     this.answer = MQ.MathField(document.getElementById('' + this.props.row + this.props.column), {
       autoCommands: 'class',
       autoOperatorNames: 'pi', // we want to disable all commands, but MQ throw error if list is empty, so leave pi operator
-      spaceBehavesLikeTab: true,
       handlers: {
         edit: (mathField) => {
           // if change by API (not user), then not fire
