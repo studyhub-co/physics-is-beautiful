@@ -4,43 +4,69 @@ import {UnitConversionBase, ConversionTable, MathquillBox} from '../../../games/
 /* global MathQuill */
 
 class UnitConversionCanvas extends UnitConversionBase {
-  componentDidMount () {
+
+  initialBoxes (props) {
+    var spanBoxes = ['11', '21', '15']
+
+    for (var i = 0; i < spanBoxes.length; i++) {
+      document.getElementById(spanBoxes[i]).classList.remove('green-border')
+      document.getElementById(spanBoxes[i]).classList.remove('red-border')
+      document.getElementById(spanBoxes[i]).style.pointerEvents = 'auto'
+    }
+
     var MQ = MathQuill.getInterface(2)
-    if (this.props.show_answer) { // fill right hand side
-      var answerBox = MQ(document.getElementById('15'))
+
+    var numBox = MQ(document.getElementById('11'))
+    var denumBox = MQ(document.getElementById('21'))
+    var answerBox = MQ(document.getElementById('15'))
+
+    if (props.show_answer) { // fill right hand side
+      this.setLatexWoFireEvent(numBox, '')
+      this.setLatexWoFireEvent(denumBox, '')
 
       document.getElementById('15').style.pointerEvents = 'none'
 
       this.setState({
-        answer: { 'data': this.props.answer, 'box': answerBox },
+        answer: { 'data': props.answer, 'box': answerBox },
         answersSteps: [[
           {'data': '', 'box': MQ(document.getElementById('11'))},
           {'data': '', 'box': MQ(document.getElementById('21'))}
-        ]] // column set by default]
+        ]] // column set by default
       }, function () {
-        this.setLatexWoFireEvent(answerBox, this.props.answer)
+        this.setLatexWoFireEvent(answerBox, props.answer)
       })
-    } else { // fill left hand side
-      var numBox, denumBox
-      numBox = MQ(document.getElementById('11'))
-      denumBox = MQ(document.getElementById('21'))
+    } else {  // fill left hand side
+
+      this.setLatexWoFireEvent(answerBox, '')
 
       document.getElementById('11').style.pointerEvents = 'none'
       document.getElementById('21').style.pointerEvents = 'none'
 
       this.setState({
         answersSteps: [[
-          {'data': this.props.numerator, 'box': numBox},
-          {'data': this.props.denominator, 'box': denumBox}
+          {'data': props.numerator, 'box': numBox},
+          {'data': props.denominator, 'box': denumBox}
         ]]
       }, function () {
-        numBox.latex(this.props.numerator)
-        denumBox.latex(this.props.denominator)
+        numBox.latex(props.numerator)
+        denumBox.latex(props.denominator)
       })
     }
   }
 
+  componentDidMount () {
+    this.initialBoxes(this.props)
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (newProps.uuid !== this.props.uuid) {
+      this.props.updateAnswer(null)
+      this.initialBoxes(newProps)
+    }
+  }
+
   updateExternalAnswer () {
+
     var answerSteps = this.state.answersSteps
 
     var numSplit = answerSteps[0][0]['splitData']
