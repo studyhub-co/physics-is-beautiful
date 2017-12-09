@@ -196,6 +196,12 @@ class UnitConversionCanvas extends UnitConversionBase {
   }
 
   render () {
+    if (typeof this.props.is_correct_answer !== 'undefined') { // user gave answer
+      document.getElementById('11').style.pointerEvents = 'none'
+      document.getElementById('21').style.pointerEvents = 'none'
+      document.getElementById('15').style.pointerEvents = 'none'
+    }
+
     return (<div style={{display: 'block'}}>
       <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
         <ConversionTable
@@ -226,7 +232,8 @@ UnitConversionCanvas.propTypes = {
   answer: React.PropTypes.string,
   numerator: React.PropTypes.string,
   denominator: React.PropTypes.string,
-  show_answer: React.PropTypes.bool
+  show_answer: React.PropTypes.bool,
+  is_correct_answer: React.PropTypes.bool
 }
 
 export class SingleUnitConversionAnswer extends React.Component {
@@ -252,11 +259,13 @@ export class SingleUnitConversionAnswer extends React.Component {
         show_answer={this.props.question.unit_conversion.show_answer}
         updateAnswer={this.props.updateAnswer}
         uuid={this.props.question.uuid}
+        is_correct_answer={this.props.correct}
       />
     </div>)
   }
 }
 SingleUnitConversionAnswer.propTypes = {
   updateAnswer: React.PropTypes.func.isRequired,
-  question: React.PropTypes.object
+  question: React.PropTypes.object,
+  correct: React.PropTypes.bool
 }
