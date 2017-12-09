@@ -109,7 +109,7 @@ class UnitConversionCanvas extends UnitConversionBase {
     }
 
     var numSplitData = this.state.answersSteps[0][0].splitData
-    var numAnswerData = this.clearDataText(this.state.answersSteps[0][0].data)
+    var numAnswerData = this.clearDataText(this.state.answersSteps[0][0].data).split(' ')[0]
 
     // test if it simple Number
     if (!numSplitData && (Number(numAnswerData) === Number(numAnswerData))) {
@@ -120,7 +120,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       var numValue = numSplitData[0]
       if (numValue === '') { numValue = 1 }
 
-      if (numValue || numAnswerData === '0') {
+      if (numValue || numAnswerData.trim() === '0') {
         answerValue *= numValue
       }
       if (numSplitData[1] && this.state.uncrossedUnits['nums'].length > 0) {
@@ -129,17 +129,18 @@ class UnitConversionCanvas extends UnitConversionBase {
     }
 
     var denomSplitData = this.state.answersSteps[0][1].splitData
-    var denomAnswerData = this.clearDataText(this.state.answersSteps[0][1].data)
+    var denomAnswerData = this.clearDataText(this.state.answersSteps[0][1].data).split(' ')[0]
 
     // test if it simple Number
     if (!denomSplitData && (Number(denomAnswerData) === Number(denomAnswerData))) {
       denomSplitData = [Number(denomAnswerData)]
     }
+
     if (typeof denomSplitData !== 'undefined' && denomSplitData) {
       var denomValue = denomSplitData[0]
       if (denomValue === '') { denomValue = 1 }
 
-      if (denomValue || denomAnswerData === '0') {
+      if (denomValue || denomAnswerData.trim() === '0') {
         answerValue = answerValue / denomValue
       }
 
