@@ -15,6 +15,14 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
     // }
   }
 
+  componentWillReceiveProps (newProps) {
+    if (newProps.uuid !== this.props.uuid) {
+      // reset answer
+      this.answer.latex('')
+      this.props.updateAnswer(null)
+    }
+  }
+
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
     // this.answer = MQ.MathField($('#math-field-answer')[0], {
