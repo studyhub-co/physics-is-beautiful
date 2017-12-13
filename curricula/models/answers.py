@@ -10,8 +10,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-from . import BaseModel, Question
+from jsonfield import JSONField
 
+from . import BaseModel, Question
 
 class AnswerQuerySet(models.QuerySet):
 
@@ -66,7 +67,6 @@ class Text(BaseModel):
 
     def __str__(self):
         return 'Text: {}'.format(self.text)
-
 
 class MathematicalExpressionMixin:
     @staticmethod
@@ -170,6 +170,23 @@ class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
 
 
 class UnitConversion(BaseModel, MathematicalExpressionMixin):
+    UnitConversionTypes = (
+        ('10', 'LEFT SIDE BLANK'),
+        ('20', 'RIGHT SIDE BLANK'),
+        ('30', 'ALL SIDE BLANK'),
+    )
+
+    unit_conversion_type = models.CharField(
+        max_length=2,
+        choices=UnitConversionTypes,
+        default='10',
+    )
+
+    # conversion matrix
+    # conversion_steps = [{"numerator":"", "denominator":""},
+    #   {"numerator":"", "denominator":""}, ...]
+    conversion_steps = JSONField(blank=True, null=True, help_text="Numerator/Denominator steps")
+
     answer = models.CharField(max_length=100, help_text="Correct answer with unit: m, s, kg, m/s")
     numerator = models.CharField(blank=True, null=True,
                                  max_length=100, help_text="Numerator value with unit: m, s, kg, m/s")
