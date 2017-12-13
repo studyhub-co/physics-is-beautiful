@@ -4,6 +4,12 @@ from django.utils.html import escape
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
+from jsonfield.fields import JSONFormField
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+
+import json
+
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression,
     UnitConversion
@@ -291,19 +297,43 @@ class MathematicalExpressionAnswerInline(AnswerTabularInline):
         return obj.representation
 
 
+class ConversionStepsJSONWidget(forms.Widget):
+    template_name = 'curricula/conversion_steps_json_widget.html'
+
+    def render(self, name, value, attrs=None):
+        if not value:
+            value = '[{"numerator":"", "denominator":""},' \
+                    '{"numerator":"", "denominator":""},' \
+                    '{"numerator":"", "denominator":""},' \
+                    '{"numerator":"", "denominator":""}]'
+        else:
+            value = json.dumps(value)
+
+        context = {
+            'data': value,
+            'name': name
+        }
+
+        return mark_safe(render_to_string(self.template_name, context))
+
+
 class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
-    FIELDS = ['answer', 'numerator', 'denominator', 'show_answer']
+    FIELDS = ['answer', 'unit_conversion_type', 'conversion_steps']
     SPECIAL_MODEL = UnitConversion
 
     answer = forms.CharField(help_text=UnitConversion._meta.get_field('answer').help_text)
-    numerator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('numerator').help_text)
-    denominator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('denominator').help_text)
-    show_answer = forms.BooleanField(required=False, help_text=UnitConversion._meta.get_field('show_answer').help_text)
+    unit_conversion_type = forms.ChoiceField(choices=UnitConversion.UnitConversionTypes)
+    # numerator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('numerator').help_text)
+    # denominator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('denominator').help_text)
+    # show_answer = forms.BooleanField(required=False, help_text=UnitConversion._meta.get_field('show_answer').help_text)
+    conversion_steps = JSONFormField(required=False,
+                                     help_text=UnitConversion._meta.get_field('conversion_steps').help_text,
+                                     widget=ConversionStepsJSONWidget)
 
     class Meta:
         model = Answer
-        fields = ['answer', 'numerator', 'denominator', 'show_answer', 'is_correct', 'position']
+        fields = ['answer', 'unit_conversion_type', 'is_correct', 'position', 'conversion_steps']
 
 
 @create_fields_funcs(UnitConversionAnswerForm)
@@ -311,6 +341,13 @@ class UnitConversionAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Unit Conversion Answers'
     model = Answer
     form = UnitConversionAnswerForm
+
+    class Media:
+        css = {
+            "all": ("admin/jsoneditor.min.css", "admin/jsoneditor.reset.css",
+                    "curricula/mathquill-0.10.1/mathquill.css")
+        }
+        js = ("admin/jsoneditor.min.js", "curricula/mathquill-0.10.1/mathquill.js")
 
 
 class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):

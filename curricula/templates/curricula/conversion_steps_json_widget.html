@@ -1,0 +1,54 @@
+<textarea cols="40" id="id_{{ name }}" name="{{ name }}" rows="10" required="" style="display: none">{{ data|safe }}</textarea>
+
+{% if not '__prefix__' in name %}
+<div id="{{ name }}_editor"  style="width: 100%; height: 400px; padding-top: 0;">
+<script>
+    var container = document.getElementById("{{ name }}_editor");
+     var schema = {
+    "title": "UC Schema",
+    "type": "array",
+    "items": {
+       "type": "object",
+        "properties": {
+           "numerator": {
+            "type": "string"
+          },
+          "denominator": {
+            "type": "string"
+          },
+        },
+        "required": ["numerator", "denominator"]
+       },
+
+  };
+    var options = {
+        {#modes: ['text', 'code', 'tree', 'form', 'view'],#}
+        schema: schema,
+        mode: 'tree',
+        search: false,
+        onChange: function () {
+            var json = editor.get();
+            document.getElementById("id_{{ name }}").value=JSON.stringify(json);
+        },
+    };
+
+    var json = {{ data|safe }};
+    var editor = new JSONEditor(container, options, json);
+    editor.expandAll();
+    {# set MQ: does not work now#}
+    {#MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);#}
+    {#django.jQuery(function() {#}
+    {#    django.jQuery('.jsoneditor-value').each(function() { MQ.MathField(this, {#}
+    {#        handlers: {#}
+    {#          edit: function(field) {#}
+               {#console.log(field);#}
+    {#           console.log(field.__controller.container[0].innerHTML=field.latex());#}
+               {#field.__controller.container[0].setValue(field.latex())#}
+    {#          }#}
+    {#        }#}
+    {#      })#}
+    {#    });#}
+    {#    });#}
+</script>
+</div>
+{% endif %}

@@ -31,3 +31,4 @@ tornado==4.4.2
 bokeh==0.12.4
 sympy==1.0
 typing==3.6.1
+jsonfield=2.0.2
