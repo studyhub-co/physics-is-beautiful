@@ -61,9 +61,11 @@ class VectorSerializer(BaseSerializer):
 
 
 class UnitConversionSerializer(BaseSerializer):
+    conversion_steps = serializers.JSONField()
+
     class Meta:
         model = UnitConversion
-        fields = ['answer', 'numerator', 'denominator', 'show_answer']
+        fields = ['answer', 'conversion_steps', 'unit_conversion_type']
 
     # def to_representation(self, obj):
     #     return super(UnitConversionSerializer, self).to_representation(obj.for_display())
@@ -184,17 +186,7 @@ class QuestionSerializer(BaseSerializer):
                 return None
 
             if type(answer.content) == UnitConversion:
-                if answer.content.show_answer:  # answer option
-                    return {
-                        'answer': answer.content.answer,
-                        'show_answer': answer.content.show_answer,
-                    }
-                else:
-                    return {
-                        'numerator': answer.content.numerator,
-                        'denominator': answer.content.denominator,
-                        'show_answer': answer.content.show_answer,
-                    }
+                return UnitConversionSerializer(answer.content).data
 
         return None
 

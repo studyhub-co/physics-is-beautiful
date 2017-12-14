@@ -66,7 +66,7 @@ Object.getOwnPropertyNames(UNITS)
     INPUT_UNITS = INPUT_UNITS.concat(Object.keys(UNITS[key]))
   })
 
-// Limit browser support:
+// Limit browsers support:
 // Object.entries(Object.getOwnPropertyDescriptors(UNITS))
 //   .filter(([key, descriptor]) => typeof descriptor.get === 'function')
 //   .map(([key]) => key).forEach(function (key) {
@@ -230,11 +230,38 @@ export class UnitConversionBase extends React.Component {
     this.resetStrikeAnswers = this.resetStrikeAnswers.bind(this)
     this.reDrawStrikes = this.reDrawStrikes.bind(this)
 
+    this.addColumn = this.addColumn.bind(this)
+    this.removeColumn = this.removeColumn.bind(this)
+
     this.state = {
       numColumns: numColumns,
       strikethroughD: false,
       strikethroughN: false
     }
+  }
+
+  addColumn () {
+    var MQ = MathQuill.getInterface(2)
+    var newColumns = this.state.numColumns + 1
+
+    this.setState({
+      numColumns: newColumns
+    }, function () { // need wait mount mathquill span!
+      this.setState({
+        answersSteps: [...this.state.answersSteps, [
+          { 'data': '', 'box': MQ(document.getElementById('1' + newColumns)) },
+          { 'data': '', 'box': MQ(document.getElementById('2' + newColumns)) }]
+        ]
+      })
+    })
+  }
+  removeColumn () {
+    this.setState({
+      numColumns: this.state.numColumns - 1,
+      answersSteps: this.state.answersSteps.slice(0, -1)
+    }, function () {
+      this.reDrawStrikes()
+    })
   }
 
   setLatexWoFireEvent (box, text) {
@@ -521,7 +548,7 @@ export class UnitConversionBase extends React.Component {
       if (foundIndex !== -1) {
         // replace all char and spaces in value
         return [input.substring(0, foundIndex)
-          .replace(/[^0-9*^.]+/g, ''),
+          .replace(/[^0-9*^.-]+/g, ''),
           // .replace(/^[\\\s]+|[\\\s]+$/gm, ''), unnessecery now
         unit]
       }
@@ -537,9 +564,6 @@ UnitConversionBase.propTypes = {
 export class UnitConversionCanvas extends UnitConversionBase {
   constructor (props) {
     super(props)
-
-    this.addColumn = this.addColumn.bind(this)
-    this.removeColumn = this.removeColumn.bind(this)
     this.submitQuestion = this.submitQuestion.bind(this)
   }
 
@@ -557,30 +581,6 @@ export class UnitConversionCanvas extends UnitConversionBase {
         ]]
       })
     }
-  }
-
-  addColumn () {
-    var MQ = MathQuill.getInterface(2)
-    var newColumns = this.state.numColumns + 1
-
-    this.setState({
-      numColumns: newColumns
-    }, function () { // need wait mount mathquill span!
-      this.setState({
-        answersSteps: [...this.state.answersSteps, [
-          { 'data': '', 'box': MQ(document.getElementById('1' + newColumns)) },
-          { 'data': '', 'box': MQ(document.getElementById('2' + newColumns)) }]
-        ]
-      })
-    })
-  }
-  removeColumn () {
-    this.setState({
-      numColumns: this.state.numColumns - 1,
-      answersSteps: this.state.answersSteps.slice(0, -1)
-    }, function () {
-      this.reDrawStrikes()
-    })
   }
 
   submitQuestion () {
@@ -725,7 +725,6 @@ export class UnitConversionCanvas extends UnitConversionBase {
     }
   }
   render () {
-    // var disabled = '';
     var buttonStyle = {
       padding: 2,
       display: 'block',

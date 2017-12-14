@@ -173,7 +173,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
     UnitConversionTypes = (
         ('10', 'LEFT SIDE BLANK'),
         ('20', 'RIGHT SIDE BLANK'),
-        ('30', 'ALL SIDE BLANK'),
+        ('30', 'ALL SIDES BLANK'),
     )
 
     unit_conversion_type = models.CharField(
@@ -199,10 +199,14 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
         if isinstance(obj, Answer):
             return self.matches(obj.content)
         elif isinstance(obj, UnitConversion):
-            if self.show_answer:  # check fraction
-                return self.match_math(obj.numerator, obj.denominator) and self.match_math(obj.answer, self.answer)
-            else:  # check answer
+            if self.unit_conversion_type == '20':  # check only answer
                 return self.match_math(obj.answer, self.answer)
+            else:  # check fraction and answer
+                correct = True
+                for step in obj.conversion_steps:
+                    if step['numerator'] and step['denominator']:
+                        correct = self.match_math(str(step['numerator']),  str(step['denominator']))
+                return correct and self.match_math(obj.answer, self.answer)
 
         return False
 
