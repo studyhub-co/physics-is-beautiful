@@ -62,17 +62,25 @@ export class UnitConversionAnswer extends React.Component {
     var answer = this.props.answer.answer
     var originalQuestion = this.props.answer.question.additional_text.split('/')
 
-    if (answer.show_answer) {
+    if (answer.unit_conversion_type === '10') {
       var qsDenom = ''
       if (typeof originalQuestion[1] !== 'undefined') {
         qsDenom = originalQuestion[1]
       }
+      var data = '\\frac{' + originalQuestion[0] + '}{' + qsDenom + '} '
+      for (var i = 0; i < answer.conversion_steps.length; i++) {
+        if (answer.conversion_steps[i]['numerator'] && answer.conversion_steps[i]['denominator']) {
+          data += ' | \\frac{' + answer.conversion_steps[i]['numerator'] + '}{' + answer.conversion_steps[i]['denominator'] + '} '
+        }
+      }
+      data += ' = ' + answer.answer
 
-      var data = '\\frac{' + originalQuestion[0] + '}{' + qsDenom + '} | ' +
-        ' \\frac{' + answer.numerator + '}{' + answer.denominator + '} = ' +
-        answer.answer
+      // var data = '\\frac{' + originalQuestion[0] + '}{' + qsDenom + '} | ' +
+      //   ' \\frac{' + answer.numerator + '}{' + answer.denominator + '} = ' +
+      //   answer.answer
       component = <RMathJax.Node>{data}</RMathJax.Node>
-    } else {
+    }
+    if (answer.unit_conversion_type === '20') {
       component = <RMathJax.Node>{answer.answer}</RMathJax.Node>
     }
 
