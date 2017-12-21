@@ -35,7 +35,7 @@ class Answer(BaseModel):
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content = GenericForeignKey('content_type', 'object_id')
+    content = GenericForeignKey('content_type', 'object_id')  # FIXME seems simpler to use model inheritance or one-to-one relationship
     is_correct = models.BooleanField(default=False)
 
     def matches(self, answer):
@@ -176,6 +176,25 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
         ('30', 'ALL SIDES BLANK'),
     )
 
+    UnitConversionUnits = {
+        'DISTANCE': {
+            'm': 'meters',
+            'mm': 'millimeters',
+            'cm': 'centimeters',
+            'km': 'kilometers',
+            'ft': 'feet',
+            'mi': 'miles'
+        },
+        'TIME': {
+            's': 'seconds',
+            'ms': 'milliseconds',
+            'min': 'minutes',
+            'hr': 'hours',
+            'd': 'days',
+            'wk': 'weeks'
+        }
+    }
+
     unit_conversion_type = models.CharField(
         max_length=2,
         choices=UnitConversionTypes,
@@ -187,7 +206,11 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
     #   {"numerator":"", "denominator":""}, ...]
     conversion_steps = JSONField(blank=True, null=True, help_text="Numerator/Denominator steps")
 
-    answer = models.CharField(max_length=100, help_text="Correct answer with unit: m, s, kg, m/s")
+    question_number = models.FloatField(blank=True, null=True)
+    question_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
+    answer_number = models.FloatField(blank=True, null=True)
+    answer_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
+
     numerator = models.CharField(blank=True, null=True,
                                  max_length=100, help_text="Numerator value with unit: m, s, kg, m/s")
     denominator = models.CharField(blank=True, null=True,
@@ -200,7 +223,8 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
             return self.matches(obj.content)
         elif isinstance(obj, UnitConversion):
             if self.unit_conversion_type == '20':  # check only answer
-                return self.match_math(obj.answer, self.answer)
+                # return self.match_math(obj.answer, self.answer)
+                return self.match_math(obj.answer_number, self.answer_number)
             else:  # check fraction and answer
                 correct = True
                 for step in obj.conversion_steps:

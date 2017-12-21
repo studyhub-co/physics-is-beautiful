@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.permissions import AllowAny
 
-from .models import Curriculum, Unit, Module, Lesson, Question, Game
+from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
 from .services import get_progress_service, LessonLocked
 
 from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSerializer,\
@@ -77,6 +77,12 @@ class LessonViewSet(ModelViewSet):
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_unit_conversion_units(request):
+    return Response(UnitConversion.UnitConversionUnits)
 
 
 @api_view(['POST'])

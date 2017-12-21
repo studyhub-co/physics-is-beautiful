@@ -298,7 +298,7 @@ class MathematicalExpressionAnswerInline(AnswerTabularInline):
 
 
 class ConversionStepsJSONWidget(forms.Widget):
-    template_name = 'curricula/conversion_steps_json_widget.html'
+    template_name = 'curricula/widgets/conversion_steps_json_widget.html'
 
     def render(self, name, value, attrs=None):
         if not value:
@@ -317,23 +317,49 @@ class ConversionStepsJSONWidget(forms.Widget):
         return mark_safe(render_to_string(self.template_name, context))
 
 
+from .form_fields import UCTField
+from django.contrib.contenttypes.models import ContentType
+
 class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
-    FIELDS = ['answer', 'unit_conversion_type', 'conversion_steps']
+    def save(self, commit=True):
+        self.instance.question_number = self.cleaned_data['initial_step'][0]
+        self.instance.question_unit = self.cleaned_data['initial_step'][1]
+        self.instance.answer_number = self.cleaned_data['initial_step'][2]
+        self.instance.answer_unit = self.cleaned_data['initial_step'][3]
+        super(UnitConversionAnswerForm, self).save(commit)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+
+        if instance:
+            ct = ContentType.objects.get_for_id(instance.content_type.pk)
+            uc_instance = ct.get_object_for_this_type(pk=instance.content.pk)
+
+            kwargs.update(initial={
+                'initial_step': (uc_instance.question_number,
+                                 uc_instance.question_unit,
+                                 uc_instance.answer_number,
+                                 uc_instance.answer_number)
+            })
+
+        super(UnitConversionAnswerForm, self).__init__(*args, **kwargs)
+
+    FIELDS = ['unit_conversion_type', 'conversion_steps']
     SPECIAL_MODEL = UnitConversion
 
-    answer = forms.CharField(help_text=UnitConversion._meta.get_field('answer').help_text)
+    initial_step = UCTField()
+    # answer = forms.CharField(help_text=UnitConversion._meta.get_field('answer').help_text)
+
     unit_conversion_type = forms.ChoiceField(choices=UnitConversion.UnitConversionTypes)
-    # numerator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('numerator').help_text)
-    # denominator = forms.CharField(required=False, help_text=UnitConversion._meta.get_field('denominator').help_text)
-    # show_answer = forms.BooleanField(required=False, help_text=UnitConversion._meta.get_field('show_answer').help_text)
+
     conversion_steps = JSONFormField(required=False,
                                      help_text=UnitConversion._meta.get_field('conversion_steps').help_text,
                                      widget=ConversionStepsJSONWidget)
 
     class Meta:
         model = Answer
-        fields = ['answer', 'unit_conversion_type', 'is_correct', 'position', 'conversion_steps']
+        fields = ['unit_conversion_type', 'conversion_steps', 'is_correct', 'position']
 
 
 @create_fields_funcs(UnitConversionAnswerForm)
@@ -341,6 +367,9 @@ class UnitConversionAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Unit Conversion Answers'
     model = Answer
     form = UnitConversionAnswerForm
+
+    def initial_step(self, obj):
+        return obj
 
     class Media:
         css = {
