@@ -36,7 +36,7 @@ class Question(BaseModel):
                                        db_index=True,
                                        null=True,
                                        blank=True,
-                                       help_text="Enter initial value for unit conversion type")
+                                       help_text="Not used field")
     hint = models.CharField(max_length=1024, blank=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
