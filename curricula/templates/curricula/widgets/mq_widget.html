@@ -1,50 +1,8 @@
 {% load uc_filters %}
-<input style="display: none;" type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %} />
 <label>
     {{ widget.attrs|get_item:'placeholder' }}:
 </label>
-{#<span name="{{ widget.name }}-span" id="{{ widget.name }}-mq" style="min-height: 1.5em; min-width: 5em;"></span>#}
-<span id="{{ widget.name }}-mq" style="min-height: 1.5em; min-width: 5em;"></span>
-{% if not '__prefix__' in widget.name %}
-<script>
-  if (typeof mathFields === 'undefined'){
-    var mathFields={};
-  }
+<span id="{{ widget.name }}-ucmathquill">
+    <input style="display: none;" type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %} />
+</span>
 
-  MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
-    mathFields['{{ widget.name }}'] = MQ.MathField(document.getElementById('{{ widget.name }}-mq'), {
-        handlers: {
-          edit: function(field) {
-            if (field.data.fromJsCall) { return }
-            document.getElementsByName('{{ widget.name }}')[0].value = field.latex();
-            
-            var lhs_id = 'id_{{ widget.name }}';
-            lhs_id = lhs_id.replace(/.$/, 1);
-
-            var lhs_element = document.getElementById(lhs_id);
-
-            var lhs_unit = lhs_element.options[lhs_element.selectedIndex].value;
-
-            var rhs_id = 'id_{{ widget.name }}';
-            rhs_id = lhs_id.replace(/.$/, 3);
-            var rhs_element = document.getElementById(rhs_id);
-            var rhs_unit = rhs_element.options[rhs_element.selectedIndex].value;
-
-            var rhs_val = django.uc_calculate_lhs_number(field.latex(), lhs_unit, rhs_unit);
-
-            mathFields['{{ widget.name }}'.replace(/.$/, 2)].data.fromJsCall = true;
-            mathFields['{{ widget.name }}'.replace(/.$/, 2)].latex(rhs_val);
-            mathFields['{{ widget.name }}'.replace(/.$/, 2)].data.fromJsCall = false;
-
-          }
-        }
-    });
-    {% if widget.value != None %}
-        mathFields['{{ widget.name }}'].latex('{{ widget.value|stringformat:'s' }}');
-    {%  endif %}
-    {% if 'initial_step_2' in widget.name  %}
-        mathFields['{{ widget.name }}'].__controller.container[0].style.pointerEvents = 'none'
-    {% endif %}
-
-</script>
-{%  endif %}
