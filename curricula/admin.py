@@ -8,6 +8,9 @@ from jsonfield.fields import JSONFormField
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
+from .form_fields import UCTField
+from django.contrib.contenttypes.models import ContentType
+
 import json
 
 from .models import (
@@ -316,9 +319,6 @@ class ConversionStepsJSONWidget(forms.Widget):
 
         return mark_safe(render_to_string(self.template_name, context))
 
-
-from .form_fields import UCTField
-from django.contrib.contenttypes.models import ContentType
 
 class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
