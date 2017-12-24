@@ -1,7 +1,8 @@
 from django.forms.fields import MultiValueField, CharField
 from django.core.exceptions import ValidationError
 
-from .widgets import UnitNameWidget, MathQuillWidget, UCWidget
+from .widgets import UnitNameWidget, MathQuillWidget\
+    # , UCWidget
 
 
 class UCTField(MultiValueField):
@@ -32,3 +33,6 @@ class UCTField(MultiValueField):
             raise ValidationError(self.error_messages['invalid'], code='invalid')
 
         return non_empty_list
+
+    def value_from_datadict(self, data, files, name):
+        return ''

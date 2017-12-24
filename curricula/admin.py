@@ -300,62 +300,68 @@ class MathematicalExpressionAnswerInline(AnswerTabularInline):
         return obj.representation
 
 
-class ConversionStepsJSONWidget(forms.Widget):
-    template_name = 'curricula/widgets/conversion_steps_json_widget.html'
+# class ConversionStepsJSONWidget(forms.Widget):
+#     template_name = 'curricula/widgets/conversion_steps_json_widget.html'
+#
+#     def render(self, name, value, attrs=None):
+#         # if not value:
+#         #     value = '[{"numerator":"", "denominator":""},' \
+#         #             '{"numerator":"", "denominator":""},' \
+#         #             '{"numerator":"", "denominator":""},' \
+#         #             '{"numerator":"", "denominator":""}]'
+#         # else:
+#         value = json.dumps(value)
+#
+#         context = {
+#             'data': value,
+#             'name': name
+#         }
+#
+#         return mark_safe(render_to_string(self.template_name, context))
 
-    def render(self, name, value, attrs=None):
-        if not value:
-            value = '[{"numerator":"", "denominator":""},' \
-                    '{"numerator":"", "denominator":""},' \
-                    '{"numerator":"", "denominator":""},' \
-                    '{"numerator":"", "denominator":""}]'
-        else:
-            value = json.dumps(value)
-
-        context = {
-            'data': value,
-            'name': name
-        }
-
-        return mark_safe(render_to_string(self.template_name, context))
+from .widgets import UnitNameWidget, MathQuillWidget
 
 
 class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
-    def save(self, commit=True):
-        self.instance.question_number = self.cleaned_data['initial_step'][0]
-        self.instance.question_unit = self.cleaned_data['initial_step'][1]
-        self.instance.answer_number = self.cleaned_data['initial_step'][2]
-        self.instance.answer_unit = self.cleaned_data['initial_step'][3]
-        super(UnitConversionAnswerForm, self).save(commit)
+    # def save(self, commit=True):
+    #     # self.instance.question_number = self.cleaned_data['initial_step'][0]
+    #     # self.instance.question_unit = self.cleaned_data['initial_step'][1]
+    #     # self.instance.answer_number = self.cleaned_data['initial_step'][2]
+    #     # self.instance.answer_unit = self.cleaned_data['initial_step'][3]
+    #     super(UnitConversionAnswerForm, self).save(commit)
 
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
+    # def __init__(self, *args, **kwargs):
+    #     instance = kwargs.get('instance', None)
+    #
+    #     if instance:
+    #         ct = ContentType.objects.get_for_id(instance.content_type.pk)
+    #         uc_instance = ct.get_object_for_this_type(pk=instance.content.pk)
+    #
+    #         kwargs.update(initial={
+    #             'initial_step': (uc_instance.question_number,
+    #                              uc_instance.question_unit,
+    #                              uc_instance.answer_number,
+    #                              uc_instance.answer_unit)
+    #         })
+    #
+    #     super(UnitConversionAnswerForm, self).__init__(*args, **kwargs)
 
-        if instance:
-            ct = ContentType.objects.get_for_id(instance.content_type.pk)
-            uc_instance = ct.get_object_for_this_type(pk=instance.content.pk)
-
-            kwargs.update(initial={
-                'initial_step': (uc_instance.question_number,
-                                 uc_instance.question_unit,
-                                 uc_instance.answer_number,
-                                 uc_instance.answer_number)
-            })
-
-        super(UnitConversionAnswerForm, self).__init__(*args, **kwargs)
-
-    FIELDS = ['unit_conversion_type', 'conversion_steps']
+    FIELDS = ['unit_conversion_type', 'conversion_steps', 'question_number', 'question_unit', 'answer_number', 'answer_unit']
     SPECIAL_MODEL = UnitConversion
 
-    initial_step = UCTField()
+    # initial_step = UCTField()
+    question_number = forms.CharField(widget=MathQuillWidget(attrs={'placeholder': 'question'}))
+    question_unit = forms.CharField(widget=UnitNameWidget(attrs={'placeholder': 'question unit'}))
+    answer_number = forms.CharField(widget=MathQuillWidget(attrs={'placeholder': 'answer'}))
+    answer_unit = forms.CharField(widget=UnitNameWidget(attrs={'placeholder': 'answer unit'}))
     # answer = forms.CharField(help_text=UnitConversion._meta.get_field('answer').help_text)
 
     unit_conversion_type = forms.ChoiceField(choices=UnitConversion.UnitConversionTypes)
 
     conversion_steps = JSONFormField(required=False,
                                      help_text=UnitConversion._meta.get_field('conversion_steps').help_text,
-                                     widget=ConversionStepsJSONWidget)
+                                     )
 
     class Meta:
         model = Answer
@@ -368,15 +374,14 @@ class UnitConversionAnswerInline(AnswerTabularInline):
     model = Answer
     form = UnitConversionAnswerForm
 
-    def initial_step(self, obj):
-        return obj
+    # def initial_step(self, obj):
+    #     return obj
 
     class Media:
         css = {
-            "all": ("admin/jsoneditor.min.css", "admin/jsoneditor.reset.css",
-                    "curricula/mathquill-0.10.1/mathquill.css")
+            "all": ("curricula/mathquill-0.10.1/mathquill.css", )
         }
-        js = ("admin/jsoneditor.min.js", "curricula/mathquill-0.10.1/mathquill.js")
+        js = ("curricula/mathquill-0.10.1/mathquill.js", )
 
 
 class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):

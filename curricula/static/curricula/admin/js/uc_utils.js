@@ -19,9 +19,7 @@ var reloadUnits = function(django) {
        function unitsLoaded() {
 
          var refreshUnits = function (widget_name, unitType) {
-           
-           //console.log(widget_name);
-           
+
            var INPUT_UNITS = []
 
            Object.getOwnPropertyNames(django.unitsList)
@@ -69,13 +67,20 @@ var reloadUnits = function(django) {
                         selected_unit_type = key;
                         wn = mainElement.attr('name');
 
-                        var widgetIndex = wn.slice(-1);
-                        if (widgetIndex == "1"){
-                          widgetIndex="3";
-                        } else {
-                          widgetIndex="1";
-                        }
-                        wn = wn.replace(/.$/, widgetIndex);
+                        // var widgetIndex = wn.slice(-1);
+                        // if (widgetIndex == "1"){
+                        //   widgetIndex="3";
+                        // } else {
+                        //   widgetIndex="1";
+                        // }
+                        // wn = wn.replace(/.$/, widgetIndex);
+
+                       if (wn.indexOf('answer_unit', wn.length - 'answer_unit'.length) !== -1){
+                          wn = wn.replace(new RegExp('answer_unit$'), 'question_unit');
+                       } else {
+                          wn = wn.replace(new RegExp('question_unit$'), 'answer_unit');
+                       }
+
                         var oldVal = django.jQuery('#id_'+wn).val();
                         refreshUnits(wn, selected_unit_type); // reload on other
                         //restore other box with selected
@@ -90,7 +95,8 @@ var reloadUnits = function(django) {
 
                 // fire mathquill field for recalculate rhs
                 MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
-                var spanId = mainElement.attr('name').replace(/.$/, "0-mq")
+                var spanId = mainElement.attr('name').replace(new RegExp('answer_unit$|question_unit$'), 'question_number-mq');
+                // var spanId = mainElement.attr('name').replace(/.$/, "0-mq")
                 var latexLhs = MQ(document.getElementById(spanId)).latex()
                 MQ(document.getElementById(spanId)).latex(latexLhs)
             });
@@ -115,6 +121,8 @@ var reloadMQ = function(django) {
   django.jQuery('span[id$=ucmathquill]').each(function() {
 
     var inputElement = django.jQuery(this).children(':first');
+    
+    //console.log(inputElement);
 
     if (typeof django.mathFields === 'undefined') {
       django.mathFields = {};
@@ -128,18 +136,30 @@ var reloadMQ = function(django) {
     django.mathFields[inputElement.attr('name')] = MQ.MathField(document.getElementById(inputElement.attr('name') + '-mq'), {
       handlers: {
         edit: function (field) {
-          if (field.data.fromJsCall) { return }
+          //write value to original input
           document.getElementsByName(inputElement.attr('name'))[0].value = field.latex();
+
+          if (field.data.fromJsCall) { return }
+          //document.getElementsByName(inputElement.attr('name'))[0].value = field.latex();
 
           //var lhs_id = 'id_{{ widget.name }}';
           var lhs_id = 'id_' + inputElement.attr('name');
-          lhs_id = lhs_id.replace(/.$/, 1);
+          //lhs_id = lhs_id.replace(/.$/, 1);
+          lhs_id = lhs_id.replace(new RegExp('answer_number$|question_number$'), 'question_unit');
           var lhs_element = document.getElementById(lhs_id);
 
-          var lhs_unit = lhs_element.options[lhs_element.selectedIndex].value;
+          var lhs_unit
+          try {
+            lhs_unit = lhs_element.options[lhs_element.selectedIndex].value;
+          }
+          catch (TypeError){
+            lhs_element.selectedIndex = 0;
+            lhs_unit = lhs_element.options[lhs_element.selectedIndex].value;
+          }
 
           var rhs_id = 'id_' + inputElement.attr('name');
-          rhs_id = lhs_id.replace(/.$/, 3);
+          // rhs_id = lhs_id.replace(/.$/, 3);
+          rhs_id = rhs_id.replace(new RegExp('answer_number$|question_number$'), 'answer_unit');
 
           var rhs_element = document.getElementById(rhs_id);
 
@@ -148,14 +168,18 @@ var reloadMQ = function(django) {
             rhs_unit = rhs_element.options[rhs_element.selectedIndex].value;
           }
           catch (TypeError){
-            rhs_unit = rhs_element.selectedIndex = 0;
+            rhs_element.selectedIndex = 0;
+            rhs_unit = rhs_element.options[rhs_element.selectedIndex].value;
           }
 
           var rhs_val = django.uc_calculate_lhs_number(field.latex(), lhs_unit, rhs_unit);
 
-          django.mathFields[inputElement.attr('name').replace(/.$/, 2)].data.fromJsCall = true;
-          django.mathFields[inputElement.attr('name').replace(/.$/, 2)].latex(rhs_val);
-          django.mathFields[inputElement.attr('name').replace(/.$/, 2)].data.fromJsCall = false;
+          // django.mathFields[inputElement.attr('name').replace(/.$/, 2)].data.fromJsCall = true;
+          // django.mathFields[inputElement.attr('name').replace(/.$/, 2)].latex(rhs_val);
+          // django.mathFields[inputElement.attr('name').replace(/.$/, 2)].data.fromJsCall = false;
+          django.mathFields[inputElement.attr('name').replace(new RegExp('question_number$'), 'answer_number')].data.fromJsCall = true;
+          django.mathFields[inputElement.attr('name').replace(new RegExp('question_number$'), 'answer_number')].latex(rhs_val);
+          django.mathFields[inputElement.attr('name').replace(new RegExp('question_number$'), 'answer_number')].data.fromJsCall = false;
 
         }
       }
@@ -172,7 +196,7 @@ var reloadMQ = function(django) {
 
 django.jQuery(function() {
   // reloadUnits(django);
-  //reloadMQ(django);
+  // reloadMQ(django);
 
   MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
@@ -180,8 +204,8 @@ django.jQuery(function() {
    mutations.forEach(function(mutation) {
      if(mutation.target.className == "djn-add-item"){
         // reload for new widget
-        reloadUnits(django);
-        reloadMQ(django);
+         reloadUnits(django);
+         reloadMQ(django);
       }
     });
   });
