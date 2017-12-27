@@ -230,7 +230,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
                 for step in obj.conversion_steps:
                     if step['numerator'] and step['denominator']:
                         correct = self.match_math(str(step['numerator']),  str(step['denominator']))
-                return correct and self.match_math(obj.answer, self.answer)
+                return correct and self.match_math(obj.answer_number, self.answer_number)
 
         return False
 
