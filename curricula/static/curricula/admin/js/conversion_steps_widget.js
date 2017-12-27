@@ -119,8 +119,8 @@ django.jQuery(function() {
           var answer_number = MQ(document.getElementById("answers-0-conversion_steps-" + idx + "-answer_number-mq")).latex();
           var answer_unit = django.jQuery("#id_answers-0-conversion_steps-" + idx + "-answer_unit").val();
           jsonSteps.push({
-            "numerator": question_number + "\ " + question_unit,
-            "denominator": answer_number + "\ " + answer_unit
+            "numerator": question_number + "\\ " + question_unit,
+            "denominator": answer_number + "\\ " + answer_unit
           });
         }
       }
