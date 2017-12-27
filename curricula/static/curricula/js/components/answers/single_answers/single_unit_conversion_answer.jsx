@@ -35,14 +35,14 @@ class UnitConversionCanvas extends UnitConversionBase {
       document.getElementById('15').style.pointerEvents = 'none'
 
       this.setState({
-        answer: { 'data': props.answer, 'box': answerBox },
+        answer: { 'data': props.answer_number+'\ '+props.answer_unit, 'box': answerBox },
         numColumns: 1,
         answersSteps: [[
           {'data': '', 'box': MQ(document.getElementById('11'))},
           {'data': '', 'box': MQ(document.getElementById('21'))}
         ]] // column set by default
       }, function () {
-        this.setLatexWoFireEvent(answerBox, props.answer)
+        this.setLatexWoFireEvent(answerBox, props.answer_number+'\\ '+props.answer_unit)
       })
     }
 
@@ -135,6 +135,7 @@ class UnitConversionCanvas extends UnitConversionBase {
               'numerator': baseCompareLst[0],
               'denominator': baseCompareLst[1]
             })
+
         }
       }
     }
@@ -158,7 +159,9 @@ class UnitConversionCanvas extends UnitConversionBase {
         this.props.uuid,
         {
           unit_conversion: {
-            answer: answerSplit[0] + answerSplit[1],
+            // answer: answerSplit[0] + answerSplit[1],
+            answer_number: answerSplit[0],
+            answer_unit: answerSplit[1],
             conversion_steps: conversionSteps
             // numerator: baseCompareLst[0],
             // denominator: baseCompareLst[1]
@@ -405,11 +408,18 @@ export class SingleUnitConversionAnswer extends React.Component {
   }
 
   render () {
-    var [number, unit] = UnitConversionBase.parseToValueUnit(this.props.question.additional_text)
+    //var [number, unit] = UnitConversionBase.parseToValueUnit(this.props.question.additional_text)
+    var number = this.props.question.unit_conversion.question_number
+    var unit = this.props.question.unit_conversion.question_unit
+
 
     return (<div className='bounding-box'>
       <UnitConversionCanvas
-        answer={this.props.question.unit_conversion.answer}
+        //answer={this.props.question.unit_conversion.answer}
+        answer_number={this.props.question.unit_conversion.answer_number}
+        answer_unit={this.props.question.unit_conversion.answer_unit}
+        // question_number={this.props.question.unit_conversion.question_number}
+        // question_unit={this.props.question.unit_conversion.question_unit}
         number={number}
         unit={unit}
         unit_conversion_type={this.props.question.unit_conversion.unit_conversion_type}

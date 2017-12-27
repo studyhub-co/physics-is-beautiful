@@ -62,18 +62,21 @@ class VectorSerializer(BaseSerializer):
 
 class UnitConversionSerializer(BaseSerializer):
     conversion_steps = serializers.JSONField()
-    question = serializers.SerializerMethodField()
-    answer = serializers.SerializerMethodField()
+    # question = serializers.SerializerMethodField()
+    # answer = serializers.SerializerMethodField()
 
-    def get_answer(self, obj):
-        return str(obj.answer_number)+ '\ ' + obj.answer_unit
-
-    def get_question(self, obj):
-        return str(obj.question_number) + '\ ' + obj.question_unit
+    # def get_answer(self, obj):
+    #     return str(obj.answer_number)+ '\ ' + obj.answer_unit
+    #
+    # def get_question(self, obj):
+    #     return str(obj.question_number) + '\ ' + obj.question_unit
 
     class Meta:
         model = UnitConversion
-        fields = ['question', 'answer', 'conversion_steps', 'unit_conversion_type']
+        # fields = ['question', 'answer', 'conversion_steps', 'unit_conversion_type']
+        fields = ['question_number', 'question_unit',
+                  'answer_number', 'answer_unit',
+                  'conversion_steps', 'unit_conversion_type']
 
     # def to_representation(self, obj):
     #     return super(UnitConversionSerializer, self).to_representation(obj.for_display())
