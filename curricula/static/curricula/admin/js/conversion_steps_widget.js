@@ -3,7 +3,6 @@ var conversionStepsEditor = function(django) {
  function createEditor(){
 
    // create steps list
-
    django.stepsArray = [];
 
    var addStep = function () {
@@ -54,7 +53,7 @@ var conversionStepsEditor = function(django) {
          django.stepsArray.push(rowDiv);
 
          django.jQuery('#remove-answers-0-conversion_steps-' + idx + '-button').click(function(e){
-           // remove-answers-0-conversion_steps-1-button
+           // remove-answers-0-conversion_steps-1-button click
            var id = e.target.id.match(/^remove-answers-0-conversion_steps-(\d+)-button/)[1];
            django.jQuery("#conversions-step-" + id).remove();
            for (var i=0; i < django.stepsArray.length; i++){
@@ -63,12 +62,13 @@ var conversionStepsEditor = function(django) {
               }
            }
            if (idx <= 2){
-            django.jQuery('#add-answers-0-conversion_steps-button').show();
+              django.jQuery('#add-answers-0-conversion_steps-button').show();
            }
            delete django.mathFields['answers-0-conversion_steps-' + idx + '-answer_number'];
            delete django.mathFields['answers-0-conversion_steps-' + idx + '-question_number'];
            // django.reloadUnits(django);
            // django.reloadMQ(django);
+           django.regenerateConversionStepsJson();
          })
 
        }
@@ -83,8 +83,49 @@ var conversionStepsEditor = function(django) {
 
    var initialTextArea = django.jQuery('textarea[id$=conversion_steps]')
    if(initialTextArea.val()){
-     // TODO load data
-   }else{
+     // load data
+     var initialJson =initialTextArea.val().replace(/'/g, '"')
+     var stepsList = JSON.parse(initialJson);
+
+     MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
+
+     for (var i=0; i < stepsList.length; i++){
+         addStep();
+     }
+     
+     django.reloadUnits(django);
+     django.reloadMQ(django);
+
+     // wait for django.mathFields populated
+     var intialDataLoaded = function (stepsList) {
+
+       for (var i=0; i < stepsList.length; i++){
+          var [inputNumValue, inputNumUnit] = stepsList[i]['numerator'].split('\\ ');
+          var inputDenomUnit = stepsList[i]['denominator'].split('\\ ')[1];
+          
+          var inputElement = MQ(document.getElementById("answers-0-conversion_steps-" + i + "-question_number-mq"));
+          var inputNumElement = django.jQuery('#id_answers-0-conversion_steps-'+ i +'-question_unit');
+          var inputDenomElement = django.jQuery('#id_answers-0-conversion_steps-'+ i +'-answer_unit');
+
+          inputNumElement.val(inputNumUnit);
+          inputDenomElement.val(inputDenomUnit);
+          inputElement.latex(inputNumValue);
+       }
+
+     }
+
+     function checkMathFields(stepsList) {
+        if (django.mathFields) {
+            intialDataLoaded(stepsList);
+        } else {
+          window.setTimeout(checkMathFields.bind(null, stepsList), 100);
+       }
+    }
+
+    checkMathFields(stepsList);
+
+
+   } else { //empty initial data
      //add initial step
       addStep();
    }

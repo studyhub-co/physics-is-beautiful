@@ -51,17 +51,7 @@ class UnitConversionCanvas extends UnitConversionBase {
 
       this.setLatexWoFireEvent(answerBox, '')
 
-      // reset default column
-      // document.getElementById('11').style.pointerEvents = 'none'
-      // document.getElementById('21').style.pointerEvents = 'none'
-      // if(x == 0){
-      //        this.setLatexWoFireEvent(numBox, props.conversion_steps[x]['numerator'])
-      //        this.setLatexWoFireEvent(denumBox, props.conversion_steps[x]['denominator'])
-      //      } else (
-      //
-      //      )
-
-      this.setState({
+       this.setState({
         // answersSteps: answersSteps,
         numColumns: props.conversion_steps.length
         // answersSteps: [[
@@ -69,9 +59,6 @@ class UnitConversionCanvas extends UnitConversionBase {
         //   {'data': props.denominator, 'box': denumBox}
         // ]]
       }, function () {
-        // numBox.latex(props.numerator)
-        // denumBox.latex(props.denominator)
-
         for (var x = 0; x < props.conversion_steps.length; x++) {
           if (props.conversion_steps[x]['numerator'] &&
               props.conversion_steps[x]['denominator']) {
@@ -95,7 +82,10 @@ class UnitConversionCanvas extends UnitConversionBase {
 
     if (props.unit_conversion_type === '30') { // no fill any side
       this.setState({
-        answersSteps: []
+        answersSteps: [[
+                {'data': '', 'box': MQ(document.getElementById('11'))},
+                {'data': '', 'box': MQ(document.getElementById('21'))}
+              ]]
       })
     }
   }
@@ -139,12 +129,6 @@ class UnitConversionCanvas extends UnitConversionBase {
         }
       }
     }
-
-    // var numQty = null
-    // var denomQty = null
-    //
-    // if (numSplit) { numQty = this.getQtyFromSplitData(numSplit) }
-    // if (denSplit) { denomQty = this.getQtyFromSplitData(denSplit) }
 
     var answerSplit = null
 
@@ -304,15 +288,17 @@ class UnitConversionCanvas extends UnitConversionBase {
   render () {
     if (typeof this.props.is_correct_answer !== 'undefined') { // user gave answer
       var spanBoxes = []
-      if (this.props.unit_conversion_type === '20') { // RIGHT SIDE BLANK
+      if (this.props.unit_conversion_type === '20' || '30') { // RIGHT SIDE BLANK
         spanBoxes.push(15)
       }
-      if (this.props.unit_conversion_type === '10') { // LEFT SIDE BLANK
+      if (this.props.unit_conversion_type === '10' || '30') { // LEFT SIDE BLANK
         for (var x = 0; x < this.state.answersSteps.length; x++) {
           spanBoxes.push('1' + (x + 1))
           spanBoxes.push('2' + (x + 1))
         }
       }
+      
+      console.log(spanBoxes);
 
       for (var i = 0; i < spanBoxes.length; i++) {
         var element = document.getElementById(spanBoxes[i])

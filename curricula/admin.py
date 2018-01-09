@@ -12,6 +12,9 @@ from .models import (
     UnitConversion
 )
 
+from .models.answers import MathematicalExpressionMixin
+from pint import UnitRegistry
+
 admin.AdminSite.site_header = 'Physics is Beautiful Admin'
 admin.AdminSite.site_title = admin.AdminSite.site_header
 
@@ -311,9 +314,38 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
                                      widget=ConversionStepsJSONWidget
                                      )
 
+    def clean(self):
+        steps = self.cleaned_data['conversion_steps']
+        question_number = self.cleaned_data['question_number']
+        question_unit = self.cleaned_data['question_unit']
+
+        answer_number = self.cleaned_data['answer_number']
+
+        ureg = UnitRegistry()
+        Q_ = ureg.Quantity
+
+        left_value = Q_(question_number + " " + question_unit)
+
+        for step in steps:
+            num = Q_(step['numerator'])
+            denom = Q_(step['denominator'])
+
+            left_value = left_value * num / denom
+
+        # left_value conver to SI
+        answer_si = left_value.to_base_units().magnitude
+
+        correct = MathematicalExpressionMixin.match_math(str(answer_si), str(answer_number))
+
+        if not correct:
+            self.add_error('conversion_steps', 'Conversion steps are incorrect')
+
+
     class Meta:
         model = Answer
-        fields = ['unit_conversion_type', 'conversion_steps', 'is_correct', 'position']
+        fields = ['unit_conversion_type',
+                  'conversion_steps', 'question_number', 'question_unit', 'answer_number', 'answer_unit',
+                  'is_correct', 'position']
 
 
 @create_fields_funcs(UnitConversionAnswerForm)
@@ -321,9 +353,6 @@ class UnitConversionAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Unit Conversion Answers'
     model = Answer
     form = UnitConversionAnswerForm
-
-    # def initial_step(self, obj):
-    #     return obj
 
     class Media:
         css = {
