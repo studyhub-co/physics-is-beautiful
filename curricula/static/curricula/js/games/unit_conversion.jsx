@@ -410,6 +410,7 @@ export class UnitConversionBase extends React.Component {
 
     // store value in matrix
     var answers = this.state.answersSteps
+
     answers[col - 1][row - 1] = {
       'data': data,
       'splitData': this.constructor.parseToValueUnit(this.clearDataText(data)),

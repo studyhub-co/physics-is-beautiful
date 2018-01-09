@@ -12,6 +12,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 from jsonfield import JSONField
 
+from pint import UnitRegistry
+
 from . import BaseModel, Question
 
 class AnswerQuerySet(models.QuerySet):
@@ -67,6 +69,7 @@ class Text(BaseModel):
 
     def __str__(self):
         return 'Text: {}'.format(self.text)
+
 
 class MathematicalExpressionMixin:
     @staticmethod
@@ -223,14 +226,27 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
             return self.matches(obj.content)
         elif isinstance(obj, UnitConversion):
             if self.unit_conversion_type == '20':  # check only answer
-                # return self.match_math(obj.answer, self.answer)
                 return self.match_math(obj.answer_number, self.answer_number)
             else:  # check fraction and answer
-                correct = True
+                # correct = True
+                ureg = UnitRegistry()
+                Q_ = ureg.Quantity
+                left_value = Q_(str(self.question_number) + " " + self.question_unit)
                 for step in obj.conversion_steps:
                     if step['numerator'] and step['denominator']:
-                        correct = self.match_math(str(step['numerator']),  str(step['denominator']))
-                return correct and self.match_math(obj.answer_number, self.answer_number)
+                        num = Q_(step['numerator'])
+                        denom = Q_(step['denominator'])
+
+                        left_value = left_value * num / denom
+                        # correct = self.match_math(str(step['numerator']),  str(step['denominator']))
+
+                answer_si = left_value.to_base_units().magnitude
+                correct = MathematicalExpressionMixin.match_math(str(answer_si), str(self.answer_number))
+
+                return correct
+
+                # correct = MathematicalExpressionMixin.match_math(str(answer_calc), answer_number)
+                # return correct and self.match_math(obj.answer_number, self.answer_number)
 
         return False
 
