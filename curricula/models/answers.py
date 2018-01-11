@@ -240,8 +240,9 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
                         left_value = left_value * num / denom
                         # correct = self.match_math(str(step['numerator']),  str(step['denominator']))
 
-                answer_si = left_value.to_base_units().magnitude
-                correct = MathematicalExpressionMixin.match_math(str(answer_si), str(self.answer_number))
+                obj_answer_si = left_value.to_base_units().magnitude
+                self_answer_si = self.answer_number.to_base_units().magnitude
+                correct = MathematicalExpressionMixin.match_math(str(obj_answer_si), str(self_answer_si))
 
                 return correct
 
