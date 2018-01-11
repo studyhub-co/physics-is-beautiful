@@ -1,6 +1,9 @@
 django.uc_calculate_lhs_number = function (lhsNumber, lhsUnit, rhsUnit) {
   lhsNumber = lhsNumber.replace(/\^{\s*(\S+)\s*}/, '^($1)'); // fix for math.parser()
+  lhsNumber = lhsNumber.replace(/\\cdot/, '*'); // fix for math.parser()
+
   var parser = math.parser();
+
   try {
     var lhsNumber = parser.eval(lhsNumber);
   } catch (e) {
@@ -144,9 +147,6 @@ var reloadMQ = function(django) {
       }
 
       MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
-
-      // django.jQuery(inputElement.attr('name') + '-mq').remove();
-      // inputElement.after('<span id="' + inputElement.attr('name') + '-mq" style="min-height: 1.5em; min-width: 5em;"></span>');
 
       if(!django.mathFields[inputElement.attr('name')]){
 
