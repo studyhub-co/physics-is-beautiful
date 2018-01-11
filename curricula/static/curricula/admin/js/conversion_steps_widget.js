@@ -7,8 +7,9 @@ var conversionStepsEditor = function(django) {
 
    var addStep = function () {
 
-     django.jQuery('div[id$="conversion_steps-div"]').each(function () {
+     django.jQuery('span[id$="conversion_steps-div"]').each(function () {
        var initialDiv = django.jQuery(this);
+
        if (initialDiv.attr('id').indexOf("__prefix__") === -1) {
 
          var idx = django.stepsArray.length;
@@ -71,7 +72,7 @@ var conversionStepsEditor = function(django) {
            django.regenerateConversionStepsJson();
          })
 
-       }
+        }
       })
    }
 
@@ -83,6 +84,7 @@ var conversionStepsEditor = function(django) {
 
    var initialTextArea = django.jQuery('textarea[id$=conversion_steps]')
    if(initialTextArea.val()){
+
      // load data
      var initialJson =initialTextArea.val().replace(/'/g, '"')
      var stepsList = JSON.parse(initialJson);
@@ -149,6 +151,8 @@ django.jQuery(function() {
   django.regenerateConversionStepsJson = function () {
 
     if(django.stepsArray){
+      
+      //console.log(django.stepsArray);
 
       var jsonSteps = []
       MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);

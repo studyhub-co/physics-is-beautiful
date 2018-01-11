@@ -302,12 +302,12 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     FIELDS = ['unit_conversion_type', 'conversion_steps', 'question_number', 'question_unit', 'answer_number', 'answer_unit']
     SPECIAL_MODEL = UnitConversion
 
-    question_number = forms.CharField(widget=MathQuillWidget(attrs={'placeholder': 'question'}))
-    question_unit = forms.CharField(widget=UnitNameWidget(attrs={'placeholder': 'question unit'}))
-    answer_number = forms.CharField(widget=MathQuillWidget(attrs={'placeholder': 'answer'}))
-    answer_unit = forms.CharField(widget=UnitNameWidget(attrs={'placeholder': 'answer unit'}))
+    question_number = forms.CharField(required=True, widget=MathQuillWidget(attrs={'placeholder': 'question'}))
+    question_unit = forms.CharField(required=True, widget=UnitNameWidget(attrs={'placeholder': 'question unit'}))
+    answer_number = forms.CharField(required=True, widget=MathQuillWidget(attrs={'placeholder': 'answer'}))
+    answer_unit = forms.CharField(required=True, widget=UnitNameWidget(attrs={'placeholder': 'answer unit'}))
 
-    unit_conversion_type = forms.ChoiceField(choices=UnitConversion.UnitConversionTypes)
+    unit_conversion_type = forms.ChoiceField(required=True, choices=UnitConversion.UnitConversionTypes)
 
     conversion_steps = JSONFormField(required=False,
                                      help_text=UnitConversion._meta.get_field('conversion_steps').help_text,
@@ -315,27 +315,40 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
                                      )
 
     def clean(self):
-        steps = self.cleaned_data['conversion_steps']
-        question_number = self.cleaned_data['question_number']
-        question_unit = self.cleaned_data['question_unit']
 
-        answer_number = self.cleaned_data['answer_number']
+
+        question_number = self.cleaned_data.get('question_number', None)
+        question_unit = self.cleaned_data.get('question_unit', None)
+
+        answer_number = self.cleaned_data.get('answer_number', None)
+        answer_unit = self.cleaned_data.get('answer_unit', None)
+
+        if None in [question_number, question_unit, answer_number, answer_unit]:
+            return
+
+        steps = self.cleaned_data.get('conversion_steps', None)
 
         ureg = UnitRegistry()
         Q_ = ureg.Quantity
 
         left_value = Q_(question_number + " " + question_unit)
+        right_value = Q_(answer_number + " " + answer_unit)
 
-        for step in steps:
-            num = Q_(step['numerator'])
-            denom = Q_(step['denominator'])
+        if steps:
+            for step in steps:
+                try:
+                    num = Q_(step['numerator'])
+                    denom = Q_(step['denominator'])
 
-            left_value = left_value * num / denom
+                    left_value = left_value * num / denom
+                except:
+                    steps.remove(step)
 
         # left_value conver to SI
-        answer_si = left_value.to_base_units().magnitude
+        answer_left = left_value.to_base_units().magnitude
+        answer_number = right_value.to_base_units().magnitude
 
-        correct = MathematicalExpressionMixin.match_math(str(answer_si), str(answer_number))
+        correct = MathematicalExpressionMixin.match_math(str(answer_left), str(answer_number))
 
         if not correct:
             self.add_error('conversion_steps', 'Conversion steps are incorrect')
