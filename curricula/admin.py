@@ -5,7 +5,7 @@ from django.utils.html import escape
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
 from jsonfield.fields import JSONFormField
-from .widgets import UnitNameWidget, MathQuillWidget, ConversionStepsJSONWidget
+from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionStepsJSONWidget, MathConversionWidget
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression,
@@ -277,6 +277,7 @@ class TextAnswerInline(AnswerTabularInline):
 
 
 class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+    representation = forms.CharField(required=True, max_length=255, widget=MathConversionWidget())
 
     FIELDS = ['representation']
     SPECIAL_MODEL = MathematicalExpression
@@ -284,8 +285,6 @@ class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     class Meta:
         model = Answer
         fields = ['representation', 'is_correct', 'position']
-
-    representation = forms.CharField()
 
 
 class MathematicalExpressionAnswerInline(AnswerTabularInline):
@@ -296,15 +295,21 @@ class MathematicalExpressionAnswerInline(AnswerTabularInline):
     def representation(self, obj):
         return obj.representation
 
+    class Media:
+        css = {
+            "all": ("curricula/mathquill-0.10.1/mathquill.css", )
+        }
+        js = ("curricula/mathquill-0.10.1/mathquill.js", )
+
 
 class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     FIELDS = ['unit_conversion_type', 'conversion_steps', 'question_number', 'question_unit', 'answer_number', 'answer_unit']
     SPECIAL_MODEL = UnitConversion
 
-    question_number = forms.CharField(required=True, widget=MathQuillWidget(attrs={'placeholder': 'question'}))
+    question_number = forms.CharField(required=True, widget=MathQuillUnitConversionWidget(attrs={'placeholder': 'question'}))
     question_unit = forms.CharField(required=True, widget=UnitNameWidget(attrs={'placeholder': 'question unit'}))
-    answer_number = forms.CharField(required=True, widget=MathQuillWidget(attrs={'placeholder': 'answer'}))
+    answer_number = forms.CharField(required=True, widget=MathQuillUnitConversionWidget(attrs={'placeholder': 'answer'}))
     answer_unit = forms.CharField(required=True, widget=UnitNameWidget(attrs={'placeholder': 'answer unit'}))
 
     unit_conversion_type = forms.ChoiceField(required=True, choices=UnitConversion.UnitConversionTypes)
@@ -315,8 +320,6 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
                                      )
 
     def clean(self):
-
-
         question_number = self.cleaned_data.get('question_number', None)
         question_unit = self.cleaned_data.get('question_unit', None)
 
@@ -344,7 +347,7 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
                 except:
                     steps.remove(step)
 
-        # left_value conver to SI
+        # values to base
         answer_left = left_value.to_base_units().magnitude
         answer_number = right_value.to_base_units().magnitude
 
@@ -352,7 +355,6 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
         if not correct:
             self.add_error('conversion_steps', 'Conversion steps are incorrect')
-
 
     class Meta:
         model = Answer

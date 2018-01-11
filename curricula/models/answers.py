@@ -204,9 +204,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
         default='10',
     )
 
-    # conversion matrix
-    # conversion_steps = [{"numerator":"", "denominator":""},
-    #   {"numerator":"", "denominator":""}, ...]
+    # conversion_steps = [{"numerator":"", "denominator":""},  {"numerator":"", "denominator":""}, ...]
     conversion_steps = JSONField(blank=True, null=True, help_text="Numerator/Denominator steps")
 
     question_number = models.FloatField(blank=True, null=True)
