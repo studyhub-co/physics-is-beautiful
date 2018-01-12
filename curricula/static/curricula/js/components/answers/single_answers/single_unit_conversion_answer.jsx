@@ -109,24 +109,31 @@ class UnitConversionCanvas extends UnitConversionBase {
       conversionSteps = this.props.conversion_steps
     } else {
       for (var x = 0; x < answerSteps.length; x++) {
-        var numSplit = answerSteps[x][0]['splitData']
-        var denSplit = answerSteps[x][1]['splitData']
-
-        var numQty = null
-        var denomQty = null
-
-        if (numSplit) { numQty = this.getQtyFromSplitData(numSplit) }
-        if (denSplit) { denomQty = this.getQtyFromSplitData(denSplit) }
-
-        if (numQty && denomQty) {
-          var baseCompareLst = this.getBaseFor2Qty(numQty, denomQty)
-          conversionSteps.push(
-            {
-              'numerator': baseCompareLst[0],
-              'denominator': baseCompareLst[1]
-            })
-
-        }
+        // TODO remove, it is parses on server side now
+        // var numSplit = answerSteps[x][0]['splitData']
+        // var denSplit = answerSteps[x][1]['splitData']
+        //
+        // var numQty = null
+        // var denomQty = null
+        //
+        // if (numSplit) { numQty = this.getQtyFromSplitData(numSplit) }
+        // if (denSplit) { denomQty = this.getQtyFromSplitData(denSplit) }
+        //
+        // if (numQty && denomQty) {
+        //   var baseCompareLst = this.getBaseFor2Qty(numQty, denomQty)
+        //   conversionSteps.push(
+        //     {
+        //       'numerator': baseCompareLst[0],
+        //       'denominator': baseCompareLst[1]
+        //     })
+        //
+        // }
+        try {
+          conversionSteps.push({
+            'numerator': answerSteps[x][0]['splitData'].join(" "),
+            'denominator': answerSteps[x][1]['splitData'].join(" ")
+          })
+        } catch(err){}
       }
     }
 
@@ -254,30 +261,16 @@ class UnitConversionCanvas extends UnitConversionBase {
 
     var answerSteps = this.state.answersSteps
 
-    answerSteps[col - 1][row - 1]['data'] = this.clearDataText(data)
-    answerSteps[col - 1][row - 1]['splitData'] = this.constructor.parseToValueUnit(this.clearDataText(data))
+    // TODO remove, seems it is filled in parent onMathQuillChange
+    // answerSteps[col - 1][row - 1]['data'] = this.clearDataText(data) // .replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
+    // answerSteps[col - 1][row - 1]['splitData'] = this.constructor.parseToValueUnit(this.clearDataText(data))
 
     if (this.props.unit_conversion_type === '10') { // automatically fill right hand box | left side blank
       var answerBox = MQ(document.getElementById('15'))
       this.setLatexWoFireEvent(answerBox, this.calculateAnswer())
     }
-    if (this.props.unit_conversion_type === '20') { // disable left side editing | right side blank
-      // var numeratorBox = MQ(document.getElementById('11'))
-      // var denominatorBox = MQ(document.getElementById('21'))
-      // this.setLatexWoFireEvent(numeratorBox, this.props.numerator)
-      // this.setLatexWoFireEvent(denominatorBox, this.props.denominator)
-      // answerSteps[0][0]['data'] = this.props.numerator
-      // answerSteps[0][1]['data'] = this.props.denominator
-      // answerSteps[0][0]['splitData'] = this.constructor.parseToValueUnit(this.props.numerator)
-      // answerSteps[0][1]['splitData'] = this.constructor.parseToValueUnit(this.props.denominator)
+    // all side blank | right side blank - do nothing
 
-      // this.setState({
-      //   answerSteps: answerSteps
-      // })
-      // }, function () {
-      //   this.reDrawStrikes()
-      // })
-    }
     this.setState({
       answerSteps: answerSteps
     })
@@ -297,8 +290,6 @@ class UnitConversionCanvas extends UnitConversionBase {
           spanBoxes.push('2' + (x + 1))
         }
       }
-      
-      console.log(spanBoxes);
 
       for (var i = 0; i < spanBoxes.length; i++) {
         var element = document.getElementById(spanBoxes[i])

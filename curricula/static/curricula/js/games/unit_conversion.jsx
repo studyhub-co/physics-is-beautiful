@@ -367,7 +367,7 @@ export class UnitConversionBase extends React.Component {
                   var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
 
                   answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
-
+                  
                   this.setLatexWoFireEvent(denominatorBox, newLatexDN)
 
                   // remove denominator unit from uncrossed out
