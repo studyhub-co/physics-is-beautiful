@@ -7,14 +7,6 @@ class UnitConversionCanvas extends UnitConversionBase {
   initialBoxes (props) {
     var spanBoxesIds = ['11', '21', '15']
 
-    // for (var x=0; x < props.conversion_steps.length; x++){
-    //   if (props.conversion_steps[x]['numerator'] &&
-    //       props.conversion_steps[x]['denominator']){
-    //     spanBoxesIds.push('1'+(x+1))
-    //     spanBoxesIds.push('2'+(x+1))
-    //   }
-    // }
-
     for (var i = 0; i < spanBoxesIds.length; i++) {
       document.getElementById(spanBoxesIds[i]).classList.remove('green-border')
       document.getElementById(spanBoxesIds[i]).classList.remove('red-border')
@@ -52,12 +44,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       this.setLatexWoFireEvent(answerBox, '')
 
        this.setState({
-        // answersSteps: answersSteps,
         numColumns: props.conversion_steps.length
-        // answersSteps: [[
-        //   {'data': props.numerator, 'box': numBox},
-        //   {'data': props.denominator, 'box': denumBox}
-        // ]]
       }, function () {
         for (var x = 0; x < props.conversion_steps.length; x++) {
           if (props.conversion_steps[x]['numerator'] &&
@@ -144,18 +131,13 @@ class UnitConversionCanvas extends UnitConversionBase {
     }
 
     if (answerSplit) {
-      // var baseCompareLst = this.getBaseFor2Qty(numQty, denomQty)
-
       this.props.updateAnswer([
         this.props.uuid,
         {
           unit_conversion: {
-            // answer: answerSplit[0] + answerSplit[1],
             answer_number: answerSplit[0],
             answer_unit: answerSplit[1],
             conversion_steps: conversionSteps
-            // numerator: baseCompareLst[0],
-            // denominator: baseCompareLst[1]
           }
         }
       ])
@@ -368,9 +350,6 @@ UnitConversionCanvas.propTypes = {
   updateAnswer: React.PropTypes.func.isRequired,
   unit_conversion_type: React.PropTypes.string,
   conversion_steps: React.PropTypes.array,
-  // numerator: React.PropTypes.string,
-  // denominator: React.PropTypes.string,
-  // show_answer: React.PropTypes.bool,
   is_correct_answer: React.PropTypes.bool
 }
 
@@ -385,25 +364,17 @@ export class SingleUnitConversionAnswer extends React.Component {
   }
 
   render () {
-    //var [number, unit] = UnitConversionBase.parseToValueUnit(this.props.question.additional_text)
     var number = this.props.question.unit_conversion.question_number
     var unit = this.props.question.unit_conversion.question_unit
 
-
     return (<div className='bounding-box'>
       <UnitConversionCanvas
-        //answer={this.props.question.unit_conversion.answer}
         answer_number={this.props.question.unit_conversion.answer_number}
         answer_unit={this.props.question.unit_conversion.answer_unit}
-        // question_number={this.props.question.unit_conversion.question_number}
-        // question_unit={this.props.question.unit_conversion.question_unit}
         number={number}
         unit={unit}
         unit_conversion_type={this.props.question.unit_conversion.unit_conversion_type}
         conversion_steps={this.props.question.unit_conversion.conversion_steps}
-        // numerator={this.props.question.unit_conversion.numerator}
-        // denominator={this.props.question.unit_conversion.denominator}
-        // show_answer={this.props.question.unit_conversion.show_answer}
         updateAnswer={this.props.updateAnswer}
         uuid={this.props.question.uuid}
         is_correct_answer={this.props.correct}
