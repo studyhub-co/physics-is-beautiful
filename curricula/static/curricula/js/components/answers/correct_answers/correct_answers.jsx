@@ -38,7 +38,7 @@ export class TextAnswer extends React.Component {
 
 export class MathematicalExpressionAnswer extends React.Component {
   render () {
-    return <span>{this.props.answer.expression}</span>
+    return <div><RMathJax.Context><div><RMathJax.Node inline>{this.props.answer.expression}</RMathJax.Node></div></RMathJax.Context></div>
   }
 }
 
