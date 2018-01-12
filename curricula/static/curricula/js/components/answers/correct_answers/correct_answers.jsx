@@ -60,10 +60,9 @@ export class UnitConversionAnswer extends React.Component {
     var component = ''
 
     var answer = this.props.answer.answer
-    //var originalQuestion = this.props.answer.question.additional_text.split('/')
     var originalQuestion = (''+this.props.answer.answer.question_number+'\\ '+this.props.answer.answer.question_unit).split('/')
 
-    if (answer.unit_conversion_type === '10') {
+    if (answer.unit_conversion_type === '10' || '30') {
       var qsDenom = ''
       if (typeof originalQuestion[1] !== 'undefined') {
         qsDenom = originalQuestion[1]
