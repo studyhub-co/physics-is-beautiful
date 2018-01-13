@@ -239,7 +239,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
                         # correct = self.match_math(str(step['numerator']),  str(step['denominator']))
 
                 obj_answer_si = left_value.to_base_units().magnitude
-                self_answer_si = Q_(self.answer_number).to_base_units().magnitude
+                self_answer_si = Q_(str(self.answer_number) + " " + self.answer_unit).to_base_units().magnitude
                 correct = MathematicalExpressionMixin.match_math(str(obj_answer_si), str(self_answer_si))
 
                 return correct
