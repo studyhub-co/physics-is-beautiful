@@ -83,6 +83,7 @@ class UnitConversionCanvas extends UnitConversionBase {
 
   componentWillReceiveProps (newProps) {
     if (newProps.uuid !== this.props.uuid) {
+      this.reset()
       this.props.updateAnswer(null)
       this.initialBoxes(newProps)
     }
@@ -359,9 +360,9 @@ export class SingleUnitConversionAnswer extends React.Component {
     this.questionId = null
   }
 
-  reset () {
-    this.answer.latex('')
-  }
+  // reset () {
+  //   this.answer.latex('')
+  // }
 
   render () {
     var number = this.props.question.unit_conversion.question_number
