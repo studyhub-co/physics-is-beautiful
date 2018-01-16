@@ -238,9 +238,14 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
                         left_value = left_value * num / denom
                         # correct = self.match_math(str(step['numerator']),  str(step['denominator']))
 
-                obj_answer_si = left_value.to_base_units().magnitude
+                self_question_si = left_value.to_base_units().magnitude
                 self_answer_si = Q_(str(self.answer_number) + " " + self.answer_unit).to_base_units().magnitude
-                correct = MathematicalExpressionMixin.match_math(str(obj_answer_si), str(self_answer_si))
+                correct = MathematicalExpressionMixin.match_math(str(self_question_si), str(self_answer_si))
+
+                if self.unit_conversion_type == '10' and correct:  # if left side blank only
+                    # test right side answer
+                    obj_answer_si = Q_(str(obj.answer_number) + " " + obj.answer_unit).to_base_units().magnitude
+                    correct = MathematicalExpressionMixin.match_math(str(obj_answer_si), str(self_answer_si))
 
                 return correct
 
