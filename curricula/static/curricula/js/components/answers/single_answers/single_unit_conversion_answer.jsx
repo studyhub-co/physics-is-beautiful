@@ -78,6 +78,8 @@ class UnitConversionCanvas extends UnitConversionBase {
   }
 
   componentDidMount () {
+    this.reset()
+    this.props.updateAnswer(null)
     this.initialBoxes(this.props)
   }
 

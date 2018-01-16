@@ -16,10 +16,9 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
   }
 
   componentWillReceiveProps (newProps) {
-    if (newProps.uuid !== this.props.uuid) {
-      // reset answer
-      this.answer.latex('')
-      this.props.updateAnswer(null)
+     if (newProps.question.uuid !== this.props.question.uuid) {
+       // reset answer
+       this.reset()
     }
   }
 
@@ -28,15 +27,19 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
     // this.answer = MQ.MathField($('#math-field-answer')[0], {
     this.answer = MQ.MathField(document.getElementById('math-field-answer'), {
       handlers: {
-        // spaceBehavesLikeTab: true, // FIXME it is does not work, must not place in handlers, if it really need
-        edit: () => {
-          // this.data = this.answer.latex()
-          this.props.updateAnswer([
-            this.props.question.uuid,
-            {
-              mathematical_expression: {representation: this.answer.latex()}
-            }
-          ])
+        edit: (mathField) => {
+          // if change by API (not user), then not fire
+          if (mathField.data.fromJsCall) { return }
+          if (mathField.latex()){
+            this.props.updateAnswer([
+              this.props.question.uuid,
+              {
+                mathematical_expression: {representation: mathField.latex()}
+              }
+            ])
+          } else {
+            this.props.updateAnswer(null)
+          }
         }
       }
     })
@@ -62,17 +65,24 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
   // }
 
   insertXHat () {
+    this.answer.data.fromJsCall = true
     this.answer.focus()
     this.answer.write('\\hat{x}')
+    this.answer.data.fromJsCall = false
   }
 
   insertYHat () {
+    this.answer.data.fromJsCall = true
     this.answer.focus()
     this.answer.write('\\hat{y}')
+    this.answer.data.fromJsCall = false
   }
 
   reset () {
+    this.answer.data.fromJsCall = true
     this.answer.latex('')
+    this.answer.data.fromJsCall = false
+    this.props.updateAnswer(null)
     // this.stoppedProcessing = true
   }
 
@@ -84,9 +94,7 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
     // if (this.state.processing) {
     //   disabled = ' disabled'
     // }
-    if (this.questionId && this.props.question.uuid && this.props.question.uuid != this.questionId) {
-      this.reset()
-    }
+
     this.questionId = this.props.question.uuid
     var x, y
     var hoverStyle = {
