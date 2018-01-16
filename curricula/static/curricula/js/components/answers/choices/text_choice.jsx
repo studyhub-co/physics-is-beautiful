@@ -1,6 +1,12 @@
 import React from 'react'
 
 export class TextChoice extends React.Component {
+
+  checkAnswer(o) {
+    o.target.id = this.props.choice.uuid
+    this.props.checkAnswer(o)
+  }
+
   render () {
     var style = {}
     var disabled = ''
@@ -18,7 +24,7 @@ export class TextChoice extends React.Component {
       <a className={'btn btn-primary btn-lg' + disabled}
         id={this.props.choice.uuid}
         style={style}
-        onClick={this.props.checkAnswer}>
+        onClick={this.checkAnswer.bind(this)}>
         {this.props.choice.content.text}
       </a>
     )

@@ -8,7 +8,7 @@ export class MultipleAnswer extends React.Component {
       this.props.question.uuid,
       {
         answer: {
-          uid: o.target.id
+          uuid: o.target.id
         }
       }
     )
