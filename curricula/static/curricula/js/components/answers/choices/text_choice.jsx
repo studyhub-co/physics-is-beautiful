@@ -2,15 +2,15 @@ import React from 'react'
 
 export class TextChoice extends React.Component {
 
-  checkAnswer(o) {
-    o.target.id = this.props.choice.uuid
-    this.props.checkAnswer(o)
+  checkAnswer (o) {
+      o.target.id = this.props.choice.uuid
+      this.props.checkAnswer(o)
   }
 
   render () {
     var style = {}
     var disabled = ''
-    if (this.props.hasAnswer) {
+    if (this.props.hasAnswer || this.props.clickedAnswer) {
       disabled = ' disabled'
       if (this.props.isAnswer) {
         style['backgroundColor'] = 'rgb(79, 212, 24)'
