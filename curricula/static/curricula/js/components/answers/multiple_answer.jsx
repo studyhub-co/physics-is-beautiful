@@ -3,15 +3,26 @@ import {TextChoice} from './choices/text_choice'
 import {ImageChoice} from './choices/image_choice'
 
 export class MultipleAnswer extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.state = { clickedAnswer: false }
+  }
+
   checkAnswer (o) {
-    this.props.question.submitAnswer(
-      this.props.question.uuid,
-      {
-        answer: {
-          uuid: o.target.id
+    o.persist()
+    this.setState({
+        clickedAnswer: true
+      }, function () {
+      this.props.question.submitAnswer(
+        this.props.question.uuid,
+        {
+          answer: {
+            uuid: o.target.id
+          }
         }
-      }
-    )
+      )
+    })
   }
 
   render () {
@@ -50,6 +61,7 @@ export class MultipleAnswer extends React.Component {
           key={choice.uuid}
           choice={choice}
           checkAnswer={this.checkAnswer.bind(this)}
+          clickedAnswer={this.state.clickedAnswer}
           hasAnswer={hasAnswer}
           isAnswer={isAnswer}
           wasResponse={wasResponse}

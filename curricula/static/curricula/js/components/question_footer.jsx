@@ -45,7 +45,7 @@ export class Footer extends React.Component {
             checkAction={this.props.checkAction}
             continueAction={this.props.continueAction}
             isCheck={typeof this.props.correct === 'undefined'}
-            disabledContinue={this.props.disabledContinue} />
+            disabledCheck={this.props.disabledCheck} />
         </div>
         <div id='blockRight'>
           <div id='correctMessage'>{correctMessage}</div>
@@ -72,5 +72,5 @@ export class Footer extends React.Component {
 Footer.propTypes = {
   continueAction: React.PropTypes.func.isRequired,
   checkAction: React.PropTypes.func.isRequired,
-  disabledContinue: React.PropTypes.bool
+  disabledCheck: React.PropTypes.bool
 }

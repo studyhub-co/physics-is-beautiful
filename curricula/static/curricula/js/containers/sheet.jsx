@@ -49,7 +49,7 @@ class QuestionSheet extends React.Component {
     this.checkAnswer = this.checkAnswer.bind(this)
     this.answer = null
     this.state = {
-      disabledContinue: true
+      disabledCheck: true
     }
   }
 
@@ -57,12 +57,12 @@ class QuestionSheet extends React.Component {
     this.answer = answer
      if(this.answer) {
       this.setState({
-        disabledContinue: false
+        disabledCheck: false
       })
     } else {
-      if (this.state.disabledContinue == false){
+      if (this.state.disabledCheck == false){
         this.setState({
-          disabledContinue: true
+          disabledCheck: true
         })
       }
      }
@@ -92,7 +92,7 @@ class QuestionSheet extends React.Component {
           correct_answer={this.props.correct_answer}
           continueAction={this.props.continueAction}
           checkAction={this.checkAnswer}
-          disabledContinue={this.state.disabledContinue}
+          disabledCheck={this.state.disabledCheck}
         />
       </div>
     )

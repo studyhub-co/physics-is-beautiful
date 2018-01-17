@@ -5,7 +5,7 @@ export class CheckContinueButton extends React.Component {
     return (
       <div className='button-group'>
         <a id='checkButton'
-          className={'btn btn-primary' + (this.props.disabledContinue ? ' disabled' : '')}
+          className={'btn btn-primary' + ((this.props.isCheck && this.props.disabledCheck) ? ' disabled' : '')}
           onClick={this.props.isCheck ? this.props.checkAction : this.props.continueAction}>
           {this.props.isCheck ? 'Check' : 'Continue'}
         </a>
@@ -17,7 +17,7 @@ CheckContinueButton.propTypes = {
   isCheck: React.PropTypes.bool,
   checkAction: React.PropTypes.func.isRequired,
   continueAction: React.PropTypes.func.isRequired,
-  disabledContinue: React.PropTypes.bool
+  disabledCheck: React.PropTypes.bool
 }
 CheckContinueButton.defaultProps = {
   isCheck: true
