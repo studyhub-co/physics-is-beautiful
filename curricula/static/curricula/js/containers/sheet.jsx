@@ -57,12 +57,14 @@ class QuestionSheet extends React.Component {
     this.answer = answer
      if(this.answer) {
       this.setState({
-        disabledCheck: false
+        disabledCheck: false,
+        questionShouldUpdate: false
       })
     } else {
       if (this.state.disabledCheck == false){
         this.setState({
-          disabledCheck: true
+          disabledCheck: true,
+          questionShouldUpdate: false
         })
       }
      }
@@ -70,7 +72,12 @@ class QuestionSheet extends React.Component {
 
   checkAnswer () {
     if (this.answer) {
-      this.props.question.submitAnswer(...this.answer)
+
+      this.setState({
+          questionShouldUpdate: true
+        }, function () {
+        this.props.question.submitAnswer(...this.answer)
+      })
     }
   }
 
@@ -84,6 +91,7 @@ class QuestionSheet extends React.Component {
           hintClick={this.props.hintClick}
           // continueAction={this.props.continueAction}
           updateAnswer={this.updateAnswer.bind(this)}
+          shouldUpdate={this.state.questionShouldUpdate}
           correct={this.props.question.is_correct}
         />
         <Footer

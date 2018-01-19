@@ -19,6 +19,16 @@ var VECTOR_COLORS = [
 ]
 
 export class Question extends React.Component {
+
+  shouldComponentUpdate(nextProps, nextState){
+    console.log(nextProps);
+    if (nextProps['shouldUpdate'] || nextProps.question.uuid !== this.props.question.uuid){
+      return true
+    } else {
+      return false
+    }
+  }
+
   componentDidMount () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
     MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
