@@ -50,8 +50,12 @@ class UnitConversionCanvas extends UnitConversionBase {
           if (props.conversion_steps[x]['numerator'] &&
               props.conversion_steps[x]['denominator']) {
             answersSteps.push([
-              {'data': props.conversion_steps[x]['numerator'], 'box': MQ(document.getElementById('1' + (x + 1)))},
-              {'data': props.conversion_steps[x]['denominator'], 'box': MQ(document.getElementById('2' + (x + 1)))}
+              {'data': props.conversion_steps[x]['numerator'],
+               'splitData': this.constructor.parseToValueUnit(this.clearDataText(props.conversion_steps[x]['numerator'])),
+               'box': MQ(document.getElementById('1' + (x + 1)))},
+              {'data': props.conversion_steps[x]['denominator'],
+                'splitData': this.constructor.parseToValueUnit(this.clearDataText(props.conversion_steps[x]['denominator'])),
+                'box': MQ(document.getElementById('2' + (x + 1)))}
             ])
 
             this.setLatexWoFireEvent(answersSteps[x][0]['box'], answersSteps[x][0]['data'])
@@ -63,6 +67,8 @@ class UnitConversionCanvas extends UnitConversionBase {
         this.setState({
           answersSteps: answersSteps,
           numColumns: answersSteps.length
+        }, function () {
+          this.reDrawStrikes()
         })
       })
     }
@@ -240,6 +246,7 @@ class UnitConversionCanvas extends UnitConversionBase {
     return answerValue + '\\ ' + unit
   }
 
+  // one of the boxes value changed
   onMathQuillChange (data, row, col, mathquillObj) {
     super.onMathQuillChange(data, row, col, mathquillObj)
     var MQ = MathQuill.getInterface(2)
