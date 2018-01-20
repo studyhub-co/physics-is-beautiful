@@ -16,13 +16,14 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
   }
 
   componentWillReceiveProps (newProps) {
-     if (newProps.question.uuid !== this.props.question.uuid) {
+    if (newProps.question.uuid !== this.props.question.uuid) {
        // reset answer
        this.reset()
     }
   }
 
   componentDidMount () {
+    this.props.updateAnswer(null)
     var MQ = MathQuill.getInterface(2)
     // this.answer = MQ.MathField($('#math-field-answer')[0], {
     this.answer = MQ.MathField(document.getElementById('math-field-answer'), {
@@ -65,17 +66,13 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
   // }
 
   insertXHat () {
-    this.answer.data.fromJsCall = true
     this.answer.focus()
     this.answer.write('\\hat{x}')
-    this.answer.data.fromJsCall = false
   }
 
   insertYHat () {
-    this.answer.data.fromJsCall = true
     this.answer.focus()
     this.answer.write('\\hat{y}')
-    this.answer.data.fromJsCall = false
   }
 
   reset () {

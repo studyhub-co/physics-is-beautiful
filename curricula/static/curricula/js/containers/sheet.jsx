@@ -55,7 +55,7 @@ class QuestionSheet extends React.Component {
 
   updateAnswer (answer) {
     this.answer = answer
-     if(this.answer) {
+    if(this.answer) {
       this.setState({
         disabledCheck: false,
         questionShouldUpdate: false
@@ -72,7 +72,6 @@ class QuestionSheet extends React.Component {
 
   checkAnswer () {
     if (this.answer) {
-
       this.setState({
           questionShouldUpdate: true
         }, function () {

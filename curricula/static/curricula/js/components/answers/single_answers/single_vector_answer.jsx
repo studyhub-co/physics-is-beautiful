@@ -8,6 +8,21 @@ export class SingleVectorAnswer extends React.Component {
     this.unanswered = true
   }
 
+  componentDidMount () {
+    this.reset()
+  }
+
+  componentWillReceiveProps (newProps) {
+     if (newProps.question.uuid !== this.props.question.uuid) {
+       // reset answer
+       this.reset()
+    }
+  }
+
+  reset () {
+    this.props.updateAnswer(null)
+  }
+
   componentDidUpdate () {
     if (this.props.answer || this.props.question.is_correct) {
       this.unanswered = false
