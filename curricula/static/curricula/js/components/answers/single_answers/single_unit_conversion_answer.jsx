@@ -90,6 +90,7 @@ class UnitConversionCanvas extends UnitConversionBase {
   }
 
   componentWillReceiveProps (newProps) {
+    // UnitConversionCanvas is child for SingleUnitConversionAnswer where props.question located
     if (newProps.uuid !== this.props.uuid) {
       this.reset()
       this.props.updateAnswer(null)
@@ -364,14 +365,6 @@ UnitConversionCanvas.propTypes = {
 }
 
 export class SingleUnitConversionAnswer extends React.Component {
-  constructor () {
-    super()
-    this.questionId = null
-  }
-
-  // reset () {
-  //   this.answer.latex('')
-  // }
 
   render () {
     var number = this.props.question.unit_conversion.question_number
