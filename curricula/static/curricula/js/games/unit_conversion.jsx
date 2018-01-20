@@ -316,7 +316,7 @@ export class UnitConversionBase extends React.Component {
     }
 
     var alreadyStrikeDenumIndex = []
-
+    
     // strikethrough units
     numeratorsC:
     for (var column = -1; column < answers.length; column++) { // walk through numerators
@@ -325,7 +325,7 @@ export class UnitConversionBase extends React.Component {
       } else {
         splitNumerator = answers[column][0]['splitData']
       } // "2 cm"
-
+      
       if (splitNumerator) {
         for (var column2 = -1; column2 < answers.length; column2++) { // walk through denominators
           if (column2 === -1) {

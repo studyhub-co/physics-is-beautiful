@@ -223,12 +223,14 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
         if isinstance(obj, Answer):
             return self.matches(obj.content)
         elif isinstance(obj, UnitConversion):
+            ureg = UnitRegistry()
+            Q_ = ureg.Quantity
+            self_answer_si = Q_(str(self.answer_number) + " " + self.answer_unit).to_base_units().magnitude
+            obj_answer_si = Q_(str(obj.answer_number) + " " + obj.answer_unit).to_base_units().magnitude
+
             if self.unit_conversion_type == '20':  # check only answer
-                return self.match_math(obj.answer_number, self.answer_number)
+                return MathematicalExpressionMixin.match_math(str(obj_answer_si), str(self_answer_si))
             else:  # check fraction and answer
-                # correct = True
-                ureg = UnitRegistry()
-                Q_ = ureg.Quantity
                 left_value = Q_(str(self.question_number) + " " + self.question_unit)
                 for step in obj.conversion_steps:
                     if step['numerator'] and step['denominator']:
@@ -236,15 +238,12 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
                         denom = Q_(step['denominator'])
 
                         left_value = left_value * num / denom
-                        # correct = self.match_math(str(step['numerator']),  str(step['denominator']))
 
                 self_question_si = left_value.to_base_units().magnitude
-                self_answer_si = Q_(str(self.answer_number) + " " + self.answer_unit).to_base_units().magnitude
                 correct = MathematicalExpressionMixin.match_math(str(self_question_si), str(self_answer_si))
 
                 if self.unit_conversion_type == '10' and correct:  # if left side blank only
                     # test right side answer
-                    obj_answer_si = Q_(str(obj.answer_number) + " " + obj.answer_unit).to_base_units().magnitude
                     correct = MathematicalExpressionMixin.match_math(str(obj_answer_si), str(self_answer_si))
 
                 return correct
