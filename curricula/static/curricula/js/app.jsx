@@ -157,8 +157,9 @@ export class Expression {
 }
 
 export class Text {
-  constructor (text) {
+  constructor (text, uuid) {
     this.text = text
+    this.uuid = uuid
   }
 }
 
@@ -218,7 +219,8 @@ class LessonsApp extends React.Component {
                             );
                             break;
                         case 'text':
-                            this.correct_answer = new Text(data.correct_answer.content.text);
+                            // this.correct_answer = new Text(data.correct_answer.content.text);
+                            this.correct_answer = new Text(data.correct_answer.content.text, data.correct_answer.uuid);
                             break;
                         case 'mathematicalexpression':
                             this.correct_answer = new Expression(data.correct_answer.content.representation);
