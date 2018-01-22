@@ -23,7 +23,7 @@ export class Question extends React.Component {
   shouldComponentUpdate(nextProps, nextState){
     if (nextProps['shouldUpdate']
       || nextProps.question.uuid !== this.props.question.uuid
-      || nextProps.correct_answer !== this.props.correct_answer ){
+      || nextProps.correct_answer !== this.props.correct_answer) {
       return true
     } else {
       return false
@@ -101,6 +101,7 @@ export class Question extends React.Component {
           question={this.props.question}
           answer={this.props.correct_answer}
           // continueAction={this.props.continueAction}
+          updateAnswer={this.props.updateAnswer}
           correct={this.props.correct}
         />
     }

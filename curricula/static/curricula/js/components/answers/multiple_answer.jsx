@@ -9,6 +9,18 @@ export class MultipleAnswer extends React.Component {
     this.state = { clickedAnswer: false }
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.question.uuid !== this.props.question.uuid){
+       // reset answer
+       this.reset()
+    }
+  }
+
+  reset () {
+    this.setState({ clickedAnswer: false })
+    this.props.updateAnswer(null)
+  }
+
   checkAnswer (o) {
     o.persist()
     this.setState({
@@ -27,7 +39,11 @@ export class MultipleAnswer extends React.Component {
 
   render () {
     var choices = []
-    var hasAnswer = this.props.answer !== null
+    // var hasAnswer = this.props.answer !== null
+    var hasAnswer = false
+    if (this.props.answer || this.props.question.is_correct) {
+        hasAnswer = true
+    }
     var Component
     switch (this.props.question.answer_type) {
       case 'TEXT':
@@ -49,13 +65,22 @@ export class MultipleAnswer extends React.Component {
       var choice = this.props.question.choices[i]
       var isAnswer = false
       var wasResponse = false
-      if (hasAnswer) {
-        if (this.props.answer.uuid == choice.uuid) {
-          isAnswer = true
-        } else if (this.props.question.response.answer.uuid == choice.uuid) {
-          wasResponse = true
+      if (hasAnswer){
+        if (this.props.answer){ // if we has answer, answer was wrong
+          if (this.props.answer.uuid == choice.uuid) {
+            isAnswer = true
+          } else if (this.props.question.response.answer.uuid == choice.uuid) {
+            wasResponse = true
+         }
         }
       }
+      // if (hasAnswer) {
+      //   if (this.props.answer.uuid == choice.uuid) {
+      //     isAnswer = true
+      //   } else if (this.props.question.response.answer.uuid == choice.uuid) {
+      //     wasResponse = true
+      //   }
+      // }
       choices.push(
         <Component
           key={choice.uuid}
