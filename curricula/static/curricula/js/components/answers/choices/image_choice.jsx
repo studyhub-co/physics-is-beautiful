@@ -3,7 +3,7 @@ import React from 'react'
 export class ImageChoice extends React.Component {
   render () {
     var style = {}
-    if (this.props.hasAnswer) {
+    if (this.props.hasAnswer || this.props.clickedAnswer) {
       style['pointerEvents'] = 'none'
       if (this.props.isAnswer) {
         style['boxShadow'] = 'green 0px 0px 15px'

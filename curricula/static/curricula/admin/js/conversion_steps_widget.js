@@ -151,8 +151,6 @@ django.jQuery(function() {
   django.regenerateConversionStepsJson = function () {
 
     if(django.stepsArray){
-      
-      //console.log(django.stepsArray);
 
       var jsonSteps = []
       MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
