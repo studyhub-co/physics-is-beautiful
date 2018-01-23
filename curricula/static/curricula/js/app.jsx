@@ -249,6 +249,7 @@ class LessonsApp extends React.Component {
 
     continueAction() {
         playAudio('continue');
+
         this.fetchState();
     }
 
