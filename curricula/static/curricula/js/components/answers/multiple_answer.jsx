@@ -6,7 +6,7 @@ export class MultipleAnswer extends React.Component {
 
   constructor (props) {
     super(props)
-    this.state = { clickedAnswer: false }
+    this.state = { clickedAnswerUuid: null }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -17,14 +17,14 @@ export class MultipleAnswer extends React.Component {
   }
 
   reset () {
-    this.setState({ clickedAnswer: false })
+    this.setState({ clickedAnswerUuid: null })
     this.props.updateAnswer(null)
   }
 
   checkAnswer (o) {
     o.persist()
     this.setState({
-        clickedAnswer: true
+        clickedAnswerUuid: o.target.id
       }, function () {
       this.props.question.submitAnswer(
         this.props.question.uuid,
@@ -41,7 +41,7 @@ export class MultipleAnswer extends React.Component {
     var choices = []
     // var hasAnswer = this.props.answer !== null
     var hasAnswer = false
-    if (this.props.answer || this.props.question.is_correct) {
+    if (this.props.answer || this.props.question.is_correct || this.state.clickedAnswerUuid ) {
         hasAnswer = true
     }
     var Component
@@ -64,16 +64,24 @@ export class MultipleAnswer extends React.Component {
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
       var isAnswer = false
-      var wasResponse = false
+      var wasResponse = false // war wrong response
+
       if (hasAnswer){
         if (this.props.answer){ // if we has answer, answer was wrong
           if (this.props.answer.uuid == choice.uuid) {
-            isAnswer = true
-          } else if (this.props.question.response.answer.uuid == choice.uuid) {
             wasResponse = true
-         }
+            isAnswer = true
+          }
         }
+        // clicked answer
+        if(this.state.clickedAnswerUuid == choice.uuid) {
+          if(!this.props.answer){ //if have no answer is right answer
+            isAnswer = true
+          }
+          wasResponse = true
+         }
       }
+
       // if (hasAnswer) {
       //   if (this.props.answer.uuid == choice.uuid) {
       //     isAnswer = true
@@ -86,7 +94,7 @@ export class MultipleAnswer extends React.Component {
           key={choice.uuid}
           choice={choice}
           checkAnswer={this.checkAnswer.bind(this)}
-          clickedAnswer={this.state.clickedAnswer}
+          // clickedAnswer={this.state.clickedAnswer}
           hasAnswer={hasAnswer}
           isAnswer={isAnswer}
           wasResponse={wasResponse}
