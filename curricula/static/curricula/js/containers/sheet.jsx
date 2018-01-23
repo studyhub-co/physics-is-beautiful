@@ -53,6 +53,12 @@ class QuestionSheet extends React.Component {
     }
   }
 
+  clearAnswerContinue(){
+    //TODO now we can remove all updateAnswer(null) in child answers
+    this.updateAnswer(null)
+    this.props.continueAction()
+  }
+
   updateAnswer (answer) {
     this.answer = answer
     if(this.answer) {
@@ -97,7 +103,7 @@ class QuestionSheet extends React.Component {
           progress={this.props.progress}
           correct={this.props.question.is_correct}
           correct_answer={this.props.correct_answer}
-          continueAction={this.props.continueAction}
+          continueAction={this.clearAnswerContinue.bind(this)}
           checkAction={this.checkAnswer}
           disabledCheck={this.state.disabledCheck}
         />
