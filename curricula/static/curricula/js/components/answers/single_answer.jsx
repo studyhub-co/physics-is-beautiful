@@ -13,8 +13,9 @@ export class SingleAnswer extends React.Component {
         Component = SingleVectorAnswer
         break
       case 'VECTOR_COMPONENTS':
-        options['xHat'] = true
-        options['yHat'] = true
+        // options['xHat'] = true
+        // options['yHat'] = true
+        options['vectorComponentButtons'] = true
       case 'MATHEMATICAL_EXPRESSION':
         Component = SingleMathematicalExpressionAnswer
         break
