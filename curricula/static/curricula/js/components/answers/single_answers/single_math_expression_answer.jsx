@@ -65,14 +65,19 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
   //   }
   // }
 
-  insertXHat () {
-    this.answer.focus()
-    this.answer.write('\\hat{x}')
-  }
+  // insertXHat () {
+  //   this.answer.focus()
+  //   this.answer.write('\\hat{x}')
+  // }
+  //
+  // insertYHat () {
+  //   this.answer.focus()
+  //   this.answer.write('\\hat{y}')
+  // }
 
-  insertYHat () {
+  insertLatex (val) {
     this.answer.focus()
-    this.answer.write('\\hat{y}')
+    this.answer.write(val)
   }
 
   reset () {
@@ -93,7 +98,7 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
     // }
 
     this.questionId = this.props.question.uuid
-    var x, y
+    // var x, y
     var hoverStyle = {
       height: '30px',
       overflowY: 'auto',
@@ -103,42 +108,64 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
       position: 'absolute',
       color: 'black'
     }
-    if (this.props.xHat) {
-      x = (
-        <a
-          className={'btn btn-primary btn-lg mathClickEntryButton'}
-          style={{minHeight: '40px'}}
-          onClick={this.insertXHat.bind(this)}
-        >
-          <ReactHover options={{shiftX: 200, shiftY: 200}}>
-            <ReactHover.Trigger>
-              <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
-            </ReactHover.Trigger>
-            <ReactHover.Hover>
-              <span style={hoverStyle}>\hat x</span>
-            </ReactHover.Hover>
-          </ReactHover>
-        </a>
-      )
+
+    var buttons = []
+
+    var that = this
+
+    if (this.props.vectorComponentButtons) {
+      var buttonsLst = ['\\hat{x}', '\\hat{y}', '1', '2', '3', '4', '+', '-']
+      for(var i=0; i < buttonsLst.length; i++){
+        var button = (
+          <a
+            className={'btn btn-primary btn-lg mathClickEntryButton'}
+            style={{minHeight: '40px'}}
+            onClick={this.insertLatex.bind(that, buttonsLst[i])}
+          >
+            <RMathJax.Node inline>{buttonsLst[i]}</RMathJax.Node>
+          </a>
+        )
+        buttons.push(button)
+      }
+
     }
-    if (this.props.yHat) {
-      y = (
-        <a
-          className={'btn btn-primary btn-lg mathClickEntryButton'}
-          style={{minHeight: '40px'}}
-          onClick={this.insertYHat.bind(this)}
-        >
-          <ReactHover options={{shiftX: 200, shiftY: 200}}>
-            <ReactHover.Trigger>
-              <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
-            </ReactHover.Trigger>
-            <ReactHover.Hover>
-              <span style={hoverStyle}>\hat y</span>
-            </ReactHover.Hover>
-          </ReactHover>
-        </a>
-      )
-    }
+
+    // if (this.props.xHat) {
+    //   x = (
+    //     <a
+    //       className={'btn btn-primary btn-lg mathClickEntryButton'}
+    //       style={{minHeight: '40px'}}
+    //       onClick={this.insertXHat.bind(this)}
+    //     >
+    //       <ReactHover options={{shiftX: 200, shiftY: 200}}>
+    //         <ReactHover.Trigger>
+    //           <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
+    //         </ReactHover.Trigger>
+    //         <ReactHover.Hover>
+    //           <span style={hoverStyle}>\hat x</span>
+    //         </ReactHover.Hover>
+    //       </ReactHover>
+    //     </a>
+    //   )
+    // }
+    // if (this.props.yHat) {
+    //   y = (
+    //     <a
+    //       className={'btn btn-primary btn-lg mathClickEntryButton'}
+    //       style={{minHeight: '40px'}}
+    //       onClick={this.insertYHat.bind(this)}
+    //     >
+    //       <ReactHover options={{shiftX: 200, shiftY: 200}}>
+    //         <ReactHover.Trigger>
+    //           <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
+    //         </ReactHover.Trigger>
+    //         <ReactHover.Hover>
+    //           <span style={hoverStyle}>\hat y</span>
+    //         </ReactHover.Hover>
+    //       </ReactHover>
+    //     </a>
+    //   )
+    // }
     var mathFieldStyle = {
       width: 200,
       fontSize: 30
@@ -148,7 +175,10 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
         <p style={{marginBottom: 5}}><span id='math-field-answer' style={mathFieldStyle}></span></p>
         <RMathJax.Context {...DEFAULT_MATHJAX_OPTIONS}>
           <div style={{marginBottom: 10}}>
-            {x}{y}
+            {buttons.map(function(button, index){
+                return <span key={index}>{ button }</span>
+            })}
+            {/*{x}{y}*/}
           </div>
         </RMathJax.Context>
         {/*<div className={'button-group' + (this.props.answer === null ? '' : ' hidden')} id='vectorButton' >*/}
