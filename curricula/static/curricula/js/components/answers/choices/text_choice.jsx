@@ -10,14 +10,16 @@ export class TextChoice extends React.Component {
   render () {
     var style = {}
     var disabled = ''
-    if (this.props.hasAnswer || this.props.clickedAnswer) {
+    if (this.props.hasAnswer) {
       disabled = ' disabled'
-      if (this.props.isAnswer) {
-        style['backgroundColor'] = 'rgb(79, 212, 24)'
-        style['borderColor'] = 'rgb(79, 212, 24)'
-      } else if (this.props.wasResponse) {
-        style['backgroundColor'] = 'rgb(255, 0, 0)'
-        style['borderColor'] = 'rgb(255, 0, 0)'
+      if (this.props.wasResponse) {
+        if(this.props.isAnswer) { // right answer
+          style['backgroundColor'] = 'rgb(79, 212, 24)'
+          style['borderColor'] = 'rgb(79, 212, 24)'
+        } else { // wrong answer
+          style['backgroundColor'] = 'rgb(255, 0, 0)'
+          style['borderColor'] = 'rgb(255, 0, 0)'
+        }
       }
     }
     return (
