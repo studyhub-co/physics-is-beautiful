@@ -76,6 +76,7 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
   // }
 
   insertLatex (val) {
+    if (this.props.answer){ return }
     this.answer.focus()
     this.answer.write(val)
   }
@@ -166,9 +167,14 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
     //     </a>
     //   )
     // }
+    var disabled = 'auto'
+    if (this.props.answer) {
+      disabled = 'none'
+    }
     var mathFieldStyle = {
       width: 200,
-      fontSize: 30
+      fontSize: 30,
+      'pointer-events': disabled
     }
     return (
       <div className='bounding-box'>
