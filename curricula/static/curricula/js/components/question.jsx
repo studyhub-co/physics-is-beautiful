@@ -3,7 +3,7 @@ import React from 'react'
 // import ReactHover from 'react-hover'
 // import {Vector, VectorCanvas, CanvasVector, CanvasText} from '../vector_canvas'
 // import {Text, Expression} from '../app'
-import {VectorCanvas, CanvasVector} from '../vector_canvas'
+import { VectorCanvas, CanvasVector, CanvasText } from '../vector_canvas'
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Hint} from './utils/hint'
 import { SingleAnswer } from './answers/single_answer'
@@ -67,6 +67,21 @@ export class Question extends React.Component {
         }
         var cVector = new CanvasVector(null, point, VECTOR_COLORS[i])
         cVector.complete(endPoint)
+
+        var x0 = (endPoint.y+point.y)/2
+        var y0 = (endPoint.x+point.x)/2
+
+        if (this.props.question.vectors.length == 2){
+          var color = "red"
+          var text = "\nA"
+          if ( i == 1 ) {
+            color = "blue"
+            text = "\nB"
+          }
+          var text = new CanvasText(null, {top: x0, left: y0}, text, {fill: color})
+          vectors.push(text)
+        }
+
         vectors.push(cVector)
       }
       vector = (
