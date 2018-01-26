@@ -73,10 +73,10 @@ export class Question extends React.Component {
 
         if (this.props.question.vectors.length == 2){
           var color = "red"
-          var text = "\nA"
+          var text = "A"
           if ( i == 1 ) {
             color = "blue"
-            text = "\nB"
+            text = "B"
           }
           var text = new CanvasText(null, {top: x0, left: y0}, text, {fill: color})
           vectors.push(text)
