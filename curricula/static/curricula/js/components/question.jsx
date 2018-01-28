@@ -71,14 +71,21 @@ export class Question extends React.Component {
 
         if (this.props.question.vectors.length == 2){
 
-          var kVector = (endPoint.y - point.y)/(endPoint.x - point.x)
+          var kVector
+          var vectorAngle
+          if (endPoint.x != point.x) {
+               kVector = (endPoint.y - point.y) / (endPoint.x - point.x)
+            	 vectorAngle = Math.atan((endPoint.y - point.y)/
+                    (endPoint.x - point.x))
+          } else { kVector = 1}
 
           vectorsPoints.push({ startPoint: {x: point.x, y: point.y },
                                endPoint: {x: endPoint.x, y: endPoint.y },
                                kVector: kVector,
+                               vectorAngle: vectorAngle,
                                b: (endPoint.y - kVector * endPoint.x),
-                               x0: (endPoint.y + point.y)/2,
-                               y0: (endPoint.x + point.x)/2
+                               x0: (endPoint.x + point.x)/2,
+                               y0: (endPoint.y + point.y)/2
                             })
         }
 
@@ -89,43 +96,43 @@ export class Question extends React.Component {
         for (var i = 0; i < vectorsPoints.length; i++) {
           var x0 = vectorsPoints[i].x0
           var y0 = vectorsPoints[i].y0
-          if(vectorsPoints[i].endPoint.x != vectorsPoints[i].startPoint.x){
-            // vectorAngle = Math.atan((vectorsPoints[i].endPoint.y - vectorsPoints[i].startPoint.y)/
-            //                      (vectorsPoints[i].endPoint.x - vectorsPoints[i].startPoint.x))
-            kVector = (vectorsPoints[i].endPoint.y-vectorsPoints[i].startPoint.y)/
-              (vectorsPoints[i].endPoint.x - vectorsPoints[i].startPoint.x)
-          }
-          // vectorAngle = vectorAngle*180/3.14159
+
+          var kVector = vectorsPoints[i].kVector
+          var vectorAngle = vectorsPoints[i].vectorAngle*180/3.14159
 
           var kPerpVector
           // perpendicular
           if (kVector != 0) {
             kPerpVector = -1 / kVector
-          } else { kPerpVector = 1 }
+          } else {
+            // TODO kPerpVector==infinity
+          }
 
-          var bPerp = y0 - kPerpVector *x0
-
-          var diffOnLine = 10
+          var diffFromLine
 
           var dist
 
-          if (i == 0){
-            // point x0, y0
-            // line vectorsPoints[1]
-            dist = Math.abs(y0 - vectorsPoints[1].kVector * x0 - vectorsPoints[1].b) /
-                        Math.sqrt(Math.pow(vectorsPoints[1].kVector, 2)+1)
-          } else if (i == 1) {
-            dist = Math.abs(y0 - vectorsPoints[0].kVector * x0 - vectorsPoints[0].b) /
-                        Math.sqrt(Math.pow(vectorsPoints[0].kVector, 2)+1)
+          if (vectorAngle <= 0){
+            if (i == 0)
+            {
+              diffFromLine = 30
+            } else if (i == 1) {
+              diffFromLine = 10
+            }
+          }
+          else {
+            if (i == 0)
+            {
+              diffFromLine = 20
+            } else if (i == 1) {
+              diffFromLine = 20
+            }
           }
 
-          if(dist < 20){
-            diffOnLine += 20
-          }
+          var Xr1 = Math.sqrt(Math.pow(diffFromLine, 2) / (1 + Math.pow(kPerpVector, 2))) + x0
+          var Xr2 = x0 - Math.sqrt(Math.pow(diffFromLine,2) / (1+Math.pow(kPerpVector,2)))
 
-          var Xr1 = Math.sqrt(Math.pow(diffOnLine,2)/(1+Math.pow(kPerpVector,2))) + x0
-          var Xr2 = x0 - Math.sqrt(Math.pow(diffOnLine,2)/(1+Math.pow(kPerpVector,2)))
-
+          var bPerp = y0 - kPerpVector * x0
           var Yr1 = kPerpVector*Xr1 + bPerp
           var Yr2 = kPerpVector*Xr2 + bPerp
 
@@ -136,10 +143,28 @@ export class Question extends React.Component {
             text = "B"
           }
           var topx, topy
-          topx = Xr1
-          topy = Yr1
+          
+          console.log(vectorAngle);
+          
+          if (vectorAngle <= 0) {
+            if (i == 0) {
+              topx = Xr2
+              topy = Yr2
+            } else if (i == 1) {
+              topx = Xr1
+              topy = Yr1
+            }
+          } else {
+            if (i == 0) {
+              topx = Xr1
+              topy = Yr1
+            } else if (i == 1) {
+              topx = Xr2
+              topy = Yr2
+            }
+          }
 
-          var text = new CanvasText(null, {top: topx, left: topy}, text, {fill: color})
+          var text = new CanvasText(null, {top: topy, left: topx}, text, {fill: color})
           vectors.push(text)
         }
       }
