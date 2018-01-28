@@ -55,6 +55,7 @@ export class Question extends React.Component {
     var vector = ''
     if (this.props.question.vectors.length) {
       var vectors = []
+      var vectorsPoints = []
       for (var i = 0; i < this.props.question.vectors.length; i++) {
         var iVector = this.props.question.vectors[i];
         var point = {
@@ -68,22 +69,35 @@ export class Question extends React.Component {
         var cVector = new CanvasVector(null, point, VECTOR_COLORS[i])
         cVector.complete(endPoint)
 
-        var x0 = (endPoint.y+point.y)/2
-        var y0 = (endPoint.x+point.x)/2
-
         if (this.props.question.vectors.length == 2){
+
+          var kVector = (endPoint.y - point.y)/(endPoint.x - point.x)
+
+          vectorsPoints.push({ startPoint: {x: point.x, y: point.y },
+                               endPoint: {x: endPoint.x, y: endPoint.y },
+                               // kVector: kVector,
+                               // b: (endPoint.y - kVector * endPoint.x),
+                               // x0: (endPoint.y + point.y)/2,
+                               // y0: (endPoint.x + point.x)/2
+                            })
+        }
+
+        vectors.push(cVector)
+      }
+      if (this.props.question.vectors.length == 2){
+        // add labels
+        for (var i = 0; i < vectorsPoints.length; i++) {
           var color = "red"
           var text = "A"
           if ( i == 1 ) {
             color = "blue"
             text = "B"
           }
-          var text = new CanvasText(null, {top: x0, left: y0}, text, {fill: color})
+          var text = new CanvasText(null, {top: vectorsPoints[i].endPoint.y, left: vectorsPoints[i].endPoint.x}, text, {fill: color})
           vectors.push(text)
         }
-
-        vectors.push(cVector)
       }
+
       vector = (
         <VectorCanvas objects={vectors} />
       )
