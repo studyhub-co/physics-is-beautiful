@@ -79,13 +79,19 @@ export class Question extends React.Component {
                     (endPoint.x - point.x))
           } else { kVector = 1}
 
+          var lambda = 1.85
+          var x75 = (point.x + lambda*endPoint.x)/(1+lambda)
+          var y75 = (point.y + lambda*endPoint.y)/(1+lambda)
+
           vectorsPoints.push({ startPoint: {x: point.x, y: point.y },
                                endPoint: {x: endPoint.x, y: endPoint.y },
                                kVector: kVector,
                                vectorAngle: vectorAngle,
                                b: (endPoint.y - kVector * endPoint.x),
-                               x0: (endPoint.x + point.x)/2,
-                               y0: (endPoint.y + point.y)/2
+                               x0: x75,
+                               y0: y75
+                               // x0: (endPoint.x + point.x)/2,
+                               // y0: (endPoint.y + point.y)/2
                             })
         }
 
@@ -143,9 +149,7 @@ export class Question extends React.Component {
             text = "B"
           }
           var topx, topy
-          
-          console.log(vectorAngle);
-          
+
           if (vectorAngle <= 0) {
             if (i == 0) {
               topx = Xr2
