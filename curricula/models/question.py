@@ -18,6 +18,7 @@ class Question(BaseModel):
         UNDEFINED = 0
         SINGLE_ANSWER = 10
         MULTIPLE_CHOICE = 20
+        MULTISELECT_CHOICE = 40
 
     class AnswerType(enum.Enum):
         UNDEFINED = 0
@@ -28,6 +29,7 @@ class Question(BaseModel):
         MATHEMATICAL_EXPRESSION = 50
         VECTOR_COMPONENTS = 60
         UNIT_CONVERSION = 70
+        IMAGE_WITH_TEXT = 80
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)

@@ -9,7 +9,7 @@ from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionSt
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression,
-    UnitConversion
+    UnitConversion, ImageWText
 )
 
 from .models.answers import MathematicalExpressionMixin
@@ -255,6 +255,42 @@ class VectorAnswerInline(AnswerTabularInline):
     #     return obj.y_component
 
 
+class ImageWTextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['text', 'image']
+    SPECIAL_MODEL = ImageWText
+
+    class Meta:
+        model = Answer
+        fields = ['text', 'image', 'is_correct', 'position']
+
+    text = forms.CharField(required=False)
+    image = forms.ImageField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        text = cleaned_data.get("text")
+        image = cleaned_data.get("image")
+
+        if not image and not text:
+            raise forms.ValidationError(
+                "At least one of text field or image field required"
+            )
+
+
+@create_fields_funcs(ImageWTextAnswerForm)
+class ImageWTextAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Image with Text Answers'
+    model = Answer
+    form = ImageWTextAnswerForm
+
+    # def text(self, obj):
+    #     return obj.text
+    #
+    # def image(self, obj):
+    #     return obj.image
+
+
 class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     FIELDS = ['text']
@@ -471,7 +507,7 @@ class QuestionAdmin(NestedModelAdmin):
 
     inlines = [
         VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
-        MathematicalExpressionAnswerInline, UnitConversionAnswerInline
+        MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline
 
     ]
     fields = [
@@ -486,7 +522,8 @@ class QuestionAdmin(NestedModelAdmin):
         Question.AnswerType.NULLABLE_VECTOR: [VectorAnswerInline],
         Question.AnswerType.MATHEMATICAL_EXPRESSION: [MathematicalExpressionAnswerInline],
         Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline],
-        Question.AnswerType.UNIT_CONVERSION: [UnitConversionAnswerInline]
+        Question.AnswerType.UNIT_CONVERSION: [UnitConversionAnswerInline],
+        Question.AnswerType.IMAGE_WITH_TEXT: [ImageWTextAnswerInline]
     }
 
     def get_inline_instances(self, request, obj=None):
