@@ -257,6 +257,31 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
         return 'UnitConversion: {}'.format(self.answer)
 
 
+class ImageWText(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_image_w_text'
+
+    image = models.ImageField(blank=True)
+    text = models.CharField(blank=True, max_length=200)
+
+    # def matches(self, obj):
+    #     if isinstance(obj, Answer):
+    #         return self.matches(obj.content)
+    #     raise ValidationError('It does not make sense to try to compare 2 images.')
+
+    def matches(self, obj):
+        if isinstance(obj, Answer):
+            return self.matches(obj.content)
+        try:
+            return self.text.lower() == obj.text.lower()
+        except AttributeError:
+            return False
+
+    def __str__(self):
+        return 'Image: {}, Text: {}'.format(self.image, self.text)
+
+
 class Image(BaseModel):
 
     class Meta:

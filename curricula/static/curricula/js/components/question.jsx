@@ -8,6 +8,7 @@ import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Hint} from './utils/hint'
 import { SingleAnswer } from './answers/single_answer'
 import { MultipleAnswer } from './answers/multiple_answer'
+import { MultiSelectAnswer } from './answers/multiselect_answer'
 
 /* global MathJax */
 
@@ -205,6 +206,16 @@ export class Question extends React.Component {
           question={this.props.question}
           answer={this.props.correct_answer}
           // continueAction={this.props.continueAction}
+          updateAnswer={this.props.updateAnswer}
+          correct={this.props.correct}
+        />
+    }
+    else if (this.props.question.question_type == 'MULTISELECT_CHOICE') {
+      answerField =
+        <MultiSelectAnswer
+          question={this.props.question}
+          answer={this.props.correct_answer}
+          continueAction={this.props.continueAction}
           updateAnswer={this.props.updateAnswer}
           correct={this.props.correct}
         />
