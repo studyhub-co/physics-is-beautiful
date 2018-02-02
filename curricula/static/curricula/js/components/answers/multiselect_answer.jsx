@@ -7,7 +7,10 @@ export class MultiSelectAnswer extends React.Component {
 
   constructor (props) {
     super(props)
-    this.state = { clickedAnswerUuid: null }
+    this.selectedItems = []
+    this.state = {
+      clickedAnswerUuid: null,
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -22,21 +25,39 @@ export class MultiSelectAnswer extends React.Component {
     this.props.updateAnswer(null)
   }
 
-  checkAnswer (o) {
-    o.persist()
-    this.setState({
-        clickedAnswerUuid: o.target.id
-      }, function () {
-      this.props.question.submitAnswer(
+  updateAnswer(uuid, state) {
+    // console.log(state);
+    if (state){
+      this.selectedItems.push(uuid)
+    } else {
+      var index = this.selectedItems.indexOf(uuid)
+      if (index !== -1) {
+          this.selectedItems.splice(index, 1)
+      }
+    }
+    this.props.updateAnswer([
         this.props.question.uuid,
         {
-          answer: {
-            uuid: o.target.id
-          }
+          image_with_text: this.selectedItems
         }
-      )
-    })
+      ])
   }
+
+  // checkAnswer (o) {
+  //   o.persist()
+  //   this.setState({
+  //       clickedAnswerUuid: o.target.id
+  //     }, function () {
+  //     this.props.question.submitAnswer(
+  //       this.props.question.uuid,
+  //       {
+  //         answer: {
+  //           uuid: o.target.id
+  //         }
+  //       }
+  //     )
+  //   })
+  // }
 
   render () {
     var choices = []
@@ -97,11 +118,13 @@ export class MultiSelectAnswer extends React.Component {
         <Component
           key={choice.uuid}
           choice={choice}
-          checkAnswer={this.checkAnswer.bind(this)}
+          // checkAnswer={this.checkAnswer.bind(this)}
           // clickedAnswer={this.state.clickedAnswer}
+          selectAnswer={this.updateAnswer.bind(this)}
           hasAnswer={hasAnswer}
           isAnswer={isAnswer}
           wasResponse={wasResponse}
+          index={i}
         />
       )
     }
@@ -110,8 +133,12 @@ export class MultiSelectAnswer extends React.Component {
         <div className='bounding-box'>
           <h1>Select answer below:</h1>
           {choices}
+          <div style={{clear: 'both'}}></div>
         </div>
       </div>
     )
   }
+}
+MultiSelectAnswer.propTypes = {
+  updateAnswer: React.PropTypes.func.isRequired
 }
