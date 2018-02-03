@@ -493,3 +493,24 @@ img.grayed-out-img {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
+.wrapper {
+  position: relative;
+  overflow: hidden;
+  margin: 1rem;
+}
+
+.wrapper:after {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+.wrapper img {
+  width: auto;
+  height: 100%;
+  max-width: none;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}

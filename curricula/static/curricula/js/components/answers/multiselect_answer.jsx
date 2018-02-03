@@ -132,7 +132,9 @@ export class MultiSelectAnswer extends React.Component {
       <div className='col-md-6 text-center'>
         <div className='bounding-box'>
           <h1>Select answer below:</h1>
-          {choices}
+          <div className='card-columns'>
+            {choices}
+          </div>
           <div style={{clear: 'both'}}></div>
         </div>
       </div>
