@@ -79,7 +79,8 @@ class QuestionSheet extends React.Component {
   checkAnswer () {
     if (this.answer) {
       this.setState({
-          questionShouldUpdate: true
+          questionShouldUpdate: true,
+          // disabledCheck: true
         }, function () {
         this.props.question.submitAnswer(...this.answer)
       })

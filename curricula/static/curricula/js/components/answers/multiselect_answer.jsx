@@ -26,7 +26,6 @@ export class MultiSelectAnswer extends React.Component {
   }
 
   updateAnswer(uuid, state) {
-    // console.log(state);
     if (state){
       this.selectedItems.push(uuid)
     } else {
@@ -35,12 +34,19 @@ export class MultiSelectAnswer extends React.Component {
           this.selectedItems.splice(index, 1)
       }
     }
-    this.props.updateAnswer([
+    if (this.selectedItems.length > 0) {
+      this.props.updateAnswer([
         this.props.question.uuid,
         {
-          image_with_text: this.selectedItems
+          answer: {
+            uuid: this.selectedItems
+          }
         }
       ])
+    }
+    else {
+      this.props.updateAnswer(null)
+    }
   }
 
   // checkAnswer (o) {
@@ -67,25 +73,26 @@ export class MultiSelectAnswer extends React.Component {
         hasAnswer = true
     }
     var Component
-    switch (this.props.question.answer_type) {
-      // case 'TEXT':
-      //   Component = TextChoice
-      //   break
-      // case 'IMAGE':
-      //   Component = ImageChoice
-      //   break
-      case 'IMAGE_WITH_TEXT':
-        Component = ImageWithText
-        break
-      default:
-        return (
-          <div className='col-md-6 text-center'>
-            <div className='bounding-box'>
-              <h1>Unrecognized answer type: {this.props.question.answer_type}.</h1>
-            </div>
-          </div>
-        )
-    }
+    Component = ImageWithText
+    // switch (this.props.question.answer_type) {
+    //   // case 'TEXT':
+    //   //   Component = TextChoice
+    //   //   break
+    //   // case 'IMAGE':
+    //   //   Component = ImageChoice
+    //   //   break
+    //   case 'IMAGE_WITH_TEXT':
+    //     Component = ImageWithText
+    //     break
+    //   default:
+    //     return (
+    //       <div className='col-md-6 text-center'>
+    //         <div className='bounding-box'>
+    //           <h1>Unrecognized answer type: {this.props.question.answer_type}.</h1>
+    //         </div>
+    //       </div>
+    //     )
+    // }
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
       var isAnswer = false

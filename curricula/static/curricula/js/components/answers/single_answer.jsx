@@ -22,6 +22,7 @@ export class SingleAnswer extends React.Component {
       case 'UNIT_CONVERSION':
         Component = SingleUnitConversionAnswer
         break
+
       default:
         return (
           <div className='col-md-6 text-center'>

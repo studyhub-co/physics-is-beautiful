@@ -1,6 +1,25 @@
 import React from 'react'
 
 export class CheckContinueButton extends React.Component {
+  
+  keydown(e) {
+    // console.log(e.code);
+    if (e.code === "Enter"){
+      if (this.props.isCheck){
+       this.props.checkAction()
+      } else {
+       this.props.continueAction()
+      }
+    }
+   }
+  
+  componentDidMount() {
+    document.addEventListener("keydown", this.keydown.bind(this), false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.keydown, false);
+  }
+  
   render () {
     return (
       <div className='button-group'>

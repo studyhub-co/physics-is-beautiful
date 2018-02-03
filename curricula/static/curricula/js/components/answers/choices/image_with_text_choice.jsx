@@ -7,12 +7,31 @@ export class ImageWithText extends React.Component {
     this.state = { checked: false }
   }
 
-  cardClick (evt) {
+   keydown(e) {
+    if (e.code.startsWith('Digit')){
+        if (e.key === (this.props.index+1).toString()){
+          this.setState({
+            checked: !this.state.checked
+          }, function () {
+            this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
+          })
+      }
+    }
+  }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.keydown.bind(this), false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.keydown, false);
+  }
+
+  cardClick (evt) {
     this.setState({
       checked: !this.state.checked
+    }, function () {
+      this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
     })
-    this.props.selectAnswer(this.props.choice.uuid, !this.state.checked)
     evt.stopPropagation();
     evt.preventDefault();
   }
@@ -40,8 +59,13 @@ export class ImageWithText extends React.Component {
           />
     }
     //onClick={this.cardClick.bind(this)}
+    var cardStyle = {width: '20rem', float: 'left'}
+    if (this.state.checked) {
+
+      cardStyle.backgroundColor = '#eafcff'
+    }
     return (
-      <div onClick={this.cardClick.bind(this)} className='card' style={{width: '20rem', float: 'left'}}  id={this.props.choice.uuid}>
+      <div onClick={this.cardClick.bind(this)} className='card' style={cardStyle}  id={this.props.choice.uuid}>
          <div className='wrapper'>
           { image }
          </div>

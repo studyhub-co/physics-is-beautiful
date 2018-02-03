@@ -21,15 +21,18 @@ class Question(BaseModel):
         MULTISELECT_CHOICE = 40
 
     class AnswerType(enum.Enum):
-        UNDEFINED = 0
-        TEXT = 10
+        UNDEFINED = 0  # FIXME we really need this?
+        SINGLE_ANSWER = 90
+        MULTIPLE_CHOICE = 100
+        MULTISELECT_CHOICE = 110
+        TEXT = 10  # TODO remove
         VECTOR = 20
         NULLABLE_VECTOR = 30
-        IMAGE = 40
+        IMAGE = 40  # TODO remove
         MATHEMATICAL_EXPRESSION = 50
         VECTOR_COMPONENTS = 60
         UNIT_CONVERSION = 70
-        IMAGE_WITH_TEXT = 80
+        # IMAGE_WITH_TEXT = 80
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
@@ -42,7 +45,7 @@ class Question(BaseModel):
     hint = models.CharField(max_length=1024, blank=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
-    question_type = enum.EnumField(QuestionType)
+    question_type = enum.EnumField(QuestionType, null=True, blank=True)
     answer_type = enum.EnumField(AnswerType)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     vectors = models.ManyToManyField('Vector', related_name='questions')
