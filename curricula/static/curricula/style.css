@@ -516,6 +516,8 @@ img.grayed-out-img {
   max-height: 100%;
   position: absolute;
   left: 50%;
-  top: 0;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+
+
 }
