@@ -57,7 +57,7 @@ class UnitInline(NestedTabularInline):
     sortable_field_name = 'position'
     extra = 0
     classes = ['collapse']
-    fields = [_link_to_unit, 'name', 'published_on', 'image', 'position']
+    fields = [_link_to_unit, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_unit]
 
 
@@ -69,7 +69,7 @@ class ModuleInline(NestedTabularInline):
     sortable_field_name = 'position'
     extra = 0
     classes = ['collapse']
-    fields = [_link_to_module, 'name', 'published_on', 'image', 'position']
+    fields = [_link_to_module, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_module]
 
 
@@ -81,7 +81,7 @@ class LessonInline(NestedTabularInline):
     sortable_field_name = 'position'
     extra = 0
     classes = ['collapse']
-    fields = [_link_to_lesson, 'name', 'published_on', 'image', 'position']
+    fields = [_link_to_lesson, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_lesson]
 
 
@@ -93,7 +93,7 @@ class QuestionInline(NestedTabularInline):
     sortable_field_name = 'position'
     extra = 0
     classes = ['collapse']
-    fields = [_link_to_question, 'text', 'published_on', 'image', 'position']
+    fields = [_link_to_question, 'text', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_question]
 
 
@@ -165,9 +165,14 @@ class AnswerTabularInline(NestedTabularInline):
     extra = 0
     classes = ['collapse']
     readonly_fields = ['position']
+    exclude = []
+    # def __init__(self):
+    #
 
     def get_max_num(self, request, obj=None, **kwargs):
-        if not obj or obj.question_type == Question.QuestionType.SINGLE_ANSWER:
+        # if not obj or obj.question_type == Question.QuestionType.SINGLE_ANSWER:
+        if not obj or obj.answer_type == Question.AnswerType.SINGLE_ANSWER:
+            self.exclude.append('is_correct')
             return 1
         else:
             return None
@@ -444,7 +449,7 @@ _backlink_to_curriculum = link_to_field('curriculum')
 class UnitAdmin(NestedModelAdmin):
 
     inlines = [ModuleInline]
-    fields = ['curriculum', _backlink_to_curriculum, 'name', 'published_on', 'image', 'position']
+    fields = ['curriculum', _backlink_to_curriculum, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_backlink_to_curriculum, 'position']
 
 
@@ -454,7 +459,7 @@ _backlink_to_unit = link_to_field('unit')
 class ModuleAdmin(NestedModelAdmin):
 
     inlines = [LessonInline]
-    fields = ['unit', _backlink_to_unit, 'name', 'published_on', 'image', 'position']
+    fields = ['unit', _backlink_to_unit, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_backlink_to_unit, 'position']
 
 
@@ -466,7 +471,7 @@ class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
         fields = [
-            'module', 'name', 'published_on', 'image', 'position', 'lesson_type', 'game_slug',
+            'module', 'name', 'image', 'position', 'lesson_type', 'game_slug',  # 'published_on',
         ]
 
     game_slug = forms.CharField(required=False)
@@ -489,7 +494,7 @@ class LessonAdmin(NestedModelAdmin):
     form = LessonForm
     inlines = [QuestionInline]
     fields = [
-        'module', _backlink_to_module, 'name', 'published_on', 'image', 'position', 'lesson_type'
+        'module', _backlink_to_module, 'name', 'image', 'position', 'lesson_type'  # 'published_on',
     ]
     readonly_fields = [_backlink_to_module, 'position']
 
@@ -511,19 +516,22 @@ class QuestionAdmin(NestedModelAdmin):
 
     ]
     fields = [
-        'lesson', _backlink_to_lesson, 'text', 'additional_text', 'hint', 'published_on', 'image', 'question_type',
+        'lesson', _backlink_to_lesson, 'text', 'additional_text', 'hint', 'image',  # 'question_type', 'published_on',
         'answer_type', 'position'
     ]
     readonly_fields = [_backlink_to_lesson, 'position']
     inline_map = {
-        Question.AnswerType.TEXT: [TextAnswerInline],
-        Question.AnswerType.IMAGE: [ImageAnswerInline],
+        Question.AnswerType.TEXT: [TextAnswerInline],  # TODO remove
+        Question.AnswerType.IMAGE: [ImageAnswerInline],  # TODOremove
         Question.AnswerType.VECTOR: [VectorAnswerInline],
         Question.AnswerType.NULLABLE_VECTOR: [VectorAnswerInline],
         Question.AnswerType.MATHEMATICAL_EXPRESSION: [MathematicalExpressionAnswerInline],
         Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline],
         Question.AnswerType.UNIT_CONVERSION: [UnitConversionAnswerInline],
-        Question.AnswerType.IMAGE_WITH_TEXT: [ImageWTextAnswerInline]
+        # Question.AnswerType.IMAGE_WITH_TEXT: [ImageWTextAnswerInline]
+        Question.AnswerType.SINGLE_ANSWER: [ImageWTextAnswerInline],
+        Question.AnswerType.MULTIPLE_CHOICE: [ImageWTextAnswerInline],
+        Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline]
     }
 
     def get_inline_instances(self, request, obj=None):

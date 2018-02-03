@@ -38,7 +38,7 @@ class Answer(BaseModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content = GenericForeignKey('content_type', 'object_id')  # FIXME seems simpler to use model inheritance or one-to-one relationship
-    is_correct = models.BooleanField(default=False)
+    is_correct = models.BooleanField(default=True)
 
     def matches(self, answer):
         if isinstance(answer, Answer):

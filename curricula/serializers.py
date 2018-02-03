@@ -80,8 +80,8 @@ class ImageWithTextSerializer(BaseSerializer):
 class AnswerSerializer(BaseSerializer):
 
     CONTENT_SERIALIZER_MAP = {
-        Text.__name__.lower(): TextSerializer,
-        Image.__name__.lower(): ImageSerializer,
+        Text.__name__.lower(): TextSerializer,  # TODo remove
+        Image.__name__.lower(): ImageSerializer,  # TODO remove
         Vector.__name__.lower(): VectorSerializer,
         MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
         UnitConversion.__name__.lower(): UnitConversionSerializer,
@@ -116,9 +116,10 @@ class UserResponseSerializer(BaseSerializer):
         extra_kwargs = {'profile': {'required': False}}
 
     vector = VectorSerializer(required=False)
-    text = TextSerializer(required=False)
+    text = TextSerializer(required=False)  # TODo remove
     mathematical_expression = MathematicalExpressionSerializer(required=False)
-    image = ImageSerializer(required=False)
+    image = ImageSerializer(required=False)  # TODO remove
+    # multiple or multi select field
     answer = AnswerSerializer(required=False)
     unit_conversion = UnitConversionSerializer(required=False)
 
