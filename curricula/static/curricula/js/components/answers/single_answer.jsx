@@ -1,7 +1,7 @@
 import React from 'react'
-import {SingleVectorAnswer} from './single_answers/single_vector_answer'
-import {SingleMathematicalExpressionAnswer} from './single_answers/single_math_expression_answer'
-import {SingleUnitConversionAnswer} from './single_answers/single_unit_conversion_answer'
+import {VectorAnswer} from './vector'
+import {MathematicalExpressionAnswer} from './math_expression'
+import {SingleUnitConversionAnswer} from './unit_conversion'
 
 export class SingleAnswer extends React.Component {
   render () {
@@ -10,14 +10,14 @@ export class SingleAnswer extends React.Component {
     switch (this.props.question.answer_type) {
       case 'VECTOR':
       case 'NULLABLE_VECTOR':
-        Component = SingleVectorAnswer
+        Component = VectorAnswer
         break
       case 'VECTOR_COMPONENTS':
         // options['xHat'] = true
         // options['yHat'] = true
         options['vectorComponentButtons'] = true
       case 'MATHEMATICAL_EXPRESSION':
-        Component = SingleMathematicalExpressionAnswer
+        Component = MathematicalExpressionAnswer
         break
       case 'UNIT_CONVERSION':
         Component = SingleUnitConversionAnswer

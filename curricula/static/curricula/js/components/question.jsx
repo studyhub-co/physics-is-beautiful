@@ -7,8 +7,8 @@ import { VectorCanvas, CanvasVector, CanvasText } from '../vector_canvas'
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Hint} from './utils/hint'
 import { SingleAnswer } from './answers/single_answer'
-import { MultipleAnswer } from './answers/multiple_answer'
-import { MultiSelectAnswer } from './answers/multiselect_answer'
+import { MultipleAnswer } from './answers/multiple'
+import { MultiSelectAnswer } from './answers/multiselect'
 
 /* global MathJax */
 

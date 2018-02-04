@@ -1,7 +1,7 @@
 import React from 'react'
-import {VectorCanvas, CanvasVector, CanvasText} from '../../../vector_canvas'
+import {VectorCanvas, CanvasVector, CanvasText} from '../../vector_canvas'
 
-export class SingleVectorAnswer extends React.Component {
+export class VectorAnswer extends React.Component {
   constructor () {
     super()
     this.state = {clear: false}
@@ -79,6 +79,6 @@ export class SingleVectorAnswer extends React.Component {
     )
   }
 }
-SingleVectorAnswer.propTypes = {
+VectorAnswer.propTypes = {
   updateAnswer: React.PropTypes.func.isRequired
 }

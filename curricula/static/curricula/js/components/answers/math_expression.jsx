@@ -1,11 +1,11 @@
 import React from 'react'
 import RMathJax from 'react-mathjax'
 import ReactHover from 'react-hover'
-import {DEFAULT_MATHJAX_OPTIONS} from '../../../constants'
+import {DEFAULT_MATHJAX_OPTIONS} from '../../constants'
 
 /* global MathQuill */
 
-export class SingleMathematicalExpressionAnswer extends React.Component {
+export class MathematicalExpressionAnswer extends React.Component {
   constructor () {
     super()
     this.questionId = null
@@ -196,6 +196,6 @@ export class SingleMathematicalExpressionAnswer extends React.Component {
     )
   }
 }
-SingleMathematicalExpressionAnswer.propTypes = {
+MathematicalExpressionAnswer.propTypes = {
   updateAnswer: React.PropTypes.func.isRequired
 }
