@@ -102,12 +102,10 @@ export class MultipleAnswer extends React.Component {
       )
     }
     return (
-      <div className='col-md-6 text-center'>
         <div className='bounding-box'>
           <h1>Select answer below:</h1>
           {choices}
         </div>
-      </div>
     )
   }
 }

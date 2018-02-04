@@ -37,12 +37,34 @@ class UserResponse(BaseModel):
     answered_on = models.DateTimeField()
     is_correct = models.BooleanField(default=False)
 
+    def answers_list_get(self):
+        return self.answers_list_internal
+
+    def answers_list_set(self, value):
+        self.answers_list_internal = value
+
+    answers_list = property(answers_list_get, answers_list_set)
+
     def check_response(self):
         if isinstance(self.content, Answer):
             self.is_correct = self.content.is_correct
         else:
-            if self.question.correct_answer.matches(self.content):
-                self.is_correct = True
+            if not self.answers_list:
+                if self.question.correct_answer.matches(self.content):
+                    self.is_correct = True
+            else:
+                # Check several answers
+                correct_answers_list = self.question.correct_answer
+                # Check lenth arrays equal
+                correct = False
+                if correct_answers_list.count() == len(self.answers_list):
+                    for answer in self.answers_list:
+                        correct = False
+                        for correct_answer in correct_answers_list:
+                            if correct_answer.matches(answer):
+                                # current user answer answer was found in answers list
+                                correct = True
+                self.is_correct = correct
         return self.is_correct
 
     def get_correct_answer(self):

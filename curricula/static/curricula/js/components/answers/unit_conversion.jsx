@@ -364,7 +364,7 @@ UnitConversionCanvas.propTypes = {
   is_correct_answer: React.PropTypes.bool
 }
 
-export class SingleUnitConversionAnswer extends React.Component {
+export class UnitConversionAnswer extends React.Component {
 
   render () {
     var number = this.props.question.unit_conversion.question_number
@@ -385,7 +385,7 @@ export class SingleUnitConversionAnswer extends React.Component {
     </div>)
   }
 }
-SingleUnitConversionAnswer.propTypes = {
+UnitConversionAnswer.propTypes = {
   updateAnswer: React.PropTypes.func.isRequired,
   question: React.PropTypes.object,
   correct: React.PropTypes.bool

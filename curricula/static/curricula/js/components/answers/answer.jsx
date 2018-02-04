@@ -1,9 +1,11 @@
 import React from 'react'
-import {VectorAnswer} from './vector'
-import {MathematicalExpressionAnswer} from './math_expression'
-import {SingleUnitConversionAnswer} from './unit_conversion'
+import { VectorAnswer } from './vector'
+import { MathematicalExpressionAnswer } from './math_expression'
+import { UnitConversionAnswer } from './unit_conversion'
+import { MultipleAnswer } from './multiple'
+import { MultiSelectAnswer } from './multiselect'
 
-export class SingleAnswer extends React.Component {
+export class Answer extends React.Component {
   render () {
     var Component
     var options = {}
@@ -13,14 +15,18 @@ export class SingleAnswer extends React.Component {
         Component = VectorAnswer
         break
       case 'VECTOR_COMPONENTS':
-        // options['xHat'] = true
-        // options['yHat'] = true
         options['vectorComponentButtons'] = true
       case 'MATHEMATICAL_EXPRESSION':
         Component = MathematicalExpressionAnswer
         break
       case 'UNIT_CONVERSION':
-        Component = SingleUnitConversionAnswer
+        Component = UnitConversionAnswer
+        break
+      case 'MULTISELECT_CHOICE':
+        Component = MultiSelectAnswer
+        break
+      case 'MULTIPLE_CHOICE':
+        Component = MultipleAnswer
         break
 
       default:

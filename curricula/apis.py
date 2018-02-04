@@ -43,7 +43,10 @@ class QuestionViewSet(ModelViewSet):
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
         if not is_correct:
-            data['correct_answer'] = AnswerSerializer(user_response.get_correct_answer()).data
+            if user_response.content:
+                data['correct_answer'] = AnswerSerializer(user_response.get_correct_answer()).data
+            elif user_response.answers_list:
+                data['correct_answer'] = AnswerSerializer(user_response.get_correct_answer(), many=True).data
         return Response(data)
 
 
