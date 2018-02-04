@@ -6,7 +6,7 @@ from piblib.latex2sympy.process_latex import process_sympy
 from shortuuidfield import ShortUUIDField
 
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
@@ -16,12 +16,17 @@ from pint import UnitRegistry
 
 from . import BaseModel, Question
 
+
 class AnswerQuerySet(models.QuerySet):
 
     def get_correct(self):
         # Right now we assume there to only be a single correct answer to a
         # question.
-        return self.get(is_correct=True)
+        # return self.get(is_correct=True)
+        try:
+            return self.get(is_correct=True)
+        except MultipleObjectsReturned:
+            return self.filter(is_correct=True)
 
 
 class Answer(BaseModel):

@@ -134,10 +134,11 @@ class ProgressService(ProgressServiceBase):
 
     def save(self):
         for response in self.user_responses:
-            obj = response.content
-            obj.save()
-            response.content = obj
-            response.save()
+            if response.content:  # I am not sure why we must store user responses in DB?
+                obj = response.content
+                obj.save()
+                response.content = obj
+                response.save()
         for lesson_progress in self._dirty_lesson_progresses.values():
             lesson_progress.save()
         self.user_responses = []

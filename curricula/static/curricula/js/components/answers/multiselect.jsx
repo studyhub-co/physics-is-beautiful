@@ -35,12 +35,20 @@ export class MultiSelectAnswer extends React.Component {
       }
     }
     if (this.selectedItems.length > 0) {
+
+      var answersList = []
+      for(var i = 0; i<this.selectedItems.length;i++){
+        answersList.push(
+           {
+            uuid: this.selectedItems[i]
+          }
+        )
+      }
+
       this.props.updateAnswer([
         this.props.question.uuid,
         {
-          answer: {
-            uuid: this.selectedItems
-          }
+          answers_list: answersList
         }
       ])
     }
@@ -136,7 +144,6 @@ export class MultiSelectAnswer extends React.Component {
       )
     }
     return (
-      <div className='col-md-6 text-center'>
         <div className='bounding-box'>
           <h1>Select answer below:</h1>
           <div className='card-columns'>
@@ -144,7 +151,6 @@ export class MultiSelectAnswer extends React.Component {
           </div>
           <div style={{clear: 'both'}}></div>
         </div>
-      </div>
     )
   }
 }

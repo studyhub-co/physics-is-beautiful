@@ -4,11 +4,10 @@ import React from 'react'
 // import {Vector, VectorCanvas, CanvasVector, CanvasText} from '../vector_canvas'
 // import {Text, Expression} from '../app'
 import { VectorCanvas, CanvasVector, CanvasText } from '../vector_canvas'
-import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
-import {Hint} from './utils/hint'
-import { SingleAnswer } from './answers/single_answer'
-import { MultipleAnswer } from './answers/multiple'
-import { MultiSelectAnswer } from './answers/multiselect'
+import { DEFAULT_MATHJAX_OPTIONS } from '../constants'
+import { Hint } from './utils/hint'
+import { Answer } from './answers/answer'
+
 
 /* global MathJax */
 
@@ -190,37 +189,37 @@ export class Question extends React.Component {
       {/*</div>*/}
       {/*</div>;*/}
     }
-    var answerField = ''
-    if (this.props.question.answer_type == 'MULTIPLE_CHOICE') {
-      answerField =
-        <MultipleAnswer
-          question={this.props.question}
-          answer={this.props.correct_answer}
-          // continueAction={this.props.continueAction}
-          updateAnswer={this.props.updateAnswer}
-          correct={this.props.correct}
-        />
-    }
-    else if (this.props.question.answer_type == 'MULTISELECT_CHOICE') {
-      answerField =
-        <MultiSelectAnswer
+    // var answerField = ''
+    // if (this.props.question.answer_type == 'MULTIPLE_CHOICE') {
+    //   answerField =
+    //     <MultipleAnswer
+    //       question={this.props.question}
+    //       answer={this.props.correct_answer}
+    //       // continueAction={this.props.continueAction}
+    //       updateAnswer={this.props.updateAnswer}
+    //       correct={this.props.correct}
+    //     />
+    // }
+    // else if (this.props.question.answer_type == 'MULTISELECT_CHOICE') {
+    //   answerField =
+    //     <MultiSelectAnswer
+    //       question={this.props.question}
+    //       answer={this.props.correct_answer}
+    //       continueAction={this.props.continueAction}
+    //       updateAnswer={this.props.updateAnswer}
+    //       correct={this.props.correct}
+    //     />
+    // }
+    // else { //default
+    var answerField =
+        <Answer
           question={this.props.question}
           answer={this.props.correct_answer}
           continueAction={this.props.continueAction}
           updateAnswer={this.props.updateAnswer}
           correct={this.props.correct}
         />
-    }
-    else { //default
-            answerField =
-        <SingleAnswer
-          question={this.props.question}
-          answer={this.props.correct_answer}
-          // continueAction={this.props.continueAction}
-          updateAnswer={this.props.updateAnswer}
-          correct={this.props.correct}
-        />
-    }
+    // }
     // if (this.props.question.question_type == 'SINGLE_ANSWER') {
     //   answerField =
     //     <SingleAnswer

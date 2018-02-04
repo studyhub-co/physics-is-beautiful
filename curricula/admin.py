@@ -146,11 +146,11 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(VectorAnswerForm, self).__init__(*args, **kwargs)
-        instance = kwargs.get('instance')
-        if instance and instance.question.question_type == Question.QuestionType.SINGLE_ANSWER:
-            field = self.fields['is_correct']
-            field.initial = True
-            field.widget.attrs['disabled'] = True
+        # instance = kwargs.get('instance')
+        # if instance and instance.question.question_type == Question.QuestionType.SINGLE_ANSWER:
+        #     field = self.fields['is_correct']
+        #     field.initial = True
+        #     field.widget.attrs['disabled'] = True
 
     def clean(self):
         cleaned_data = super(VectorAnswerForm, self).clean()
@@ -165,16 +165,19 @@ class AnswerTabularInline(NestedTabularInline):
     extra = 0
     classes = ['collapse']
     readonly_fields = ['position']
-    exclude = []
-    # def __init__(self):
-    #
+
+    def __init__(self, *args, **kwargs):
+        self.exclude = []
+        super(AnswerTabularInline, self).__init__(*args, **kwargs)
 
     def get_max_num(self, request, obj=None, **kwargs):
-        # if not obj or obj.question_type == Question.QuestionType.SINGLE_ANSWER:
-        if not obj or obj.answer_type == Question.AnswerType.SINGLE_ANSWER:
+        # if not obj or obj.answer_type == Question.AnswerType.SINGLE_ANSWER:
+        if not obj or not (obj.answer_type == Question.AnswerType.MULTISELECT_CHOICE or
+                       obj.answer_type == Question.AnswerType.MULTIPLE_CHOICE):
             self.exclude.append('is_correct')
             return 1
         else:
+            self.exclude = []
             return None
 
 

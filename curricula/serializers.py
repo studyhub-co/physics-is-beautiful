@@ -110,7 +110,7 @@ class UserResponseSerializer(BaseSerializer):
         fields = [
             'question', 'vector', 'text', 'mathematical_expression', 'image', 'unit_conversion',
             'profile',
-            'answer',
+            'answer', 'answers_list',
             'answered_on'
         ]
         extra_kwargs = {'profile': {'required': False}}
@@ -121,6 +121,7 @@ class UserResponseSerializer(BaseSerializer):
     image = ImageSerializer(required=False)  # TODO remove
     # multiple or multi select field
     answer = AnswerSerializer(required=False)
+    answers_list = AnswerSerializer(required=False, many=True)
     unit_conversion = UnitConversionSerializer(required=False)
 
     def validate_answer(self, value):
@@ -146,9 +147,21 @@ class UserResponseSerializer(BaseSerializer):
             sr = serializer_class(data=content)
             sr.is_valid(raise_exception=True)
             content = sr.Meta.model(**sr.validated_data)
+        if isinstance(content, list):
+            serializer_class = self.fields[self.field_name].__class__
+            sr = serializer_class(data=content, child=AnswerSerializer())
+            sr.is_valid(raise_exception=True)
+            # content = sr.Meta.model(**sr.validated_data)
+
+            content = None  # TODO how we can sent several
+            answers_list = []
+            for answer_data in sr.validated_data:
+                answers_list.append(Answer(answer_data))
+
         self.validated_data['content'] = content
         self.validated_data.update(kwargs)
         instance = self.Meta.model(**self.validated_data)
+        instance.answers_list = answers_list
         return instance
 
 
