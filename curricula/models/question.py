@@ -22,7 +22,7 @@ class Question(BaseModel):
 
     class AnswerType(enum.Enum):
         UNDEFINED = 0  # FIXME we really need this?
-        SINGLE_ANSWER = 90
+        # SINGLE_ANSWER = 90
         MULTIPLE_CHOICE = 100
         MULTISELECT_CHOICE = 110
         TEXT = 10  # TODO remove

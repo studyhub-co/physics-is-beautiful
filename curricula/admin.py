@@ -529,7 +529,7 @@ class QuestionAdmin(NestedModelAdmin):
         Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline],
         Question.AnswerType.UNIT_CONVERSION: [UnitConversionAnswerInline],
         # Question.AnswerType.IMAGE_WITH_TEXT: [ImageWTextAnswerInline]
-        Question.AnswerType.SINGLE_ANSWER: [ImageWTextAnswerInline],
+        # Question.AnswerType.SINGLE_ANSWER: [ImageWTextAnswerInline],
         Question.AnswerType.MULTIPLE_CHOICE: [ImageWTextAnswerInline],
         Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline]
     }

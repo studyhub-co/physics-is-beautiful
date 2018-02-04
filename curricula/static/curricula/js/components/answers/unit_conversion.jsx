@@ -1,5 +1,5 @@
 import React from 'react'
-import {UnitConversionBase, ConversionTable, MathquillBox} from '../../../games/unit_conversion'
+import {UnitConversionBase, ConversionTable, MathquillBox} from '../../games/unit_conversion'
 
 /* global MathQuill */
 
