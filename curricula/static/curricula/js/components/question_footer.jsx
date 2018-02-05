@@ -25,10 +25,20 @@ export class Footer extends React.Component {
       correctMessage = 'Correct'
     } else if (this.props.correct === false) {
       checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right'></span>)
-      correctMessage = <div>
-        <span>Incorrect, the correct answer is: <br /></span>
-        <Answer answer={this.props.correct_answer} />
-      </div>
+      if(Array.isArray(this.props.correct_answer)){
+        correctMessage = <div>
+          <span>Incorrect, the correct answers are: <br /></span>
+          {this.props.correct_answer.map((answer, i) => <span key={i}>
+              {!!i && ", "}
+              <Answer ckey={i+1} key={i} answer={answer} />
+          </span>)}
+        </div>
+      } else {
+        correctMessage = <div>
+          <span>Incorrect, the correct answer is: <br /></span>
+          <Answer answer={this.props.correct_answer} />
+        </div>
+      }
       // continueButton = (
       //   <button id='checkButton' type='button' onClick={this.props.continueAction}>
       //       Continue

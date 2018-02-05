@@ -44,7 +44,14 @@ export class MathematicalExpressionAnswer extends React.Component {
 
 export class DefaultAnswer extends React.Component {
   render () {
-    return <div>{this.props.answer.text}</div>
+    console.log(this.props);
+    if (this.props.answer.content.text) {
+      return <span>{ this.props.answer.content.text }</span>
+    } else if (this.props.ckey) {
+      return <span>{ this.props.ckey } item</span>
+    } else {
+      return <span>{ this.props.answer }</span>
+    }
   }
 }
 
@@ -60,7 +67,7 @@ export class UnitConversionAnswer extends React.Component {
     var component = ''
 
     var answer = this.props.answer.answer
-    var originalQuestion = (''+this.props.answer.answer.question_number+'\\ '+this.props.answer.answer.question_unit).split('/')
+    var originalQuestion = (''+answer.question_number+'\\ '+answer.question_unit).split('/')
 
     if (answer.unit_conversion_type === '10' || '30') {
       var qsDenom = ''

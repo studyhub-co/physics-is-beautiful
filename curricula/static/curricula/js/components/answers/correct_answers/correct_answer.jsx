@@ -13,7 +13,7 @@ export class Answer extends React.Component {
         Component = VectorAnswer
         break
       case Text:
-        Component = TextAnswer
+        Component = TextAnswer // Todo remove
         break
       case Expression:
         Component = MathematicalExpressionAnswer

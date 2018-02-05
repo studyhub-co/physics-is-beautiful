@@ -41,7 +41,7 @@ export class MultipleAnswer extends React.Component {
     var choices = []
     // var hasAnswer = this.props.answer !== null
     var hasAnswer = false
-    if (this.props.answer || this.props.question.is_correct || this.state.clickedAnswerUuid ) {
+    if (this.props.answer || this.props.question.is_correct || this.state.selectedAnswersUuids ) {
         hasAnswer = true
     }
     var Component
@@ -74,7 +74,7 @@ export class MultipleAnswer extends React.Component {
           }
         }
         // clicked answer
-        if(this.state.clickedAnswerUuid == choice.uuid) {
+        if(this.state.selectedAnswersUuids == choice.uuid) {
           if(!this.props.answer){ //if have no answer is right answer
             isAnswer = true
           }
