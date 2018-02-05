@@ -31,7 +31,6 @@ export class MultiSelectAnswer extends React.Component {
       }
     }
     if (this.selectedItems.length > 0) {
-
       var answersList = []
       for(var i = 0; i<this.selectedItems.length;i++){
         answersList.push(
@@ -90,8 +89,6 @@ export class MultiSelectAnswer extends React.Component {
         <ImageWithText
           key={choice.uuid}
           choice={choice}
-          // checkAnswer={this.checkAnswer.bind(this)}
-          // clickedAnswer={this.state.clickedAnswer}
           selectAnswer={this.updateAnswer.bind(this)}
           hasAnswer={hasAnswer}
           isAnswer={isAnswer}

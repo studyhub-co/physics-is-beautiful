@@ -26,14 +26,32 @@ export class ImageWithText extends React.Component {
     document.removeEventListener("keydown", this.keydown, false);
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.checked != this.state.checked){
+      this.setState({checked: nextProps.checked})
+    }
+  }
+
   cardClick (evt) {
-    this.setState({
-      checked: !this.state.checked
-    }, function () {
-      this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
-    })
-    evt.stopPropagation();
-    evt.preventDefault();
+    if (this.props.type != 'RADIO_BUTTON') {
+      this.setState({
+        checked: !this.state.checked
+      }, function () {
+        this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
+      })
+      evt.stopPropagation();
+      evt.preventDefault();
+    } else {
+
+      // checked state changed with props
+      this.props.selectAnswer(this.props.choice.uuid, true)
+
+      // this.setState({
+      //   checked: true
+      // }, function () {
+      //   this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
+      // })
+    }
   }
 
   render () {
@@ -59,19 +77,30 @@ export class ImageWithText extends React.Component {
     if (this.state.checked) {
       cardStyle.backgroundColor = '#eafcff'
     }
+
     return (
       <div onClick={this.cardClick.bind(this)} className='card' style={cardStyle}  id={this.props.choice.uuid}>
          <div className='wrapper'>
           { image }
          </div>
           <div className={'card-block'} style={{padding: '.5rem'}}>
-            <div className={'pure-checkbox'} style={{float: 'left'}}>
-              <input id={'checkbox'+this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked}/>
+            {this.props.type == 'RADIO_BUTTON' ?
+            <div className="pure-radiobutton"  style={{float: 'left'}}>
+              <input id={'radio'+this.props.choice.uuid} value={this.props.choice.content.text} name="radio" type="radio" checked={this.state.checked}/>
               {this.props.choice.content.text ?
-                <label htmlFor={'checkbox'+this.props.choice.uuid}>{this.props.choice.content.text}</label> :
-                <label htmlFor={'checkbox'+this.props.choice.uuid} style={{padding: "1rem"}}></label>
-                }
+                  <label htmlFor={'radio'+this.props.choice.uuid}>{this.props.choice.content.text}</label> :
+                  <label htmlFor={'radio'+this.props.choice.uuid} style={{padding: "1rem"}}></label>
+                  }
             </div>
+              :
+            <div className={'pure-checkbox'} style={{float: 'left'}}>
+                <input id={'checkbox'+this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked}/>
+                {this.props.choice.content.text ?
+                  <label htmlFor={'checkbox'+this.props.choice.uuid}>{this.props.choice.content.text}</label> :
+                  <label htmlFor={'checkbox'+this.props.choice.uuid} style={{padding: "1rem"}}></label>
+                  }
+            </div>
+            }
             <div onClick={this.cardClick.bind(this)}  style={{float: 'right'}}>
               {this.props.index+1}
             </div>
