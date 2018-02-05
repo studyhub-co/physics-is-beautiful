@@ -54,7 +54,16 @@ export class MultiSelectAnswer extends React.Component {
 
   render () {
     var choices = []
-    // var hasAnswer = this.props.answer !== null
+
+    // detect text only mode
+    var textOnlyMode = true
+    for (var i = 0; i < this.props.question.choices.length; i++) {
+      var choice = this.props.question.choices[i]
+      if (choice.content.image){
+        textOnlyMode = false
+      }
+    }
+
     var hasAnswer = false
     if (this.props.answer || this.props.question.is_correct) {
         hasAnswer = true
@@ -87,6 +96,7 @@ export class MultiSelectAnswer extends React.Component {
 
       choices.push(
         <ImageWithText
+          textOnlyMode={textOnlyMode}
           key={choice.uuid}
           choice={choice}
           selectAnswer={this.updateAnswer.bind(this)}
@@ -100,7 +110,7 @@ export class MultiSelectAnswer extends React.Component {
     return (
         <div className='bounding-box'>
           <h1>Select answer below:</h1>
-          <div className='card-columns'>
+          <div className={textOnlyMode ? 'button-group': 'card-columns'}>
             {choices}
           </div>
           <div style={{clear: 'both'}}></div>

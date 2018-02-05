@@ -254,9 +254,6 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
 
                 return correct
 
-                # correct = MathematicalExpressionMixin.match_math(str(answer_calc), answer_number)
-                # return correct and self.match_math(obj.answer_number, self.answer_number)
-
         return False
 
     def __str__(self):
@@ -270,6 +267,18 @@ class ImageWText(BaseModel):
 
     image = models.ImageField(blank=True)
     text = models.CharField(blank=True, max_length=200)
+
+    def save(self, *args, **kwargs):
+        # delete old file when replacing by updating the file
+        try:
+            this = ImageWText.objects.get(id=self.id)
+            if this.image != self.image:
+                this.image.delete(save=False)
+        except:
+            pass  # when new photo then we do nothing, normal case
+        if not self.image:
+            self.image = ''
+        super(ImageWText, self).save(*args, **kwargs)
 
     # def matches(self, obj):
     #     if isinstance(obj, Answer):

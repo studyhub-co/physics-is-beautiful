@@ -58,6 +58,13 @@ export class MultipleAnswer extends React.Component {
 
   render () {
     var choices = []
+    
+    var textOnlyMode = true
+    for (var i = 0; i < this.props.question.choices.length; i++) {
+      var choice = this.props.question.choices[i]
+      console.log(choice);
+      // if (choice)
+    }    
 
     var hasAnswer = false
     if (this.props.answer || this.props.question.is_correct || this.state.selectedAnswersUuids ) {
@@ -85,17 +92,11 @@ export class MultipleAnswer extends React.Component {
          }
       }
 
-      // console.log("-----")
-      // console.log(this.state.clickedAnswerUuid);
-      // console.log(choice.uuid);
-      // console.log("-----")
-
       choices.push(
         <ImageWithText
           key={choice.uuid}
           choice={choice}
           type={'RADIO_BUTTON'}
-          // checkAnswer={this.checkAnswer.bind(this)}
           checked={choice.uuid===this.state.clickedAnswerUuid}
           selectAnswer={this.updateAnswer.bind(this)}
           hasAnswer={hasAnswer}
