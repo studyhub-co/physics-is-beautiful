@@ -37,16 +37,15 @@ export class ImageWithText extends React.Component {
   }
 
   render () {
-    var imgStyle = {}
+    var cardStyle = {width: '20rem', float: 'left'}
     if (this.props.hasAnswer) {
-      var disabled = ' disabled'
-      imgStyle['pointerEvents'] = 'none'
+      cardStyle['pointerEvents'] = 'none'
       if (this.props.wasResponse) {
         if (this.props.isAnswer) {
-          imgStyle['boxShadow'] = 'green 0px 0px 15px'
-          imgStyle['border'] = '2px solid rgb(79, 212, 24)'
+          cardStyle['boxShadow'] = 'green 0px 0px 15px'
+          cardStyle['border'] = '2px solid rgb(79, 212, 24)'
         } else if (this.props.wasResponse) {
-          imgStyle['boxShadow'] = 'rgb(255, 0, 0) 0px 0px 10px'
+          cardStyle['boxShadow'] = 'rgb(255, 0, 0) 0px 0px 10px'
         }
       }
     }
@@ -54,14 +53,10 @@ export class ImageWithText extends React.Component {
     if (this.props.choice.content.image){
       image = <img
             className='card-img-top img-fluid'
-            style={imgStyle}
             src={this.props.choice.content.image}
           />
     }
-    //onClick={this.cardClick.bind(this)}
-    var cardStyle = {width: '20rem', float: 'left'}
     if (this.state.checked) {
-
       cardStyle.backgroundColor = '#eafcff'
     }
     return (
@@ -72,8 +67,10 @@ export class ImageWithText extends React.Component {
           <div className={'card-block'} style={{padding: '.5rem'}}>
             <div className={'pure-checkbox'} style={{float: 'left'}}>
               <input id={'checkbox'+this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked}/>
-              <label htmlFor={'checkbox'+this.props.choice.uuid}>{this.props.choice.content.text}</label>
-              {/*{this.props.choice.content.text}*/}
+              {this.props.choice.content.text ?
+                <label htmlFor={'checkbox'+this.props.choice.uuid}>{this.props.choice.content.text}</label> :
+                <label htmlFor={'checkbox'+this.props.choice.uuid} style={{padding: "1rem"}}></label>
+                }
             </div>
             <div onClick={this.cardClick.bind(this)}  style={{float: 'right'}}>
               {this.props.index+1}

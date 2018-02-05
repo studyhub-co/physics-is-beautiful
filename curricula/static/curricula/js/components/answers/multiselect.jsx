@@ -1,6 +1,5 @@
 import React from 'react'
-// import {TextChoice} from './choices/text_choice'
-// import {ImageChoice} from './choices/image_choice'
+
 import {ImageWithText} from './choices/image_with_text_choice'
 
 export class MultiSelectAnswer extends React.Component {
@@ -8,9 +7,6 @@ export class MultiSelectAnswer extends React.Component {
   constructor (props) {
     super(props)
     this.selectedItems = []
-    this.state = {
-      clickedAnswerUuid: null,
-    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -21,7 +17,7 @@ export class MultiSelectAnswer extends React.Component {
   }
 
   reset () {
-    this.setState({ clickedAnswerUuid: null })
+    this.selectedItems = []
     this.props.updateAnswer(null)
   }
 
@@ -57,50 +53,14 @@ export class MultiSelectAnswer extends React.Component {
     }
   }
 
-  // checkAnswer (o) {
-  //   o.persist()
-  //   this.setState({
-  //       clickedAnswerUuid: o.target.id
-  //     }, function () {
-  //     this.props.question.submitAnswer(
-  //       this.props.question.uuid,
-  //       {
-  //         answer: {
-  //           uuid: o.target.id
-  //         }
-  //       }
-  //     )
-  //   })
-  // }
-
   render () {
     var choices = []
     // var hasAnswer = this.props.answer !== null
     var hasAnswer = false
-    if (this.props.answer || this.props.question.is_correct || this.state.clickedAnswerUuid ) {
+    if (this.props.answer || this.props.question.is_correct) {
         hasAnswer = true
     }
-    var Component
-    Component = ImageWithText
-    // switch (this.props.question.answer_type) {
-    //   // case 'TEXT':
-    //   //   Component = TextChoice
-    //   //   break
-    //   // case 'IMAGE':
-    //   //   Component = ImageChoice
-    //   //   break
-    //   case 'IMAGE_WITH_TEXT':
-    //     Component = ImageWithText
-    //     break
-    //   default:
-    //     return (
-    //       <div className='col-md-6 text-center'>
-    //         <div className='bounding-box'>
-    //           <h1>Unrecognized answer type: {this.props.question.answer_type}.</h1>
-    //         </div>
-    //       </div>
-    //     )
-    // }
+
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
       var isAnswer = false
@@ -108,29 +68,26 @@ export class MultiSelectAnswer extends React.Component {
 
       if (hasAnswer){
         if (this.props.answer){ // if we has answer, answer was wrong
-          if (this.props.answer.uuid == choice.uuid) {
-            wasResponse = true
-            isAnswer = true
+          for (var y=0; y < this.props.answer.length; y++){
+            if (this.props.answer[y].uuid == choice.uuid) {
+              wasResponse = true
+              isAnswer = true
+            }
           }
         }
-        // clicked answer
-        if(this.state.clickedAnswerUuid == choice.uuid) {
-          if(!this.props.answer){ //if have no answer is right answer
-            isAnswer = true
-          }
-          wasResponse = true
-         }
+        // clicked answers
+        for (var j=0; j < this.selectedItems.length; j++){
+          if(this.selectedItems[j] == choice.uuid) {
+            if(!this.props.answer){ //if have no answer is right answer
+              isAnswer = true
+            }
+            wasResponse = true
+           }
+        }
       }
 
-      // if (hasAnswer) {
-      //   if (this.props.answer.uuid == choice.uuid) {
-      //     isAnswer = true
-      //   } else if (this.props.question.response.answer.uuid == choice.uuid) {
-      //     wasResponse = true
-      //   }
-      // }
       choices.push(
-        <Component
+        <ImageWithText
           key={choice.uuid}
           choice={choice}
           // checkAnswer={this.checkAnswer.bind(this)}

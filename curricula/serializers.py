@@ -140,6 +140,7 @@ class UserResponseSerializer(BaseSerializer):
             'You must call `.is_valid()` before calling `.get_response()`.'
         )
         content = self.validated_data.pop(self.field_name)
+        answers_list = []
         if isinstance(content, dict):
             # Answers map to objects, everything else maps to dictionaries for
             # objects to be created. Here we create those sub-objects
@@ -152,11 +153,13 @@ class UserResponseSerializer(BaseSerializer):
             sr = serializer_class(data=content, child=AnswerSerializer())
             sr.is_valid(raise_exception=True)
             # content = sr.Meta.model(**sr.validated_data)
+            content = None
 
-            content = None  # TODO how we can sent several
-            answers_list = []
+            answers_uuids = []
+
             for answer_data in sr.validated_data:
-                answers_list.append(Answer(answer_data))
+                answers_uuids.append(answer_data.get('uuid', 0))
+            answers_list = Answer.objects.filter(uuid__in = answers_uuids)
 
         self.validated_data['content'] = content
         self.validated_data.update(kwargs)
