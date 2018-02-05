@@ -23,10 +23,11 @@ class AnswerQuerySet(models.QuerySet):
         # Right now we assume there to only be a single correct answer to a
         # question.
         # return self.get(is_correct=True)
-        try:
-            return self.get(is_correct=True)
-        except MultipleObjectsReturned:
+
+        if self._hints['instance'].answer_type == Question.AnswerType.MULTISELECT_CHOICE:
             return self.filter(is_correct=True)
+        else:
+            return self.get(is_correct=True)
 
 
 class Answer(BaseModel):

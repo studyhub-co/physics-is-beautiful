@@ -1,6 +1,7 @@
 import React from 'react'
-import {TextChoice} from './choices/text_choice'
-import {ImageChoice} from './choices/image_choice'
+// import {TextChoice} from './choices/text_choice'
+// import {ImageChoice} from './choices/image_choice'
+import {ImageWithText} from './choices/image_with_text_choice'
 
 export class MultipleAnswer extends React.Component {
 
@@ -21,46 +22,48 @@ export class MultipleAnswer extends React.Component {
     this.props.updateAnswer(null)
   }
 
-  checkAnswer (o) {
-    o.persist()
-    this.setState({
-        clickedAnswerUuid: o.target.id
-      }, function () {
-      this.props.question.submitAnswer(
-        this.props.question.uuid,
-        {
-          answer: {
-            uuid: o.target.id
+  updateAnswer(uuid, state) {
+    if (state){
+      this.setState({ clickedAnswerUuid: uuid }, function () {
+        this.props.updateAnswer([
+          this.props.question.uuid,
+          {
+            answer:  {
+               uuid: uuid
+             }
           }
-        }
-      )
-    })
+        ])
+      })
+    }else{
+      //Deselect select one item
+      this.props.updateAnswer(null)
+    }
   }
+
+  // checkAnswer (o) {
+  //   o.persist()
+  //   this.setState({
+  //       clickedAnswerUuid: o.target.id
+  //     }, function () {
+  //     this.props.question.submitAnswer(
+  //       this.props.question.uuid,
+  //       {
+  //         answer: {
+  //           uuid: o.target.id
+  //         }
+  //       }
+  //     )
+  //   })
+  // }
 
   render () {
     var choices = []
-    // var hasAnswer = this.props.answer !== null
+
     var hasAnswer = false
     if (this.props.answer || this.props.question.is_correct || this.state.selectedAnswersUuids ) {
         hasAnswer = true
     }
-    var Component
-    switch (this.props.question.answer_type) {
-      case 'TEXT':
-        Component = TextChoice
-        break
-      case 'IMAGE':
-        Component = ImageChoice
-        break
-      default:
-        return (
-          <div className='col-md-6 text-center'>
-            <div className='bounding-box'>
-              <h1>Unrecognized answer type: {this.props.question.answer_type}.</h1>
-            </div>
-          </div>
-        )
-    }
+
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
       var isAnswer = false
@@ -74,7 +77,7 @@ export class MultipleAnswer extends React.Component {
           }
         }
         // clicked answer
-        if(this.state.selectedAnswersUuids == choice.uuid) {
+        if(this.state.clickedAnswerUuid == choice.uuid) {
           if(!this.props.answer){ //if have no answer is right answer
             isAnswer = true
           }
@@ -82,29 +85,33 @@ export class MultipleAnswer extends React.Component {
          }
       }
 
-      // if (hasAnswer) {
-      //   if (this.props.answer.uuid == choice.uuid) {
-      //     isAnswer = true
-      //   } else if (this.props.question.response.answer.uuid == choice.uuid) {
-      //     wasResponse = true
-      //   }
-      // }
+      // console.log("-----")
+      // console.log(this.state.clickedAnswerUuid);
+      // console.log(choice.uuid);
+      // console.log("-----")
+
       choices.push(
-        <Component
+        <ImageWithText
           key={choice.uuid}
           choice={choice}
-          checkAnswer={this.checkAnswer.bind(this)}
-          // clickedAnswer={this.state.clickedAnswer}
+          type={'RADIO_BUTTON'}
+          // checkAnswer={this.checkAnswer.bind(this)}
+          checked={choice.uuid===this.state.clickedAnswerUuid}
+          selectAnswer={this.updateAnswer.bind(this)}
           hasAnswer={hasAnswer}
           isAnswer={isAnswer}
           wasResponse={wasResponse}
+          index={i}
         />
       )
     }
     return (
-        <div className='bounding-box'>
+         <div className='bounding-box'>
           <h1>Select answer below:</h1>
-          {choices}
+          <div className='card-columns'>
+            {choices}
+          </div>
+          <div style={{clear: 'both'}}></div>
         </div>
     )
   }

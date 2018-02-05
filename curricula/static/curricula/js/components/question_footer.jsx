@@ -30,13 +30,14 @@ export class Footer extends React.Component {
           <span>Incorrect, the correct answers are: <br /></span>
           {this.props.correct_answer.map((answer, i) => <span key={i}>
               {!!i && ", "}
-              <Answer ckey={i+1} key={i} answer={answer} />
+              <Answer key={i} answer={answer} />
           </span>)}
         </div>
       } else {
+        console.log(this.props);
         correctMessage = <div>
           <span>Incorrect, the correct answer is: <br /></span>
-          <Answer answer={this.props.correct_answer} />
+          <Answer ckey={1} answer={this.props.correct_answer} />
         </div>
       }
       // continueButton = (

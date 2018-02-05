@@ -44,13 +44,10 @@ export class MathematicalExpressionAnswer extends React.Component {
 
 export class DefaultAnswer extends React.Component {
   render () {
-    console.log(this.props);
     if (this.props.answer.content.text) {
       return <span>{ this.props.answer.content.text }</span>
-    } else if (this.props.ckey) {
-      return <span>{ this.props.ckey } item</span>
     } else {
-      return <span>{ this.props.answer }</span>
+      return <span>Highlighted in the green card</span>
     }
   }
 }
