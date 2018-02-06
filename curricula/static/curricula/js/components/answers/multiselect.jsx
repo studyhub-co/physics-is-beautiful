@@ -64,34 +64,45 @@ export class MultiSelectAnswer extends React.Component {
       }
     }
 
-    var hasAnswer = false
+    var hasAnswer = false // user clicked check button
     if (this.props.answer || this.props.question.is_correct) {
         hasAnswer = true
     }
 
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
-      var isAnswer = false
-      var wasResponse = false // war wrong response
 
       if (hasAnswer){
-        if (this.props.answer){ // if we has answer, answer was wrong
-          for (var y=0; y < this.props.answer.length; y++){
-            if (this.props.answer[y].uuid == choice.uuid) {
-              wasResponse = true
-              isAnswer = true
+        var isRightChoice = false // is right answer
+        var wasWrongChoice = false // was wrong answer
+
+
+        // compare current choice with right answers and checked answers
+        // set intial values for selected choice
+        for (var j=0; j < this.selectedItems.length; j++){ // go throw clicked answers
+          if (this.selectedItems[j] == choice.uuid) {
+            if (!this.props.answer){ // if has no answer is right answer
+              isRightChoice = true
+            } else { // if we have props.answer answer was wrong
+              wasWrongChoice = true
             }
-          }
-        }
-        // clicked answers
-        for (var j=0; j < this.selectedItems.length; j++){
-          if(this.selectedItems[j] == choice.uuid) {
-            if(!this.props.answer){ //if have no answer is right answer
-              isAnswer = true
-            }
-            wasResponse = true
            }
         }
+
+        // rewrite values for selected choice nad set values for right answers
+        if (this.props.answer){ // if we has answer, answer was wrong
+          for (var y=0; y < this.props.answer.length; y++){ // go throw right answers
+            if (this.props.answer[y].uuid == choice.uuid) {
+              for (var j=0; j < this.selectedItems.length; j++){ //go throw cheched answers
+                if (this.selectedItems[j] == choice.uuid) {
+                  wasWrongChoice = true
+                } else {
+                  isRightChoice = true
+                }
+              }}
+            }
+          }
+
       }
 
       choices.push(
@@ -101,8 +112,8 @@ export class MultiSelectAnswer extends React.Component {
           choice={choice}
           selectAnswer={this.updateAnswer.bind(this)}
           hasAnswer={hasAnswer}
-          isAnswer={isAnswer}
-          wasResponse={wasResponse}
+          isRightChoice={isRightChoice}
+          wasWrongChoice={wasWrongChoice}
           index={i}
         />
       )

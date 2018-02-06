@@ -26,8 +26,12 @@ export class Footer extends React.Component {
     } else if (this.props.correct === false) {
       checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right'></span>)
       if(Array.isArray(this.props.correct_answer)){
+        var message = "Incorrect, the correct answers are:"
+        if (this.props.correct_answer.length == 1){
+          message = "Incorrect, the correct answer is:"
+        }
         correctMessage = <div>
-          <span>Incorrect, the correct answers are: <br /></span>
+          <span>{message}<br /></span>
           {this.props.correct_answer.map((answer, i) => <span key={i}>
               {!!i && ", "}
               <Answer key={i} answer={answer} />

@@ -27,8 +27,12 @@ export class ImageWithText extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.checked != this.state.checked){
+    if (nextProps.checked && nextProps.checked != this.state.checked){
+      console.log(nextProps.checked);
       this.setState({checked: nextProps.checked})
+    }
+    if (nextProps.isRightChoice){ //save checked after response
+      this.setState({checked: true})
     }
   }
 
@@ -56,16 +60,18 @@ export class ImageWithText extends React.Component {
 
   render () {
     var cardStyle = {width: '20rem', float: 'left'}
+    var buttonStyle = {}
     if (this.props.hasAnswer) {
       cardStyle['pointerEvents'] = 'none'
-      if (this.props.wasResponse) {
-        if (this.props.isAnswer) {
+        if (this.props.isRightChoice) {
+          buttonStyle['boxShadow'] = 'green 0px 0px 15px'
+          buttonStyle['border'] = '2px solid rgb(79, 212, 24)'
           cardStyle['boxShadow'] = 'green 0px 0px 15px'
           cardStyle['border'] = '2px solid rgb(79, 212, 24)'
-        } else if (this.props.wasResponse) {
+        } else if (this.props.wasWrongChoice) {
           cardStyle['boxShadow'] = 'rgb(255, 0, 0) 0px 0px 10px'
+          buttonStyle['boxShadow'] = 'rgb(255, 0, 0) 0px 0px 10px'
         }
-      }
     }
     var image = null
     if (this.props.choice.content.image){
@@ -75,14 +81,17 @@ export class ImageWithText extends React.Component {
           />
     }
     if (this.state.checked) {
-      cardStyle.backgroundColor = '#eafcff'
+      cardStyle['backgroundColor'] = '#eafcff'
+      buttonStyle['backgroundColor'] = '#eafcff'
+      cardStyle['border'] = '.2rem solid #1caff6'
+      buttonStyle['border'] = '.2rem solid #1caff6'
     }
 
     var toReturn
     if (this.props.textOnlyMode){
       if (this.props.type == 'RADIO_BUTTON' ){
         // TEXT ONLY RADIO
-        <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)}>
+        <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
               <span style={{marginRight: '1rem'}}>{this.props.index+1}</span>
               <input id={'radio'+this.props.choice.uuid} value={this.props.choice.content.text} name='radio'
                      type='radio' checked={this.state.checked}/>
@@ -93,7 +102,7 @@ export class ImageWithText extends React.Component {
        </div>
       } else {
         // TEXT ONLY CHECKBOXES
-      toReturn = <div className={'pure-checkbox answer-button'} onClick={this.cardClick.bind(this)}>
+      toReturn = <div className={'pure-checkbox answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
                       <span style={{marginRight: '1rem'}}>{this.props.index+1}</span>
                 <input id={'checkbox'+this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked}/>
                 {this.props.choice.content.text ?

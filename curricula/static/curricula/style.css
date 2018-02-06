@@ -523,19 +523,19 @@ img.grayed-out-img {
 
 .answer-button{
     border-radius: 12rem;
-    border: .2rem solid #1caff6;
+    border: .2rem solid gray;
     padding-left: 15;
     padding-right: 15;
     padding-top: 9px;
     padding-bottom: 9px;
     margin: 2rem;
     background: rgba(255, 255, 255, 0);
-    color: #1caff6;
+    color: gray;
     transition: color .3s,border .3s;
     text-align: justify;
     cursor: pointer;
 }
-#checkButton:hover{
-    color: #105e84;
-    border: .2rem solid #105e84;
+.answer-button:hover{
+    color: #1caff6;
+    border: .2rem solid #1caff6;
 }
