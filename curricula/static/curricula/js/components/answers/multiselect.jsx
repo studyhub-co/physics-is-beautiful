@@ -114,6 +114,7 @@ export class MultiSelectAnswer extends React.Component {
           hasAnswer={hasAnswer}
           isRightChoice={isRightChoice}
           wasWrongChoice={wasWrongChoice}
+          checked={this.selectedItems.indexOf(choice.uuid) != -1}
           index={i}
         />
       )
