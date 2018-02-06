@@ -28,11 +28,7 @@ export class ImageWithText extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.checked && nextProps.checked != this.state.checked){
-      console.log(nextProps.checked);
       this.setState({checked: nextProps.checked})
-    }
-    if (nextProps.isRightChoice){ //save checked after response
-      this.setState({checked: true})
     }
   }
 

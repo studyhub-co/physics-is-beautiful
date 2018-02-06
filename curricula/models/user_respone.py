@@ -66,6 +66,8 @@ class UserResponse(BaseModel):
                     # incorrect answer was found
                     if temp_correct_answers_list:
                         correct = False
+                else:  # arrays not equal
+                    correct = False
                 self.is_correct = correct
         return self.is_correct
 
