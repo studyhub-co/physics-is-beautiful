@@ -56,14 +56,16 @@ class UserResponse(BaseModel):
                 # Check several answers
                 correct_answers_list = self.question.correct_answer
                 # Check lenth arrays equal
-                correct = False
+                correct = True
                 if correct_answers_list.count() == len(self.answers_list):
+                    temp_correct_answers_list = list(correct_answers_list)
                     for answer in self.answers_list:
-                        correct = False
                         for correct_answer in correct_answers_list:
                             if correct_answer.matches(answer):
-                                # current user answer answer was found in answers list
-                                correct = True
+                                temp_correct_answers_list.remove(correct_answer)
+                    # incorrect answer was found
+                    if temp_correct_answers_list:
+                        correct = False
                 self.is_correct = correct
         return self.is_correct
 
