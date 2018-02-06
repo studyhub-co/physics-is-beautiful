@@ -27,7 +27,7 @@ export class ImageWithText extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.checked && nextProps.checked != this.state.checked){
+    if (typeof(nextProps.checked) != 'undefinded' && nextProps.checked != this.state.checked){
       this.setState({checked: nextProps.checked})
     }
   }
@@ -42,7 +42,6 @@ export class ImageWithText extends React.Component {
       evt.stopPropagation();
       evt.preventDefault();
     } else {
-
       // checked state changed with props
       this.props.selectAnswer(this.props.choice.uuid, true)
 
@@ -85,9 +84,9 @@ export class ImageWithText extends React.Component {
 
     var toReturn
     if (this.props.textOnlyMode){
-      if (this.props.type == 'RADIO_BUTTON' ){
+      if (this.props.type == 'RADIO_BUTTON'){
         // TEXT ONLY RADIO
-        <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
+        toReturn = <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
               <span style={{marginRight: '1rem'}}>{this.props.index+1}</span>
               <input id={'radio'+this.props.choice.uuid} value={this.props.choice.content.text} name='radio'
                      type='radio' checked={this.state.checked}/>
