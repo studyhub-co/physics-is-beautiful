@@ -38,7 +38,6 @@ export class Footer extends React.Component {
           </span>)}
         </div>
       } else {
-        console.log(this.props);
         correctMessage = <div>
           <span>Incorrect, the correct answer is: <br /></span>
           <Answer ckey={1} answer={this.props.correct_answer} />

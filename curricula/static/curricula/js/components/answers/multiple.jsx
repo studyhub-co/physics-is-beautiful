@@ -24,16 +24,18 @@ export class MultipleAnswer extends React.Component {
 
   updateAnswer(uuid, state) {
     if (state){
-      this.setState({ clickedAnswerUuid: uuid }, function () {
-        this.props.updateAnswer([
-          this.props.question.uuid,
-          {
-            answer:  {
-               uuid: uuid
-             }
-          }
-        ])
-      })
+      if (uuid!==this.state.clickedAnswerUuid) {
+        this.setState({clickedAnswerUuid: uuid}, function () {
+          this.props.updateAnswer([
+            this.props.question.uuid,
+            {
+              answer: {
+                uuid: uuid
+              }
+            }
+          ])
+        })
+      }
     }else{
       //Deselect select one item
       this.props.updateAnswer(null)
@@ -62,8 +64,9 @@ export class MultipleAnswer extends React.Component {
     var textOnlyMode = true
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
-      // console.log(choice);
-      // if (choice)
+      if (choice.content.image){
+        textOnlyMode = false
+      }
     }    
 
     var hasAnswer = false // user gave answer
@@ -93,6 +96,7 @@ export class MultipleAnswer extends React.Component {
 
       choices.push(
         <ImageWithText
+          textOnlyMode={textOnlyMode}
           key={choice.uuid}
           choice={choice}
           type={'RADIO_BUTTON'}
@@ -108,7 +112,7 @@ export class MultipleAnswer extends React.Component {
     return (
          <div className='bounding-box'>
           <h1>Select answer below:</h1>
-          <div className='card-columns'>
+          <div className={textOnlyMode ? 'button-group': 'card-columns'}>
             {choices}
           </div>
           <div style={{clear: 'both'}}></div>
