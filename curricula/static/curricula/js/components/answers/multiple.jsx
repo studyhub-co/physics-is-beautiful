@@ -62,34 +62,33 @@ export class MultipleAnswer extends React.Component {
     var textOnlyMode = true
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
-      console.log(choice);
+      // console.log(choice);
       // if (choice)
     }    
 
-    var hasAnswer = false
+    var hasAnswer = false // user gave answer
     if (this.props.answer || this.props.question.is_correct || this.state.selectedAnswersUuids ) {
         hasAnswer = true
     }
 
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
-      var isAnswer = false
-      var wasResponse = false // war wrong response
+      
+      var isRightChoice = false // right answer
+      var wasWrongChoice = false // was wrong answer
 
       if (hasAnswer){
         if (this.props.answer){ // if we has answer, answer was wrong
+          // find right answer
           if (this.props.answer.uuid == choice.uuid) {
-            wasResponse = true
-            isAnswer = true
+            wasWrongChoice = true
           }
+        } else {
+          // clicked answer
+          if (this.state.clickedAnswerUuid == choice.uuid) {
+              isRightChoice = true
+           }
         }
-        // clicked answer
-        if(this.state.clickedAnswerUuid == choice.uuid) {
-          if(!this.props.answer){ //if have no answer is right answer
-            isAnswer = true
-          }
-          wasResponse = true
-         }
       }
 
       choices.push(
@@ -100,8 +99,8 @@ export class MultipleAnswer extends React.Component {
           checked={choice.uuid===this.state.clickedAnswerUuid}
           selectAnswer={this.updateAnswer.bind(this)}
           hasAnswer={hasAnswer}
-          isAnswer={isAnswer}
-          wasResponse={wasResponse}
+          isRightChoice={isRightChoice}
+          wasWrongChoice={wasWrongChoice}
           index={i}
         />
       )
