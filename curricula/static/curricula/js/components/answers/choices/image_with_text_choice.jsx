@@ -8,6 +8,7 @@ export class ImageWithText extends React.Component {
   }
 
    keydown(e) {
+    if (this.props.hasAnswer) {return}
     if (e.code.startsWith('Digit')){
         if (e.key === (this.props.index+1).toString()){
           this.setState({
@@ -58,6 +59,7 @@ export class ImageWithText extends React.Component {
     var buttonStyle = {}
     if (this.props.hasAnswer) {
       cardStyle['pointerEvents'] = 'none'
+      buttonStyle['pointerEvents'] = 'none'
         if (this.props.isRightChoice) {
           buttonStyle['boxShadow'] = 'green 0px 0px 15px'
           buttonStyle['border'] = '2px solid rgb(79, 212, 24)'
