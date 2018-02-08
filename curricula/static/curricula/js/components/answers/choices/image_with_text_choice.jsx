@@ -55,7 +55,7 @@ export class ImageWithText extends React.Component {
   }
 
   render () {
-    var cardStyle = {width: '20rem', float: 'left'}
+    var cardStyle = {width: '16rem', float: 'left'}
     var buttonStyle = {}
     if (this.props.hasAnswer) {
       cardStyle['pointerEvents'] = 'none'
