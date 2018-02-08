@@ -153,6 +153,7 @@ export default class ProfileModalApp extends React.Component {
 
     fetchProfile(lookupId) {
         $.ajax({
+            async: true,
             url: '/api/v1/profiles/me',
             context: this,
             success: function(data, status, jqXHR) {
