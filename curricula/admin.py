@@ -512,6 +512,8 @@ _backlink_to_lesson = link_to_field('lesson')
 
 
 class QuestionAdmin(NestedModelAdmin):
+    class Media:
+        js = ("curricula/admin/js/automatic_save.js",)
 
     inlines = [
         VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
