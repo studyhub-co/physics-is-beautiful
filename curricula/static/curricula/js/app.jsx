@@ -58,6 +58,7 @@ class CurriculumApp extends React.Component {
 
     fetchState() {
         $.ajax({
+            async: true,
             url: '/api/v1/curricula/curricula/' + this.state.currentId,
             data: {'expand': 'units.modules'},
             context: this,
@@ -129,6 +130,7 @@ class ModulesApp extends React.Component {
 
     fetchState() {
         $.ajax({
+            async: true,
             url: '/api/v1/curricula/modules/' + this.state.currentId,
             data: {'expand': 'lessons'},
             context: this,
@@ -201,7 +203,8 @@ class LessonsApp extends React.Component {
             data: JSON.stringify(obj),
             // We must block on this call so that the audio works on mobile
             // (audio must be a result of a click).
-            async: false,
+            // async: false,
+            async: true,
             context: this,
             success: function(data, status, jqXHR) {
                 this.question.response = obj;
@@ -264,6 +267,7 @@ class LessonsApp extends React.Component {
             data['previous_question'] = this.question.uuid
         }
         $.ajax({
+            async: true,
             url: '/api/v1/curricula/lessons/' + this.state.currentId + '/next-question',
             context: this,
             data: data,
@@ -304,6 +308,7 @@ class GamesApp extends React.Component {
 
   gameWon () {
     $.ajax({
+      async: true,
       url: '/api/v1/curricula/games/' + this.state.slug + '/success',
       context: this,
       type: "POST",
