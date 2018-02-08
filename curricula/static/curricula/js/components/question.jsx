@@ -253,7 +253,7 @@ export class Question extends React.Component {
       return {__html: text}
     }
     return (
-      <div className='question' id='ajaxDiv'>
+      <div className='question'>
         <div className='row'>
           <div className='col-md-6 text-center'>
             <div className='bounding-box'>

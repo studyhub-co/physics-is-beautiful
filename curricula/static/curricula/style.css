@@ -50,14 +50,15 @@ html, body {
 .section-sheet h1 {font-size: 100%;}
 
 .problem-sheet{
+    padding: 0 !important;
     position:relative;
     min-width: 80vw;
     margin-top: 1%;
     border-radius: 15px;
-    min-height: 80vh;
+    min-height: 60vh;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    padding-bottom:8vh
+    /*padding-bottom:8vh*/
 }
 .problem-sheet h1 {font-size: 120%;}
 
@@ -76,11 +77,13 @@ html, body {
 .section-sheet h1 {font-size: 100%;}
 
 #footer{
-    float:left;
-    position:absolute;
+    /*position:absolute;*/
+    position:relative;
+    padding:0;
     bottom:0;
     left:0;
     right:0;
+    height:15rem;
     border-radius: 0 0 15px 15px;
     background-color: #dbdbdb;
     margin-top:5px;
@@ -361,6 +364,10 @@ img.grayed-out-img {
     color:#DDD;
     font-size:25px;
     font-family: TW CEN MT
+}
+
+.question {
+    min-height: 60vh;
 }
 
 .hintButton{
