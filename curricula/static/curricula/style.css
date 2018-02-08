@@ -500,7 +500,7 @@ img.grayed-out-img {
 .wrapper {
   position: relative;
   overflow: hidden;
-  margin: 1rem;
+  margin: 0.25rem;
 }
 
 .wrapper:after {
