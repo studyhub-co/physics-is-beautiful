@@ -557,6 +557,23 @@ class QuestionAdmin(NestedModelAdmin):
         for inline in self.get_inline_instances(request, obj):
             yield inline.get_formset(request, obj)
 
+    def _create_formsets(self, request, obj, change):
+        formsets, inline_instances = super(QuestionAdmin, self)._create_formsets(request, obj, change)
+
+        if request.method == 'POST':
+            if obj.answer_type == 100:  # multiple choice
+                count_of_answers = 0
+                if len(formsets) > 0:
+                    if hasattr(formsets[0], 'cleaned_data'):
+                        for cleaned_data_formset in formsets[0].cleaned_data:
+                            if 'is_correct' in cleaned_data_formset and cleaned_data_formset['is_correct'] and not cleaned_data_formset['DELETE']:
+                                count_of_answers += 1
+
+                    if count_of_answers != 1:
+                        formsets[0]._non_form_errors = ("This question type allows only one correct answer")
+
+        return formsets, inline_instances
+
 
 admin.site.register(Curriculum, CurriculumAdmin)
 admin.site.register(Unit, UnitAdmin)
