@@ -163,7 +163,8 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 class AnswerTabularInline(NestedTabularInline):
 
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = ['']
     readonly_fields = ['position']
 
     def __init__(self, *args, **kwargs):
@@ -291,6 +292,7 @@ class ImageWTextAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Image with Text Answers'
     model = Answer
     form = ImageWTextAnswerForm
+
 
     # def text(self, obj):
     #     return obj.text
@@ -512,6 +514,7 @@ _backlink_to_lesson = link_to_field('lesson')
 
 
 class QuestionAdmin(NestedModelAdmin):
+
     class Media:
         js = ("curricula/admin/js/automatic_save.js",)
 
