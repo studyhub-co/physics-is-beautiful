@@ -56,7 +56,8 @@ class UnitInline(NestedTabularInline):
     model = Unit
     sortable_field_name = 'position'
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = ['']
     fields = [_link_to_unit, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_unit]
 
@@ -68,7 +69,8 @@ class ModuleInline(NestedTabularInline):
     model = Module
     sortable_field_name = 'position'
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = ['']
     fields = [_link_to_module, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_module]
 
@@ -80,7 +82,8 @@ class LessonInline(NestedTabularInline):
     model = Lesson
     sortable_field_name = 'position'
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = []
     fields = [_link_to_lesson, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_lesson]
 
@@ -92,7 +95,8 @@ class QuestionInline(NestedTabularInline):
     model = Question
     sortable_field_name = 'position'
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = ['']
     fields = [_link_to_question, 'text', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_question]
 
