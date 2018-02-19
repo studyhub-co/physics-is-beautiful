@@ -44,6 +44,7 @@ export class MathematicalExpressionAnswer extends React.Component {
         }
       }
     })
+    this.answer.focus()
   }
 
   // componentDidUpdate () {

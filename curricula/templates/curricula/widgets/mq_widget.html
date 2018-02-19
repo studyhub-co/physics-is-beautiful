@@ -26,8 +26,7 @@ django.jQuery(function() {
 
   var observer = new MutationObserver(function(mutations, observer) {
    mutations.forEach(function(mutation) {
-     //if(mutation.target.className.indexOf("djn-add-item") != -1){
-     if(mutation.target.className.indexOf("collapse") != -1){
+     if(mutation.target.className.indexOf("collapse") != -1 || mutation.target.className.indexOf("djn-add-item") != -1){
          // reload for new widget
          reloadMathMQ(django);
       }

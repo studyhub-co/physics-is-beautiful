@@ -92,6 +92,9 @@ export class MathquillBox extends React.Component {
         }
       }
     })
+    if (this.props.focus){
+      this.answer.focus()
+    }
   }
   handleChange (data, row, col, mathquillObj) {
     this.props.onMathQuillChange(data, row, col, mathquillObj)
@@ -113,7 +116,8 @@ export class MathquillBox extends React.Component {
 MathquillBox.propTypes = {
   onMathQuillChange: React.PropTypes.func,
   row: React.PropTypes.number.isRequired,
-  column: React.PropTypes.number.isRequired
+  column: React.PropTypes.number.isRequired,
+  focus: React.PropTypes.bool
 }
 
 export class ConversionTable extends React.Component {

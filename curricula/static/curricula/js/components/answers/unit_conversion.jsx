@@ -26,6 +26,9 @@ class UnitConversionCanvas extends UnitConversionBase {
 
       document.getElementById('15').style.pointerEvents = 'none'
 
+      // set focus on 1st box
+      MQ(document.getElementById('11')).focus()
+
       this.setState({
         answer: { 'data': props.answer_number+'\ '+props.answer_unit, 'box': answerBox },
         numColumns: 1,
@@ -43,7 +46,7 @@ class UnitConversionCanvas extends UnitConversionBase {
 
       this.setLatexWoFireEvent(answerBox, '')
 
-       this.setState({
+      this.setState({
         numColumns: props.conversion_steps.length
       }, function () {
         for (var x = 0; x < props.conversion_steps.length; x++) {
@@ -74,6 +77,8 @@ class UnitConversionCanvas extends UnitConversionBase {
     }
 
     if (props.unit_conversion_type === '30') { // no fill any side
+      // set focus on 1st box
+      MQ(document.getElementById('11')).focus()
       this.setState({
         answersSteps: [[
                 {'data': '', 'box': MQ(document.getElementById('11'))},
@@ -106,25 +111,6 @@ class UnitConversionCanvas extends UnitConversionBase {
       conversionSteps = this.props.conversion_steps
     } else {
       for (var x = 0; x < answerSteps.length; x++) {
-        // TODO remove, it is parses on server side now
-        // var numSplit = answerSteps[x][0]['splitData']
-        // var denSplit = answerSteps[x][1]['splitData']
-        //
-        // var numQty = null
-        // var denomQty = null
-        //
-        // if (numSplit) { numQty = this.getQtyFromSplitData(numSplit) }
-        // if (denSplit) { denomQty = this.getQtyFromSplitData(denSplit) }
-        //
-        // if (numQty && denomQty) {
-        //   var baseCompareLst = this.getBaseFor2Qty(numQty, denomQty)
-        //   conversionSteps.push(
-        //     {
-        //       'numerator': baseCompareLst[0],
-        //       'denominator': baseCompareLst[1]
-        //     })
-        //
-        // }
         try {
           conversionSteps.push({
             'numerator': answerSteps[x][0]['splitData'].join(" "),
@@ -350,6 +336,7 @@ class UnitConversionCanvas extends UnitConversionBase {
             onMathQuillChange={this.onResultChange}
             row={1}
             column={5}
+            focus={this.props.unit_conversion_type === '20'}
           />
         </div>
       </div>
