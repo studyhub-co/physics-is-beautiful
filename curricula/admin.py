@@ -84,21 +84,21 @@ class LessonInline(NestedTabularInline):
     extra = 0
     # classes = ['collapse']
     classes = []
-    fields = [_link_to_lesson, 'name', 'image', 'position']  # 'published_on',
+    fields = [_link_to_lesson, 'name', 'image', 'position', 'lesson_type']  # 'published_on',
     readonly_fields = [_link_to_lesson]
 
 
 _link_to_question = link_to_obj('Question')
 
 
-class QuestionInline(NestedTabularInline):
-    model = Question
-    sortable_field_name = 'position'
-    extra = 0
-    # classes = ['collapse']
-    classes = ['']
-    fields = [_link_to_question, 'text', 'image', 'position']  # 'published_on',
-    readonly_fields = [_link_to_question]
+# class QuestionInline(NestedTabularInline):
+#     model = Question
+#     sortable_field_name = 'position'
+#     extra = 0
+#     # classes = ['collapse']
+#     classes = ['']
+#     fields = [_link_to_question, 'text', 'image', 'position']  # 'published_on',
+#     readonly_fields = [_link_to_question]
 
 
 _link_to_answer = link_to_obj('Answer')
@@ -229,7 +229,8 @@ class VectorQuestionForm(forms.ModelForm):
 class VectorQuestionsInline(NestedTabularInline):
 
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = ['']
     verbose_name_plural = 'Edit Vectors to Display with Question'
     model = Question.vectors.through
     form = VectorQuestionForm
@@ -450,6 +451,7 @@ class ImageAnswerInline(AnswerTabularInline):
 class CurriculumAdmin(NestedModelAdmin):
 
     inlines = [UnitInline]
+    exclude = ['published_on']
 
 
 _backlink_to_curriculum = link_to_field('curriculum')
@@ -496,6 +498,37 @@ class LessonForm(forms.ModelForm):
             instance.game.slug = self.cleaned_data['game_slug']
             instance.game.save()
         return instance
+
+
+_backlink_to_lesson = link_to_field('lesson')
+
+# temp
+
+
+def popup_to_obj(name):
+    def link(obj):
+        return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">{}</a>'.format(obj.get_admin_url(), str(obj), str(obj))
+    link.allow_tags = True
+    link.short_description = name
+    return link
+
+
+_popup_to_question = popup_to_obj('Question')
+
+
+class QuestionInline(NestedTabularInline):
+
+    model = Question
+    extra = 0
+
+    class Media:
+        js = ("curricula/admin/js/automatic_save.js",)
+
+    fields = [
+        _popup_to_question, 'text', 'hint', 'image',  # 'question_type', 'published_on', 'additional_text',
+        'answer_type', 'position'
+    ]
+    readonly_fields = [_popup_to_question]
 
 
 class LessonAdmin(NestedModelAdmin):
