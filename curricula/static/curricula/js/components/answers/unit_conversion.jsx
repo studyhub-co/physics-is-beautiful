@@ -25,9 +25,8 @@ class UnitConversionCanvas extends UnitConversionBase {
       this.setLatexWoFireEvent(denumBox, '')
 
       document.getElementById('15').style.pointerEvents = 'none'
+      document.getElementById('15').firstElementChild.firstElementChild.setAttribute('tabindex', '-1')
 
-      // set focus on 1st box
-      MQ(document.getElementById('11')).focus()
 
       this.setState({
         answer: { 'data': props.answer_number+'\ '+props.answer_unit, 'box': answerBox },
@@ -38,6 +37,8 @@ class UnitConversionCanvas extends UnitConversionBase {
         ]] // column set by default
       }, function () {
         this.setLatexWoFireEvent(answerBox, props.answer_number+'\\ '+props.answer_unit)
+        // set focus on 1st box
+        MQ(document.getElementById('11')).focus()
       })
     }
 
@@ -84,6 +85,9 @@ class UnitConversionCanvas extends UnitConversionBase {
                 {'data': '', 'box': MQ(document.getElementById('11'))},
                 {'data': '', 'box': MQ(document.getElementById('21'))}
               ]]
+      }, function(){
+        // set focus on 1st box
+        MQ(document.getElementById('11')).focus()
       })
     }
   }
@@ -113,8 +117,8 @@ class UnitConversionCanvas extends UnitConversionBase {
       for (var x = 0; x < answerSteps.length; x++) {
         try {
           conversionSteps.push({
-            'numerator': answerSteps[x][0]['splitData'].join(" "),
-            'denominator': answerSteps[x][1]['splitData'].join(" ")
+            'numerator': answerSteps[x][0]['splitData'].join(' '),
+            'denominator': answerSteps[x][1]['splitData'].join(' ')
           })
         } catch(err){}
       }
