@@ -22,6 +22,8 @@ var reloadMathMQ = function(django) {
 }
 django.jQuery(function() {
 
+  reloadMathMQ(django); //load with page load
+
   MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
   var observer = new MutationObserver(function(mutations, observer) {
