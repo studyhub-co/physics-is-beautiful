@@ -175,7 +175,7 @@ export class MathematicalExpressionAnswer extends React.Component {
     var mathFieldStyle = {
       width: 200,
       fontSize: 30,
-      'pointer-events': disabled
+      pointerEvents: disabled
     }
     return (
       <div className='bounding-box'>
