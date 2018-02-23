@@ -54,11 +54,11 @@ _link_to_unit = link_to_obj('Unit')
 
 class UnitInline(NestedTabularInline):
     model = Unit
-    sortable_field_name = 'position'
+    # sortable_field_name = 'position'
     extra = 0
     # classes = ['collapse']
     classes = ['']
-    fields = [_link_to_unit, 'name', 'image', 'position']  # 'published_on',
+    fields = [_link_to_unit, 'name', 'image']  # 'published_on', 'position'
     readonly_fields = [_link_to_unit]
 
 
@@ -67,11 +67,11 @@ _link_to_module = link_to_obj('Module')
 
 class ModuleInline(NestedTabularInline):
     model = Module
-    sortable_field_name = 'position'
+    # sortable_field_name = 'position'
     extra = 0
     # classes = ['collapse']
     classes = ['']
-    fields = [_link_to_module, 'name', 'image', 'position']  # 'published_on',
+    fields = [_link_to_module, 'name', 'image']  # 'published_on', 'position'
     readonly_fields = [_link_to_module]
 
 
@@ -80,11 +80,11 @@ _link_to_lesson = link_to_obj('Lesson')
 
 class LessonInline(NestedTabularInline):
     model = Lesson
-    sortable_field_name = 'position'
+    # sortable_field_name = 'position'
     extra = 0
     # classes = ['collapse']
     classes = []
-    fields = [_link_to_lesson, 'name', 'image', 'position', 'lesson_type']  # 'published_on',
+    fields = [_link_to_lesson, 'name', 'image', 'lesson_type']  # 'published_on', 'position',
     readonly_fields = [_link_to_lesson]
 
 
@@ -460,7 +460,7 @@ _backlink_to_curriculum = link_to_field('curriculum')
 class UnitAdmin(NestedModelAdmin):
 
     inlines = [ModuleInline]
-    fields = ['curriculum', _backlink_to_curriculum, 'name', 'image', 'position']  # 'published_on',
+    fields = ['curriculum', _backlink_to_curriculum, 'name', 'image', ]  # 'published_on', 'position'
     readonly_fields = [_backlink_to_curriculum, 'position']
 
 
@@ -470,7 +470,7 @@ _backlink_to_unit = link_to_field('unit')
 class ModuleAdmin(NestedModelAdmin):
 
     inlines = [LessonInline]
-    fields = ['unit', _backlink_to_unit, 'name', 'image', 'position']  # 'published_on',
+    fields = ['unit', _backlink_to_unit, 'name', 'image']  # 'published_on', 'position'
     readonly_fields = [_backlink_to_unit, 'position']
 
 
@@ -525,8 +525,8 @@ class QuestionInline(NestedTabularInline):
         js = ("curricula/admin/js/automatic_save.js",)
 
     fields = [
-        _popup_to_question, 'text', 'hint', 'image',  # 'question_type', 'published_on', 'additional_text',
-        'answer_type', 'position'
+        _popup_to_question, 'text', 'hint', 'image',  # 'question_type', 'published_on', 'additional_text', 'position'
+        'answer_type'
     ]
     readonly_fields = [_popup_to_question]
 
@@ -536,7 +536,7 @@ class LessonAdmin(NestedModelAdmin):
     form = LessonForm
     inlines = [QuestionInline]
     fields = [
-        'module', _backlink_to_module, 'name', 'image', 'position', 'lesson_type'  # 'published_on',
+        'module', _backlink_to_module, 'name', 'image', 'lesson_type'  # 'published_on', 'position',
     ]
     readonly_fields = [_backlink_to_module, 'position']
 
@@ -561,8 +561,8 @@ class QuestionAdmin(NestedModelAdmin):
 
     ]
     fields = [
-        'lesson', _backlink_to_lesson, 'text', 'additional_text', 'hint', 'image',  # 'question_type', 'published_on',
-        'answer_type', 'position'
+        'lesson', _backlink_to_lesson, 'text', 'additional_text',
+        'hint', 'image', 'answer_type'  # 'question_type', 'published_on','position'
     ]
     readonly_fields = [_backlink_to_lesson, 'position']
     inline_map = {
