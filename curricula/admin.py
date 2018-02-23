@@ -502,18 +502,24 @@ class LessonForm(forms.ModelForm):
 
 _backlink_to_lesson = link_to_field('lesson')
 
-# temp
 
-
-def popup_to_obj(name):
+def iframe_obj(name):
     def link(obj):
-        return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">{}</a>'.format(obj.get_admin_url(), str(obj), str(obj))
+        return '<iframe src="{}" frameborder="0"></iframe><br />'.format(obj.get_admin_url())
     link.allow_tags = True
-    link.short_description = name
     return link
 
+_popup_to_question = iframe_obj('Question')
 
-_popup_to_question = popup_to_obj('Question')
+# temp
+# def popup_to_obj(name):
+#     def link(obj):
+#         return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">{}</a>'.format(obj.get_admin_url(), str(obj), str(obj))
+#     link.allow_tags = True
+#     link.short_description = name
+#     return link
+#
+# _popup_to_question = popup_to_obj('Question')
 
 
 class QuestionInline(NestedTabularInline):
