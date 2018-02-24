@@ -503,23 +503,27 @@ class LessonForm(forms.ModelForm):
 _backlink_to_lesson = link_to_field('lesson')
 
 
-def iframe_obj(name):
-    def link(obj):
-        return '<iframe src="{}" frameborder="0"></iframe><br />'.format(obj.get_admin_url())
-    link.allow_tags = True
-    return link
-
-_popup_to_question = iframe_obj('Question')
-
 # temp
-# def popup_to_obj(name):
+# def iframe_obj(name):
 #     def link(obj):
-#         return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">{}</a>'.format(obj.get_admin_url(), str(obj), str(obj))
+#         return '<iframe src="{}" frameborder="0"></iframe><br />'.format(obj.get_admin_url())
 #     link.allow_tags = True
-#     link.short_description = name
 #     return link
 #
-# _popup_to_question = popup_to_obj('Question')
+# _popup_to_question = iframe_obj('Question')
+
+def popup_to_obj(name):
+    def link(obj):
+        # return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}" href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">{}</a>'\
+        #     .format(obj.pk, obj.pk, obj.get_admin_url(), obj.get_admin_url(), str(obj), str(obj))
+        return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}"' \
+               ' href="javascript:showQuestionIframe({}, \'{}\');">{}</a>' \
+               .format(obj.pk, obj.pk, obj.get_admin_url(), obj.pk, obj.get_admin_url(), str(obj))
+    link.allow_tags = True
+    link.short_description = name
+    return link
+
+_popup_to_question = popup_to_obj('Question')
 
 
 class QuestionInline(NestedTabularInline):
@@ -528,7 +532,7 @@ class QuestionInline(NestedTabularInline):
     extra = 0
 
     class Media:
-        js = ("curricula/admin/js/automatic_save.js",)
+        js = ("curricula/admin/js/question_inline.js",)
 
     fields = [
         _popup_to_question, 'text', 'hint', 'image',  # 'question_type', 'published_on', 'additional_text', 'position'
@@ -559,7 +563,7 @@ _backlink_to_lesson = link_to_field('lesson')
 class QuestionAdmin(NestedModelAdmin):
 
     class Media:
-        js = ("curricula/admin/js/automatic_save.js",)
+        js = ("curricula/admin/js/question_admin.js",)
 
     inlines = [
         VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
