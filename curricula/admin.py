@@ -482,7 +482,7 @@ class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
         fields = [
-            'module', 'name', 'image', 'position', 'lesson_type', 'game_slug',  # 'published_on',
+            'module', 'name', 'image', 'lesson_type', 'game_slug',  # 'published_on', 'position',
         ]
 
     game_slug = forms.CharField(required=False)
@@ -523,6 +523,7 @@ def popup_to_obj(name):
     link.short_description = name
     return link
 
+
 _popup_to_question = popup_to_obj('Question')
 
 
@@ -530,23 +531,27 @@ class QuestionInline(NestedTabularInline):
 
     model = Question
     extra = 0
+    sortable_field_name = "position"
+    readonly_fields = [_popup_to_question]
 
     class Media:
         js = ("curricula/admin/js/question_inline.js",)
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
     fields = [
-        _popup_to_question, 'text', 'hint', 'image',  # 'question_type', 'published_on', 'additional_text', 'position'
-        'answer_type'
+        _popup_to_question, 'text', 'hint', 'image', 'answer_type', 'position',
+        # 'question_type', 'published_on', 'additional_text', 'position'
     ]
-    readonly_fields = [_popup_to_question]
 
 
 class LessonAdmin(NestedModelAdmin):
 
     form = LessonForm
-    inlines = [QuestionInline]
+    inlines = [QuestionInline, ]
     fields = [
-        'module', _backlink_to_module, 'name', 'image', 'lesson_type'  # 'published_on', 'position',
+        'module', _backlink_to_module, 'name', 'image', 'lesson_type', 'position',  # 'published_on', 'position',
     ]
     readonly_fields = [_backlink_to_module, 'position']
 
@@ -572,7 +577,7 @@ class QuestionAdmin(NestedModelAdmin):
     ]
     fields = [
         'lesson', _backlink_to_lesson, 'text', 'additional_text',
-        'hint', 'image', 'answer_type'  # 'question_type', 'published_on','position'
+        'hint', 'image', 'answer_type', 'position' # 'question_type', 'published_on','position'
     ]
     readonly_fields = [_backlink_to_lesson, 'position']
     inline_map = {
