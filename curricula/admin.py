@@ -141,7 +141,7 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['magnitude', 'angle', 'x_component', 'y_component', 'is_correct', 'position']
+        fields = ['magnitude', 'angle', 'x_component', 'y_component', 'is_correct' ] # 'position'
 
     magnitude = forms.FloatField(required=False)
     angle = forms.FloatField(required=False)
@@ -169,7 +169,7 @@ class AnswerTabularInline(NestedTabularInline):
     extra = 0
     # classes = ['collapse']
     classes = ['']
-    readonly_fields = ['position']
+    # readonly_fields = ['position']
 
     def __init__(self, *args, **kwargs):
         self.exclude = []
@@ -276,7 +276,7 @@ class ImageWTextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['text', 'image', 'is_correct', 'position']
+        fields = ['text', 'image', 'is_correct'] # 'position'
 
     text = forms.CharField(required=False)
     image = forms.ImageField(required=False)
@@ -313,7 +313,7 @@ class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['text', 'is_correct', 'position']
+        fields = ['text', 'is_correct'] # , 'position'
 
     text = forms.CharField()
 
@@ -335,7 +335,7 @@ class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['representation', 'is_correct', 'position']
+        fields = ['representation', 'is_correct'] # , 'position'
 
 
 class MathematicalExpressionAnswerInline(AnswerTabularInline):
@@ -411,7 +411,7 @@ class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
         model = Answer
         fields = ['unit_conversion_type',
                   'conversion_steps', 'question_number', 'question_unit', 'answer_number', 'answer_unit',
-                  'is_correct', 'position']
+                  'is_correct'] # , 'position'
 
 
 @create_fields_funcs(UnitConversionAnswerForm)
@@ -434,7 +434,7 @@ class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['image', 'is_correct', 'position']
+        fields = ['image', 'is_correct'] # , 'position'
 
     image = forms.ImageField()
 
