@@ -512,19 +512,19 @@ _backlink_to_lesson = link_to_field('lesson')
 #
 # _popup_to_question = iframe_obj('Question')
 
-def popup_to_obj(name):
+def toggle_answers_list(name):
     def link(obj):
         # return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}" href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">{}</a>'\
         #     .format(obj.pk, obj.pk, obj.get_admin_url(), obj.get_admin_url(), str(obj), str(obj))
         return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}"' \
-               ' href="javascript:showQuestionIframe({}, \'{}\');">{}</a>' \
-               .format(obj.pk, obj.pk, obj.get_admin_url(), obj.pk, obj.get_admin_url(), str(obj))
+               ' href="javascript:showQuestionIframe({}, \'{}\');">Toggle answer details</a>' \
+               .format(obj.pk, obj.pk, obj.get_admin_url(), obj.pk, obj.get_admin_url())
     link.allow_tags = True
     link.short_description = name
     return link
 
 
-_popup_to_question = popup_to_obj('Question')
+_popup_to_question = toggle_answers_list('Question')
 
 
 class QuestionInline(NestedTabularInline):
@@ -541,7 +541,7 @@ class QuestionInline(NestedTabularInline):
         }
 
     fields = [
-        _popup_to_question, 'text', 'hint', 'image', 'answer_type', 'position',
+        'text', 'hint', 'image', 'answer_type', _popup_to_question, 'position',
         # 'question_type', 'published_on', 'additional_text', 'position'
     ]
 
