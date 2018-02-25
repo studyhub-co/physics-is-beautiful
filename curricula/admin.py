@@ -524,7 +524,7 @@ def toggle_answers_list(name):
     return link
 
 
-_popup_to_question = toggle_answers_list('Question')
+_iframe_answers_list = toggle_answers_list('Answers')
 
 
 class QuestionInline(NestedTabularInline):
@@ -532,7 +532,7 @@ class QuestionInline(NestedTabularInline):
     model = Question
     extra = 0
     sortable_field_name = "position"
-    readonly_fields = [_popup_to_question]
+    readonly_fields = [_iframe_answers_list]
 
     class Media:
         js = ("curricula/admin/js/question_inline.js",)
@@ -541,7 +541,7 @@ class QuestionInline(NestedTabularInline):
         }
 
     fields = [
-        'text', 'hint', 'image', 'answer_type', _popup_to_question, 'position',
+        'text', 'hint', 'image', 'answer_type', _iframe_answers_list, 'position',
         # 'question_type', 'published_on', 'additional_text', 'position'
     ]
 
