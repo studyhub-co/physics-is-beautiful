@@ -54,12 +54,17 @@ _link_to_unit = link_to_obj('Unit')
 
 class UnitInline(NestedTabularInline):
     model = Unit
-    # sortable_field_name = 'position'
+    sortable_field_name = 'position'
     extra = 0
     # classes = ['collapse']
     classes = ['']
-    fields = [_link_to_unit, 'name', 'image']  # 'published_on', 'position'
+    fields = [_link_to_unit, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_unit]
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 _link_to_module = link_to_obj('Module')
@@ -67,12 +72,17 @@ _link_to_module = link_to_obj('Module')
 
 class ModuleInline(NestedTabularInline):
     model = Module
-    # sortable_field_name = 'position'
+    sortable_field_name = 'position'
     extra = 0
     # classes = ['collapse']
     classes = ['']
-    fields = [_link_to_module, 'name', 'image']  # 'published_on', 'position'
+    fields = [_link_to_module, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_module]
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 _link_to_lesson = link_to_obj('Lesson')
@@ -80,12 +90,17 @@ _link_to_lesson = link_to_obj('Lesson')
 
 class LessonInline(NestedTabularInline):
     model = Lesson
-    # sortable_field_name = 'position'
+    sortable_field_name = 'position'
     extra = 0
     # classes = ['collapse']
     classes = []
-    fields = [_link_to_lesson, 'name', 'image', 'lesson_type']  # 'published_on', 'position',
+    fields = [_link_to_lesson, 'name', 'image', 'lesson_type',  'position',]  # 'published_on',
     readonly_fields = [_link_to_lesson]
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 _link_to_question = link_to_obj('Question')
@@ -169,7 +184,7 @@ class AnswerTabularInline(NestedTabularInline):
     extra = 0
     # classes = ['collapse']
     classes = ['']
-    # readonly_fields = ['position']
+    readonly_fields = ['position']
 
     def __init__(self, *args, **kwargs):
         self.exclude = []
@@ -184,6 +199,11 @@ class AnswerTabularInline(NestedTabularInline):
         else:
             self.exclude = []
             return None
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 class VectorQuestionForm(forms.ModelForm):
@@ -461,7 +481,7 @@ class UnitAdmin(NestedModelAdmin):
 
     inlines = [ModuleInline]
     fields = ['curriculum', _backlink_to_curriculum, 'name', 'image', ]  # 'published_on', 'position'
-    readonly_fields = [_backlink_to_curriculum, 'position']
+    readonly_fields = [_backlink_to_curriculum] #, 'position'
 
 
 _backlink_to_unit = link_to_field('unit')
@@ -471,7 +491,7 @@ class ModuleAdmin(NestedModelAdmin):
 
     inlines = [LessonInline]
     fields = ['unit', _backlink_to_unit, 'name', 'image']  # 'published_on', 'position'
-    readonly_fields = [_backlink_to_unit, 'position']
+    readonly_fields = [_backlink_to_unit] #, 'position'
 
 
 _backlink_to_module = link_to_field('module')
@@ -503,19 +523,8 @@ class LessonForm(forms.ModelForm):
 _backlink_to_lesson = link_to_field('lesson')
 
 
-# temp
-# def iframe_obj(name):
-#     def link(obj):
-#         return '<iframe src="{}" frameborder="0"></iframe><br />'.format(obj.get_admin_url())
-#     link.allow_tags = True
-#     return link
-#
-# _popup_to_question = iframe_obj('Question')
-
 def toggle_answers_list(name):
     def link(obj):
-        # return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}" href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">{}</a>'\
-        #     .format(obj.pk, obj.pk, obj.get_admin_url(), obj.get_admin_url(), str(obj), str(obj))
         return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}"' \
                ' href="javascript:showQuestionIframe({}, \'{}\');">Toggle answer details</a>' \
                .format(obj.pk, obj.pk, obj.get_admin_url(), obj.pk, obj.get_admin_url())
@@ -551,9 +560,9 @@ class LessonAdmin(NestedModelAdmin):
     form = LessonForm
     inlines = [QuestionInline, ]
     fields = [
-        'module', _backlink_to_module, 'name', 'image', 'lesson_type', 'position',  # 'published_on', 'position',
+        'module', _backlink_to_module, 'name', 'image', 'lesson_type', # 'published_on', 'position',
     ]
-    readonly_fields = [_backlink_to_module, 'position']
+    readonly_fields = [_backlink_to_module] # , 'position'
 
     def get_fields(self, request, obj=None):
         extra_fields = []
@@ -577,9 +586,9 @@ class QuestionAdmin(NestedModelAdmin):
     ]
     fields = [
         'lesson', _backlink_to_lesson, 'text', 'additional_text',
-        'hint', 'image', 'answer_type', 'position' # 'question_type', 'published_on','position'
+        'hint', 'image', 'answer_type'  # 'question_type', 'published_on','position'
     ]
-    readonly_fields = [_backlink_to_lesson, 'position']
+    readonly_fields = [_backlink_to_lesson]  # , 'position'
     inline_map = {
         Question.AnswerType.TEXT: [TextAnswerInline],  # TODO remove
         Question.AnswerType.IMAGE: [ImageAnswerInline],  # TODOremove

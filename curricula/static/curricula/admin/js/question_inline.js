@@ -2,6 +2,12 @@ django.jQuery(function() {
 
   var listShownIframes = [];
 
+  // autosave click
+  django.jQuery("select[id$='-answer_type']").change(function () {
+    console.log("change");
+      django.jQuery("input[name=_continue]").click();
+  });
+
   showQuestionIframe = function (id, iframeUrl) {
 
     var alreadyOpen = false;
