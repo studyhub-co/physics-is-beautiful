@@ -7,3 +7,7 @@ td.field-position{
 th.position {
     display: none;
 }
+
+td.original p {
+    display: none;
+}
