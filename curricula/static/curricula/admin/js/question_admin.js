@@ -54,6 +54,7 @@ django.jQuery(function() {
     django.jQuery(".object-tools").hide();
     django.jQuery(".breadcrumbs").hide();
     django.jQuery("fieldset.module").first().hide();
+    django.jQuery("#question_form").attr('action', '?only-answers=true');
   }
 
 });

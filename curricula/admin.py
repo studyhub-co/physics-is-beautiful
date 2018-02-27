@@ -523,6 +523,17 @@ class LessonForm(forms.ModelForm):
 _backlink_to_lesson = link_to_field('lesson')
 
 
+def popup_question(name):
+    def iframe(obj):
+        return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">Question</a>'.format(obj.get_admin_url(), str(obj))
+    iframe.allow_tags = True
+    iframe.short_description = name
+    return iframe
+
+
+_popup_to_question = popup_question('Question')
+
+
 def toggle_answers_list(name):
     def link(obj):
         return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}"' \
@@ -541,7 +552,7 @@ class QuestionInline(NestedTabularInline):
     model = Question
     extra = 0
     sortable_field_name = "position"
-    readonly_fields = [_iframe_answers_list]
+    readonly_fields = [_popup_to_question, _iframe_answers_list]
 
     class Media:
         js = ("curricula/admin/js/question_inline.js",)
@@ -550,8 +561,8 @@ class QuestionInline(NestedTabularInline):
         }
 
     fields = [
-        'text', 'hint', 'image', 'answer_type', _iframe_answers_list, 'position',
-        # 'question_type', 'published_on', 'additional_text', 'position'
+        _popup_to_question, 'text', 'hint', 'image', 'answer_type', _iframe_answers_list, 'position',
+        # 'question_type', 'published_on', 'position'
     ]
 
 
@@ -582,10 +593,9 @@ class QuestionAdmin(NestedModelAdmin):
     inlines = [
         VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
         MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline
-
     ]
     fields = [
-        'lesson', _backlink_to_lesson, 'text', 'additional_text',
+        'lesson', _backlink_to_lesson, 'text',
         'hint', 'image', 'answer_type'  # 'question_type', 'published_on','position'
     ]
     readonly_fields = [_backlink_to_lesson]  # , 'position'
@@ -602,6 +612,12 @@ class QuestionAdmin(NestedModelAdmin):
         Question.AnswerType.MULTIPLE_CHOICE: [ImageWTextAnswerInline],
         Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline]
     }
+
+    def response_change(self, request, obj):
+        if "_continue" in request.POST:
+            from urllib import parse
+            request.path += '?' + parse.urlencode(request.GET)
+        return super(QuestionAdmin, self).response_change(request, obj)
 
     def get_inline_instances(self, request, obj=None):
         inline_classes = []
