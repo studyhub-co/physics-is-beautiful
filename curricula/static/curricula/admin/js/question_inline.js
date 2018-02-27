@@ -22,7 +22,6 @@ django.jQuery(function() {
       var openedIframe = django.jQuery(this).closest("tr").next().find("iframe");
 
       openedIframe.ready(function (){
-        console.log(openedIframe);
         openedIframe.attr("data-new-answer-type", newValue);
       })
     }

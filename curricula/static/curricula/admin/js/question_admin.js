@@ -53,6 +53,9 @@ django.jQuery(function() {
     django.jQuery("h1").hide();
     django.jQuery(".object-tools").hide();
     django.jQuery(".breadcrumbs").hide();
+    django.jQuery(".deletelink-box").hide();
+    django.jQuery("[name='_addanother']").hide();
+    django.jQuery("[name='_save']").hide();
     django.jQuery("fieldset.module").first().hide();
     django.jQuery("#question_form").attr('action', '?only-answers=true');
   }
