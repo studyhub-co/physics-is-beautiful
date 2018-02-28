@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^questions/(?P<uuid>[0-9a-zA-Z_]+)/response$',
         apis.QuestionViewSet.as_view({'post': 'user_response'})),
     url(r'^games/(?P<slug>[0-9a-zA-Z_-]+)/success$', apis.game_success),
+    url(r'^units$', apis.get_unit_conversion_units),
 ]

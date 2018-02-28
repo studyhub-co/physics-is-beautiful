@@ -1,8 +1,7 @@
 from django.utils.functional import cached_property
 
-from rest_framework import serializers
-
-from .models import LessonProgress, UserResponse, Text, Vector, Answer, MathematicalExpression
+from .models import LessonProgress
+from .serializers import LessonProgressSerializer, UserResponseSerializer
 
 
 class LessonLocked(Exception):
@@ -135,10 +134,11 @@ class ProgressService(ProgressServiceBase):
 
     def save(self):
         for response in self.user_responses:
-            obj = response.content
-            obj.save()
-            response.content = obj
-            response.save()
+            if response.content:  # I am not sure why we must store user responses in DB?
+                obj = response.content
+                obj.save()
+                response.content = obj
+                response.save()
         for lesson_progress in self._dirty_lesson_progresses.values():
             lesson_progress.save()
         self.user_responses = []
@@ -147,62 +147,6 @@ class ProgressService(ProgressServiceBase):
     @staticmethod
     def get_score_board_qs(lesson):
         return LessonProgress.objects.filter(lesson=lesson, status=LessonProgress.Status.COMPLETE).order_by('duration')
-
-# TODO:  move all serializers to serializers.py
-class LessonProgressSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = LessonProgress
-        fields = ['score', 'status', 'completed_on']
-
-
-class TextSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Text
-        fields = ['text']
-
-
-class MathematicalExpressionSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = MathematicalExpression
-        fields = ['representation']
-
-
-class VectorSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Vector
-        fields = ['magnitude', 'angle', 'x_component', 'y_component']
-
-
-class AnswerSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Answer
-        fields = ['uuid']
-
-    uuid = serializers.CharField()
-
-
-class UserResponseSerializer(serializers.ModelSerializer):
-
-    CONTENT_SERIALIZER_MAP = {
-        Text.__name__.lower(): TextSerializer,
-        Vector.__name__.lower(): VectorSerializer,
-        Answer.__name__.lower(): AnswerSerializer,
-        MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
-    }
-
-    class Meta:
-        model = UserResponse
-        fields = ['question', 'content_type', 'content', 'is_correct', 'answered_on']
-
-    content = serializers.SerializerMethodField()
-
-    def get_content(self, obj):
-        return self.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data
 
 
 class AnonymousProgressService(ProgressServiceBase):

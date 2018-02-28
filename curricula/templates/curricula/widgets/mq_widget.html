@@ -1,0 +1,44 @@
+{% load uc_filters %}
+<input style="display: none;" type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %} />
+<span id="{{ widget.name }}-mathquill" name="{{ widget.name }}" style="min-height: 1.5em; min-width: 7em;">
+    {% if widget.value != None %}{{ widget.value|stringformat:'s' }}{% endif %}
+</span>
+<script>
+var reloadMathMQ = function(django) {
+      django.jQuery('span[id$=mathquill]').each(function () {
+       var inputElement = django.jQuery(this);
+       if (inputElement.attr("id").indexOf("__prefix__") === -1){
+            MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
+            MQ.MathField(inputElement[0], {
+              handlers: {
+                edit: function (field) {
+                  //write value to original input
+                  document.getElementById("id_"+inputElement.attr('name')).value = field.latex();
+                }
+              }
+            })
+         }
+      })
+}
+django.jQuery(function() {
+
+  reloadMathMQ(django); //load with page load
+
+  MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+  var observer = new MutationObserver(function(mutations, observer) {
+   mutations.forEach(function(mutation) {
+     if(mutation.target.className.indexOf("collapse") != -1 || mutation.target.className.indexOf("djn-add-item") != -1){
+         // reload for new widget
+         reloadMathMQ(django);
+      }
+    });
+  });
+
+  observer.observe(document, {
+    subtree: true,
+    attributes: true
+  });
+
+});
+</script>

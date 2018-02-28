@@ -4,10 +4,16 @@ from django.utils.html import escape
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
+from jsonfield.fields import JSONFormField
+from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionStepsJSONWidget, MathConversionWidget
+
 from .models import (
-    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression
+    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression,
+    UnitConversion, ImageWText
 )
 
+from .models.answers import MathematicalExpressionMixin
+from pint import UnitRegistry
 
 admin.AdminSite.site_header = 'Physics is Beautiful Admin'
 admin.AdminSite.site_title = admin.AdminSite.site_header
@@ -30,6 +36,19 @@ def link_to_field(field_name):
     return link
 
 
+def create_fields_funcs(field_cls):
+    """
+    decorator to generate NestedTabularInline functions
+    :param field_cls:
+    :return:
+    """
+    def wrapped_decorator(cls):
+        for field in field_cls.FIELDS:
+            setattr(cls, field, {'field': field})
+        return cls
+    return wrapped_decorator
+
+
 _link_to_unit = link_to_obj('Unit')
 
 
@@ -37,9 +56,15 @@ class UnitInline(NestedTabularInline):
     model = Unit
     sortable_field_name = 'position'
     extra = 0
-    classes = ['collapse']
-    fields = [_link_to_unit, 'name', 'published_on', 'image', 'position']
+    # classes = ['collapse']
+    classes = ['']
+    fields = [_link_to_unit, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_unit]
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 _link_to_module = link_to_obj('Module')
@@ -49,9 +74,15 @@ class ModuleInline(NestedTabularInline):
     model = Module
     sortable_field_name = 'position'
     extra = 0
-    classes = ['collapse']
-    fields = [_link_to_module, 'name', 'published_on', 'image', 'position']
+    # classes = ['collapse']
+    classes = ['']
+    fields = [_link_to_module, 'name', 'image', 'position']  # 'published_on',
     readonly_fields = [_link_to_module]
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 _link_to_lesson = link_to_obj('Lesson')
@@ -61,21 +92,28 @@ class LessonInline(NestedTabularInline):
     model = Lesson
     sortable_field_name = 'position'
     extra = 0
-    classes = ['collapse']
-    fields = [_link_to_lesson, 'name', 'published_on', 'image', 'position']
+    # classes = ['collapse']
+    classes = []
+    fields = [_link_to_lesson, 'name', 'image', 'lesson_type',  'position',]  # 'published_on',
     readonly_fields = [_link_to_lesson]
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 _link_to_question = link_to_obj('Question')
 
 
-class QuestionInline(NestedTabularInline):
-    model = Question
-    sortable_field_name = 'position'
-    extra = 0
-    classes = ['collapse']
-    fields = [_link_to_question, 'text', 'published_on', 'image', 'position']
-    readonly_fields = [_link_to_question]
+# class QuestionInline(NestedTabularInline):
+#     model = Question
+#     sortable_field_name = 'position'
+#     extra = 0
+#     # classes = ['collapse']
+#     classes = ['']
+#     fields = [_link_to_question, 'text', 'image', 'position']  # 'published_on',
+#     readonly_fields = [_link_to_question]
 
 
 _link_to_answer = link_to_obj('Answer')
@@ -118,7 +156,7 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['magnitude', 'angle', 'x_component', 'y_component', 'is_correct', 'position']
+        fields = ['magnitude', 'angle', 'x_component', 'y_component', 'is_correct' ] # 'position'
 
     magnitude = forms.FloatField(required=False)
     angle = forms.FloatField(required=False)
@@ -127,11 +165,11 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(VectorAnswerForm, self).__init__(*args, **kwargs)
-        instance = kwargs.get('instance')
-        if instance and instance.question.question_type == Question.QuestionType.SINGLE_ANSWER:
-            field = self.fields['is_correct']
-            field.initial = True
-            field.widget.attrs['disabled'] = True
+        # instance = kwargs.get('instance')
+        # if instance and instance.question.question_type == Question.QuestionType.SINGLE_ANSWER:
+        #     field = self.fields['is_correct']
+        #     field.initial = True
+        #     field.widget.attrs['disabled'] = True
 
     def clean(self):
         cleaned_data = super(VectorAnswerForm, self).clean()
@@ -144,14 +182,28 @@ class VectorAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 class AnswerTabularInline(NestedTabularInline):
 
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = ['']
     readonly_fields = ['position']
 
+    def __init__(self, *args, **kwargs):
+        self.exclude = []
+        super(AnswerTabularInline, self).__init__(*args, **kwargs)
+
     def get_max_num(self, request, obj=None, **kwargs):
-        if not obj or obj.question_type == Question.QuestionType.SINGLE_ANSWER:
+        # if not obj or obj.answer_type == Question.AnswerType.SINGLE_ANSWER:
+        if not obj or not (obj.answer_type == Question.AnswerType.MULTISELECT_CHOICE or
+                       obj.answer_type == Question.AnswerType.MULTIPLE_CHOICE):
+            self.exclude.append('is_correct')
             return 1
         else:
+            self.exclude = []
             return None
+
+    class Media:
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
 
 
 class VectorQuestionForm(forms.ModelForm):
@@ -197,7 +249,8 @@ class VectorQuestionForm(forms.ModelForm):
 class VectorQuestionsInline(NestedTabularInline):
 
     extra = 0
-    classes = ['collapse']
+    # classes = ['collapse']
+    classes = ['']
     verbose_name_plural = 'Edit Vectors to Display with Question'
     model = Question.vectors.through
     form = VectorQuestionForm
@@ -216,23 +269,61 @@ class VectorQuestionsInline(NestedTabularInline):
         return obj.vector.y_component
 
 
+@create_fields_funcs(VectorAnswerForm)
 class VectorAnswerInline(AnswerTabularInline):
 
     verbose_name_plural = 'Edit Vector Answers'
     model = Answer
     form = VectorAnswerForm
 
-    def magnitude(self, obj):
-        return obj.magnitude
+    # def magnitude(self, obj):
+    #     return obj.magnitude
+    #
+    # def angle(self, obj):
+    #     return obj.angle
+    #
+    # def x_component(self, obj):
+    #     return obj.x_component
+    #
+    # def y_component(self, obj):
+    #     return obj.y_component
 
-    def angle(self, obj):
-        return obj.angle
 
-    def x_component(self, obj):
-        return obj.x_component
+class ImageWTextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
-    def y_component(self, obj):
-        return obj.y_component
+    FIELDS = ['text', 'image']
+    SPECIAL_MODEL = ImageWText
+
+    class Meta:
+        model = Answer
+        fields = ['text', 'image', 'is_correct'] # 'position'
+
+    text = forms.CharField(required=False)
+    image = forms.ImageField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        text = cleaned_data.get("text")
+        image = cleaned_data.get("image")
+
+        if not image and not text:
+            raise forms.ValidationError(
+                "At least one of text field or image field required"
+            )
+
+
+@create_fields_funcs(ImageWTextAnswerForm)
+class ImageWTextAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Image with Text Answers'
+    model = Answer
+    form = ImageWTextAnswerForm
+
+
+    # def text(self, obj):
+    #     return obj.text
+    #
+    # def image(self, obj):
+    #     return obj.image
 
 
 class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
@@ -242,7 +333,7 @@ class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['text', 'is_correct', 'position']
+        fields = ['text', 'is_correct'] # , 'position'
 
     text = forms.CharField()
 
@@ -257,15 +348,14 @@ class TextAnswerInline(AnswerTabularInline):
 
 
 class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+    representation = forms.CharField(required=True, max_length=255, widget=MathConversionWidget())
 
     FIELDS = ['representation']
     SPECIAL_MODEL = MathematicalExpression
 
     class Meta:
         model = Answer
-        fields = ['representation', 'is_correct', 'position']
-
-    representation = forms.CharField()
+        fields = ['representation', 'is_correct'] # , 'position'
 
 
 class MathematicalExpressionAnswerInline(AnswerTabularInline):
@@ -276,6 +366,86 @@ class MathematicalExpressionAnswerInline(AnswerTabularInline):
     def representation(self, obj):
         return obj.representation
 
+    class Media:
+        css = {
+            "all": ("curricula/mathquill-0.10.1/mathquill.css", )
+        }
+        js = ("curricula/mathquill-0.10.1/mathquill.js", )
+
+
+class UnitConversionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['unit_conversion_type', 'conversion_steps', 'question_number', 'question_unit', 'answer_number', 'answer_unit']
+    SPECIAL_MODEL = UnitConversion
+
+    question_number = forms.CharField(required=True, widget=MathQuillUnitConversionWidget(attrs={'placeholder': 'question'}))
+    question_unit = forms.CharField(required=True, widget=UnitNameWidget(attrs={'placeholder': 'question unit'}))
+    answer_number = forms.CharField(required=True, widget=MathQuillUnitConversionWidget(attrs={'placeholder': 'answer'}))
+    answer_unit = forms.CharField(required=True, widget=UnitNameWidget(attrs={'placeholder': 'answer unit'}))
+
+    unit_conversion_type = forms.ChoiceField(required=True, choices=UnitConversion.UnitConversionTypes)
+
+    conversion_steps = JSONFormField(required=False,
+                                     help_text=UnitConversion._meta.get_field('conversion_steps').help_text,
+                                     widget=ConversionStepsJSONWidget
+                                     )
+
+    def clean(self):
+        question_number = self.cleaned_data.get('question_number', None)
+        question_unit = self.cleaned_data.get('question_unit', None)
+
+        answer_number = self.cleaned_data.get('answer_number', None)
+        answer_unit = self.cleaned_data.get('answer_unit', None)
+
+        if None in [question_number, question_unit, answer_number, answer_unit]:
+            return
+
+        steps = self.cleaned_data.get('conversion_steps', None)
+
+        ureg = UnitRegistry()
+        Q_ = ureg.Quantity
+
+        left_value = Q_(question_number + " " + question_unit)
+        right_value = Q_(answer_number + " " + answer_unit)
+
+        if steps:
+            for step in steps:
+                try:
+                    num = Q_(step['numerator'])
+                    denom = Q_(step['denominator'])
+
+                    left_value = left_value * num / denom
+                except:
+                    steps.remove(step)
+
+        # values to base
+        answer_left = left_value.to_base_units().magnitude
+        answer_number = right_value.to_base_units().magnitude
+
+        correct = MathematicalExpressionMixin.match_math(str(answer_left), str(answer_number))
+
+        if not correct:
+            self.add_error('conversion_steps', 'Conversion steps are incorrect')
+
+    class Meta:
+        model = Answer
+        fields = ['unit_conversion_type',
+                  'conversion_steps', 'question_number', 'question_unit', 'answer_number', 'answer_unit',
+                  'is_correct'] # , 'position'
+
+
+@create_fields_funcs(UnitConversionAnswerForm)
+class UnitConversionAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Unit Conversion Answers'
+    model = Answer
+    form = UnitConversionAnswerForm
+
+    class Media:
+        css = {
+            "all": ("curricula/mathquill-0.10.1/mathquill.css", )
+        }
+        js = ("curricula/mathquill-0.10.1/mathquill.js", )
+
 
 class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
@@ -284,7 +454,7 @@ class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['image', 'is_correct', 'position']
+        fields = ['image', 'is_correct'] # , 'position'
 
     image = forms.ImageField()
 
@@ -301,6 +471,7 @@ class ImageAnswerInline(AnswerTabularInline):
 class CurriculumAdmin(NestedModelAdmin):
 
     inlines = [UnitInline]
+    exclude = ['published_on']
 
 
 _backlink_to_curriculum = link_to_field('curriculum')
@@ -309,8 +480,8 @@ _backlink_to_curriculum = link_to_field('curriculum')
 class UnitAdmin(NestedModelAdmin):
 
     inlines = [ModuleInline]
-    fields = ['curriculum', _backlink_to_curriculum, 'name', 'published_on', 'image', 'position']
-    readonly_fields = [_backlink_to_curriculum, 'position']
+    fields = ['curriculum', _backlink_to_curriculum, 'name', 'image', ]  # 'published_on', 'position'
+    readonly_fields = [_backlink_to_curriculum] #, 'position'
 
 
 _backlink_to_unit = link_to_field('unit')
@@ -319,8 +490,8 @@ _backlink_to_unit = link_to_field('unit')
 class ModuleAdmin(NestedModelAdmin):
 
     inlines = [LessonInline]
-    fields = ['unit', _backlink_to_unit, 'name', 'published_on', 'image', 'position']
-    readonly_fields = [_backlink_to_unit, 'position']
+    fields = ['unit', _backlink_to_unit, 'name', 'image']  # 'published_on', 'position'
+    readonly_fields = [_backlink_to_unit] #, 'position'
 
 
 _backlink_to_module = link_to_field('module')
@@ -331,7 +502,7 @@ class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
         fields = [
-            'module', 'name', 'published_on', 'image', 'position', 'lesson_type', 'game_slug',
+            'module', 'name', 'image', 'lesson_type', 'game_slug',  # 'published_on', 'position',
         ]
 
     game_slug = forms.CharField(required=False)
@@ -349,14 +520,60 @@ class LessonForm(forms.ModelForm):
         return instance
 
 
+_backlink_to_lesson = link_to_field('lesson')
+
+
+def popup_question(name):
+    def iframe(obj):
+        return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">Question</a>'.format(obj.get_admin_url(), str(obj))
+    iframe.allow_tags = True
+    iframe.short_description = name
+    return iframe
+
+
+_popup_to_question = popup_question('Question')
+
+
+def toggle_answers_list(name):
+    def link(obj):
+        return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}"' \
+               ' href="javascript:showQuestionIframe({}, \'{}\');">Toggle answer details</a>' \
+               .format(obj.pk, obj.pk, obj.get_admin_url(), obj.pk, obj.get_admin_url())
+    link.allow_tags = True
+    link.short_description = name
+    return link
+
+
+_iframe_answers_list = toggle_answers_list('Answers')
+
+
+class QuestionInline(NestedTabularInline):
+
+    model = Question
+    extra = 0
+    sortable_field_name = "position"
+    readonly_fields = [_popup_to_question, _iframe_answers_list]
+
+    class Media:
+        js = ("curricula/admin/js/question_inline.js",)
+        css = {
+             'all': ("curricula/admin/css/custom_admin.css",)
+        }
+
+    fields = [
+        _popup_to_question, 'text', 'hint', 'image', 'answer_type', _iframe_answers_list, 'position',
+        # 'question_type', 'published_on', 'position'
+    ]
+
+
 class LessonAdmin(NestedModelAdmin):
 
     form = LessonForm
-    inlines = [QuestionInline]
+    inlines = [QuestionInline, ]
     fields = [
-        'module', _backlink_to_module, 'name', 'published_on', 'image', 'position', 'lesson_type'
+        'module', _backlink_to_module, 'name', 'image', 'lesson_type', # 'published_on', 'position',
     ]
-    readonly_fields = [_backlink_to_module, 'position']
+    readonly_fields = [_backlink_to_module] # , 'position'
 
     def get_fields(self, request, obj=None):
         extra_fields = []
@@ -370,24 +587,37 @@ _backlink_to_lesson = link_to_field('lesson')
 
 class QuestionAdmin(NestedModelAdmin):
 
+    class Media:
+        js = ("curricula/admin/js/question_admin.js",)
+
     inlines = [
         VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
-        MathematicalExpressionAnswerInline,
-
+        MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline
     ]
     fields = [
-        'lesson', _backlink_to_lesson, 'text', 'hint', 'published_on', 'image', 'question_type',
-        'answer_type', 'position'
+        'lesson', _backlink_to_lesson, 'text',
+        'hint', 'image', 'answer_type'  # 'question_type', 'published_on','position'
     ]
-    readonly_fields = [_backlink_to_lesson, 'position']
+    readonly_fields = [_backlink_to_lesson]  # , 'position'
     inline_map = {
-        Question.AnswerType.TEXT: [TextAnswerInline],
-        Question.AnswerType.IMAGE: [ImageAnswerInline],
+        Question.AnswerType.TEXT: [TextAnswerInline],  # TODO remove
+        Question.AnswerType.IMAGE: [ImageAnswerInline],  # TODOremove
         Question.AnswerType.VECTOR: [VectorAnswerInline],
         Question.AnswerType.NULLABLE_VECTOR: [VectorAnswerInline],
         Question.AnswerType.MATHEMATICAL_EXPRESSION: [MathematicalExpressionAnswerInline],
-        Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline]
+        Question.AnswerType.VECTOR_COMPONENTS: [VectorAnswerInline, VectorQuestionsInline],
+        Question.AnswerType.UNIT_CONVERSION: [UnitConversionAnswerInline],
+        # Question.AnswerType.IMAGE_WITH_TEXT: [ImageWTextAnswerInline]
+        # Question.AnswerType.SINGLE_ANSWER: [ImageWTextAnswerInline],
+        Question.AnswerType.MULTIPLE_CHOICE: [ImageWTextAnswerInline],
+        Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline]
     }
+
+    def response_change(self, request, obj):
+        if "_continue" in request.POST:
+            from urllib import parse
+            request.path += '?' + parse.urlencode(request.GET)
+        return super(QuestionAdmin, self).response_change(request, obj)
 
     def get_inline_instances(self, request, obj=None):
         inline_classes = []
@@ -406,6 +636,23 @@ class QuestionAdmin(NestedModelAdmin):
     def get_formsets(self, request, obj=None):
         for inline in self.get_inline_instances(request, obj):
             yield inline.get_formset(request, obj)
+
+    def _create_formsets(self, request, obj, change):
+        formsets, inline_instances = super(QuestionAdmin, self)._create_formsets(request, obj, change)
+
+        if request.method == 'POST':
+            if obj.answer_type == 100:  # multiple choice
+                count_of_answers = 0
+                if len(formsets) > 0:
+                    if hasattr(formsets[0], 'cleaned_data'):
+                        for cleaned_data_formset in formsets[0].cleaned_data:
+                            if 'is_correct' in cleaned_data_formset and cleaned_data_formset['is_correct'] and not cleaned_data_formset['DELETE']:
+                                count_of_answers += 1
+
+                    if count_of_answers != 1:
+                        formsets[0]._non_form_errors = ("This question type allows only one correct answer")
+
+        return formsets, inline_instances
 
 
 admin.site.register(Curriculum, CurriculumAdmin)
