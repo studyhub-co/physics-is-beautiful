@@ -1,10 +1,10 @@
-import React from 'react';
-import {BrowserRouter, Switch, Route} from 'react-router-dom';
-import {SectionSheet, Sheet} from './sheet';
-import {VectorGame} from './games';
-import {UnitConversionGame} from './games_uc';
-import {Vector} from './vector_canvas';
-
+import React from 'react'
+import {BrowserRouter, Switch, Route} from 'react-router-dom'
+import {SectionSheet, Sheet} from './containers/sheet'
+import {VectorGame} from './games/vector'
+import {UnitConversionGame} from './games/unit_conversion'
+import {Vector} from './vector_canvas'
+import { UnitConversion } from './components/answers/correct_answers/correct_answers'
 
 class CurriculumApp extends React.Component {
 
@@ -58,6 +58,7 @@ class CurriculumApp extends React.Component {
 
     fetchState() {
         $.ajax({
+            async: true,
             url: '/api/v1/curricula/curricula/' + this.state.currentId,
             data: {'expand': 'units.modules'},
             context: this,
@@ -77,7 +78,6 @@ class CurriculumApp extends React.Component {
     }
 
 }
-
 
 class ModulesApp extends React.Component {
 
@@ -130,6 +130,7 @@ class ModulesApp extends React.Component {
 
     fetchState() {
         $.ajax({
+            async: true,
             url: '/api/v1/curricula/modules/' + this.state.currentId,
             data: {'expand': 'lessons'},
             context: this,
@@ -151,24 +152,18 @@ class ModulesApp extends React.Component {
 
 }
 
-
 export class Expression {
-
-    constructor(representation) {
-        this.expression = representation;
-    }
-
+  constructor (representation) {
+    this.expression = representation
+  }
 }
-
 
 export class Text {
-
-    constructor(text) {
-        this.text = text;
-    }
-
+  constructor (text, uuid) {
+    this.text = text
+    this.uuid = uuid
+  }
 }
-
 
 class LessonsApp extends React.Component {
 
@@ -185,7 +180,7 @@ class LessonsApp extends React.Component {
         this.module = null;
         this.question = null;
         this.progress = 0;
-        this.answer = null;
+        this.correct_answer = null;
     }
 
     load() {
@@ -195,7 +190,7 @@ class LessonsApp extends React.Component {
         this.setState({
             question: this.question,
             progress: this.progress,
-            answer: this.answer,
+            correct_answer: this.correct_answer
         });
     }
 
@@ -208,43 +203,48 @@ class LessonsApp extends React.Component {
             data: JSON.stringify(obj),
             // We must block on this call so that the audio works on mobile
             // (audio must be a result of a click).
-            async: false,
+            // async: false,
+            async: true,
             context: this,
             success: function(data, status, jqXHR) {
                 this.question.response = obj;
                 this.progress = data['score'] / data['required_score'] * 100;
                 if (data.was_correct) {
-                    this.question.is_correct = true;
+                    this.question.is_correct = true
                     playAudio('correct');
                 } else {
                     this.question.is_correct = false;
                     switch (data.correct_answer.type) {
                         case 'vector':
-                            this.answer = new Vector(
+                            this.correct_answer = new Vector(
                                 data.correct_answer.content.x_component,
                                 data.correct_answer.content.y_component,
                             );
                             break;
                         case 'text':
-                            this.answer = new Text(data.correct_answer.content.text);
+                            // this.correct_answer = new Text(data.correct_answer.content.text);
+                            this.correct_answer = new Text(data.correct_answer.content.text, data.correct_answer.uuid);
                             break;
                         case 'mathematicalexpression':
-                            this.answer = new Expression(data.correct_answer.content.representation);
+                            this.correct_answer = new Expression(data.correct_answer.content.representation);
+                            break;
+                        case 'unitconversion':
+                            this.correct_answer = new UnitConversion(data.correct_answer.content, this.question);
                             break;
                         default:
-                            this.answer = data.correct_answer;
+                            this.correct_answer = data.correct_answer;
                             break;
                     }
                     playAudio('incorrect');
                 }
                 this.load();
                 if (data.was_correct) {
-                    setTimeout(
-                        function() {
-                            this.fetchState(this.state.currentId);
-                        }.bind(this),
-                        500
-                    );
+                    // setTimeout(
+                    //     function() {
+                    //         this.fetchState(this.state.currentId);
+                    //     }.bind(this),
+                    //     500
+                    // );
                 }
             }
         });
@@ -252,6 +252,7 @@ class LessonsApp extends React.Component {
 
     continueAction() {
         playAudio('continue');
+
         this.fetchState();
     }
 
@@ -266,6 +267,7 @@ class LessonsApp extends React.Component {
             data['previous_question'] = this.question.uuid
         }
         $.ajax({
+            async: true,
             url: '/api/v1/curricula/lessons/' + this.state.currentId + '/next-question',
             context: this,
             data: data,
@@ -274,7 +276,7 @@ class LessonsApp extends React.Component {
                 data.submitAnswer = this.submitAnswer.bind(this);
                 this.question = data;
                 this.question.hintCollapsed = true;
-                this.answer = null;
+                this.correct_answer = null;
                 this.load();
             }
         });
@@ -284,7 +286,7 @@ class LessonsApp extends React.Component {
         return (
             <Sheet
                 question={this.state.question}
-                answer={this.state.answer}
+                correct_answer={this.state.correct_answer}
                 progress={this.state.progress}
                 continueAction={this.continueAction.bind(this)}
                 hintClick={this.hintClick.bind(this)}
@@ -297,37 +299,38 @@ class LessonsApp extends React.Component {
 
 class GamesApp extends React.Component {
 
-    constructor(obj) {
-        super();
-        this.state = {
-            slug: obj.match.params.slug,
-        };
-    }
+  constructor(obj) {
+    super();
+    this.state = {
+      slug: obj.match.params.slug,
+    };
+  }
 
-    gameWon() {
-        $.ajax({
-            url: '/api/v1/curricula/games/' + this.state.slug + '/success',
-            context: this,
-            type: "POST",
-            data: {},
-            success: function(data, status, jqXHR) {
-                return;
-            }
-        });
-    }
+  gameWon () {
+    $.ajax({
+      async: true,
+      url: '/api/v1/curricula/games/' + this.state.slug + '/success',
+      context: this,
+      type: "POST",
+      data: {},
+      success: function(data, status, jqXHR) {
+        return;
+      }
+    });
+  }
 
-    render() {
-        var Game;
-        switch(this.state.slug) {
-            case 'vector-game':
-                Game = VectorGame
-                break
-            case 'unit-conversion':
-                Game = UnitConversionGame
-                break
-        }
-        return <Game gameWon={this.gameWon.bind(this)}/>;
+  render() {
+    var Game;
+    switch(this.state.slug) {
+      case 'vector-game':
+        Game = VectorGame
+        break
+      case 'unit-conversion':
+        Game = UnitConversionGame
+        break
     }
+    return <Game gameWon={this.gameWon.bind(this)}/>;
+  }
 
 }
 
