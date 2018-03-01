@@ -335,6 +335,7 @@ def convert_frac(frac):
 
 
 def convert_func(func):
+
     if func.func_normal():
         if func.L_PAREN():  # function called with parenthesis
             arg = convert_func_arg(func.func_arg())
@@ -378,10 +379,10 @@ def convert_func(func):
             expr = sympy.Pow(expr, func_pow, evaluate=False)
 
         return expr
-    elif func.LETTER() or func.SYMBOL():
-        if func.LETTER():
+    elif ("LETTER" in dir(func) and func.LETTER()) or ("SYMBOL" in dir(func) and func.SYMBOL()):
+        if "LETTER" in dir(func) and func.LETTER():
             fname = func.LETTER().getText()
-        elif func.SYMBOL():
+        elif "SYMBOL" in dir(func) and func.SYMBOL():
             fname = func.SYMBOL().getText()[1:]
         fname = str(fname)  # can't be unicode
         if func.subexpr():
@@ -399,20 +400,20 @@ def convert_func(func):
             input_args = input_args.args()
         output_args.append(convert_expr(input_args.expr()))
         return sympy.Function(fname)(*output_args)
-    elif func.FUNC_INT():
+    elif "FUNC_INT" in dir(func) and func.FUNC_INT():
         return handle_integral(func)
-    elif func.FUNC_SQRT():
+    elif "FUNC_SQRT" in dir(func) and func.FUNC_SQRT():
         expr = convert_expr(func.base)
         if func.root:
             r = convert_expr(func.root)
             return sympy.root(expr, r)
         else:
             return sympy.sqrt(expr)
-    elif func.FUNC_SUM():
+    elif "FUNC_SUM" in dir(func) and func.FUNC_SUM():
         return handle_sum_or_prod(func, "summation")
-    elif func.FUNC_PROD():
+    elif "FUNC_PROD" in dir(func) and func.FUNC_PROD():
         return handle_sum_or_prod(func, "product")
-    elif func.FUNC_LIM():
+    elif "FUNC_LIM" in dir(func) and func.FUNC_LIM():
         return handle_limit(func)
 
 

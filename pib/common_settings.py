@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'curricula.apps.CurriculaConfig',
     # blog
     'blog',
+    'admin_reorder',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +74,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
+
+ADMIN_REORDER = (
+
+    # Reorder app models
+    {'app': 'curricula', 'models': ('curricula.Curriculum', 'curricula.Unit', 'curricula.Module',
+                                    'curricula.Lesson', 'curricula.Question')},
+    'account', 'auth', 'pib_auth', 'profiles', 'sites', 'socialaccount'
+)
 
 ROOT_URLCONF = 'pib.urls'
 

@@ -50,14 +50,15 @@ html, body {
 .section-sheet h1 {font-size: 100%;}
 
 .problem-sheet{
+    padding: 0 !important;
     position:relative;
     min-width: 80vw;
     margin-top: 1%;
     border-radius: 15px;
-    min-height: 80vh;
+    min-height: 60vh;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    padding-bottom:8vh
+    /*padding-bottom:8vh*/
 }
 .problem-sheet h1 {font-size: 120%;}
 
@@ -76,11 +77,13 @@ html, body {
 .section-sheet h1 {font-size: 100%;}
 
 #footer{
-    float:left;
-    position:absolute;
+    /*position:absolute;*/
+    position:relative;
+    padding:0;
     bottom:0;
     left:0;
     right:0;
+    height:15rem;
     border-radius: 0 0 15px 15px;
     background-color: #dbdbdb;
     margin-top:5px;
@@ -105,6 +108,7 @@ html, body {
         margin-top:3px;
     }
     .problem-sheet {
+        height: calc(100% - 60px);
 		width: 100%;
 		padding: 0px;
 		margin-top: -15px;
@@ -130,7 +134,7 @@ html, body {
         margin-right: 1%;
     }
     #footer{
-        position:relative;
+        /*position:relative;*/
         width: 100%;
     }
 }
@@ -362,6 +366,10 @@ img.grayed-out-img {
     font-family: TW CEN MT
 }
 
+.question {
+    min-height: 60vh;
+}
+
 .hintButton{
     text-align:right;
     font-style: italic;
@@ -477,3 +485,65 @@ img.grayed-out-img {
 .green-border {
     border: .3rem solid green !important;
 }
+
+.card {
+    /* Add shadows to create the "card" effect */
+    /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);*/
+    transition: 0.3s;
+    cursor: pointer;
+    margin: .3rem;
+    height: auto;
+    border-radius: 1rem;
+    border: 0.2rem solid #e3e3e3;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+    /*box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
+    border: 0.2rem solid #1caff6;
+    color: #1caff6;
+}
+
+.wrapper {
+  position: relative;
+  overflow: hidden;
+  margin: 0.25rem;
+}
+
+.wrapper:after {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+.wrapper img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+
+.answer-button{
+    border-radius: 12rem;
+    border: .2rem solid gray;
+    padding-left: 15;
+    padding-right: 15;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    margin: 2rem;
+    background: rgba(255, 255, 255, 0);
+    color: gray;
+    transition: color .3s,border .3s;
+    text-align: justify;
+    cursor: pointer;
+}
+.answer-button:hover{
+    color: #1caff6;
+    border: .2rem solid #1caff6;
+}
+
