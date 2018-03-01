@@ -307,12 +307,12 @@ class NullCheckbox extends React.Component {
 
 
 export class VectorCanvas extends React.Component {
-
+    // NOTE It might be better to store the arrow in state
     constructor() {
         super();
         this.objects = [];
         this.state = {
-            checked: false,
+            checked: false, // TODO rename to isNullVector
             submitted: false,
         }
         this.drawColor = "red";
@@ -333,18 +333,33 @@ export class VectorCanvas extends React.Component {
         // $('#checkAnswer').click(this.checkAnswer.bind(this));
     }
 
-    componentDidUpdate() {
-        var newState = {};
-        if (this.props.clear && this.state.checked) {
-            newState.checked = false;
-        }
-        if (this.state.submitted && this.props.clear) {
-            newState.submitted = false;
-        }
-        if (Object.keys(newState).length > 0) {
-            this.setState(newState);
-        }
+  componentDidUpdate () {
+    var newState = {};
+    if (this.props.clear && this.state.checked) {
+      newState.checked = false;
     }
+    if (this.state.submitted && this.props.clear) {
+      newState.submitted = false;
+    }
+    if (Object.keys(newState).length > 0) {
+      this.setState(newState);
+    }
+  }
+
+  refreshAnswer () {
+    // populate answer in external component
+    if (this.arrow) {
+      this.props.updateAnswer([
+        this.props.question.uuid,
+        {
+          vector: {
+            x_component: this.arrow.getXComponent(),
+            y_component: this.arrow.getYComponent()
+          }
+        }
+      ])
+    }
+  }
 
     drawGrid() {
         for (var i = 1; i < (600 / GRID); i++) {
@@ -375,12 +390,14 @@ export class VectorCanvas extends React.Component {
             this.arrow.delete();
         }
         this.arrow = new CanvasVector(this.canvas, this.canvas.getPointer(o.e), this.getColor());
+        this.refreshAnswer()
     }
 
     mouseMove(o) {
         if (this.arrow && this.arrow instanceof CanvasVector) {
             this.arrow.draw(this.canvas.getPointer(o.e));
         }
+        this.refreshAnswer()
     }
 
     mouseUp(o) {
@@ -395,6 +412,7 @@ export class VectorCanvas extends React.Component {
         } else if (this.props.onComplete) {
             this.props.onComplete(this.arrow);
         }
+        this.refreshAnswer()
     }
 
     nullBoxCheck(event) {
@@ -415,6 +433,7 @@ export class VectorCanvas extends React.Component {
             this.arrow = null;
         }
         this.setState({checked: newState});
+        this.refreshAnswer()
     }
 
     static calcVectorXStart(value) {
@@ -449,21 +468,23 @@ export class VectorCanvas extends React.Component {
         }
     }
 
-    checkAnswer(o) {
-        if (this.arrow && this.props.question.submitAnswer) {
-            this.setState({submitted: true});
-            this.props.question.submitAnswer(
-                this.props.question.uuid,
-                {
-                    vector: {
-                        x_component: this.arrow.getXComponent(),
-                        y_component: this.arrow.getYComponent(),
-                    }
-                }
-            );
-            this.setState({checked: false});
-        }
-    }
+    // checkAnswer(o) {
+    //     if (this.arrow && this.props.question.submitAnswer) {
+    //         this.setState({submitted: true});
+    //         this.props.question.submitAnswer(
+    //             this.props.question.uuid,
+    //             {
+    //                 vector: {
+    //                     x_component: this.arrow.getXComponent(),
+    //                     y_component: this.arrow.getYComponent(),
+    //                 }
+    //             }
+    //         );
+    //         this.setState({checked: false});
+    //     }
+    // }
+
+
 
     drawObjects() {
         if (this.canvas && this.props.objects && this.props.objects.length) {
@@ -517,23 +538,24 @@ export class VectorCanvas extends React.Component {
                 />
             );
         }
-        var checkButton = '';
-        if (this.props.manualCheck) {
-            var buttonClass = 'btn btn-primary';
-            if (!this.props.allowInput || this.state.submitted) {
-                buttonClass += ' disabled';
-            }
-            checkButton = (
-                <div className="button-group" id="vectorButton">
-                    <a className={buttonClass} onClick={this.checkAnswer.bind(this)}>Check</a>
-                </div>
-            );
-        }
+        // var checkButton = '';
+        // if (this.props.manualCheck) {
+        //     var buttonClass = 'btn btn-primary';
+        //     if (!this.props.allowInput || this.state.submitted) {
+        //         buttonClass += ' disabled';
+        //     }
+        //     checkButton = (
+        //         <div className={'button-group' + (this.props.answer === null ? '' : ' hidden')} id='vectorButton'>
+        //             <a className={buttonClass} onClick={this.checkAnswer.bind(this)}>Check</a>
+        //         </div>
+        //     );
+        // }
         return (
             <div>
                 <canvas id="c" width="300" height="300" className="lower-canvas" style={canvasStyle}></canvas>
                 <div>{nullBox}</div>
-                <div>{checkButton}</div>
+                {/*<div>{checkButton}</div>*/}
+                {/*{typeof this.props.continueBtn !== 'undefined' ? this.props.continueBtn : ''}*/}
             </div>
         );
     }
