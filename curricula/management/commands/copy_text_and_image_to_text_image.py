@@ -17,16 +17,28 @@ class Command(BaseCommand):
             ct = ContentType.objects.get_for_model(text)
             try:
                 answer = Answer.objects.get(content_type=ct, object_id=text.id)
-                new_text = ImageWText.objects.create(text=text.text)
 
                 question = answer.question
 
-                question.answer_type = answer.question.AnswerType.MULTIPLE_CHOICE
-                question.save()  # here is all answers are removed
-                # text.delete()
+                if question.answer_type != answer.question.AnswerType.MULTIPLE_CHOICE:
+                    question.answer_type = answer.question.AnswerType.MULTIPLE_CHOICE
 
-                # create new answer
-                Answer.objects.create(content_type=ct_txt_img, object_id=new_text.id, question=question)
+                    # collect all old answers
+                    oldanswers = []
+                    for answer in question.answers.all():
+                        oldanswers.append(answer)
+
+                    # here is all old answers are removed
+                    question.save()
+
+                    # create new answers
+                    for oldanswer in oldanswers:
+                        old_text = Text.objects.get(pk=oldanswer.object_id)
+                        new_text = ImageWText.objects.create(text=old_text.text)
+                        # create new answer
+                        Answer.objects.create(content_type=ct_txt_img, object_id=new_text.id,
+                                              question=question, is_correct=oldanswer.is_correct,
+                                              position=oldanswer.position)
 
             except Answer.DoesNotExist:  # we store users texts also
                 pass
@@ -37,16 +49,26 @@ class Command(BaseCommand):
             try:
                 answer = Answer.objects.get(content_type=ct, object_id=img.id)
 
-                new_img = ImageWText.objects.create(image=img.image)
-
                 question = answer.question
+                if question.answer_type != answer.question.AnswerType.MULTIPLE_CHOICE:
+                    question.answer_type = answer.question.AnswerType.MULTIPLE_CHOICE
 
-                question.answer_type = answer.question.AnswerType.MULTIPLE_CHOICE
-                question.save()  # here is all answers are removed
-                # img.delete()
+                    # collect all old answers
+                    oldanswers = []
+                    for answer in question.answers.all():
+                        oldanswers.append(answer)
 
-                # create new answer
-                Answer.objects.create(content_type=ct_txt_img, object_id=new_img.id, question=question)
+                    # here is all old answers are removed
+                    question.save()
+
+                    # create new answers
+                    for oldanswer in oldanswers:
+                        old_img = Image.objects.get(pk=oldanswer.object_id)
+                        new_img = ImageWText.objects.create(image=old_img.image)
+                        # create new answer
+                        Answer.objects.create(content_type=ct_txt_img, object_id=new_img.id,
+                                              question=question, is_correct=oldanswer.is_correct,
+                                              position=oldanswer.position)
 
             except Answer.DoesNotExist:
                 pass
