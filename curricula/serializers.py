@@ -222,7 +222,7 @@ class QuestionSerializer(BaseSerializer):
     class Meta:
         model = Question
         fields = [
-            'uuid', 'text', 'additional_text', 'hint', 'image', 'vectors', 'question_type', 'answer_type', 'choices',
+            'uuid', 'text', 'hint', 'image', 'vectors', 'question_type', 'answer_type', 'choices',
             'lesson', 'unit_conversion'
         ]
 
