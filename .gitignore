@@ -111,5 +111,5 @@ static/bundles/
 # pycharm
 library_test
 .idea
-curricula/static/nested_admin/
+# curricula/static/nested_admin/
 sh.exe.stackdump
