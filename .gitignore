@@ -112,3 +112,4 @@ static/bundles/
 library_test
 .idea
 curricula/static/nested_admin/
+sh.exe.stackdump
