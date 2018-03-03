@@ -110,8 +110,6 @@ export class Question extends React.Component {
           // perpendicular
           if (kVector != 0) {
             kPerpVector = -1 / kVector
-          } else {
-            // TODO kPerpVector==infinity
           }
 
           var diffFromLine
