@@ -342,12 +342,13 @@ export class VectorCanvas extends React.Component {
       newState.submitted = false;
     }
     if (Object.keys(newState).length > 0) {
-      this.setState(newState);
+      this.setState(newState)
     }
   }
 
   refreshAnswer () {
     // populate answer in external component
+    if (!this.props.question){ return }
     if (this.arrow) {
       this.props.updateAnswer([
         this.props.question.uuid,
@@ -467,24 +468,6 @@ export class VectorCanvas extends React.Component {
             return this.drawColor;
         }
     }
-
-    // checkAnswer(o) {
-    //     if (this.arrow && this.props.question.submitAnswer) {
-    //         this.setState({submitted: true});
-    //         this.props.question.submitAnswer(
-    //             this.props.question.uuid,
-    //             {
-    //                 vector: {
-    //                     x_component: this.arrow.getXComponent(),
-    //                     y_component: this.arrow.getYComponent(),
-    //                 }
-    //             }
-    //         );
-    //         this.setState({checked: false});
-    //     }
-    // }
-
-
 
     drawObjects() {
         if (this.canvas && this.props.objects && this.props.objects.length) {
