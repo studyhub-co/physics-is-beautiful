@@ -135,18 +135,29 @@ export class Question extends React.Component {
             }
           }
 
-          var Xr1 = Math.sqrt(Math.pow(diffFromLine, 2) / (1 + Math.pow(kPerpVector, 2))) + x0
-          var Xr2 = x0 - Math.sqrt(Math.pow(diffFromLine,2) / (1+Math.pow(kPerpVector,2)))
+          if(typeof kPerpVector != 'undefined') {
+            var Xr1 = Math.sqrt(Math.pow(diffFromLine, 2) / (1 + Math.pow(kPerpVector, 2))) + x0
+            var Xr2 = x0 - Math.sqrt(Math.pow(diffFromLine, 2) / (1 + Math.pow(kPerpVector, 2)))
 
-          var bPerp = y0 - kPerpVector * x0
-          var Yr1 = kPerpVector*Xr1 + bPerp
-          var Yr2 = kPerpVector*Xr2 + bPerp
+             var bPerp = y0 - kPerpVector * x0
+             var Yr1 = kPerpVector*Xr1 + bPerp
+             var Yr2 = kPerpVector*Xr2 + bPerp
 
-          var color = "red"
-          var text = "A"
+          } else { // vector is x axis
+
+            var Xr1 = x0
+            var Xr2 = x0
+
+            var Yr1 = y0 - diffFromLine
+            var Yr2 = y0 - diffFromLine
+
+          }
+
+          var color = 'red'
+          var text = 'A'
           if ( i == 1 ) {
-            color = "blue"
-            text = "B"
+            color = 'blue'
+            text = 'B'
           }
           var topx, topy
 

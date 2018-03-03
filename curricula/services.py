@@ -102,7 +102,7 @@ class ProgressServiceBase(object):
         if is_correct:
             self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
             if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
-                self.current_lesson_progress.complete()
+                self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
                 # unlock the next lesson!
                 next_lesson = self.current_lesson.get_next_lesson()
                 if next_lesson:
