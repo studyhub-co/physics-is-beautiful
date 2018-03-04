@@ -16,16 +16,21 @@ django.jQuery(function() {
       questionIframe.contents().find("input[name=_continue]").click();
     } else {
     // iframe not found
-    //   toggleAnswerButton.trigger('click');
-    //   toggleAnswerButton[0].click();
-    //we must save new qs before we can us it
-    django.jQuery("input[name=_continue]").click();
+      
+    if(toggleAnswerButton.attr('data-qs-id')!="None") {
+      toggleAnswerButton.trigger('click');
+      toggleAnswerButton[0].click();
 
-      // var openedIframe = django.jQuery(this).closest("tr").next().find("iframe");
-      //
-      // openedIframe.ready(function (){
-      //   openedIframe.attr("data-new-answer-type", newValue);
-      // })
+      var openedIframe = django.jQuery(this).closest("tr").next().find("iframe");
+
+      openedIframe.ready(function () {
+        openedIframe.attr("data-new-answer-type", newValue);
+      })
+    } else {
+      //we must save new qs before we can us it
+      django.jQuery("input[name=_continue]").click();
+    }
+
     }
 
   });
