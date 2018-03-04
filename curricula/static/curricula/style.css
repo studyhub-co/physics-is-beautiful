@@ -318,8 +318,12 @@ img.grayed-out-img {
     background: rgba(255, 255, 255, 0);
     color: #1caff6;
     transition: color .3s,border .3s;
+    outline: none;
 }
+#checkButton:active
+#checkButton.disabled
 #checkButton:hover{
+    border-radius: 12rem;
     color: #105e84;
     border: .2rem solid #105e84;
 }
