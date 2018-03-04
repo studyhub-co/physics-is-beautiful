@@ -83,7 +83,7 @@ html, body {
     bottom:0;
     left:0;
     right:0;
-    height:15rem;
+    height:8rem;
     border-radius: 0 0 15px 15px;
     background-color: #dbdbdb;
     margin-top:5px;
@@ -160,10 +160,10 @@ html, body {
 
 .progress-bottom-container{
     position: relative;
-    bottom: 0;
-    float: left;
-    padding-bottom: 10;
-    padding-left: 10;
+    /*bottom: 0;*/
+    /*float: left;*/
+    padding-bottom: 10px;
+    padding-left: 10px;
     width: 45vw;
 }
 
