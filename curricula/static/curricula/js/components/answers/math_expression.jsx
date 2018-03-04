@@ -47,39 +47,10 @@ export class MathematicalExpressionAnswer extends React.Component {
     this.answer.focus()
   }
 
-  // componentDidUpdate () {
-  //   if (this.stoppedProcessing) {
-  //     this.stoppedProcessing = false
-  //     this.setState({processing: false})
-  //   }
-  // }
-
-  // checkAnswer () {
-  //   if (this.data) {
-  //     this.setState({processing: true})
-  //     this.props.question.submitAnswer(
-  //       this.props.question.uuid,
-  //       {
-  //         mathematical_expression: {representation: this.data}
-  //       }
-  //     )
-  //   }
-  // }
-
-  // insertXHat () {
-  //   this.answer.focus()
-  //   this.answer.write('\\hat{x}')
-  // }
-  //
-  // insertYHat () {
-  //   this.answer.focus()
-  //   this.answer.write('\\hat{y}')
-  // }
-
   insertLatex (val) {
     if (this.props.answer){ return }
-    this.answer.focus()
     this.answer.write(val)
+    this.answer.focus()
   }
 
   reset () {
@@ -90,7 +61,18 @@ export class MathematicalExpressionAnswer extends React.Component {
     // this.stoppedProcessing = true
   }
 
+  componentDidUpdate() {
+    // mathquill focus is lost after render
+    if (this.props.answer == null) {
+      this.answer.focus()
+    }
+    else {
+      this.answer.blur()
+    }
+  }
+
   render () {
+
     // var disabled = ''
     // if (this.props.answer) {
     //   disabled = ' disabled'
@@ -177,6 +159,7 @@ export class MathematicalExpressionAnswer extends React.Component {
       fontSize: 30,
       pointerEvents: disabled
     }
+
     return (
       <div className='bounding-box'>
         <p style={{marginBottom: 5}}><span id='math-field-answer' style={mathFieldStyle}></span></p>
