@@ -320,12 +320,17 @@ img.grayed-out-img {
     transition: color .3s,border .3s;
     outline: none;
 }
-#checkButton:active
-#checkButton.disabled
+
 #checkButton:hover{
     border-radius: 12rem;
     color: #105e84;
     border: .2rem solid #105e84;
+}
+#checkButton.disabled{
+    border-radius: 12rem;
+    color: #dddddd;
+    background: gray;
+    border: .2rem solid gray;
 }
 #vectorButton{
 
