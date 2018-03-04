@@ -59,7 +59,7 @@
   vertical-align: middle;
   user-select: none;
   cursor: pointer;
-  width: 96%;
+  width: 95%;
 }
 .pure-checkbox input[type="checkbox"] + label:before,
 .pure-radiobutton input[type="checkbox"] + label:before,
