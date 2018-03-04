@@ -544,7 +544,7 @@ img.grayed-out-img {
     padding-right: 15;
     padding-top: 9px;
     padding-bottom: 9px;
-    margin: 2rem;
+    margin: 1rem;
     background: rgba(255, 255, 255, 0);
     color: gray;
     transition: color .3s,border .3s;
