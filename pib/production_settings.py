@@ -28,6 +28,7 @@ AWS_S3_PUBLIC_URL = 'https://pib-media-production.s3.amazonaws.com'
 AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_BUCKET_AUTH = False
 AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
+AWS_S3_FILE_OVERWRITE_STATIC = True
 
 
 DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
