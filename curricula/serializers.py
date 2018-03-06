@@ -4,8 +4,7 @@ from rest_framework.exceptions import ValidationError
 from expander import ExpanderSerializerMixin
 
 from .models import (
-    Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, Text,
-    Image, MathematicalExpression, UnitConversion, ImageWText
+    Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, MathematicalExpression, UnitConversion, ImageWText
 )
 
 
@@ -29,26 +28,11 @@ class BaseSerializer(serializers.ModelSerializer):
             return super(BaseSerializer, self).to_internal_value(data)
 
 
-class TextSerializer(BaseSerializer):
-
-    class Meta:
-        model = Text
-        fields = ['text']
-
-
 class MathematicalExpressionSerializer(BaseSerializer):
 
     class Meta:
         model = MathematicalExpression
         fields = ['representation']
-
-
-class ImageSerializer(BaseSerializer):
-
-    class Meta:
-        model = Image
-        fields = ['image']
-
 
 class VectorSerializer(BaseSerializer):
 
@@ -80,8 +64,6 @@ class ImageWithTextSerializer(BaseSerializer):
 class AnswerSerializer(BaseSerializer):
 
     CONTENT_SERIALIZER_MAP = {
-        Text.__name__.lower(): TextSerializer,  # TODo remove
-        Image.__name__.lower(): ImageSerializer,  # TODO remove
         Vector.__name__.lower(): VectorSerializer,
         MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
         UnitConversion.__name__.lower(): UnitConversionSerializer,
@@ -116,9 +98,7 @@ class UserResponseSerializer(BaseSerializer):
         extra_kwargs = {'profile': {'required': False}}
 
     vector = VectorSerializer(required=False)
-    text = TextSerializer(required=False)  # TODo remove
     mathematical_expression = MathematicalExpressionSerializer(required=False)
-    image = ImageSerializer(required=False)  # TODO remove
     # multiple or multi select field
     answer = AnswerSerializer(required=False)
     answers_list = AnswerSerializer(required=False, many=True)

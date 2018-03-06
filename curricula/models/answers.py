@@ -58,25 +58,6 @@ class Answer(BaseModel):
         super(Answer, self).save(*args, **kwargs)
 
 
-class Text(BaseModel):
-
-    class Meta:
-        db_table = 'curricula_texts'
-
-    text = models.CharField(max_length=200)
-
-    def matches(self, obj):
-        if isinstance(obj, Answer):
-            return self.matches(obj.content)
-        try:
-            return self.text.lower() == obj.text.lower()
-        except AttributeError:
-            return False
-
-    def __str__(self):
-        return 'Text: {}'.format(self.text)
-
-
 class MathematicalExpressionMixin:
     @staticmethod
     def match_math(val1, val2):
@@ -295,22 +276,6 @@ class ImageWText(BaseModel):
 
     def __str__(self):
         return 'Image: {}, Text: {}'.format(self.image, self.text)
-
-
-class Image(BaseModel):
-
-    class Meta:
-        db_table = 'curricula_images'
-
-    image = models.ImageField(blank=True)
-
-    def matches(self, obj):
-        if isinstance(obj, Answer):
-            return self.matches(obj.content)
-        raise ValidationError('It does not make sense to try to compare 2 images.')
-
-    def __str__(self):
-        return 'Image: {}'.format(self.image)
 
 
 class Vector(BaseModel):
