@@ -8,7 +8,7 @@ from jsonfield.fields import JSONFormField
 from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionStepsJSONWidget, MathConversionWidget
 
 from .models import (
-    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, Text, Image, MathematicalExpression,
+    Curriculum, Unit, Module, Lesson, Question, Answer, Vector, MathematicalExpression,
     UnitConversion, ImageWText
 )
 
@@ -318,35 +318,6 @@ class ImageWTextAnswerInline(AnswerTabularInline):
     model = Answer
     form = ImageWTextAnswerForm
 
-
-    # def text(self, obj):
-    #     return obj.text
-    #
-    # def image(self, obj):
-    #     return obj.image
-
-
-class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
-
-    FIELDS = ['text']
-    SPECIAL_MODEL = Text
-
-    class Meta:
-        model = Answer
-        fields = ['text', 'is_correct'] # , 'position'
-
-    text = forms.CharField()
-
-
-class TextAnswerInline(AnswerTabularInline):
-    verbose_name_plural = 'Edit Text Answers'
-    model = Answer
-    form = TextAnswerForm
-
-    def text(self, obj):
-        return obj.text
-
-
 class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     representation = forms.CharField(required=True, max_length=255, widget=MathConversionWidget())
 
@@ -445,27 +416,6 @@ class UnitConversionAnswerInline(AnswerTabularInline):
             "all": ("curricula/mathquill-0.10.1/mathquill.css", )
         }
         js = ("curricula/mathquill-0.10.1/mathquill.js", )
-
-
-class ImageAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
-
-    FIELDS = ['image']
-    SPECIAL_MODEL = Image
-
-    class Meta:
-        model = Answer
-        fields = ['image', 'is_correct'] # , 'position'
-
-    image = forms.ImageField()
-
-
-class ImageAnswerInline(AnswerTabularInline):
-    verbose_name_plural = 'Edit Image Answers'
-    model = Answer
-    form = ImageAnswerForm
-
-    def image(self, obj):
-        return obj.image
 
 
 class CurriculumAdmin(NestedModelAdmin):
@@ -591,7 +541,7 @@ class QuestionAdmin(NestedModelAdmin):
         js = ("curricula/admin/js/question_admin.js",)
 
     inlines = [
-        VectorQuestionsInline, TextAnswerInline, VectorAnswerInline, ImageAnswerInline,
+        VectorQuestionsInline, VectorAnswerInline,
         MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline
     ]
     fields = [
@@ -600,8 +550,6 @@ class QuestionAdmin(NestedModelAdmin):
     ]
     readonly_fields = [_backlink_to_lesson]  # , 'position'
     inline_map = {
-        Question.AnswerType.TEXT: [TextAnswerInline],  # TODO remove
-        Question.AnswerType.IMAGE: [ImageAnswerInline],  # TODOremove
         Question.AnswerType.VECTOR: [VectorAnswerInline],
         Question.AnswerType.NULLABLE_VECTOR: [VectorAnswerInline],
         Question.AnswerType.MATHEMATICAL_EXPRESSION: [MathematicalExpressionAnswerInline],
