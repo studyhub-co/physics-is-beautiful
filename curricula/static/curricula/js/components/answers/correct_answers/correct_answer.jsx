@@ -2,7 +2,7 @@ import React from 'react'
 import {VectorAnswer, TextAnswer, UnitConversionAnswer,
   MathematicalExpressionAnswer, DefaultAnswer,
   UnitConversion } from './correct_answers'
-import {Text, Expression} from '../../../app' // TODO move to correct_answers.jsx
+import {Expression} from '../../../app' // TODO move to correct_answers.jsx
 import {Vector} from '../../../vector_canvas'
 
 export class Answer extends React.Component {
@@ -12,8 +12,8 @@ export class Answer extends React.Component {
       case Vector:
         Component = VectorAnswer
         break
-      case Text:
-        Component = TextAnswer // Todo remove
+      // case Text:
+      //   Component = TextAnswer // Todo remove
         break
       case Expression:
         Component = MathematicalExpressionAnswer
