@@ -92,7 +92,13 @@ export class MathquillBox extends React.Component {
         }
       }
     })
-    if (this.props.focus){
+    // if (this.props.focus){
+    //   this.answer.focus()
+    // }
+  }
+  componentDidUpdate() {
+    // mathquill focus is lost after render
+    if (this.props.answer == null && this.props.focus) {
       this.answer.focus()
     }
   }

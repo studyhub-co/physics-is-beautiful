@@ -80,10 +80,12 @@ class Question(BaseModel):
             #         self.question_type == self.QuestionType.SINGLE_ANSWER):
             if db_instance.answer_type != self.answer_type:
                 self.answers.filter(position__gt=0).delete()
-                answer = self.answers.first()
-                if answer and not answer.is_correct:
-                    answer.is_correct = True
-                    answer.save()
+                if db_instance.answer_type != Question.AnswerType.MULTISELECT_CHOICE and \
+                        db_instance.answer_type != Question.AnswerType.MULTIPLE_CHOICE:
+                    answer = self.answers.first()
+                    if answer and not answer.is_correct:
+                        answer.is_correct = True
+                        answer.save()
         super(Question, self).save(*args, **kwargs)
 
     def __str__(self):
