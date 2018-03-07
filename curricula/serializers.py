@@ -90,7 +90,7 @@ class UserResponseSerializer(BaseSerializer):
     class Meta:
         model = UserResponse
         fields = [
-            'question', 'vector', 'text', 'mathematical_expression', 'image', 'unit_conversion',
+            'question', 'vector',  'mathematical_expression', 'unit_conversion',  # 'text', 'image',
             'profile',
             'answer', 'answers_list',
             'answered_on'
@@ -171,9 +171,9 @@ class LessonSerializer(BaseSerializer):
 
 
 class QuestionSerializer(BaseSerializer):
-    question_type = serializers.ChoiceField(
-        source='question_type_name', choices=Question.QuestionType.choices_inverse
-    )
+    # question_type = serializers.ChoiceField(
+    #     source='question_type_name', choices=Question.QuestionType.choices_inverse
+    # )
     answer_type = serializers.ChoiceField(
         source='answer_type_name', choices=Question.AnswerType.choices_inverse
     )
@@ -195,14 +195,14 @@ class QuestionSerializer(BaseSerializer):
         return None
 
     def get_choices(self, obj):
-        if obj.question_type == Question.QuestionType.MULTIPLE_CHOICE \
-                or obj.question_type == Question.QuestionType.MULTISELECT_CHOICE:
+        if obj.answer_type == Question.AnswerType.MULTIPLE_CHOICE \
+                or obj.answer_type == Question.AnswerType.MULTISELECT_CHOICE:
             return AnswerSerializer(obj.answers, many=True).data
 
     class Meta:
         model = Question
         fields = [
-            'uuid', 'text', 'hint', 'image', 'vectors', 'question_type', 'answer_type', 'choices',
+            'uuid', 'text', 'hint', 'image', 'vectors', 'answer_type', 'choices', # 'question_type',
             'lesson', 'unit_conversion'
         ]
 
