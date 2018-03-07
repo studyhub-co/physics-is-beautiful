@@ -14,21 +14,19 @@ class Question(BaseModel):
         ordering = ['position']
         db_table = 'curricula_questions'
 
-    class QuestionType(enum.Enum):
-        UNDEFINED = 0
-        SINGLE_ANSWER = 10
-        MULTIPLE_CHOICE = 20
-        MULTISELECT_CHOICE = 40
+    # class QuestionType(enum.Enum):
+    #     UNDEFINED = 0
+    #     SINGLE_ANSWER = 10
+    #     MULTIPLE_CHOICE = 20
+    #     MULTISELECT_CHOICE = 40
 
     class AnswerType(enum.Enum):
         UNDEFINED = 0  # FIXME we really need this?
         # SINGLE_ANSWER = 90
         MULTIPLE_CHOICE = 100
         MULTISELECT_CHOICE = 110
-        TEXT = 10  # TODO remove
         VECTOR = 20
         NULLABLE_VECTOR = 30
-        IMAGE = 40  # TODO remove
         MATHEMATICAL_EXPRESSION = 50
         VECTOR_COMPONENTS = 60
         UNIT_CONVERSION = 70
@@ -45,22 +43,22 @@ class Question(BaseModel):
     hint = models.CharField(max_length=1024, blank=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
-    question_type = enum.EnumField(QuestionType, null=True, blank=True)
+    # question_type = enum.EnumField(QuestionType, null=True, blank=True)
     answer_type = enum.EnumField(AnswerType)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     vectors = models.ManyToManyField('Vector', related_name='questions')
 
-    @property
-    def question_type_name(self):
-        return self.QuestionType.get_name(self.question_type)
+    # @property
+    # def question_type_name(self):
+    #     return self.QuestionType.get_name(self.question_type)
 
     @property
     def answer_type_name(self):
         return self.AnswerType.get_name(self.answer_type)
 
-    @property
-    def is_choice_question(self):
-        return self.question_type in {self.QuestionType.MULTIPLE_CHOICE}
+    # @property
+    # def is_choice_question(self):
+    #     return self.question_type in {self.QuestionType.MULTIPLE_CHOICE}
 
     @cached_property
     def correct_answer(self):
@@ -78,8 +76,9 @@ class Question(BaseModel):
                 self.answers.all().delete()
                 if db_instance.answer_type == self.AnswerType.VECTOR_COMPONENTS:
                     self.vectors.all().delete()
-            if (db_instance.question_type != self.question_type and
-                    self.question_type == self.QuestionType.SINGLE_ANSWER):
+            # if (db_instance.question_type != self.question_type and
+            #         self.question_type == self.QuestionType.SINGLE_ANSWER):
+            if db_instance.answer_type != self.answer_type:
                 self.answers.filter(position__gt=0).delete()
                 answer = self.answers.first()
                 if answer and not answer.is_correct:

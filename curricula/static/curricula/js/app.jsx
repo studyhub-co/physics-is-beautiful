@@ -158,12 +158,12 @@ export class Expression {
   }
 }
 
-export class Text {
-  constructor (text, uuid) {
-    this.text = text
-    this.uuid = uuid
-  }
-}
+// export class Text {
+//   constructor (text, uuid) {
+//     this.text = text
+//     this.uuid = uuid
+//   }
+// }
 
 class LessonsApp extends React.Component {
 

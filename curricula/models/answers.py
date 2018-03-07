@@ -53,7 +53,9 @@ class Answer(BaseModel):
             return self.content.matches(answer)
 
     def save(self, *args, **kwargs):
-        if self.question and self.question.question_type == Question.QuestionType.SINGLE_ANSWER:
+        # if self.question and self.question.question_type == Question.QuestionType.SINGLE_ANSWER:
+        if self.question and self.question.answer_type != Question.AnswerType.MULTISELECT_CHOICE and \
+                self.question.answer_type != Question.AnswerType.MULTISELECT_CHOICE:
             self.is_correct = True
         super(Answer, self).save(*args, **kwargs)
 
