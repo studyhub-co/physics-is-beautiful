@@ -21,6 +21,12 @@ var VECTOR_COLORS = [
 export class Question extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState){
+    // reload for hint
+    if (nextProps.question.uuid == this.props.question.uuid &&
+      this.state && nextProps.question.hintCollapsed !== this.state.hintCollapsed){
+       return true
+    }
+
     if (nextProps['shouldUpdate']
       || nextProps.question.uuid !== this.props.question.uuid
       || nextProps.correct_answer !== this.props.correct_answer) {
@@ -36,11 +42,15 @@ export class Question extends React.Component {
     window.onbeforeunload = function() {
       return 'Changes you made may not be saved.';
     }
+    this.setState({'hintCollapsed': this.props.question.hintCollapsed})
   }
 
   componentDidUpdate () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
     MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+    if (this.state && this.props.question.hintCollapsed != this.state.hintCollapsed) {
+      this.setState({'hintCollapsed': this.props.question.hintCollapsed})
+    }
   }
 
   render () {
