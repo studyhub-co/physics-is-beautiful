@@ -39,6 +39,14 @@ class UNITS {
     }
   }
 
+  static get MASS () {
+    return {
+    'mg': 'milligrams',
+    'g': 'grams',
+    'oz': 'ounces'
+    }
+  }
+
   static get SPEED () {
     var distanceO = UNITS.DISTANCE
     distanceO['m'] = 'meters'
