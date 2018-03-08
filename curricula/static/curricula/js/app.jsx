@@ -203,8 +203,8 @@ class LessonsApp extends React.Component {
             data: JSON.stringify(obj),
             // We must block on this call so that the audio works on mobile
             // (audio must be a result of a click).
-            // async: false,
-            async: true,
+            async: false,
+            // async: true,
             context: this,
             success: function(data, status, jqXHR) {
                 this.question.response = obj;
