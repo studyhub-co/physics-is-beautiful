@@ -602,6 +602,14 @@ export class UnitConversionCanvas extends UnitConversionBase {
     }
   }
 
+  componentWillReceiveProps(nextProps){
+    if(nextProps.copy2Answer != this.props.copy2Answer){
+      // set value from calc to answer
+      var MQ = MathQuill.getInterface(2)
+      MQ.MathField(document.getElementById('15')).latex(nextProps.copy2Answer)
+    }
+  }
+
   submitQuestion () {
     var answers = this.state.answersSteps
     var uncrossedUnits = this.state.uncrossedUnits
@@ -839,23 +847,118 @@ UnitConversionCanvas.propTypes = {
 }
 
 class UnitConversionQuestionBoard extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.state = {calulatorAnswer: '', copy2Answer: null}
+    this.copy2Answer = this.copy2Answer.bind(this)
+  }
+
+  copy2Answer (){
+    if (this.state.calulatorAnswer != '') {
+      this.setState({copy2Answer: this.state.calulatorAnswer})
+    }
+  }
+
+  clearCalculatorInput (tmpData) {
+    // remove backslash with whitespace
+    tmpData = tmpData.replace(/\\ /g, ' ')
+    tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
+    // convert scientific notation
+    tmpData = tmpData.replace(/\\cdot/, '*')
+    tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
+
+     var parser = math.parser()
+      try {
+        var value = parser.eval(tmpData)
+        if (value) {
+          return value
+        }
+      } catch (e) {} // catch SyntaxError
+
+    return false
+  }
+
+  componentDidMount () {
+
+    var MQ = MathQuill.getInterface(2)
+
+   this.calculatorField = MQ.MathField(document.getElementById('calculatorField'), {
+      autoCommands: 'class',
+      autoOperatorNames: 'pi',
+      handlers: {
+        edit: (mathField) => {
+          var calcedValue = this.clearCalculatorInput(mathField.latex())
+          if (calcedValue){
+            this.setState({
+              calulatorAnswer: calcedValue
+            })
+          }
+          else{
+            this.setState({
+              calulatorAnswer: ''
+            })
+          }
+        }
+      }
+    })
+
+  }
+
   render () {
+
+     var mathFieldStyle = {
+      minWidth: 300,
+      fontSize: 30
+    }
+
     return (
-      <div className='text-center'>
-        <MediaQuery minDeviceWidth={736}>
-          <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
-        </MediaQuery>
-        <MediaQuery maxDeviceWidth={736}>
-          <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
-        </MediaQuery>
-        <UnitConversionCanvas
-          number={this.props.number}
-          unit={this.props.unit}
-          nextQuestion={this.props.nextQuestion}
-          gameOver={this.props.gameOver}
-          gameState={this.props.gameState}
-          level={this.props.level}
-        />
+      <div>
+        <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
+          <MediaQuery minDeviceWidth={736}>
+            <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+          </MediaQuery>
+          <MediaQuery maxDeviceWidth={736}>
+            <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
+          </MediaQuery>
+          <UnitConversionCanvas
+            number={this.props.number}
+            unit={this.props.unit}
+            nextQuestion={this.props.nextQuestion}
+            gameOver={this.props.gameOver}
+            gameState={this.props.gameState}
+            level={this.props.level}
+            copy2Answer={this.state.copy2Answer}
+          />
+        </div>
+        <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
+          <div className='text-center'>
+            <h2>Calculator</h2>
+            <div>
+             <div style={{display: 'table-cell', verticalAlign: 'middle'}}>
+               <p style={{marginBottom: 5}}>
+                 <span id={'calculatorField'} style={mathFieldStyle} />
+               </p>
+             </div>
+             <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
+                 =
+             </div>
+             <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
+               {this.state.calulatorAnswer}
+             </div>
+             <div style={{textAlign: 'right'}}>
+               <div className='button-group'>
+                  <button id='checkButton'
+                    className={'btn btn-primary' + (this.state.calulatorAnswer === '' ? ' disabled' : '')}
+                    onClick={this.copy2Answer}
+                    >
+                    Copy to Answer
+                  </button>
+                </div>
+             </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
