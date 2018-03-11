@@ -903,6 +903,7 @@ class UnitConversionQuestionBoard extends React.Component {
       }
     })
 
+    MQ(document.getElementById('11')).focus()
   }
 
   render () {
@@ -1001,7 +1002,7 @@ class UnitConversionQuestionBoard extends React.Component {
                   Mass
                 </div>
                 <div style={cellCheatStyle}>
-                  11 kg = 1000 g = 2.2 lb <br />
+                  1 kg = 1000 g = 2.2 lb <br />
                   1 g = 0.035 oz
                 </div>
                 <div style={cellCheatStyle}>
