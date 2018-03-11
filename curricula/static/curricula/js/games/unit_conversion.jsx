@@ -884,8 +884,8 @@ class UnitConversionQuestionBoard extends React.Component {
     var MQ = MathQuill.getInterface(2)
 
    this.calculatorField = MQ.MathField(document.getElementById('calculatorField'), {
-      autoCommands: 'class',
-      autoOperatorNames: 'pi',
+      autoCommands: 'pi',
+      autoOperatorNames: 'sin',
       handlers: {
         edit: (mathField) => {
           var calcedValue = this.clearCalculatorInput(mathField.latex())
