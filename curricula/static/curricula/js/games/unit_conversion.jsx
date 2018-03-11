@@ -912,6 +912,13 @@ class UnitConversionQuestionBoard extends React.Component {
       fontSize: 30
     }
 
+    var cellCheatStyle = {
+      border: '1px solid #d8d8d8',
+      display: 'table-cell',
+      verticalAlign: 'middle',
+      padding: '1rem',
+    }
+
     return (
       <div>
         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
@@ -952,10 +959,71 @@ class UnitConversionQuestionBoard extends React.Component {
                     className={'btn btn-primary' + (this.state.calulatorAnswer === '' ? ' disabled' : '')}
                     onClick={this.copy2Answer}
                     >
-                    Copy to Answer
+                    Copy to answer
                   </button>
                 </div>
              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
+          <div className='text-center'>
+            <h2>Unit Conversion Cheat Sheet</h2>
+            <div style={{display: 'table', marginLeft: 'auto', borderCollapse: 'collapse', marginRight: 'auto'}}>
+              <div style={{display: 'table-row'}}>
+                <div style={Object.assign({}, cellCheatStyle, {textDecoration: 'underline', fontWeight: 'bold'})}>
+                  Measurement
+                </div>
+                <div style={Object.assign({}, cellCheatStyle, {textDecoration: 'underline', fontWeight: 'bold'})}>
+                  SI to US Standard
+                </div>
+                <div style={Object.assign({}, cellCheatStyle, {textDecoration: 'underline', fontWeight: 'bold'})}>
+                  US Standard to SI
+                </div>
+              </div>
+              <div style={{display: 'table-row'}}>
+                <div style={cellCheatStyle}>
+                  Distance
+                </div>
+                <div style={cellCheatStyle}>
+                  1 cm = 0.3937 in <br />
+                  1 m = 100 cm = 3.28 ft <br />
+                  1 km = 0.621 mi
+                </div>
+                <div style={cellCheatStyle}>
+                  1 in = 2.54 cm  <br />
+                  1 ft = 0.3048 m  <br />
+                  1 mi = 5280 ft = 1.609 km
+                </div>
+              </div>
+              <div style={{display: 'table-row'}}>
+                <div style={cellCheatStyle}>
+                  Mass
+                </div>
+                <div style={cellCheatStyle}>
+                  11 kg = 1000 g = 2.2 lb <br />
+                  1 g = 0.035 oz
+                </div>
+                <div style={cellCheatStyle}>
+                  1 lb = 16 oz = 0.454 kg   <br />
+                  1 oz = 28.35 g
+                </div>
+              </div>
+              <div style={{display: 'table-row'}}>
+                <div style={cellCheatStyle}>
+                  Time
+                </div>
+                <div style={cellCheatStyle}>
+                  1 s = 1000 ms = 0.0166 min
+                </div>
+                <div style={cellCheatStyle}>
+                 1 min = 60 s <br />   <br />
+                 Other useful non-SI conversions:   <br />
+                 1 hr = 60 min   <br />
+                 1 day = 24 hr   <br />
+                 1 week = 7 days
+                </div>
+              </div>
             </div>
           </div>
         </div>
