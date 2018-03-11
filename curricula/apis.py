@@ -91,7 +91,7 @@ def get_unit_conversion_units(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def game_success(request, slug):
-    game = Game.objects.get(slug=slug)  # TODO here is raise exception is game not found by slug
+    game = Game.objects.get(slug=slug)  # TODO here is raise exception is game not found by slug and if if more than one
     service = get_progress_service(request, game.lesson)
 
     duration_ms = request.data.get('duration', None)
@@ -103,7 +103,7 @@ def game_success(request, slug):
 
     service.game_success(game, dur, score)
 
-    if game.slug == 'unit-conversion':  # temp fix
+    if game.slug == 'unit-conversion' or game.slug == 'vector-game':  # temp fix
         # get score list for auth user
         try:
             scores = service.get_score_board_qs(game.lesson)
