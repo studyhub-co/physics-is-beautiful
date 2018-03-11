@@ -1195,8 +1195,6 @@ export class UnitConversionGame extends React.Component {
   }
 
   getRandomNumber () {
-    // var random = (Math.floor(Math.random() * 9) + 1) * Math.pow(10, (Math.random() <= 0.5 ? -Math.floor(Math.random() * 4) : Math.floor(Math.random() * 4)))
-    // return (random.toString().length > 3 ? random.toPrecision(3) : random)
     var arrayRandoms = [(Math.random() * 10000).toFixed(2), (Math.random()).toFixed(3)]
     var toReturn = this.getRandomFromArray(arrayRandoms) // return random 1-9999 or 0.0000-0.9999
     return Number(toReturn) === 0 ? 1 : toReturn // if number is 0, return 1
