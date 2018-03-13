@@ -858,6 +858,8 @@ UnitConversionCanvas.propTypes = {
   gameOver: React.PropTypes.func
 }
 
+import Draggable from 'react-draggable'; // The default
+
 class UnitConversionQuestionBoard extends React.Component {
 
   constructor (props) {
@@ -924,7 +926,7 @@ class UnitConversionQuestionBoard extends React.Component {
   render () {
 
      var mathFieldStyle = {
-      minWidth: 300,
+      minWidth: '25rem',
       fontSize: 30
     }
 
@@ -937,23 +939,26 @@ class UnitConversionQuestionBoard extends React.Component {
 
     return (
       <div>
-        <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
-          <MediaQuery minDeviceWidth={736}>
-            <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
-          </MediaQuery>
-          <MediaQuery maxDeviceWidth={736}>
-            <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
-          </MediaQuery>
-          <UnitConversionCanvas
-            number={this.props.number}
-            unit={this.props.unit}
-            nextQuestion={this.props.nextQuestion}
-            gameOver={this.props.gameOver}
-            gameState={this.props.gameState}
-            level={this.props.level}
-            copy2Answer={this.state.copy2Answer}
-          />
-        </div>
+        <Draggable
+          axis="x">
+         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
+            <MediaQuery minDeviceWidth={736}>
+              <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+            </MediaQuery>
+            <MediaQuery maxDeviceWidth={736}>
+              <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
+            </MediaQuery>
+            <UnitConversionCanvas
+              number={this.props.number}
+              unit={this.props.unit}
+              nextQuestion={this.props.nextQuestion}
+              gameOver={this.props.gameOver}
+              gameState={this.props.gameState}
+              level={this.props.level}
+              copy2Answer={this.state.copy2Answer}
+            />
+         </div>
+        </Draggable>
         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
           <div className='text-center'>
             <h2>Calculator</h2>
