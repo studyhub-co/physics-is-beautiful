@@ -456,7 +456,7 @@ export class UnitConversionBase extends React.Component {
     tmpData = tmpData.replace(/\\ /g, ' ')
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
     // convert scientific notation
-    tmpData = tmpData.replace(/\\cdot/, '*')
+    tmpData = tmpData.replace(/\\cdot/g, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
 
     var parsedToValUnit = this.constructor.parseToValueUnit(tmpData)
@@ -586,6 +586,12 @@ export class UnitConversionCanvas extends UnitConversionBase {
     this.submitQuestion = this.submitQuestion.bind(this)
   }
 
+  keydown(e) {
+    if (e.code === "Enter"){
+       this.submitQuestion()
+    }
+  }
+
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
     if (this.props.level === 5) {
@@ -600,6 +606,11 @@ export class UnitConversionCanvas extends UnitConversionBase {
         ]]
       })
     }
+    document.addEventListener("keydown", this.keydown.bind(this), false)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.keydown, false)
   }
 
   componentWillReceiveProps(nextProps){
@@ -609,6 +620,7 @@ export class UnitConversionCanvas extends UnitConversionBase {
       MQ.MathField(document.getElementById('15')).latex(nextProps.copy2Answer)
     }
   }
+
 
   submitQuestion () {
     var answers = this.state.answersSteps
@@ -865,14 +877,17 @@ class UnitConversionQuestionBoard extends React.Component {
     tmpData = tmpData.replace(/\\ /g, ' ')
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
     // convert scientific notation
-    tmpData = tmpData.replace(/\\cdot/, '*')
+    tmpData = tmpData.replace(/\\cdot/g, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
+    tmpData = tmpData.replace(/\\left\(/g, '(')
+    tmpData = tmpData.replace(/\\right\)/g, ')')
 
      var parser = math.parser()
       try {
         var value = parser.eval(tmpData)
         if (value) {
-          return value
+          var mult = Math.pow(10, 4 - Math.floor(Math.log(value) / Math.LN10) - 1)
+          return Math.round(value * mult) / mult
         }
       } catch (e) {} // catch SyntaxError
 
