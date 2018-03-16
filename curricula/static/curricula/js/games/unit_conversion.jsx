@@ -212,7 +212,7 @@ export class ConversionTable extends React.Component {
         <table style={style}>
           <tbody>
             <tr>
-              <td style={topLeft}>{this.props.number} <span style={Object.assign({}, unitStyle, strikethroughStyleN)}>{this.props.unit.split('/')[0]}</span></td>
+              <td style={Object.assign({}, topLeft, {whiteSpace: 'nowrap'})}>{this.props.number} <span style={Object.assign({}, unitStyle, strikethroughStyleN)}>{this.props.unit.split('/')[0]}</span></td>
               {this.getColumns(1)}
             </tr>
             <tr>
@@ -588,7 +588,12 @@ export class UnitConversionCanvas extends UnitConversionBase {
 
   keydown(e) {
     if (e.code === "Enter"){
-       this.submitQuestion()
+      var MQ = MathQuill.getInterface(2)
+      // detect that calculator field is not focused
+      if(!MQ.MathField(document.getElementById('calculatorField')).__controller.cursor._jQ[0].classList.contains("mq-blink"))
+      {
+        this.submitQuestion()
+      }
     }
   }
 
@@ -618,6 +623,14 @@ export class UnitConversionCanvas extends UnitConversionBase {
       // set value from calc to answer
       var MQ = MathQuill.getInterface(2)
       MQ.MathField(document.getElementById('15')).latex(nextProps.copy2Answer)
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.copy2Answer != this.props.copy2Answer){
+      // set value from calc to answer
+      var MQ = MathQuill.getInterface(2)
+      MQ.MathField(document.getElementById('15')).focus()
     }
   }
 
@@ -936,11 +949,10 @@ class UnitConversionQuestionBoard extends React.Component {
       verticalAlign: 'middle',
       padding: '1rem',
     }
-
+    
     return (
       <div>
-        <Draggable
-          axis="x">
+        <Draggable axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
          <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
             <MediaQuery minDeviceWidth={736}>
               <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
@@ -959,6 +971,7 @@ class UnitConversionQuestionBoard extends React.Component {
             />
          </div>
         </Draggable>
+        <Draggable axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
           <div className='text-center'>
             <h2>Calculator</h2>
@@ -987,6 +1000,7 @@ class UnitConversionQuestionBoard extends React.Component {
             </div>
           </div>
         </div>
+        </Draggable>
         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
           <div className='text-center'>
             <h2>Unit Conversion Cheat Sheet</h2>

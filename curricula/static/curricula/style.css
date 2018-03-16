@@ -321,7 +321,8 @@ img.grayed-out-img {
     outline: none;
 }
 
-#checkButton:hover{
+#checkButton:hover,
+#checkButton:focus{
     border-radius: 12rem;
     color: #105e84;
     border: .2rem solid #105e84;
