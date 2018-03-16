@@ -588,9 +588,9 @@ export class UnitConversionCanvas extends UnitConversionBase {
 
   keydown(e) {
     if (e.code === "Enter"){
-      var MQ = MathQuill.getInterface(2)
-      // detect that calculator field is not focused
-      if(!MQ.MathField(document.getElementById('calculatorField')).__controller.cursor._jQ[0].classList.contains("mq-blink"))
+      // detect that calculator field and button is not focused
+      if(!document.getElementById('calculatorField').classList.contains("mq-focused") &&
+       (document.activeElement !== document.getElementById('checkButton')))
       {
         this.submitQuestion()
       }
