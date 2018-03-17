@@ -11,6 +11,7 @@ import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
+import Draggable from 'react-draggable'
 
 var math = require('mathjs')
 var Qty = require('js-quantities')
@@ -443,6 +444,7 @@ export class UnitConversionBase extends React.Component {
 
   // result answer change
   onResultChange (data, row, col, mathquillObj) {
+
     this.setState({
       answer: {'data': data, 'box': mathquillObj}
     })
@@ -597,6 +599,12 @@ export class UnitConversionCanvas extends UnitConversionBase {
     }
   }
 
+  updateAnswer(answer){
+    var MQ = MathQuill.getInterface(2)
+    MQ.MathField(document.getElementById('15')).latex(answer)
+    MQ.MathField(document.getElementById('15')).focus()
+  }
+
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
     if (this.props.level === 5) {
@@ -617,23 +625,6 @@ export class UnitConversionCanvas extends UnitConversionBase {
   componentWillUnmount() {
     document.removeEventListener("keydown", this.keydown, false)
   }
-
-  componentWillReceiveProps(nextProps){
-    if(nextProps.copy2Answer != this.props.copy2Answer){
-      // set value from calc to answer
-      var MQ = MathQuill.getInterface(2)
-      MQ.MathField(document.getElementById('15')).latex(nextProps.copy2Answer)
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState){
-    if(prevProps.copy2Answer != this.props.copy2Answer){
-      // set value from calc to answer
-      var MQ = MathQuill.getInterface(2)
-      MQ.MathField(document.getElementById('15')).focus()
-    }
-  }
-
 
   submitQuestion () {
     var answers = this.state.answersSteps
@@ -775,6 +766,11 @@ export class UnitConversionCanvas extends UnitConversionBase {
       playAudio('incorrect')
       this.props.gameOver()
     }
+
+    // erase calculator
+    var MQ = MathQuill.getInterface(2)
+    MQ(document.getElementById('calculatorField')).latex('')
+
   }
   render () {
     var buttonStyle = {
@@ -796,8 +792,16 @@ export class UnitConversionCanvas extends UnitConversionBase {
       border: '.2rem solid #c0c0c0',
       backgroundColor: '#ffffff'
     }
+
+
+    var pointerEvents = 'auto'
+
+    if (this.props.gameState === GameState.GAME_OVER){
+      pointerEvents = 'none'
+    }
+    
     return (
-      <div>
+      <div style={{pointerEvents: pointerEvents }}>
         <div style={{display: 'block'}}>
           <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
             <ConversionTable
@@ -871,8 +875,6 @@ UnitConversionCanvas.propTypes = {
   gameOver: React.PropTypes.func
 }
 
-import Draggable from 'react-draggable'; // The default
-
 class UnitConversionQuestionBoard extends React.Component {
 
   constructor (props) {
@@ -883,7 +885,7 @@ class UnitConversionQuestionBoard extends React.Component {
 
   copy2Answer (){
     if (this.state.calulatorAnswer != '') {
-      this.setState({copy2Answer: this.state.calulatorAnswer})
+      this.conversionCanvas.updateAnswer(this.state.calulatorAnswer)
     }
   }
 
@@ -910,10 +912,9 @@ class UnitConversionQuestionBoard extends React.Component {
   }
 
   componentDidMount () {
-
     var MQ = MathQuill.getInterface(2)
 
-   this.calculatorField = MQ.MathField(document.getElementById('calculatorField'), {
+    this.calculatorField = MQ.MathField(document.getElementById('calculatorField'), {
       autoCommands: 'pi',
       autoOperatorNames: 'sin',
       handlers: {
@@ -938,7 +939,7 @@ class UnitConversionQuestionBoard extends React.Component {
 
   render () {
 
-     var mathFieldStyle = {
+    var mathFieldStyle = {
       minWidth: '25rem',
       fontSize: 30
     }
@@ -949,10 +950,10 @@ class UnitConversionQuestionBoard extends React.Component {
       verticalAlign: 'middle',
       padding: '1rem',
     }
-    
+
     return (
       <div>
-        <Draggable axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
+        <Draggable disabled={screen.width > 736} axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
          <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
             <MediaQuery minDeviceWidth={736}>
               <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
@@ -967,11 +968,11 @@ class UnitConversionQuestionBoard extends React.Component {
               gameOver={this.props.gameOver}
               gameState={this.props.gameState}
               level={this.props.level}
-              copy2Answer={this.state.copy2Answer}
+              ref={(conversionCanvas) => { this.conversionCanvas = conversionCanvas; }}
             />
          </div>
         </Draggable>
-        <Draggable axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
+        <Draggable disabled={screen.width > 736} axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
           <div className='text-center'>
             <h2>Calculator</h2>
@@ -1190,6 +1191,8 @@ UnitConversionGameBoard.propTypes = {
 export class UnitConversionGame extends React.Component {
   constructor () {
     super()
+    this.elapsed = 0
+    this.timer = null
     this.timesUp = this.timesUp.bind(this)
     this.start = this.start.bind(this)
     this.pauseToggle = this.pauseToggle.bind(this)
@@ -1203,25 +1206,23 @@ export class UnitConversionGame extends React.Component {
       score: 0,
       // level: 4,
       level: 1,
-      elapsed: 0,
       question: null,
       unit: null,
       number: null,
       answer: null,
-      paused: true,
-      timer: null
+      paused: true
     }
   }
 
   componentWillUnmount () {
     window.onbeforeunload = null
-    clearInterval(this.state.timer)
+    clearInterval(this.timer)
   }
 
   // due https://github.com/pughpugh/react-countdown-clock/issues/28 create own timer
   tick () {
     if (this.state.state !== GameState.PAUSED) {
-      this.setState({ elapsed: this.state.elapsed + 10 })
+      this.elapsed = this.elapsed + 10
     }
   }
 
@@ -1284,9 +1285,9 @@ export class UnitConversionGame extends React.Component {
       stopBackgroundAudio()
       // TODO add more secure, i.e. server token when game starts, etc
       // TODO move it to games.jsx (replace jQuery), remove ajaxSetup from main page
-      clearInterval(this.state.timer)
+      clearInterval(this.timer)
       axios.post('/api/v1/curricula/games/unit-conversion/success', {
-        duration: this.state.elapsed,
+        duration: this.elapsed,
         score: newScore
       }).then(function (response) {
         this.setState({
@@ -1314,15 +1315,13 @@ export class UnitConversionGame extends React.Component {
   gameOver () {
     this.setState({state: GameState.GAME_OVER})
     stopBackgroundAudio()
-    clearInterval(this.state.timer)
+    clearInterval(this.timer)
     window.onbeforeunload = null
   }
 
   restart () {
-    clearInterval(this.state.timer)
-    this.setState(
-      { timer: setInterval(this.tick.bind(this), 10) }
-    )
+    clearInterval(this.timer)
+    this.timer = setInterval(this.tick.bind(this), 10)
 
     var state = Object.assign(
       this.generateQuestion(),
@@ -1341,9 +1340,7 @@ export class UnitConversionGame extends React.Component {
     }
     playBackgroundAudio('rainbow', 0.2)
     this.setState(this.generateQuestion())
-    this.setState({
-      timer: setInterval(this.tick.bind(this), 10)
-    })
+    this.timer = setInterval(this.tick.bind(this), 10)
   }
 
   render () {
