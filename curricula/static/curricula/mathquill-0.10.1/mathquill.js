@@ -2816,7 +2816,9 @@ var MathBlock = P(MathElement, function(_, super_) {
   _.chToCmd = function(ch, options) {
     var cons;
     // exclude f because it gets a dedicated command with more spacing
-    if (ch.match(/^[a-eg-zA-Z]$/))
+    // if (ch.match(/^[a-eg-zA-Z]$/))
+    // monkey patch
+    if (ch.match(/^[a-zA-Z]$/))
       return Letter(ch);
     else if (/^\d$/.test(ch))
       return Digit(ch);
@@ -4809,15 +4811,16 @@ LatexCmds.operatorname = P(MathCommand, function(_) {
   };
 });
 
-LatexCmds.f = P(Letter, function(_, super_) {
-  _.init = function() {
-    Symbol.p.init.call(this, this.letter = 'f', '<var class="mq-f">f</var>');
-  };
-  _.italicize = function(bool) {
-    this.jQ.html('f').toggleClass('mq-f', bool);
-    return super_.italicize.apply(this, arguments);
-  };
-});
+// monkey patch disable f
+// LatexCmds.f = P(Letter, function(_, super_) {
+//   _.init = function() {
+//     Symbol.p.init.call(this, this.letter = 'f', '<var class="mq-f">f</var>');
+//   };
+//   _.italicize = function(bool) {
+//     this.jQ.html('f').toggleClass('mq-f', bool);
+//     return super_.italicize.apply(this, arguments);
+//   };
+// });
 
 // VanillaSymbol's
 LatexCmds[' '] = LatexCmds.space = bind(VanillaSymbol, '\\ ', '&nbsp;');

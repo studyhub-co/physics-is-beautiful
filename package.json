@@ -34,15 +34,15 @@
     "axios": "^0.17.0",
     "webpack": "^1.14.0",
     "webpack-bundle-tracker": "^0.2.0",
-    "eslint" : "^4.10.0",
-    "eslint-plugin-react" : "^4.10.0",
-    "eslint-plugin-import" : "^2.8.0",
+    "eslint": "^4.10.0",
+    "eslint-plugin-react": "^7.4.0 ",
+    "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-react": "^7.4.0 ",
     "eslint-plugin-standard": "^3.0.0",
     "eslint-config-standard": "^10.2.0",
-    "eslint-config-standard-react": "^5.0.0"
+    "eslint-config-standard-react": "^5.0.0",
+    "react-draggable": "^3.0.5"
   },
   "dependencies": {
     "react-bootstrap": "^0.30.7"

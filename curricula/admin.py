@@ -447,6 +447,12 @@ class ModuleAdmin(NestedModelAdmin):
 _backlink_to_module = link_to_field('module')
 
 
+GAME_CHOICES = [
+    ('unit-conversion', 'Unit conversion'),
+    ('vector-game', 'Vector game')
+]
+
+
 class LessonForm(forms.ModelForm):
 
     class Meta:
@@ -455,7 +461,7 @@ class LessonForm(forms.ModelForm):
             'module', 'name', 'image', 'lesson_type', 'game_slug',  # 'published_on', 'position',
         ]
 
-    game_slug = forms.CharField(required=False)
+    game_slug = forms.CharField(required=False, widget=forms.Select(choices=GAME_CHOICES))
 
     def __init__(self, *args, **kwargs):
         super(LessonForm, self).__init__(*args, **kwargs)
