@@ -151,7 +151,7 @@ const vectorB = <MathJax.Node inline>{'\\vec{B}'}</MathJax.Node>;
 export class VectorGame extends React.Component {
 
     constructor() {
-        super();
+        super()
         this.elapsed = 0
         this.timer = null
         this.state = {
@@ -164,7 +164,6 @@ export class VectorGame extends React.Component {
             y: null,
             answerVector: null,
             paused: true,
-
         };
     }
 
