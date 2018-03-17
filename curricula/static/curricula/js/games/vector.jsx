@@ -6,6 +6,11 @@ import {VectorCanvas, CanvasVector, CanvasText} from '../vector_canvas'
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
 
+import axios from 'axios'
+
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.xsrfCookieName = 'csrftoken'
+
 class QuestionBoard extends React.Component {
 
     render() {
@@ -99,6 +104,7 @@ class VectorGameBoard extends React.Component {
                     pause={this.props.pause}
                     restart={this.props.restart}
                 />
+              { this.props.state !== GameState.WON ?
                 <QuestionBoard
                     question={this.props.question}
                     arrowComplete={this.props.arrowComplete}
@@ -107,6 +113,26 @@ class VectorGameBoard extends React.Component {
                     answerVector={this.props.answerVector}
                     answerText={this.props.answerText}
                 />
+                 : <div className='text-center'>
+                    <h4>High Score List</h4>
+                    <table style={{marginLeft: 'auto', marginRight: 'auto'}}>
+                      <tbody>
+                        <tr>
+                          <th style={{'padding': 5}} />
+                          <th style={{'padding': 5}}>Name</th>
+                          <th style={{'padding': 5}}>Completion Time</th>
+                        </tr>
+                        {this.props.scoreList ? this.props.scoreList.map(function (score, i) {
+                          return <tr key={i}>
+                            <td style={{'padding': 5}}>{score.row_num}</td>
+                            <td style={{'padding': 5}}>{score.profile}</td>
+                            <td style={{'padding': 5}}>{score.duration}</td>
+                          </tr>
+                        }) : null}
+                      </tbody>
+                    </table>
+                  </div>
+              }
             </div>
         );
     }
@@ -125,7 +151,9 @@ const vectorB = <MathJax.Node inline>{'\\vec{B}'}</MathJax.Node>;
 export class VectorGame extends React.Component {
 
     constructor() {
-        super();
+        super()
+        this.elapsed = 0
+        this.timer = null
         this.state = {
             state: GameState.NEW,
             pausedOnState: null,
@@ -141,6 +169,14 @@ export class VectorGame extends React.Component {
 
     componentWillUnmount() {
         window.onbeforeunload = null;
+        clearInterval(this.timer)
+    }
+
+    // due https://github.com/pughpugh/react-countdown-clock/issues/28 create own timer
+    tick () {
+      if (this.state.state !== GameState.PAUSED) {
+        this.elapsed = this.elapsed + 10
+      }
     }
 
     getRandomInt(min, max) {
@@ -172,10 +208,23 @@ export class VectorGame extends React.Component {
             if (newLevel > 4) {
                 var newState = GameState.WON;
                 stopBackgroundAudio();
-                this.props.gameWon();
-                newLevel = 4;
-                window.onbeforeunload = null;
-                this.setState({score: newScore, level: newLevel, state: newState});
+                clearInterval(this.timer)
+                // this.props.gameWon();
+                axios.post('/api/v1/curricula/games/vector-game/success', {
+                  duration: this.elapsed,
+                  score: newScore
+                }).then(function (response) {
+                  newLevel = 4;
+                  window.onbeforeunload = null;
+                  this.setState({
+                    scoreList: response.data,
+                    level: newLevel,
+                    state: newState
+                  })
+                }.bind(this))
+                // newLevel = 4;
+                // window.onbeforeunload = null;
+                // this.setState({score: newScore, level: newLevel, state: newState});
             } else {
                 this.setState(this.generateQuestion(newScore, newLevel));
             }
@@ -276,11 +325,15 @@ export class VectorGame extends React.Component {
     gameOver(vector, text) {
         this.setState({state: GameState.GAME_OVER, answerVector: vector, answerText: text});
         stopBackgroundAudio();
+        clearInterval(this.timer)
         window.onbeforeunload = null;
     }
 
     restart() {
-        var state = Object.assign(
+      clearInterval(this.timer)
+      this.timer = setInterval(this.tick.bind(this), 10)
+
+      var state = Object.assign(
             this.generateQuestion(),
             {
                 score: 0,
@@ -291,6 +344,7 @@ export class VectorGame extends React.Component {
             },
         );
         this.setState(state);
+
     }
 
     start() {
@@ -299,6 +353,7 @@ export class VectorGame extends React.Component {
         };
         playBackgroundAudio('rainbow',0.2);
         this.setState(this.generateQuestion());
+        this.timer = setInterval(this.tick.bind(this), 10)
     }
 
     render() {
@@ -315,6 +370,7 @@ export class VectorGame extends React.Component {
                 pause={this.pauseToggle.bind(this)}
                 arrowComplete={this.checkAnswer.bind(this)}
                 restart={this.restart.bind(this)}
+                scoreList={this.state.scoreList}
             />
         );
     }

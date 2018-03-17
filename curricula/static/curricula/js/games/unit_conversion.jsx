@@ -11,6 +11,7 @@ import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
+import Draggable from 'react-draggable'
 
 var math = require('mathjs')
 var Qty = require('js-quantities')
@@ -212,7 +213,7 @@ export class ConversionTable extends React.Component {
         <table style={style}>
           <tbody>
             <tr>
-              <td style={topLeft}>{this.props.number} <span style={Object.assign({}, unitStyle, strikethroughStyleN)}>{this.props.unit.split('/')[0]}</span></td>
+              <td style={Object.assign({}, topLeft, {whiteSpace: 'nowrap'})}>{this.props.number} <span style={Object.assign({}, unitStyle, strikethroughStyleN)}>{this.props.unit.split('/')[0]}</span></td>
               {this.getColumns(1)}
             </tr>
             <tr>
@@ -443,6 +444,7 @@ export class UnitConversionBase extends React.Component {
 
   // result answer change
   onResultChange (data, row, col, mathquillObj) {
+
     this.setState({
       answer: {'data': data, 'box': mathquillObj}
     })
@@ -456,7 +458,7 @@ export class UnitConversionBase extends React.Component {
     tmpData = tmpData.replace(/\\ /g, ' ')
     tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
     // convert scientific notation
-    tmpData = tmpData.replace(/\\cdot/, '*')
+    tmpData = tmpData.replace(/\\cdot/g, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
 
     var parsedToValUnit = this.constructor.parseToValueUnit(tmpData)
@@ -586,6 +588,23 @@ export class UnitConversionCanvas extends UnitConversionBase {
     this.submitQuestion = this.submitQuestion.bind(this)
   }
 
+  keydown(e) {
+    if (e.code === "Enter"){
+      // detect that calculator field and button is not focused
+      if(!document.getElementById('calculatorField').classList.contains("mq-focused") &&
+       (document.activeElement !== document.getElementById('checkButton')))
+      {
+        this.submitQuestion()
+      }
+    }
+  }
+
+  updateAnswer(answer){
+    var MQ = MathQuill.getInterface(2)
+    MQ.MathField(document.getElementById('15')).latex(answer)
+    MQ.MathField(document.getElementById('15')).focus()
+  }
+
   componentDidMount () {
     var MQ = MathQuill.getInterface(2)
     if (this.props.level === 5) {
@@ -600,6 +619,11 @@ export class UnitConversionCanvas extends UnitConversionBase {
         ]]
       })
     }
+    document.addEventListener("keydown", this.keydown.bind(this), false)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.keydown, false)
   }
 
   submitQuestion () {
@@ -742,6 +766,11 @@ export class UnitConversionCanvas extends UnitConversionBase {
       playAudio('incorrect')
       this.props.gameOver()
     }
+
+    // erase calculator
+    var MQ = MathQuill.getInterface(2)
+    MQ(document.getElementById('calculatorField')).latex('')
+
   }
   render () {
     var buttonStyle = {
@@ -763,8 +792,16 @@ export class UnitConversionCanvas extends UnitConversionBase {
       border: '.2rem solid #c0c0c0',
       backgroundColor: '#ffffff'
     }
+
+
+    var pointerEvents = 'auto'
+
+    if (this.props.gameState === GameState.GAME_OVER){
+      pointerEvents = 'none'
+    }
+    
     return (
-      <div>
+      <div style={{pointerEvents: pointerEvents }}>
         <div style={{display: 'block'}}>
           <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
             <ConversionTable
@@ -839,23 +876,193 @@ UnitConversionCanvas.propTypes = {
 }
 
 class UnitConversionQuestionBoard extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.state = {calulatorAnswer: '', copy2Answer: null}
+    this.copy2Answer = this.copy2Answer.bind(this)
+  }
+
+  copy2Answer (){
+    if (this.state.calulatorAnswer != '') {
+      this.conversionCanvas.updateAnswer(this.state.calulatorAnswer)
+    }
+  }
+
+  clearCalculatorInput (tmpData) {
+    // remove backslash with whitespace
+    tmpData = tmpData.replace(/\\ /g, ' ')
+    tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
+    // convert scientific notation
+    tmpData = tmpData.replace(/\\cdot/g, '*')
+    tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
+    tmpData = tmpData.replace(/\\left\(/g, '(')
+    tmpData = tmpData.replace(/\\right\)/g, ')')
+
+     var parser = math.parser()
+      try {
+        var value = parser.eval(tmpData)
+        if (value) {
+          var mult = Math.pow(10, 4 - Math.floor(Math.log(value) / Math.LN10) - 1)
+          return Math.round(value * mult) / mult
+        }
+      } catch (e) {} // catch SyntaxError
+
+    return false
+  }
+
+  componentDidMount () {
+    var MQ = MathQuill.getInterface(2)
+
+    this.calculatorField = MQ.MathField(document.getElementById('calculatorField'), {
+      autoCommands: 'pi',
+      autoOperatorNames: 'sin',
+      handlers: {
+        edit: (mathField) => {
+          var calcedValue = this.clearCalculatorInput(mathField.latex())
+          if (calcedValue){
+            this.setState({
+              calulatorAnswer: calcedValue
+            })
+          }
+          else{
+            this.setState({
+              calulatorAnswer: ''
+            })
+          }
+        }
+      }
+    })
+
+    MQ(document.getElementById('11')).focus()
+  }
+
   render () {
+
+    var mathFieldStyle = {
+      minWidth: '25rem',
+      fontSize: 30
+    }
+
+    var cellCheatStyle = {
+      border: '1px solid #d8d8d8',
+      display: 'table-cell',
+      verticalAlign: 'middle',
+      padding: '1rem',
+    }
+
     return (
-      <div className='text-center'>
-        <MediaQuery minDeviceWidth={736}>
-          <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
-        </MediaQuery>
-        <MediaQuery maxDeviceWidth={736}>
-          <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
-        </MediaQuery>
-        <UnitConversionCanvas
-          number={this.props.number}
-          unit={this.props.unit}
-          nextQuestion={this.props.nextQuestion}
-          gameOver={this.props.gameOver}
-          gameState={this.props.gameState}
-          level={this.props.level}
-        />
+      <div>
+        <Draggable disabled={screen.width > 736} axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
+         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
+            <MediaQuery minDeviceWidth={736}>
+              <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+            </MediaQuery>
+            <MediaQuery maxDeviceWidth={736}>
+              <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
+            </MediaQuery>
+            <UnitConversionCanvas
+              number={this.props.number}
+              unit={this.props.unit}
+              nextQuestion={this.props.nextQuestion}
+              gameOver={this.props.gameOver}
+              gameState={this.props.gameState}
+              level={this.props.level}
+              ref={(conversionCanvas) => { this.conversionCanvas = conversionCanvas; }}
+            />
+         </div>
+        </Draggable>
+        <Draggable disabled={screen.width > 736} axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
+        <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
+          <div className='text-center'>
+            <h2>Calculator</h2>
+            <div>
+             <div style={{display: 'table-cell', verticalAlign: 'middle'}}>
+               <p style={{marginBottom: 5}}>
+                 <span id={'calculatorField'} style={mathFieldStyle} />
+               </p>
+             </div>
+             <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
+                 =
+             </div>
+             <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
+               {this.state.calulatorAnswer}
+             </div>
+             <div style={{textAlign: 'right'}}>
+               <div className='button-group'>
+                  <button id='checkButton'
+                    className={'btn btn-primary' + (this.state.calulatorAnswer === '' ? ' disabled' : '')}
+                    onClick={this.copy2Answer}
+                    >
+                    Copy to answer
+                  </button>
+                </div>
+             </div>
+            </div>
+          </div>
+        </div>
+        </Draggable>
+        <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
+          <div className='text-center'>
+            <h2>Unit Conversion Cheat Sheet</h2>
+            <div style={{display: 'table', marginLeft: 'auto', borderCollapse: 'collapse', marginRight: 'auto'}}>
+              <div style={{display: 'table-row'}}>
+                <div style={Object.assign({}, cellCheatStyle, {textDecoration: 'underline', fontWeight: 'bold'})}>
+                  Measurement
+                </div>
+                <div style={Object.assign({}, cellCheatStyle, {textDecoration: 'underline', fontWeight: 'bold'})}>
+                  SI to US Standard
+                </div>
+                <div style={Object.assign({}, cellCheatStyle, {textDecoration: 'underline', fontWeight: 'bold'})}>
+                  US Standard to SI
+                </div>
+              </div>
+              <div style={{display: 'table-row'}}>
+                <div style={cellCheatStyle}>
+                  Distance
+                </div>
+                <div style={cellCheatStyle}>
+                  1 cm = 0.3937 in <br />
+                  1 m = 100 cm = 3.28 ft <br />
+                  1 km = 0.621 mi
+                </div>
+                <div style={cellCheatStyle}>
+                  1 in = 2.54 cm  <br />
+                  1 ft = 0.3048 m  <br />
+                  1 mi = 5280 ft = 1.609 km
+                </div>
+              </div>
+              <div style={{display: 'table-row'}}>
+                <div style={cellCheatStyle}>
+                  Mass
+                </div>
+                <div style={cellCheatStyle}>
+                  1 kg = 1000 g = 2.2 lb <br />
+                  1 g = 0.035 oz
+                </div>
+                <div style={cellCheatStyle}>
+                  1 lb = 16 oz = 0.454 kg   <br />
+                  1 oz = 28.35 g
+                </div>
+              </div>
+              <div style={{display: 'table-row'}}>
+                <div style={cellCheatStyle}>
+                  Time
+                </div>
+                <div style={cellCheatStyle}>
+                  1 s = 1000 ms = 0.0166 min
+                </div>
+                <div style={cellCheatStyle}>
+                 1 min = 60 s <br />   <br />
+                 Other useful non-SI conversions:   <br />
+                 1 hr = 60 min   <br />
+                 1 day = 24 hr   <br />
+                 1 week = 7 days
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -984,6 +1191,8 @@ UnitConversionGameBoard.propTypes = {
 export class UnitConversionGame extends React.Component {
   constructor () {
     super()
+    this.elapsed = 0
+    this.timer = null
     this.timesUp = this.timesUp.bind(this)
     this.start = this.start.bind(this)
     this.pauseToggle = this.pauseToggle.bind(this)
@@ -997,25 +1206,23 @@ export class UnitConversionGame extends React.Component {
       score: 0,
       // level: 4,
       level: 1,
-      elapsed: 0,
       question: null,
       unit: null,
       number: null,
       answer: null,
-      paused: true,
-      timer: null
+      paused: true
     }
   }
 
   componentWillUnmount () {
     window.onbeforeunload = null
-    clearInterval(this.state.timer)
+    clearInterval(this.timer)
   }
 
   // due https://github.com/pughpugh/react-countdown-clock/issues/28 create own timer
   tick () {
     if (this.state.state !== GameState.PAUSED) {
-      this.setState({ elapsed: this.state.elapsed + 10 })
+      this.elapsed = this.elapsed + 10
     }
   }
 
@@ -1024,8 +1231,6 @@ export class UnitConversionGame extends React.Component {
   }
 
   getRandomNumber () {
-    // var random = (Math.floor(Math.random() * 9) + 1) * Math.pow(10, (Math.random() <= 0.5 ? -Math.floor(Math.random() * 4) : Math.floor(Math.random() * 4)))
-    // return (random.toString().length > 3 ? random.toPrecision(3) : random)
     var arrayRandoms = [(Math.random() * 10000).toFixed(2), (Math.random()).toFixed(3)]
     var toReturn = this.getRandomFromArray(arrayRandoms) // return random 1-9999 or 0.0000-0.9999
     return Number(toReturn) === 0 ? 1 : toReturn // if number is 0, return 1
@@ -1080,9 +1285,9 @@ export class UnitConversionGame extends React.Component {
       stopBackgroundAudio()
       // TODO add more secure, i.e. server token when game starts, etc
       // TODO move it to games.jsx (replace jQuery), remove ajaxSetup from main page
-      clearInterval(this.state.timer)
+      clearInterval(this.timer)
       axios.post('/api/v1/curricula/games/unit-conversion/success', {
-        duration: this.state.elapsed,
+        duration: this.elapsed,
         score: newScore
       }).then(function (response) {
         this.setState({
@@ -1110,15 +1315,13 @@ export class UnitConversionGame extends React.Component {
   gameOver () {
     this.setState({state: GameState.GAME_OVER})
     stopBackgroundAudio()
-    clearInterval(this.state.timer)
+    clearInterval(this.timer)
     window.onbeforeunload = null
   }
 
   restart () {
-    clearInterval(this.state.timer)
-    this.setState(
-      { timer: setInterval(this.tick.bind(this), 10) }
-    )
+    clearInterval(this.timer)
+    this.timer = setInterval(this.tick.bind(this), 10)
 
     var state = Object.assign(
       this.generateQuestion(),
@@ -1137,9 +1340,7 @@ export class UnitConversionGame extends React.Component {
     }
     playBackgroundAudio('rainbow', 0.2)
     this.setState(this.generateQuestion())
-    this.setState({
-      timer: setInterval(this.tick.bind(this), 10)
-    })
+    this.timer = setInterval(this.tick.bind(this), 10)
   }
 
   render () {

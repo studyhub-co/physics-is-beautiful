@@ -14,10 +14,10 @@ export class CheckContinueButton extends React.Component {
    }
   
   componentDidMount() {
-    document.addEventListener("keydown", this.keydown.bind(this), false);
+    document.addEventListener("keydown", this.keydown.bind(this), false)
   }
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.keydown, false);
+    document.removeEventListener("keydown", this.keydown, false)
   }
   
   render () {

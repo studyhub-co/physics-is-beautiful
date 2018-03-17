@@ -306,7 +306,7 @@ class GamesApp extends React.Component {
     };
   }
 
-  gameWon () {
+  gameWon () { // todo remove
     $.ajax({
       async: true,
       url: '/api/v1/curricula/games/' + this.state.slug + '/success',
