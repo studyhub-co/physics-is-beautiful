@@ -489,7 +489,7 @@ export class UnitConversionBase extends React.Component {
   }
 
   getBaseFor2Qty (firstQty, secondQty) {
-    // TODO We need to determine the minimum of minLength, so 3341.24 mm == 3 m now (minLength = 1)
+    // Determine the minimum of minLength
     var minLength = 0
     minLength = firstQty.baseScalar.toString().length
     if (secondQty.toString().length < minLength) {
@@ -903,10 +903,20 @@ class UnitConversionQuestionBoard extends React.Component {
       try {
         var value = parser.eval(tmpData)
         if (value) {
-          var mult = Math.pow(10, 4 - Math.floor(Math.log(value) / Math.LN10) - 1)
-          return Math.round(value * mult) / mult
+          if (value < 1) {
+            // leave just significant figures for answer
+            var mult = Math.pow(10, 4 - Math.floor(Math.log(value) / Math.LN10) - 1)
+            value = Math.round(value * mult) / mult
+          } else {
+            value = value.toFixed(2)
+          }
         }
-      } catch (e) {} // catch SyntaxError
+
+        return value
+
+      } catch (e) {if (!(e instanceof SyntaxError)) { // catch SyntaxError
+          throw e
+        }}
 
     return false
   }
