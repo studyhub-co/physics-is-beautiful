@@ -83,7 +83,8 @@ html, body {
     bottom:0;
     left:0;
     right:0;
-    height:8rem;
+    /*height:8rem;*/
+    height:22%;
     border-radius: 0 0 15px 15px;
     background-color: #dbdbdb;
     margin-top:5px;
