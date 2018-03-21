@@ -65,6 +65,7 @@ export class Footer extends React.Component {
           <div id='correctMessage'>{correctMessage}</div>
         </div>
         <div className='progress-bottom-container'>
+          <br />
           <h4>Progress</h4>
           <div className='progress'>
             <div
