@@ -52,18 +52,6 @@ export class Footer extends React.Component {
 
     return (
       <div id='footer'>
-        <div id='checkMarks'>{checkMarks}</div>
-        <div id='checkContainer'>
-          {/* {continueButton} */}
-          <CheckContinueButton
-            checkAction={this.props.checkAction}
-            continueAction={this.props.continueAction}
-            isCheck={typeof this.props.correct === 'undefined'}
-            disabledCheck={this.props.disabledCheck} />
-        </div>
-        <div id='blockRight'>
-          <div id='correctMessage'>{correctMessage}</div>
-        </div>
         <div className='progress-bottom-container'>
           <h4>Progress</h4>
           <div className='progress'>
@@ -79,6 +67,20 @@ export class Footer extends React.Component {
             </div>
           </div>
         </div>
+        <div className="float-left">
+          <div id='correctMessage'>{correctMessage}</div>
+        </div>
+        <div style={{clear: "both"}}></div>
+        <div id='checkMarks'>{checkMarks}</div>
+        <div id='checkContainer'>
+          {/* {continueButton} */}
+          <CheckContinueButton
+            checkAction={this.props.checkAction}
+            continueAction={this.props.continueAction}
+            isCheck={typeof this.props.correct === 'undefined'}
+            disabledCheck={this.props.disabledCheck} />
+        </div>
+        <div style={{clear: "both"}}></div>
       </div>
     )
   }

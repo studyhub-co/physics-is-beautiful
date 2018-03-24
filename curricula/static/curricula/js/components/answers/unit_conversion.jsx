@@ -130,18 +130,23 @@ class UnitConversionCanvas extends UnitConversionBase {
       answerSplit = this.constructor.parseToValueUnit(this.clearDataText(this.state.answer['box'].latex()))
     }
 
-    if (answerSplit) {
-      this.props.updateAnswer([
-        this.props.uuid,
-        {
-          unit_conversion: {
-            answer_number: answerSplit[0],
-            answer_unit: answerSplit[1],
-            conversion_steps: conversionSteps
+    if (conversionSteps.length != 0){
+      if (answerSplit) {
+        this.props.updateAnswer([
+          this.props.uuid,
+          {
+            unit_conversion: {
+              answer_number: answerSplit[0],
+              answer_unit: answerSplit[1],
+              conversion_steps: conversionSteps
+            }
           }
+        ])
         }
-      ])
+    } else { // if no steps - do not update
+      this.props.updateAnswer(null)
     }
+
   }
 
   // result answer change
@@ -257,7 +262,7 @@ class UnitConversionCanvas extends UnitConversionBase {
     this.setState({
       answerSteps: answerSteps
     })
-
+    
     this.updateExternalAnswer()
   }
 
