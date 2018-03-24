@@ -77,13 +77,11 @@ html, body {
 .section-sheet h1 {font-size: 100%;}
 
 #footer{
-    /*position:absolute;*/
     position:relative;
     padding:0;
     bottom:0;
     left:0;
     right:0;
-    height:8rem;
     border-radius: 0 0 15px 15px;
     background-color: #dbdbdb;
     margin-top:5px;
@@ -108,7 +106,7 @@ html, body {
         margin-top:3px;
     }
     .problem-sheet {
-        height: calc(100% - 60px);
+        /*height: calc(100% - 60px);*/
 		width: 100%;
 		padding: 0px;
 		margin-top: -15px;
@@ -160,8 +158,9 @@ html, body {
 
 .progress-bottom-container{
     position: relative;
+    display: inline-block;
     /*bottom: 0;*/
-    /*float: left;*/
+    float: left;
     padding-bottom: 10px;
     padding-left: 10px;
     width: 45vw;
@@ -300,13 +299,13 @@ img.grayed-out-img {
 #checkMarks{
     float:right;
     position: absolute;
-    bottom: 6px;
-    right: 5px;
+    bottom: 2rem;
+    right: 1rem;
 }
 #checkContainer{
     position: absolute;
-    bottom: 20px;
-    right: 80px
+    bottom: 2rem;
+    right: 8rem;
 }
 #checkButton{
     border-radius: 12rem;
@@ -335,6 +334,10 @@ img.grayed-out-img {
 }
 #vectorButton{
 
+}
+
+.float-lefteft{
+    float:left;
 }
 
 #blockRight{

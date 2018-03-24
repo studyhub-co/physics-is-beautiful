@@ -523,7 +523,19 @@ export class UnitConversionBase extends React.Component {
 
   compareWithSigFigs (firstQty, secondQty) {
     var baseCompareLst = this.getBaseFor2Qty(firstQty, secondQty)
-    return '' + baseCompareLst[0] === '' + baseCompareLst[1]
+
+    var equal = '' + baseCompareLst[0] === '' + baseCompareLst[1]
+
+    if (!equal){
+      var a = baseCompareLst[0]
+      var b = baseCompareLst[1]
+      var percent = (Math.abs(a-b)/Math.max(Math.abs(a), Math.abs(b))) * 100
+      if (percent <= 11){
+         equal = true
+      }
+    }
+    
+    return equal
   }
 
   resetStrikeAnswers () {
