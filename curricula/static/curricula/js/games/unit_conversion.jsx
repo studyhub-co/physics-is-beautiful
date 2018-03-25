@@ -67,7 +67,7 @@ class UNITS {
   }
 }
 
-var INPUT_UNITS = ['s', 'm', 'kg']
+var INPUT_UNITS = ['s', 'm', 'kg', 'm/s']
 Object.getOwnPropertyNames(UNITS)
   .map(key => [key, Object.getOwnPropertyDescriptor(UNITS, key)])
   .filter(([key, descriptor]) => typeof descriptor.get === 'function')
@@ -460,7 +460,7 @@ export class UnitConversionBase extends React.Component {
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/g, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
-
+    
     var parsedToValUnit = this.constructor.parseToValueUnit(tmpData)
 
     if (parsedToValUnit && parsedToValUnit[0]) {
@@ -1298,7 +1298,7 @@ export class UnitConversionGame extends React.Component {
       unit = this.getRandomFromArray(Object.keys(UNITS.SPEED))
       unitLong = UNITS.SPEED[unit]
     } else if (newLevel === 5) {
-      var unitType = this.getRandomFromArray(Object.keys(UNITS))
+      var unitType = this.getRandomFromArray(Object.getOwnPropertyNames(UNITS))
       unit = this.getRandomFromArray(Object.keys(UNITS[unitType]))
       unitLong = UNITS[unitType][unit]
     }
