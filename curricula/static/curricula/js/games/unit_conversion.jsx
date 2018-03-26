@@ -1226,7 +1226,7 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      // level: 4,
+      // level: 5,
       level: 1,
       question: null,
       unit: null,
@@ -1298,7 +1298,17 @@ export class UnitConversionGame extends React.Component {
       unit = this.getRandomFromArray(Object.keys(UNITS.SPEED))
       unitLong = UNITS.SPEED[unit]
     } else if (newLevel === 5) {
-      var unitType = this.getRandomFromArray(Object.getOwnPropertyNames(UNITS))
+
+      var INPUT_UNITS = []
+
+      Object.getOwnPropertyNames(UNITS)
+      .map(key => [key, Object.getOwnPropertyDescriptor(UNITS, key)])
+      .filter(([key, descriptor]) => typeof descriptor.get === 'function')
+      .map(([key]) => key).forEach(function (key) {
+        INPUT_UNITS = INPUT_UNITS.concat(key)
+      })
+
+      var unitType = this.getRandomFromArray(INPUT_UNITS)
       unit = this.getRandomFromArray(Object.keys(UNITS[unitType]))
       unitLong = UNITS[unitType][unit]
     }
