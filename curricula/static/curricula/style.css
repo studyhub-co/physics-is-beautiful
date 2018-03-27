@@ -460,11 +460,14 @@ img.grayed-out-img {
     background: rgba(255, 255, 255, 0);
     color: #1caff6;
     transition: color .3s,border .3s;
+    outline:0;
 }
-.hover-button:hover{
+.hover-button:hover,
+.hover-button:focus{
     color: #105e84;
     border: .2rem solid #105e84;
 }
+
 .TwCenMT{
     font-family: "TW CEN MT"
 }

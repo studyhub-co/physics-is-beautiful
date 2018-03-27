@@ -67,7 +67,7 @@ class UNITS {
   }
 }
 
-var INPUT_UNITS = ['s', 'm', 'kg']
+var INPUT_UNITS = ['s', 'm', 'kg', 'm/s']
 Object.getOwnPropertyNames(UNITS)
   .map(key => [key, Object.getOwnPropertyDescriptor(UNITS, key)])
   .filter(([key, descriptor]) => typeof descriptor.get === 'function')
@@ -460,7 +460,7 @@ export class UnitConversionBase extends React.Component {
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/g, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
-
+    
     var parsedToValUnit = this.constructor.parseToValueUnit(tmpData)
 
     if (parsedToValUnit && parsedToValUnit[0]) {
@@ -604,7 +604,10 @@ export class UnitConversionCanvas extends UnitConversionBase {
     if (e.code === "Enter"){
       // detect that calculator field and button is not focused
       if(!document.getElementById('calculatorField').classList.contains("mq-focused") &&
-       (document.activeElement !== document.getElementById('checkButton')))
+          (document.activeElement !== document.getElementById('checkButton')) &&
+          (document.activeElement !== document.getElementById('addStep')) &&
+          (document.activeElement !== document.getElementById('removeStep'))
+      )
       {
         this.submitQuestion()
       }
@@ -841,11 +844,11 @@ export class UnitConversionCanvas extends UnitConversionBase {
               : null}
             {this.props.level > 4 ? null
               : <div style={{fontSize: 10, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 0, paddingRight: 0}}>
-                <button
+                <button id='addStep'
                   className='hover-button'
                   style={this.state.numColumns === 4 ? disabledButtonStyle : buttonStyle}
                   onClick={this.addColumn}>+Add Step</button>
-                <button
+                <button id='removeStep'
                   className='hover-button'
                   style={this.state.numColumns === 1 ? disabledButtonStyle : buttonStyle} onClick={this.removeColumn}
                   disabled={this.state.numColumns === 1}>
@@ -1226,7 +1229,7 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      // level: 4,
+      // level: 5,
       level: 1,
       question: null,
       unit: null,
@@ -1298,7 +1301,17 @@ export class UnitConversionGame extends React.Component {
       unit = this.getRandomFromArray(Object.keys(UNITS.SPEED))
       unitLong = UNITS.SPEED[unit]
     } else if (newLevel === 5) {
-      var unitType = this.getRandomFromArray(Object.keys(UNITS))
+
+      var INPUT_UNITS = []
+
+      Object.getOwnPropertyNames(UNITS)
+      .map(key => [key, Object.getOwnPropertyDescriptor(UNITS, key)])
+      .filter(([key, descriptor]) => typeof descriptor.get === 'function')
+      .map(([key]) => key).forEach(function (key) {
+        INPUT_UNITS = INPUT_UNITS.concat(key)
+      })
+
+      var unitType = this.getRandomFromArray(INPUT_UNITS)
       unit = this.getRandomFromArray(Object.keys(UNITS[unitType]))
       unitLong = UNITS[unitType][unit]
     }
