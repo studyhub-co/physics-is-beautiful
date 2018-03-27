@@ -604,7 +604,10 @@ export class UnitConversionCanvas extends UnitConversionBase {
     if (e.code === "Enter"){
       // detect that calculator field and button is not focused
       if(!document.getElementById('calculatorField').classList.contains("mq-focused") &&
-       (document.activeElement !== document.getElementById('checkButton')))
+          (document.activeElement !== document.getElementById('checkButton')) &&
+          (document.activeElement !== document.getElementById('addStep')) &&
+          (document.activeElement !== document.getElementById('removeStep'))
+      )
       {
         this.submitQuestion()
       }
@@ -841,11 +844,11 @@ export class UnitConversionCanvas extends UnitConversionBase {
               : null}
             {this.props.level > 4 ? null
               : <div style={{fontSize: 10, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 0, paddingRight: 0}}>
-                <button
+                <button id='addStep'
                   className='hover-button'
                   style={this.state.numColumns === 4 ? disabledButtonStyle : buttonStyle}
                   onClick={this.addColumn}>+Add Step</button>
-                <button
+                <button id='removeStep'
                   className='hover-button'
                   style={this.state.numColumns === 1 ? disabledButtonStyle : buttonStyle} onClick={this.removeColumn}
                   disabled={this.state.numColumns === 1}>
