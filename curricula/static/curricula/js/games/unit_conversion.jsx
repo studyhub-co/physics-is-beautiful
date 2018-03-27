@@ -783,8 +783,10 @@ export class UnitConversionCanvas extends UnitConversionBase {
     }
 
     // erase calculator
-    var MQ = MathQuill.getInterface(2)
-    MQ(document.getElementById('calculatorField')).latex('')
+    if(document.getElementById('calculatorField')) {
+      var MQ = MathQuill.getInterface(2)
+      MQ(document.getElementById('calculatorField')).latex('')
+    }
 
   }
   render () {
