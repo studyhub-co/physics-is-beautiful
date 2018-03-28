@@ -112,7 +112,7 @@ def game_success(request, slug):
 
             for row_num, row in enumerate(scores[:10]):
                 setattr(row, 'row_num', row_num + 1)
-                if request.user.id == row.profile_id:
+                if request.user.profile.id == row.profile_id:
                     current_user_in_score_list = True
                 data_scores_list.append(row)
 
