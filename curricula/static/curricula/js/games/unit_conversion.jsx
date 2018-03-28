@@ -783,8 +783,10 @@ export class UnitConversionCanvas extends UnitConversionBase {
     }
 
     // erase calculator
-    var MQ = MathQuill.getInterface(2)
-    MQ(document.getElementById('calculatorField')).latex('')
+    if(document.getElementById('calculatorField')) {
+      var MQ = MathQuill.getInterface(2)
+      MQ(document.getElementById('calculatorField')).latex('')
+    }
 
   }
   render () {
@@ -907,14 +909,14 @@ class UnitConversionQuestionBoard extends React.Component {
   clearCalculatorInput (tmpData) {
     // remove backslash with whitespace
     tmpData = tmpData.replace(/\\ /g, ' ')
-    tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/$2')
+    tmpData = tmpData.replace(/\\frac{(\S+)}{(\S+)}/, '$1/($2)')
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/g, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
     tmpData = tmpData.replace(/\\left\(/g, '(')
     tmpData = tmpData.replace(/\\right\)/g, ')')
 
-     var parser = math.parser()
+    var parser = math.parser()
       try {
         var value = parser.eval(tmpData)
         if (value) {
@@ -1229,7 +1231,7 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      // level: 5,
+      //level: 4,
       level: 1,
       question: null,
       unit: null,
