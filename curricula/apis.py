@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
-from .services import get_progress_service, LessonLocked
+from .services import get_progress_service, LessonLocked, LessonProgress
 
 from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSerializer,\
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
@@ -104,28 +104,44 @@ def game_success(request, slug):
     service.game_success(game, dur, score)
 
     if game.slug == 'unit-conversion' or game.slug == 'vector-game':  # temp fix
-        # get score list for auth user
-        try:
-            scores = service.get_score_board_qs(game.lesson)
-            data_scores_list = []
-            current_user_in_score_list = False
+        # get score list for
+        # try:
+        scores = service.get_score_board_qs(game.lesson)
+        data_scores_list = []
+        current_user_in_score_list = False
 
-            for row_num, row in enumerate(scores[:10]):
-                setattr(row, 'row_num', row_num + 1)
+        already_anon_insert = False
+
+        for row_num, row in enumerate(scores[:10]):
+            if request.user.is_authenticated:
                 if request.user.profile.id == row.profile_id:
                     current_user_in_score_list = True
-                data_scores_list.append(row)
+            else:
+                if row.duration > dur or row_num == len(scores[:10])-1:
+                    if not already_anon_insert:
+                        currrent_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+                        setattr(currrent_user_score, 'row_num', row_num + 1)
+                        data_scores_list.append(currrent_user_score)
+                        already_anon_insert = True
 
+                if not already_anon_insert:
+                    setattr(row, 'row_num', row_num + 1)
+                else:
+                    setattr(row, 'row_num', row_num + 2)
+
+            data_scores_list.append(row)
+
+        if request.user.is_authenticated:
             if not current_user_in_score_list:
                 currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
                 position = service.get_score_board_qs(game.lesson).filter(duration__lt=currrent_user_score.duration).count()
                 setattr(currrent_user_score, 'row_num', position + 1)
                 data_scores_list.append(currrent_user_score)
 
-            data = ScoreBoardSerializer(data_scores_list, many=True).data
-            return Response(data)
-        except NotImplementedError:
-            pass
+        data = ScoreBoardSerializer(data_scores_list, many=True).data
+        return Response(data)
+        # except NotImplementedError:
+        #     pass
 
     return Response(status=status.HTTP_204_NO_CONTENT)
 

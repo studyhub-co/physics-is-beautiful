@@ -1187,7 +1187,7 @@ class UnitConversionGameBoard extends React.Component {
                 {this.props.scoreList ? this.props.scoreList.map(function (score, i) {
                   return <tr key={i}>
                     <td style={{'padding': 5}}>{score.row_num}</td>
-                    <td style={{'padding': 5}}>{score.profile}</td>
+                    <td style={{'padding': 5}}>{score.profile ? score.profile: 'Anonymous'}</td>
                     <td style={{'padding': 5}}>{score.duration}</td>
                   </tr>
                 }) : null}
@@ -1231,8 +1231,8 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      //level: 4,
-      level: 1,
+      level: 4,
+      //level: 1,
       question: null,
       unit: null,
       number: null,

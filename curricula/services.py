@@ -201,4 +201,4 @@ class AnonymousProgressService(ProgressServiceBase):
 
     @staticmethod
     def get_score_board_qs(lesson):
-        raise NotImplementedError
+        return LessonProgress.objects.filter(lesson=lesson, status=LessonProgress.Status.COMPLETE).order_by('duration')
