@@ -652,6 +652,10 @@ export class UnitConversionCanvas extends UnitConversionBase {
 
     var isRightAnswer = true
 
+    if (!this.state.answersSteps || this.state.answersSteps.length == 0 || !this.state.answer || !this.state.answer['data']){
+      return
+    }
+
     // checking for correct units conversions
     for (var column = 0; column < answers.length; column++) { // walk through columns
       var numerator = answers[column][0]
@@ -1231,8 +1235,8 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      level: 4,
-      //level: 1,
+      //level: 4,
+      level: 1,
       question: null,
       unit: null,
       number: null,
