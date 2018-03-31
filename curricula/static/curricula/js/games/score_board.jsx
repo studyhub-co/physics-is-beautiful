@@ -37,7 +37,7 @@ export class ScoreBoard extends React.Component {
         score = (
           <div className='col-md-4'>
             <h1 className='TwCenMT'>Game Over!</h1>
-            <button className='hover-button' onClick={this.props.restart}>Try Again</button>
+            <button id='tryAgain' className='hover-button' onClick={this.props.restart}>Try Again</button>
             <button className='hover-button'><Link to={'/'}>Exit</Link></button>
           </div>
         )
