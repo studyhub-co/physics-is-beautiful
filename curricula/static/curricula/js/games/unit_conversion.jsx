@@ -819,6 +819,7 @@ export class UnitConversionCanvas extends UnitConversionBase {
 
     if (this.props.gameState === GameState.GAME_OVER){
       pointerEvents = 'none'
+      document.getElementById('tryAgain').focus()
     }
     
     return (
@@ -1073,7 +1074,7 @@ class UnitConversionQuestionBoard extends React.Component {
                 </div>
                 <div style={cellCheatStyle}>
                   1 lb = 16 oz = 0.454 kg   <br />
-                  1 oz = 28.35 g
+                  1 oz = 28.35 g = 0.02835 kg
                 </div>
               </div>
               <div style={{display: 'table-row'}}>
@@ -1113,13 +1114,18 @@ class UnitConversionGameBoard extends React.Component {
     super()
     this.levelColorMap = {
       1: '#ffffff',
-      2: '#fee',
-      3: '#eef',
-      4: '#ffa'
+      2: '#c9bfff',
+      3: '#caffe5',
+      4: '#ffffaa',
+      5: '#ffd8b2'
     }
     this.state = {clockSeconds: 600}
   }
-
+  componentDidMount() {
+    if (this.props.state == GameState.NEW) {
+      document.getElementById('start').focus()
+    }
+  }
   render () {
     var style = {backgroundColor: this.levelColorMap[this.props.level]}
 
@@ -1131,7 +1137,7 @@ class UnitConversionGameBoard extends React.Component {
             <div className='col-md-4 text-center'>
               <span><h1 className='game-title'>Unit Conversion Game</h1></span>
               <p><span>Beat a score of 2500 to unlock the next lesson. Wrong answers end the game.</span></p>
-              <button className='hover-button' onClick={this.props.start}>Start</button>
+              <button id='start' className='hover-button' onClick={this.props.start}>Start</button>
             </div>
           </div>
         )
