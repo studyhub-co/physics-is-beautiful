@@ -1,6 +1,6 @@
 import React from 'react'
 import {UnitConversionBase, ConversionTable, MathquillBox} from '../../games/unit_conversion'
-
+import Draggable from 'react-draggable'
 /* global MathQuill */
 
 class UnitConversionCanvas extends UnitConversionBase {
@@ -27,16 +27,15 @@ class UnitConversionCanvas extends UnitConversionBase {
       document.getElementById('15').style.pointerEvents = 'none'
       document.getElementById('15').firstElementChild.firstElementChild.setAttribute('tabindex', '-1')
 
-
       this.setState({
-        answer: { 'data': props.answer_number+'\ '+props.answer_unit, 'box': answerBox },
+        answer: { 'data': props.answer_number + '\ ' + props.answer_unit, 'box': answerBox },
         numColumns: 1,
         answersSteps: [[
           {'data': '', 'box': MQ(document.getElementById('11'))},
           {'data': '', 'box': MQ(document.getElementById('21'))}
         ]] // column set by default
       }, function () {
-        this.setLatexWoFireEvent(answerBox, props.answer_number+'\\ '+props.answer_unit)
+        this.setLatexWoFireEvent(answerBox, props.answer_number + '\\ ' + props.answer_unit)
         // set focus on 1st box
         MQ(document.getElementById('11')).focus()
       })
@@ -55,8 +54,8 @@ class UnitConversionCanvas extends UnitConversionBase {
               props.conversion_steps[x]['denominator']) {
             answersSteps.push([
               {'data': props.conversion_steps[x]['numerator'],
-               'splitData': this.constructor.parseToValueUnit(this.clearDataText(props.conversion_steps[x]['numerator'])),
-               'box': MQ(document.getElementById('1' + (x + 1)))},
+                'splitData': this.constructor.parseToValueUnit(this.clearDataText(props.conversion_steps[x]['numerator'])),
+                'box': MQ(document.getElementById('1' + (x + 1)))},
               {'data': props.conversion_steps[x]['denominator'],
                 'splitData': this.constructor.parseToValueUnit(this.clearDataText(props.conversion_steps[x]['denominator'])),
                 'box': MQ(document.getElementById('2' + (x + 1)))}
@@ -82,10 +81,10 @@ class UnitConversionCanvas extends UnitConversionBase {
       MQ(document.getElementById('11')).focus()
       this.setState({
         answersSteps: [[
-                {'data': '', 'box': MQ(document.getElementById('11'))},
-                {'data': '', 'box': MQ(document.getElementById('21'))}
-              ]]
-      }, function(){
+          {'data': '', 'box': MQ(document.getElementById('11'))},
+          {'data': '', 'box': MQ(document.getElementById('21'))}
+        ]]
+      }, function () {
         // set focus on 1st box
         MQ(document.getElementById('11')).focus()
       })
@@ -120,7 +119,7 @@ class UnitConversionCanvas extends UnitConversionBase {
             'numerator': answerSteps[x][0]['splitData'].join(' '),
             'denominator': answerSteps[x][1]['splitData'].join(' ')
           })
-        } catch(err){}
+        } catch (err) {}
       }
     }
 
@@ -130,7 +129,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       answerSplit = this.constructor.parseToValueUnit(this.clearDataText(this.state.answer['box'].latex()))
     }
 
-    if (conversionSteps.length != 0){
+    if (conversionSteps.length != 0) {
       if (answerSplit) {
         this.props.updateAnswer([
           this.props.uuid,
@@ -142,11 +141,10 @@ class UnitConversionCanvas extends UnitConversionBase {
             }
           }
         ])
-        }
+      }
     } else { // if no steps - do not update
       this.props.updateAnswer(null)
     }
-
   }
 
   // result answer change
@@ -179,7 +177,6 @@ class UnitConversionCanvas extends UnitConversionBase {
     var uncrossedUnits = Object.assign({}, this.state.uncrossedUnits)
 
     for (var x = 0; x < this.state.answersSteps.length; x++) {
-
       var numSplitData = this.state.answersSteps[x][0].splitData
       var numAnswerData = this.clearDataText(this.state.answersSteps[x][0].data).split(' ')[0]
 
@@ -262,7 +259,7 @@ class UnitConversionCanvas extends UnitConversionBase {
     this.setState({
       answerSteps: answerSteps
     })
-    
+
     this.updateExternalAnswer()
   }
 
@@ -361,24 +358,28 @@ UnitConversionCanvas.propTypes = {
 }
 
 export class UnitConversionAnswer extends React.Component {
-
   render () {
     var number = this.props.question.unit_conversion.question_number
     var unit = this.props.question.unit_conversion.question_unit
 
-    return (<div className='bounding-box'>
-      <UnitConversionCanvas
-        answer_number={this.props.question.unit_conversion.answer_number}
-        answer_unit={this.props.question.unit_conversion.answer_unit}
-        number={number}
-        unit={unit}
-        unit_conversion_type={this.props.question.unit_conversion.unit_conversion_type}
-        conversion_steps={this.props.question.unit_conversion.conversion_steps}
-        updateAnswer={this.props.updateAnswer}
-        uuid={this.props.question.uuid}
-        is_correct_answer={this.props.correct}
-      />
-    </div>)
+    return (
+      <div>
+        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}} cancel='.mq-root-block'>
+          <div className='bounding-box'>
+            <UnitConversionCanvas
+              answer_number={this.props.question.unit_conversion.answer_number}
+              answer_unit={this.props.question.unit_conversion.answer_unit}
+              number={number}
+              unit={unit}
+              unit_conversion_type={this.props.question.unit_conversion.unit_conversion_type}
+              conversion_steps={this.props.question.unit_conversion.conversion_steps}
+              updateAnswer={this.props.updateAnswer}
+              uuid={this.props.question.uuid}
+              is_correct_answer={this.props.correct}
+            />
+          </div>
+        </Draggable>
+      </div>)
   }
 }
 UnitConversionAnswer.propTypes = {
