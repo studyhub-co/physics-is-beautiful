@@ -45,7 +45,7 @@ class ProgressServiceBase(object):
         return question
 
     def _allow_override(self):
-        return False
+        return True  # Set this to True if you want all users to have all lessons unlocked
 
     @cached_property
     def current_lesson_progress(self):
