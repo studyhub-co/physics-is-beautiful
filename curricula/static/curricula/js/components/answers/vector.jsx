@@ -38,26 +38,40 @@ export class VectorAnswer extends React.Component {
   render () {
     // Right now we only support Vector problems for single answer.
     var allowInput = true
+    var isNullAnswer = false
+    var isNotNullAnswer = false
     var objects = []
+
     if (this.props.answer && !this.props.question.is_correct) {
-      allowInput = false
-      var pointer = {
-        x: VectorCanvas.calcVectorXStart(this.props.answer.x),
-        y: VectorCanvas.calcVectorYStart(this.props.answer.y)
+      // if answer is not null vector
+      if (this.props.answer['x'] != 0 || this.props.answer['y'] != 0) {
+
+        if(!this.props.question.response.vector.x_component && !this.props.question.response.vector.y_component){
+          // user gave wrong answer
+          isNotNullAnswer = true
+        }
+
+        allowInput = false
+        var pointer = {
+          x: VectorCanvas.calcVectorXStart(this.props.answer.x),
+          y: VectorCanvas.calcVectorYStart(this.props.answer.y)
+        }
+        var endPointer = {
+          x: pointer['x'] + VectorCanvas.calcCanvasMagnitude(this.props.answer.x),
+          y: pointer['y'] - VectorCanvas.calcCanvasMagnitude(this.props.answer.y)
+        }
+        var vector = new CanvasVector(null, pointer, 'green')
+        vector.complete(endPointer)
+        var textPoint = {
+          left: endPointer.x - VectorCanvas.calcCanvasMagnitude(.65) + this.props.answer.x,
+          top: endPointer.y - this.props.answer.y - VectorCanvas.calcCanvasMagnitude(1)
+        }
+        var text = new CanvasText(null, textPoint, 'correct\nsolution')
+        objects.push(vector)
+        objects.push(text)
+      } else {
+        isNullAnswer = true
       }
-      var endPointer = {
-        x: pointer['x'] + VectorCanvas.calcCanvasMagnitude(this.props.answer.x),
-        y: pointer['y'] - VectorCanvas.calcCanvasMagnitude(this.props.answer.y)
-      }
-      var vector = new CanvasVector(null, pointer, 'green')
-      vector.complete(endPointer)
-      var textPoint = {
-        left: endPointer.x - VectorCanvas.calcCanvasMagnitude(.65) + this.props.answer.x,
-        top: endPointer.y - this.props.answer.y - VectorCanvas.calcCanvasMagnitude(1)
-      }
-      var text = new CanvasText(null, textPoint, 'correct\nsolution')
-      objects.push(vector)
-      objects.push(text)
     }
     var allowNull = false
     if (this.props.question.answer_type == 'NULLABLE_VECTOR') {
@@ -68,6 +82,8 @@ export class VectorAnswer extends React.Component {
       <div className='bounding-box'>
         <VectorCanvas {...this.props}
           // continueBtn={continueBtn}
+          isNullAnswer={isNullAnswer}
+          isNotNullAnswer={isNotNullAnswer}
           allowInput={allowInput}
           // manualCheck={true} TODO seems it not used, remove?
           updateAnswer={this.props.updateAnswer}

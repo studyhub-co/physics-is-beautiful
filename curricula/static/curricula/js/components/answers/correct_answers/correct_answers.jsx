@@ -3,6 +3,11 @@ import RMathJax from 'react-mathjax'
 
 export class VectorAnswer extends React.Component {
   render () {
+
+    if (this.props.answer.x == 0 && this.props.answer.y == 0){
+      return (<div>Null vector</div>)
+    }
+
     var x, y, xComponent, yComponent = ''
     if (this.props.answer.y) {
       y = <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
@@ -15,6 +20,7 @@ export class VectorAnswer extends React.Component {
       xComponent = this.props.answer.x
       x = <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
     }
+
     return (
       <div>
         <RMathJax.Context>
