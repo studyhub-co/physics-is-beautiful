@@ -285,6 +285,10 @@ class NullCheckbox extends React.Component {
             divStyle["pointerEvents"] = "none";
             labelStyle["backgroundColor"] = "rgb(127, 250, 127)";
             checked = true;
+        } else if (this.props.isNotAnswer) {
+            divStyle["pointerEvents"] = "none";
+            labelStyle["backgroundColor"] = "red";
+            checked = true;
         } else if (!this.props.allowInput || this.props.submitted) {
             divStyle["pointerEvents"] = "none";
         }
@@ -516,6 +520,8 @@ export class VectorCanvas extends React.Component {
                 <NullCheckbox
                     allowInput={this.props.allowInput}
                     submitted={this.state.submitted}
+                    isAnswer={this.props.isNullAnswer}
+                    isNotAnswer={this.props.isNotNullAnswer}
                     checked={this.state.checked}
                     onChange={this.nullBoxCheck.bind(this)}
                 />
