@@ -34,25 +34,7 @@ p.justify{
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
 }
-.headline{
-    padding-bottom: 10px;
-}
-.byline-dateline{
-    padding-bottom: 16px;
-    padding-top: 14px;
-    border-bottom-color: rgb(226, 226, 226);
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-top-color: rgb(226, 226, 226);
-    border-top-style: solid;
-    border-top-width: 1px;
-}
-.byline{
-    font-weight: bold;
-}
-.dateline{
-    margin-left: 15px;
-}
+
 
 .border-bottom{
     border-bottom: 3px solid #0fa5ff;

@@ -14,14 +14,15 @@ html {
 }
 
 body {
+
+}
+#front-page {
     background: url('images/Prague.jpg');
     background-size: cover;
-    /*background-size: contain; */
-    /*background-size: auto 100%;*/
-    background-attachment: fixed;
+    /*background-attachment: fixed;*/
+    height:100%;
     background-position: center center;@media (max-width: @iphone-screen) {
-    background-attachment: scroll;
-    min-height:100%;
+    /*background-attachment: scroll;*/
     top: 0;
 }
 
@@ -29,45 +30,52 @@ z-index:-1;
 
 }
 
-.navbar-collapse{
-    padding-top: 20px;
-    padding-right: 40px;
-}
-
-.icon-bar{
-    background-color: white;
-}
-.nav>li>a {
-    text-align: center;
+.navlink{
     color: white;
-    font-size: 150%;
-    font-family: Tw Cen MT;
+    text-decoration:none !important;
+}
+.navlink:hover{
+    color: white;
 }
 
-.dropdown-menu {
-    text-align: center;
-    background: rgba(255,255,255,0.3);
+.navbutton{
+    background: rgba(193, 179, 179, 0.25);
+    color: white;
     font-family: Tw Cen MT;
-    font-weight: bold;
-    left: 0px;
-}
-
-#loginButton{
-    border: 2px solid #fff;
+    font-weight: 200;
+    font-size: 18px;
+    border: 2px solid transparent;
     border-radius: 20px;
+    border-color: white;
+    padding: 0px 30px;
+    margin-top: 4px;
+    transition: 0.3s;
+}
+.navbutton:active {
+    background: rgba(255,255,255,.2);
+    box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.navbutton:hover {
+    box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.navbutton:focus {
+    outline:none;
 }
 
-.btn.btn-primary.btn-lg {
-    color: white;
-    text-transform: none;
-    margin-bottom: 10px;
-    font-family: Tw Cen MT;
-    font-weight: normal;
+.card-body{
+    color:black;
+    transition:.2s;
 }
-.btn.btn-primary.btn-lg.noAccount {
-    background: rgba(255, 187, 153, 0.46);
-    border-color: #ffddcc;
+.card-body:hover{
+    color: #6880b8;
 }
+.card{
+    transition:.2s;
+}
+.card:hover{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
 .jumbotron {
     background-color: transparent;
 }
@@ -87,20 +95,19 @@ z-index:-1;
     text-shadow: 1px 1px 28px #AAA;
 }
 
-
-
 #getStartedButton {
     background: rgba(0,0,0,0.25);
     color: white;
     font-family: Tw Cen MT;
     font-weight: 200;
-    font-size: 22px;
+    font-size: 24px;
     border: 2px solid transparent;
     border-radius: 20px;
     border-color: white;
     padding: 0px 30px;
     margin: auto;
     margin-top: 100px;
+    transition: 0.3s;
 }
 
 #getStartedButton:active {
@@ -109,18 +116,13 @@ z-index:-1;
 }
 #getStartedButton:hover {
     box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    font-size: 25px;
+    background: rgba(0, 0, 0, 0.61);
 }
 #getStartedButton:focus {
     outline:none;
 }
 
-.account-button {
-    /*border-radius: 10px;*/
-}
-
-.modal-content{
-    background-color: rgba(255, 255, 255, 0.9);
-}
 
 
 
@@ -151,24 +153,69 @@ z-index:-1;
     }
 }
 
-/*.buttonSocial {
-	height: 40px !important;
-	width: 40px !important;
-	margin-bottom: 0px !important;
-}*/
+.scroll-down {
+  opacity: 1;
+  -webkit-transition: all .5s ease-in 3s;
+  transition: all .5s ease-in 3s;
+}
 
-/*.glowButton:hover {
-	-webkit-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
-	-moz-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
-	box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
-	background-color: rgba(168,245,255,1);
-}*/
+.scroll-down {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  margin-left: -16px;
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #FFF;
+  background-size: 14px auto;
+  border-radius: 50%;
+  z-index: 2;
+  -webkit-animation: bounce 2s infinite 2s;
+  animation: bounce 2s infinite 2s;
+  -webkit-transition: all .2s ease-in;
+  transition: all .2s ease-in;
+}
 
-.account-button img:hover {
-    /*-webkit-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
-    -moz-box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
-    box-shadow: 0px 0px 6px 4px rgba(168,245,255,1);
-    background-color: rgba(168,245,255,1);*/
-    -webkit-filter: brightness(120%); /* Chrome, Safari, Opera */
-    filter: brightness(120%);
+.scroll-down:before {
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 6px);
+    transform: rotate(-45deg);
+    display: block;
+    width: 12px;
+    height: 12px;
+    content: "";
+    border: 2px solid white;
+    border-width: 0px 0 2px 2px;
+}
+
+@keyframes bounce {
+  0%,
+  100%,
+  20%,
+  50%,
+  80% {
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-10px);
+    -ms-transform: translateY(-10px);
+    transform: translateY(-10px);
+  }
+  60% {
+    -webkit-transform: translateY(-5px);
+    -ms-transform: translateY(-5px);
+    transform: translateY(-5px);
+  }
+}
+
+*,
+:after,
+:before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
