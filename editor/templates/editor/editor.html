@@ -1,0 +1,16 @@
+{% extends "curricula/navbar.html" %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block ExtraHead %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'editor/style.css' %}" />
+<script src="{% static 'js/csrf.js' %}"></script>
+
+{% endblock ExtraHead %}
+
+{% block content %}
+<div id="react-app" class="editor"></div>
+    {% render_bundle 'editor' %}
+</div>
+{% endblock %}
