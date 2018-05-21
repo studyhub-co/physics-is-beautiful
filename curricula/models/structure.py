@@ -66,7 +66,7 @@ class Module(BaseModel):
     unit = models.ForeignKey(Unit, related_name='modules', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
-    image = models.ImageField()
+    image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
     def save(self, *args, **kwargs):
