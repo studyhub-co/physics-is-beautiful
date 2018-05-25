@@ -1,4 +1,6 @@
 import React from 'react';
+import { DragSource, DropTarget } from 'react-dnd';
+
 import {LessonContainer, UnitContainer} from './containers';
 
 function Thumbnail(props) {
@@ -88,7 +90,11 @@ export class CurriculumDetails extends React.Component {
     const units = [];
     for (var i=0; i<this.props.units.length; i++){
       var unit = this.props.units[i];
-      units.push(<UnitContainer key={unit.uuid} unit={unit} history={this.props.history} onDeleteClick={this.props.onDeleteUnitClick}/>);
+      units.push(
+        <UnitContainer key={unit.uuid}
+                       unit={unit}
+                       history={this.props.history}
+                       onDeleteClick={this.props.onDeleteUnitClick}/>);
     }
     return (
       <div>
@@ -106,10 +112,16 @@ export class CurriculumDetails extends React.Component {
 
 
 export class Unit extends React.Component {
+  handleDrop (){
+  }
   render () {
+    
     const modules=[];
     for (var i=0; i<this.props.modules.length; i++){
-      modules.push(<Module key={this.props.modules[i].uuid} {...this.props.modules[i]} history={this.props.history}/>);
+      modules.push(
+        <DockableDropTarget key={this.props.modules[i].uuid} onDrop={this.props.onModuleDroppedBefore.bind(null, this.props.modules[i])}>
+          <Module {...this.props.modules[i]} history={this.props.history}/>
+        </DockableDropTarget>);
     }
    
     return (
@@ -123,18 +135,43 @@ export class Unit extends React.Component {
         </div>
         <div className="row">
           {modules}
-          <div className="col-md-1 module-accessible-block" onClick={this.props.onAddModuleClick}>
-            <div className="thumbnail section-thumbnail">
-              <span className="glyphicon glyphicon-plus-sign"/>
+          <DockableDropTarget onDrop={this.props.onModuleDroppedBefore.bind(null, null)}>
+            <div className="col-md-1 module-accessible-block" onClick={this.props.onAddModuleClick}>
+              <div className="thumbnail section-thumbnail">
+                <span className="glyphicon glyphicon-plus-sign"/>
+              </div>
+              Add module
             </div>
-            Add module
-          </div>
+          </DockableDropTarget>
         </div>
       </div>)
   }
 }
 
-export class Module extends React.Component {
+
+
+
+export const DragItemTypes = {
+  MODULE : 'module'
+};
+
+
+export const moduleDragSource = {
+  beginDrag(props) {
+    return {uuid:props.uuid};
+  }
+}
+
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+
+
+class Module extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
@@ -145,13 +182,50 @@ export class Module extends React.Component {
     return false;
   }
   render () {
-    return (<div className="col-md-1 module-accessible-block" onClick={this.handleClick}>
-            <div className="thumbnail section-thumbnail"><Thumbnail image={this.props.image}/></div>
-            <div>{this.props.name}</div>
-            </div>)
-  }
-  
+    const { connectDragSource, isDragging } = this.props;
+    return connectDragSource(
+      <div className="col-md-1 module-accessible-block" onClick={this.handleClick} style={{opacity:isDragging?0.5:1}}>
+        <div className="thumbnail section-thumbnail"><Thumbnail image={this.props.image}/></div>
+        <div>{this.props.name}</div>
+      </div>)
+  } 
 }
+Module = DragSource(DragItemTypes.MODULE, moduleDragSource, collect)(Module);
+
+export {Module};
+
+class DockableDropTarget extends React.Component {
+/*  constructor (props) {
+    super(props);
+    this.onDr
+  }*/
+  render () {
+    let dockSite;
+    if (this.props.dragOver){
+      dockSite = <div className="dock-site"></div>;
+    }
+    return this.props.connectDropTarget(
+      <div className="drop-target">
+        {dockSite}
+        {this.props.children}
+      </div>
+    )
+  }
+}
+
+DockableDropTarget = DropTarget([DragItemTypes.MODULE],
+                              {drop :function(props, monitor) {
+                                props.onDrop(monitor.getItem());
+                              }
+                              },
+                              (connect, monitor) => {
+                                return {
+                                  connectDropTarget: connect.dropTarget(),
+                                  dragOver : monitor.isOver()
+                                }
+                              })(DockableDropTarget);
+
+
 
 export class ModuleDetails extends React.Component {
   render() {

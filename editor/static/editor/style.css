@@ -10,3 +10,5 @@
 
 .editor h1 .selectable-image, .editor h2 .selectable-image { display:inline; }
 .editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
+
+.drop-target .dock-site { float:left; width:80px; height:150px; background:rgba(200, 200, 255, 0.8); }

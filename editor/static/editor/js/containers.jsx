@@ -136,7 +136,8 @@ export class UnitContainer extends React.Component {
     this.state = this.props.unit
     this.handleNameChange = patch.bind(this, 'name');
     this.handleImageChange = patchImage.bind(this, 'image');   
-    this.handleAddModuleClick = this.handleAddModuleClick.bind(this); 
+    this.handleAddModuleClick = this.handleAddModuleClick.bind(this);
+    this.handleModuleInsert = this.handleModuleInsert.bind(this);
   }
 
   handleAddModuleClick() {
@@ -153,13 +154,48 @@ export class UnitContainer extends React.Component {
     });    
   }
 
-  
+  fetchState() {
+    $.ajax({
+      async: true,
+      url: '/editor/api/units/'+this.props.unit.uuid +'/',
+      context: this,
+      success: function(data, status, jqXHR) {
+        this.setState(data);
+      }
+    });
+    
+  }
+
+  handleModuleInsert(beforeModule, module){
+    var newPosition;
+    if (beforeModule)
+      newPosition = beforeModule.position;
+    else {
+      if (this.state.modules.length > 0)
+        newPosition = this.state.modules[this.state.modules.length-1].position + 1;
+      else
+        newPosition = 1;
+    }
+    $.ajax({
+      async: true,
+      url: '/editor/api/modules/'+module.uuid+'/',
+      method : 'PATCH',
+      context: this,
+      data : {position : newPosition,
+              unit : this.state.uuid}, //TODO:??
+      success: function(data, status, jqXHR) {
+        this.fetchState();
+      }
+    });    
+
+  }
   
   render() {
     return <Unit {...this.state}
     onNameChange={this.handleNameChange}
     onImageChange={this.handleImageChange}
     onAddModuleClick={this.handleAddModuleClick}
+    onModuleDroppedBefore={this.handleModuleInsert}
     onDeleteClick={() => this.props.onDeleteClick(this.state)}
     history={this.props.history}/>
   }
