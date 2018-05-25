@@ -1,3 +1,5 @@
+from django.db.models import F
+
 from rest_framework import serializers
 from expander import ExpanderSerializerMixin
 
@@ -34,6 +36,16 @@ class ModuleSerializer(BaseSerializer):
         return Unit.objects.get(uuid=value)
 
     curriculum = serializers.CharField(read_only=True, source='unit.curriculum.uuid')
+
+
+
+    def update(self, instance, validated_data):
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Module.objects.filter(position__gte=validated_data['position']).update(position=F('position')+1)
+        return super().update(instance, validated_data)
+                
+            
+        
     
     class Meta:
         model = Module

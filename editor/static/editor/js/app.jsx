@@ -1,6 +1,11 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
+
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
+
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
 import {CurriculumDetailsContainer, ModuleDetailsContainer} from './containers'
 import {Curriculum} from './components'
 
@@ -114,7 +119,7 @@ class EditorRouter extends React.Component {
   }
 
 }
-
+EditorRouter = DragDropContext(HTML5Backend)(EditorRouter);
 
 ReactDOM.render(<EditorRouter/>, document.getElementById('react-app'));
 
