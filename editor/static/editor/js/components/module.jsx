@@ -3,6 +3,7 @@ import React from 'react';
 import {LessonThumbnailContainer} from '../containers/lesson_thumbnail';
 import {EditableThumbnail} from './thumbnail';
 import {EditableLabel} from './label'
+import {BackButton} from './back_button'
 
 
 export class Module extends React.Component {
@@ -25,7 +26,8 @@ export class Module extends React.Component {
       lessons.push(<LessonThumbnailContainer uuid={this.props.lessons[i]}/>);
     }
     return (
-      <div>
+      <div>        
+        <BackButton link={'/curricula/' + this.props.curriculum + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
           <EditableLabel value={this.props.name} onChange={this.props.onNameChange}/>

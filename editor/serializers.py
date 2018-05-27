@@ -38,7 +38,7 @@ class SimpleModuleSerializer(BaseSerializer):
         model = Module
         list_serializer_class = DictSerializer
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'url']
-        read_only_fields = ('uuid', )
+        read_only_fields = ('uuid', 'curriculum')
         extra_kwargs = {
             'url' : {'lookup_field' : 'uuid'}
         }
@@ -47,6 +47,7 @@ class ModuleSerializer(BaseSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
 
     unit = serializers.CharField(source='unit.uuid')
+    curriculum = serializers.CharField(source='unit.curriculum.uuid')
     
     def validate_unit(self, value):
         return Unit.objects.get(uuid=value)
@@ -66,7 +67,7 @@ class ModuleSerializer(BaseSerializer):
 
     class Meta:
         model = Module
-        fields = ['uuid', 'name', 'image', 'position', 'unit', 'url', 'lessons'] #, 'curriculum']
+        fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons'] #, 'curriculum']
         read_only_fields = ('uuid', )
         extra_kwargs = {
             'url' : {'lookup_field' : 'uuid'}

@@ -14,6 +14,7 @@ const mapStateToProps = (state, ownProps) => {
       name : mod.name,
       image : mod.image,
       lessons : mod.lessons || [],
+      curriculum : mod.curriculum
     }
   else
     return {loading : true}
