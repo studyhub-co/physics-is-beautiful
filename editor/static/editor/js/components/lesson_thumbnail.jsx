@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {LessonContainer} from '../containers';
 import {EditableThumbnail} from './thumbnail';
 import {EditableLabel} from './label'
 
