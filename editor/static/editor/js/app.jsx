@@ -17,6 +17,7 @@ import { history } from './history';
 import {ModuleContainer} from './containers/module'
 import {CurriculumContainer} from './containers/curriculum'
 import {CurriculumThumbnail} from './components/curriculum_thumbnail'
+import {BackButton} from './components/back_button'
 
 import {editor} from './reducers'
 import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded} from './actions'
@@ -28,6 +29,7 @@ function Sheet(props) {
           </div>
          );
 }
+
 
 
 class Curricula extends React.Component {
@@ -82,6 +84,7 @@ class CurriculumApp extends React.Component {
   }
   render() {
     return (<Sheet>
+            <BackButton link="/"/>
             <CurriculumContainer uuid={this.props.match.params.uuid}/> 
             </Sheet>)
   }
