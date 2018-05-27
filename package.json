@@ -45,8 +45,13 @@
     "webpack-bundle-tracker": "^0.2.0"
   },
   "dependencies": {
+    "history": "^4.7.2",
     "react-bootstrap": "^0.30.7",
     "react-dnd": "^2.6.0",
-    "react-dnd-html5-backend": "^2.6.0"
+    "react-dnd-html5-backend": "^2.6.0",
+    "react-redux": "^5.0.7",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
   }
 }
