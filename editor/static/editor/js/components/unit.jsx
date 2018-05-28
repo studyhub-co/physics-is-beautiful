@@ -3,7 +3,7 @@ import React from 'react';
 import {EditableLabel} from './label'
 import {EditableThumbnail} from './thumbnail'
 import {ModuleThumbnailContainer} from '../containers/module_thumbnail'
-import {DockableDropTarget} from '../dnd';
+import {DockableDropTarget, DragHoverable, DragItemTypes} from '../dnd';
 
 export class Unit extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ export class Unit extends React.Component {
     const modules=[];
     for (var i=0; i<this.props.modules.length; i++){
       modules.push(
-        <DockableDropTarget key={this.props.modules[i]} onDrop={this.props.onModuleDroppedBefore.bind(null, this.props.modules[i])}>
+        <DockableDropTarget key={this.props.modules[i]} onDrop={this.props.onModuleDroppedBefore.bind(null, this.props.modules[i])} itemType={DragItemTypes.MODULE}>
           <ModuleThumbnailContainer uuid={this.props.modules[i]} />
         </DockableDropTarget>);
     }
@@ -36,7 +36,7 @@ export class Unit extends React.Component {
         </div>
         <div className="row">
           {modules}
-          <DockableDropTarget onDrop={this.props.onModuleDroppedBefore.bind(null, null)}>
+          <DockableDropTarget onDrop={this.props.onModuleDroppedBefore.bind(null, null)} itemType={DragItemTypes.MODULE}>
             <div className="col-md-1 module-accessible-block" onClick={this.props.onAddModuleClick}>
               <div className="thumbnail section-thumbnail">
                 <span className="glyphicon glyphicon-plus-sign"/>

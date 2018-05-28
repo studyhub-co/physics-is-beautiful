@@ -22,12 +22,13 @@ function collect(connect, monitor) {
 
 class ModuleThumbnail extends React.Component {
   render () {
-    const { connectDragSource, isDragging } = this.props;
-    return connectDragSource(
+    const { connectDragSource, isDragging, connectDropTarget } = this.props;
+    return connectDropTarget(connectDragSource(
       <div className="col-md-1 module-accessible-block" onClick={this.props.onClick} style={{opacity:isDragging?0.5:1}}>
         <div className="thumbnail section-thumbnail"><Thumbnail image={this.props.image}/></div>
         <div>{this.props.name}</div>
-      </div>)
+      </div>
+    ))
   } 
 }
 ModuleThumbnail = DragSource(DragItemTypes.MODULE, moduleDragSource, collect)(ModuleThumbnail);
