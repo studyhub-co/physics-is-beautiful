@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux'
 
 import {Unit} from '../components/unit';
-import {renameUnit, changeUnitImage, deleteUnit, addModule, moveModule} from '../actions';
+import {renameUnit, changeUnitImage, deleteUnit, addModule, moveModule, moveLesson} from '../actions';
+import {DragItemTypes} from '../dnd';
 
 const mapStateToProps = (state, ownProps) => {
   const unit = state.units[ownProps.uuid];

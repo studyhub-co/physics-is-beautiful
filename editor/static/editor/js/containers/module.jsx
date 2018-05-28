@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {Module} from '../components/module';
 
-import {renameModule, changeModuleImage, deleteModule} from '../actions';
+import {renameModule, changeModuleImage, deleteModule, moveLesson} from '../actions';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onImageChange : image => dispatch(changeModuleImage(ownProps.uuid, image)),
     onNameChange : name => dispatch(renameModule(ownProps.uuid, name)),
     onDeleteClick : () => dispatch(deleteModule(ownProps.uuid)),
+    onLessonDroppedBefore : (beforeLessonUuid, draggedItem) => dispatch(moveLesson(draggedItem.uuid, ownProps.uuid, beforeLessonUuid))
   }    
 }
 

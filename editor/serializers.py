@@ -21,10 +21,27 @@ class DictSerializer(serializers.ListSerializer):
 
 class LessonSerializer(BaseSerializer):
 
+    module = serializers.CharField(source='module.uuid')
+    
+    def validate_module(self, value):
+        return Module.objects.get(uuid=value)
+
+    def update(self, instance, validated_data):
+        if 'module' in validated_data:
+            validated_data['module'] = validated_data['module']['uuid']
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Lesson.objects.filter(position__gte=validated_data['position'],
+                                  module_id=instance.module_id).update(position=F('position')+1)
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        validated_data['module'] = validated_data['module']['uuid']
+        return super().create(validated_data)
+
     class Meta:
         model = Lesson
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'position', 'lesson_type', 'url']
+        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'url']
         extra_kwargs = {
             'url' : {'lookup_field' : 'uuid'}
         }
@@ -56,7 +73,8 @@ class ModuleSerializer(BaseSerializer):
         if 'unit' in validated_data:
             validated_data['unit'] = validated_data['unit']['uuid']
         if 'position' in validated_data and instance.position != validated_data['position']:
-            Module.objects.filter(position__gte=validated_data['position']).update(position=F('position')+1)
+            Module.objects.filter(position__gte=validated_data['position'],
+                                  unit_id=instance.unit_id).update(position=F('position')+1)
         return super().update(instance, validated_data)
 
     def create(self, validated_data):

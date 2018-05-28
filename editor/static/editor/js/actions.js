@@ -390,3 +390,34 @@ export function changeLessonImage(uuid, image) {
                });
     }
 }
+
+export function moveLesson(uuid, toModuleUuid, beforeLessonUuid) {    
+    return (dispatch, getState) => {
+	var state = getState()
+	var toModule = state.units[toModuleUuid];
+	var newPosition
+	if (beforeLessonUuid) 
+	    newPosition = state.lessons[beforeLessonUuid].position;
+	else if (toModule && toModule.lessons.length > 0)
+	    newPosition = state.lesons[toModule.lessons[toModule.lessons.length-1]].position + 1;
+	else
+	    newPosition = 1;
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/lessons/'+uuid+'/',
+	    method : 'PATCH',
+	    data : {position : newPosition,
+		    module : toModuleUuid},
+	    success: function(data, status, jqXHR) {
+		$.ajax({
+		    async: true,
+		    url: '/editor/api/modules/'+toModuleUuid+'/',
+		    method : 'GET',
+		    success: function(data, status, jqXHR) {
+			dispatch(moduleLoaded(data));
+		    }
+		});
+	    }
+	});    	
+    }
+}

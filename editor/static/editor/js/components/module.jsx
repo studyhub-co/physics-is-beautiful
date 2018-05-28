@@ -4,6 +4,7 @@ import {LessonThumbnailContainer} from '../containers/lesson_thumbnail';
 import {EditableThumbnail} from './thumbnail';
 import {EditableLabel} from './label'
 import {BackButton} from './back_button'
+import {DockableDropTarget, DragItemTypes} from '../dnd';
 
 
 export class Module extends React.Component {
@@ -22,8 +23,12 @@ export class Module extends React.Component {
       return <div>Loading...</div>
     }
     const lessons=[];
-    for (var i=0; i<this.props.lessons.length; i++){
-      lessons.push(<LessonThumbnailContainer uuid={this.props.lessons[i]}/>);
+    for (var i=0; i<this.props.lessons.length; i++){      
+      lessons.push(
+        <DockableDropTarget key={this.props.lessons[i]} onDrop={this.props.onLessonDroppedBefore.bind(null, this.props.lessons[i])} itemType={DragItemTypes.LESSON}>
+          <LessonThumbnailContainer uuid={this.props.lessons[i]}/>
+        </DockableDropTarget>
+      );
     }
     return (
       <div>        
