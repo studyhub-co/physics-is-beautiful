@@ -87,6 +87,45 @@ function lessons(state={}, action){
     
 }
 
+function questions(state={}, action){
+   switch (action.type) {
+   case ActionTypes.QUESTION_LOADED:
+       return Object.assign({}, state, {[action.question.uuid] : action.question})
+   case ActionTypes.ANSWER_ADDED:
+       var ret = Object.assign({}, state)
+       ret[action.answer.question].answers = ret[action.answer.question].answers.slice();
+       ret[action.answer.question].answers.push(action.answer.uuid)
+       return ret       
+   default:
+       return state
+   }
+    
+}
+function answers(state={}, action){
+   switch (action.type) {
+   case ActionTypes.QUESTION_LOADED:
+       return Object.assign({}, state, action.answers)
+   case ActionTypes.ANSWER_LOADED:
+   case ActionTypes.ANSWER_ADDED:      
+       return Object.assign({}, state, {[action.answer.uuid] : action.answer})
+   case ActionTypes.SET_ANSWER_EXCLUSIVELY_CORRECT:
+       var ret = Object.assign({}, state)
+       for (var a in ret) {
+	   if (ret[a].question === state[action.answer].question)
+	       ret[a].is_correct = a === action.answer;
+       }
+       return ret
+   case ActionTypes.SET_ANSWER_IS_CORRECT:
+       var ret = Object.assign({}, state)
+       ret[action.answer].is_correct = action.is_correct;
+       return ret
+       
+   default:
+       return state
+   }
+    
+}
 
-export const editor = combineReducers({curricula, units, modules, lessons, router : routerReducer});
+
+export const editor = combineReducers({curricula, units, modules, lessons, questions, answers, router : routerReducer});
 

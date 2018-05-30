@@ -1,14 +1,21 @@
-.thumbnail .glyphicon { font-size:60px; }
-.thumbnail img { max-width:100%; 
-		 display: block;
-		 height: 60px;
-	       }
+.section-sheet .thumbnail .glyphicon { font-size:60px; }
+.editor .section-sheet .thumbnail img {
+    max-width:100%; 
+    display: block;
+    height: 60px;
+}
+
 .selectable-image { position:relative; }
 .selectable-image input { position:absolute; width:100%; height:100%; left:0; top:0; opacity:0;}
 
-.editor h1, .editor section-sheet h1 { font-size:36px; }
+.editor .section-sheet h1 { font-size:36px; }
 
 .editor h1 .selectable-image, .editor h2 .selectable-image { display:inline; }
 .editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
 
+
 .drop-target .dock-site { float:left; width:80px; height:150px; background:rgba(200, 200, 255, 0.8); }
+
+.question-thumbnail img { max-width:100%; }
+
+.editor .thumbnail img { max-width: 100%; }

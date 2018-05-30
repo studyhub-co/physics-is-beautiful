@@ -3,9 +3,13 @@ from collections import OrderedDict
 from django.db.models import F
 
 from rest_framework import serializers
+from rest_framework.fields import empty
+
 from expander import ExpanderSerializerMixin
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
+from curricula.models import ImageWText
+
 from curricula.serializers import BaseSerializer
 
 
@@ -138,3 +142,85 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
             'url' : {'lookup_field' : 'uuid'}
         }
 
+
+
+class AnswerContentField(serializers.Field):
+    def to_representation(self, obj):
+        if isinstance(obj, ImageWText):
+            img_field = serializers.ImageField()
+            return {'image' : img_field.to_representation(obj.image),
+                    'text' : obj.text}
+        return 'UNKNOWN'
+      
+class AnswerSerializer(BaseSerializer):
+
+    question = serializers.CharField(source='question.uuid')
+    
+    def __init__(self, *args, **kwargs):
+        self.answer_type = kwargs.pop('answer_type', None)
+        super().__init__(*args, **kwargs)
+    
+    def validate_question(self, value):
+        return Question.objects.get(uuid=value)
+
+    def _fix_question(self, validated_data):
+        if 'question' in validated_data:
+            validated_data['question'] = validated_data['question']['uuid']
+    
+    def update(self, instance, validated_data):
+        self._fix_question(validated_data)
+        content_data = validated_data.pop('content', None)
+        if content_data:
+            content = instance.content
+            for k, v in content_data.items():
+                setattr(instance.content, k, v)
+            content.save()
+        ret = super().update(instance, validated_data)
+        if ret.question and ret.question.answer_type == Question.AnswerType.MULTIPLE_CHOICE and ret.is_correct:
+            ret.question.answers.exclude(id=ret.id).update(is_correct=False)
+       
+        return ret
+
+    def create(self, validated_data):
+        self._fix_question(validated_data)
+        self.answer_type = validated_data['question'].answer_type
+        if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
+            validated_data['content'] = ImageWText.objects.create(text='New answer')            
+        ret =  super().create(validated_data)
+        if hasattr(self, '_fields'):
+            del self._fields
+        return ret
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE) or \
+           (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, ImageWText)):
+            fields['image'] = serializers.ImageField(source='content.image')
+            fields['text'] = serializers.CharField(source='content.text')
+            
+        return fields
+    
+    class Meta:
+        model = Answer
+        list_serializer_class = DictSerializer
+        fields = ['uuid', 'question', 'position', 'is_correct']
+
+    
+        
+    
+class QuestionSerializer(BaseSerializer):
+    lesson = serializers.CharField(source='lesson.uuid')
+
+    answers = serializers.SerializerMethodField()
+    
+    def get_answers(self, obj):
+        s = AnswerSerializer(many=True, answer_type=obj.answer_type)
+        return s.to_representation(obj.answers.all())
+    
+    class Meta:
+        model = Question
+        fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers']
+
+
+
+        
