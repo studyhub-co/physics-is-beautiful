@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 
-from curricula.models import Curriculum, Unit, Module, Lesson
+from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
 
-from editor.serializers import CurriculumSerializer, UnitSerializer, ModuleSerializer, LessonSerializer
+from editor.serializers import CurriculumSerializer, UnitSerializer, ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
 
 class CurriculumViewSet(ModelViewSet):
 
@@ -22,25 +22,19 @@ class ModuleViewSet(ModelViewSet):
     lookup_field = 'uuid'
     queryset = Module.objects.all()
 
-"""    
-    def get_queryset(self):
-        return Module.objects.filter(unit__uuid=self.kwargs['unit_uuid'])
-
-    def perform_create(self, serializer):
-        unit = Unit.objects.get(uuid=self.kwargs['unit_uuid'])
-        serializer.save(unit=unit)
-"""
     
 class LessonViewSet(ModelViewSet):
     serializer_class = LessonSerializer
     lookup_field = 'uuid'
     queryset = Lesson.objects.all()
 
-"""
-    def get_queryset(self):
-        return Lesson.objects.filter(module__uuid=self.kwargs['module_uuid'])
 
-    def perform_create(self, serializer):
-        module = Module.objects.get(uuid=self.kwargs['module_uuid'])
-        serializer.save(module=module)
-"""
+class QuestionViewSet(ModelViewSet):
+    serializer_class = QuestionSerializer
+    lookup_field = 'uuid'
+    queryset = Question.objects.all()
+
+class AnswerViewSet(ModelViewSet):
+    serializer_class = AnswerSerializer
+    lookup_field = 'uuid'
+    queryset = Answer.objects.all()

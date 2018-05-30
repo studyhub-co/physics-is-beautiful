@@ -15,16 +15,18 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { history } from './history';
 
 import {ModuleContainer} from './containers/module'
+import {QuestionContainer} from './containers/question'
 import {CurriculumContainer} from './containers/curriculum'
 import {CurriculumThumbnail} from './components/curriculum_thumbnail'
 import {BackButton} from './components/back_button'
 
 import {editor} from './reducers'
-import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded} from './actions'
+import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadQuestionIfNeeded} from './actions'
 
 
 function Sheet(props) {
-  return (<div className="container section-sheet">
+  var className = 'container ' + (props.type || 'section') + '-sheet';
+  return (<div className={className}>
           {props.children}
           </div>
          );
@@ -107,6 +109,22 @@ class ModuleApp extends React.Component {
 ModuleApp = connect()(ModuleApp)
 
 
+class QuestionApp extends React.Component {
+  componentDidMount() {
+    this.props.dispatch(loadQuestionIfNeeded(this.props.match.params.uuid));
+  }
+
+  render() {
+    return (
+      <Sheet type="problem">
+        <QuestionContainer uuid={this.props.match.params.uuid}/>
+      </Sheet>)
+  }
+  
+}
+
+QuestionApp = connect()(QuestionApp)
+
 class EditorRouter extends React.Component {
 
   render() {
@@ -115,6 +133,7 @@ class EditorRouter extends React.Component {
         <Switch>
           <Route path='/curricula/:uuid' component={CurriculumApp} />
           <Route path='/modules/:uuid' component={ModuleApp} />
+          <Route path='/questions/:uuid' component={QuestionApp} />
           <Route path='/' component={CurriculaApp} />
         
         </Switch>

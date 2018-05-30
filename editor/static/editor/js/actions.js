@@ -15,7 +15,11 @@ export const ActionTypes = Object.freeze({
     MODULE_LOADED : 'MODULE_LOADED',
     DELETE_MODULE : 'DELETE_MODULE',
     LESSON_LOADED : 'LESSON_LOADED',
-    
+    QUESTION_LOADED : 'QUESTION_LOADED',
+    ANSWER_LOADED : 'ANSWER_LOADED',
+    ANSWER_ADDED : 'ANSWER_ADDED',
+    SET_ANSWER_EXCLUSIVELY_CORRECT : 'SET_ANSWER_EXCLUSIVELY_CORRECT',
+    SET_ANSWER_IS_CORRECT : 'SET_ANSWER_IS_CORRECT',
 });
 
 /*
@@ -420,4 +424,155 @@ export function moveLesson(uuid, toModuleUuid, beforeLessonUuid) {
 	    }
 	});    	
     }
+}
+
+
+export function questionLoaded(data){
+    return {type : ActionTypes.QUESTION_LOADED,
+	    question : data,
+	    answers : extract(data, 'answers')
+	   }
+}
+
+export function loadQuestionIfNeeded(uuid){
+    return (dispatch, getState) => {
+	if (!(uuid in getState().questions)){
+	    $.ajax({
+		async: true,
+		url: '/editor/api/questions/'+uuid +'/',
+		success: function(data, status, jqXHR) {
+		    dispatch(questionLoaded(data));
+		}});	    
+	}
+    }
+}
+
+export function changeQuestionText(uuid, newText) {
+    return function(dispatch) {
+	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+		type:'PATCH',
+		data:{text:newText},
+		success: function(data,status, jqXHR){
+		    dispatch(questionLoaded(data));
+		}});
+	
+    }
+    
+}
+export function changeQuestionType(uuid, newType) {
+    return function(dispatch) {
+	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+		type:'PATCH',
+		data:{answer_type:newType},
+		success: function(data,status, jqXHR){
+		    dispatch(questionLoaded(data));
+		}});
+    }    
+}
+
+export function changeQuestionImage(uuid, image) {
+    return dispatch => {
+	var formData = new FormData();
+	formData.append('image', image);
+	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+		type:'PATCH',
+		processData: false,
+		contentType: false,
+		data:formData,
+		success : function(data) {
+		    dispatch(questionLoaded(data));
+		}
+               });
+    }
+    
+}
+
+export function changeQuestionHint(uuid, newHint) {
+    return function(dispatch) {
+	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+		type:'PATCH',
+		data:{hint:newHint},
+		success: function(data,status, jqXHR){
+		    dispatch(questionLoaded(data));
+		}});
+	
+    }
+    
+}
+
+
+export function deleteQuestion() {
+}
+
+export function answerLoaded(data){
+    return { type : ActionTypes.ANSWER_LOADED,
+	     answer : data }
+}
+
+export function changeAnswerText(uuid, newText) {
+    return function(dispatch) {
+	$.ajax({url:'/editor/api/answers/'+uuid+'/',
+		type:'PATCH',
+		data:{text:newText},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});
+	
+    }
+
+}
+
+export function changeAnswerImage(uuid, image) {
+    return dispatch => {
+	var formData = new FormData();
+	formData.append('image', image);
+	$.ajax({url:'/editor/api/answers/'+uuid+'/',
+		type:'PATCH',
+		processData: false,
+		contentType: false,
+		data:formData,
+		success : function(data) {
+		    dispatch(answerLoaded(data));
+		}
+               });
+    }
+}
+
+export function answerAdded(answer) {
+    return { type : ActionTypes.ANSWER_ADDED,
+	     answer : answer }
+}
+
+export function addAnswer(questionUuid) {
+    return dispatch => {
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/answers/',
+	    method : 'POST',
+	    data : {text : 'New answer', question : questionUuid},
+	    success: function(data, status, jqXHR) {
+		dispatch(answerAdded(data));
+	    }
+	});   
+    }  
+}
+
+export function setAnswerIsCorrect(answer, is_correct, exclusive) {
+    return dispatch => {
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/answers/'+answer+'/',
+	    method : 'PATCH',
+	    data : {is_correct:is_correct},
+	    success: function(data, status, jqXHR) {
+		if (exclusive) 
+		    dispatch({type : ActionTypes.SET_ANSWER_EXCLUSIVELY_CORRECT,
+			      answer : answer});
+		else
+		    dispatch({type : ActionTypes.SET_ANSWER_IS_CORRECT,
+			     answer : answer,
+			     is_correct : is_correct});
+	    }
+	});   
+    }     
 }
