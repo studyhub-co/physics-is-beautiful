@@ -15,7 +15,11 @@ export const ActionTypes = Object.freeze({
     MODULE_LOADED : 'MODULE_LOADED',
     DELETE_MODULE : 'DELETE_MODULE',
     LESSON_LOADED : 'LESSON_LOADED',
+    LESSON_ADDED : 'LESSON_ADDED',
     QUESTION_LOADED : 'QUESTION_LOADED',
+    QUESTION_ADDED : 'QUESTION_ADDED',
+    GOTO_QUESTION : 'GOTO_QUESTION',
+    DELETE_QUESTION : 'DELETE_QUESTION',
     ANSWER_LOADED : 'ANSWER_LOADED',
     ANSWER_ADDED : 'ANSWER_ADDED',
     SET_ANSWER_EXCLUSIVELY_CORRECT : 'SET_ANSWER_EXCLUSIVELY_CORRECT',
@@ -363,10 +367,47 @@ export function loadModuleIfNeeded(uuid) {
     }
 }
 
+
+export function addLesson(moduleUuid) {
+    return dispatch => {
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/lessons/',
+	    method : 'POST',
+	    data : {name : 'New lesson', module : moduleUuid},
+	    success: function(data, status, jqXHR) {
+		dispatch({type : ActionTypes.LESSON_ADDED,
+			  lesson : data});
+		history.push('/lessons/'+data.uuid+'/');
+	    }
+	});   
+    }  
+}
+
+
 export function lessonLoaded(data) {
     return { type : ActionTypes.LESSON_LOADED,
 	     lesson : data }
 }
+
+export function loadLessonIfNeeded(uuid) {
+    return (dispatch, getState) => {
+	if (!(uuid in getState().lessons)) {
+	    $.ajax({
+		async: true,
+		url: '/editor/api/lessons/'+uuid +'/',
+		success: function(data, status, jqXHR) {
+		    dispatch(lessonLoaded(data));
+		    dispatch(loadQuestionIfNeeded(data.questions[0]));
+		}
+	    });
+	} else {
+	    dispatch(lessonLoaded(getState().lessons[uuid]));
+	    dispatch(loadQuestionIfNeeded(getState().lessons[uuid].questions[0]));
+	}
+    }
+}
+
 
 export function renameLesson(uuid, newName) {
     return function(dispatch) {
@@ -501,7 +542,56 @@ export function changeQuestionHint(uuid, newHint) {
 }
 
 
-export function deleteQuestion() {
+export function goToQuestion(uuid){
+    return dispatch => {
+	dispatch({type : ActionTypes.GOTO_QUESTION,
+		  question:uuid});
+	dispatch(loadQuestionIfNeeded(uuid));
+    }
+}
+
+export function addQuestion(lesson){
+     return dispatch => {
+	 $.ajax({
+	     async: true,
+	     method : 'POST',
+	     url: '/editor/api/questions/',
+	     data : {lesson : lesson,
+		     text : 'New question'},
+	     success: function(data, status, jqXHR) {
+		 dispatch({type : ActionTypes.QUESTION_ADDED,
+			   question : data});
+	     }});	    
+     }
+   
+}
+
+
+export function deleteQuestion(uuid) {
+    return (dispatch, getState) => {
+	var state = getState()
+	var currentLesson = state.lessons[state.questions[uuid].lesson]
+	var idx = currentLesson.questions.indexOf(uuid)
+	var goToQuestion
+	if (idx < currentLesson.questions.length - 1)
+	    goToQuestion = currentLesson.questions[idx + 1]
+	else if (idx > 0)
+	    goToQuestion = currentLesson.questions[idx - 1]
+		 
+	$.ajax({
+            async : true,
+            url : '/editor/api/questions/'+uuid+'/',
+            method : 'DELETE',
+            success : function(data, status, jqXHR) {
+		dispatch({type : ActionTypes.DELETE_QUESTION,
+			  question : uuid,
+			  lesson : state.questions[uuid].lesson,
+			  goToQuestion : goToQuestion });
+		dispatch(loadQuestionIfNeeded(goToQuestion))
+            }
+	});
+    }
+    
 }
 
 export function answerLoaded(data){
@@ -576,3 +666,4 @@ export function setAnswerIsCorrect(answer, is_correct, exclusive) {
 	});   
     }     
 }
+

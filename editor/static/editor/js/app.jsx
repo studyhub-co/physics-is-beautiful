@@ -18,10 +18,11 @@ import {ModuleContainer} from './containers/module'
 import {QuestionContainer} from './containers/question'
 import {CurriculumContainer} from './containers/curriculum'
 import {CurriculumThumbnail} from './components/curriculum_thumbnail'
+import {LessonContainer} from './containers/lesson'
 import {BackButton} from './components/back_button'
 
 import {editor} from './reducers'
-import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadQuestionIfNeeded} from './actions'
+import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded, loadQuestionIfNeeded, goToQuestion, addQuestion} from './actions'
 
 
 function Sheet(props) {
@@ -95,7 +96,7 @@ class CurriculumApp extends React.Component {
 CurriculumApp = connect()(CurriculumApp)
 
 class ModuleApp extends React.Component {
-  componentDidMount() {
+   componentDidMount() {
     this.props.dispatch(loadModuleIfNeeded(this.props.match.params.uuid));
   }
 
@@ -125,6 +126,71 @@ class QuestionApp extends React.Component {
 
 QuestionApp = connect()(QuestionApp)
 
+class LessonApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleNextClick = this.handleNextClick.bind(this);
+    this.handlePreviousClick = this.handlePreviousClick.bind(this);
+    this.handleAddQuestionClick = this.handleAddQuestionClick.bind(this);
+    
+  }
+  componentDidMount() {
+    this.props.dispatch(loadLessonIfNeeded(this.props.match.params.uuid));
+  }
+
+  handlePreviousClick(){
+    this.props.dispatch(goToQuestion(this.props.previousQuestion));
+  }
+  handleNextClick(){
+    this.props.dispatch(goToQuestion(this.props.nextQuestion));
+  }
+  handleAddQuestionClick(){
+     this.props.dispatch(addQuestion(this.props.match.params.uuid));
+  }
+  
+  render() {
+    return (
+      <div>
+        <Sheet type="problem">
+          <LessonContainer uuid={this.props.match.params.uuid}/>
+          <div className="row">
+            {this.props.previousQuestion &&
+              <a onClick={this.handlePreviousClick} className="btn btn-default">Previous question</a>
+              }
+              {this.props.nextQuestion &&
+                <a onClick={this.handleNextClick} className="btn btn-default">Next question</a>
+                }
+                <a onClick={this.handleAddQuestionClick} className="btn btn-default">Add question</a>
+          </div>
+          <hr/>
+          <QuestionContainer uuid={this.props.currentQuestion}/>
+        </Sheet>
+      </div>)
+  }
+
+}
+
+LessonApp = connect(
+  (state, ownProps) => {
+    var previousQuestion, nextQuestion;
+    if (state.currentQuestion && state.lessons[ownProps.match.params.uuid]) {
+      var currentLesson = state.lessons[ownProps.match.params.uuid];
+      var idx = currentLesson.questions.indexOf(state.currentQuestion);
+      if (idx > 0)
+        previousQuestion = currentLesson.questions[idx - 1];
+      if (idx < currentLesson.questions.length - 1)
+        nextQuestion = currentLesson.questions[idx + 1];
+      
+    }
+    return {
+      currentQuestion : state.currentQuestion,
+      previousQuestion  : previousQuestion,
+      nextQuestion : nextQuestion,
+    }
+  })(LessonApp)
+
+
+
 class EditorRouter extends React.Component {
 
   render() {
@@ -133,6 +199,7 @@ class EditorRouter extends React.Component {
         <Switch>
           <Route path='/curricula/:uuid' component={CurriculumApp} />
           <Route path='/modules/:uuid' component={ModuleApp} />
+          <Route path='/lessons/:uuid' component={LessonApp} />
           <Route path='/questions/:uuid' component={QuestionApp} />
           <Route path='/' component={CurriculaApp} />
         

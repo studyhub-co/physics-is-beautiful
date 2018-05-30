@@ -26,6 +26,11 @@ class DictSerializer(serializers.ListSerializer):
 class LessonSerializer(BaseSerializer):
 
     module = serializers.CharField(source='module.uuid')
+
+    questions = serializers.SerializerMethodField()
+
+    def get_questions(self, lesson):
+        return list(lesson.questions.values_list('uuid', flat=True))
     
     def validate_module(self, value):
         return Module.objects.get(uuid=value)
@@ -45,7 +50,7 @@ class LessonSerializer(BaseSerializer):
     class Meta:
         model = Lesson
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'url']
+        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'url', 'questions']
         extra_kwargs = {
             'url' : {'lookup_field' : 'uuid'}
         }
@@ -216,6 +221,19 @@ class QuestionSerializer(BaseSerializer):
     def get_answers(self, obj):
         s = AnswerSerializer(many=True, answer_type=obj.answer_type)
         return s.to_representation(obj.answers.all())
+
+    def validate_lesson(self, value):
+        return Lesson.objects.get(uuid=value)
+
+    def update(self, instance, validated_data):
+        if 'lesson' in validated_data:
+            validated_data['lesson'] = validated_data['lesson']['uuid']
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        validated_data['lesson'] = validated_data['lesson']['uuid']
+        return super().create(validated_data)
+
     
     class Meta:
         model = Question
