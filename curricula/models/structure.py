@@ -95,7 +95,7 @@ class Lesson(BaseModel):
     module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
-    image = models.ImageField()
+    image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
     lesson_type = enum.EnumField(LessonType)
 

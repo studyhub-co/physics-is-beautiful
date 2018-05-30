@@ -40,6 +40,14 @@ export class Module extends React.Component {
         </h1>
         <div className="row">
           {lessons}
+          <DockableDropTarget onDrop={this.props.onLessonDroppedBefore.bind(null, null)} itemType={DragItemTypes.LESSON}>
+            <div className="col-md-1 module-accessible-block" onClick={this.props.onAddLessonClick}>
+              <div className="thumbnail section-thumbnail">
+                <span className="glyphicon glyphicon-plus-sign"/>
+              </div>
+              Add lesson
+            </div>
+          </DockableDropTarget>
         </div>
       </div>)
   }

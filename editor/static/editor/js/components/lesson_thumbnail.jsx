@@ -1,7 +1,6 @@
 import React from 'react';
 
-import {EditableThumbnail} from './thumbnail';
-import {EditableLabel} from './label'
+import {Thumbnail} from './thumbnail';
 
 import { DragSource } from 'react-dnd';
 
@@ -25,9 +24,9 @@ function collect(connect, monitor) {
 class LessonThumbnail extends React.Component {
   render() {
     return this.props.connectDragSource(
-      <div className="col-md-1 module-accessible-block">
-        <div className="thumbnail section-thumbnail"><EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/></div>
-        <div><EditableLabel value={this.props.name} onChange={this.props.onNameChange}/></div>
+      <div className="col-md-1 module-accessible-block" onClick={this.props.onClick}>
+        <div className="thumbnail section-thumbnail"><Thumbnail image={this.props.image}/></div>
+        <div>{this.props.name}</div>
       </div>)    
   }
 }

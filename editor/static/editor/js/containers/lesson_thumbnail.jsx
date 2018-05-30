@@ -12,17 +12,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     name : les.name,
     image : les.image,
-//    onClick : () => { history.push('/lessons/'+ownProps.uuid+'/') }
-  }
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    onNameChange : newName => dispatch(renameLesson(ownProps.uuid, newName)),
-    onImageChange : newImage => dispatch(changeLessonImage(ownProps.uuid, newImage)),
+    onClick : () => { history.push('/lessons/'+ownProps.uuid+'/') }
   }
 }
 
  
-export const LessonThumbnailContainer = connect(
-  mapStateToProps, mapDispatchToProps)(LessonThumbnail);
+export const LessonThumbnailContainer = connect(mapStateToProps)(LessonThumbnail);

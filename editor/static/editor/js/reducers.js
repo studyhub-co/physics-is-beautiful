@@ -68,6 +68,11 @@ function modules(state={}, action){
 	var ret = Object.assign({}, state)
 	delete ret[action.uuid]
 	return ret
+    case ActionTypes.LESSON_ADDED:
+	var ret = Object.assign({}, state)
+	ret[action.lesson.module].lessons = ret[action.lesson.module].lessons.slice()
+	ret[action.lesson.module].lessons.push(action.lesson.uuid)
+	return ret
     default:
 	return state
     }
@@ -80,7 +85,19 @@ function lessons(state={}, action){
    case ActionTypes.MODULE_LOADED:
        return Object.assign({}, state, action.lessons)
    case ActionTypes.LESSON_LOADED:
+   case ActionTypes.LESSON_ADDED:
        return Object.assign({}, state, {[action.lesson.uuid] : action.lesson})
+   case ActionTypes.QUESTION_ADDED:
+       var ret = Object.assign({}, state)
+       ret[action.question.lesson].questions = ret[action.question.lesson].questions.slice();
+       ret[action.question.lesson].questions.push(action.question.uuid)
+       return ret
+   case ActionTypes.DELETE_QUESTION:
+       var ret = Object.assign({}, state)
+       ret[action.lesson].questions = ret[action.lesson].questions.slice();
+       ret[action.lesson].questions.splice(ret[action.lesson].questions.indexOf(action.question), 1)
+       return ret
+       
    default:
        return state
    }
@@ -90,12 +107,17 @@ function lessons(state={}, action){
 function questions(state={}, action){
    switch (action.type) {
    case ActionTypes.QUESTION_LOADED:
+   case ActionTypes.QUESTION_ADDED:
        return Object.assign({}, state, {[action.question.uuid] : action.question})
    case ActionTypes.ANSWER_ADDED:
        var ret = Object.assign({}, state)
        ret[action.answer.question].answers = ret[action.answer.question].answers.slice();
        ret[action.answer.question].answers.push(action.answer.uuid)
-       return ret       
+       return ret
+   case ActionTypes.DELETE_QUESTION:
+       var ret = Object.assign({}, state)
+       delete ret[action.question]
+       return ret
    default:
        return state
    }
@@ -104,6 +126,7 @@ function questions(state={}, action){
 function answers(state={}, action){
    switch (action.type) {
    case ActionTypes.QUESTION_LOADED:
+   case ActionTypes.QUESTION_ADDED:
        return Object.assign({}, state, action.answers)
    case ActionTypes.ANSWER_LOADED:
    case ActionTypes.ANSWER_ADDED:      
@@ -126,6 +149,22 @@ function answers(state={}, action){
     
 }
 
+function currentQuestion(state=null, action){
+   switch (action.type) {
+   case ActionTypes.LESSON_LOADED:
+       return action.lesson.questions[0]
+   case ActionTypes.GOTO_QUESTION:
+       return action.question
+   case ActionTypes.QUESTION_ADDED:
+       return action.question.uuid
+   case ActionTypes.DELETE_QUESTION:
+       return action.goToQuestion
+   default:
+       return state
+   }
+    
+}
 
-export const editor = combineReducers({curricula, units, modules, lessons, questions, answers, router : routerReducer});
+
+export const editor = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, router : routerReducer});
 
