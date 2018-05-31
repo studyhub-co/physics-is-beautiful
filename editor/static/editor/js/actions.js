@@ -667,3 +667,15 @@ export function setAnswerIsCorrect(answer, is_correct, exclusive) {
     }     
 }
 
+export function changeAnswerRepresentation(answerUuid, newRepresentation){
+    return dispatch => {
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:{representation:newRepresentation},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});
+	
+	
+    }
+}

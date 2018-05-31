@@ -6,6 +6,7 @@ export class EditableLabel extends React.Component {
     this.state = {editing : false};
     this.handleEditClick = this.handleEditClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
 
   }
@@ -18,6 +19,11 @@ export class EditableLabel extends React.Component {
   handleInputChange(e){
     this.setState({'value' : e.target.value}); 
   }
+
+  handleInputBlur(e){
+    this.setState({editing : false})
+  }
+  
   handleFormSubmit(e){
     e.preventDefault();
     this.setState({editing:false});
@@ -28,7 +34,7 @@ export class EditableLabel extends React.Component {
   render () {
     if (this.state.editing){
       return (<form onSubmit={this.handleFormSubmit}>
-              <input type="text" value={this.state.value} onChange={this.handleInputChange}/>
+              <input type="text" value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur}/>
               </form>)
     } else {
       return (<span>

@@ -76,6 +76,10 @@ class Question(BaseModel):
                 self.answers.all().delete()
                 if db_instance.answer_type == self.AnswerType.VECTOR_COMPONENTS:
                     self.vectors.all().delete()
+                if self.answer_type == self.AnswerType.MATHEMATICAL_EXPRESSION:
+                    from .answers import Answer, MathematicalExpression
+                    mx = MathematicalExpression.objects.create()
+                    a = Answer.objects.create(question=self, content=mx)
             # if (db_instance.question_type != self.question_type and
             #         self.question_type == self.QuestionType.SINGLE_ANSWER):
             if db_instance.answer_type != self.answer_type:
