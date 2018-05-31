@@ -5,6 +5,7 @@ import {EditableLabel} from './label'
 import {AnswerTypes, AnswerTypeLabels} from '../constants';
 
 import {MultipleChoiceAnswers} from './multiple_choice_answers';
+import {MathematicalExpressionAnswerContainer} from '../containers/mathematical_expression_answer';
 
 export class Question extends React.Component {
   constructor(props) {
@@ -27,6 +28,8 @@ export class Question extends React.Component {
 
     if (this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE || this.props.answer_type === AnswerTypes.MULTISELECT_CHOICE){
       answersEditor = <MultipleChoiceAnswers answers={this.props.answers} onAddAnswerClick={this.props.onAddAnswerClick} exclusive={this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE}/>;
+    } else if (this.props.answer_type === AnswerTypes.MATHEMATICAL_EXPRESSION) {
+      answersEditor = <MathematicalExpressionAnswerContainer uuid={this.props.answers[0]}/>
     }
     
     return (
