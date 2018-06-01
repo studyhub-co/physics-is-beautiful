@@ -64,6 +64,13 @@ class Question(BaseModel):
     def correct_answer(self):
         return self.answers.get_correct()
 
+    def _create_default_answer(self):
+        from .answers import Answer, MathematicalExpression, Vector
+        if self.answer_type == self.AnswerType.MATHEMATICAL_EXPRESSION:
+            Answer.objects.create(question=self, content=MathematicalExpression.objects.create())
+        elif self.answer_type == self.AnswerType.VECTOR:
+            Answer.objects.create(question=self, content=Vector.objects.create())
+    
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -76,10 +83,8 @@ class Question(BaseModel):
                 self.answers.all().delete()
                 if db_instance.answer_type == self.AnswerType.VECTOR_COMPONENTS:
                     self.vectors.all().delete()
-                if self.answer_type == self.AnswerType.MATHEMATICAL_EXPRESSION:
-                    from .answers import Answer, MathematicalExpression
-                    mx = MathematicalExpression.objects.create()
-                    a = Answer.objects.create(question=self, content=mx)
+                self._create_default_answer()
+                
             # if (db_instance.question_type != self.question_type and
             #         self.question_type == self.QuestionType.SINGLE_ANSWER):
             if db_instance.answer_type != self.answer_type:

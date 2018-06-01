@@ -6,6 +6,7 @@ import {AnswerTypes, AnswerTypeLabels} from '../constants';
 
 import {MultipleChoiceAnswers} from './multiple_choice_answers';
 import {MathematicalExpressionAnswerContainer} from '../containers/mathematical_expression_answer';
+import {VectorAnswerContainer} from '../containers/vector_answer';
 
 export class Question extends React.Component {
   constructor(props) {
@@ -30,6 +31,8 @@ export class Question extends React.Component {
       answersEditor = <MultipleChoiceAnswers answers={this.props.answers} onAddAnswerClick={this.props.onAddAnswerClick} exclusive={this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE}/>;
     } else if (this.props.answer_type === AnswerTypes.MATHEMATICAL_EXPRESSION) {
       answersEditor = <MathematicalExpressionAnswerContainer uuid={this.props.answers[0]}/>
+    } else if (this.props.answer_type === AnswerTypes.VECTOR) {
+      answersEditor = <VectorAnswerContainer uuid={this.props.answers[0]}/>
     }
     
     return (
