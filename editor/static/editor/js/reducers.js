@@ -46,7 +46,8 @@ function units(state={}, action){
 	return ret
     case ActionTypes.DELETE_MODULE:
 	var ret = Object.assign({}, state)
-	ret[action.unitUuid].modules.splice(ret[action.unitUuid].modules.indexOf(action.uuid), 1)
+	if (action.unitUuid in ret)
+	    ret[action.unitUuid].modules.splice(ret[action.unitUuid].modules.indexOf(action.uuid), 1)
 	return ret	
     default:
 	return state
@@ -83,6 +84,7 @@ function modules(state={}, action){
 function lessons(state={}, action){
    switch (action.type) {
    case ActionTypes.MODULE_LOADED:
+   case ActionTypes.MODULE_ADDED:
        return Object.assign({}, state, action.lessons)
    case ActionTypes.LESSON_LOADED:
    case ActionTypes.LESSON_ADDED:
@@ -152,7 +154,10 @@ function answers(state={}, action){
 function currentQuestion(state=null, action){
    switch (action.type) {
    case ActionTypes.LESSON_LOADED:
-       return action.lesson.questions[0]
+       if (action.lesson.questions.length > 0)
+	   return action.lesson.questions[0]
+       else
+	   return null
    case ActionTypes.GOTO_QUESTION:
        return action.question
    case ActionTypes.QUESTION_ADDED:

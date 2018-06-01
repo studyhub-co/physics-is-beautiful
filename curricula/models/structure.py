@@ -2,6 +2,8 @@ from django.db import models
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
 
+from pib_auth.models import User
+
 from . import BaseModel, get_earliest_gap
 
 
@@ -27,6 +29,8 @@ class Curriculum(BaseModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
 
+    author = models.ForeignKey(User)
+    
     def __str__(self):
         return 'Curriculum: {}'.format(self.name)
 

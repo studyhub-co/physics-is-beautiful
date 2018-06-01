@@ -66,6 +66,9 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">
                 {% render_bundle 'profile' %}
+                {% if user.is_authenticated %}
+     	        <li class="nav-item"><a href="{% url 'editor' %}">Curriculum</a></li>
+	        {% endif %}
                 <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Blog</a></li>
                 <li class="nav-item">
                     {% if user.is_authenticated %}

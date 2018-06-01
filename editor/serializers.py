@@ -45,7 +45,9 @@ class LessonSerializer(BaseSerializer):
 
     def create(self, validated_data):
         validated_data['module'] = validated_data['module']['uuid']
-        return super().create(validated_data)
+        new_lesson = super().create(validated_data)
+        Question.objects.create(lesson=new_lesson, text='New question')
+        return new_lesson
 
     class Meta:
         model = Lesson
@@ -73,7 +75,7 @@ class ModuleSerializer(BaseSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
 
     unit = serializers.CharField(source='unit.uuid')
-    curriculum = serializers.CharField(source='unit.curriculum.uuid')
+    curriculum = serializers.CharField(source='unit.curriculum.uuid', read_only=True)
     
     def validate_unit(self, value):
         return Unit.objects.get(uuid=value)

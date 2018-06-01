@@ -241,8 +241,9 @@ export function changeUnitImage(uuid, image) {
 }
 
 export function moduleAdded(data) {
-    return {type : ActionTypes.MODULE_ADDED,
-	    module : data}
+    return {type : ActionTypes.MODULE_ADDED,	    
+	    module : data,
+	    lessons : extract(data, 'lessons')}
 
 }
 
@@ -341,7 +342,7 @@ export function moveModule(uuid, toUnitUuid, beforeUuid) {
 export function deleteModule(moduleUuid) {
     return (dispatch, getState) => {
 	var state = getState()
-	var curriculum = state.curricula[state.units[state.modules[moduleUuid].unit].curriculum].uuid
+	var curriculum = state.modules[moduleUuid].curriculum
 	dispatch({type : ActionTypes.DELETE_MODULE,
 		  unitUuid : state.modules[moduleUuid].unit,
 		  uuid : moduleUuid});
@@ -580,6 +581,8 @@ export function deleteQuestion(uuid) {
 	    goToQuestion = currentLesson.questions[idx + 1]
 	else if (idx > 0)
 	    goToQuestion = currentLesson.questions[idx - 1]
+	else
+	    goToQuestion = null
 		 
 	$.ajax({
             async : true,
