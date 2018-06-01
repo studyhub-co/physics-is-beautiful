@@ -13,6 +13,8 @@ export function angleToVector(angle) {
 }    
 
 export function vectorToAngle(x,y) {
+    if (x == null || y == null)
+	return null;
     var a = Math.atan2(y, x) / Math.PI * 180
     if (a < 0)
 	a = a + 360

@@ -31,8 +31,8 @@ export class Question extends React.Component {
       answersEditor = <MultipleChoiceAnswers answers={this.props.answers} onAddAnswerClick={this.props.onAddAnswerClick} exclusive={this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE}/>;
     } else if (this.props.answer_type === AnswerTypes.MATHEMATICAL_EXPRESSION) {
       answersEditor = <MathematicalExpressionAnswerContainer uuid={this.props.answers[0]}/>
-    } else if (this.props.answer_type === AnswerTypes.VECTOR) {
-      answersEditor = <VectorAnswerContainer uuid={this.props.answers[0]}/>
+    } else if (this.props.answer_type === AnswerTypes.VECTOR || this.props.answer_type === AnswerTypes.NULLABLE_VECTOR) {
+      answersEditor = <VectorAnswerContainer uuid={this.props.answers[0]} allowNull={this.props.answer_type === AnswerTypes.NULLABLE_VECTOR}/>
     }
     
     return (

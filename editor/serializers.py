@@ -205,7 +205,7 @@ class AnswerSerializer(BaseSerializer):
         elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MathematicalExpression)):
             fields['representation'] = serializers.CharField(source='content.representation')
-        elif self.answer_type == Question.AnswerType.VECTOR or \
+        elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Vector)):
             fields['magnitude'] = serializers.FloatField(source='content.magnitude', allow_null=True)
             fields['angle'] = serializers.FloatField(source='content.angle', allow_null=True)

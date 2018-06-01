@@ -68,7 +68,7 @@ class Question(BaseModel):
         from .answers import Answer, MathematicalExpression, Vector
         if self.answer_type == self.AnswerType.MATHEMATICAL_EXPRESSION:
             Answer.objects.create(question=self, content=MathematicalExpression.objects.create())
-        elif self.answer_type == self.AnswerType.VECTOR:
+        elif self.answer_type == self.AnswerType.VECTOR or self.answer_type == self.AnswerType.NULLABLE_VECTOR:
             Answer.objects.create(question=self, content=Vector.objects.create())
     
     def save(self, *args, **kwargs):
