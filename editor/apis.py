@@ -1,11 +1,17 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import ListAPIView
 from rest_framework import permissions
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
 
-from editor.serializers import CurriculumSerializer, UnitSerializer, ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
+from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, UnitSerializer, ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
 
 from editor.permissions import IsOwnerBase, IsUnitOwner, IsModuleOwner, IsLessonOwner, IsQuestionOwner, IsAnswerOwner
+
+class OthersCurriculaView(ListAPIView):
+    serializer_class = MiniCurriculumSerializer
+    def get_queryset(self):
+        return Curriculum.objects.exclude(author=self.request.user)
 
 class CurriculumViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwnerBase)    
@@ -16,7 +22,11 @@ class CurriculumViewSet(ModelViewSet):
         return Curriculum.objects.filter(author=self.request.user)
     
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        new_curriculum = serializer.save(author=self.request.user)
+
+        if 'prototype' in self.request.data and self.request.data['prototype'] is not None:
+            prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
+            prototype.clone(new_curriculum)
     
     
 class UnitViewSet(ModelViewSet):

@@ -6,8 +6,9 @@ import {angleToVector, vectorToAngle} from './utils';
 export const ActionTypes = Object.freeze({
     REQUEST_ADD_CURRICULUM : 'REQUEST_ADD_CURRICULUM',
     CURRICULA_LOADED : 'CURRICULA_LOADED',
+    OTHERS_CURRICULA_LOADED : 'OTHERS_CURRICULA_LOADED',
     LOAD_CURRICULA : 'LOAD_CURRICULA',
-    CURRICULUM_LOADED : 'CURRICULUM_LOADED',
+    CURRICULUM_LOADED : 'CURRICULUM_LOADED',    
     RENAME_CURRICULUM : 'RENAME_CURRICULUM',
     CHANGE_CURRICULUM_IMAGE : 'CHANGE_CURRICULUM_IMAGE',
     DELETE_CURRICULUM : 'DELETE_CURRICULUM',
@@ -41,14 +42,15 @@ export function curriculumAdded(curriculum) {
 
 
 
-export function addCurriculum() {
+export function addCurriculum(prototype) {
     return function(dispatch) {
 	//	dispatch(requestAddCurriculum());
 	$.ajax({
 	    async: true,
 	    url: '/editor/api/curricula/',
 	    method : 'POST',
-	    data : {name : 'New curriculum'},
+	    data : {name : 'New curriculum',
+		    prototype : prototype},
 	    success: function(data, status, jqXHR) {		
 		dispatch(curriculumLoaded(data));
 		history.push('/curricula/'+data.uuid+'/');
@@ -84,6 +86,11 @@ function extractAll(object, prop){
     return ret
 }
 
+export function othersCurriculaLoaded(data) {
+    return {type : ActionTypes.OTHERS_CURRICULA_LOADED,
+	    curricula : data}
+}
+
 export function loadCurricula() {
     return function(dispatch) {
 	$.ajax({
@@ -94,6 +101,15 @@ export function loadCurricula() {
 		dispatch(curriculaLoaded(data))
 	    }	
 	});
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/curricula/others/',
+	    context: this,
+	    success: function(data, status, jqXHR) {
+		dispatch(othersCurriculaLoaded(data))
+	    }	
+	});
+	
     }
     
 }

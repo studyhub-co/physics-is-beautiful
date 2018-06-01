@@ -36,6 +36,9 @@ class Answer(BaseModel):
         ordering = ['position']
         db_table = 'curricula_answers'
 
+    class CloneMeta:
+        parent_field = 'question'
+        
     objects = AnswerQuerySet.as_manager()
 
     uuid = ShortUUIDField()
@@ -58,6 +61,16 @@ class Answer(BaseModel):
                 self.question.answer_type != Question.AnswerType.MULTIPLE_CHOICE:
             self.is_correct = True
         super(Answer, self).save(*args, **kwargs)
+
+    def clone(self, to_parent):
+        copy = super().clone(to_parent)
+        content = self.content
+        if content:
+            content.id = None
+            content.save()
+            copy.object_id = content.id
+            copy.save()
+        return copy
 
 
 class MathematicalExpressionMixin:

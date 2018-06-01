@@ -170,6 +170,12 @@ function currentQuestion(state=null, action){
     
 }
 
+function othersCurricula(state={}, action){
+    if (action.type == ActionTypes.OTHERS_CURRICULA_LOADED){
+	return action.curricula
+    } else
+	return state
+}
 
-export const editor = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, router : routerReducer});
+export const editor = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, othersCurricula, router : routerReducer});
 
