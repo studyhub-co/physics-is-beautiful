@@ -1,40 +1,63 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework import permissions
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
 
 from editor.serializers import CurriculumSerializer, UnitSerializer, ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
 
-class CurriculumViewSet(ModelViewSet):
+from editor.permissions import IsOwnerBase, IsUnitOwner, IsModuleOwner, IsLessonOwner, IsQuestionOwner, IsAnswerOwner
 
+class CurriculumViewSet(ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, IsOwnerBase)    
     serializer_class = CurriculumSerializer
-    queryset = Curriculum.objects.all()
     lookup_field = 'uuid'
 
-
+    def get_queryset(self):
+        return Curriculum.objects.filter(author=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+    
+    
 class UnitViewSet(ModelViewSet):
-
+    permission_classes = (permissions.IsAuthenticated, IsUnitOwner)
     serializer_class = UnitSerializer
     lookup_field = 'uuid'
-    queryset = Unit.objects.all()
 
+    def get_queryset(self):
+        return Unit.objects.filter(curriculum__author=self.request.user)
+
+    
 class ModuleViewSet(ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, IsModuleOwner)
     serializer_class = ModuleSerializer
     lookup_field = 'uuid'
-    queryset = Module.objects.all()
+
+    def get_queryset(self):
+        return Module.objects.filter(unit__curriculum__author=self.request.user)
 
     
 class LessonViewSet(ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, IsLessonOwner)
     serializer_class = LessonSerializer
     lookup_field = 'uuid'
-    queryset = Lesson.objects.all()
 
-
+    def get_queryset(self):
+        return Lesson.objects.filter(module__unit__curriculum__author=self.request.user)
+   
 class QuestionViewSet(ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, IsQuestionOwner)
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
-    queryset = Question.objects.all()
+    
+    def get_queryset(self):
+        return Question.objects.filter(lesson__module__unit__curriculum__author=self.request.user)
 
+    
 class AnswerViewSet(ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, IsAnswerOwner)
     serializer_class = AnswerSerializer
     lookup_field = 'uuid'
-    queryset = Answer.objects.all()
+
+    def get_queryset(self):
+        return Answer.objects.filter(question__lesson__module__unit__curriculum__author=self.request.user)
