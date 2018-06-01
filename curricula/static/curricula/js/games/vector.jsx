@@ -2,7 +2,7 @@ import React from 'react'
 import MathJax from 'react-mathjax'
 import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
-import {VectorCanvas, CanvasVector, CanvasText} from '../vector_canvas'
+import {VectorCanvas, CanvasVector, CanvasText} from 'vector_canvas'
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
 

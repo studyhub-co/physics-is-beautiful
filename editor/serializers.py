@@ -7,7 +7,7 @@ from rest_framework.fields import empty
 
 from expander import ExpanderSerializerMixin
 
-from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
+from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector
 from curricula.models import ImageWText, MathematicalExpression
 
 from curricula.serializers import BaseSerializer
@@ -204,7 +204,14 @@ class AnswerSerializer(BaseSerializer):
             fields['text'] = serializers.CharField(source='content.text')
         elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MathematicalExpression)):
-            fields['representation'] = serializers.CharField(source='content.representation')            
+            fields['representation'] = serializers.CharField(source='content.representation')
+        elif self.answer_type == Question.AnswerType.VECTOR or \
+        (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Vector)):
+            fields['magnitude'] = serializers.FloatField(source='content.magnitude', allow_null=True)
+            fields['angle'] = serializers.FloatField(source='content.angle', allow_null=True)
+            fields['x_component'] = serializers.FloatField(source='content.x_component', allow_null=True)
+            fields['y_component'] = serializers.FloatField(source='content.y_component', allow_null=True)
+            
             
         return fields
     

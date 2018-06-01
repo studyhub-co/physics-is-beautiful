@@ -34,7 +34,7 @@ module.exports = {
     },
 
     resolve: {
-        modulesDirectories: ['node_modules', 'bower_components'],
+        modulesDirectories: ['static/js/common', 'node_modules', 'bower_components'],
         extensions: ['', '.js', '.jsx']
     },
     watchOptions: { // fix watch for Windows

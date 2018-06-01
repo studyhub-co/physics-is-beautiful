@@ -1,5 +1,8 @@
 import { history } from './history';
 
+import {angleToVector, vectorToAngle} from './utils';
+
+
 export const ActionTypes = Object.freeze({
     REQUEST_ADD_CURRICULUM : 'REQUEST_ADD_CURRICULUM',
     CURRICULA_LOADED : 'CURRICULA_LOADED',
@@ -667,7 +670,7 @@ export function setAnswerIsCorrect(answer, is_correct, exclusive) {
     }     
 }
 
-export function changeAnswerRepresentation(answerUuid, newRepresentation){
+export function changeAnswerRepresentation(answerUuid, newRepresentation) {
     return dispatch => {
 	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
 		type:'PATCH',
@@ -677,5 +680,53 @@ export function changeAnswerRepresentation(answerUuid, newRepresentation){
 		}});
 	
 	
+    }
+}
+
+
+export function updateVectorAnswerComponents(answerUuid, x_component, y_component) {
+    return (dispatch, getState) => {
+	var update;
+	var ans = getState().answers[answerUuid]
+	if (ans.angle != null)
+	    update = {angle :vectorToAngle(x_component, y_component),
+		      x_component : null,
+		      y_component : null}
+	else
+	    update = {angle : null,
+		      x_component : x_component,
+		      y_component : y_component}
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:update,
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});
+	
+    }
+}
+
+export function updateVectorAnswerAngleOnly(answerUuid, angleOnly){
+    return (dispatch, getState) => {
+	var update;
+	var ans = getState().answers[answerUuid]
+	if (angleOnly)	    
+	    update = {x_component:null, y_component:null,
+		      angle:ans.angle ||  vectorToAngle(ans.x_component, ans.y_component)
+		     }
+	else {
+	    var x,y;
+	    [x,y] = angleToVector(ans.angle)
+	    update = {x_component:ans.x_component || x,
+		      y_component:ans.y_component || y,
+		      angle:null
+		     }
+	}
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:update,
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});
     }
 }

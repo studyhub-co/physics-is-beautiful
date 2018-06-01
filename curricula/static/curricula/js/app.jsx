@@ -3,7 +3,7 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import {SectionSheet, Sheet} from './containers/sheet'
 import {VectorGame} from './games/vector'
 import {UnitConversionGame} from './games/unit_conversion'
-import {Vector} from './vector_canvas'
+import {Vector} from 'vector_canvas'
 import { UnitConversion } from './components/answers/correct_answers/correct_answers'
 
 class CurriculumApp extends React.Component {
