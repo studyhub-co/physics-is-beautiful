@@ -14,6 +14,11 @@ class Question(BaseModel):
         ordering = ['position']
         db_table = 'curricula_questions'
 
+    class CloneMeta:
+        parent_field = 'lesson'
+        children_field = 'answers'
+
+    
     # class QuestionType(enum.Enum):
     #     UNDEFINED = 0
     #     SINGLE_ANSWER = 10

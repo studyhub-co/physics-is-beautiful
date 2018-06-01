@@ -36,23 +36,50 @@ function Sheet(props) {
 
 
 class Curricula extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {prototypeChoice : 0}
+    this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(this)
+    this.handleAddClick = this.handleAddClick.bind(this)
+  }    
+  
   componentDidMount() {
     this.props.onMounted()
   }
+
+  handlePrototypeChoiceChange(e){
+    this.setState({prototypeChoice : e.target.value})
+  }
+
+  handleAddClick(){
+    this.props.onAddClick(this.state.prototypeChoice)
+  }
+  
   render() {
     const curricula = [];
     for (var uuid in this.props.curricula){
-      
       curricula.push(
         <CurriculumThumbnail key={uuid}
                              {...this.props.curricula[uuid]}
                              onClick={this.props.onCurriculumClick.bind(null, uuid)}/>
       );
     }
+    const prototypeChoices = [];
+    for (var i in this.props.othersCurricula) {
+      prototypeChoices.push(
+        <option value={this.props.othersCurricula[i].uuid}>{this.props.othersCurricula[i].name + ' by ' + this.props.othersCurricula[i].author}</option>
+      )
+    }
+
     return (
       <Sheet>
         <h1>My curricula</h1>
-        <a onClick={this.props.onAddClick} className="btn btn-primary">Add curriculum</a>
+        <a onClick={this.handleAddClick} className="btn btn-primary">Create curriculum</a>
+        <span> based on </span>
+        <select onChange={this.handlePrototypeChoiceChange} value={this.state.prototypeChoice}>
+          <option value={null}>None - start from scratch</option>
+          {prototypeChoices}
+        </select>
         <hr/>
         <div className="row">
           {curricula}
@@ -66,12 +93,13 @@ class Curricula extends React.Component {
 let CurriculaApp = connect(
   state => {
     return {
-      curricula : state.curricula
+      curricula : state.curricula,
+      othersCurricula : state.othersCurricula,
     }
   },
   dispatch => {
     return {
-      onAddClick : () => dispatch(addCurriculum()),
+      onAddClick : prototype => dispatch(addCurriculum(prototype)),
       onMounted : () => dispatch(loadCurricula()),
       onCurriculumClick : (uuid) => {history.push('/curricula/'+uuid+'/');}
     }

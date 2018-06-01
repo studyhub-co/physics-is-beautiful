@@ -134,6 +134,16 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         }
         
 
+class MiniCurriculumSerializer(BaseSerializer):
+    author = serializers.SerializerMethodField()
+
+    def get_author(self, obj):
+        return obj.author.get_full_name()
+    
+    class Meta:
+        model = Curriculum
+        fields = ['uuid', 'name', 'author']
+        
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
 
