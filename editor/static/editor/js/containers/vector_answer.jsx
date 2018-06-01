@@ -28,6 +28,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onVectorChanged : (x_component, y_component) => dispatch(updateVectorAnswerComponents(ownProps.uuid, x_component, y_component)),
     onAngleOnlyChanged : angleOnly => dispatch(updateVectorAnswerAngleOnly(ownProps.uuid,angleOnly)),
+    onSetNull : () => dispatch(updateVectorAnswerComponents(ownProps.uuid, null, null))
   }
 }
 
