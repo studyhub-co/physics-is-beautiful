@@ -20,3 +20,15 @@ export function vectorToAngle(x,y) {
 	a = a + 360
     return a;
 }
+
+
+const quantityUnitRe = /^([\d\.,]+)\\*\s*([\w/]+)$/;
+
+export function validateQuantityUnit(value) {
+    return quantityUnitRe.test(value);
+}
+
+export function splitQuantityUnit(value) {
+    var match = value.match(quantityUnitRe)
+    return  match.slice(1,3)
+}

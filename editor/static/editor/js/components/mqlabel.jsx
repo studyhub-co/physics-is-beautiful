@@ -21,8 +21,9 @@ export class MQEditableLabel extends React.Component {
 
   handleEnterPressed(e){
     var val = this._editorMQ.latex();
+    
     this.setState({editing:false});
-    this.props.onChange(val);
+    this.props.onhange(val);
     
     return false;
   }

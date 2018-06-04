@@ -19,3 +19,14 @@
 .question-thumbnail img { max-width:100%; }
 
 .editor .thumbnail img { max-width: 100%; }
+
+.editor .conversion-steps { margin-top:20px; display:inline-block; font-size:20px; }
+.editor .conversion-steps .conversion-step { border-right:1px solid black; display:inline-block;}
+.editor .conversion-steps .conversion-step:last-child { border-right:none; }
+.editor .conversion-steps .conversion-step .numerator { border-bottom:1px solid black; padding-right: 10px; }
+.editor .conversion-steps .conversion-step .denominator { padding-right:10px; }
+.editor .unit-conversion .add-remove-steps {font-size:10px; display:inline-block; text-align:left;}
+.editor .unit-conversion .equals { font-size:60px; margin:0 10px; display:inline-block;}
+.editor .unit-conversion .conversion-result { vertical-align:middle; display:inline-block; font-size:20px; height:60px;}
+.editor .unit-conversion input { max-width: 80px; }
+					      
