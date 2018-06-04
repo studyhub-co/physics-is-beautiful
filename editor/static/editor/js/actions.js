@@ -1,6 +1,6 @@
 import { history } from './history';
 
-import {angleToVector, vectorToAngle} from './utils';
+import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} from './utils';
 
 
 export const ActionTypes = Object.freeze({
@@ -749,3 +749,93 @@ export function updateVectorAnswerAngleOnly(answerUuid, angleOnly){
 		}});
     }
 }
+
+
+export function updateUnitConversionType(answerUuid, newType){
+    return dispatch => {
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:{'unit_conversion_type' : newType},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});
+    }
+}
+
+export function updateUnitConversionQuestionValue(answerUuid, newValue){    
+    return dispatch => {
+	if (!validateQuantityUnit(newValue))
+	    return;
+	var quantity, unit;
+	[quantity, unit] = splitQuantityUnit(newValue)
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:{'question_number' : quantity,
+		      'question_unit' : unit},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});
+    }
+}
+
+export function updateUnitConversionAnswerValue(answerUuid, newValue){    
+    return dispatch => {
+	if (!validateQuantityUnit(newValue))
+	    return;
+	var quantity, unit;
+	[quantity, unit] = splitQuantityUnit(newValue)
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:{'answer_number' : quantity,
+		      'answer_unit' : unit},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});
+    }
+}
+
+export function updateUnitConversionStep(answerUuid, stepIndex, update){
+    return (dispatch, getState) => {
+	for (var k in update) {
+	    if (!validateQuantityUnit(update[k]))
+		return;
+	    update[k] = splitQuantityUnit(update[k]).join('\\ ')
+	}
+	var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step));
+	Object.assign(steps[stepIndex], update);
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:{'conversion_steps' : JSON.stringify(steps)},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});	
+    }
+}
+
+
+export function addConversionStep(answerUuid){
+    return (dispatch, getState) => {
+	var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step));
+	steps.push({numerator : '', denominator : ''})
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:{'conversion_steps' : JSON.stringify(steps)},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});	
+    }
+}
+export function removeConversionStep(answerUuid){
+    return (dispatch, getState) => {
+	var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step));
+	steps.pop()
+	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+		type:'PATCH',
+		data:{'conversion_steps' : JSON.stringify(steps)},
+		success: function(data,status, jqXHR){
+		    dispatch(answerLoaded(data));
+		}});	
+    }
+
+}
+

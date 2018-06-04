@@ -7,8 +7,8 @@ from rest_framework.fields import empty
 
 from expander import ExpanderSerializerMixin
 
-from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, Vector
-from curricula.models import ImageWText, MathematicalExpression
+from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
+from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion
 
 from curricula.serializers import BaseSerializer
 
@@ -223,6 +223,15 @@ class AnswerSerializer(BaseSerializer):
             fields['angle'] = serializers.FloatField(source='content.angle', allow_null=True)
             fields['x_component'] = serializers.FloatField(source='content.x_component', allow_null=True)
             fields['y_component'] = serializers.FloatField(source='content.y_component', allow_null=True)
+        elif self.answer_type == Question.AnswerType.UNIT_CONVERSION or \
+        (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, UnitConversion)):
+            fields['unit_conversion_type'] = serializers.ChoiceField(source='content.unit_conversion_type',
+                                                                     choices=UnitConversion.UnitConversionTypes)
+            fields['question_number'] = serializers.FloatField(source='content.question_number')
+            fields['question_unit'] = serializers.CharField(source='content.question_unit', max_length=100)
+            fields['answer_number'] = serializers.FloatField(source='content.answer_number')
+            fields['answer_unit'] = serializers.CharField(source='content.answer_unit', max_length=100)
+            fields['conversion_steps'] = serializers.JSONField(source='content.conversion_steps')
             
             
         return fields

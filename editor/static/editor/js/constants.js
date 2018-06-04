@@ -9,7 +9,7 @@ export const AnswerTypes = Object.freeze({
     UNIT_CONVERSION :  70});
     
 
-export const AnswerTypeLabels = {
+export const AnswerTypeLabels = Object.freeze({
     [AnswerTypes.UNDEFINED] : 'Please select',
     [AnswerTypes.MULTIPLE_CHOICE] : 'Multiple choices',
     [AnswerTypes.MULTISELECT_CHOICE] : 'Mutiple choices with more than one correct choice',
@@ -18,4 +18,17 @@ export const AnswerTypeLabels = {
     [AnswerTypes.MATHEMATICAL_EXPRESSION] : 'Mathematical expression',
     [AnswerTypes.VECTOR_COMPONENTS] : 'Vector components',
     [AnswerTypes.UNIT_CONVERSION] :  'Unit conversion'  
-}
+})
+
+export const UnitConversionTypes = Object.freeze({
+    LEFT_SIDE_BLANK : 10,
+    RIGHT_SIDE_BLANK : 20,
+    ALL_SIDES_BLANK : 30
+})
+
+export const UnitConversionTypeLabels = Object.freeze({
+    [UnitConversionTypes.LEFT_SIDE_BLANK] : 'Left side blank',
+    [UnitConversionTypes.RIGHT_SIDE_BLANK] : 'Right side blank',
+    [UnitConversionTypes.ALL_SIDES_BLANK] : 'Both sides blank'
+   
+})

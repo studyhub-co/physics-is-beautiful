@@ -7,6 +7,7 @@ import {AnswerTypes, AnswerTypeLabels} from '../constants';
 import {MultipleChoiceAnswers} from './multiple_choice_answers';
 import {MathematicalExpressionAnswerContainer} from '../containers/mathematical_expression_answer';
 import {VectorAnswerContainer} from '../containers/vector_answer';
+import {UnitConversionAnswerContainer} from '../containers/unit_conversion_answer'
 
 export class Question extends React.Component {
   constructor(props) {
@@ -33,7 +34,8 @@ export class Question extends React.Component {
       answersEditor = <MathematicalExpressionAnswerContainer uuid={this.props.answers[0]}/>
     } else if (this.props.answer_type === AnswerTypes.VECTOR || this.props.answer_type === AnswerTypes.NULLABLE_VECTOR) {
       answersEditor = <VectorAnswerContainer uuid={this.props.answers[0]} allowNull={this.props.answer_type === AnswerTypes.NULLABLE_VECTOR}/>
-    }
+    } else if (this.props.answer_type === AnswerTypes.UNIT_CONVERSION)
+      answersEditor = <UnitConversionAnswerContainer uuid={this.props.answers[0]}/>
     
     return (
       <div className="question">
