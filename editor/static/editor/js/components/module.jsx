@@ -31,7 +31,7 @@ export class Module extends React.Component {
       );
     }
     return (
-      <div>        
+      <div className="module">        
         <BackButton link={'/curricula/' + this.props.curriculum + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>

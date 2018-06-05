@@ -135,16 +135,20 @@ export function renameCurriculum(uuid, newName) {
     }
 }
 
+function loadCurriculum(uuid, dispatch) {
+    $.ajax({
+	async: true,
+	url: '/editor/api/curricula/'+uuid +'/',
+	success: function(data, status, jqXHR) {
+	    dispatch(curriculumLoaded(data));
+	}
+    });    
+}
+
 export function loadCurriculumIfNeeded(uuid) {
     return (dispatch, getState) => {
 	if (!(uuid in getState().curricula)) {
-	    $.ajax({
-		async: true,
-		url: '/editor/api/curricula/'+uuid +'/',
-		success: function(data, status, jqXHR) {
-		    dispatch(curriculumLoaded(data));
-		}
-	    });
+	    loadCurriculum(uuid, dispatch)
 	}
     }
 }
@@ -255,6 +259,30 @@ export function changeUnitImage(uuid, image) {
                });
     }
 }
+
+
+export function moveUnit(uuid, beforeUuid) {
+    return (dispatch, getState) => {
+	var state = getState()
+	var newPosition
+	if (beforeUuid) 
+	    newPosition = state.units[beforeUuid].position;
+	else {
+	    var cur = state.curricula[state.units[uuid].curriculum]
+	    newPosition = state.units[cur.units[cur.units.length - 1]].position + 1;
+	}
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/units/'+uuid+'/',
+	    method : 'PATCH',
+	    data : {position : newPosition},
+	    success: function(data, status, jqXHR) {
+		loadCurriculum(data.curriculum, dispatch)	    
+	    }
+	});    
+    }
+}
+
 
 export function moduleAdded(data) {
     return {type : ActionTypes.MODULE_ADDED,	    

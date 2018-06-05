@@ -4,8 +4,9 @@ import {EditableLabel} from './label'
 import {EditableThumbnail} from './thumbnail'
 import {ModuleThumbnailContainer} from '../containers/module_thumbnail'
 import {DockableDropTarget, DragHoverable, DragItemTypes} from '../dnd';
+import { DragSource } from 'react-dnd';
 
-export class Unit extends React.Component {
+class Unit extends React.Component {
   constructor(props) {
     super(props);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
@@ -20,19 +21,22 @@ export class Unit extends React.Component {
     const modules=[];
     for (var i=0; i<this.props.modules.length; i++){
       modules.push(
-        <DockableDropTarget key={this.props.modules[i]} onDrop={this.props.onModuleDroppedBefore.bind(null, this.props.modules[i])} itemType={DragItemTypes.MODULE}>
+        <DockableDropTarget key={this.props.modules[i]} onDrop={this.props.onModuleDroppedBefore.bind(null, this.props.modules[i])} itemType={DragItemTypes.MODULE} selfUuid={this.props.modules[i]}>
           <ModuleThumbnailContainer uuid={this.props.modules[i]} />
         </DockableDropTarget>);
     }
    
-    return (
-      <div>
+    return this.props.connectDragPreview(
+      <div className="unit">
         <div className="section-title">
-          <h2>
-            <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>          
-            <EditableLabel value={this.props.name} onChange={this.props.onNameChange}/>
-            <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
-          </h2>
+          
+            <h2>
+              {this.props.connectDragSource(<span className="drag-handle glyphicon glyphicon-option-vertical"/>)}
+              <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>          
+              <EditableLabel value={this.props.name} onChange={this.props.onNameChange}/>
+              <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
+            </h2>
+          
         </div>
         <div className="row">
           {modules}
@@ -49,3 +53,21 @@ export class Unit extends React.Component {
   }
 }
 
+const dragSource = {
+  beginDrag(props) {
+    return {uuid:props.uuid};
+  }
+}
+
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    connectDragPreview : connect.dragPreview(),
+    isDragging: monitor.isDragging()
+  }
+}
+
+Unit = DragSource(DragItemTypes.UNIT, dragSource, collect)(Unit)
+
+export {Unit}

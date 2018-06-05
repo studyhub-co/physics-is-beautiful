@@ -115,6 +115,10 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
     def update(self, instance, validated_data):
         if 'curriculum' in validated_data:
             validated_data['curriculum'] = validated_data['curriculum']['uuid']
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Unit.objects.filter(position__gte=validated_data['position'],
+                                curriculum_id=instance.curriculum_id).update(position=F('position')+1)
+            
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
