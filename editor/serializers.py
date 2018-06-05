@@ -218,6 +218,7 @@ class AnswerSerializer(BaseSerializer):
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MathematicalExpression)):
             fields['representation'] = serializers.CharField(source='content.representation')
         elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR or \
+        self.answer_type == Question.AnswerType.VECTOR_COMPONENTS or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Vector)):
             fields['magnitude'] = serializers.FloatField(source='content.magnitude', allow_null=True)
             fields['angle'] = serializers.FloatField(source='content.angle', allow_null=True)
@@ -242,23 +243,34 @@ class AnswerSerializer(BaseSerializer):
         fields = ['uuid', 'question', 'position', 'is_correct']
 
     
-        
+
+class VectorSerializer(BaseSerializer):
+    
+    class Meta:
+        model = Vector
+        fields = ['x_component', 'y_component']
     
 class QuestionSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
 
     answers = serializers.SerializerMethodField()
+    vectors = VectorSerializer(many=True)
     
     def get_answers(self, obj):
         s = AnswerSerializer(many=True, answer_type=obj.answer_type)
         return s.to_representation(obj.answers.all())
-
+    
     def validate_lesson(self, value):
         return Lesson.objects.get(uuid=value)
 
     def update(self, instance, validated_data):
         if 'lesson' in validated_data:
             validated_data['lesson'] = validated_data['lesson']['uuid']
+        if 'vectors' in validated_data:
+            instance.vectors.all().delete()
+            for v in validated_data['vectors']:                
+                instance.vectors.add(Vector.objects.create(**v))
+            del validated_data['vectors']
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
@@ -268,7 +280,7 @@ class QuestionSerializer(BaseSerializer):
     
     class Meta:
         model = Question
-        fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers']
+        fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers', 'vectors']
 
 
 

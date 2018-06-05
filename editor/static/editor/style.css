@@ -29,4 +29,8 @@
 .editor .unit-conversion .equals { font-size:60px; margin:0 10px; display:inline-block;}
 .editor .unit-conversion .conversion-result { vertical-align:middle; display:inline-block; font-size:20px; height:60px;}
 .editor .unit-conversion input { max-width: 80px; }
-					      
+
+.editor .vector-components-answer { font-size:18px; margin-top:20px; }
+.editor .vector-components-answer .mq-editable-label .editing { min-width:120px; }
+.editor .vector-components-answer .mq-editable-label .buttons { display:block; }
+.editor .vector-components-answer .mq-editable-label .buttons a { border:1px solid black; padding:10px; border-radius:5px; }
