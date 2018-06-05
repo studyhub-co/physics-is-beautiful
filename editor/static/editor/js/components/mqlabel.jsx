@@ -10,8 +10,11 @@ export class MQEditableLabel extends React.Component {
     this.handleEnterPressed = this.handleEnterPressed.bind(this);
     this.setLabelRef = this.setLabelRef.bind(this);
     this.setEditorRef = this.setEditorRef.bind(this);
+    this.setButtonRef = this.setButtonRef.bind(this);
     this.handleDocumentClick = this.handleDocumentClick.bind(this);
     this.handleDocumentKeyPress = this.handleDocumentKeyPress.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+    this._buttonsRefs = [];
   }
 
   handleEditClick(e){
@@ -23,7 +26,7 @@ export class MQEditableLabel extends React.Component {
     var val = this._editorMQ.latex();
     
     this.setState({editing:false});
-    this.props.onhange(val);
+    this.props.onChange(val);
     
     return false;
   }
@@ -42,13 +45,18 @@ export class MQEditableLabel extends React.Component {
     }
   }
 
+  setButtonRef(idx, ref){
+    this._buttonsRefs[idx] = ref;
+  }
+  
+  
   registerBlurHandlers(){
-    $(document).on('click', this.handleDocumentClick);
-    $(document).on('keyup', this.handleDocumentKeyPress);
+    document.addEventListener('click',this.handleDocumentClick);
+    document.addEventListener('keyup', this.handleDocumentKeyPress);
   }
   detachBlurHandlers() {
-    $(document).off('click', this.handleDocumentClick);
-    $(document).off('keyup', this.handleDocumentKeyPress);
+    document.removeEventListener('click', this.handleDocumentClick);
+    document.removeEventListener('keyup', this.handleDocumentKeyPress);
 
   }
 
@@ -80,9 +88,21 @@ export class MQEditableLabel extends React.Component {
       });
       this._editorMQ.focus();
       this.registerBlurHandlers();
+      for (var i in this._buttonsRefs){
+        MQ.StaticMath(this._buttonsRefs[i]);
+      }
+
     } else {
       this._labelMQ = MQ.StaticMath(this._label);
     }
+  }
+
+  handleButtonClick(i, e) {
+    e.preventDefault()
+    e.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
+    this._editorMQ.write(this.props.buttons[i])
+    this._editorMQ.focus()
   }
   
   componentDidMount(){
@@ -94,9 +114,21 @@ export class MQEditableLabel extends React.Component {
   }
   
   render () {
-      return (<span>
-              <span ref={this.state.editing ? this.setEditorRef : this.setLabelRef} key={this.state.editing ? 'editing' : ''}>{this.props.value}</span>
-              <span onClick={this.handleEditClick} className="glyphicon glyphicon-pencil"/>              
-              </span>)
+    var buttons;
+    if (this.state.editing && this.props.buttons){
+      var btns = []
+      for (var b in this.props.buttons) {
+        btns.push(<a className="mq-editor-button" ref={this.setButtonRef.bind(null, b)} onClick={this.handleButtonClick.bind(null, b)} >{this.props.buttons[b]}</a>)
+      }
+      buttons = <span className="buttons">{btns}</span>
+    }
+    return (<span className="mq-editable-label">
+            <span className={this.state.editing ? 'editing' : ''} ref={this.state.editing ? this.setEditorRef : this.setLabelRef} key={this.state.editing ? 'editing' : ''}>{this.props.value}</span>
+            <span onClick={this.handleEditClick} className="glyphicon glyphicon-pencil"/>
+            {buttons}
+            </span>)
   }
 }
+
+
+

@@ -839,3 +839,31 @@ export function removeConversionStep(answerUuid){
 
 }
 
+export function clearQuestionVectors(uuid){
+    return dispatch => {
+	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+		type:'PATCH',
+		data:{'vectors':'[]'},
+		success: function(data,status, jqXHR){
+		    dispatch(questionLoaded(data));
+		}});
+    }    
+    
+}
+export function addQuestionVector(uuid, x_component, y_component){
+    return (dispatch, getState) => {
+	var s=getState();
+	var vectors = s.questions[uuid].vectors.slice();
+	vectors.push({x_component : x_component,		      
+		      y_component : y_component})
+	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+		type:'PATCH',
+		contentType:"application/json; charset=utf-8",
+		dataType:"json",
+		data:JSON.stringify({'vectors': vectors}),
+		success: function(data,status, jqXHR){
+		    dispatch(questionLoaded(data));
+		}});
+    }    
+    
+}

@@ -1,5 +1,17 @@
 import React from 'react';
 
+export const DEFAULT_MATHJAX_OPTIONS = {
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX', 'output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+    displayMath: [ ['$$', '$$'], ['\\[', '\\]'] ],
+    processEscapes: true
+  },
+  'HTML-CSS': { availableFonts: ['TeX'] }
+}
+
+
 export class EditableLabel extends React.Component {
   constructor (props) {
     super(props);
@@ -31,6 +43,15 @@ export class EditableLabel extends React.Component {
     return false;
   }
   
+  componentDidMount () {
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+  }
+  componentDidUpdate () {
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+  }
+
   render () {
     if (this.state.editing){
       return (<form onSubmit={this.handleFormSubmit}>
