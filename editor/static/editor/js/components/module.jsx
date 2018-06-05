@@ -25,7 +25,7 @@ export class Module extends React.Component {
     const lessons=[];
     for (var i=0; i<this.props.lessons.length; i++){      
       lessons.push(
-        <DockableDropTarget key={this.props.lessons[i]} onDrop={this.props.onLessonDroppedBefore.bind(null, this.props.lessons[i])} itemType={DragItemTypes.LESSON}>
+        <DockableDropTarget key={this.props.lessons[i]} onDrop={this.props.onLessonDroppedBefore.bind(null, this.props.lessons[i])} itemType={DragItemTypes.LESSON} selfUuid={this.props.lessons[i]}>
           <LessonThumbnailContainer uuid={this.props.lessons[i]}/>
         </DockableDropTarget>
       );
