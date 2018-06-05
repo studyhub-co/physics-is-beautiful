@@ -2,14 +2,15 @@ import React from 'react';
 import { DropTarget } from 'react-dnd';
 
 export const DragItemTypes = {
+  UNIT : 'unit',
   MODULE : 'module',
-  LESSON : 'lesson'    
+  LESSON : 'lesson'
 };
 
 class DockableDropTarget extends React.Component {
   render () {
     let dockSite;
-    if (this.props.dragOver){
+    if (this.props.dragOver && this.props.itemOver.uuid != this.props.selfUuid){
       dockSite = <div className="dock-site"></div>;
     }
     return this.props.connectDropTarget(
@@ -23,13 +24,16 @@ class DockableDropTarget extends React.Component {
 
 DockableDropTarget = DropTarget(props =>  props.itemType,
                                 {drop :function(props, monitor) {
-                                  props.onDrop(monitor.getItem());
+                                  var item = monitor.getItem();
+                                  if (item.uuid != props.selfUuid)
+                                    props.onDrop(item);
                                 }
                                 },
                                 (connect, monitor) => {
                                   return {
                                     connectDropTarget: connect.dropTarget(),
-                                    dragOver : monitor.isOver()
+                                    dragOver : monitor.isOver(),
+                                    itemOver : monitor.getItem()
                                   }
                                 })(DockableDropTarget);
 

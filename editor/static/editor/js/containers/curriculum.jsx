@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {Curriculum} from '../components/curriculum';
 
-import {renameCurriculum, changeCurriculumImage, deleteCurriculum, addUnit} from '../actions';
+import {renameCurriculum, changeCurriculumImage, deleteCurriculum, addUnit, moveUnit} from '../actions';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onNameChange : name => dispatch(renameCurriculum(ownProps.uuid, name)),
     onDeleteClick : () => dispatch(deleteCurriculum(ownProps.uuid)),
     onAddUnitClick : () => dispatch(addUnit(ownProps.uuid)),
+    onUnitDroppedBefore : (beforeUnit, unit) => dispatch(moveUnit(unit.uuid, beforeUnit)),
   }    
 }
 
