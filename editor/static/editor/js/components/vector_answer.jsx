@@ -23,15 +23,13 @@ export class VectorAnswer extends React.Component {
     
     return (
       <div>
-        <div className="col-md-1 module-accessible-block">
-          <VectorCanvas
-             clear={true}             
-             objects={objects}
-             allowInput={true}
-             updateAnswer={ans => this.props.onVectorChanged(ans[1].vector.x_component, ans[1].vector.y_component)}
-             question={{uuid : this.props.question}}
-             />
-        </div>
+        <VectorCanvas
+           clear={true}             
+           objects={objects}
+           allowInput={true}
+           updateAnswer={ans => this.props.onVectorChanged(ans[1].vector.x_component, ans[1].vector.y_component)}
+          question={{uuid : this.props.question}}
+          />
         <input type="checkbox" checked={this.props.angleOnly} onChange={(e) => {this.props.onAngleOnlyChanged(e.target.checked)}}/> Only check angle
           {this.props.allowNull &&
             <a onClick={e => {e.preventDefault(); this.props.onSetNull()}}>Clear (set to null vector)</a>
