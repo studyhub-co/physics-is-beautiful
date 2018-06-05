@@ -15,6 +15,7 @@ export const moduleDragSource = {
 function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
+    connectDragPreview : connect.dragPreview(),
     isDragging: monitor.isDragging()
   }
 }
@@ -22,9 +23,10 @@ function collect(connect, monitor) {
 
 class ModuleThumbnail extends React.Component {
   render () {
-    const { connectDragSource, isDragging, connectDropTarget } = this.props;
-    return connectDropTarget(connectDragSource(
+    const { connectDragSource, connectDragPreview, isDragging, connectDropTarget } = this.props;
+    return connectDropTarget(connectDragPreview(
       <div className="col-md-1 module-accessible-block" onClick={this.props.onClick} style={{opacity:isDragging?0.5:1}}>
+        {connectDragSource(<span className="drag-handle glyphicon glyphicon-option-vertical"/>)}
         <div className="thumbnail section-thumbnail"><Thumbnail image={this.props.image}/></div>
         <div>{this.props.name}</div>
       </div>
