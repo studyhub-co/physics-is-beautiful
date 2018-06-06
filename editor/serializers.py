@@ -7,7 +7,7 @@ from rest_framework.fields import empty
 
 from expander import ExpanderSerializerMixin
 
-from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
+from curricula.models import Curriculum, Unit, Module, Lesson, Game, Question, Answer
 from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion
 
 from curricula.serializers import BaseSerializer
@@ -29,6 +29,9 @@ class LessonSerializer(BaseSerializer):
 
     questions = serializers.SerializerMethodField()
 
+    game_type = serializers.CharField(source='game.slug', required=False)
+
+
     def get_questions(self, lesson):
         return list(lesson.questions.values_list('uuid', flat=True))
     
@@ -41,6 +44,13 @@ class LessonSerializer(BaseSerializer):
         if 'position' in validated_data and instance.position != validated_data['position']:
             Lesson.objects.filter(position__gte=validated_data['position'],
                                   module_id=instance.module_id).update(position=F('position')+1)
+        if 'lesson_type' in validated_data and validated_data['lesson_type'] == Lesson.LessonType.GAME:
+            Game.objects.get_or_create(lesson=instance, defaults={'slug' : 'unit-conversion'})
+        if 'game' in validated_data:
+            for k,v in validated_data.pop('game').items():
+                setattr(instance.game, k, v)
+                instance.game.save()
+            
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
@@ -52,7 +62,7 @@ class LessonSerializer(BaseSerializer):
     class Meta:
         model = Lesson
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'url', 'questions']
+        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'game_type', 'url', 'questions']
         extra_kwargs = {
             'url' : {'lookup_field' : 'uuid'}
         }
@@ -258,7 +268,7 @@ class QuestionSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
 
     answers = serializers.SerializerMethodField()
-    vectors = VectorSerializer(many=True)
+    vectors = VectorSerializer(many=True, required=False)
     
     def get_answers(self, obj):
         s = AnswerSerializer(many=True, answer_type=obj.answer_type)
@@ -279,7 +289,11 @@ class QuestionSerializer(BaseSerializer):
 
     def create(self, validated_data):
         validated_data['lesson'] = validated_data['lesson']['uuid']
-        return super().create(validated_data)
+        vectors = validated_data.pop('vectors', [])
+        new_question = super().create(validated_data)
+        for v in vectors:
+            new_question.vectors.add(Vector.objects.create(**v))
+        return new_question
 
     
     class Meta:

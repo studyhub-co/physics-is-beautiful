@@ -188,10 +188,16 @@ class LessonApp extends React.Component {
               {this.props.nextQuestion &&
                 <a onClick={this.handleNextClick} className="btn btn-default">Next question</a>
                 }
-                <a onClick={this.handleAddQuestionClick} className="btn btn-default">Add question</a>
+                {this.props.lesson_type == 0 &&
+                  <a onClick={this.handleAddQuestionClick} className="btn btn-default">Add question</a>
+                  }
           </div>
-          <hr/>
-          <QuestionContainer uuid={this.props.currentQuestion}/>
+          {this.props.lesson_type == 0 && this.props.currentQuestion &&
+            <div>
+                <hr/>
+                  <QuestionContainer uuid={this.props.currentQuestion}/>
+              </div>
+            }
         </Sheet>
       </div>)
   }
@@ -201,8 +207,8 @@ class LessonApp extends React.Component {
 LessonApp = connect(
   (state, ownProps) => {
     var previousQuestion, nextQuestion;
-    if (state.currentQuestion && state.lessons[ownProps.match.params.uuid]) {
-      var currentLesson = state.lessons[ownProps.match.params.uuid];
+    var currentLesson = state.lessons[ownProps.match.params.uuid];
+    if (state.currentQuestion && state.lessons[ownProps.match.params.uuid]) {      
       var idx = currentLesson.questions.indexOf(state.currentQuestion);
       if (idx > 0)
         previousQuestion = currentLesson.questions[idx - 1];
@@ -214,6 +220,7 @@ LessonApp = connect(
       currentQuestion : state.currentQuestion,
       previousQuestion  : previousQuestion,
       nextQuestion : nextQuestion,
+      lesson_type : currentLesson && currentLesson.lesson_type,
     }
   })(LessonApp)
 
