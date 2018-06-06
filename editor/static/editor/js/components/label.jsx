@@ -54,7 +54,7 @@ export class EditableLabel extends React.Component {
 
   render () {
     if (this.state.editing){
-      return (<form onSubmit={this.handleFormSubmit}>
+      return (<form onSubmit={this.handleFormSubmit} style={{display:'inline'}}>
               <input type="text" value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur}/>
               </form>)
     } else {

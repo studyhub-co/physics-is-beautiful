@@ -20,7 +20,7 @@ export class EditableThumbnail extends React.Component {
     return (
       <div className="selectable-image">
         <Thumbnail image={this.props.image}/>
-        <input type="file" name="image" accept="image/*" onChange={this.handleChange}/>
+        <input type="file" name="image" accept="image/*" onChange={this.handleChange} style={{fontSize:'1px'}}/>
       </div>
     )
   }
