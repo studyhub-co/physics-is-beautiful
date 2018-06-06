@@ -446,12 +446,14 @@ export function loadLessonIfNeeded(uuid) {
 		url: '/editor/api/lessons/'+uuid +'/',
 		success: function(data, status, jqXHR) {
 		    dispatch(lessonLoaded(data));
-		    dispatch(loadQuestionIfNeeded(data.questions[0]));
+		    if (data.questions.length > 0)
+			dispatch(loadQuestionIfNeeded(data.questions[0]));
 		}
 	    });
 	} else {
 	    dispatch(lessonLoaded(getState().lessons[uuid]));
-	    dispatch(loadQuestionIfNeeded(getState().lessons[uuid].questions[0]));
+	    if (getState().lessons[uuid].questions.length > 0)
+		dispatch(loadQuestionIfNeeded(getState().lessons[uuid].questions[0]));
 	}
     }
 }
@@ -483,6 +485,30 @@ export function changeLessonImage(uuid, image) {
                });
     }
 }
+
+export function changeLessonType(uuid, newType) {
+    return function(dispatch) {
+	$.ajax({url:'/editor/api/lessons/'+uuid+'/',
+		type:'PATCH',
+		data:{lesson_type:newType},
+		success: function(data,status, jqXHR){
+		    dispatch(lessonLoaded(data));
+		}});
+	
+    }
+}
+export function changeLessonGameType(uuid, newType) {
+    return function(dispatch) {
+	$.ajax({url:'/editor/api/lessons/'+uuid+'/',
+		type:'PATCH',
+		data:{game_type:newType},
+		success: function(data,status, jqXHR){
+		    dispatch(lessonLoaded(data));
+		}});
+	
+    }
+}
+
 
 export function moveLesson(uuid, toModuleUuid, beforeLessonUuid) {    
     return (dispatch, getState) => {
