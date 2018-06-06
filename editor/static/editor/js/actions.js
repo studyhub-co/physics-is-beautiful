@@ -28,6 +28,7 @@ export const ActionTypes = Object.freeze({
     DELETE_QUESTION : 'DELETE_QUESTION',
     ANSWER_LOADED : 'ANSWER_LOADED',
     ANSWER_ADDED : 'ANSWER_ADDED',
+    DELETE_ANSWER : 'DELETE_ANSWER',
     SET_ANSWER_EXCLUSIVELY_CORRECT : 'SET_ANSWER_EXCLUSIVELY_CORRECT',
     SET_ANSWER_IS_CORRECT : 'SET_ANSWER_IS_CORRECT',
 });
@@ -756,6 +757,25 @@ export function addAnswer(questionUuid) {
 	});   
     }  
 }
+
+export function deleteAnswerChoice(answerUuid) {
+    return (dispatch, getState) => {
+	var state = getState()
+	var questionUuid = state.answers[answerUuid].question
+	dispatch({type : ActionTypes.DELETE_ANSWER,
+		  questionUuid : questionUuid,
+		  uuid : answerUuid})
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/answers/'+answerUuid+'/',
+	    method : 'DELETE',
+	    success: function(data, status, jqXHR) {
+		//
+	    }
+	});   
+    }  
+}
+
 
 export function setAnswerIsCorrect(answer, is_correct, exclusive) {
     return dispatch => {
