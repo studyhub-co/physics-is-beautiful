@@ -34,3 +34,5 @@
 .editor .vector-components-answer .mq-editable-label .editing { min-width:120px; }
 .editor .vector-components-answer .mq-editable-label .buttons { display:block; }
 .editor .vector-components-answer .mq-editable-label .buttons a { border:1px solid black; padding:10px; border-radius:5px; }
+
+.editor .answer-choice.without-image .selectable-image { display:inline-block; border:none; }

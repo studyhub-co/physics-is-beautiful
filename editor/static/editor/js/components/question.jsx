@@ -54,7 +54,8 @@ export class Question extends React.Component {
     var answersEditor;
 
     if (this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE || this.props.answer_type === AnswerTypes.MULTISELECT_CHOICE){
-      answersEditor = <MultipleChoiceAnswers answers={this.props.answers} onAddAnswerClick={this.props.onAddAnswerClick} exclusive={this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE}/>;
+      answersEditor = <MultipleChoiceAnswers answers={this.props.answers} onAddAnswerClick={this.props.onAddAnswerClick}
+                                             exclusive={this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE} hasPictures={this.props.hasPictures}/>
     } else if (this.props.answer_type === AnswerTypes.MATHEMATICAL_EXPRESSION) {
       answersEditor = <MathematicalExpressionAnswerContainer uuid={this.props.answers[0]}/>
     } else if (this.props.answer_type === AnswerTypes.VECTOR || this.props.answer_type === AnswerTypes.NULLABLE_VECTOR) {

@@ -8,15 +8,24 @@ import {changeQuestionText, changeQuestionImage, changeQuestionHint, changeQuest
 
 const mapStateToProps = (state, ownProps) => {
   const q = state.questions[ownProps.uuid];
-  if (q) 
+  if (q) {
+    var hasPictures = false
+    for (var i in q.answers) {
+      if (state.answers[q.answers[i]].image) {
+        hasPictures = true;
+        break;
+      }
+    }
     return {
       loading : false,
       text : q.text,
       image : q.image,
       hint : q.hint,
       answers : q.answers,
-      answer_type : q.answer_type      
+      hasPictures : hasPictures,
+      answer_type : q.answer_type
     }
+  }
   else
     return {loading : true}
 }
