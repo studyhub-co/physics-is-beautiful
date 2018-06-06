@@ -7,7 +7,7 @@ export class MultipleChoiceAnswers extends React.Component {
   render() {
     var answers = [];
     for (var i in this.props.answers) {
-      answers.push(<AnswerChoiceContainer key={this.props.answers[i]} uuid={this.props.answers[i]} exclusive={this.props.exclusive}/>)
+      answers.push(<AnswerChoiceContainer key={this.props.answers[i]} uuid={this.props.answers[i]} exclusive={this.props.exclusive} withThumbnail={this.props.hasPictures}/>)
     }
     return <div>
       {answers}
