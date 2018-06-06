@@ -20,14 +20,22 @@ export class EditableLabel extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
-
-  }
+    this.setInputRef = this.setInputRef.bind(this);
+  }  
 
   handleEditClick(e){
+    if (this._inputRef)
+      this._inputRef.focus()
     this.setState({editing : true,
                    value : this.props.value});
   }
 
+  setInputRef(ref){
+    this._inputRef = ref
+    if (ref && this.state.editing) 
+      ref.focus()
+  }
+  
   handleInputChange(e){
     this.setState({'value' : e.target.value}); 
   }
@@ -55,12 +63,12 @@ export class EditableLabel extends React.Component {
   render () {
     if (this.state.editing){
       return (<form onSubmit={this.handleFormSubmit} style={{display:'inline'}}>
-              <input type="text" value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur}/>
+              <input type="text" value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur} ref={this.setInputRef}/>
               </form>)
     } else {
-      return (<span>
+      return (<span className={'editable-label' + (this.props.value?'':' empty')} onClick={this.handleEditClick}>
               <span>{this.props.value}</span>
-              <span onClick={this.handleEditClick} className="glyphicon glyphicon-pencil"/>              
+              <span  className="glyphicon glyphicon-pencil"/>              
               </span>)
     }
   }
