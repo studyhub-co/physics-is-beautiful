@@ -106,5 +106,15 @@ class Question(BaseModel):
                         answer.save()
         super(Question, self).save(*args, **kwargs)
 
+    def clone(self, to_parent):
+        copy = super().clone(to_parent)
+        copy.vectors.clear()        
+        for v in self.vectors.all():
+            v.id = None
+            v.save()
+            copy.vectors.add(v)            
+        return copy
+
+        
     def __str__(self):
         return 'Question: {}'.format(self.text)
