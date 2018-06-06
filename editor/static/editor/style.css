@@ -14,7 +14,8 @@
 .editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
 
 .curriculum .drop-target .dock-site { height:60px; }
-.unit .drop-target .dock-site, .module .drop-target .dock-site { float:left; width:80px; height:150px; }
+.unit .drop-target .dock-site, .module .drop-target .dock-site { float:left; width:110px; height:150px; }
+.unit .drop-target, .module .drop-target { float:left; }
 
 .question-thumbnail img { max-width:100%; }
 
