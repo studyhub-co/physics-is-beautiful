@@ -71,8 +71,16 @@ function modules(state={}, action){
 	return ret
     case ActionTypes.LESSON_ADDED:
 	var ret = Object.assign({}, state)
-	ret[action.lesson.module].lessons = ret[action.lesson.module].lessons.slice()
+ 	ret[action.lesson.module].lessons = ret[action.lesson.module].lessons.slice()
 	ret[action.lesson.module].lessons.push(action.lesson.uuid)
+	return ret
+    case ActionTypes.DELETE_LESSON:
+	var ret = Object.assign({}, state)
+	if (!ret[action.moduleUuid])
+	    return ret
+	var newLessons = ret[action.moduleUuid].lessons.slice()
+	newLessons.splice(newLessons.indexOf(action.uuid), 1)
+	ret[action.moduleUuid].lessons = newLessons
 	return ret
     default:
 	return state
@@ -89,6 +97,10 @@ function lessons(state={}, action){
    case ActionTypes.LESSON_LOADED:
    case ActionTypes.LESSON_ADDED:
        return Object.assign({}, state, {[action.lesson.uuid] : action.lesson})
+   case ActionTypes.DELETE_LESSON:
+       var ret = Object.assign({}, state)
+       delete ret[action.uuid]
+       return ret
    case ActionTypes.QUESTION_ADDED:
        var ret = Object.assign({}, state)
        ret[action.question.lesson].questions = ret[action.question.lesson].questions.slice();

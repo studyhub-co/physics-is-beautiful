@@ -20,6 +20,7 @@ export const ActionTypes = Object.freeze({
     DELETE_MODULE : 'DELETE_MODULE',
     LESSON_LOADED : 'LESSON_LOADED',
     LESSON_ADDED : 'LESSON_ADDED',
+    DELETE_LESSON : 'DELETE_LESSON',
     QUESTION_LOADED : 'QUESTION_LOADED',
     QUESTION_ADDED : 'QUESTION_ADDED',
     PRESERVE_ANSWERS : 'PRESERVE_ANSWERS',
@@ -539,6 +540,25 @@ export function moveLesson(uuid, toModuleUuid, beforeLessonUuid) {
 		});
 	    }
 	});    	
+    }
+}
+
+
+export function deleteLesson(lessonUuid) {
+    return (dispatch, getState) => {
+	var state = getState()
+	var moduleUuid = state.lessons[lessonUuid].module
+	dispatch({type : ActionTypes.DELETE_LESSON,
+		  moduleUuid : moduleUuid,
+		  uuid : lessonUuid});
+	$.ajax({
+            async : true,
+            url : '/editor/api/lessons/'+lessonUuid+'/',
+            method : 'DELETE',
+            success : function(data, status, jqXHR) {
+		history.push('/modules/'+moduleUuid+'/');
+	    }
+	});	
     }
 }
 
