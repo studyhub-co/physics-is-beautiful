@@ -289,14 +289,10 @@ class AnswersField(serializers.Field):
 class QuestionSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
     
-#    answers = serializers.SerializerMethodField()
     answers = AnswersField(required=False)
     vectors = VectorSerializer(many=True, required=False)
     
-    def get_answers(self, obj):
-        s = AnswerSerializer(many=True, answer_type=obj.answer_type)
-        return s.to_representation(obj.answers.all())
-    
+   
     def validate_lesson(self, value):
         return Lesson.objects.get(uuid=value)
 
