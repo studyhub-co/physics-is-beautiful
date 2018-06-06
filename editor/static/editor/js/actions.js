@@ -514,12 +514,12 @@ export function changeLessonGameType(uuid, newType) {
 export function moveLesson(uuid, toModuleUuid, beforeLessonUuid) {    
     return (dispatch, getState) => {
 	var state = getState()
-	var toModule = state.units[toModuleUuid];
+	var toModule = state.modules[toModuleUuid];
 	var newPosition
 	if (beforeLessonUuid) 
 	    newPosition = state.lessons[beforeLessonUuid].position;
 	else if (toModule && toModule.lessons.length > 0)
-	    newPosition = state.lesons[toModule.lessons[toModule.lessons.length-1]].position + 1;
+	    newPosition = state.lessons[toModule.lessons[toModule.lessons.length-1]].position + 1;
 	else
 	    newPosition = 1;
 	$.ajax({
