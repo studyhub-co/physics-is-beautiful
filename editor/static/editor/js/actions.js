@@ -22,6 +22,7 @@ export const ActionTypes = Object.freeze({
     LESSON_ADDED : 'LESSON_ADDED',
     QUESTION_LOADED : 'QUESTION_LOADED',
     QUESTION_ADDED : 'QUESTION_ADDED',
+    PRESERVE_ANSWERS : 'PRESERVE_ANSWERS',
     GOTO_QUESTION : 'GOTO_QUESTION',
     DELETE_QUESTION : 'DELETE_QUESTION',
     ANSWER_LOADED : 'ANSWER_LOADED',
@@ -574,11 +575,24 @@ export function changeQuestionText(uuid, newText) {
     }
     
 }
+
+export function preserveAnswers(questionUuid){
+    return {type : ActionTypes.PRESERVE_ANSWERS,
+	    question : questionUuid}
+}
+
 export function changeQuestionType(uuid, newType) {
-    return function(dispatch) {
+    return function(dispatch, getState) {
+	var state = getState()
+	var oldAnswerIds;
+	var data = {answer_type:newType};
+	if (state.preservedAnswers[uuid])
+	    data['answers'] = JSON.stringify(state.preservedAnswers[uuid][newType]);
+
+	dispatch(preserveAnswers(uuid))
 	$.ajax({url:'/editor/api/questions/'+uuid+'/',
 		type:'PATCH',
-		data:{answer_type:newType},
+		data:data,
 		success: function(data,status, jqXHR){
 		    dispatch(questionLoaded(data));
 		}});
