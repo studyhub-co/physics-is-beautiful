@@ -27,7 +27,7 @@ class Unit extends React.Component {
     }
    
     return this.props.connectDragPreview(
-      <div className="unit" style={{opacity:this.props.isDragging?0.5:1}}>
+      <div className="unit" style={{display: this.props.isDragging ? 'none' : 'block'}}>
         <div className="section-title">
           
             <h2>

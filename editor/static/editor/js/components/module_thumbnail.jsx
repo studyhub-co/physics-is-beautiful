@@ -25,11 +25,11 @@ class ModuleThumbnail extends React.Component {
   render () {
     const { connectDragSource, connectDragPreview, isDragging, connectDropTarget } = this.props;
     return connectDropTarget(connectDragPreview(
-      <div className="module-thumbnail col-md-1 module-accessible-block draggable" onClick={this.props.onClick} style={{opacity:isDragging?0.5:1}}>
+      <div className="module-thumbnail col-md-1 module-accessible-block draggable" onClick={this.props.onClick} style={{display: isDragging ? 'none' : 'block'}}>
         {connectDragSource(<span className="drag-handle"/>)}
         <div className="thumbnail section-thumbnail"><Thumbnail image={this.props.image}/></div>
         <div>{this.props.name}</div>
-      </div>
+        </div>
     ))
   } 
 }
