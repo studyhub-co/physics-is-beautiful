@@ -116,6 +116,8 @@ function questions(state={}, action){
        ret[action.answer.question].answers = ret[action.answer.question].answers.slice();
        ret[action.answer.question].answers.push(action.answer.uuid)
        return ret
+    case ActionTypes.PRESERVE_ANSWERS:
+       
    case ActionTypes.DELETE_QUESTION:
        var ret = Object.assign({}, state)
        delete ret[action.question]
@@ -177,5 +179,18 @@ function othersCurricula(state={}, action){
 	return state
 }
 
-export const editor = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, othersCurricula, router : routerReducer});
 
+const combined = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, othersCurricula, router : routerReducer});
+
+export function editor(state={}, action){
+    var newState = combined(state, action)
+    if (action.type === ActionTypes.PRESERVE_ANSWERS) {
+	newState.preservedAnswers = Object.assign({}, state.preservedAnswers || {})
+	var q = state.questions[action.question]
+	var qpa = Object.assign({}, newState.preservedAnswers[action.question] || {})
+	qpa[q.answer_type] = q.answers
+	newState.preservedAnswers[action.question] = qpa
+    } else
+	newState.preservedAnswers = state.preservedAnswers || {}
+    return newState   
+}

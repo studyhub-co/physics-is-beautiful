@@ -1,3 +1,5 @@
+import json
+
 from collections import OrderedDict
 
 from django.db.models import F
@@ -195,7 +197,7 @@ class AnswerSerializer(BaseSerializer):
         return Question.objects.get(uuid=value)
 
     def _fix_question(self, validated_data):
-        if 'question' in validated_data:
+        if 'question' in validated_data and isinstance(validated_data['question'], dict):
             validated_data['question'] = validated_data['question']['uuid']
     
     def update(self, instance, validated_data):
@@ -215,7 +217,16 @@ class AnswerSerializer(BaseSerializer):
     def create(self, validated_data):
         self._fix_question(validated_data)
         self.answer_type = validated_data['question'].answer_type
-        if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
+        if 'content' in validated_data:
+            if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
+                validated_data['content'] = ImageWText.objects.create(**validated_data['content'])
+            elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION:
+                validated_data['content'] = MathematicalExpression.objects.create(**validated_data['content'])
+            elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR:
+                validated_data['content'] = Vector.objects.create(**validated_data['content'])
+            elif self.answer_type == Question.AnswerType.UNIT_CONVERSION:
+                validated_data['content'] = UnitConversion.objects.create(**validated_data['content'])
+        elif self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
             validated_data['content'] = ImageWText.objects.create(text='New answer')            
         ret =  super().create(validated_data)
         if hasattr(self, '_fields'):
@@ -263,11 +274,23 @@ class VectorSerializer(BaseSerializer):
     class Meta:
         model = Vector
         fields = ['x_component', 'y_component']
+
+class AnswersField(serializers.Field):
+    def get_attribute(self, obj):
+        return obj
     
+    def to_representation(self, obj):
+        s = AnswerSerializer(many=True, answer_type=obj.answer_type)
+        return s.to_representation(obj.answers.all())
+    
+    def to_internal_value(self, data):
+        return Answer.objects.filter(uuid__in=json.loads(data), question__isnull=True)
+        
 class QuestionSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
-
-    answers = serializers.SerializerMethodField()
+    
+#    answers = serializers.SerializerMethodField()
+    answers = AnswersField(required=False)
     vectors = VectorSerializer(many=True, required=False)
     
     def get_answers(self, obj):
@@ -285,7 +308,14 @@ class QuestionSerializer(BaseSerializer):
             for v in validated_data['vectors']:                
                 instance.vectors.add(Vector.objects.create(**v))
             del validated_data['vectors']
-        return super().update(instance, validated_data)
+
+        new_answers = validated_data.pop('answers', None)
+                                
+        updated = super().update(instance, validated_data)
+        if new_answers:
+            updated.answers.all().delete()
+            new_answers.update(question=updated)
+        return updated
 
     def create(self, validated_data):
         validated_data['lesson'] = validated_data['lesson']['uuid']

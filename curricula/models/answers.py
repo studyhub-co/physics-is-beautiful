@@ -42,7 +42,7 @@ class Answer(BaseModel):
     objects = AnswerQuerySet.as_manager()
 
     uuid = ShortUUIDField()
-    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE, null=True)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
