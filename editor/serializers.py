@@ -267,13 +267,21 @@ class AnswerSerializer(BaseSerializer):
         list_serializer_class = DictSerializer
         fields = ['uuid', 'question', 'position', 'is_correct']
 
-    
 
+class VectorListSerializer(serializers.ListSerializer):
+    def get_value(self, dictionary):
+        if not self.field_name in dictionary:
+            return empty
+        else :
+            return super().get_value(dictionary)
+
+                  
 class VectorSerializer(BaseSerializer):
-    
+
     class Meta:
         model = Vector
         fields = ['x_component', 'y_component']
+        list_serializer_class = VectorListSerializer
 
 class AnswersField(serializers.Field):
     def get_attribute(self, obj):
