@@ -13,10 +13,10 @@ const mapStateToProps = (state, ownProps) => {
     question : ans.question,
     unit_conversion_type : ans.unit_conversion_type,
     conversion_steps : ans.conversion_steps,
-    question_number : ans.question_number,
-    question_unit : ans.question_unit,
-    answer_number : ans.answer_number,
-    answer_unit : ans.answer_unit,
+    question_number : ans.question_number||'',
+    question_unit : ans.question_unit||'',
+    answer_number : ans.answer_number||'',
+    answer_unit : ans.answer_unit||'',
     
   }
 }
