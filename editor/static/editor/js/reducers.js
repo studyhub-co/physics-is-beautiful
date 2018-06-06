@@ -128,8 +128,12 @@ function questions(state={}, action){
        ret[action.answer.question].answers = ret[action.answer.question].answers.slice();
        ret[action.answer.question].answers.push(action.answer.uuid)
        return ret
-    case ActionTypes.PRESERVE_ANSWERS:
-       
+   case ActionTypes.DELETE_ANSWER:
+       var ret = Object.assign({}, state)
+       var newAnswers = ret[action.questionUuid].answers.slice()
+       newAnswers.splice(newAnswers.indexOf(action.uuid), 1)
+       ret[action.questionUuid].answers = newAnswers
+       return ret
    case ActionTypes.DELETE_QUESTION:
        var ret = Object.assign({}, state)
        delete ret[action.question]
@@ -147,6 +151,10 @@ function answers(state={}, action){
    case ActionTypes.ANSWER_LOADED:
    case ActionTypes.ANSWER_ADDED:      
        return Object.assign({}, state, {[action.answer.uuid] : action.answer})
+   case ActionTypes.DELETE_ANSWER:
+       var ret = Object.assign({}, state)
+       delete ret[action.answerUuid]
+       return ret
    case ActionTypes.SET_ANSWER_EXCLUSIVELY_CORRECT:
        var ret = Object.assign({}, state)
        for (var a in ret) {

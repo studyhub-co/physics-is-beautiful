@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 
-import {changeAnswerText, changeAnswerImage, setAnswerIsCorrect} from '../actions';
+import {changeAnswerText, changeAnswerImage, deleteAnswerChoice, setAnswerIsCorrect} from '../actions';
 
 import {AnswerChoice} from '../components/answer_choice';
 
@@ -18,7 +18,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onTextChange : newName => dispatch(changeAnswerText(ownProps.uuid, newName)),
     onImageChange : newImage => dispatch(changeAnswerImage(ownProps.uuid, newImage)),
-    onSelectChange : e =>  dispatch(setAnswerIsCorrect(ownProps.uuid, e.target.checked, ownProps.exclusive))
+    onSelectChange : e =>  dispatch(setAnswerIsCorrect(ownProps.uuid, e.target.checked, ownProps.exclusive)),
+    onDeleteClick : () => dispatch(deleteAnswerChoice(ownProps.uuid))
   }
 }
 
