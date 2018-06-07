@@ -344,6 +344,7 @@ export default class CurriculumRouter extends React.Component {
                     <Route path='/lessons/:currentId' component={LessonsApp} />
                     <Route path='/modules/:currentId' component={ModulesApp} />
                     <Route path='/games/:slug' component={GamesApp} />
+                    <Route path='/:currentId' component={CurriculumApp} />
                     <Route path='/' component={CurriculumApp} />
                 </Switch>
             </BrowserRouter>
