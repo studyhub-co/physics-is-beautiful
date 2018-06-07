@@ -8,7 +8,7 @@ export class AnswerChoice extends React.Component {
   render() {
     var thumb = <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
     var selectionControl = <input type={this.props.exclusive ? 'radio':'checkbox'}  onChange={this.props.onSelectChange} value={this.props.text} checked={this.props.is_correct}/>
-    var label = <EditableLabel value={this.props.text} onChange={this.props.onTextChange}/>
+    var label = <EditableLabel value={this.props.text} defaultValue="New answer" onChange={this.props.onTextChange}/>
     var deleteIcon = <span className="glyphicon glyphicon-remove" onClick={this.props.onDeleteClick}/>
           
           

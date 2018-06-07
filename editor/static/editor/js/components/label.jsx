@@ -66,8 +66,8 @@ export class EditableLabel extends React.Component {
               <input type="text" value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur} ref={this.setInputRef}/>
               </form>)
     } else {
-      return (<span className={'editable-label' + (this.props.value?'':' empty')} onClick={this.handleEditClick}>
-              <span>{this.props.value}</span>
+      return (<span className={'editable-label' + (this.props.value || this.props.defaultValue?'':' empty')} onClick={this.handleEditClick}>
+              <span>{this.props.value || this.props.defaultValue}</span>
               <span  className="glyphicon glyphicon-pencil"/>              
               </span>)
     }

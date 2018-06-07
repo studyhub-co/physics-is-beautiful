@@ -100,7 +100,7 @@ class AnswerSerializer(BaseSerializer):
             elif self.answer_type == Question.AnswerType.UNIT_CONVERSION:
                 validated_data['content'] = UnitConversion.objects.create(**validated_data['content'])
         elif self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
-            validated_data['content'] = ImageWText.objects.create(text='New answer')            
+            validated_data['content'] = ImageWText.objects.create()            
         ret =  super().create(validated_data)
         if hasattr(self, '_fields'):
             del self._fields
@@ -110,8 +110,8 @@ class AnswerSerializer(BaseSerializer):
         fields = super().get_fields()
         if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE) or \
            (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, ImageWText)):
-            fields['image'] = serializers.ImageField(source='content.image')
-            fields['text'] = serializers.CharField(source='content.text')
+            fields['image'] = serializers.ImageField(source='content.image', required=False)
+            fields['text'] = serializers.CharField(source='content.text', allow_blank=True)
         elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MathematicalExpression)):
             fields['representation'] = serializers.CharField(source='content.representation')
