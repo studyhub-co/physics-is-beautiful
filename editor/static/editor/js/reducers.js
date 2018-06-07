@@ -111,6 +111,19 @@ function lessons(state={}, action){
        ret[action.lesson].questions = ret[action.lesson].questions.slice();
        ret[action.lesson].questions.splice(ret[action.lesson].questions.indexOf(action.question), 1)
        return ret
+   case ActionTypes.QUESTION_MOVED:
+       var ret = Object.assign({}, state)
+       var les = Object.assign({}, ret[action.lessonUuid])
+       var qs = les.questions.slice()
+       qs.splice(qs.indexOf(action.uuid), 1)
+       if (action.beforeUuid)
+	   qs.splice(qs.indexOf(action.beforeUuid), 0, action.uuid)
+       else
+	   qs.push(action.uuid)
+       les.questions = qs
+       ret[action.lessonUuid] = les
+       return ret
+       
        
    default:
        return state
@@ -138,6 +151,8 @@ function questions(state={}, action){
        var ret = Object.assign({}, state)
        delete ret[action.question]
        return ret
+   case ActionTypes.LESSON_LOADED:
+       return Object.assign({}, action.questions)
    default:
        return state
    }
@@ -166,6 +181,8 @@ function answers(state={}, action){
        var ret = Object.assign({}, state)
        ret[action.answer].is_correct = action.is_correct;
        return ret
+   case ActionTypes.LESSON_LOADED:
+       return Object.assign({}, action.answers)
        
    default:
        return state

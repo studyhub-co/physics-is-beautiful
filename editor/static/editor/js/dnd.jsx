@@ -4,17 +4,18 @@ import { DropTarget } from 'react-dnd';
 export const DragItemTypes = {
   UNIT : 'unit',
   MODULE : 'module',
-  LESSON : 'lesson'
+  LESSON : 'lesson',
+  QUESTION : 'question',
 };
 
 class DockableDropTarget extends React.Component {
   render () {
-    let dockSite;
-    if (this.props.dragOver && this.props.itemOver.uuid != this.props.selfUuid){
+    let dockSite, isOver=this.props.dragOver && this.props.itemOver.uuid != this.props.selfUuid;
+    if (isOver){
       dockSite = <div className="dock-site"></div>;
     }
     return this.props.connectDropTarget(
-      <div className="drop-target">
+      <div className={'drop-target' + (isOver ? ' drag-over':'')}>
         {dockSite}
         {this.props.children}
       </div>

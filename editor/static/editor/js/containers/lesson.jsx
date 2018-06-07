@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {Lesson} from '../components/lesson';
 
-import {renameLesson, changeLessonImage, changeLessonType, changeLessonGameType, deleteLesson} from '../actions';
+import {renameLesson, changeLessonImage, changeLessonType, changeLessonGameType, moveQuestion, deleteLesson} from '../actions';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -16,6 +16,7 @@ const mapStateToProps = (state, ownProps) => {
       module : les.module,
       lesson_type : les.lesson_type,
       game_type : les.game_type,
+      questions : les.questions
     }
   else
     return {loading : true}
@@ -28,7 +29,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onDeleteClick : () => dispatch(deleteLesson(ownProps.uuid)),
     onTypeChange : newType => dispatch(changeLessonType(ownProps.uuid, newType)),
     onGameTypeChange : e => dispatch(changeLessonGameType(ownProps.uuid, e.target.value)),
-    
+    onQuestionDroppedBefore : (beforeQuestionUuid, question) => dispatch(moveQuestion(question.uuid, beforeQuestionUuid)),
   }    
 }
 

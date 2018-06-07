@@ -49,7 +49,7 @@ export class Question extends React.Component {
     if (this.props.loading) {
       return <div>Loading...</div>
     }
-    var typeOptions = Object.entries(AnswerTypeLabels).map(([typeId, typeDisplay]) => <option value={typeId}>{typeDisplay}</option>);
+    var typeOptions = Object.entries(AnswerTypeLabels).map(([typeId, typeDisplay]) => <option key={typeId} value={typeId}>{typeDisplay}</option>);
 
     var answersEditor;
 
@@ -75,7 +75,7 @@ export class Question extends React.Component {
                 <EditableLabel value={this.props.text} onChange={this.props.onTextChange}/>
                 <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
               </h1>
-              <div className="thumbnail question-thumbnail">
+              <div className="thumbnail question-image">
                 {this.props.answer_type != AnswerTypes.VECTOR_COMPONENTS &&
                   <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
                   }
