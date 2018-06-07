@@ -197,10 +197,9 @@ class LessonApp extends React.Component {
     }
 
     return (
-      <div>
+      <div className="lesson-editor">
         <Sheet type="problem">
           <LessonContainer uuid={this.props.match.params.uuid}/>
-          <div className="row">
             {this.props.lesson_type==0 &&
               <div className="lesson-questions">
                   <a onClick={this.handlePreviousClick} className={'btn btn-default btn-arrow' + (this.props.previousQuestion?'': ' disabled')}><span className="glyphicon glyphicon-backward"/></a>
@@ -211,7 +210,6 @@ class LessonApp extends React.Component {
                    </DockableDropTarget>
                     <a onClick={this.handleNextClick} className={'btn btn-default btn-arrow' + (this.props.nextQuestion?'': ' disabled')}><span className="glyphicon glyphicon-forward"/></a>
               </div>}
-          </div>
           { this.props.lesson_type == 0 && this.props.currentQuestion &&
             <div>
                 <hr/>
