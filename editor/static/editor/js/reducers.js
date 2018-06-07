@@ -152,7 +152,7 @@ function questions(state={}, action){
        delete ret[action.question]
        return ret
    case ActionTypes.LESSON_LOADED:
-       return Object.assign({}, action.questions)
+       return Object.assign({}, state, action.questions)
    default:
        return state
    }
@@ -182,7 +182,7 @@ function answers(state={}, action){
        ret[action.answer].is_correct = action.is_correct;
        return ret
    case ActionTypes.LESSON_LOADED:
-       return Object.assign({}, action.answers)
+       return Object.assign({}, state, action.answers)
        
    default:
        return state
@@ -193,6 +193,7 @@ function answers(state={}, action){
 function currentQuestion(state=null, action){
    switch (action.type) {
    case ActionTypes.LESSON_LOADED:
+   case ActionTypes.LESSON_AVAILABLE:
        if (action.lesson.questions.length > 0)
 	   return action.lesson.questions[0]
        else
