@@ -19,6 +19,7 @@ export const ActionTypes = Object.freeze({
     MODULE_LOADED : 'MODULE_LOADED',
     DELETE_MODULE : 'DELETE_MODULE',
     LESSON_LOADED : 'LESSON_LOADED',
+    LESSON_AVAILABLE : 'LESSON_AVAILABLE',
     LESSON_ADDED : 'LESSON_ADDED',
     DELETE_LESSON : 'DELETE_LESSON',
     QUESTION_LOADED : 'QUESTION_LOADED',
@@ -444,6 +445,10 @@ export function lessonLoaded(data) {
 	     questions : questions,
 	     answers : extractAll(questions, 'answers')}
 }
+export function lessonAvailable(lesson){
+    return {type:ActionTypes.LESSON_AVAILABLE,
+	    lesson:lesson}
+}
 
 export function loadLessonIfNeeded(uuid) {
     return (dispatch, getState) => {
@@ -458,7 +463,7 @@ export function loadLessonIfNeeded(uuid) {
 		}
 	    });
 	} else {
-	    dispatch(lessonLoaded(getState().lessons[uuid]));
+	    dispatch(lessonAvailable(getState().lessons[uuid]));
 	}
     }
 }
