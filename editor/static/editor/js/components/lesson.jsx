@@ -27,7 +27,7 @@ export class Lesson extends React.Component {
       questions.push(
         <DockableDropTarget key={this.props.questions[i]} onDrop={this.props.onQuestionDroppedBefore.bind(null, this.props.questions[i])}
                             itemType={DragItemTypes.QUESTION} selfUuid={this.props.questions[i]}>
-          <QuestionThumbnailContainer key={this.props.questions[i]} uuid={this.props.questions[i]} />
+          <QuestionThumbnailContainer key={this.props.questions[i]} uuid={this.props.questions[i]} selected={this.props.currentQuestion==this.props.questions[i]}/>
         </DockableDropTarget>
       )
     }
