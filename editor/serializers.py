@@ -23,53 +23,7 @@ class DictSerializer(serializers.ListSerializer):
     def data(self):
         return super(serializers.ListSerializer, self).data
 
-    
-
-class LessonSerializer(BaseSerializer):
-
-    module = serializers.CharField(source='module.uuid')
-
-    questions = serializers.SerializerMethodField()
-
-    game_type = serializers.CharField(source='game.slug', required=False)
-
-
-    def get_questions(self, lesson):
-        return list(lesson.questions.values_list('uuid', flat=True))
-    
-    def validate_module(self, value):
-        return Module.objects.get(uuid=value)
-
-    def update(self, instance, validated_data):
-        if 'module' in validated_data:
-            validated_data['module'] = validated_data['module']['uuid']
-        if 'position' in validated_data and instance.position != validated_data['position']:
-            Lesson.objects.filter(position__gte=validated_data['position'],
-                                  module_id=instance.module_id).update(position=F('position')+1)
-        if 'lesson_type' in validated_data and validated_data['lesson_type'] == Lesson.LessonType.GAME:
-            Game.objects.get_or_create(lesson=instance, defaults={'slug' : 'unit-conversion'})
-        if 'game' in validated_data:
-            for k,v in validated_data.pop('game').items():
-                setattr(instance.game, k, v)
-                instance.game.save()
-            
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        validated_data['module'] = validated_data['module']['uuid']
-        new_lesson = super().create(validated_data)
-        Question.objects.create(lesson=new_lesson, text='New question')
-        return new_lesson
-
-    class Meta:
-        model = Lesson
-        list_serializer_class = DictSerializer
-        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'game_type', 'url', 'questions']
-        extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
-        }
-
-
+        
 class SimpleModuleSerializer(BaseSerializer):
 
     unit = serializers.CharField(source='unit.uuid')
@@ -83,72 +37,7 @@ class SimpleModuleSerializer(BaseSerializer):
             'url' : {'lookup_field' : 'uuid'}
         }
 
-class ModuleSerializer(BaseSerializer):
-    lessons = LessonSerializer(many=True, read_only=True)
-
-    unit = serializers.CharField(source='unit.uuid')
-    curriculum = serializers.CharField(source='unit.curriculum.uuid', read_only=True)
     
-    def validate_unit(self, value):
-        return Unit.objects.get(uuid=value)
-
-    def update(self, instance, validated_data):
-        if 'unit' in validated_data:
-            validated_data['unit'] = validated_data['unit']['uuid']
-        if 'position' in validated_data and instance.position != validated_data['position']:
-            Module.objects.filter(position__gte=validated_data['position'],
-                                  unit_id=instance.unit_id).update(position=F('position')+1)
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        validated_data['unit'] = validated_data['unit']['uuid']
-        return super().create(validated_data)
-
-#    curriculum = serializers.CharField(read_only=True, source='unit.curriculum.uuid')
-
-    class Meta:
-        model = Module
-        fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons'] #, 'curriculum']
-        read_only_fields = ('uuid', )
-        extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
-        }
-    
-
-class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
-    modules = SimpleModuleSerializer(many=True, read_only=True)
-    
-    curriculum = serializers.CharField(source='curriculum.uuid')
-
-    
-    def validate_curriculum(self, value):
-        return Curriculum.objects.get(uuid=value)
-
-    def update(self, instance, validated_data):
-        if 'curriculum' in validated_data:
-            validated_data['curriculum'] = validated_data['curriculum']['uuid']
-        if 'position' in validated_data and instance.position != validated_data['position']:
-            Unit.objects.filter(position__gte=validated_data['position'],
-                                curriculum_id=instance.curriculum_id).update(position=F('position')+1)
-            
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        validated_data['curriculum'] = validated_data['curriculum']['uuid']
-        return super().create(validated_data)
-    
-    class Meta:
-        model = Unit
-        list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'position', 'url', 'curriculum', 'modules']
-        read_only_fields = ('uuid', 'modules')        
-        expandable_fields = {
-            'modules': (ModuleSerializer, (), {'many': True}),
-        }
-        extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
-        }
-        
 
 class MiniCurriculumSerializer(BaseSerializer):
     author = serializers.SerializerMethodField()
@@ -160,22 +49,6 @@ class MiniCurriculumSerializer(BaseSerializer):
         model = Curriculum
         fields = ['uuid', 'name', 'author']
         
-class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
-    units = UnitSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Curriculum
-        list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'url', 'units']
-        read_only_fields = ('uuid', 'units')
-        expandable_fields = {
-            'units': (UnitSerializer, (), {'many': True}),
-        }
-        extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
-        }
-
-
 
 class AnswerContentField(serializers.Field):
     def to_representation(self, obj):
@@ -307,11 +180,15 @@ class QuestionSerializer(BaseSerializer):
     def update(self, instance, validated_data):
         if 'lesson' in validated_data:
             validated_data['lesson'] = validated_data['lesson']['uuid']
+
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Question.objects.filter(position__gte=validated_data['position'],
+                                    lesson_id=instance.lesson_id).update(position=F('position')+1)           
         if 'vectors' in validated_data:
             instance.vectors.all().delete()
             for v in validated_data['vectors']:                
                 instance.vectors.add(Vector.objects.create(**v))
-            del validated_data['vectors']
+            del validated_data['vectors']            
 
         new_answers = validated_data.pop('answers', None)
                                 
@@ -333,7 +210,131 @@ class QuestionSerializer(BaseSerializer):
     class Meta:
         model = Question
         fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers', 'vectors']
-
-
+        list_serializer_class = DictSerializer
 
         
+class LessonSerializer(BaseSerializer):
+
+    module = serializers.CharField(source='module.uuid')
+
+    questions = QuestionSerializer(many=True, read_only=True)
+
+    game_type = serializers.CharField(source='game.slug', required=False)
+    
+    def validate_module(self, value):
+        return Module.objects.get(uuid=value)
+
+    def update(self, instance, validated_data):
+        if 'module' in validated_data:
+            validated_data['module'] = validated_data['module']['uuid']
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Lesson.objects.filter(position__gte=validated_data['position'],
+                                  module_id=instance.module_id).update(position=F('position')+1)
+        if 'lesson_type' in validated_data and validated_data['lesson_type'] == Lesson.LessonType.GAME:
+            Game.objects.get_or_create(lesson=instance, defaults={'slug' : 'unit-conversion'})
+        if 'game' in validated_data:
+            for k,v in validated_data.pop('game').items():
+                setattr(instance.game, k, v)
+                instance.game.save()
+            
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        validated_data['module'] = validated_data['module']['uuid']
+        new_lesson = super().create(validated_data)
+        Question.objects.create(lesson=new_lesson, text='New question')
+        return new_lesson
+
+    class Meta:
+        model = Lesson
+        list_serializer_class = DictSerializer
+        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'game_type', 'url', 'questions']
+        extra_kwargs = {
+            'url' : {'lookup_field' : 'uuid'}
+        }
+
+
+class MiniLessonSerializer(LessonSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields.pop('questions')
+        
+class ModuleSerializer(BaseSerializer):
+    lessons = MiniLessonSerializer(many=True, read_only=True)
+
+    unit = serializers.CharField(source='unit.uuid')
+    curriculum = serializers.CharField(source='unit.curriculum.uuid', read_only=True)
+    
+    def validate_unit(self, value):
+        return Unit.objects.get(uuid=value)
+
+    def update(self, instance, validated_data):
+        if 'unit' in validated_data:
+            validated_data['unit'] = validated_data['unit']['uuid']
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Module.objects.filter(position__gte=validated_data['position'],
+                                  unit_id=instance.unit_id).update(position=F('position')+1)
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        validated_data['unit'] = validated_data['unit']['uuid']
+        return super().create(validated_data)
+
+#    curriculum = serializers.CharField(read_only=True, source='unit.curriculum.uuid')
+
+    class Meta:
+        model = Module
+        fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons'] #, 'curriculum']
+        read_only_fields = ('uuid', )
+        extra_kwargs = {
+            'url' : {'lookup_field' : 'uuid'}
+        }
+
+class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
+    modules = SimpleModuleSerializer(many=True, read_only=True)
+    
+    curriculum = serializers.CharField(source='curriculum.uuid')
+
+    
+    def validate_curriculum(self, value):
+        return Curriculum.objects.get(uuid=value)
+
+    def update(self, instance, validated_data):
+        if 'curriculum' in validated_data:
+            validated_data['curriculum'] = validated_data['curriculum']['uuid']
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Unit.objects.filter(position__gte=validated_data['position'],
+                                curriculum_id=instance.curriculum_id).update(position=F('position')+1)
+            
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        validated_data['curriculum'] = validated_data['curriculum']['uuid']
+        return super().create(validated_data)
+    
+    class Meta:
+        model = Unit
+        list_serializer_class = DictSerializer
+        fields = ['uuid', 'name', 'image', 'position', 'url', 'curriculum', 'modules']
+        read_only_fields = ('uuid', 'modules')        
+        expandable_fields = {
+            'modules': (ModuleSerializer, (), {'many': True}),
+        }
+        extra_kwargs = {
+            'url' : {'lookup_field' : 'uuid'}
+        }
+        
+class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
+    units = UnitSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Curriculum
+        list_serializer_class = DictSerializer
+        fields = ['uuid', 'name', 'image', 'url', 'units']
+        read_only_fields = ('uuid', 'units')
+        expandable_fields = {
+            'units': (UnitSerializer, (), {'many': True}),
+        }
+        extra_kwargs = {
+            'url' : {'lookup_field' : 'uuid'}
+        }

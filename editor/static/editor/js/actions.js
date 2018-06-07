@@ -23,6 +23,7 @@ export const ActionTypes = Object.freeze({
     DELETE_LESSON : 'DELETE_LESSON',
     QUESTION_LOADED : 'QUESTION_LOADED',
     QUESTION_ADDED : 'QUESTION_ADDED',
+    QUESTION_MOVED : 'QUESTION_MOVED',
     PRESERVE_ANSWERS : 'PRESERVE_ANSWERS',
     GOTO_QUESTION : 'GOTO_QUESTION',
     DELETE_QUESTION : 'DELETE_QUESTION',
@@ -437,13 +438,16 @@ export function addLesson(moduleUuid) {
 
 
 export function lessonLoaded(data) {
+    var questions = extract(data, 'questions')
     return { type : ActionTypes.LESSON_LOADED,
-	     lesson : data }
+	     lesson : data,
+	     questions : questions,
+	     answers : extractAll(questions, 'answers')}
 }
 
 export function loadLessonIfNeeded(uuid) {
     return (dispatch, getState) => {
-	if (!(uuid in getState().lessons)) {
+	if (!(uuid in getState().lessons) || !getState().lessons[uuid].questions) {
 	    $.ajax({
 		async: true,
 		url: '/editor/api/lessons/'+uuid +'/',
@@ -455,8 +459,6 @@ export function loadLessonIfNeeded(uuid) {
 	    });
 	} else {
 	    dispatch(lessonLoaded(getState().lessons[uuid]));
-	    if (getState().lessons[uuid].questions.length > 0)
-		dispatch(loadQuestionIfNeeded(getState().lessons[uuid].questions[0]));
 	}
     }
 }
@@ -674,6 +676,34 @@ export function addQuestion(lesson){
      }
    
 }
+
+
+export function moveQuestion(uuid, beforeUuid) {    
+    return (dispatch, getState) => {
+	var state = getState()
+	var lessonUuid = state.questions[uuid].lesson
+	var newPosition
+	if (beforeUuid) 
+	    newPosition = state.questions[beforeUuid].position;
+	else {
+	    var lesson = state.lessons[lessonUuid]
+	    newPosition = state.questions[lesson.questions[lesson.questions.length - 1]].position + 1;
+	}
+	$.ajax({
+	    async: true,
+	    url: '/editor/api/questions/'+uuid+'/',
+	    method : 'PATCH',
+	    data : {position : newPosition},
+	    success: function(data, status, jqXHR) {
+		dispatch({type : ActionTypes.QUESTION_MOVED,
+			  uuid : uuid,
+			  beforeUuid : beforeUuid,
+			  lessonUuid: lessonUuid})
+	    }
+	});    	
+    }
+}
+
 
 
 export function deleteQuestion(uuid) {

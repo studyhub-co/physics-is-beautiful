@@ -3,6 +3,8 @@ import React from 'react';
 import {EditableThumbnail} from './thumbnail'
 import {EditableLabel} from './label'
 import {BackButton} from './back_button'
+import {QuestionThumbnailContainer} from '../containers/question_thumbnail'
+import {DockableDropTarget, DragItemTypes} from '../dnd';
 
 
 export class Lesson extends React.Component {
@@ -19,6 +21,15 @@ export class Lesson extends React.Component {
   render() {
     if (this.props.loading) {
       return <div>Loading...</div>
+    }
+    var questions = [];
+    for (var i in this.props.questions) {
+      questions.push(
+        <DockableDropTarget key={this.props.questions[i]} onDrop={this.props.onQuestionDroppedBefore.bind(null, this.props.questions[i])}
+                            itemType={DragItemTypes.QUESTION} selfUuid={this.props.questions[i]}>
+          <QuestionThumbnailContainer key={this.props.questions[i]} uuid={this.props.questions[i]} />
+        </DockableDropTarget>
+      )
     }
     return (
       <div>        
@@ -37,7 +48,15 @@ export class Lesson extends React.Component {
                   <option value="unit-conversion">Unit conversion game</option>
                 </select>
             </label>
-        }
+          }
+          {this.props.lesson_type==0 && <div className="lesson-questions">
+              {questions}
+              <DockableDropTarget onDrop={this.props.onQuestionDroppedBefore.bind(null, null)}
+                                    itemType={DragItemTypes.QUESTION}>
+                  <div className="dock-space"/>                     
+              </DockableDropTarget>
+
+          </div>}
       </div>)
   }
 }

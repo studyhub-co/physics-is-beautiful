@@ -192,7 +192,7 @@ class LessonApp extends React.Component {
                   <a onClick={this.handleAddQuestionClick} className="btn btn-default">Add question</a>
                   }
           </div>
-          {this.props.lesson_type == 0 && this.props.currentQuestion &&
+          { this.props.lesson_type == 0 && this.props.currentQuestion &&
             <div>
                 <hr/>
                   <QuestionContainer uuid={this.props.currentQuestion}/>
