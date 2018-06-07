@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {Lesson} from '../components/lesson';
 
-import {renameLesson, changeLessonImage, changeLessonType, changeLessonGameType, moveQuestion, deleteLesson} from '../actions';
+import {renameLesson, changeLessonImage, changeLessonType, changeLessonGameType, deleteLesson} from '../actions';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -30,7 +30,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onDeleteClick : () => dispatch(deleteLesson(ownProps.uuid)),
     onTypeChange : newType => dispatch(changeLessonType(ownProps.uuid, newType)),
     onGameTypeChange : e => dispatch(changeLessonGameType(ownProps.uuid, e.target.value)),
-    onQuestionDroppedBefore : (beforeQuestionUuid, question) => dispatch(moveQuestion(question.uuid, beforeQuestionUuid)),
   }    
 }
 
