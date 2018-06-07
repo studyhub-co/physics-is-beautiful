@@ -207,7 +207,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
     )
 
     # conversion_steps = [{"numerator":"", "denominator":""},  {"numerator":"", "denominator":""}, ...]
-    conversion_steps = JSONField(blank=True, null=True, default=[], help_text="Numerator/Denominator steps")
+    conversion_steps = JSONField(blank=True, null=True, default=[{'numerator':'','denominator':''}], help_text="Numerator/Denominator steps")
 
     question_number = models.FloatField(blank=True, null=True)
     question_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
