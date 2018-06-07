@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { routerReducer } from 'react-router-redux'
+import { routerReducer, LOCATION_CHANGE } from 'react-router-redux'
 
 
 import {ActionTypes} from './actions'
@@ -203,6 +203,8 @@ function currentQuestion(state=null, action){
        return action.question.uuid
    case ActionTypes.DELETE_QUESTION:
        return action.goToQuestion
+   case LOCATION_CHANGE:
+       return null
    default:
        return state
    }
