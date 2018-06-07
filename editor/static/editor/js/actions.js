@@ -429,8 +429,12 @@ export function addLesson(moduleUuid) {
 	    method : 'POST',
 	    data : {name : 'New lesson', module : moduleUuid},
 	    success: function(data, status, jqXHR) {
+		var questions = extract(data, 'questions')		
 		dispatch({type : ActionTypes.LESSON_ADDED,
-			  lesson : data});
+			  lesson : data,
+			  questions : questions,
+			  answers : extractAll(questions, 'answers')
+			 });
 		history.push('/lessons/'+data.uuid+'/');
 	    }
 	});   
