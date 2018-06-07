@@ -18,7 +18,7 @@ export class UnitConversionAnswer extends React.Component {
                  </div>)
     }
     return (
-      <div className="unit-conversion">
+      <div className={'unit-conversion' + (this.props.is_consistent? '' : ' inconsistent')}>
         <select onChange={this.props.onTypeChange} value={this.props.unit_conversion_type}>{typeOptions}</select>
         <div className="conversion-row">
           <div className="conversion-steps">
@@ -30,13 +30,16 @@ export class UnitConversionAnswer extends React.Component {
           </div>
           <div className="add-remove-steps">
             <a href="" onClick={e=>{e.preventDefault();this.props.onAddStepClick()}} className="hover-button"><span className="glyphicon glyphicon-plus"/> Add Step</a> <br/>
-            <a href="" onClick={e=>{e.preventDefault(); if(this.props.conversion_steps.length>1)this.props.onRemoveStepClick()}} className={'hover-button' + (this.props.conversion_steps.length<=1 ? ' disabled' : '')}><span className="glyphicon glyphicon-minus"/> Remove Step</a>
+            <a href="" onClick={e=>{e.preventDefault(); if (this.props.conversion_steps.length > 1) this.props.onRemoveStepClick()}} className={'hover-button' + (this.props.conversion_steps.length<=1 ? ' disabled' : '')}><span className="glyphicon glyphicon-minus"/> Remove Step</a>
           </div>
           <div className="equals"> = </div>
           <div className="conversion-result">
             <EditableLabel value={this.props.answer_number+' '+this.props.answer_unit} onChange={this.props.onAnswerValueChange}/>
           </div>        
         </div>
+        {!this.props.is_consistent &&
+          <div className="alert alert-warning" role="alert">This conversion is inconsistent or incomplete. Please correct or complete it</div>
+          }
       </div>
     )
   }

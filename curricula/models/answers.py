@@ -252,6 +252,25 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
 
         return False
 
+    @property
+    def is_consistent(self):
+        if self.question_number is None or self.answer_number is None or \
+           not self.question_unit or not self.answer_unit:
+            return False
+        ureg = UnitRegistry()
+        Q_ = ureg.Quantity
+        q = Q_(str(self.question_number) + ' ' + self.question_unit)
+        for s in self.conversion_steps:
+            if s['numerator'] and s['denominator']:
+                num = Q_(s['numerator'])
+                denom = Q_(s['denominator'])
+                q = q * num / denom
+            else:
+                return False
+        left_si = q.to_base_units().magnitude
+        right_si = Q_(str(self.answer_number) + ' ' + self.answer_unit).to_base_units().magnitude
+        return self.match_math(str(left_si), str(right_si))
+    
     def __str__(self):
         return 'UnitConversion: {}'.format(self.answer)
 

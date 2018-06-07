@@ -37,6 +37,7 @@
 .editor .unit-conversion .equals { font-size:60px; margin:0 10px; display:inline-block; vertical-align:top; padding-top:25px;}
 .editor .unit-conversion .conversion-result { vertical-align:top; padding-top:54px; display:inline-block; font-size:20px; height:60px;}
 .editor .unit-conversion input { max-width: 80px; }
+.editor .unit-conversion .conversion-row { margin-bottom:20px; }
 
 .editor .vector-components-answer { font-size:36px; margin-top:20px; }
 .editor .vector-components-answer .mq-editable-label .editing { min-width:120px; }
