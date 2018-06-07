@@ -16,7 +16,8 @@ const mapStateToProps = (state, ownProps) => {
       module : les.module,
       lesson_type : les.lesson_type,
       game_type : les.game_type,
-      questions : les.questions
+      questions : les.questions,
+      currentQuestion : state.currentQuestion,
     }
   else
     return {loading : true}

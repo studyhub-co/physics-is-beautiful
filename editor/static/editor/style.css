@@ -51,6 +51,7 @@
 .editor .lesson-questions .drop-target{ display:inline-block; }
 .editor .lesson-questions .drop-target .dock-site { display:none; }
 .editor .lesson-questions .drop-target.drag-over { padding-left:120px; }
-.editor .lesson-questions .dock-space { width:80px; display:inline-block; height:70px;}
-.editor .question-thumbnail { background:#EEE; border:1px solid #DDD; margin:5px; padding:0 5px 0 0; height:60px; max-width:120px; overflow:hidden;}
+.editor .lesson-questions .dock-space { width:80px; display:inline-block; height:75px;}
+.editor .question-thumbnail { background:#FCFCFC; border:1px solid #DDD; border-radius:5px; margin:5px; padding:0 5px; height:65px; max-width:120px; overflow:hidden;}
 .editor .question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}
+.editor .question-thumbnail.selected { background: #f0fafe; border:1px solid #9fddfb; }
