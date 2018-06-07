@@ -41,7 +41,7 @@ class Unit extends React.Component {
         <div className="row">
           {modules}
           <DockableDropTarget onDrop={this.props.onModuleDroppedBefore.bind(null, null)} itemType={DragItemTypes.MODULE}>
-            <div className="col-md-1 module-accessible-block" onClick={this.props.onAddModuleClick}>
+            <div className="col-md-1 module-accessible-block btn-add-module" onClick={this.props.onAddModuleClick}>
               <div className="thumbnail section-thumbnail">
                 <span className="glyphicon glyphicon-plus-sign"/>
               </div>
