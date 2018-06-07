@@ -131,7 +131,7 @@ class AnswerSerializer(BaseSerializer):
             fields['answer_number'] = serializers.FloatField(source='content.answer_number')
             fields['answer_unit'] = serializers.CharField(source='content.answer_unit', max_length=100)
             fields['conversion_steps'] = serializers.JSONField(source='content.conversion_steps')
-            
+            fields['is_consistent'] = serializers.BooleanField(source='content.is_consistent', read_only=True)
             
         return fields
     

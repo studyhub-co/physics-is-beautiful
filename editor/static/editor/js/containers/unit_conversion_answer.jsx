@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
     question_unit : ans.question_unit||'',
     answer_number : ans.answer_number||'',
     answer_unit : ans.answer_unit||'',
-    
+    is_consistent : ans.is_consistent
   }
 }
 
