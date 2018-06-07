@@ -28,11 +28,14 @@
 .editor .conversion-steps { margin-top:20px; display:inline-block; font-size:20px; }
 .editor .conversion-steps .conversion-step { border-right:1px solid black; display:inline-block;}
 .editor .conversion-steps .conversion-step:last-child { border-right:none; }
-.editor .conversion-steps .conversion-step .numerator { border-bottom:1px solid black; padding-right: 10px; }
-.editor .conversion-steps .conversion-step .denominator { padding-right:10px; }
+.editor .conversion-steps .conversion-step .numerator { border-bottom:1px solid black; padding:10px; }
+.editor .conversion-steps .conversion-step .denominator { padding:10px;}
 .editor .unit-conversion .add-remove-steps {font-size:10px; display:inline-block; text-align:left;}
-.editor .unit-conversion .equals { font-size:60px; margin:0 10px; display:inline-block;}
-.editor .unit-conversion .conversion-result { vertical-align:middle; display:inline-block; font-size:20px; height:60px;}
+.editor .unit-conversion .add-remove-steps .hover-button { padding:2px; margin:1px auto; display:inline-block; }
+.editor .unit-conversion .add-remove-steps .hover-button:hover {text-decoration:none; }
+.editor .unit-conversion .add-remove-steps .hover-button.disabled { color: rgb(192, 192, 192); border-color:rgb(192, 192, 192); cursor:default;}
+.editor .unit-conversion .equals { font-size:60px; margin:0 10px; display:inline-block; vertical-align:top; padding-top:25px;}
+.editor .unit-conversion .conversion-result { vertical-align:top; padding-top:54px; display:inline-block; font-size:20px; height:60px;}
 .editor .unit-conversion input { max-width: 80px; }
 
 .editor .vector-components-answer { font-size:36px; margin-top:20px; }

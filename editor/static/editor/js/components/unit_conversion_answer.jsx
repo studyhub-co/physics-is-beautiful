@@ -20,21 +20,22 @@ export class UnitConversionAnswer extends React.Component {
     return (
       <div className="unit-conversion">
         <select onChange={this.props.onTypeChange} value={this.props.unit_conversion_type}>{typeOptions}</select>
-        <br/>
-        <div className="conversion-steps">
-          <div className="conversion-step">
-            <div className="numerator"><EditableLabel value={this.props.question_number+' '+this.props.question_unit} onChange={this.props.onQuestionValueChange}/></div>
-            <div className="denominator">&nbsp;</div>
+        <div className="conversion-row">
+          <div className="conversion-steps">
+            <div className="conversion-step">
+              <div className="numerator"><EditableLabel value={this.props.question_number+' '+this.props.question_unit} onChange={this.props.onQuestionValueChange}/></div>
+              <div className="denominator">&nbsp;</div>
+            </div>
+            {steps}
           </div>
-          {steps}
-        </div>
-        <div className="add-remove-steps">
-          <a onClick={this.props.onAddStepClick}><span className="glyphicon glyphicon-plus"/> Add step</a> <br/>
-          <a onClick={this.props.onRemoveStepClick}><span className="glyphicon glyphicon-minus"/> Remove step</a>
-        </div>
-        <div className="equals"> = </div>
-        <div className="conversion-result">
-          <EditableLabel value={this.props.answer_number+' '+this.props.answer_unit} onChange={this.props.onAnswerValueChange}/>
+          <div className="add-remove-steps">
+            <a href="" onClick={e=>{e.preventDefault();this.props.onAddStepClick()}} className="hover-button"><span className="glyphicon glyphicon-plus"/> Add Step</a> <br/>
+            <a href="" onClick={e=>{e.preventDefault(); if(this.props.conversion_steps.length>1)this.props.onRemoveStepClick()}} className={'hover-button' + (this.props.conversion_steps.length<=1 ? ' disabled' : '')}><span className="glyphicon glyphicon-minus"/> Remove Step</a>
+          </div>
+          <div className="equals"> = </div>
+          <div className="conversion-result">
+            <EditableLabel value={this.props.answer_number+' '+this.props.answer_unit} onChange={this.props.onAnswerValueChange}/>
+          </div>        
         </div>
       </div>
     )

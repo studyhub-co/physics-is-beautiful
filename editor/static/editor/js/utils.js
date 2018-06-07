@@ -22,7 +22,7 @@ export function vectorToAngle(x,y) {
 }
 
 
-const quantityUnitRe = /^([\d\.,]+)\\*\s*([\w/]+)$/;
+const quantityUnitRe = /^\s*([\d\.,]+)\\*\s*([\w/]+)\s*$/;
 
 export function validateQuantityUnit(value) {
     return quantityUnitRe.test(value);
