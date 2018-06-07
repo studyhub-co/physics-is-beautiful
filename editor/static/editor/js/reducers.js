@@ -152,6 +152,7 @@ function questions(state={}, action){
        delete ret[action.question]
        return ret
    case ActionTypes.LESSON_LOADED:
+   case ActionTypes.LESSON_ADDED:   
        return Object.assign({}, state, action.questions)
    default:
        return state
@@ -182,6 +183,7 @@ function answers(state={}, action){
        ret[action.answer].is_correct = action.is_correct;
        return ret
    case ActionTypes.LESSON_LOADED:
+   case ActionTypes.LESSON_ADDED:       
        return Object.assign({}, state, action.answers)
        
    default:
