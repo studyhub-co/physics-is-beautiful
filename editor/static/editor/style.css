@@ -5,12 +5,12 @@
     height: 60px;
 }
 
-.selectable-image { position:relative; }
-.selectable-image input { position:absolute; width:100%; height:100%; left:0; top:0; opacity:0;}
+.selectable-image { position:relative;  cursor:pointer;}
+.selectable-image input { position:absolute; width:100%; height:100%; left:0; top:0; opacity:0; cursor:pointer;}
 
 .editor .section-sheet h1 { font-size:36px; }
 
-.editor h1 .selectable-image, .editor h2 .selectable-image { display:inline; }
+.editor h1 .selectable-image, .editor h2 .selectable-image { display:inline-block; }
 .editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
 
 .curriculum .drop-target .dock-site { height:60px; }
