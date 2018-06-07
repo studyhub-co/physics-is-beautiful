@@ -20,9 +20,12 @@ import {CurriculumContainer} from './containers/curriculum'
 import {CurriculumThumbnail} from './components/curriculum_thumbnail'
 import {LessonContainer} from './containers/lesson'
 import {BackButton} from './components/back_button'
+import {QuestionThumbnailContainer} from './containers/question_thumbnail'
 
 import {editor} from './reducers'
-import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded, loadQuestionIfNeeded, goToQuestion, addQuestion} from './actions'
+import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded, loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion} from './actions'
+
+import {DockableDropTarget, DragItemTypes} from './dnd';
 
 
 function Sheet(props) {
@@ -160,10 +163,15 @@ class LessonApp extends React.Component {
     this.handleNextClick = this.handleNextClick.bind(this);
     this.handlePreviousClick = this.handlePreviousClick.bind(this);
     this.handleAddQuestionClick = this.handleAddQuestionClick.bind(this);
+    this.handleQuestionDroppedBefore = this.handleQuestionDroppedBefore.bind(this)
     
   }
   componentDidMount() {
     this.props.dispatch(loadLessonIfNeeded(this.props.match.params.uuid));
+  }
+
+  handleQuestionDroppedBefore(beforeQuestionUuid, question) {
+    this.props.dispatch(moveQuestion(question.uuid, beforeQuestionUuid))
   }
 
   handlePreviousClick(){
@@ -175,22 +183,34 @@ class LessonApp extends React.Component {
   handleAddQuestionClick(){
      this.props.dispatch(addQuestion(this.props.match.params.uuid));
   }
+
   
   render() {
+    var questions = [];
+    for (var i in this.props.questions) {
+      questions.push(
+        <DockableDropTarget key={this.props.questions[i]} onDrop={this.handleQuestionDroppedBefore.bind(null, this.props.questions[i])}
+                            itemType={DragItemTypes.QUESTION} selfUuid={this.props.questions[i]}>
+          <QuestionThumbnailContainer key={this.props.questions[i]} uuid={this.props.questions[i]} selected={this.props.currentQuestion==this.props.questions[i]}/>
+        </DockableDropTarget>
+      )
+    }
+
     return (
       <div>
         <Sheet type="problem">
           <LessonContainer uuid={this.props.match.params.uuid}/>
           <div className="row">
-            {this.props.previousQuestion &&
-              <a onClick={this.handlePreviousClick} className="btn btn-default">Previous question</a>
-              }
-              {this.props.nextQuestion &&
-                <a onClick={this.handleNextClick} className="btn btn-default">Next question</a>
-                }
-                {this.props.lesson_type == 0 &&
-                  <a onClick={this.handleAddQuestionClick} className="btn btn-default">Add question</a>
-                  }
+            {this.props.lesson_type==0 &&
+              <div className="lesson-questions">
+                  <a onClick={this.handlePreviousClick} className={'btn btn-default btn-arrow' + (this.props.previousQuestion?'': ' disabled')}><span className="glyphicon glyphicon-backward"/></a>
+                  {questions}
+                  <DockableDropTarget onDrop={this.handleQuestionDroppedBefore.bind(null, null)}
+                                        itemType={DragItemTypes.QUESTION}>
+                      <a onClick={this.handleAddQuestionClick} className="btn btn-default btn-add"><span className="glyphicon glyphicon-plus-sign"/><br/>Add question</a>
+                   </DockableDropTarget>
+                    <a onClick={this.handleNextClick} className={'btn btn-default btn-arrow' + (this.props.nextQuestion?'': ' disabled')}><span className="glyphicon glyphicon-forward"/></a>
+              </div>}
           </div>
           { this.props.lesson_type == 0 && this.props.currentQuestion &&
             <div>
@@ -208,15 +228,17 @@ LessonApp = connect(
   (state, ownProps) => {
     var previousQuestion, nextQuestion;
     var currentLesson = state.lessons[ownProps.match.params.uuid];
-    if (state.currentQuestion && state.lessons[ownProps.match.params.uuid]) {      
+    var questions = []
+    if (state.currentQuestion && currentLesson) {      
       var idx = currentLesson.questions.indexOf(state.currentQuestion);
       if (idx > 0)
         previousQuestion = currentLesson.questions[idx - 1];
       if (idx < currentLesson.questions.length - 1)
         nextQuestion = currentLesson.questions[idx + 1];
-      
+      questions = currentLesson.questions
     }
     return {
+      questions : questions,
       currentQuestion : state.currentQuestion,
       previousQuestion  : previousQuestion,
       nextQuestion : nextQuestion,

@@ -25,7 +25,8 @@ function collect(connect, monitor) {
 class QuestionThumbnail extends React.Component {
   render() {
     return this.props.connectDragPreview(
-      <div className={'question-thumbnail draggable' + (this.props.selected ? ' selected':'')} style={{display: this.props.isDragging ? 'none' : 'inline-block'}}>
+      <div className={'question-thumbnail draggable' + (this.props.selected ? ' selected':'')} style={{display: this.props.isDragging ? 'none' : 'inline-block'}}
+           onClick={this.props.onClick}>
         {this.props.connectDragSource(<span className="drag-handle"/>)}
         <span>{this.props.shortText}</span>
       </div>)    

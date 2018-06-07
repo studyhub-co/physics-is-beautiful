@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { history } from '../history';
 
-//import {} from '../actions';
+import {goToQuestion} from '../actions';
 
 import {QuestionThumbnail} from '../components/question_thumbnail';
 
@@ -14,5 +14,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    onClick : e => dispatch(goToQuestion(ownProps.uuid))
+  }
+}
  
-export const QuestionThumbnailContainer = connect(mapStateToProps)(QuestionThumbnail);
+export const QuestionThumbnailContainer = connect(mapStateToProps, mapDispatchToProps)(QuestionThumbnail);
