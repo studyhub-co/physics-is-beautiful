@@ -12,7 +12,7 @@ export class MultipleChoiceAnswers extends React.Component {
     return <div>
       {answers}
       <div className="col-md-1 module-accessible-block">
-      <a onClick={this.props.onAddAnswerClick}><span className="glyphicon glyphicon-plus-sign"/> Add answer</a>
+      <a onClick={this.props.onAddAnswerClick}><span className="glyphicon glyphicon-plus-sign"/> <br/>Add answer</a>
       </div>    
     </div>;
   }

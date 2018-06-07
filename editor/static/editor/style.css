@@ -17,7 +17,11 @@
 .unit .drop-target .dock-site, .module .drop-target .dock-site { float:left; width:110px; height:150px; }
 .unit .drop-target, .module .drop-target { float:left; margin-left:-60px; padding-left:60px;}
 
-.question-image img { max-width:100%; }
+.editor .question-image img { max-width:100%; }
+.editor .question-image .selectable-image { font-size:80px; }
+
+.editor .question .question-type { margin-bottom: 20px; }
+.editor .question .answer-block .mathematical-expression { font-size:36px; padding:20px; }
 
 .editor .thumbnail img { max-width: 100%; }
 
@@ -31,7 +35,7 @@
 .editor .unit-conversion .conversion-result { vertical-align:middle; display:inline-block; font-size:20px; height:60px;}
 .editor .unit-conversion input { max-width: 80px; }
 
-.editor .vector-components-answer { font-size:18px; margin-top:20px; }
+.editor .vector-components-answer { font-size:36px; margin-top:20px; }
 .editor .vector-components-answer .mq-editable-label .editing { min-width:120px; }
 .editor .vector-components-answer .mq-editable-label .buttons { display:block; }
 .editor .vector-components-answer .mq-editable-label .buttons a { border:1px solid black; padding:10px; border-radius:5px; }

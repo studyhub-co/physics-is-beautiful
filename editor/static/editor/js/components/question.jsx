@@ -86,9 +86,9 @@ export class Question extends React.Component {
               Hint: <EditableLabel value={this.props.hint} onChange={this.props.onHintChange}/>
             </div>
           </div>
-          <div className="col-md-6 text-center">
+          <div className="col-md-6 text-center answer-block">
             <div className="bounding-box">
-              <select onChange={this.props.onTypeChange} value={this.props.answer_type}>{typeOptions}</select>
+              <select className="question-type" onChange={this.props.onTypeChange} value={this.props.answer_type}>{typeOptions}</select>
               {answersEditor}
               <div className="clearfix"/>
             </div>

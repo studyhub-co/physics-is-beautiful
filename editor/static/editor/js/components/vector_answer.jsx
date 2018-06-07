@@ -32,7 +32,9 @@ export class VectorAnswer extends React.Component {
           />
         <input type="checkbox" checked={this.props.angleOnly} onChange={(e) => {this.props.onAngleOnlyChanged(e.target.checked)}}/> Only check angle
           {this.props.allowNull &&
-            <a onClick={e => {e.preventDefault(); this.props.onSetNull()}}>Clear (set to null vector)</a>
+            <div>
+                <a href="" onClick={e => {e.preventDefault(); this.props.onSetNull()}}>Clear (set to null vector)</a>
+              </div>
           }
       </div>)    
   }
