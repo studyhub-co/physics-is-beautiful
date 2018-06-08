@@ -24,7 +24,8 @@ class CurriculumViewSet(ModelViewSet):
     def perform_create(self, serializer):
         new_curriculum = serializer.save(author=self.request.user)
 
-        if 'prototype' in self.request.data and self.request.data['prototype'] is not None:
+        if 'prototype' in self.request.data and self.request.data['prototype']:
+            print('aa:',self.request.data['prototype'])
             prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
             prototype.clone(new_curriculum)
     

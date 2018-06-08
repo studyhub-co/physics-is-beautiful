@@ -41,7 +41,7 @@ function Sheet(props) {
 class Curricula extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {prototypeChoice : 0}
+    this.state = {prototypeChoice : null}
     this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(this)
     this.handleAddClick = this.handleAddClick.bind(this)
   }    
