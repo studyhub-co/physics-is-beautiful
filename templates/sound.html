@@ -1,0 +1,47 @@
+{% load static %}
+<script type="text/javascript">
+var SoundSingleton = {
+  soundFiles: {
+    "correct": new Audio("{% static 'curricula/audio/correct.mp3' %}"),
+    "incorrect": new Audio("{% static 'curricula/audio/incorrect.mp3' %}"),
+    "continue": new Audio("{% static 'curricula/audio/continue.mp3' %}"),
+    "complete": new Audio("{% static 'curricula/audio/complete.mp3' %}"),
+    "exam_start": new Audio("{% static 'curricula/audio/exam_start.mp3' %}"),
+    "exam_correct": new Audio("{% static 'curricula/audio/exam_correct.mp3' %}"),
+    "rainbow": new Audio("{% static 'curricula/audio/doublerainbow.mp3' %}"),
+  }
+};
+var bgAudio = null;
+var playAudio = function(key, volume = 1) {
+  if (SoundSingleton.soundEnabled) {
+    var audio = SoundSingleton.soundFiles[key];
+    audio.volume = volume;
+    audio.play();
+  }
+}
+var playBackgroundAudio = function(key, volume = 1) {
+  stopBackgroundAudio();
+  if (SoundSingleton.soundEnabled) {
+    bgAudio = SoundSingleton.soundFiles[key];
+    bgAudio.loop = true;
+    bgAudio.volume = volume;
+    bgAudio.play();
+  }
+}
+var pauseBackgroundAudio = function() {
+  if (bgAudio) {
+    bgAudio.pause();
+  }
+}
+var unpauseBackgroundAudio = function() {
+  if (bgAudio) {
+    bgAudio.play();
+  }
+}
+var stopBackgroundAudio = function() {
+  if (bgAudio) {
+    bgAudio.pause();
+    bgAudio = null;
+  }
+}
+</script>
