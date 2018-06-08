@@ -6,7 +6,7 @@ import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} f
 export const ActionTypes = Object.freeze({
     REQUEST_ADD_CURRICULUM : 'REQUEST_ADD_CURRICULUM',
     CURRICULA_LOADED : 'CURRICULA_LOADED',
-    OTHERS_CURRICULA_LOADED : 'OTHERS_CURRICULA_LOADED',
+    ALL_CURRICULA_LOADED : 'ALL_CURRICULA_LOADED',
     LOAD_CURRICULA : 'LOAD_CURRICULA',
     CURRICULUM_LOADED : 'CURRICULUM_LOADED',    
     RENAME_CURRICULUM : 'RENAME_CURRICULUM',
@@ -91,8 +91,8 @@ function extractAll(object, prop){
     return ret
 }
 
-export function othersCurriculaLoaded(data) {
-    return {type : ActionTypes.OTHERS_CURRICULA_LOADED,
+export function allCurriculaLoaded(data) {
+    return {type : ActionTypes.ALL_CURRICULA_LOADED,
 	    curricula : data}
 }
 
@@ -108,10 +108,10 @@ export function loadCurricula() {
 	});
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/curricula/others/',
+	    url: '/editor/api/curricula/all/',
 	    context: this,
 	    success: function(data, status, jqXHR) {
-		dispatch(othersCurriculaLoaded(data))
+		dispatch(allCurriculaLoaded(data))
 	    }	
 	});
 	

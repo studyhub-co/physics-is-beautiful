@@ -214,15 +214,15 @@ function currentQuestion(state=null, action){
     
 }
 
-function othersCurricula(state={}, action){
-    if (action.type == ActionTypes.OTHERS_CURRICULA_LOADED){
+function allCurricula(state={}, action){
+    if (action.type == ActionTypes.ALL_CURRICULA_LOADED){
 	return action.curricula
     } else
 	return state
 }
 
 
-const combined = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, othersCurricula, router : routerReducer});
+const combined = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, allCurricula, router : routerReducer});
 
 export function editor(state={}, action){
     var newState = combined(state, action)
