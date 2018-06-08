@@ -26,6 +26,8 @@
 
 .editor .thumbnail img { max-width: 100%; }
 
+.editor .module-accessible-block { height:134px; line-height:16px; text-align:center; overflow:hidden;}
+
 .editor .conversion-steps { margin-top:20px; display:inline-block; font-size:20px; }
 .editor .conversion-steps .conversion-step { border-right:1px solid black; display:inline-block;}
 .editor .conversion-steps .conversion-step:last-child { border-right:none; }
