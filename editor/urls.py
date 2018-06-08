@@ -16,7 +16,7 @@ router.register(r'answers', apis.AnswerViewSet, base_name='answer')
 
 
 urlpatterns = [
-    url(r'^api/curricula/others/', apis.OthersCurriculaView.as_view()),
+    url(r'^api/curricula/all/', apis.AllCurriculaView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'^', login_required(TemplateView.as_view(template_name='editor/editor.html')), name='editor'),
     

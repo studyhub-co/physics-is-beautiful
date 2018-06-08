@@ -8,10 +8,10 @@ from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, U
 
 from editor.permissions import IsOwnerBase, IsUnitOwner, IsModuleOwner, IsLessonOwner, IsQuestionOwner, IsAnswerOwner
 
-class OthersCurriculaView(ListAPIView):
+class AllCurriculaView(ListAPIView):
     serializer_class = MiniCurriculumSerializer
     def get_queryset(self):
-        return Curriculum.objects.exclude(author=self.request.user)
+        return Curriculum.objects.all()
 
 class CurriculumViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwnerBase)    

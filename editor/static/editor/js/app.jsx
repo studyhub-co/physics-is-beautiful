@@ -68,9 +68,9 @@ class Curricula extends React.Component {
       );
     }
     const prototypeChoices = [];
-    for (var i in this.props.othersCurricula) {
+    for (var i in this.props.allCurricula) {
       prototypeChoices.push(
-        <option value={this.props.othersCurricula[i].uuid}>{this.props.othersCurricula[i].name + ' by ' + this.props.othersCurricula[i].author}</option>
+        <option value={this.props.allCurricula[i].uuid}>{this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}</option>
       )
     }
 
@@ -97,7 +97,7 @@ let CurriculaApp = connect(
   state => {
     return {
       curricula : state.curricula,
-      othersCurricula : state.othersCurricula,
+      allCurricula : state.allCurricula,
     }
   },
   dispatch => {
