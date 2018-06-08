@@ -34,6 +34,7 @@ export class Curriculum extends React.Component {
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>          
           <EditableLabel value={this.props.name} onChange={this.props.onNameChange}/>
           <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
+          <a href={'/curriculum/' + this.props.uuid + '/'} className="btn btn-default" target="_blank"><span className="glyphicon glyphicon-new-window"/> Open student view</a>
         </h1>
         {units}
         <DockableDropTarget onDrop={this.props.onUnitDroppedBefore.bind(null, null)} itemType={DragItemTypes.UNIT}>

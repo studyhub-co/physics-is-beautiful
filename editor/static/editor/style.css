@@ -9,6 +9,8 @@
 .selectable-image input { position:absolute; width:100%; height:100%; left:0; top:0; opacity:0; cursor:pointer;}
 
 .editor .section-sheet h1 { font-size:36px; }
+.editor .section-sheet h1>.glyphicon { font-size:24px; }
+.editor .section-sheet h1 .btn { vertical-align:middle; margin-left:20px; }
 
 .editor h1 .selectable-image, .editor h2 .selectable-image { display:inline-block; border:1px solid #FAFAFA; margin:0 10px 0 0;}
 .editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
