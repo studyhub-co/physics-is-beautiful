@@ -20,7 +20,7 @@ export class BackButton extends React.Component {
   render() {
     return (
       <DragHoverable onDragHover={this.handleDragHover} itemType={DragItemTypes.LESSON}>
-        <a href={history.createHref({pathname:this.props.link})} onClick={this.handleClick}  className="btn">
+        <a href={history.createHref({pathname:this.props.link})} onClick={this.handleClick}  className="btn btn-default btn-back">
           <span className="glyphicon glyphicon-chevron-left"/>
         </a>
 
