@@ -12,6 +12,8 @@
 .editor .section-sheet h1>.glyphicon { font-size:24px; }
 .editor .section-sheet h1 .btn { vertical-align:middle; margin-left:20px; }
 
+.editor .btn-back { position:absolute; top:10px; left:10px; }
+
 .editor h1 .selectable-image, .editor h2 .selectable-image { display:inline-block; border:1px solid #FAFAFA; margin:0 10px 0 0;}
 .editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
 
