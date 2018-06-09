@@ -28,9 +28,12 @@ export class VectorAnswer extends React.Component {
            objects={objects}
            allowInput={true}
            updateAnswer={ans => this.props.onVectorChanged(ans[1].vector.x_component, ans[1].vector.y_component)}
-          question={{uuid : this.props.question}}
-          />
-        <input type="checkbox" checked={this.props.angleOnly} onChange={(e) => {this.props.onAngleOnlyChanged(e.target.checked)}}/> Only check angle
+           question={{uuid : this.props.question}}/>
+            <select value={this.props.vectorCheckType} onChange={this.props.onVectorCheckTypeChanged}>
+              <option value="full">Check answer for full vector match</option>
+              <option value="angle">Only check angle</option>
+              <option value="magnitude">Only check magnitude</option>
+            </select>
           {this.props.allowNull &&
             <div>
                 <a href="" onClick={e => {e.preventDefault(); this.props.onSetNull()}}>Clear (set to null vector)</a>

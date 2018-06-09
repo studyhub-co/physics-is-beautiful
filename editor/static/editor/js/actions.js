@@ -858,7 +858,10 @@ export function updateVectorAnswerComponents(answerUuid, x_component, y_componen
 	    update = {angle :vectorToAngle(x_component, y_component),
 		      x_component : null,
 		      y_component : null}
-	else
+	else if(ans.magnitude != null) 
+	    update = {magnitude : Math.sqrt(x_component*x_component + y_component*y_component),
+		      angle : null, x_component : null, y_component:null}
+	else   
 	    update = {angle : null,
 		      x_component : x_component,
 		      y_component : y_component}
@@ -872,20 +875,36 @@ export function updateVectorAnswerComponents(answerUuid, x_component, y_componen
     }
 }
 
-export function updateVectorAnswerAngleOnly(answerUuid, angleOnly){
+export function updateVectorCheckType(answerUuid, newType){
     return (dispatch, getState) => {
 	var update;
 	var ans = getState().answers[answerUuid]
-	if (angleOnly)	    
+	if (newType === 'angle' )	    
 	    update = {x_component:null, y_component:null,
-		      angle:ans.angle ||  vectorToAngle(ans.x_component, ans.y_component)
+		      angle:ans.angle ||  vectorToAngle(ans.x_component, ans.y_component) || 0,
+		      magnitude : null,
 		     }
-	else {
+	else if (newType === 'full') {
 	    var x,y;
-	    [x,y] = angleToVector(ans.angle)
+	    if (ans.angle != null)
+		[x,y] = angleToVector(ans.angle)
+	    else {
+		x = ans.magnitude;
+		y = 0;
+	    }
 	    update = {x_component:ans.x_component || x,
 		      y_component:ans.y_component || y,
-		      angle:null
+		      angle:null,
+		      magnitude:null,
+		     }
+	} else if (newType === 'magnitude'){
+	    var magnitude = 1;
+	    if (ans.x_component)
+		magnitude = Math.sqrt(ans.x_component*ans.x_component + ans.y_component*ans.y_component)
+	    update = {x_component:null,
+		      y_component:null,
+		      angle:null,
+		      magnitude:magnitude
 		     }
 	}
 	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
