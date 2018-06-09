@@ -118,7 +118,7 @@ export class MQEditableLabel extends React.Component {
     if (this.state.editing && this.props.buttons){
       var btns = []
       for (var b in this.props.buttons) {
-        btns.push(<a className="mq-editor-button" ref={this.setButtonRef.bind(null, b)} onClick={this.handleButtonClick.bind(null, b)} >{this.props.buttons[b]}</a>)
+        btns.push(<a className="mq-editor-button" key={b} ref={this.setButtonRef.bind(null, b)} onClick={this.handleButtonClick.bind(null, b)} >{this.props.buttons[b]}</a>)
       }
       buttons = <span className="buttons">{btns}</span>
     }
