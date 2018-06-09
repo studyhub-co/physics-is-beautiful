@@ -70,7 +70,7 @@ class Curricula extends React.Component {
     const prototypeChoices = [];
     for (var i in this.props.allCurricula) {
       prototypeChoices.push(
-        <option value={this.props.allCurricula[i].uuid}>{this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}</option>
+        <option key={this.props.allCurricula[i].uuid} value={this.props.allCurricula[i].uuid}>{this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}</option>
       )
     }
 
@@ -79,7 +79,7 @@ class Curricula extends React.Component {
         <h1>My curricula</h1>
         <a onClick={this.handleAddClick} className="btn btn-primary">Create curriculum</a>
         <span> based on </span>
-        <select onChange={this.handlePrototypeChoiceChange} value={this.state.prototypeChoice}>
+        <select onChange={this.handlePrototypeChoiceChange} >
           <option value={null}>None - start from scratch</option>
           {prototypeChoices}
         </select>

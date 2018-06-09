@@ -9,7 +9,7 @@ export class UnitConversionAnswer extends React.Component {
   render() {
     var typeOptions=[];
     for (var uct in UnitConversionTypeLabels)
-      typeOptions.push(<option value={uct}>{UnitConversionTypeLabels[uct]}</option>)
+      typeOptions.push(<option key={uct} value={uct}>{UnitConversionTypeLabels[uct]}</option>)
     var steps=[];
     for (var s in this.props.conversion_steps){
       steps.push(<div className="conversion-step" key={s}>
