@@ -36,6 +36,7 @@ export class Lesson extends React.Component {
                 <option value="unit-conversion">Unit conversion game</option>
             </select>
           }
+          <a href={'/curriculum/lessons/'+this.props.uuid} target="_blank" className="btn btn-default"><span className="glyphicon glyphicon-new-window"/> Open student view</a>
       </div>)
   }
 }
