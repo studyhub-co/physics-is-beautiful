@@ -28,7 +28,7 @@ function parseComponent(s){
 }
 
 function parse(rep){
-  var match = rep.match(/^\s*((-?\d*\.?\d*)\s*\\hat\{x\})\s*?(([+-]?\d*\.?\d*)\s*\\hat\{y\})?\s*$/)
+  var match = rep.match(/^\s*((-?\d*\.?\d*)\s*\\hat\{x\})?\s*?(([+-]?\d*\.?\d*)\s*\\hat\{y\})?\s*$/)
   var x = parseComponent(match[2])
   var y = parseComponent(match[4])
   return [x, y]
