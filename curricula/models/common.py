@@ -34,3 +34,17 @@ class BaseModel(models.Model):
             args=[self.id]
         )
 
+    def clone(self, to_parent):
+        copy = self.__class__.objects.get(id=self.id)
+        copy.id = None
+        copy.uuid = None
+        setattr(copy, self.CloneMeta.parent_field, to_parent)
+        copy.save()
+        self.clone_children(copy)
+        return copy
+
+    def clone_children(self, to_copy):
+        if hasattr(self.CloneMeta, 'children_field'):
+            for child in getattr(self, self.CloneMeta.children_field).all():
+                child.clone(to_copy)
+        

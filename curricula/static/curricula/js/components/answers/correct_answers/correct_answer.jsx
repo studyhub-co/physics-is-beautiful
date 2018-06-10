@@ -3,7 +3,7 @@ import {VectorAnswer, TextAnswer, UnitConversionAnswer,
   MathematicalExpressionAnswer, DefaultAnswer,
   UnitConversion } from './correct_answers'
 import {Expression} from '../../../app' // TODO move to correct_answers.jsx
-import {Vector} from '../../../vector_canvas'
+import {Vector} from 'vector_canvas'
 
 export class Answer extends React.Component {
   render () {

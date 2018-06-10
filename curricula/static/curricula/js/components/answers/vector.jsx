@@ -1,5 +1,5 @@
 import React from 'react'
-import {VectorCanvas, CanvasVector, CanvasText} from '../../vector_canvas'
+import {VectorCanvas, CanvasVector, CanvasText} from 'vector_canvas'
 
 export class VectorAnswer extends React.Component {
   constructor () {
