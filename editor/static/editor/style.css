@@ -53,9 +53,9 @@
 
 .editor .answer-choice.without-image .selectable-image { display:inline-block; border:none; }
 
-.editor .editable-label:not(.empty) .glyphicon-pencil{ display:none; }
-.editor .editable-label:hover .glyphicon-pencil { display:inline; }
-.editor .editable-label:hover { cursor:pointer; }
+.editor .editable-label:not(.empty) .glyphicon-pencil, .editor .mq-editable-label:not(.empty) .glyphicon-pencil{ display:none; }
+.editor .editable-label:hover .glyphicon-pencil, .editor .mq-editable-label:hover .glyphicon-pencil { display:inline; }
+.editor .editable-label:hover, .editor .mq-editable-label:hover, .editor .mq-editable-label:hover .mq-math-mode { cursor:pointer; }
 
 .editor .draggable {position:relative; }
 .editor .drag-handle:hover { cursor: move; }
