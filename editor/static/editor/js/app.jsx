@@ -269,7 +269,7 @@ EditorRouter = DragDropContext(HTML5Backend)(EditorRouter);
 
 const loggerMiddleware = createLogger()
 
-const store = createStore(editor, applyMiddleware(thunkMiddleware, routerMiddleware(history), loggerMiddleware));
+const store = createStore(editor, applyMiddleware(thunkMiddleware, routerMiddleware(history))) // add  loggerMiddleware for logging
 
 
 
