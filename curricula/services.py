@@ -44,7 +44,7 @@ class ProgressServiceBase(object):
             self.save()
         return question
 
-    def _allow_override(self):
+    def _allow_override(self, lesson):
         return True  # Set this to True if you want all users to have all lessons unlocked
 
     @cached_property
@@ -77,7 +77,7 @@ class ProgressServiceBase(object):
     def get_lesson_status(self, lesson, auto_unlock=True):
         lesson_progress = self.get_lesson_progress(lesson)
         if lesson_progress.status == LessonProgress.Status.LOCKED:
-            if self._allow_override():
+            if self._allow_override(lesson):
                 return LessonProgress.Status.UNLOCKED
             elif auto_unlock:
                 previous_lesson = lesson.get_previous_lesson()
@@ -129,8 +129,8 @@ class ProgressService(ProgressServiceBase):
     def _get_lesson_progress(self, lesson):
         return LessonProgress.objects.get_or_create(lesson=lesson, profile=self.user.profile)[0]
 
-    def _allow_override(self):
-        return self.user.profile.all_lessons_unlocked
+    def _allow_override(self, lesson):
+        return self.user.profile.all_lessons_unlocked or lesson.module.unit.curriculum.author == self.user
 
     def save(self):
         for response in self.user_responses:
