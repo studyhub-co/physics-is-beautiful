@@ -395,14 +395,14 @@ export class VectorCanvas extends React.Component {
             this.arrow.delete();
         }
         this.arrow = new CanvasVector(this.canvas, this.canvas.getPointer(o.e), this.getColor());
-        this.refreshAnswer()
+//        this.refreshAnswer()
     }
 
     mouseMove(o) {
         if (this.arrow && this.arrow instanceof CanvasVector) {
             this.arrow.draw(this.canvas.getPointer(o.e));
         }
-        this.refreshAnswer()
+//        this.refreshAnswer()
     }
 
     mouseUp(o) {

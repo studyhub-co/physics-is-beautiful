@@ -1,0 +1,84 @@
+.section-sheet .thumbnail .glyphicon { font-size:60px; }
+.editor .section-sheet .thumbnail img {
+    max-width:100%; 
+    display: block;
+    height: 60px;
+}
+
+.selectable-image { position:relative;  cursor:pointer;}
+.selectable-image input { position:absolute; width:100%; height:100%; left:0; top:0; opacity:0; cursor:pointer;}
+
+.editor .section-sheet h1 { font-size:36px; }
+.editor .section-sheet h1>.glyphicon { font-size:24px; }
+.editor .section-sheet h1 .btn { vertical-align:middle; margin-left:20px; }
+
+.editor .btn-back { position:absolute; top:10px; left:10px; }
+
+.editor h1 .selectable-image, .editor h2 .selectable-image { display:inline-block; border:1px solid #FAFAFA; margin:0 10px 0 0;}
+.editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
+
+.curriculum .drop-target .dock-site { height:60px; }
+.unit .drop-target .dock-site, .module .drop-target .dock-site { float:left; width:110px; height:150px; }
+.unit .drop-target, .module .drop-target { float:left; margin-left:-60px; padding-left:60px;}
+.editor .unit .btn-add-module, .editor .module .btn-add-lesson {text-align:center;}
+
+.editor .question-image img { max-width:100%; }
+.editor .question-image .selectable-image { font-size:80px; }
+
+.editor .question .question-type { margin-bottom: 20px; }
+.editor .question .answer-block .mathematical-expression { font-size:36px; padding:20px; }
+
+.editor .thumbnail img { max-width: 100%; }
+
+.editor .module-accessible-block { height:134px; line-height:16px; text-align:center; overflow:hidden;}
+
+.editor .conversion-steps { margin-top:20px; display:inline-block; font-size:20px; }
+.editor .conversion-steps .conversion-step { border-right:1px solid black; display:inline-block;}
+.editor .conversion-steps .conversion-step:last-child { border-right:none; }
+.editor .conversion-steps .conversion-step .numerator { border-bottom:1px solid black; padding:10px; }
+.editor .conversion-steps .conversion-step .denominator { padding:10px;}
+.editor .unit-conversion .add-remove-steps {font-size:10px; display:inline-block; text-align:left;}
+.editor .unit-conversion .add-remove-steps .hover-button { padding:2px; margin:1px auto; display:inline-block; }
+.editor .unit-conversion .add-remove-steps .hover-button:hover {text-decoration:none; }
+.editor .unit-conversion .add-remove-steps .hover-button.disabled { color: rgb(192, 192, 192); border-color:rgb(192, 192, 192); cursor:default;}
+.editor .unit-conversion .equals { font-size:60px; margin:0 10px; display:inline-block; vertical-align:top; padding-top:25px;}
+.editor .unit-conversion .conversion-result { vertical-align:top; padding-top:54px; display:inline-block; font-size:20px; height:60px;}
+.editor .unit-conversion input { max-width: 80px; }
+.editor .unit-conversion .conversion-row { margin-bottom:20px; }
+
+.editor .vector-components-answer { font-size:36px; margin-top:20px; }
+.editor .vector-components-answer .mq-editable-label .editing { min-width:120px; }
+.editor .vector-components-answer .mq-editable-label .buttons { display:block; }
+.editor .vector-components-answer .mq-editable-label .buttons a { border:1px solid black; padding:10px; border-radius:5px; }
+
+.editor .answer-choice.without-image .selectable-image { display:inline-block; border:none; }
+
+.editor .editable-label:not(.empty) .glyphicon-pencil{ display:none; }
+.editor .editable-label:hover .glyphicon-pencil { display:inline; }
+.editor .editable-label:hover { cursor:pointer; }
+
+.editor .draggable {position:relative; }
+.editor .drag-handle:hover { cursor: move; }
+.editor .drag-handle {background-image:url(img/drag-handle.png); background-size:contain; width:20px; height:20px; }
+.editor .unit .drag-handle {display:inline-block; position:static; height:25px; width:25px; filter:invert(71%) sepia(55%) saturate(5383%) hue-rotate(169deg) brightness(100%) contrast(94%)}
+.editor .module-thumbnail .drag-handle, .editor .lesson-thumbnail .drag-handle { display:block;position:absolute; left:5px; top:5px; filter:none;}
+
+
+.editor .problem-sheet { padding:20px 10px !important; }
+
+.editor .lesson-editor .lesson h1 { display:inline-block; margin-right:20px; font-size:36px;}
+.editor .lesson-editor .lesson label { margin:0 10px; }
+
+.editor .lesson-questions .drop-target{ display:inline-block; vertical-align:top;}
+.editor .lesson-questions .drop-target .dock-site { display:none; }
+.editor .lesson-questions .drop-target.drag-over { padding-left:120px; }
+
+.editor .question-thumbnail { background:#FCFCFC; border:1px solid #DDD; border-radius:5px; margin:5px; padding:0 5px; height:65px; max-width:120px; cursor:pointer;}
+.editor .question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}
+.editor .question-thumbnail.selected { background: #f0fafe; border:1px solid #9fddfb; }
+.editor .question-thumbnail .btn-delete { position:absolute; right:-7px; top:-7px; cursor:pointer; }
+.editor .question-thumbnail .question-thumbnail-inner { overflow:hidden; height:100%;}
+
+.editor .lesson-questions .btn { height: 65px; vertical-align: top; margin: 5px;}
+.editor .lesson-questions .btn-arrow { padding:22px 10px;}
+.editor .lesson-questions .btn-add { padding-top:16px; }

@@ -2,6 +2,8 @@ from django.db import models
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
 
+from pib_auth.models import User
+
 from . import BaseModel, get_earliest_gap
 
 
@@ -17,6 +19,9 @@ class Curriculum(BaseModel):
         verbose_name_plural = "curricula"
         db_table = 'curricula_curricula'
 
+    class CloneMeta:
+        children_field = 'units'
+
     class Name:
         DEFAULT = 'Default Curriculum'
 
@@ -27,6 +32,12 @@ class Curriculum(BaseModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
 
+    author = models.ForeignKey(User)
+
+    def clone(self, to_curriculum):
+        for unit in self.units.all():
+            unit.clone(to_curriculum)
+    
     def __str__(self):
         return 'Curriculum: {}'.format(self.name)
 
@@ -36,6 +47,10 @@ class Unit(BaseModel):
     class Meta:
         ordering = ['position']
         db_table = 'curricula_units'
+
+    class CloneMeta:
+        parent_field = 'curriculum'
+        children_field = 'modules'        
 
     uuid = ShortUUIDField()
     curriculum = models.ForeignKey(Curriculum, related_name='units', on_delete=models.CASCADE)
@@ -51,7 +66,7 @@ class Unit(BaseModel):
             )
             self.position = get_earliest_gap(taken_positions)
         super(Unit, self).save(*args, **kwargs)
-
+        
     def __str__(self):
         return 'Unit: {}'.format(self.name)
 
@@ -62,11 +77,16 @@ class Module(BaseModel):
         ordering = ['position']
         db_table = 'curricula_modules'
 
+    class CloneMeta:
+        parent_field = 'unit'
+        children_field = 'lessons'
+
+        
     uuid = ShortUUIDField()
     unit = models.ForeignKey(Unit, related_name='modules', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
-    image = models.ImageField()
+    image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -87,6 +107,10 @@ class Lesson(BaseModel):
         ordering = ['position']
         db_table = 'curricula_lessons'
 
+    class CloneMeta:
+        parent_field = 'module'
+        children_field = 'questions'
+
     class LessonType(enum.Enum):
         DEFAULT = 0
         GAME = 1
@@ -95,7 +119,7 @@ class Lesson(BaseModel):
     module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
-    image = models.ImageField()
+    image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
     lesson_type = enum.EnumField(LessonType)
 
@@ -139,6 +163,18 @@ class Lesson(BaseModel):
         elif self.lesson_type != self.LessonType.GAME and hasattr(self, 'game'):
             self.game.delete()
 
+    def clone(self, to_parent):
+        copy = super().clone(to_parent)
+        if hasattr(self, 'game'):
+            copy.game.delete()
+            game = self.game
+            game.id = None
+            game.uuid = None
+            game.lesson = copy
+            game.save()
+        return copy
+        
+            
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
 

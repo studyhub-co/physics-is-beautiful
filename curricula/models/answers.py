@@ -36,10 +36,13 @@ class Answer(BaseModel):
         ordering = ['position']
         db_table = 'curricula_answers'
 
+    class CloneMeta:
+        parent_field = 'question'
+        
     objects = AnswerQuerySet.as_manager()
 
     uuid = ShortUUIDField()
-    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE, null=True)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -58,6 +61,16 @@ class Answer(BaseModel):
                 self.question.answer_type != Question.AnswerType.MULTIPLE_CHOICE:
             self.is_correct = True
         super(Answer, self).save(*args, **kwargs)
+
+    def clone(self, to_parent):
+        copy = super().clone(to_parent)
+        content = self.content
+        if content:
+            content.id = None
+            content.save()
+            copy.object_id = content.id
+            copy.save()
+        return copy
 
 
 class MathematicalExpressionMixin:
@@ -194,7 +207,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
     )
 
     # conversion_steps = [{"numerator":"", "denominator":""},  {"numerator":"", "denominator":""}, ...]
-    conversion_steps = JSONField(blank=True, null=True, help_text="Numerator/Denominator steps")
+    conversion_steps = JSONField(blank=True, null=True, default=[{'numerator':'','denominator':''}], help_text="Numerator/Denominator steps")
 
     question_number = models.FloatField(blank=True, null=True)
     question_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
@@ -239,6 +252,25 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
 
         return False
 
+    @property
+    def is_consistent(self):
+        if self.question_number is None or self.answer_number is None or \
+           not self.question_unit or not self.answer_unit:
+            return False
+        ureg = UnitRegistry()
+        Q_ = ureg.Quantity
+        q = Q_(str(self.question_number) + ' ' + self.question_unit)
+        for s in self.conversion_steps:
+            if s['numerator'] and s['denominator']:
+                num = Q_(s['numerator'])
+                denom = Q_(s['denominator'])
+                q = q * num / denom
+            else:
+                return False
+        left_si = q.to_base_units().magnitude
+        right_si = Q_(str(self.answer_number) + ' ' + self.answer_unit).to_base_units().magnitude
+        return self.match_math(str(left_si), str(right_si))
+    
     def __str__(self):
         return 'UnitConversion: {}'.format(self.answer)
 
