@@ -24,8 +24,8 @@ export class EditableLabel extends React.Component {
   }  
 
   handleEditClick(e){
-    if (this._inputRef)
-      this._inputRef.focus()
+    if (this._inputRef) 
+      this.focus()
     this.setState({editing : true,
                    value : this.props.value});
   }
@@ -33,7 +33,14 @@ export class EditableLabel extends React.Component {
   setInputRef(ref){
     this._inputRef = ref
     if (ref && this.state.editing) 
-      ref.focus()
+      this.focus()
+  }
+
+  focus() {
+    this._inputRef.focus()
+    var v = this._inputRef.value
+    this._inputRef.value = ''
+    this._inputRef.value = v
   }
   
   handleInputChange(e){
