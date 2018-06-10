@@ -35,7 +35,7 @@ export class Module extends React.Component {
         <BackButton link={'/curricula/' + this.props.curriculum + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
-          <EditableLabel value={this.props.name} onChange={this.props.onNameChange}/>
+          <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New module"/>
           <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
         </h1>
         <div className="row">
