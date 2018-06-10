@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {Question} from '../components/question';
 
-import {changeQuestionText, changeQuestionImage, changeQuestionHint, changeQuestionType, deleteQuestion, addAnswer} from '../actions';
+import {changeQuestionText, changeQuestionImage, changeQuestionHint, changeQuestionType, addAnswer} from '../actions';
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -36,7 +36,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onTextChange : name => dispatch(changeQuestionText(ownProps.uuid, name)),
     onHintChange : hint => dispatch(changeQuestionHint(ownProps.uuid, hint)),
     onTypeChange : (e) => dispatch(changeQuestionType(ownProps.uuid, e.target.value)),
-    onDeleteClick : () => dispatch(deleteQuestion(ownProps.uuid)),
     onAddAnswerClick : () => dispatch(addAnswer(ownProps.uuid))
   }    
 }

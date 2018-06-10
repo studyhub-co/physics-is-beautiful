@@ -25,16 +25,6 @@ export const DEFAULT_MATHJAX_OPTIONS = {
 
 
 export class Question extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleDeleteClick = this.handleDeleteClick.bind(this);
-  }
-  handleDeleteClick(e) {
-    e.preventDefault();
-    if (confirm('Are you sure you want to delete this question?')){
-      this.props.onDeleteClick();
-    }
-  }
 
   componentDidMount () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
@@ -73,7 +63,6 @@ export class Question extends React.Component {
             <div className="bounding-box">
               <h1>
                 <EditableLabel value={this.props.text} onChange={this.props.onTextChange}/>
-                <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
               </h1>
               <div className="thumbnail question-image">
                 {this.props.answer_type != AnswerTypes.VECTOR_COMPONENTS &&
