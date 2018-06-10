@@ -23,12 +23,26 @@ function collect(connect, monitor) {
 
 
 class QuestionThumbnail extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+  }
+  handleDeleteClick(e) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to delete this question?')){
+      this.props.onDeleteClick();
+    }
+  }
+
   render() {
     return this.props.connectDragPreview(
       <div className={'question-thumbnail draggable' + (this.props.selected ? ' selected':'')} style={{display: this.props.isDragging ? 'none' : 'inline-block'}}
            onClick={this.props.onClick}>
-        {this.props.connectDragSource(<span className="drag-handle"/>)}
-        <span>{this.props.shortText}</span>
+        <div className="question-thumbnail-inner">
+          {this.props.connectDragSource(<span className="drag-handle"/>)}
+          <span>{this.props.shortText}</span>
+        </div>
+        <span className="glyphicon glyphicon-remove btn-delete" onClick={this.handleDeleteClick}/>
       </div>)    
   }
 }
