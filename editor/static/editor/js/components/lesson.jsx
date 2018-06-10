@@ -25,7 +25,7 @@ export class Lesson extends React.Component {
         <BackButton link={'/modules/' + this.props.module + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
-          <EditableLabel value={this.props.name} onChange={this.props.onNameChange}/>
+          <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New lesson"/>
           <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
         </h1>
         <label><input type="radio" value="0" checked={this.props.lesson_type==0} onChange={e=>this.props.onTypeChange(0)}/> Normal lesson</label>

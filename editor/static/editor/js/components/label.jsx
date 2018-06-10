@@ -24,10 +24,13 @@ export class EditableLabel extends React.Component {
   }  
 
   handleEditClick(e){
+    var val = this.props.value
+    if (this.props.value == this.props.defaultValue)
+       val = ''
     if (this._inputRef) 
       this.focus()
     this.setState({editing : true,
-                   value : this.props.value});
+                   value : val});
   }
 
   setInputRef(ref){

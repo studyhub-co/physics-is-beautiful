@@ -62,7 +62,7 @@ export class Question extends React.Component {
           <div className="col-md-6 text-center">
             <div className="bounding-box">
               <h1>
-                <EditableLabel value={this.props.text} onChange={this.props.onTextChange}/>
+                <EditableLabel value={this.props.text} onChange={this.props.onTextChange} defaultValue="New question"/>
               </h1>
               <div className="thumbnail question-image">
                 {this.props.answer_type != AnswerTypes.VECTOR_COMPONENTS &&

@@ -33,7 +33,7 @@ class Unit extends React.Component {
             <h2>
               {this.props.connectDragSource(<span className="drag-handle"/>)}
               <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>          
-              <EditableLabel value={this.props.name} onChange={this.props.onNameChange}/>
+              <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New unit"/>
               <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
             </h2>
           
