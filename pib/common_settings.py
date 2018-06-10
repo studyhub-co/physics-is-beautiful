@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     # blog
     'blog',
     'admin_reorder',
+    'editor',
 ]
 
 MIDDLEWARE = [

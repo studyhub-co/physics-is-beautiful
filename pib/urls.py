@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^', include('homepage.urls')),
     url(r'^api/v1/', include('pib.urls_api', namespace='api')),
     url(r'^curriculum/', include('curricula.urls')),
+    url(r'^editor/', include('editor.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),

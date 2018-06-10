@@ -14,6 +14,11 @@ class Question(BaseModel):
         ordering = ['position']
         db_table = 'curricula_questions'
 
+    class CloneMeta:
+        parent_field = 'lesson'
+        children_field = 'answers'
+
+    
     # class QuestionType(enum.Enum):
     #     UNDEFINED = 0
     #     SINGLE_ANSWER = 10
@@ -64,6 +69,17 @@ class Question(BaseModel):
     def correct_answer(self):
         return self.answers.get_correct()
 
+    def _create_default_answer(self):
+        from .answers import Answer, MathematicalExpression, Vector, UnitConversion
+        if self.answer_type == self.AnswerType.MATHEMATICAL_EXPRESSION:
+            Answer.objects.create(question=self, content=MathematicalExpression.objects.create())
+        elif self.answer_type == self.AnswerType.VECTOR or self.answer_type == self.AnswerType.NULLABLE_VECTOR \
+        or self.answer_type == self.AnswerType.VECTOR_COMPONENTS:
+            Answer.objects.create(question=self, content=Vector.objects.create())
+        elif self.answer_type == self.AnswerType.UNIT_CONVERSION:
+            Answer.objects.create(question=self, content=UnitConversion.objects.create())
+
+    
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -73,9 +89,11 @@ class Question(BaseModel):
         if self.pk:
             db_instance = self.instance_from_db()
             if db_instance.answer_type != self.answer_type:
-                self.answers.all().delete()
+                self.answers.update(question=None)
                 if db_instance.answer_type == self.AnswerType.VECTOR_COMPONENTS:
                     self.vectors.all().delete()
+                self._create_default_answer()
+                
             # if (db_instance.question_type != self.question_type and
             #         self.question_type == self.QuestionType.SINGLE_ANSWER):
             if db_instance.answer_type != self.answer_type:
@@ -88,5 +106,15 @@ class Question(BaseModel):
                         answer.save()
         super(Question, self).save(*args, **kwargs)
 
+    def clone(self, to_parent):
+        copy = super().clone(to_parent)
+        copy.vectors.clear()        
+        for v in self.vectors.all():
+            v.id = None
+            v.save()
+            copy.vectors.add(v)            
+        return copy
+
+        
     def __str__(self):
         return 'Question: {}'.format(self.text)
