@@ -332,6 +332,11 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
             raise serializers.ValidationError("Invalid name: %s"%value)
         return value
 
+    def update(self, instance, validated_data):
+        if 'name' in validated_data and self.instance.name == Curriculum.Name.DEFAULT:
+            del validated_data['name']
+        return super().update(instance, validated_data)
+    
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
