@@ -183,7 +183,7 @@ class QuestionSerializer(BaseSerializer):
 
         if 'position' in validated_data and instance.position != validated_data['position']:
             Question.objects.filter(position__gte=validated_data['position'],
-                                    lesson_id=instance.lesson_id).update(position=F('position')+1)           
+                                    lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)           
         if 'vectors' in validated_data:
             instance.vectors.all().delete()
             for v in validated_data['vectors']:                
@@ -229,7 +229,7 @@ class LessonSerializer(BaseSerializer):
             validated_data['module'] = validated_data['module']['uuid']
         if 'position' in validated_data and instance.position != validated_data['position']:
             Lesson.objects.filter(position__gte=validated_data['position'],
-                                  module_id=instance.module_id).update(position=F('position')+1)
+                                  module=validated_data.get('module', instance.module)).update(position=F('position')+1)
         if 'lesson_type' in validated_data and validated_data['lesson_type'] == Lesson.LessonType.GAME:
             Game.objects.get_or_create(lesson=instance, defaults={'slug' : 'unit-conversion'})
         if 'game' in validated_data:
@@ -273,7 +273,7 @@ class ModuleSerializer(BaseSerializer):
             validated_data['unit'] = validated_data['unit']['uuid']
         if 'position' in validated_data and instance.position != validated_data['position']:
             Module.objects.filter(position__gte=validated_data['position'],
-                                  unit_id=instance.unit_id).update(position=F('position')+1)
+                                  unit=validated_data.get('unit', instance.unit)).update(position=F('position')+1)
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
@@ -304,7 +304,7 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
             validated_data['curriculum'] = validated_data['curriculum']['uuid']
         if 'position' in validated_data and instance.position != validated_data['position']:
             Unit.objects.filter(position__gte=validated_data['position'],
-                                curriculum_id=instance.curriculum_id).update(position=F('position')+1)
+                                curriculum=validated_data.get('curriculum', instance.curriculum)).update(position=F('position')+1)
             
         return super().update(instance, validated_data)
 
@@ -327,6 +327,16 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
 
+    def validate_name(self, value):
+        if value and value.lower() == Curriculum.Name.DEFAULT.lower():
+            raise serializers.ValidationError("Invalid name: %s"%value)
+        return value
+
+    def update(self, instance, validated_data):
+        if 'name' in validated_data and self.instance.name == Curriculum.Name.DEFAULT:
+            del validated_data['name']
+        return super().update(instance, validated_data)
+    
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer

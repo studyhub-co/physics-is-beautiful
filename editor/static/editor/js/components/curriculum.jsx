@@ -28,11 +28,17 @@ export class Curriculum extends React.Component {
           <UnitContainer key={unit.uuid} uuid={unit.uuid} />
          </DockableDropTarget>);
     }
+    var nameLabel;
+    if (this.props.name != 'Default Curriculum'){
+      nameLabel = <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New curriculum"/>;
+    } else {
+      nameLabel = <span>{this.props.name}</span>
+    }
     return (
       <div className="curriculum">
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>          
-          <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New curriculum"/>
+          {nameLabel}
           <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
           <a href={'/curriculum/' + this.props.uuid + '/'} className="btn btn-default" target="_blank"><span className="glyphicon glyphicon-new-window"/> Open student view</a>
         </h1>

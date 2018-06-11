@@ -22,12 +22,15 @@ export class MQEditableLabel extends React.Component {
                    value : this.props.value});
   }
 
-  handleEnterPressed(e){
-    var val = this._editorMQ.latex();
-    
+  save(){
+    var val = this._editorMQ.latex();    
     this.setState({editing:false});
     this.props.onChange(val);
-    
+    this.detachBlurHandlers()
+  }
+  
+  handleEnterPressed(e){
+    this.save();
     return false;
   }
 
@@ -67,7 +70,7 @@ export class MQEditableLabel extends React.Component {
   }
   handleDocumentClick(e){
     if (!this._editor.contains(e.target))
-        this.doBlur();
+        this.save();
   }
   doBlur() {
     this.detachBlurHandlers()
