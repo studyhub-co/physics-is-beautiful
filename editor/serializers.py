@@ -327,6 +327,11 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
 
+    def validate_name(self, value):
+        if value and value.lower() == Curriculum.Name.DEFAULT.lower():
+            raise serializers.ValidationError("Invalid name: %s"%value)
+        return value
+
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
