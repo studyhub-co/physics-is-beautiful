@@ -33,6 +33,7 @@ class Curriculum(BaseModel):
     image = models.ImageField(blank=True)
 
     author = models.ForeignKey(User)
+    collaborators = models.ManyToManyField(User, related_name='coauthored_curricula')
 
     def clone(self, to_curriculum):
         for unit in self.units.all():
