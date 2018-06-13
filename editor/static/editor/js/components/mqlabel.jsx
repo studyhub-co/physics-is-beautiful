@@ -22,12 +22,15 @@ export class MQEditableLabel extends React.Component {
                    value : this.props.value});
   }
 
-  handleEnterPressed(e){
-    var val = this._editorMQ.latex();
-    
+  save(){
+    var val = this._editorMQ.latex();    
     this.setState({editing:false});
     this.props.onChange(val);
-    
+    this.detachBlurHandlers()
+  }
+  
+  handleEnterPressed(e){
+    this.save();
     return false;
   }
 
@@ -67,7 +70,7 @@ export class MQEditableLabel extends React.Component {
   }
   handleDocumentClick(e){
     if (!this._editor.contains(e.target))
-        this.doBlur();
+        this.save();
   }
   doBlur() {
     this.detachBlurHandlers()
@@ -122,9 +125,10 @@ export class MQEditableLabel extends React.Component {
       }
       buttons = <span className="buttons">{btns}</span>
     }
-    return (<span className="mq-editable-label">
-            <span className={this.state.editing ? 'editing' : ''} ref={this.state.editing ? this.setEditorRef : this.setLabelRef} key={this.state.editing ? 'editing' : ''}>{this.props.value}</span>
-            <span onClick={this.handleEditClick} className="glyphicon glyphicon-pencil"/>
+    var isEmpty = !this.props.value || (this.props.value.replace(/\\/g, '').trim().length == 0)
+    return (<span className={'mq-editable-label' + (isEmpty ? ' empty' : '')}>
+            <span onClick={this.handleEditClick} className={this.state.editing ? 'editing' : ''} ref={this.state.editing ? this.setEditorRef : this.setLabelRef} key={this.state.editing ? 'editing' : ''}>{this.props.value}</span>
+            {!this.state.editing && <span onClick={this.handleEditClick} className="glyphicon glyphicon-pencil"/>}
             {buttons}
             </span>)
   }

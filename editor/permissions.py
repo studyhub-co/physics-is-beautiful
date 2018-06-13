@@ -3,46 +3,58 @@ from rest_framework import permissions
 from curricula.models import Curriculum, Unit, Module, Lesson, Question
 
 
-class IsOwnerBase(permissions.BasePermission):
+class IsOwnerOrCollaboratorBase(permissions.BasePermission):
+    root_path = None
     owner_field = 'author'
+    collaborators_field = 'collaborators'
 
     parent_model = None
     
     def __init__(self):
-        self._owner_field_path = self.owner_field.split('.')
+        self._root_path = self.root_path.split('.') if self.root_path else []
 
-    def _get_owner(self, obj, path=None):
+    def _is_owner_or_collaborator(self, user, obj, path=None):
         o = obj
-        for f in path or self._owner_field_path:
+        for f in path or self._root_path:
             o = getattr(o, f)
-        return o
+        return  getattr(o, self.owner_field) == user or getattr(o, self.collaborators_field).filter(id=user.id).exists()
         
     def has_permission(self, request, view):
-        if self.parent_model and request.method in ('POST', 'PUT' , 'PATCH') and self._owner_field_path[0] in request.data:
-            parent_obj = self.parent_model.objects.get(uuid=request.data[self._owner_field_path[0]])
-            return request.user == self._get_owner(parent_obj, self._owner_field_path[1:])
+        if self.parent_model and request.method in ('POST', 'PUT' , 'PATCH') and self._root_path[0] in request.data:
+            parent_obj = self.parent_model.objects.get(uuid=request.data[self._root_path[0]])
+            return self._is_owner_or_collaborator(request.user, parent_obj, self._root_path[1:])
         return True
 
     def has_object_permission(self, request, view, obj):
-        return request.user == self._get_owner(obj)
+        return self._is_owner_or_collaborator(request.user, obj)
         
-class IsUnitOwner(IsOwnerBase):
-    owner_field = 'curriculum.author'
+class IsUnitOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
+    root_path = 'curriculum'
+    owner_field = 'author'
+    collaborators_field = 'collaborators'
     parent_model = Curriculum
 
-class IsModuleOwner(IsOwnerBase):
-    owner_field = 'unit.curriculum.author'
+class IsModuleOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
+    root_path = 'unit.curriculum'
+    owner_field = 'author'
+    collaborators_field = 'collaborators'
     parent_model = Unit
 
-class IsLessonOwner(IsOwnerBase):
-    owner_field = 'module.unit.curriculum.author'
+class IsLessonOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
+    root_path = 'module.unit.curriculum'
+    owner_field = 'author'
+    collaborators_field = 'collaborators'
     parent_model = Module
 
 
-class IsQuestionOwner(IsOwnerBase):
-    owner_field = 'lesson.module.unit.curriculum.author'
+class IsQuestionOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
+    root_path = 'lesson.module.unit.curriculum'
+    owner_field = 'author'
+    collaborators_field = 'collaborators'
     parent_model = Lesson
 
-class IsAnswerOwner(IsOwnerBase):
-    owner_field = 'question.lesson.module.unit.curriculum.author'
+class IsAnswerOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
+    root_path = 'question.lesson.module.unit.curriculum'
+    owner_field = 'author'
+    collaborators_field = 'collaborators'
     parent_model = Question

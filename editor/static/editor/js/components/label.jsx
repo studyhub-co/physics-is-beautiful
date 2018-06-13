@@ -20,6 +20,7 @@ export class EditableLabel extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleInputKeyUp = this.handleInputKeyUp.bind(this);
     this.setInputRef = this.setInputRef.bind(this);
   }  
 
@@ -51,14 +52,24 @@ export class EditableLabel extends React.Component {
   }
 
   handleInputBlur(e){
-    this.setState({editing : false})
+    this.save()
+  }
+
+  handleInputKeyUp(e){
+    if (e.which == 27){
+      this.setState({editing : false});
+    }   
   }
   
   handleFormSubmit(e){
     e.preventDefault();
+    this.save();
+    return false;
+  }
+
+  save() {
     this.setState({editing:false});
     this.props.onChange(this.state.value);
-    return false;
   }
   
   componentDidMount () {
@@ -73,7 +84,7 @@ export class EditableLabel extends React.Component {
   render () {
     if (this.state.editing){
       return (<form onSubmit={this.handleFormSubmit} style={{display:'inline'}}>
-              <input type="text" value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur} ref={this.setInputRef}/>
+              <input type="text" value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur} ref={this.setInputRef} onKeyUp={this.handleInputKeyUp}/>
               </form>)
     } else {
       return (<span className={'editable-label' + (((this.props.value && this.props.value.trim()) || this.props.defaultValue)?'':' empty')} onClick={this.handleEditClick}>

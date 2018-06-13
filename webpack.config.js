@@ -39,6 +39,5 @@ module.exports = {
     },
     watchOptions: { // fix watch for Windows
         poll: 1000
-    },
-    devtool: 'eval-source-map'
+    }
 }
