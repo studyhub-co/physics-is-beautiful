@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 
-from rest_framework_nested import routers
+from rest_framework import routers
 from editor import apis
 
 
