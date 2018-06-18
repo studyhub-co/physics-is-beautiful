@@ -35,7 +35,10 @@ npm install
 ```
 
 ## To run locally
-
+* Create a `.env` file in the root directory that contains just:
+```
+DJANGO_SETTINGS_MODULE=pib.local_settings
+``` 
 * Build the front-end
 ```
 ./node_modules/.bin/webpack --config webpack.config.js
