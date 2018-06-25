@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from blog.models import Collegescorecard
-from django.http import HttpResponse
 import pandas as pd
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
 from bokeh.models import HoverTool, CategoricalColorMapper, NumeralTickFormatter
 import numpy as np
+import pickle
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def BlogHomepage(request):
     return render(request, 'blog/blog_homepage.html')
@@ -25,7 +27,7 @@ def CollegeMap(request):
     df = df.convert_objects(convert_numeric=True)
     df= df.replace('', np.nan).dropna().reset_index(drop=True)
     df[intensity_variable]=df[intensity_variable]/df[intensity_variable].max()
-    context={'addressPoints': df.values.tolist() }
+    context={'addressPoints': df.values.tolist()}
     return render(request, 'blog/collegemap.html', context = context)
 
 def CollegeScorecardApp(request):
@@ -278,3 +280,19 @@ def CollegeScorecardApp(request):
         selected_institutions = []
         form_dict = load_data(years, x_axis, y_axis, selected_sectors, selected_institutions)
         return render(request, 'blog/collegescorecard.html', context=form_dict)
+
+@csrf_exempt
+def WordPairs(request):
+    words = pd.read_csv('blog/static/blog/words.csv', header=None)[0].tolist()
+    context = {'words': words}
+    return render(request, 'blog/wordpairs.html', context=context)
+
+@csrf_exempt
+def getWordPairs(request):
+    searchword = request.POST['searchWord']
+    wordpairs = pickle.load(open('blog/static/blog/ordered_counts.p', "rb"))
+    output = []
+    for index, value in wordpairs:
+        if index[1] == searchword:
+            output.append('<li>'+str(index[0]) + ' ' + str(index[1]) + ':  ' + str(value)+r'</li>')
+    return JsonResponse({'wordpairs': ''.join(output)}, safe=False)
