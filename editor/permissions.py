@@ -15,7 +15,7 @@ class IsOwnerOrCollaboratorBase(permissions.BasePermission):
 
     def _is_owner_or_collaborator(self, user, obj, path=None):
         o = obj
-        for f in path or self._root_path:
+        for f in path if path is not None else self._root_path:
             o = getattr(o, f)
         return  getattr(o, self.owner_field) == user or getattr(o, self.collaborators_field).filter(id=user.id).exists()
         
