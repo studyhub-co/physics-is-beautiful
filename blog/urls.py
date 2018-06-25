@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'^shankar/$', views.Shankar, name='shankar'),
     url(r'^collegescorecard/$', views.CollegeScorecardApp, name='collegescorecard'),
     url(r'^collegemap/$', views.CollegeMap, name='collegemap'),
+    url(r'^wordpairs/$', views.WordPairs, name='wordpairs'),
+    url(r'^wordpairs/getWordPairs$', views.getWordPairs, name='getwordpairs'),
 ]
