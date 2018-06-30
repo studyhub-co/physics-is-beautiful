@@ -114,3 +114,8 @@ library_test
 
 # emacs
 *~
+
+# private settings
+requirements.txt
+curricula/migrations/*
+pib/common_settings.py
