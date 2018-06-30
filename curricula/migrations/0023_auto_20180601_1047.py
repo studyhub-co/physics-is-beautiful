@@ -11,9 +11,9 @@ import django_light_enums.db
 def set_author(apps, schema_editor):
     # We can't import the Person model directly as it may be a newer
     # version than this migration expects. We use the historical version.
-    # Curriculum = apps.get_model('curricula', 'Curriculum')
-    # User = apps.get_model(settings.AUTH_USER_MODEL)
-    # Curriculum.objects.update(author=User.objects.filter(is_superuser=True).order_by('id')[0])
+    Curriculum = apps.get_model('curricula', 'Curriculum')
+    User = apps.get_model(settings.AUTH_USER_MODEL)
+    Curriculum.objects.update(author=User.objects.filter(is_superuser=True).order_by('id')[0])
     pass
 
 
