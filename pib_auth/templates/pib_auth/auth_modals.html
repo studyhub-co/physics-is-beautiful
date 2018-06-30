@@ -23,39 +23,41 @@
                 <h4 class="modal-title">Login</h4>
             </div>
             <div class="modal-body">
+                <div style="display: table; margin: 0 auto;">
+                    <a title="{{socialaccount_providers.0.name}}" class="socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
+                       href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
+                        <img class="social-image" src="{% static 'homepage/images/facebook_login.png' %}" alt="{{ socialaccount_providers.0.name }}">
+                    </a>
+                    <a title="{{socialaccount_providers.1.name}}" class="socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
+                       href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
+                        <img class="social-image" src="{% static 'homepage/images/google_login.png' %}" alt="{{ socialaccount_providers.1.name }}" >
+                    </a>
+                </div>
+                <div class="hr-sect">OR</div>
                 <div>
                     <form action="{% url 'account_login' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ redirect_to }}" />
-                        <div clas="form-group row">
-                            <label for="id_login">Email:</label>
+                        <div class="form-group">
+                            <label for="id_login">Email</label>
                             <input name="login" type="text" class="form-control" id="id_login" placeholder="email" required>
                         </div>
-                        <div clas="form-group row">
-                            <label for="id_password">Password:</label>
+                        <div class="form-group">
+                            <label for="id_password">Password</label>
+                            <a href="{% url 'account_reset_password' %}" style="float: right">Forgot Password?</a>
                             <input name="password" type="password" class="form-control" id="id_password" placeholder="password" required>
                         </div>
-                        <div clas="form-group row">
-                            <label for="id_remember">Remember Me:</label>
-                            <input name="remember" type="checkbox" class="form-check" id="id_remember">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label id="label_remember">
+                                    <input type="checkbox" class="form-check" name="remember" id="id_remember" />
+                                    <span>Remember me</span>
+                                </label>
+                            </div>
                         </div>
                         <input class="btn btn-primary" type="submit" value="Login"/>
-                        <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
                     </form>
                 </div>
-                <div class="container">OR</div>
-                <div>
-                    <a title="{{socialaccount_providers.0.name}}" class="socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
-                       href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
-                        {{ socialaccount_providers.0.name }}
-                    </a>
-                    /
-                    <a title="{{socialaccount_providers.1.name}}" class="socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
-                       href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
-                        {{ socialaccount_providers.1.name }}
-                    </a>
-                </div>
-
             </div>
             <div class="modal-footer">
                 Don't have an account?
