@@ -1,4 +1,4 @@
-4sudo dnf install python3-develantlr4-python3-runtime==4.7
+antlr4-python3-runtime==4.7
 boto==2.46.1
 Django==1.11.2
 django-allauth==0.30.0
