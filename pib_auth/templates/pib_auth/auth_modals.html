@@ -45,12 +45,12 @@
                 </div>
                 <div class="container">OR</div>
                 <div>
-                    <a title="{{socialaccount_providers.0.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
+                    <a title="{{socialaccount_providers.0.name}}" class="socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
                        href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
                         {{ socialaccount_providers.0.name }}
                     </a>
                     /
-                    <a title="{{socialaccount_providers.1.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
+                    <a title="{{socialaccount_providers.1.name}}" class="socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
                        href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
                         {{ socialaccount_providers.1.name }}
                     </a>
@@ -59,7 +59,7 @@
             </div>
             <div class="modal-footer">
                 Don't have an account?
-                <button class="btn btn-primary auth-modal-swap" data-toggle="modal">Signup &#62;&#62;</button>
+                <button class="btn btn-primary auth-modal-swap" data-toggle="modal">Sign Up &#62;&#62;</button>
             </div>
         </div>
     </div>
@@ -69,24 +69,23 @@
         <div class="modal-dialog" role"document">
         <div class="modal-content">
             <div class="modal-header">
+                <h4 class="modal-title">Sign Up</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Signup</h4>
             </div>
             <div class="modal-body">
                 <div>
-                    <div>
-                        <a title="{{socialaccount_providers.0.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
+                    <br>
+                    <div style="display: table; margin: 0 auto;">
+                        <a title="{{socialaccount_providers.0.name}}" class="socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
                            href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
                             <img class="social-image" src="{% static 'homepage/images/facebook_login.png' %}" alt="{{ socialaccount_providers.0.name }}">
                         </a>
-                        <a title="{{socialaccount_providers.1.name}}" class="btn btn-outline-primary socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
+                        <a title="{{socialaccount_providers.1.name}}" class="socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
                            href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
                             <img class="social-image" src="{% static 'homepage/images/google_login.png' %}" alt="{{ socialaccount_providers.1.name }}" >
                         </a>
                     </div>
-                    <br>
-                    <div class="container">OR</div>
-                    <br>
+                    <div class="hr-sect">OR</div>
                     <form action="{% url 'account_signup' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ redirect_to }}" />
@@ -107,10 +106,13 @@
                         </div>
                         <div class="form-group">
                             <div class="checkbox">
-                                <label><input type="checkbox" class="form-check" name="remember" id="id_remember"> Remember me</label>
+                                <label id="label_remember">
+                                    <input type="checkbox" class="form-check" name="remember" id="id_remember" />
+                                    <span>Remember me</span>
+                                </label>
                             </div>
                         </div>
-                        <button class="btn btn-primary" type="submit">Signup</button>
+                        <button class="btn btn-primary" type="submit">Sign Up</button>
                     </form>
                 </div>
             </div>
