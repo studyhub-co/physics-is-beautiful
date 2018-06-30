@@ -14,6 +14,7 @@ def set_author(apps, schema_editor):
     Curriculum = apps.get_model('curricula', 'Curriculum')
     User = apps.get_model(settings.AUTH_USER_MODEL)
     Curriculum.objects.update(author=User.objects.filter(is_superuser=True).order_by('id')[0])
+    
 
 class Migration(migrations.Migration):
 
