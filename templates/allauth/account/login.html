@@ -17,7 +17,7 @@
         {% if socialaccount_providers %}
             <p>{% blocktrans with site.name as site_name %}Please sign in with one
                 of your existing third party accounts. <br />Or, <a href="{{ signup_url }}">sign up</a>
-                for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+                for a Physics is Beautiful account and sign in below:{% endblocktrans %}</p> {# Note: this used to be site_url #}
 
                 <div style="display: table; margin: 0 auto;">
                     <a title="{{socialaccount_providers.0.name}}" class="socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
@@ -30,12 +30,16 @@
                     </a>
                 </div>
 
-            {% include "socialaccount/snippets/login_extra.html" %}
+            {# include "socialaccount/snippets/login_extra.html" #}
 
         {% else %}
             <p>{% blocktrans %}If you have not created an account yet, then please
                 <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
         {% endif %}
+
+        <br />
+        <div class="hr-sect">OR</div>
+        <br />
 
         <form class="form-signin" method="POST" action="{% url 'account_login' %}">
             {% csrf_token %}

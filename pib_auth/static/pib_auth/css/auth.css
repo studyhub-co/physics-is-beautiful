@@ -58,3 +58,9 @@
 	line-height: 0px;
 	margin: 0px 8px;
 }
+
+.accounts-main-container .hr-sect {
+    max-width: 40em;
+    margin: auto;
+    text-align: center;
+}
