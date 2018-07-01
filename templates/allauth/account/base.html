@@ -1,9 +1,11 @@
 {% load static %}
 
 <head>
+    <title>{% block head_title %} {% endblock %}</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'blog/images/favicon/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'blog/navbar.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'pib_auth/css/allauth.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'pib_auth/css/auth.css' %}" />
 
     {# Mathjax#}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
