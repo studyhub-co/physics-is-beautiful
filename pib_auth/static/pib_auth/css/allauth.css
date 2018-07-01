@@ -1,3 +1,18 @@
-#accounts-main-container {
-    padding: 10px;
+.accounts-main-container {
+    text-align: center;
+}
+
+.errorlist {
+    list-style: none;
+    max-width: 40em;
+    margin: auto;
+}
+
+.errorlist li {
+    margin: 20px;
+    background-color: #f53d3d;
+    color: white;
+    border-top: 1px solid #ffffff;
+    padding: 5px;
+    border-radius: 5px;
 }
