@@ -6,6 +6,7 @@
     list-style: none;
     max-width: 40em;
     margin: auto;
+    text-align: center;
 }
 
 .errorlist li {
