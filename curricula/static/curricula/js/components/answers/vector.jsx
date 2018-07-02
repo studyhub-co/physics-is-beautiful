@@ -41,9 +41,11 @@ export class VectorAnswer extends React.Component {
     var isNullAnswer = false
     var isNotNullAnswer = false
     var objects = []
+    var fade = false
 
     if (this.props.answer && !this.props.question.is_correct) {
       // if answer is not null vector
+      fade = true
       if (this.props.answer['x'] != 0 || this.props.answer['y'] != 0) {
 
         if(!this.props.question.response.vector.x_component && !this.props.question.response.vector.y_component){
@@ -86,6 +88,7 @@ export class VectorAnswer extends React.Component {
           isNotNullAnswer={isNotNullAnswer}
           allowInput={allowInput}
           // manualCheck={true} TODO seems it not used, remove?
+          fade={fade}
           updateAnswer={this.props.updateAnswer}
           objects={objects}
           allowNull={allowNull}
