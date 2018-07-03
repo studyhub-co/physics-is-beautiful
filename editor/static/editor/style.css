@@ -82,3 +82,46 @@
 .editor .lesson-questions .btn { height: 65px; vertical-align: top; margin: 5px;}
 .editor .lesson-questions .btn-arrow { padding:22px 10px;}
 .editor .lesson-questions .btn-add { padding-top:16px; }
+
+
+.tabs {
+    width: 100%;
+    display: inline-block;
+    margin-right: 30px;
+    vertical-align: top;
+    padding-top: 2rem;
+    font-size: 3rem;
+}
+
+/*.tabs-1 .tab-links {*/
+    /*margin: 0;*/
+    /*padding-top: 0;*/
+    /*border: 1px solid #CCC;*/
+    /*border-bottom: 1px solid #868686;*/
+    /*border-top-left-radius: 5px;*/
+    /*border-top-right-radius: 5px;*/
+    /*height: 35px;*/
+    /*position: relative;*/
+    /*top: 5px;*/
+/*}*/
+
+.tabs .tab-link {
+    padding: 0 5rem;
+    cursor: pointer;
+    /*border: 1px solid transparent;*/
+    display: inline-block;
+    position: relative;
+    border-bottom: 5px solid rgb(216, 216, 216);
+    height: 40px;
+    line-height: 41px;
+    top: -6px;
+    left: -1px;
+    color: rgb(216, 216, 216);
+}
+
+.tabs .tab-link-active {
+    border-bottom: 5px solid rgb(8, 209, 255);
+    color: rgb(8, 209, 255);
+}
+
+.tabs-1 .tabContent {}

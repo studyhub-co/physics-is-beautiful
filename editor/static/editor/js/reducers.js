@@ -1,29 +1,38 @@
 import { combineReducers } from 'redux'
 import { routerReducer, LOCATION_CHANGE } from 'react-router-redux'
 
-
 import {ActionTypes} from './actions'
 
-function curricula(state={}, action){
-    switch (action.type) {
-    case ActionTypes.CURRICULA_LOADED:
-	return action.curricula
-    case ActionTypes.CURRICULUM_LOADED:
-	return Object.assign({}, state, {[action.curriculum.uuid] : action.curriculum})
-    case ActionTypes.DELETE_CURRICULUM:
-	var ret = Object.assign({}, state)
-	delete ret[action.uuid]
-	return ret
-    case ActionTypes.UNIT_ADDED:
-	var ret = Object.assign({}, state)
-	ret[action.curriculumUuid].units.push(action.unit.uuid)
-	return ret
-    case ActionTypes.DELETE_UNIT:
-	var ret = Object.assign({}, state)
-	ret[action.curriculumUuid].units.splice(ret[action.curriculumUuid].units.indexOf(action.uuid), 1)
-	return ret
+function curricula_dashboard(state={tabs: null}, action){
+  switch (action.type) {
+    case ActionTypes.CHANGE_SELECTED_TAB:
+	    return Object.assign({}, state,  {[action.namespace]: action.tab})
     default:
-	return state
+	    return state
+    }
+}
+
+
+function curricula(state={}, action){
+  switch (action.type) {
+    case ActionTypes.CURRICULA_LOADED:
+	    return action.curricula
+    case ActionTypes.CURRICULUM_LOADED:
+	    return Object.assign({}, state, {[action.curriculum.uuid] : action.curriculum})
+    case ActionTypes.DELETE_CURRICULUM:
+	    var ret = Object.assign({}, state)
+	    delete ret[action.uuid]
+	    return ret
+    case ActionTypes.UNIT_ADDED:
+      var ret = Object.assign({}, state)
+      ret[action.curriculumUuid].units.push(action.unit.uuid)
+      return ret
+    case ActionTypes.DELETE_UNIT:
+      var ret = Object.assign({}, state)
+      ret[action.curriculumUuid].units.splice(ret[action.curriculumUuid].units.indexOf(action.uuid), 1)
+      return ret
+    default:
+	    return state
     }
 }
 
@@ -216,13 +225,15 @@ function currentQuestion(state=null, action){
 
 function allCurricula(state={}, action){
     if (action.type == ActionTypes.ALL_CURRICULA_LOADED){
-	return action.curricula
+	    return action.curricula
     } else
-	return state
+	    return state
 }
 
 
-const combined = combineReducers({curricula, units, modules, lessons, questions, answers, currentQuestion, allCurricula, router : routerReducer});
+const combined = combineReducers({curricula, units, modules, lessons, questions,
+  curricula_dashboard,
+  answers, currentQuestion, allCurricula, router: routerReducer});
 
 export function editor(state={}, action){
     var newState = combined(state, action)

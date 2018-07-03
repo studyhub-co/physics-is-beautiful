@@ -10,10 +10,13 @@ from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, U
 
 from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
 
+
 class AllCurriculaView(ListAPIView):
     serializer_class = MiniCurriculumSerializer
+
     def get_queryset(self):
         return Curriculum.objects.all()
+
 
 class CurriculumViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCollaboratorBase)    
@@ -56,7 +59,8 @@ class LessonViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user)|Q(module__unit__curriculum__collaborators=self.request.user))
-   
+
+
 class QuestionViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsQuestionOwnerOrCollaborator)
     serializer_class = QuestionSerializer

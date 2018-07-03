@@ -27,86 +27,87 @@ import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded
 
 import {DockableDropTarget, DragItemTypes} from './dnd';
 
+import {CurriculaDashboardApp} from './apps/curricula_dashboard'
 
 function Sheet(props) {
   var className = 'container ' + (props.type || 'section') + '-sheet';
   return (<div className={className}>
+          <h1 style={{'color': '#08d1ff'}}>Curricula</h1>
           {props.children}
+
           </div>
          );
 }
 
+// class Curricula extends React.Component {
+//   constructor(props) {
+//     super(props)
+//     this.state = {prototypeChoice : null}
+//     this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(this)
+//     this.handleAddClick = this.handleAddClick.bind(this)
+//   }
+//
+//   componentDidMount() {
+//     this.props.onMounted()
+//   }
+//
+//   handlePrototypeChoiceChange(e){
+//     this.setState({prototypeChoice : e.target.value})
+//   }
+//
+//   handleAddClick(){
+//     this.props.onAddClick(this.state.prototypeChoice)
+//   }
+//
+//   render() {
+//     const curricula = [];
+//     for (var uuid in this.props.curricula){
+//       curricula.push(
+//         <CurriculumThumbnail key={uuid}
+//                              {...this.props.curricula[uuid]}
+//                              onClick={this.props.onCurriculumClick.bind(null, uuid)}/>
+//       );
+//     }
+//     const prototypeChoices = [];
+//     for (var i in this.props.allCurricula) {
+//       prototypeChoices.push(
+//         <option key={this.props.allCurricula[i].uuid} value={this.props.allCurricula[i].uuid}>{this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}</option>
+//       )
+//     }
+//
+//     return (
+//       <Sheet>
+//
+//         <a onClick={this.handleAddClick} className="btn btn-primary">Create curriculum</a>
+//         <span> based on </span>
+//         <select onChange={this.handlePrototypeChoiceChange} >
+//           <option value={null}>None - start from scratch</option>
+//           {prototypeChoices}
+//         </select>
+//         <hr/>
+//         <div className="row">
+//           {curricula}
+//         </div>
+//       </Sheet>
+//     );
+//   }
+//
+// }
 
-
-class Curricula extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {prototypeChoice : null}
-    this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(this)
-    this.handleAddClick = this.handleAddClick.bind(this)
-  }    
-  
-  componentDidMount() {
-    this.props.onMounted()
-  }
-
-  handlePrototypeChoiceChange(e){
-    this.setState({prototypeChoice : e.target.value})
-  }
-
-  handleAddClick(){
-    this.props.onAddClick(this.state.prototypeChoice)
-  }
-  
-  render() {
-    const curricula = [];
-    for (var uuid in this.props.curricula){
-      curricula.push(
-        <CurriculumThumbnail key={uuid}
-                             {...this.props.curricula[uuid]}
-                             onClick={this.props.onCurriculumClick.bind(null, uuid)}/>
-      );
-    }
-    const prototypeChoices = [];
-    for (var i in this.props.allCurricula) {
-      prototypeChoices.push(
-        <option key={this.props.allCurricula[i].uuid} value={this.props.allCurricula[i].uuid}>{this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}</option>
-      )
-    }
-
-    return (
-      <Sheet>
-        <h1>My curricula</h1>
-        <a onClick={this.handleAddClick} className="btn btn-primary">Create curriculum</a>
-        <span> based on </span>
-        <select onChange={this.handlePrototypeChoiceChange} >
-          <option value={null}>None - start from scratch</option>
-          {prototypeChoices}
-        </select>
-        <hr/>
-        <div className="row">
-          {curricula}
-        </div>
-      </Sheet>
-    );
-  }
-
-}
-
-let CurriculaApp = connect(
-  state => {
-    return {
-      curricula : state.curricula,
-      allCurricula : state.allCurricula,
-    }
-  },
-  dispatch => {
-    return {
-      onAddClick : prototype => dispatch(addCurriculum(prototype)),
-      onMounted : () => dispatch(loadCurricula()),
-      onCurriculumClick : (uuid) => {history.push('/curricula/'+uuid+'/');}
-    }
-  })(Curricula);
+// let CurriculaApp = connect(
+//   state => {
+//     return {
+//       curricula : state.curricula,
+//       allCurricula : state.allCurricula,
+//     }
+//   },
+//   dispatch => {
+//     return {
+//       onAddClick : prototype => dispatch(addCurriculum(prototype)),
+//       onMounted : () => dispatch(loadCurricula()),
+//       onCurriculumClick : (uuid) => {history.push('/curricula/'+uuid+'/');}
+//     }
+//   })(Curricula);
 
 
 class CurriculumApp extends React.Component {
@@ -256,8 +257,8 @@ class EditorRouter extends React.Component {
           <Route path='/modules/:uuid' component={ModuleApp} />
           <Route path='/lessons/:uuid' component={LessonApp} />
           <Route path='/questions/:uuid' component={QuestionApp} />
-          <Route path='/' component={CurriculaApp} />
-        
+          {/*<Route path='/' component={CurriculaApp} />*/}
+          <Route path='/' component={CurriculaDashboardApp} />
         </Switch>
 
       </ConnectedRouter>

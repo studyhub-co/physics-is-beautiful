@@ -4,6 +4,7 @@ import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} f
 
 
 export const ActionTypes = Object.freeze({
+    CHANGE_SELECTED_TAB: 'CHANGE_SELECTED_TAB',
     REQUEST_ADD_CURRICULUM : 'REQUEST_ADD_CURRICULUM',
     CURRICULA_LOADED : 'CURRICULA_LOADED',
     ALL_CURRICULA_LOADED : 'ALL_CURRICULA_LOADED',
@@ -43,6 +44,15 @@ export const ActionTypes = Object.freeze({
 export function curriculumAdded(curriculum) {
     return { type : ActionTypes.CURRICULUM_ADDED,
 	     curriculum: curriculum}
+}
+
+
+export function changeSelectedTab(selectedTab, tabNamespace) {
+    return {
+        type: ActionTypes.CHANGE_SELECTED_TAB,
+        tab: selectedTab,
+        namespace: tabNamespace
+    };
 }
 
 
