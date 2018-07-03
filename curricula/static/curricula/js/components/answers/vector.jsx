@@ -44,8 +44,9 @@ export class VectorAnswer extends React.Component {
     var fade = false
 
     if (this.props.answer && !this.props.question.is_correct) {
-      // if answer is not null vector
       fade = true
+
+      // if answer is not null vector
       if (this.props.answer['x'] != 0 || this.props.answer['y'] != 0) {
 
         if(!this.props.question.response.vector.x_component && !this.props.question.response.vector.y_component){
