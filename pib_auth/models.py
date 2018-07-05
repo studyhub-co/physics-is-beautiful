@@ -3,6 +3,7 @@ from django.core import urlresolvers
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 
 
 class UserManager(BaseUserManager):
@@ -88,6 +89,10 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def get_short_name(self):
         return self.first_name or self.email
+
+    @property
+    def get_absolute_url(self):
+        return reverse('user-profile', kwargs={"pk": self.id})
 
     def __str__(self):
         return '{} <{}>'.format(self.full_name, self.email)

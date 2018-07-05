@@ -40,7 +40,7 @@ html, body {
     width: 80%;
     margin-top: 30px;
     border-radius: 15px;
-    padding: 60px;
+    padding: 30px 60px;
     height: 80%;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
@@ -563,3 +563,33 @@ img.grayed-out-img {
     border: .2rem solid #1caff6;
 }
 
+
+/*curriculum info panel styles*/
+
+.curriculum-panel-font{
+    font-family: Tw Cen MT;
+    font-size: 25px;
+    color: #c8c8c8;
+}
+
+.curriculum-title{
+    font-size: 35px;
+    color: #1caff6;
+}
+
+.curriculum-more-less{
+    font-size: 25px !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.curriculum-user-link{
+    text-decoration: none;
+    color: darkgrey;
+    font-style: italic;
+}
+
+.curriculum-user-link:hover{
+    color: #1caff6;
+    text-decoration: none;
+}
