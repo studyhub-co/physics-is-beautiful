@@ -27,17 +27,19 @@ import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded
 
 import {DockableDropTarget, DragItemTypes} from './dnd';
 
-import {CurriculaDashboardApp} from './apps/curricula_dashboard'
+import { Sheet } from './apps/sheet'
 
-function Sheet(props) {
-  var className = 'container ' + (props.type || 'section') + '-sheet';
-  return (<div className={className}>
-          <h1 style={{'color': '#08d1ff'}}>Curricula</h1>
-          {props.children}
+import { CurriculaDashboardApp } from './apps/curricula_dashboard'
 
-          </div>
-         );
-}
+// function Sheet(props) {
+//   var className = 'container ' + (props.type || 'section') + '-sheet';
+//   return (<div className={className}>
+//           <h1 style={{'color': '#08d1ff'}}>Curricula</h1>
+//           {props.children}
+//
+//           </div>
+//          );
+// }
 
 // class Curricula extends React.Component {
 //   constructor(props) {
@@ -93,7 +95,7 @@ function Sheet(props) {
 //   }
 //
 // }
-
+//
 // let CurriculaApp = connect(
 //   state => {
 //     return {
@@ -109,7 +111,6 @@ function Sheet(props) {
 //     }
 //   })(Curricula);
 
-
 class CurriculumApp extends React.Component {
   constructor(props) {
     super(props);
@@ -120,7 +121,7 @@ class CurriculumApp extends React.Component {
   render() {
     return (<Sheet>
             <BackButton link="/"/>
-            <CurriculumContainer uuid={this.props.match.params.uuid}/> 
+            <CurriculumContainer uuid={this.props.match.params.uuid}/>
             </Sheet>)
   }
 }
@@ -270,7 +271,18 @@ EditorRouter = DragDropContext(HTML5Backend)(EditorRouter);
 
 const loggerMiddleware = createLogger()
 
-const store = createStore(editor, applyMiddleware(thunkMiddleware, routerMiddleware(history))) // add  loggerMiddleware for logging
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(editor,
+  composeEnhancers(
+    applyMiddleware(thunkMiddleware, routerMiddleware(history))
+  ),
+) // add  loggerMiddleware for logging
+
+
+// const store = createStore(editor,
+//   applyMiddleware(thunkMiddleware, routerMiddleware(history)),
+//   ) // add  loggerMiddleware for logging
 
 
 

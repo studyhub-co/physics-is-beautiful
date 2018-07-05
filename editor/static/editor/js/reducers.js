@@ -3,10 +3,10 @@ import { routerReducer, LOCATION_CHANGE } from 'react-router-redux'
 
 import {ActionTypes} from './actions'
 
-function curricula_dashboard(state={tabs: null}, action){
+function curriculaDashboard(state={tab: null}, action){
   switch (action.type) {
     case ActionTypes.CHANGE_SELECTED_TAB:
-	    return Object.assign({}, state,  {[action.namespace]: action.tab})
+      return Object.assign({}, state,  {[action.namespace]: action.tab})
     default:
 	    return state
     }
@@ -232,7 +232,7 @@ function allCurricula(state={}, action){
 
 
 const combined = combineReducers({curricula, units, modules, lessons, questions,
-  curricula_dashboard,
+  curriculaDashboard,
   answers, currentQuestion, allCurricula, router: routerReducer});
 
 export function editor(state={}, action){
