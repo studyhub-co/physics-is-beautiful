@@ -90,6 +90,10 @@
     margin-right: 30px;
     vertical-align: top;
     padding-top: 2rem;
+    /*font-size: 3rem;*/
+}
+
+.tab-link{
     font-size: 3rem;
 }
 

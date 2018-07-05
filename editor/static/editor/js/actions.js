@@ -106,6 +106,23 @@ export function allCurriculaLoaded(data) {
 	    curricula : data}
 }
 
+export function loadMyCurricula() {
+    return function(dispatch) {
+      $.ajax({
+        async: true,
+        url: '/editor/api/curricula/',
+        context: this,
+        success: function (data, status, jqXHR) {
+          dispatch((data) => {
+            return { type : ActionTypes.CURRICULA_LOADED,
+                     curricula : data,
+            }
+          })
+        }
+      });
+    }
+}
+
 export function loadCurricula() {
     return function(dispatch) {
 	$.ajax({
