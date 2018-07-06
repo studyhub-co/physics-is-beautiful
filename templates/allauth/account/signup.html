@@ -8,6 +8,8 @@
 
 {% get_providers as socialaccount_providers %}
 
+{# TODO Figure out field placeholder #}
+
     <head>
         <link rel="stylesheet" href="{% static 'allauth/login.css' %}">
     </head>
@@ -31,21 +33,52 @@
                     </a>
                 </div>
                 <div class="hr-sect">OR</div>
-                <div>
-                    <form class="form-signin" method="POST" action="{% url 'account_login' %}">
+                <p>
+                    <form class="form-signup" method="POST" action="{% url 'account_signup' %}">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        {% if redirect_field_value %}
-                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                        {% endif %}
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label id="label_remember">
-                                    <input type="checkbox" class="form-check" name="remember" id="id_remember" />
-                                    <span>Remember me</span>
-                                </label>
-                            </div>
-                        </div>
+                        <!--{{ form.as_p }}-->
+                        {% for field in form %}
+                            <p>
+                                {{ field.errors }}
+                                {{ field.label_tag }} {# { field } #}
+                                {% if field.value %}
+                                <input name="{{ field.html_name }}" type="text" class="form-control" id="{{ field.id_for_label }}" placeholder="{{ field.placeholder }}" value="{{ field.value }}">
+                                {% else %}
+                                <input name="{{ field.html_name }}" type="text" class="form-control" id="{{ field.id_for_label }}" placeholder="{{ field.placeholder }}">
+                                {% endif %}
+                            </p>
+                        {% endfor %}
+                        <!--<div class="form-group">-->
+                            <!--{{ form.first_name.errors }}-->
+                            <!--<input name="first_name" type="text" class="form-control" id="id_firstname" placeholder="First name" value="{{ form.first_name.value }}">-->
+                        <!--</div>-->
+                        <!--<div class="form-group">-->
+                            <!--{{ form.last_name.errors }}-->
+                            <!--<input name="last_name" type="text" class="form-control" id="id_lastname" placeholder="Last name">-->
+                        <!--</div>-->
+                        <!--<div class="form-group">-->
+                            <!--{{ form.email.errors }}-->
+                            <!--<input name="email" type="text" class="form-control" id="id_email" placeholder="Email address" required>-->
+                        <!--</div>-->
+                        <!--<div class="form-group">-->
+                            <!--{{ form.password1.errors }}-->
+                            <!--<input name="password1" type="password" class="form-control" id="id_password1" placeholder="Password" required>-->
+                        <!--</div>-->
+                        <!--<div class="form-group">-->
+                            <!--{{ form.password2.errors }}-->
+                            <!--<input name="password2" type="password" class="form-control" id="id_password2" placeholder="Password (again)" required>-->
+                        <!--</div>-->
+                        <!--{% if redirect_field_value %}-->
+                            <!--<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />-->
+                        <!--{% endif %}-->
+                        <!--<div class="form-group">-->
+                            <!--<div class="checkbox">-->
+                                <!--<label id="label_remember">-->
+                                    <!--<input type="checkbox" class="form-check" name="remember" id="id_remember" />-->
+                                    <!--<span>Remember me</span>-->
+                                <!--</label>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <button class="btn btn-primary primaryAction" type="submit">{% trans "Sign Up" %}</button>
                     </form>
                 </div>
