@@ -39,16 +39,16 @@
                             {{ form.email.errors }}
                             <label for="id_email">Email</label>
                             {% if form.email.value %}
-                            <input name="email" type="text" class="form-control" id="id_email" placeholder="Email address" value="{{ form.email.value }}" required>
+                            <input tabindex=1 name="email" type="text" class="form-control" id="id_email" placeholder="Email address" value="{{ form.email.value }}" required>
                             {% else %}
-                            <input name="email" type="text" class="form-control" id="id_email" placeholder="Email address" required>
+                            <input tabindex=1 name="email" type="text" class="form-control" id="id_email" placeholder="Email address" required>
                             {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="id_email">Password</label>
                             <a class="button secondaryAction" style="float:right" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
                             {{ form.password.errors }}
-                            <input name="password" type="password" class="form-control" id="id_password" placeholder="Password" required>
+                            <input tabindex=2 name="password" type="password" class="form-control" id="id_password" placeholder="Password" required>
                         </div>
                         {% if redirect_field_value %}
                             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
@@ -56,12 +56,12 @@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label id="label_remember">
-                                    <input type="checkbox" class="form-check" name="remember" id="id_remember" />
+                                    <input tabindex=3 type="checkbox" class="form-check" name="remember" id="id_remember" />
                                     <span>Remember me</span>
                                 </label>
                             </div>
                         </div>
-                        <button class="btn btn-primary primaryAction" type="submit">{% trans "Login" %}</button>
+                        <button tabindex=4 class="btn btn-primary primaryAction" type="submit">{% trans "Login" %}</button>
                     </form>
                 </div>
             </div>
