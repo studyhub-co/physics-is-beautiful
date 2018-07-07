@@ -28,9 +28,9 @@
     margin-left: -10px;
 }
 
-.auth-modal-swap {
+/* .auth-modal-swap {
     margin: 10px;
-}
+} */
 
 #id_remember {
     display: inline-block; /* Puts the checkbox and text on the same line */
