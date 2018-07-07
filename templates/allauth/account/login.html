@@ -7,13 +7,8 @@
 {% block content %}
 
 {% get_providers as socialaccount_providers %}
-
-    <head>
-        <link rel="stylesheet" href="{% static 'allauth/login.css' %}">
-    </head>
-
-    <div class="auth-modal" id="login-modal" role="dialog">
-        <div class="modal-dialog" role="document">
+<div class="auth-modal" id="login-modal" role="dialog">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Login</h4>
@@ -71,5 +66,5 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
 {% endblock %}
