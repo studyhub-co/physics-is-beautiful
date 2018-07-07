@@ -21,3 +21,10 @@
 body {
     background-color: #f1f1f1 !important;
 }
+.modal-content {
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+}
+
+#content-wrap {
+    margin: 20px;
+}
