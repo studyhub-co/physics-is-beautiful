@@ -64,3 +64,7 @@
     margin: auto;
     text-align: center;
 }
+
+.primaryAction {
+    width: 100%;
+}
