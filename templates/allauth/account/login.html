@@ -34,25 +34,22 @@
                 <div>
                     <form class="form-signin" method="POST" action="{% url 'account_login' %}">
                         {% csrf_token %}
-
+                        {{ form.non_field_errors }}
                         <div class="form-group">
-                            {{ form.email.errors }}
-                            <label for="id_email">Email</label>
-                            {% if form.email.value %}
-                            <input tabindex=1 name="email" type="text" class="form-control" id="id_email" placeholder="Email address" value="{{ form.email.value }}" required>
+                            {{ form.login.errors }}
+                            <label for="id_login">Email</label>
+                            {% if form.login.value %}
+                            <input tabindex=1 name="login" type="text" class="form-control" id="id_login" placeholder="Email address" value="{{ form.login.value }}" required>
                             {% else %}
-                            <input tabindex=1 name="email" type="text" class="form-control" id="id_email" placeholder="Email address" required>
+                            <input tabindex=1 name="login" type="text" class="form-control" id="id_login" placeholder="Email address" required>
                             {% endif %}
                         </div>
                         <div class="form-group">
-                            <label for="id_email">Password</label>
-                            <a class="button secondaryAction" style="float:right" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
                             {{ form.password.errors }}
+                            <label for="id_password">Password</label>
+                            <a class="button secondaryAction" style="float:right" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
                             <input tabindex=2 name="password" type="password" class="form-control" id="id_password" placeholder="Password" required>
                         </div>
-                        {% if redirect_field_value %}
-                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                        {% endif %}
                         <div class="form-group">
                             <div class="checkbox">
                                 <label id="label_remember">
@@ -61,6 +58,9 @@
                                 </label>
                             </div>
                         </div>
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
                         <button tabindex=4 class="btn btn-primary primaryAction" type="submit">{% trans "Login" %}</button>
                     </form>
                 </div>

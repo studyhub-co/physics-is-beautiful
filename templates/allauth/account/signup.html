@@ -36,7 +36,7 @@
                 <p>
                     <form class="form-signup" method="POST" action="{% url 'account_signup' %}">
                         {% csrf_token %}
-
+                        {{ form.non_field_errors }}
                         <div class="form-group">
                             {{ form.first_name.errors }}
                             {% if form.first_name.value %}
