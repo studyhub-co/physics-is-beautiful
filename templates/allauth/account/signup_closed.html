@@ -5,7 +5,16 @@
 {% block head_title %}{% trans "Sign Up Closed" %}{% endblock %}
 
 {% block content %}
-<h1>{% trans "Sign Up Closed" %}</h1>
+<div class="auth-modal" id="login-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">{% trans "Sign Up Closed" %}</h4>
+        </div>
 
-<p>{% trans "We are sorry, but the sign up is currently closed." %}</p>
+        <div class="modal-body">
+          <p>{% trans "We are sorry, but the sign up is currently closed." %}</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
