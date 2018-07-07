@@ -4,16 +4,18 @@
 
 .errorlist {
     list-style: none;
-    max-width: 40em;
+    max-width: 35em;
     margin: auto;
+    padding: 0;
     text-align: center;
 }
 
 .errorlist li {
     margin: 20px;
-    background-color: #f53d3d;
-    color: white;
-    border-top: 1px solid #ffffff;
+    background-color: #f2dede;
+    /* old colors: #f53d3d; #dc3545 */
+    border-color: #ebccd1;
+    color: #a94442;
     padding: 5px;
     border-radius: 5px;
 }
