@@ -28,9 +28,9 @@
     margin-left: -10px;
 }
 
-.auth-modal-swap {
+/* .auth-modal-swap {
     margin: 10px;
-}
+} */
 
 #id_remember {
     display: inline-block; /* Puts the checkbox and text on the same line */
@@ -57,4 +57,14 @@
 	font-size: 0px;
 	line-height: 0px;
 	margin: 0px 8px;
+}
+
+.accounts-main-container .hr-sect {
+    max-width: 40em;
+    margin: auto;
+    text-align: center;
+}
+
+.primaryAction {
+    width: 100%;
 }
