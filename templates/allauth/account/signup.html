@@ -1,21 +1,92 @@
 {% extends "account/base.html" %}
 
 {% load i18n %}
-
-{% block head_title %}{% trans "Signup" %}{% endblock %}
-
+{% load account socialaccount %}
+{% load static %}
+{% block head_title %}{% trans "Sign Up" %}{% endblock %}
 {% block content %}
-<h1>{% trans "Sign Up" %}</h1>
 
-<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+{% get_providers as socialaccount_providers %}
 
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button type="submit">{% trans "Sign Up" %} &raquo;</button>
-</form>
+{# TODO Figure out field placeholder #}
+    <div class="auth-modal" id="login-modal" role="dialog">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Sign Up</h4>
+            </div>
 
+            <div class="modal-body">
+                <div style="display: table; margin: 0 auto;">
+                    <a title="{{socialaccount_providers.0.name}}" class="socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
+                       href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
+                        <img class="social-image" src="{% static 'homepage/images/facebook_login.png' %}" alt="{{ socialaccount_providers.0.name }}">
+                    </a>
+                    <a title="{{socialaccount_providers.1.name}}" class="socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
+                       href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
+                        <img class="social-image" src="{% static 'homepage/images/google_login.png' %}" alt="{{ socialaccount_providers.1.name }}" >
+                    </a>
+                </div>
+                <div class="hr-sect">OR</div>
+                <p>
+                    <form class="form-signup" method="POST" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="form-group">
+                            {{ form.first_name.errors }}
+                            {% if form.first_name.value %}
+                            <input name="first_name" type="text" class="form-control" id="id_firstname" placeholder="First name" value="{{ form.first_name.value }}">
+                            {% else %}
+                            <input name="first_name" type="text" class="form-control" id="id_firstname" placeholder="First name">
+                            {% endif %}
+
+                        </div>
+                        <div class="form-group">
+                            {{ form.last_name.errors }}
+                            {% if form.last_name.value %}
+                            <input name="last_name" type="text" class="form-control" id="id_lastname" placeholder="Last name" value="{{ form.last_name.value }}">
+                            {% else %}
+                            <input name="last_name" type="text" class="form-control" id="id_lastname" placeholder="Last name">
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.email.errors }}
+                            {% if form.email.value %}
+                            <input name="email" type="text" class="form-control" id="id_email" placeholder="Email address" value="{{ form.email.value }}" required>
+                            {% else %}
+                            <input name="email" type="text" class="form-control" id="id_email" placeholder="Email address" required>
+                            {% endif %}
+
+                        </div>
+                        <div class="form-group">
+                            {{ form.password1.errors }}
+                            <input name="password1" type="password" class="form-control" id="id_password1" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            {{ form.password2.errors }}
+                            <input name="password2" type="password" class="form-control" id="id_password2" placeholder="Password (again)" required>
+                        </div>
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label id="label_remember">
+                                    <input type="checkbox" class="form-check" name="remember" id="id_remember" />
+                                    <span>Remember me</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary primaryAction" type="submit">{% trans "Sign Up" %}</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    Already have an account? &nbsp;
+                    <a href="/accounts/login">Log in &raquo;</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
 {% endblock %}
