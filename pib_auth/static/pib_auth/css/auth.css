@@ -10,3 +10,61 @@
 .social-image{
     max-width: 191px;
 }
+
+.auth-modal .close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 2em;
+}
+
+.auth-modal input[type=checkbox], input[type=radio] {
+  position: relative !important;
+  vertical-align: -2px;
+  margin-right: 5px;
+}
+
+.auth-modal {
+    margin-left: -10px;
+}
+
+/* .auth-modal-swap {
+    margin: 10px;
+} */
+
+#id_remember {
+    display: inline-block; /* Puts the checkbox and text on the same line */
+}
+
+#label_remember:hover {
+    cursor: pointer;
+}
+
+/* Strike text like this: ----------- OR ------------ */
+.hr-sect {
+	display: flex;
+	flex-basis: 100%;
+	align-items: center;
+	color: rgba(0, 0, 0, 0.35);
+	margin: 8px 0px;
+}
+.hr-sect::before,
+.hr-sect::after {
+	content: "";
+	flex-grow: 1;
+	background: rgba(0, 0, 0, 0.35);
+	height: 1px;
+	font-size: 0px;
+	line-height: 0px;
+	margin: 0px 8px;
+}
+
+.accounts-main-container .hr-sect {
+    max-width: 40em;
+    margin: auto;
+    text-align: center;
+}
+
+.primaryAction {
+    width: 100%;
+}
