@@ -4,6 +4,7 @@ import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} f
 
 
 export const ActionTypes = Object.freeze({
+    CHANGE_SELECTED_TAB: 'CHANGE_SELECTED_TAB',
     REQUEST_ADD_CURRICULUM : 'REQUEST_ADD_CURRICULUM',
     CURRICULA_LOADED : 'CURRICULA_LOADED',
     ALL_CURRICULA_LOADED : 'ALL_CURRICULA_LOADED',
@@ -43,6 +44,15 @@ export const ActionTypes = Object.freeze({
 export function curriculumAdded(curriculum) {
     return { type : ActionTypes.CURRICULUM_ADDED,
 	     curriculum: curriculum}
+}
+
+
+export function changeSelectedTab(selectedTab, tabNamespace) {
+    return {
+        type: ActionTypes.CHANGE_SELECTED_TAB,
+        tab: selectedTab,
+        namespace: tabNamespace
+    };
 }
 
 
@@ -94,6 +104,23 @@ function extractAll(object, prop){
 export function allCurriculaLoaded(data) {
     return {type : ActionTypes.ALL_CURRICULA_LOADED,
 	    curricula : data}
+}
+
+export function loadMyCurricula() {
+    return function(dispatch) {
+      $.ajax({
+        async: true,
+        url: '/editor/api/curricula/',
+        context: this,
+        success: function (data, status, jqXHR) {
+          dispatch((data) => {
+            return { type : ActionTypes.CURRICULA_LOADED,
+                     curricula : data,
+            }
+          })
+        }
+      });
+    }
 }
 
 export function loadCurricula() {

@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^editor/', include('editor.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

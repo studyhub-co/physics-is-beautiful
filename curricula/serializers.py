@@ -3,6 +3,8 @@ from rest_framework.exceptions import ValidationError
 
 from expander import ExpanderSerializerMixin
 
+from django.contrib.auth import get_user_model
+
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, MathematicalExpression, UnitConversion, ImageWText
 )
@@ -33,6 +35,7 @@ class MathematicalExpressionSerializer(BaseSerializer):
     class Meta:
         model = MathematicalExpression
         fields = ['representation']
+
 
 class VectorSerializer(BaseSerializer):
 
@@ -271,11 +274,19 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         }
 
 
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ['pk', 'full_name', 'get_absolute_url']
+
+
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
+    author = UserSerializer(read_only=True)
 
     class Meta:
         model = Curriculum
-        fields = ['uuid', 'name']
+        fields = ['uuid', 'name', 'author', 'description', 'image']
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),
         }
