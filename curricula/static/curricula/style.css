@@ -593,3 +593,11 @@ img.grayed-out-img {
     color: #1caff6;
     text-decoration: none;
 }
+
+.lightgrey-round-backgraund{
+    border-radius: 1rem;
+    background: #f7f7f7;
+    font-size: 2rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
