@@ -4,7 +4,67 @@ import {SectionSheet, Sheet} from './containers/sheet'
 import {VectorGame} from './games/vector'
 import {UnitConversionGame} from './games/unit_conversion'
 import {Vector} from 'vector_canvas'
-import { UnitConversion } from './components/answers/correct_answers/correct_answers'
+import {UnitConversion} from './components/answers/correct_answers/correct_answers'
+
+class CurriculumInfoPanel extends React.Component {
+
+ constructor(obj) {
+   super()
+   this.state = {
+     showMore: false
+    }
+ }
+
+ showLessMore(e){
+   this.setState({
+     showMore: !this.state.showMore
+   })
+   e.preventDefault()
+ }
+
+
+
+ render(){
+   return (<div className="container section-sheet curriculum-panel-font">
+              <div>
+                {this.props.curriculum ?
+                  <div>
+                    {/*title*/}
+                    <div style={{float: 'left', position: 'relative', right:'30px'}}>
+                      <span className='curriculum-title'>{this.props.curriculum.name}</span>
+                      <span style={{fontSize: '25px', color: 'darkgrey'}}>
+                      {' by '}
+                        <a target={"_blank"}
+                           href={this.props.curriculum.author.get_absolute_url}
+                           className="curriculum-user-link">
+                          {this.props.curriculum.author.full_name}
+                        </a>
+                      </span>
+                    {this.state.showMore?<div>{this.props.curriculum.description}</div>:null}
+                      {this.state.showMore?<div style={{float: "right"}}><a href={"/editor"} style={{cursor: "pointer", color: "grey"}}>{"Select other curriculum"}</a></div>:null}
+                    </div>
+                    <div style={{float: 'right'}}>
+                      {this.state.showMore?
+                        <div>
+                        {this.props.curriculum.image?<img style={{maxWidth: "240px"}} src={this.props.curriculum.image} />:null}
+                        </div>
+                      :null}
+                      <div>
+                        <a
+                               className="curriculum-title curriculum-more-less"
+                               onClick={(e) => {this.showLessMore(e)}}>
+                          {this.state.showMore?"Show less":"Show details"}
+                        </a>
+                      </div>
+                    </div>
+                    <div style={{clear: "both", width: "100%"}}></div>
+                  </div>
+                  : null}
+              </div>
+        </div>)
+ }
+}
+
 
 class CurriculumApp extends React.Component {
 
@@ -71,9 +131,12 @@ class CurriculumApp extends React.Component {
 
     render() {
         return (
+          <div>
+            <CurriculumInfoPanel curriculum={this.curriculum}></CurriculumInfoPanel>
             <SectionSheet
                 sections={this.state.sections}
             />
+          </div>
         );
     }
 

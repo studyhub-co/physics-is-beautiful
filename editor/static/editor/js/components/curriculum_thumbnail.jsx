@@ -5,7 +5,7 @@ import {Thumbnail} from './thumbnail'
 export class CurriculumThumbnail extends React.Component {
   render() {
     return (
-      <div className="col-md-1 module-accessible-block" onClick={this.props.onClick}>
+      <div className="col-md-1 module-accessible-block" onClick={this.props.onClick} style={{'cursor': 'pointer'}}>
         <div className="thumbnail section-thumbnail">
           <Thumbnail image={this.props.image}/>
         </div>
