@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'blog',
     'admin_reorder',
     'editor',
+    'classroom'
 ]
 
 MIDDLEWARE = [
