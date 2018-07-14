@@ -10,7 +10,7 @@ https://www.python.org/dev/peps/pep-0008/
 
 ### React / javascript 
 
+https://standardjs.com/ 
+
 ESlint with .eslintrc.json config ("standard", "standard-react" extends). 
- See also 
- https://standardjs.com/ .
  

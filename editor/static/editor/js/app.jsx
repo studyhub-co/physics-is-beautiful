@@ -258,7 +258,7 @@ class EditorRouter extends React.Component {
           <Route path='/modules/:uuid' component={ModuleApp} />
           <Route path='/lessons/:uuid' component={LessonApp} />
           <Route path='/questions/:uuid' component={QuestionApp} />
-          {/*<Route path='/' component={CurriculaApp} />*/}
+          {/* <Route path='/' component={CurriculaApp} /> */}
           <Route path='/' component={CurriculaDashboardApp} />
         </Switch>
 
