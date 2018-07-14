@@ -69,6 +69,7 @@
                 {% render_bundle 'profile' %}
                 {% if user.is_authenticated %}
      	        <li class="nav-item"><a href="{% url 'editor' %}">Curriculum</a></li>
+                <li class="nav-item"><a href="{% url 'classroom' %}">Classroom</a></li>
 	        {% endif %}
                 <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Blog</a></li>
                 <li class="nav-item">
