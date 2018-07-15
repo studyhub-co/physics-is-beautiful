@@ -17,7 +17,7 @@
     {# Bootstrap JS #}
     <script src="{% static 'blog/bootstrap/bootstrap.min.js' %}" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    {% block ExtraHead %} {% endblock %}
+    {% block extrahead %} {% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script>
@@ -63,12 +63,14 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'blog:bloghomepage' %}">Blog</a></li>
-                <li><a href="{% url 'curricula:curriculum' %}">
+                <li>
+                    <a href="{% url 'curricula:curriculum' %}">
                     <span class="nb-drop-level-1">
                         Physics is
                     </span>
                     <span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul App</span>
-                    </span></a></li>
+                    </a>
+                </li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

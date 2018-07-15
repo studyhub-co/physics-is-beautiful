@@ -1,6 +1,6 @@
 $(document).ready(function(){
-    $(document).keypress(function(e) {
-        if(e.which==13){
+    $(document).on('keyup', function (e) {
+        if (e.keyCode == 13) {
             $('#submitButton').click();
         }
     });
@@ -20,7 +20,7 @@ $(document).ready(function(){
                 $('#results').show("slow", function () {});
             },
             error: function (data) {
-                alert("something went wrong");
+                alert("There was a problem with displaying the results.");
             }
         });
     });
