@@ -60,6 +60,13 @@ input[type=submit] {
     margin: auto;
 }
 
-#results li {
+#results {
     list-style: none;
+    padding: 0px;
+}
+#results li {
+    border: 1px solid black;
+    padding: 5px;
+    float: left;
+    margin: 5px;
 }
