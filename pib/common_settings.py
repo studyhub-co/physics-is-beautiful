@@ -65,6 +65,11 @@ INSTALLED_APPS = [
     'blog',
     'admin_reorder',
     'editor',
+    # discussion
+    'crispy_forms',
+    'mptt',
+    'djeddit',
+    'meta',
 ]
 
 MIDDLEWARE = [
@@ -102,6 +107,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
+                'djeddit.context_processors.djeddit_settings'
             ],
         },
     },
