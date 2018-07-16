@@ -32,8 +32,8 @@
     margin: 10px;
 } */
 
-#id_remember {
-    display: inline-block; /* Puts the checkbox and text on the same line */
+.form-check-remember {
+    display: inline-block !important; /* Puts the checkbox and text on the same line */
 }
 
 #label_remember:hover {
