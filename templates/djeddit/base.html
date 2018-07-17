@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "navbar.html" %}
+
+{% block extrahead %}
 
 <head>
 	<meta charset="utf-8" />
@@ -8,6 +9,10 @@
     {% include 'djeddit/base_stylesheets.html' %}
     <meta name="viewport" content = "width=device-width, initial-scale=1.0">
 </head>
+
+{% endblock %}
+
+{% block body_content %}
 
 <body class="body">
     <!-- Fixed navbar -->
@@ -61,4 +66,5 @@
 	};
 		{% endif %}
 </script>
-</html>
+
+{% endblock %}
