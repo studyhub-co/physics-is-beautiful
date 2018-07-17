@@ -1,62 +1,53 @@
 import React from 'react'
 // import { push } from 'react-router-redux'
 import { push } from 'connected-react-router'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
 
+import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
+
+import * as actionCreators from '../../actions/tab'
+
 class IndexView extends React.Component {
-
-  constructor (props) {
-    super(props)
-    console.log(props)
-  }
-
   // goToProtected () {
   //   this.props.dispatch(push('/protected'))
   // }
 
   render () {
-    return (<Sheet>Hello world</Sheet>)
-  }
+    console.log(this.props);
+    return (
+      <Sheet>
+        <Tabs name='tab'
+          className='tabs'
+          handleSelect={this.props.actions.changeSelectedTab}
+          selectedTab={this.props.tab}
+        >
+          <div className='tab-links'>
+            <TabLink to='student'>Student</TabLink>
+            <TabLink to='teacher'>Teacher</TabLink>
+          </div>
 
-  // render() {
-  //     return (
-  //         <div className="container">
-  //             <div className="margin-top-medium text-center">
-  //                 <img className="page-logo margin-bottom-medium"
-  //                     src={reactLogo}
-  //                     alt="ReactJs"
-  //                 />
-  //                 <img className="page-logo margin-bottom-medium"
-  //                     src={reduxLogo}
-  //                     alt="Redux"
-  //                 />
-  //             </div>
-  //             <div className="text-center">
-  //                 <h1>Django React Redux Demo</h1>
-  //                 <h4>Hello, {this.props.userName || 'guest'}.</h4>
-  //             </div>
-  //             <div className="margin-top-medium text-center">
-  //                 <p>Attempt to access some <a onClick={this.goToProtected}><b>protected content</b></a>.</p>
-  //             </div>
-  //             <div className="margin-top-medium">
-  //                 {this.props.statusText ?
-  //                     <div className="alert alert-info">
-  //                         {this.props.statusText}
-  //                     </div>
-  //                     :
-  //                     null
-  //                 }
-  //             </div>
-  //         </div>
-  //     )
-  // }
+          <div className='content'>
+            <TabContent for='student'>
+              <div>student</div>
+            </TabContent>
+            <TabContent for='teacher'>
+              <div>teacher</div>
+            </TabContent>
+          </div>
+        </Tabs>
+      </Sheet>
+    )
+  }
 }
+
 IndexView.propTypes = {
-  // statusText: PropTypes.string,
-  // userName: PropTypes.string,
-  dispatch: PropTypes.func.isRequired
+  actions: PropTypes.shape({
+    changeSelectedTab: PropTypes.func.isRequired
+  }).isRequired,
+  tab: PropTypes.string
 }
 IndexView.defaultProps = {
   // statusText: '',
@@ -65,10 +56,15 @@ IndexView.defaultProps = {
 
 const mapStateToProps = (state) => {
   return {
-    // userName: state.auth.userName,
-    // statusText: state.auth.statusText
+    tab: state.tab.tab
   }
 }
 
-export default connect(mapStateToProps)(IndexView)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(IndexView)
 export { IndexView as IndexViewNotConnected }

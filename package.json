@@ -50,13 +50,13 @@
     "redux-devtools-log-monitor": "^1.4.0",
     "react-tabs-redux": "^3.0.2",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
     "webpack": "^2.2.0",
     "webpack-bundle-tracker": "^0.3.0",
     "history": "^4.7.2",
     "react-bootstrap": "^0.30.7",
     "react-dnd": "^2.6.0",
-    "react-dnd-html5-backend": "^2.6.0",
+    "react-dnd-html5-backend": "^2.6.0"
   },
   "dependencies": {
 
