@@ -13,4 +13,6 @@ urlpatterns = [
     url(r'^user/(.+)/summary/?$', views.user_summary, name='userSummary'),
     url(r'^user/(.+)/threads/?$', views.user_threads_page, name='userThreads'),
     url(r'^user/(.+)/replies/?$', views.user_replies_page, name='userReplies'),
+    url(r'^users/?$', views.users_page, name='usersPage'),
+    url(r'^set_user_status/?$', views.set_user_status, name='setUserStatus'),
 ] + djeddit_urls.urlpatterns
