@@ -9,7 +9,7 @@ from django.utils.text import slugify
 def generate_username(apps, schema_editor):
     '''
     Generate a username given the first and last name.
-    Ex. Bill Gates -> bill_gates
+    Ex. Bill Gates -> bill_gates2
     '''
     Users = apps.get_model('pib_auth', 'User')
 
@@ -17,7 +17,8 @@ def generate_username(apps, schema_editor):
     for user in Users.objects.all():
         if not user.username:
             pre_username = '{}_{}'.format(user.first_name.strip(), user.last_name.strip())  # bill_gates
-            post_username = pre_username  # will become something like bill_gates2
+            pre_username = pre_username.replace(' ', '_')  # a b_cc -> a_b_c
+            post_username = pre_username  # will become something like bill_gates2 later
 
             username_not_unique = True
 
