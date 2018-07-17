@@ -1,6 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'react-router-redux'
+// import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router'
 import PropTypes from 'prop-types'
 
 import routes from '../../routes'
@@ -11,7 +12,6 @@ export default class Root extends React.Component {
   render () {
     return (
       <div>
-        I AM debugger
         <Provider store={this.props.store}>
           <div>
             <App>
