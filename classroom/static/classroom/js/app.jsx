@@ -1,20 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
-import classNames from 'classnames'
+// import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
+// import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
 class App extends React.Component {
 
-  goToIndex () {
-    this.props.dispatch(push('/'))
-  }
+  // goToIndex () {
+  //   this.props.dispatch(push('/'))
+  // }
 
   render () {
     // const homeClass = classNames({
     //     active: this.props.location && this.props.location.pathname === '/'
     // })
-
     return (
       <div className='app'>
         <div>
@@ -37,7 +37,7 @@ App.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    location: state.routing.location
+    location: state.router.location
   }
 }
 

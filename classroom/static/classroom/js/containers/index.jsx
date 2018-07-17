@@ -1,1 +1,2 @@
-export { HomeView } from './Home/index'
+import IndexView from './IndexView/index'
+export { IndexView }

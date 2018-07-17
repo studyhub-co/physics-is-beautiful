@@ -1,6 +1,7 @@
 import thunk from 'redux-thunk'
 import { applyMiddleware, createStore } from 'redux'
-import { routerMiddleware } from 'react-router-redux'
+// import { routerMiddleware } from 'react-router-redux'
+import { routerMiddleware } from 'connected-react-router'
 
 import rootReducer from '../reducers'
 
