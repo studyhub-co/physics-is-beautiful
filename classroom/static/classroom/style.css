@@ -1,0 +1,33 @@
+.tabs {
+    width: 100%;
+    display: inline-block;
+    margin-right: 30px;
+    vertical-align: top;
+    padding-top: 2rem;
+    /*font-size: 3rem;*/
+}
+
+.tab-link{
+    font-size: 3rem;
+}
+
+.tabs .tab-link {
+    padding: 0 5rem;
+    cursor: pointer;
+    /*border: 1px solid transparent;*/
+    display: inline-block;
+    position: relative;
+    border-bottom: 5px solid rgb(216, 216, 216);
+    height: 40px;
+    line-height: 41px;
+    top: -6px;
+    left: -1px;
+    color: rgb(216, 216, 216);
+}
+
+.tabs .tab-link-active {
+    border-bottom: 5px solid rgb(8, 209, 255);
+    color: rgb(8, 209, 255);
+}
+
+.tabs-1 .tabContent {}
