@@ -8,7 +8,11 @@ import { Sheet } from '../../components/Sheet'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
+import { EditClassroomView } from '../../containers/index'
+
 import * as actionCreators from '../../actions/tab'
+
+import { Route } from 'react-router'
 
 class IndexView extends React.Component {
   // goToProtected () {
@@ -16,7 +20,9 @@ class IndexView extends React.Component {
   // }
 
   render () {
-    console.log(this.props);
+    var createUrl = this.props.match.url.replace(/\/$/, '') + '/create'
+    var editUrl = this.props.match.url.replace(/\/$/, '') + '/edit/:uuid/'
+
     return (
       <Sheet>
         <Tabs name='tab'
@@ -28,13 +34,18 @@ class IndexView extends React.Component {
             <TabLink to='student'>Student</TabLink>
             <TabLink to='teacher'>Teacher</TabLink>
           </div>
-
           <div className='content'>
             <TabContent for='student'>
-              <div>student</div>
+              student
             </TabContent>
             <TabContent for='teacher'>
-              <div>teacher</div>
+              <h2>All classrooms</h2>
+              <Route path={createUrl} component={EditClassroomView} />
+              <Route path={editUrl} component={EditClassroomView} />
+              {this.props.location.pathname === '/classroom/' ? <div className={'create-classroom-button'}
+                onClick={() => this.props.dispatch(push(createUrl))}>
+                + Create classroom
+              </div> : null}
             </TabContent>
           </div>
         </Tabs>
@@ -47,7 +58,8 @@ IndexView.propTypes = {
   actions: PropTypes.shape({
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
-  tab: PropTypes.string
+  tab: PropTypes.string,
+  dispatch: PropTypes.func.isRequired
 }
 IndexView.defaultProps = {
   // statusText: '',
@@ -62,6 +74,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    dispatch,
     actions: bindActionCreators(actionCreators, dispatch)
   }
 }

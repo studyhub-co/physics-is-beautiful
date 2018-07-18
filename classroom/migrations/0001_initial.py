@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('curricula', '0028_auto_20180713_1537'),
+        ('curricula', '0027_auto_20180705_1704'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
