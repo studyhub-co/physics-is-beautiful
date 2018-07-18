@@ -1,2 +1,3 @@
 import IndexView from './IndexView/index'
-export { IndexView }
+import EditClassroomView from './EditClassroomView/index'
+export { IndexView, EditClassroomView }

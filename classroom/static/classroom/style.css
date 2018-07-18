@@ -1,3 +1,7 @@
+.classroom{
+    font-family: 'Tw Cen MT';
+}
+
 .tabs {
     width: 100%;
     display: inline-block;
@@ -31,3 +35,26 @@
 }
 
 .tabs-1 .tabContent {}
+
+.pop-up-windows {
+    border-radius: 15px;
+    padding: 30px 60px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+}
+
+.create-classroom-button{
+    border-radius: 15px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 30rem;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: dashed;
+    width: 50rem;
+    height: 30rem;
+    color: rgb(216, 216, 216);
+    font-size: 34px;
+    cursor: pointer;
+}

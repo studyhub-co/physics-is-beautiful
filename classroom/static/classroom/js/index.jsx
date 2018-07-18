@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import createHistory from 'history/createBrowserHistory'
+// import createHistory from 'history/createBrowserHistory'
+
+import history from './history'
 
 import Root from './containers/Root/Root'
 import configureStore from './store/configureStore'
@@ -8,7 +10,7 @@ import configureStore from './store/configureStore'
 const initialState = {}
 const target = document.getElementById('react-app')
 
-const history = createHistory()
+// const history = createHistory()
 const store = configureStore(initialState, history)
 
 const node = (
