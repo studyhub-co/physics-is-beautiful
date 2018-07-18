@@ -1,60 +1,42 @@
 {% extends "navbar.html" %}
 
 {% block extrahead %}
-
-<head>
-	<meta charset="utf-8" />
-	{% include 'meta/meta.html' %}
-	{% load staticfiles %}
-    {% include 'djeddit/base_stylesheets.html' %}
-    <meta name="viewport" content = "width=device-width, initial-scale=1.0">
-</head>
-
+{% include 'meta/meta.html' %}
+{% load staticfiles %}
+{% include 'djeddit/base_stylesheets.html' %}
 {% endblock %}
 
 {% block body_content %}
 
 <body class="body">
-    <!-- Fixed navbar -->
-	<div id="wrap">
-        <nav class="navbar navbar-fixed-top">
-          <div class="container">
-            <div>
-              <ul class="nav navbar-nav navbar-right">
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'userSummary' user.username %}">Profile</a></li>
-                    {% if user.is_superuser %}
-                        <li><a href="{% url 'usersPage' %}">Users</a></li>
-                    {% endif %}
-                    <li><a href="/accounts/logout">Logout</a></li>
-                {% else %}
-                    <li><a href="/accounts/login">Login</a></li>
-                    <li><a href="/accounts/register">Register</a></li>
-                {% endif %}
-              </ul>
-            </div><!--/.nav-collapse -->
-          </div>
-        </nav>
-
-        <!-- Content -->
-        <div id="main" class="container theme-showcase" role="main">
-            {% block title %}{% endblock %}
-            <div class="row">
-                {% block content %}{% endblock %}
-            </div>
+    <!-- Content -->
+    <div id="main" class="container theme-showcase" role="main">
+        {% block title %}{% endblock %}
+        <div class="row">
+            {% block content %}{% endblock %}
         </div>
     </div>
 	<footer>
         <div class="navbar navbar-fixed-bottom">
             <div class="container">
-                <p><a href="/discussion">Home</a> | <a href="#" target="blank">Return to Physics is Beautiful</a></p>
+                <p><a href="/discussion">Home</a>
+                {% if user.is_superuser %}
+                    | <a href="{% url 'usersPage' %}">Users</a>
+                {% endif %}
+                    | <a href="#" target="blank">Return to Physics is Beautiful</a>
+                </p>
             </div>
         </div>
 	</footer>
 
     	<!-- Bootstrap core JavaScript
 	================================================== -->
-    {% include 'djeddit/base_scripts.html' %}
+    <link rel="stylesheet" href="{% static 'djeddit/bower_components/bootstrap/dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'djeddit/bower_components/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'djeddit/bower_components/bootstrap-select/dist/css/bootstrap-select.min.css' %}">
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">
     {% block scripts %}{% endblock %}
 </body>
 
