@@ -1,6 +1,6 @@
 import uuid
 
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from django.db import models
 
 from django.db.models.signals import pre_save
@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from shortuuidfield import ShortUUIDField
 
 from curricula.models import Curriculum
+from profiles.models import Profile
 
 
 class Classroom(models.Model):
@@ -17,17 +18,21 @@ class Classroom(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
-    teacher = models.ForeignKey(get_user_model(), related_name='as_teacher_classrooms')
-    students = models.ManyToManyField(get_user_model(), through='ClassroomStudent',
+    teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
+    students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
     curriculum = models.ForeignKey(Curriculum)
     code = models.CharField(unique=True, max_length=6)
+
+    def less_students(self):
+        # TODO no so good for lists queries
+        return self.students.order_by("-id")[:10]
 
 
 class ClassroomStudent(models.Model):
     code_entered_on = models.DateTimeField(blank=True, null=True)
     leave_on = models.DateTimeField(blank=True, null=True)
-    student = models.ForeignKey(get_user_model())
+    student = models.ForeignKey(Profile)
     classroom = models.ForeignKey(Classroom)
 
 

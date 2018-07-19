@@ -58,3 +58,42 @@
     font-size: 34px;
     cursor: pointer;
 }
+
+/* classroom card*/
+
+.classroom-card{
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    width: 50rem;
+    height: 30rem;
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    vertical-align: top;
+}
+
+.classroom-card > div:nth-of-type(1) {
+    font-size: 3rem;
+    color: rgb(8, 209, 255);
+}
+
+.classroom-card > div:nth-of-type(2) {
+    font-size: 3rem;
+    color: rgb(216, 216, 216);
+}
+
+.classroom-card > div:nth-of-type(4) {
+    font-size: 3rem;
+    color: rgb(121, 121, 121);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #efefef;
+    overflow: hidden;
+}

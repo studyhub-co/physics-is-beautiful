@@ -7,6 +7,7 @@ export class PopupWindow extends React.Component {
 
     return (
       <div className={className}>
+        <button type='button' className='close' aria-label='Close' onClick={() => { this.props.goBack() }}><span aria-hidden='true'>×</span></button>
         { this.props.children }
       </div>
     )
@@ -14,5 +15,6 @@ export class PopupWindow extends React.Component {
 }
 
 PopupWindow.propTypes = {
-  children: PropTypes.object
+  children: PropTypes.object,
+  goBack: PropTypes.func
 }

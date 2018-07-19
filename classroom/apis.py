@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db.models import Count
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
@@ -14,10 +15,12 @@ class ClassroomViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Classroom.objects.filter(Q(teacher=self.request.user) | Q(students=self.request.user))
+        return Classroom.objects.\
+            filter(Q(teacher__user=self.request.user) | Q(students__user=self.request.user)).\
+            annotate(count_students=Count('students'))
 
     def perform_create(self, serializer):
-        serializer.save(teacher=self.request.user)
+        serializer.save(teacher__user=self.request.user)
 
 
 class ClassroomStudentViewSet(ModelViewSet):
@@ -26,9 +29,9 @@ class ClassroomStudentViewSet(ModelViewSet):
     # lookup_field = 'uuid'
 
     def get_queryset(self):
-        return ClassroomStudent.objects.filter(student=self.request.user)
+        return ClassroomStudent.objects.filter(student__user=self.request.user)
 
     def perform_create(self, serializer):
         # TODO check ID of room
-        serializer.save(student=self.request.user)
+        serializer.save(student__user=self.request.user)
 
