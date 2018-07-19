@@ -4,10 +4,17 @@
 {% block title %}<h2>New Thread</h2>{% endblock %}
 {% block content %}
     <div class="col-md-6">
-        <form method="post" accept-charset="utf-8">{% csrf_token %}
-            {{ threadForm|crispy }}
-            {{ postForm|crispy }}
-            <input type="submit" class="btn btn-primary btn-sm" value="Submit"/>
+        <form method="post" accept-charset="utf-8">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_title">Title</label>
+                <input id="id_title" name="thread-title" class="form-control" placeholder="Title" required="" type="text">
+            </div>
+            <div class="form-group">
+                <label for="id_body">Body</label>
+                <textarea name="post-content" id="id_body" cols="40" rows="10" class="form-control" placeholder="Type your post here..."></textarea>
+            </div>
+            <input class="btn btn-primary primaryAction" value="Submit" type="submit">
         </form>
     </div>
 
