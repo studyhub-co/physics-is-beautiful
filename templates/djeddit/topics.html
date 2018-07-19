@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% extends BASE_TEMPLATE %}
+{% load staticfiles %}
+{% load djeddit_tags %}
+{% load crispy_forms_tags %}
+{% block title %}
+    <div class="container">
+        <h2 id="pageTitle">Topics
+        {% if user.is_superuser %}
+            <button id="btnNewTopic" class="btn btn-primary btn-xs" onclick="$('#topic-form-wrapper').toggleClass('hidden')">New Topic</button>
+        {% endif %}
+        </h2>
+        {% if user.is_superuser %}
+            <div id="topic-form-wrapper" class="{% if not showForm %} hidden {% endif %} row">
+                <div class="col-sm-5">
+                    {% crispy topicForm %}
+                </div>
+            </div>
+        {% endif %}
+        <ol class="breadcrumb">
+            <li><a href="{% url 'topics' %}">Home</a></li>
+            <li class="active">{{ topic.title }}</li>
+        </ol>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="col-md-8">
+        <ul class="list-group">
+            {% for topic in topics %}
+                {% include 'djeddit/topic_item.html' %}
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'djeddit/js/util.js' %}"></script>
+{% endblock %}
