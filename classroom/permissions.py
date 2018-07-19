@@ -9,7 +9,7 @@ class IsClassroomTeacherOrStudent(permissions.BasePermission):
         return True
 
     def _is_teacher_or_student(self, user, obj):
-        if user == obj.teacher or user in obj.students:
+        if user == obj.teacher or user in obj.students.all():
             return True
         else:
             return False

@@ -3,21 +3,25 @@ from rest_framework.fields import empty
 
 from .models import Classroom, Assignment, ClassroomStudent
 
+from curricula.models import Curriculum
+
 from profiles.serializers import ProfileSerializer
 from curricula.serializers import SimpleCurriculumSerializer
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
     less_students = ProfileSerializer(many=True, read_only=True)
-    count_students = serializers.IntegerField()
+    count_students = serializers.IntegerField(read_only=True)
     teacher = ProfileSerializer(read_only=True)
-    curriculum = SimpleCurriculumSerializer()
+    curriculum = SimpleCurriculumSerializer(read_only=True)
+    # TODO limit to my Curricula
+    curriculum_id = serializers.PrimaryKeyRelatedField(queryset=Curriculum.objects.all(), source='curriculum', write_only=True)
 
     class Meta:
         model = Classroom
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'less_students', 'count_students',
-                  'teacher']
-        read_only_fields = ('uuid', 'code', 'count_students')
+                  'teacher', 'curriculum_id']
+        read_only_fields = ('uuid', 'code')
 
 
 class ClassroomStudentSerializer(serializers.ModelSerializer):

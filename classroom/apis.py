@@ -20,7 +20,7 @@ class ClassroomViewSet(ModelViewSet):
             annotate(count_students=Count('students'))
 
     def perform_create(self, serializer):
-        serializer.save(teacher__user=self.request.user)
+        serializer.save(teacher=self.request.user.profile)
 
 
 class ClassroomStudentViewSet(ModelViewSet):
