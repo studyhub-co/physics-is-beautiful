@@ -127,6 +127,11 @@ DATABASES = {
         'PASSWORD': os.getenv('DJANGO_DB_PASS', ''),
         'HOST': os.getenv('DJANGO_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('DJANGO_DB_PORT', '3306'),
+        'OPTIONS': {
+            # Minor hack to allow creation of Djeddit threads
+            # See https://stackoverflow.com/a/9699805/6609551
+            "init_command": "SET foreign_key_checks = 0;"
+        }
     }
 }
 
@@ -184,9 +189,9 @@ SITE_ID = 1
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = 'Physics is Beautiful <no-reply@physicsisbeautiful.com>'
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
