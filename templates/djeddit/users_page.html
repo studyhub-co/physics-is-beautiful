@@ -19,7 +19,7 @@
                         <div class="col-sm-5 col-xs-6 status-col">
                             <div class="full-line">
                                 <span class="text-muted hide-sm" style="margin-right: 10px">Status: </span>
-                                <select class="selectpicker user-status">
+                                <select class="user-status">
                                     <option data-icon="glyphicon-ban-circle" value="banned" {% userStatusSelected User 'banned' %}>Banned</option>
                                     <option data-icon="glyphicon-ok-sign" value="active" {% userStatusSelected User 'active' %}>Active</option>
                                     <option data-icon="glyphicon-cog" value="admin" {% userStatusSelected User 'admin' %}>Admin</option>
@@ -47,10 +47,13 @@
     <script type="text/javascript" src="{% static 'djeddit/js/user.js' %}"></script>
     <script type="text/javascript">
         $(function () {
-            $('.selectpicker.user-status').on('change', function () {
+            $('.user-status').on('change', function () {
                 var username = $(this).closest('.status-col').siblings('.username-col').text().trim();
                 var status = this.value;
                 userFuncs.setUserStatus(username, status);
+
+                // visual cue
+                $(".user-status").fadeIn(100).fadeOut(100).fadeIn(100);
             })
         })
     </script>
