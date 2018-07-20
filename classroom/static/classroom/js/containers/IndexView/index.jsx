@@ -22,7 +22,7 @@ class IndexView extends React.Component {
   // }
 
   componentWillMount () {
-    this.props.classRoomActions.classroomFetchClassroomList()
+    this.props.classroomActions.classroomFetchClassroomsList()
   }
 
   render () {
@@ -74,8 +74,8 @@ IndexView.propTypes = {
   actions: PropTypes.shape({
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
-  classRoomActions: PropTypes.shape({
-    classroomFetchClassroomList: PropTypes.func.isRequired
+  classroomActions: PropTypes.shape({
+    classroomFetchClassroomsList: PropTypes.func.isRequired
   }).isRequired,
   tab: PropTypes.string,
   classroomList: PropTypes.array,
@@ -93,7 +93,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     actions: bindActionCreators(actionCreators, dispatch),
-    classRoomActions: bindActionCreators(classroomCreators, dispatch)
+    classroomActions: bindActionCreators(classroomCreators, dispatch)
   }
 }
 

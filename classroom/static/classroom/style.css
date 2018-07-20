@@ -1,6 +1,24 @@
 .classroom{
     font-family: 'Tw Cen MT';
+    font-size: 20px;
 }
+
+
+/* common */
+
+.blue-text {
+    color: rgb(8, 209, 255)
+}
+
+.grey-text {
+    color: rgb(216, 216, 216);
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+/* tabs */
 
 .tabs {
     width: 100%;
@@ -96,4 +114,53 @@
     width: 100%;
     background: #efefef;
     overflow: hidden;
+}
+/* classroom card*/
+
+.curriculum-card {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    padding: 2rem;
+    vertical-align: top;
+    cursor: pointer;
+    min-height: 7rem;
+}
+
+.curriculum-card:hover {
+    border-color: rgb(8, 209, 255);
+}
+
+.selected-curriculum-card {
+    background-color: rgba(8, 209, 255, 0.35);
+}
+
+.create-curriculum-button {
+    text-align: center;
+    vertical-align: middle;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: dashed;
+    /*width: 50rem;*/
+    /*height: 30rem;*/
+    color: rgb(216, 216, 216);
+}
+
+.classroom-common-button{
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 2rem;
+    margin: 0 2rem 0 2rem;
+    float: right;
+}
+
+.disabled-button{
+    background-color: rgb(216, 216, 216);
 }
