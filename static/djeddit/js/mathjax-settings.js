@@ -1,3 +1,5 @@
+// This file is never used!
+
 MathJax.Ajax.config.path["mhchem"] =
   "https://cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.0";
 
