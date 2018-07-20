@@ -1,4 +1,13 @@
-export function checkHttpStatus(response) {
+import axios from 'axios'
+
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.xsrfCookieName = 'csrftoken'
+
+export function getAxios () {
+  return axios
+}
+
+export function checkHttpStatus (response) {
   if (response.status >= 200 && response.status < 300) {
     return response
   }
@@ -8,6 +17,4 @@ export function checkHttpStatus(response) {
   throw error
 }
 
-export function parseJSON (response) {
-  return response.data
-}
+

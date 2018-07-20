@@ -15,12 +15,13 @@ class ClassroomSerializer(serializers.ModelSerializer):
     teacher = ProfileSerializer(read_only=True)
     curriculum = SimpleCurriculumSerializer(read_only=True)
     # TODO limit to my Curricula
-    curriculum_id = serializers.PrimaryKeyRelatedField(queryset=Curriculum.objects.all(), source='curriculum', write_only=True)
+    curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
+                                                   slug_field='uuid',  write_only=True)
 
     class Meta:
         model = Classroom
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'less_students', 'count_students',
-                  'teacher', 'curriculum_id']
+                  'teacher', 'curriculum_uuid']
         read_only_fields = ('uuid', 'code')
 
 
