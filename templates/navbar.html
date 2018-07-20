@@ -9,7 +9,8 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'curricula/images/favicon/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'curricula/navbar.css' %}" />
 
-    {# Mathjax#}
+    {# Mathjax #}
+    {% block mathjax_config %} {% endblock %}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     {# JQuery #}
@@ -44,6 +45,7 @@
 
 </head>
 
+<body>
 
 <nav id="navTopOfScreen" class="navbar navbar-default navbar-static-top"><!-- navbar-fixed-top -->
     <div class="container-fluid">
@@ -89,3 +91,5 @@
 {% auth_modal user request.get_full_path %}
 
 {% block body_content %} {% endblock %}
+
+</body>
