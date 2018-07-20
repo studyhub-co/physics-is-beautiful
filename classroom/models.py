@@ -28,6 +28,9 @@ class Classroom(models.Model):
         # TODO no so good for lists queries
         return self.students.order_by("-id")[:10]
 
+    def __str__(self):
+        return '{}'.format(self.name)
+
 
 class ClassroomStudent(models.Model):
     code_entered_on = models.DateTimeField(blank=True, null=True)
