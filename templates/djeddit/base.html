@@ -8,7 +8,7 @@
 
 {% block body_content %}
 
-<body class="body">
+<div class="body">
     <!-- Content -->
     <div id="main" class="container theme-showcase" role="main">
         {% block title %}{% endblock %}
@@ -40,7 +40,7 @@
 
     {% include 'djeddit/base_scripts.html' %}
     {% block scripts %}{% endblock %}
-</body>
+</div>
 
 <script type="text/javascript">
     window.BASE_URL = "http://{{ request.get_host }}";
