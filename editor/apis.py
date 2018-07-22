@@ -24,7 +24,7 @@ class CurriculumViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Curriculum.objects.filter(Q(author=self.request.user)|Q(collaborators=self.request.user))
+        return Curriculum.objects.filter(Q(author=self.request.user) | Q(collaborators=self.request.user))
     
     def perform_create(self, serializer):
         new_curriculum = serializer.save(author=self.request.user)
@@ -40,7 +40,8 @@ class UnitViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Unit.objects.filter(Q(curriculum__author=self.request.user)|Q(curriculum__collaborators=self.request.user))
+        return Unit.objects.filter(Q(curriculum__author=self.request.user) |
+                                   Q(curriculum__collaborators=self.request.user))
 
     
 class ModuleViewSet(ModelViewSet):
@@ -49,7 +50,8 @@ class ModuleViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Module.objects.filter(Q(unit__curriculum__author=self.request.user)|Q(unit__curriculum__collaborators=self.request.user))
+        return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
+                                     Q(unit__curriculum__collaborators=self.request.user))
 
     
 class LessonViewSet(ModelViewSet):
@@ -58,7 +60,8 @@ class LessonViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user)|Q(module__unit__curriculum__collaborators=self.request.user))
+        return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
+                                     Q(module__unit__curriculum__collaborators=self.request.user))
 
 
 class QuestionViewSet(ModelViewSet):
@@ -67,7 +70,8 @@ class QuestionViewSet(ModelViewSet):
     lookup_field = 'uuid'
     
     def get_queryset(self):
-        return Question.objects.filter(Q(lesson__module__unit__curriculum__author=self.request.user)|Q(lesson__module__unit__curriculum__collaborators=self.request.user))
+        return Question.objects.filter(Q(lesson__module__unit__curriculum__author=self.request.user) |
+                                       Q(lesson__module__unit__curriculum__collaborators=self.request.user))
 
     
 class AnswerViewSet(ModelViewSet):
@@ -76,4 +80,5 @@ class AnswerViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Answer.objects.filter(Q(question__lesson__module__unit__curriculum__author=self.request.user)|Q(question__lesson__module__unit__curriculum__collaborators=self.request.user))
+        return Answer.objects.filter(Q(question__lesson__module__unit__curriculum__author=self.request.user) |
+                                     Q(question__lesson__module__unit__curriculum__collaborators=self.request.user))

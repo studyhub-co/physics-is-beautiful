@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Sheet } from './sheet'
 import {BackButton} from './../components/back_button'
 import {CurriculumContainer} from './../containers/curriculum'
 import {CurriculumThumbnail} from './../components/curriculum_thumbnail'
@@ -29,11 +28,9 @@ class MyCurricula extends React.Component {
     }
 
     return (
-      <Sheet>
         <div className="row">
           {curricula}
         </div>
-      </Sheet>
     );
   }
 

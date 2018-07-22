@@ -44,7 +44,7 @@ class Curricula extends React.Component {
     }
 
     return (
-      <Sheet>
+      <div>
         <a onClick={this.handleAddClick} className="btn btn-primary">Create curriculum</a>
         <span> based on </span>
         <select onChange={this.handlePrototypeChoiceChange} >
@@ -55,7 +55,7 @@ class Curricula extends React.Component {
         <div className="row">
           {curricula}
         </div>
-      </Sheet>
+      </div>
     );
   }
 

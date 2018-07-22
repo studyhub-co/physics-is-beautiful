@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'blog',
     'admin_reorder',
     'editor',
+    'classroom'
 ]
 
 MIDDLEWARE = [
@@ -83,7 +84,7 @@ ADMIN_REORDER = (
     # Reorder app models
     {'app': 'curricula', 'models': ('curricula.Curriculum', 'curricula.Unit', 'curricula.Module',
                                     'curricula.Lesson', 'curricula.Question')},
-    'account', 'auth', 'pib_auth', 'profiles', 'sites', 'socialaccount'
+    'classroom', 'account', 'auth', 'pib_auth', 'profiles', 'sites', 'socialaccount'
 )
 
 ROOT_URLCONF = 'pib.urls'
