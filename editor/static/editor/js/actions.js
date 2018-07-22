@@ -48,7 +48,7 @@ export function curriculumAdded(curriculum) {
 
 
 export function changeSelectedTab(selectedTab, tabNamespace) {
-    return {
+     return {
         type: ActionTypes.CHANGE_SELECTED_TAB,
         tab: selectedTab,
         namespace: tabNamespace

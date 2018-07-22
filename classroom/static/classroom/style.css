@@ -1,0 +1,166 @@
+.classroom{
+    font-family: 'Tw Cen MT';
+    font-size: 20px;
+}
+
+
+/* common */
+
+.blue-text {
+    color: rgb(8, 209, 255)
+}
+
+.grey-text {
+    color: rgb(216, 216, 216);
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+/* tabs */
+
+.tabs {
+    width: 100%;
+    display: inline-block;
+    margin-right: 30px;
+    vertical-align: top;
+    padding-top: 2rem;
+    /*font-size: 3rem;*/
+}
+
+.tab-link{
+    font-size: 3rem;
+}
+
+.tabs .tab-link {
+    padding: 0 5rem;
+    cursor: pointer;
+    /*border: 1px solid transparent;*/
+    display: inline-block;
+    position: relative;
+    border-bottom: 5px solid rgb(216, 216, 216);
+    height: 40px;
+    line-height: 41px;
+    top: -6px;
+    left: -1px;
+    color: rgb(216, 216, 216);
+}
+
+.tabs .tab-link-active {
+    border-bottom: 5px solid rgb(8, 209, 255);
+    color: rgb(8, 209, 255);
+}
+
+.tabs-1 .tabContent {}
+
+.pop-up-windows {
+    border-radius: 15px;
+    padding: 30px 60px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+}
+
+.create-classroom-button{
+    border-radius: 15px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 30rem;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: dashed;
+    width: 50rem;
+    height: 30rem;
+    color: rgb(216, 216, 216);
+    font-size: 34px;
+    cursor: pointer;
+}
+
+/* classroom card*/
+
+.classroom-card{
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    width: 50rem;
+    height: 30rem;
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    vertical-align: top;
+}
+
+.classroom-card > div:nth-of-type(1) {
+    font-size: 3rem;
+    color: rgb(8, 209, 255);
+}
+
+.classroom-card > div:nth-of-type(2) {
+    font-size: 3rem;
+    color: rgb(216, 216, 216);
+}
+
+.classroom-card > div:nth-of-type(4) {
+    font-size: 3rem;
+    color: rgb(121, 121, 121);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #efefef;
+    overflow: hidden;
+}
+/* classroom card*/
+
+.curriculum-card {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    padding: 2rem;
+    vertical-align: top;
+    cursor: pointer;
+    min-height: 7rem;
+}
+
+.curriculum-card:hover {
+    border-color: rgb(8, 209, 255);
+}
+
+.selected-curriculum-card {
+    background-color: rgba(8, 209, 255, 0.35);
+}
+
+.create-curriculum-button {
+    text-align: center;
+    vertical-align: middle;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: dashed;
+    /*width: 50rem;*/
+    /*height: 30rem;*/
+    color: rgb(216, 216, 216);
+}
+
+.classroom-common-button{
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 2rem;
+    margin: 0 2rem 0 2rem;
+    float: right;
+}
+
+.disabled-button{
+    background-color: rgb(216, 216, 216);
+}

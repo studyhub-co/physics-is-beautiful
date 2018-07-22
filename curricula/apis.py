@@ -171,6 +171,21 @@ class CurriculaViewSet(ModelViewSet):
     queryset = Curriculum.objects.all()
     lookup_field = 'uuid'
 
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = self.queryset
+        filter_by = self.request.query_params.get('filter', None)
+        if filter_by in ('other', 'my') and self.request.user.is_authenticated():
+            if filter_by == 'my':
+                queryset = queryset.filter(author=self.request.user)
+            elif filter_by == 'other':
+                queryset = queryset.exclude(author=self.request.user)
+
+        return queryset
+
     def get_serializer_context(self):
         context = super(CurriculaViewSet, self).get_serializer_context()
         context['progress_service'] = get_progress_service(context['request'])

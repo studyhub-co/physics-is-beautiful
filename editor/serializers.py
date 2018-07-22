@@ -56,7 +56,8 @@ class AnswerContentField(serializers.Field):
             return {'image' : img_field.to_representation(obj.image),
                     'text' : obj.text}
         return 'UNKNOWN'
-      
+
+
 class AnswerSerializer(BaseSerializer):
 
     question = serializers.CharField(source='question.uuid')

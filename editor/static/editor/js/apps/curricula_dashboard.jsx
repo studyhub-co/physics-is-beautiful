@@ -9,8 +9,11 @@ import { Sheet } from './sheet'
 
 class CurriculaDashboard extends React.Component {
 
-  render() {
+  // click1(props){
+  //   this.props.onTabChanged("browse", "tabs")
+  // }
 
+  render() {
     return (<Sheet>
        <Tabs
             name="tab"
@@ -29,6 +32,11 @@ class CurriculaDashboard extends React.Component {
                     <MyCurriculaApp></MyCurriculaApp>
                 </TabContent>
                 <TabContent for="studio">
+                    <div className={"lightgrey-round-background"}>Create a new curriculum from scratch below.
+                      Or, to add content from other curricula or to fork a curriculum visit
+                      the <a href="javascript:void(0)" onClick={() => this.props.onTabChanged("browse", "tab")}>Browse curricula</a> tab.
+                      Tutorial and additional help here
+                    </div>
                     <CurriculaApp></CurriculaApp>
                 </TabContent>
                 <TabContent for="browse">
