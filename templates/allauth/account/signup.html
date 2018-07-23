@@ -76,14 +76,14 @@
                         {% if redirect_field_value %}
                             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                         {% endif %}
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label id="label_remember">
-                                    <input type="checkbox" class="form-check form-check-remember" name="remember" />
-                                    <span>Remember me</span>
-                                </label>
-                            </div>
-                        </div>
+{#                        <div class="form-group">#}
+{#                            <div class="checkbox">#}
+{#                                <label id="label_remember">#}
+{#                                    <input type="checkbox" class="form-check form-check-remember" name="remember" />#}
+{#                                    <span>Remember me</span>#}
+{#                                </label>#}
+{#                            </div>#}
+{#                        </div>#}
                         <button class="btn btn-primary primaryAction" type="submit">{% trans "Sign Up" %}</button>
                     </form>
                 </div>

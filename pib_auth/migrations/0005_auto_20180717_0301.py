@@ -27,11 +27,10 @@ def generate_username(apps, schema_editor):
             while username_not_unique:
                 counter += 1
                 username_not_unique = False
-                for another_user in Users.objects.all():
-                    if another_user.username == post_username:
-                        username_not_unique = True
-                        post_username = '{}{}'.format(pre_username, counter)
-                        break
+                if Users.objects.filter(username=post_username).count() > 0:
+                    username_not_unique = True
+                    post_username = '{}{}'.format(pre_username, counter)
+
             user.username = post_username
             user.save()
 
