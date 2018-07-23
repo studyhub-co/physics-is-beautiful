@@ -6,6 +6,7 @@ from . import apis
 app_name = 'curricula'
 
 urlpatterns = [
+    url(r'^curricula/$', apis.CurriculaViewSet.as_view({'get': 'list'})),
     url(r'^curricula/(?P<uuid>[0-9a-zA-Z_]+)$', apis.CurriculaViewSet.as_view({'get': 'retrieve'})),
     url(r'^modules/(?P<uuid>[0-9a-zA-Z_]+)$', apis.ModuleViewSet.as_view({'get': 'retrieve'})),
     url(r'^lessons/(?P<uuid>[0-9a-zA-Z_]+)/next-question$',

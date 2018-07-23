@@ -47,4 +47,4 @@ class BaseModel(models.Model):
         if hasattr(self.CloneMeta, 'children_field'):
             for child in getattr(self, self.CloneMeta.children_field).all():
                 child.clone(to_copy)
-        
+

@@ -1,0 +1,16 @@
+{% extends "navbar.html" %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block ExtraHead %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> {#TODO move to navbar#}
+<link rel="stylesheet" type="text/css" href="{% static 'classroom/style.css' %}" />
+{#<link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>#}
+{#<script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>#}
+{% endblock ExtraHead %}
+
+{% block content %}
+<div id="react-app" class="classroom"></div>
+    {% render_bundle 'classroom' %}
+</div>
+{% endblock %}
