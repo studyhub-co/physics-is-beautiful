@@ -292,6 +292,13 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         }
 
 
+class SimpleCurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
+    class Meta:
+        model = Curriculum
+        fields = ['uuid', 'name', 'description', 'image']
+
+
+
 # class LessonProgressSerializer(serializers.ModelSerializer):
 #
 #     class Meta:

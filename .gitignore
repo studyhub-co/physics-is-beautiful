@@ -114,3 +114,4 @@ library_test
 
 # emacs
 *~
+/package-lock.json
