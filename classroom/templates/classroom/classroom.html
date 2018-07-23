@@ -2,15 +2,15 @@
 {% load render_bundle from webpack_loader %}
 {% load static %}
 
-{% block ExtraHead %}
+{% block extrahead %}
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> {#TODO move to navbar#}
 <link rel="stylesheet" type="text/css" href="{% static 'classroom/style.css' %}" />
 {#<link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>#}
 {#<script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>#}
-{% endblock ExtraHead %}
+{% endblock extrahead %}
 
-{% block content %}
-<div id="react-app" class="classroom"></div>
+{% block body_content %}
+<div id="react-app" class="classroom">
     {% render_bundle 'classroom' %}
 </div>
 {% endblock %}
