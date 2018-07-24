@@ -22,16 +22,18 @@ class ProfileSerializer(BaseSerializer):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'sound_enabled']
+        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name']
 
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
+    display_name = serializers.CharField(source='user.display_name')
 
     def to_representation(self, obj):
         if isinstance(obj, Profile):
             return super(ProfileSerializer, self).to_representation(obj)
         else:
-            return {'sound_enabled': self.context['request'].session.get('sound', True)}
+            return {'sound_enabled': self.context['request'].session.get('sound', True),
+                    'is_anonymous': True}
 
     def update(self, instance, validated_data):
         user = validated_data.get('user')
@@ -40,6 +42,8 @@ class ProfileSerializer(BaseSerializer):
                 instance.user.first_name = user['first_name']
             if 'last_name' in user:
                 instance.user.last_name = user['last_name']
+            if 'display_name' in user:
+                instance.user.display_name = user['display_name']
             instance.user.save()
         if 'sound_enabled' in validated_data:
             instance.sound_enabled = validated_data['sound_enabled']

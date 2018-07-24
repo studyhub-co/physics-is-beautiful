@@ -5,6 +5,9 @@ from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
 
 class UserManager(BaseUserManager):
 
@@ -12,7 +15,7 @@ class UserManager(BaseUserManager):
         user = super(UserManager, self).create(*args, **kwargs)
         return user
 
-    def create_user(self, email, first_name=None, last_name=None, password=None):
+    def create_user(self, email, first_name=None, last_name=None, password=None, display_name=None):
         """
         Creates and saves a User with the given username, first_name,
         last_name, email and password.
@@ -23,6 +26,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             first_name=first_name,
             last_name=last_name,
+            display_name=display_name,
             email=self.normalize_email(email),
         )
 
@@ -30,7 +34,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, first_name, last_name, password):
+    def create_superuser(self, email, first_name, last_name, password, display_name=None):
         """
         Creates and saves a User with the given username, first_name,
         last_name, email and password.
@@ -39,6 +43,7 @@ class UserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             email=email,
+            display_name=display_name,
             password=password,
         )
         user.is_superuser = True
@@ -60,7 +65,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=127, blank=True)
     last_name = models.CharField(max_length=127, blank=True)
-    username = models.CharField(max_length=127, blank=True)
+    display_name = models.CharField(max_length=280, blank=True)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -83,13 +88,17 @@ class User(PermissionsMixin, AbstractBaseUser):
         if self.first_name or self.last_name:
             return '{} {}'.format(self.first_name, self.last_name)
         else:
-            return self.email
+            return "User"
 
-    def get_full_name(self):
-        return self.full_name
+    @property
+    def username(self):
+        if self.display_name:
+            return '{} / {}'.format(self.display_name, self.id)
+        else:
+            return '{} / {}'.format(self.full_name, self.id)
 
     def get_short_name(self):
-        return self.first_name or self.email
+        return self.first_name or "User"
 
     @property
     def get_absolute_url(self):
@@ -97,3 +106,11 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def __str__(self):
         return '{} <{}>'.format(self.full_name, self.email)
+
+
+@receiver(pre_save, sender=User)
+def save_displayname(instance, *args, **kwargs):
+    # save display name for a new user
+    if not instance.id:
+        instance.display_name = '{} {}'.format(instance.first_name, instance.last_name)
+
