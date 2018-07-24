@@ -50,6 +50,25 @@
     background-color: aliceblue;
 }
 
+.nav.navbar-nav.nav-pills a {
+    color:white;
+    font-size:20px;
+    background: #1caff6;
+}
+.nav.navbar-nav.nav-pills p {
+    color:white;
+    font-size:15px;
+    font-family: Tw Cen MT;
+}
+.nav.navbar-nav.nav-pills a:hover{
+    background: #EEE;
+}
+
+.navbar.navbar-default button {
+    background-color: aliceblue;
+}
+
+
 .navbar-brand {
     position: relative;
     top: -5px;

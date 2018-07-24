@@ -88,14 +88,11 @@ class User(PermissionsMixin, AbstractBaseUser):
         if self.first_name or self.last_name:
             return '{} {}'.format(self.first_name, self.last_name)
         else:
-            return "User"
+            return "User {}".format(self.id)
 
     @property
     def username(self):
-        if self.display_name:
-            return '{} / {}'.format(self.display_name, self.id)
-        else:
-            return '{} / {}'.format(self.full_name, self.id)
+        return 'user{}'.format(self.id)
 
     def get_short_name(self):
         return self.first_name or "User"

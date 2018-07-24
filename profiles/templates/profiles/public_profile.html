@@ -8,7 +8,8 @@
 
 {% block body_content %}
 <div class="container section-sheet">
-<div class='curriculum-title'>{{ object.user.username }}</div>
+<div class='curriculum-title'>{{ object.user.display_name }}</div>
+<div>Username: {{ object.user.username }}</div>
 Registration date: {{ object.created_on }}
 </div>
 {% endblock %}
