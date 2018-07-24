@@ -91,9 +91,9 @@
                     <form action="{% url 'account_signup' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ redirect_to }}" />
-                        <div class="form-group">
-                            <input name="username" type="text" class="form-control" id="id_username" placeholder="Username">
-                        </div>
+{#                        <div class="form-group">#}
+{#                            <input name="username" type="text" class="form-control" id="id_username" placeholder="Username">#}
+{#                        </div>#}
                         <div class="form-group">
                             <input name="first_name" type="text" class="form-control" id="id_firstname" placeholder="First name">
                         </div>
@@ -109,14 +109,14 @@
                         <div class="form-group">
                             <input name="password2" type="password" class="form-control" id="id_password2" placeholder="Password (again)" required>
                         </div>
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label id="label_remember">
-                                    <input type="checkbox" class="form-check form-check-remember" name="remember" />
-                                    <span>Remember me</span>
-                                </label>
-                            </div>
-                        </div>
+{#                        <div class="form-group">#}
+{#                            <div class="checkbox">#}
+{#                                <label id="label_remember">#}
+{#                                    <input type="checkbox" class="form-check form-check-remember" name="remember" />#}
+{#                                    <span>Remember me</span>#}
+{#                                </label>#}
+{#                            </div>#}
+{#                        </div>#}
                         <button class="btn btn-primary primaryAction" type="submit">Sign Up</button>
                     </form>
                 </div>

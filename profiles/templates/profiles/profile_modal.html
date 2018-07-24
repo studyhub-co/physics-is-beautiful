@@ -8,7 +8,7 @@
 <script type="text/javascript" src="{% static "pib_auth/js/modal.js" %}"></script>
 {% if user.is_authenticated %}
     <div class="modal fade profile-modal" id="profile-modal" role="dialog">
-        <div class="modal-dialog" role"document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Profile</h4>
@@ -56,7 +56,7 @@
         </div>
     </div>
     <div class="modal fade auth-modal" id="signup-modal" role="dialog">
-        <div class="modal-dialog" role"document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Signup</h4>
@@ -90,10 +90,10 @@
                     <label for="id_password2">Password (again):</label>
                     <input name="password2" type="password" class="form-control" id="id_password2" placeholder="password (again)" required>
                 </div>
-                <div clas="form-group row">
-                    <label for="id_remember">Remember Me:</label>
-                    <input name="remember" type="checkbox" class="form-check" id="id_remember">
-                </div>
+{#                <div clas="form-group row">#}
+{#                    <label for="id_remember">Remember Me:</label>#}
+{#                    <input name="remember" type="checkbox" class="form-check" id="id_remember">#}
+{#                </div>#}
                 <button class="btn btn-primary" type="submit">Signup</button>
             </form>
             </div>
