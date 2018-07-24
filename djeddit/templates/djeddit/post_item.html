@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load djeddit_tags %}
+{% load mptt_tags %}
+
+<div class="row">
+    <div class="col-xs-{% postLevelWidth thread node %}"></div>
+    <div class="col-xs-{% postWidth thread node %}">
+        <div id="{{ node.uid }}" class="post-container">
+            {% if node != thread.op %}
+                <div class="post-heading">
+                    <i class="fa fa-minus-square-o text-muted toggle-replies"
+                       onclick="window.postFuncs.toggleReplies('{{ node.uid }}')"></i>
+                    <h4 class="post-user">
+                        {% if node.created_by %}
+                            <a href="{% url 'userSummary' node.created_by %}">{% postUserName node.created_by %}</a>
+                        {% else %}
+                            {% postUserName node.created_by %}
+                        {% endif %}
+                    </h4>
+
+                    <h6 class="text-muted post-score">{% postScore node.score %}</h6>
+                    <h6>
+                        {% postDate node.modified_on %}
+                        {% if node.created_on != node.modified_on %}
+                            (edited)
+                        {% endif %}
+                    </h6>
+                </div>
+            {% endif %}
+            <div class="bs-callout-main">
+                <div class="minicol">
+                    {% if user.is_authenticated and user != node.created_by or user.is_superuser %}
+                        <div class="glyphicon glyphicon-chevron-up hover-point {% postVoteClicked user node True %} {% postVoteOP thread node %}"
+                             onclick="window.postFuncs.votePost('{{ node.uid }}', !$(this).hasClass('color-primary'), false)"></div>
+                        {% if node == thread.op %}
+                            <h4 class="post-score">{{ node.score }}</h4>
+                        {% endif %}
+                        <div class="glyphicon glyphicon-chevron-down hover-point {% postVoteClicked user node False %}"
+                             onclick="window.postFuncs.votePost('{{ node.uid }}', false, !$(this).hasClass('color-primary'))"></div>
+                    {% endif %}
+                </div>
+                <div class="postcol">
+                    <div class="post-content">{{ node.content }}</div>
+                    <div class="btn-group btn-group-xs fixed-50" role="group">
+                        {% if node.created_by == user or user.is_superuser %}
+                            <button onclick="window.postFuncs.toggleEditForm('{{ node.uid }}', undefined, {% toggleHeader thread node user %})" class="btn btn-default" {% if thread.locked %}disabled{% endif %}>
+                                Edit
+                            </button>
+                        {% endif %}
+                        <button onclick="window.postFuncs.togglePostForm('{{ node.uid }}', this, '{% url 'replyPost' %}')" class="btn btn-default" {% if thread.locked %}disabled{% endif %}>
+                            Reply
+                        </button>
+                        {% if node.parent %}
+                            <button onclick="location.href='#{{ node.parent.uid }}'" class="btn btn-default">
+                                Parent
+                            </button>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                            <button onclick="window.postFuncs.deletePost('{{ node.uid }}', {% isOp thread node %})" class="btn btn-default">
+                                Delete
+                            </button>
+                            {% if node == thread.op %}
+                                <button onclick="window.location = '{% url 'lockThread' thread.id %}';" class="btn btn-default">
+                                    {% if not thread.locked %}Lock{% else %}Unlock{% endif %}
+                                </button>
+                                <button onclick="window.location = '{% url 'stickyThread' thread.id %}';" class="btn btn-default btn-width-auto">
+                                    {% if thread.is_stickied %}Remove Sticky{% else %}Sticky{% endif %}
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if useRecursionTree and not node.is_leaf_node %}
+                {{ children }}
+                {% with node|missingRepliesCount:node.getChildrenList as missingCount %}
+                    {% if missingCount %}
+                        <div class="full-line additional-replies" style="margin-left:15px">
+                            <br>
+                            <a href="javascript:window.postFuncs.loadAdditionalReplies(
+                            $('#comments-callout').find('#' + '{{ node.uid }}').find('>.additional-replies'), '{{ node.uid }}')">
+                                Load {% getAmount missingCount 'comment' infix='more' %}
+                            </a>
+                        </div>
+                    {% endif %}
+            {% endwith %}
+            {% endif %}
+        </div>
+    </div>
+</div>

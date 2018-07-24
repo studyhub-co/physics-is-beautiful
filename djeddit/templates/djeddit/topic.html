@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends BASE_TEMPLATE %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load djeddit_tags %}
+{% block title %}
+    <div class="container">
+        <h2>{{ topic.title }}
+            <div class="btn-group btn-group-xs fixed-80" role="group">
+                {% if user.is_superuser %}
+                    <button class="btn btn-primary" onclick="$('#topic-form-wrapper').toggleClass('hidden')">Edit Topic</button>
+                    <button class="btn btn-primary" onclick="window.topicFuncs.deleteTopic('{{ topic.urlTitle }}')">Delete Topic</button>
+                {% endif %}
+                <button class="btn btn-primary" onclick="window.location='{% url 'createThread' topic.urlTitle %}'">New Thread</button>
+            </div>
+        </h2>
+        <div class="text-muted full-line">{{ topic.description }}</div>
+        {% if user.is_superuser %}
+            <br>
+            <div id="topic-form-wrapper" class="{% if not showForm %} hidden {% endif %} row">
+                <div class="col-sm-5">
+                    {% crispy topicForm %}
+                </div>
+            </div>
+        {% endif %}
+        <ol class="breadcrumb">
+            <li><a href="{% url 'topics' %}">Home</a></li>
+            <li class="active">{{ topic.title }}</li>
+        </ol>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="col-md-8">
+        <ul class="list-group">
+            {% for thread in threads %}
+                {% include 'djeddit/thread_item.html' %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'djeddit/js/util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'djeddit/js/topic.js' %}"></script>
+    {% if user.is_superuser %}
+    <script type="text/javascript">
+    window.TOPIC_URLS = {
+				'deleteTopic' : '{% url 'deleteTopic' topic.urlTitle %}'
+			};
+    </script>
+    {% endif %}
+{% endblock %}
