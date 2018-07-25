@@ -1,4 +1,11 @@
 @font-face {
+    font-family: 'Museosansrounded';
+    src: url('fonts/museosansrounded-500-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Tw Cen MT';
     src: url('typeface/hinted-TwCenMT-Regular.eot');
     src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
@@ -567,7 +574,8 @@ img.grayed-out-img {
 /*curriculum info panel styles*/
 
 .curriculum-panel-font{
-    font-family: Tw Cen MT;
+    /*font-family: Tw Cen MT;*/
+    font-family: Museosansrounded;
     font-size: 25px;
     color: #c8c8c8;
 }

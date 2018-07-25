@@ -30,7 +30,7 @@ class CurriculumInfoPanel extends React.Component {
                 {this.props.curriculum ?
                   <div>
                     {/*title*/}
-                    <div style={{float: 'left', position: 'relative', right:'30px'}}>
+                    <div style={{float: 'left', position: 'relative', width:'80%'}}>
                       <span className='curriculum-title'>{this.props.curriculum.name}</span>
                       <span style={{fontSize: '25px', color: 'darkgrey'}}>
                       {' by '}
@@ -40,7 +40,7 @@ class CurriculumInfoPanel extends React.Component {
                           {this.props.curriculum.author.full_name}
                         </a>
                       </span>
-                    {this.state.showMore?<div>{this.props.curriculum.description}</div>:null}
+                    {this.state.showMore?<div style={{float: "left"}}>{this.props.curriculum.description}</div>:null}
                       {this.state.showMore?<div style={{float: "right"}}><a href={"/editor"} style={{cursor: "pointer", color: "grey"}}>{"Select other curriculum"}</a></div>:null}
                     </div>
                     <div style={{float: 'right'}}>

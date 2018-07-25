@@ -29,7 +29,7 @@
 .navbar.navbar-default a {
     color:white;
     font-size:25px;
-    font-family: Tw Cen MT;
+    font-family: Museosansrounded;
 }
 
 .nav.navbar-nav.navbar-right a {
@@ -72,6 +72,7 @@
 .navbar-brand {
     position: relative;
     top: -5px;
+    font-family: Tw Cen MT !important;
 }
 
 .navbar-brand:hover {
