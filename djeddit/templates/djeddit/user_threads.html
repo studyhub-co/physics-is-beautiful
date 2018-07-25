@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 {% extends "djeddit/user_page.html" %}
 {% block navtabs %}
-    <li role="presentation"><a href="{% url 'userSummary' pageUser.username %}">Summary</a></li>
+{#    <li role="presentation"><a href="{% url 'userSummary' pageUser.display_name %}">Summary</a></li>#}
+    <li role="presentation"><a href="{% url 'userSummary' pageUser.pk %}">Summary</a></li>
     <li role="presentation" class="active"><a href="#">Threads</a></li>
-    <li role="presentation"><a href="{% url 'userReplies' pageUser.username %}">Replies</a></li>
+{#    <li role="presentation"><a href="{% url 'userReplies' pageUser.display_name %}">Replies</a></li>#}
+    <li role="presentation"><a href="{% url 'userReplies' pageUser.pk %}">Replies</a></li>
 {% endblock %}
 {% block groupItems %}
     {% for thread in threads %}

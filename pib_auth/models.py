@@ -102,7 +102,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         return reverse('user-profile', kwargs={"pk": self.id})
 
     def __str__(self):
-        return '{} <{}>'.format(self.full_name, self.email)
+        return '{}'.format(self.display_name)
 
 
 @receiver(pre_save, sender=User)

@@ -89,7 +89,7 @@ ADMIN_REORDER = (
     # Reorder app models
     {'app': 'curricula', 'models': ('curricula.Curriculum', 'curricula.Unit', 'curricula.Module',
                                     'curricula.Lesson', 'curricula.Question')},
-    'classroom', 'account', 'auth', 'pib_auth', 'profiles', 'sites', 'socialaccount'
+    'classroom', 'account', 'auth', 'djeddit', 'pib_auth', 'profiles', 'sites', 'socialaccount'
 )
 
 ROOT_URLCONF = 'pib.urls'

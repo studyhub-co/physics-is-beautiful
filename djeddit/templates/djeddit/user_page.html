@@ -2,7 +2,8 @@
 {% extends BASE_TEMPLATE %}
 {% load djeddit_tags %}
 {% block title %}
-    <h2>{{ pageUser.username }}</h2>
+    <h2><a target="_blank" href="{% url "user-profile" pageUser.pk %}">{{ pageUser.display_name }}</a></h2>
+    <div>Username: {{ pageUser.username }}</div>
 {% endblock %}
 {% block content %}
     <div>

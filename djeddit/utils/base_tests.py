@@ -24,7 +24,7 @@ class TestCalls(object):
     @classmethod
     def _setup_user(cls, username, email, password, **kwargs):
         cls.user = createUser(username, email, password, **kwargs)
-        cls.username = username
+        cls.display_name = username
         cls.password = password
 
     def _create_user_and_login(self, username='', email='', password='', create_admin=False):

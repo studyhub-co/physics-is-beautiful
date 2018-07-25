@@ -19,4 +19,4 @@ class Command(BaseCommand):
         User.objects.filter(Q(first_name__exact='') & Q(last_name__exact=''))\
             .update(first_name='User',
                     last_name=F('id'),
-                    display_name=Concat(Value('User '), (F('id'))))
+                    display_name=Concat(Value('User '), F('id')))

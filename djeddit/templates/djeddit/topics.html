@@ -4,7 +4,7 @@
 {% load djeddit_tags %}
 {% load crispy_forms_tags %}
 {% block title %}
-    <div class="container">
+    <div class="">
         <h2 id="pageTitle">Topics
         {% if user.is_superuser %}
             <button id="btnNewTopic" class="btn btn-primary btn-xs" onclick="$('#topic-form-wrapper').toggleClass('hidden')">New Topic</button>
