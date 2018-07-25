@@ -30,7 +30,7 @@ class CurriculumInfoPanel extends React.Component {
                 {this.props.curriculum ?
                   <div>
                     {/*title*/}
-                    <div style={{float: 'left', position: 'relative', right:'30px'}}>
+                    <div className='curriculum-title-wrapper'>
                       <span className='curriculum-title'>{this.props.curriculum.name}</span>
                       <span style={{fontSize: '25px', color: 'darkgrey'}}>
                       {' by '}
@@ -182,9 +182,15 @@ class ModulesApp extends React.Component {
             items: items,
             uuid: this.module.uuid,
         }];
+
+        var backLink = '/curriculum/';
+
+        // If we are using the mobile app, make the query persist.
+        if (window.IS_MOBILE_APP) backLink += "?pib_mobile=true";
+
         this.setState({
             sections: sections,
-            backLink: '/curriculum/',
+            backLink: backLink,
             question:null,
             progress: 0,
             answer: null,
