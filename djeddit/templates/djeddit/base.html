@@ -18,7 +18,7 @@
 {#            <div>#}
 {#              <ul class="nav navbar-nav navbar-right">#}
 {#                {% if user.is_authenticated %}#}
-{#                    <li><a href="{% url 'userSummary' user.username %}">Profile</a></li>#}
+{#                    <li><a href="{% url 'userSummary' user.display_name %}">Profile</a></li>#}
 {#                    {% if user.is_superuser %}#}
 {#                        <li><a href="{% url 'usersPage' %}">Users</a></li>#}
 {#                    {% endif %}#}
@@ -31,10 +31,7 @@
 {#            </div><!--/.nav-collapse -->#}
 {#          </div>#}
 {#        </nav>#}
-
-    {{ user.is_authenticated }}
-
-        <!-- Content -->
+    <!-- Content -->
         <div id="main" class="container section-sheet" role="main">
             {% block title %}{% endblock %}
             <div class="row">

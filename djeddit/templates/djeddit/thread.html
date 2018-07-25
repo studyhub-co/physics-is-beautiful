@@ -14,13 +14,13 @@
                     <div class="bs-callout-heading">
                         <h3>
                             {% if thread.url %}
-                                <a href="{{ thread.url }}">{{ thread.title }}</a>
+                                <a href="{{ thread.url }}" rel="nofollow">{{ thread.title }}</a>
                             {% else %}
                                 {{ thread.title }}
                             {% endif %}
                         </h3>
                         <div class="text-muted inline">
-                            Submitted by {% postUserName thread.op.created_by %} on {{ thread.op.created_on }}
+                            Submitted by <a href="{% url "userSummary" thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> on {{ thread.op.created_on }}
                         </div>
                     </div>
                     {% with thread.op as node %}

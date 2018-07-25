@@ -69,7 +69,7 @@ class ProfileControl extends React.Component {
     render() {
         var name, form;
         if (!this.props.isAnonymous) {
-            if(!(this.props.firstName&&this.props.lastName)){
+            if(!(this.props.firstName) && !(this.props.lastName)){
               name = "Profile";
             } else {
               name = this.props.firstName + " " + this.props.lastName;

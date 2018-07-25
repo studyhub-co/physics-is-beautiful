@@ -11,11 +11,13 @@
             {% for User in Users %}
                 <li class="list-group-item">
                     <div class="row vertical-align">
-                        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% url 'userSummary' User.username %}'">
+{#                        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% url 'userSummary' User.display_name %}'">#}
+                        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% url 'userSummary' User.pk %}'">
                             <i class="fa fa-user-o fa-2x"></i>
                         </div>
                         <div class="col-sm-3 col-xs-6 list-group-item-main-col username-col">
-                            <a href="{% url 'userSummary' User.username %}"><h4 class="break-word">{{ User.username }}</h4></a>
+                            <a href="{% url 'userSummary' User.pk %}"><h4 class="break-word">{{ User.display_name }}</h4></a>
+{#                            <a href="{% url 'userSummary' User.display_name %}"><h4 class="break-word">{{ User.display_name }}</h4></a>#}
                         </div>
                         <div class="col-sm-5 col-xs-6 status-col">
                             <div class="full-line">
@@ -28,11 +30,12 @@
                             </div>
                         </div>
                         <div class="col-sm-3 hidden-xs">
-                            <div class="count-box" onclick="window.location='{% url 'userReplies' User.username %}'">
+{#                            <div class="count-box" onclick="window.location='{% url 'userReplies' User.display_name %}'">#}
+                            <div class="count-box" onclick="window.location='{% url 'userReplies' User.pk %}'">
                                 <div class="count-box-score text-muted">{{ User.rCount }}</div>
                                 <div class="count-box-context text-muted">Replies</div>
                             </div>
-                            <div class="count-box" onclick="window.location='{% url 'userThreads' User.username %}'">
+                            <div class="count-box" onclick="window.location='{% url 'userThreads' User.display_name %}'">
                                 <div class="count-box-score text-muted">{{ User.tCount }}</div>
                                 <div class="count-box-context text-muted">Threads</div>
                             </div>

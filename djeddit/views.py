@@ -5,10 +5,16 @@ import logging
 # Core Dajngo imports
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseForbidden, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+
 
 # Third-party app imports
 from ipware.ip import get_ip
@@ -21,9 +27,7 @@ from djeddit.templatetags.djeddit_tags import postScore
 from djeddit.utils.utility_funcs import is_authenticated
 
 
-# Create your views here.
-
-
+@login_required
 def createThread(request, topic_title=None):
     if topic_title:
         try:
@@ -37,6 +41,7 @@ def createThread(request, topic_title=None):
                     thread.op = post
                     thread.topic = topic
                     post.setMeta(request)
+                    post.save()
                     thread.save()
                     if is_authenticated(request):
                         post.created_by = request.user
@@ -149,7 +154,7 @@ def threadPage(request, topic_title='', thread_id='', slug=''):
             pass
     raise Http404
 
-
+@login_required
 def replyPost(request, post_uid=''):
     try:
         repliedPost = Post.objects.get(uid=post_uid)
@@ -158,7 +163,7 @@ def replyPost(request, post_uid=''):
         raise Http404
     if thread.locked:
         return HttpResponseForbidden()
-    repliedUser = repliedPost.created_by.username if repliedPost.created_by else 'guest'
+    repliedUser = repliedPost.created_by.display_name if repliedPost.created_by else 'guest'
     if request.method == 'POST':
         postForm = PostForm(request.POST)
         if postForm.is_valid():
@@ -177,7 +182,7 @@ def replyPost(request, post_uid=''):
         context = dict(postForm=postForm, thread_id=thread.id, post_uid=post_uid, repliedUser=repliedUser)
         return render(request, 'djeddit/reply_form.html', context)
 
-
+@login_required
 def editPost(request, post_uid=''):
     try:
         post = Post.objects.get(uid=post_uid)
@@ -275,9 +280,9 @@ def loadAdditionalReplies(request):
     return render(request, 'djeddit/thread_recursetree.html', context)
 
 
-def userSummary(request, username):
+def userSummary(request, pk):
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         raise Http404
     threads = Thread.objects.filter(op__created_by=user)
@@ -293,9 +298,9 @@ def userSummary(request, username):
     return render(request, 'djeddit/user_summary.html', context)
 
 
-def userThreadsPage(request, username):
+def userThreadsPage(request, pk):
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         raise Http404
     created_threads = Thread.objects.filter(op__created_by=user)
@@ -303,9 +308,9 @@ def userThreadsPage(request, username):
     return render(request, 'djeddit/user_threads.html', context)
 
 
-def userRepliesPage(request, username):
+def userRepliesPage(request, pk):
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         raise Http404
     replies = Post.objects.filter(created_by=user, parent__isnull=False)

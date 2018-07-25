@@ -3,8 +3,10 @@
 {% load djeddit_tags %}
 {% block navtabs %}
     <li role="presentation" class="active"><a href="#">Summary</a></li>
-    <li role="presentation"><a href="{% url 'userThreads' pageUser.username %}">Threads</a></li>
-    <li role="presentation"><a href="{% url 'userReplies' pageUser.username %}">Replies</a></li>
+{#    <li role="presentation"><a href="{% url 'userThreads' pageUser.display_name %}">Threads</a></li>#}
+{#    <li role="presentation"><a href="{% url 'userReplies' pageUser.display_name %}">Replies</a></li>#}
+    <li role="presentation"><a href="{% url 'userThreads' pageUser.pk %}">Threads</a></li>
+    <li role="presentation"><a href="{% url 'userReplies' pageUser.pk %}">Replies</a></li>
 {% endblock %}
 {% block groupItems %}
     {# list of threads & comments by date #}

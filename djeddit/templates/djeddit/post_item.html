@@ -12,7 +12,8 @@
                        onclick="window.postFuncs.toggleReplies('{{ node.uid }}')"></i>
                     <h4 class="post-user">
                         {% if node.created_by %}
-                            <a href="{% url 'userSummary' node.created_by %}">{% postUserName node.created_by %}</a>
+{#                            <a href="{% url 'userSummary' node.created_by %}">{% postUserName node.created_by %}</a>#}
+                            <a href="{% url 'userSummary' node.created_by.pk %}">{% postUserName node.created_by %}</a>
                         {% else %}
                             {% postUserName node.created_by %}
                         {% endif %}
@@ -47,9 +48,11 @@
                                 Edit
                             </button>
                         {% endif %}
+                        {% if user.is_authenticated %}
                         <button onclick="window.postFuncs.togglePostForm('{{ node.uid }}', this, '{% url 'replyPost' %}')" class="btn btn-default" {% if thread.locked %}disabled{% endif %}>
                             Reply
                         </button>
+                        {% endif %}
                         {% if node.parent %}
                             <button onclick="location.href='#{{ node.parent.uid }}'" class="btn btn-default">
                                 Parent

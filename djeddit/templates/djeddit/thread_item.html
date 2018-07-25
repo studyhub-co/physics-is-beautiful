@@ -23,8 +23,10 @@
             <br>
             <div class="text-muted inline full-line">
                 {% if showCreatedBy %}
+{#                    Submitted by {% if thread.op.created_by %}#}
+{#                                    <a href="{% url 'userSummary' thread.op.created_by %}">{% postUserName thread.op.created_by %}</a> {% else %} {% postUserName thread.op.created_by %} {% endif %} {% postDate thread.op.created_on 'on ' %}#}
                     Submitted by {% if thread.op.created_by %}
-                                    <a href="{% url 'userSummary' thread.op.created_by %}">{% postUserName thread.op.created_by %}</a> {% else %} {% postUserName thread.op.created_by %} {% endif %} {% postDate thread.op.created_on 'on ' %}
+                                    <a href="{% url 'userSummary' thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> {% else %} {% postUserName thread.op.created_by %} {% endif %} {% postDate thread.op.created_on 'on ' %}
                 {% else %}
                     {{ thread.op.created_on }}
                 {% endif %}
