@@ -572,6 +572,18 @@ img.grayed-out-img {
     color: #c8c8c8;
 }
 
+.curriculum-title-wrapper {
+    float: left;
+    position: relative;
+    right: 30px;
+}
+
+@media (max-width: 770px) {
+    .curriculum-title-wrapper {
+        margin-left: 20px;
+    }
+}
+
 .curriculum-title{
     font-size: 35px;
     color: #1caff6;
