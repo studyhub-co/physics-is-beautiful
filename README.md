@@ -43,13 +43,13 @@ DJANGO_SETTINGS_MODULE=pib.local_settings
 ```
 ./node_modules/.bin/webpack --config webpack.config.js
 ```
+or
+```
+npm run prod
+```
 (if you want to reload automatically when changes are made, you can run):
 ```
 ./node_modules/.bin/webpack --config webpack.config.js --watch
-```
-or
-```
-npm run watch
 ```
 (if you want to use redux-devtools, Redux DevTools chrome extension, redux-logger)
 ```
@@ -57,7 +57,7 @@ npm run watch
 ```
 or
 ```
-npm run devwatch
+npm run dev
 ```
 
 * Setup the db:
