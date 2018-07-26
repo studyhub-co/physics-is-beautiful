@@ -24,8 +24,10 @@
 .pure-radiobutton input[type="radio"] {
   border: 0;
   clip: rect(0 0 0 0);
-  /*height: 1px;*/
-  margin: -1px;
+  /*height: 1px;*!*/
+  /*margin: -1px;*/
+  height: 0px;
+  margin: 0px;
   overflow: hidden;
   padding: 0;
   position: absolute;
