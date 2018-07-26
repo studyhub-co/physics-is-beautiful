@@ -97,8 +97,10 @@
     /*font-size: 3rem;*/
 }
 
-.tab-link{
-    font-size: 3rem;
+.tab-link {
+    font-size: 16px;
+    font-weight: normal;
+    outline:0
 }
 
 /*.tabs-1 .tab-links {*/
@@ -119,7 +121,7 @@
     /*border: 1px solid transparent;*/
     display: inline-block;
     position: relative;
-    border-bottom: 5px solid rgb(216, 216, 216);
+    border-bottom: 3px solid rgb(216, 216, 216);
     height: 40px;
     line-height: 41px;
     top: -6px;
@@ -128,8 +130,9 @@
 }
 
 .tabs .tab-link-active {
-    border-bottom: 5px solid rgb(8, 209, 255);
-    color: rgb(8, 209, 255);
+    border-bottom: 3px solid #1caff6;
+    color: #1caff6;
+    font-weight: normal !important;
 }
 
 .tabs-1 .tabContent {}
