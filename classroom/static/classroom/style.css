@@ -17,6 +17,10 @@
     cursor: pointer;
 }
 
+.float-right {
+    float: right;
+}
+
 /* tabs */
 
 .tabs {
@@ -172,9 +176,8 @@
     border-radius: 2rem;
     border-width: 1px;
     color: white;
-    padding: 2rem;
-    margin: 0 2rem 0 2rem;
-    float: right;
+    padding: 1rem 4rem 1rem 4rem;
+    margin: 1rem 0 1rem 0;
 }
 
 .disabled-button{

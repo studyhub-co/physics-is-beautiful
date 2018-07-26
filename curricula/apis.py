@@ -172,10 +172,6 @@ class CurriculaViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
-        """
         queryset = self.queryset
         filter_by = self.request.query_params.get('filter', None)
         if filter_by in ('other', 'my') and self.request.user.is_authenticated():

@@ -25,9 +25,9 @@ class ClassroomSerializer(serializers.ModelSerializer):
         read_only_fields = ('uuid', 'code')
 
 
-class ClassroomStudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ClassroomStudent
-        # list_serializer_class = DictSerializer
-        fields = ['code_entered_on', 'leave_on', 'student', 'classroom']
-        read_only_fields = ('code_entered_on', 'classroom', 'student')
+# class ClassroomStudentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ClassroomStudent
+#         # list_serializer_class = DictSerializer
+#         fields = ['code_entered_on', 'leave_on', 'student', 'classroom']
+#         read_only_fields = ('code_entered_on', 'classroom', 'student')
