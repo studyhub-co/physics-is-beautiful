@@ -37,7 +37,7 @@ class CurriculumInfoPanel extends React.Component {
                         <a target={"_blank"}
                            href={this.props.curriculum.author.get_absolute_url}
                            className="curriculum-user-link">
-                          {this.props.curriculum.author.full_name}
+                          {this.props.curriculum.author.display_name}
                         </a>
                       </span>
                     {this.state.showMore?<div style={{float: "left"}}>{this.props.curriculum.description}</div>:null}
