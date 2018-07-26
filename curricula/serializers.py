@@ -6,7 +6,8 @@ from expander import ExpanderSerializerMixin
 from django.contrib.auth import get_user_model
 
 from .models import (
-    Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, MathematicalExpression, UnitConversion, ImageWText
+    Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, MathematicalExpression,
+    UnitConversion, ImageWText
 )
 
 
@@ -278,7 +279,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['pk', 'full_name', 'get_absolute_url']
+        fields = ['pk', 'display_name', 'get_absolute_url']
 
 
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
