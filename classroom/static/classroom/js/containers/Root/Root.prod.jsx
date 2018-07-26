@@ -12,11 +12,13 @@ export default class Root extends React.Component {
     return (
       <div>
         <Provider store={this.props.store}>
-          <App>
-            <ConnectedRouter history={this.props.history}>
-              {routes}
-            </ConnectedRouter>
-          </App>
+          <div>
+            <App>
+              <ConnectedRouter history={this.props.history}>
+                {routes}
+              </ConnectedRouter>
+            </App>
+          </div>
         </Provider>
       </div>
     )

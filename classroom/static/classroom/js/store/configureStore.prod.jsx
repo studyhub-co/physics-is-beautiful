@@ -1,14 +1,19 @@
 import thunk from 'redux-thunk'
 import { applyMiddleware, createStore } from 'redux'
 // import { routerMiddleware } from 'react-router-redux'
-import { routerMiddleware } from 'connected-react-router'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 
 import rootReducer from '../reducers'
 
 export default function configureStore (initialState, history) {
-  // Add so dispatched route actions to the history
-  const reduxRouterMiddleware = routerMiddleware(history)
-  const middleware = applyMiddleware(thunk, reduxRouterMiddleware)
 
-  return createStore(rootReducer, initialState, middleware)
+  const middleware = applyMiddleware(thunk, routerMiddleware(history))
+
+  const store = createStore(
+    connectRouter(history)(rootReducer),
+    initialState,
+    middleware
+  )
+
+  return store
 }
