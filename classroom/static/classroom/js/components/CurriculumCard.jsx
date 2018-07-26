@@ -12,7 +12,7 @@ export class CurriculumCard extends React.Component {
       <div className={className}>
         <span><img style={{maxHeight: '4rem', maxWidth: '10rem', paddingRight: '1rem'}} src={this.props.curriculum.image} /></span>
         <span style={{color: 'rgb(8, 209, 255)'}}>{ this.props.curriculum.name }</span>
-        <span style={{color: 'rgb(121, 121, 121)'}}> by {this.props.curriculum.author.full_name}</span>
+        <span style={{color: 'rgb(121, 121, 121)'}}> by {this.props.curriculum.author.display_name}</span>
       </div>
     )
   }
