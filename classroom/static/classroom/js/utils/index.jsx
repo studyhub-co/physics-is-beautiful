@@ -16,5 +16,3 @@ export function checkHttpStatus (response) {
   error.response = response
   throw error
 }
-
-

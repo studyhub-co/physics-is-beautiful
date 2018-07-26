@@ -1,10 +1,13 @@
 from django.conf.urls import url, include
 
 from rest_framework import routers
-from .apis import ClassroomViewSet, ClassroomStudentViewSet
+from .apis import ClassroomViewSet, join_classroom
+
+urlpatterns = [
+            url(r'join/$', join_classroom)
+]
 
 router = routers.DefaultRouter()
 router.register(r'', ClassroomViewSet, base_name='classroom')
-router.register(r'student', ClassroomStudentViewSet, base_name='classroom_student')
 
-urlpatterns = router.urls
+urlpatterns += router.urls

@@ -4,7 +4,7 @@ import React from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 
 import { connect, Provider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
+import { compose, createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { ConnectedRouter,  routerMiddleware } from 'react-router-redux'
 import { createLogger } from 'redux-logger'

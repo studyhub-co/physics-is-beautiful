@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
-import { IndexView, EditClassroomView } from './containers/index'
+import { IndexView } from './containers/index'
 
 export default(
   <Switch>

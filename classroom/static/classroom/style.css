@@ -1,8 +1,7 @@
 .classroom{
-    font-family: 'Tw Cen MT';
-    font-size: 20px;
+    font-family: Museosansrounded;
+    font-size: 16px;
 }
-
 
 /* common */
 
@@ -18,6 +17,10 @@
     cursor: pointer;
 }
 
+.float-right {
+    float: right;
+}
+
 /* tabs */
 
 .tabs {
@@ -30,7 +33,9 @@
 }
 
 .tab-link{
-    font-size: 3rem;
+    font-size: 16px;
+    font-weight: normal;
+    outline:0
 }
 
 .tabs .tab-link {
@@ -39,7 +44,7 @@
     /*border: 1px solid transparent;*/
     display: inline-block;
     position: relative;
-    border-bottom: 5px solid rgb(216, 216, 216);
+    border-bottom: 3px solid rgb(216, 216, 216);
     height: 40px;
     line-height: 41px;
     top: -6px;
@@ -48,9 +53,11 @@
 }
 
 .tabs .tab-link-active {
-    border-bottom: 5px solid rgb(8, 209, 255);
-    color: rgb(8, 209, 255);
+    border-bottom: 3px solid #1caff6;
+    color: #1caff6;
+    font-weight: normal !important;
 }
+
 
 .tabs-1 .tabContent {}
 
@@ -65,16 +72,25 @@
     border-radius: 15px;
     text-align: center;
     vertical-align: middle;
-    line-height: 30rem;
+    line-height: 25rem;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 1px;
     border-style: dashed;
-    width: 50rem;
-    height: 30rem;
+    width: 30rem;
+    height: 25rem;
     color: rgb(216, 216, 216);
-    font-size: 34px;
+    font-size: 18px;
     cursor: pointer;
+    transition: border-color 500ms, border-style 500ms, color 500ms, background 500ms;
+}
+
+.create-classroom-button:hover {
+    border-style: solid;
+    border-color: #1caff6;
+    color: #1caff6;
+    box-shadow: 0 0 15px #d8d8d8;
+    background: #fbfbfb;
 }
 
 /* classroom card*/
@@ -86,8 +102,8 @@
     border-width: 2px;
     border-style: solid;
     border-color: rgb(216, 216, 216);
-    width: 50rem;
-    height: 30rem;
+    width: 30rem;
+    height: 25rem;
     margin: 0 1rem 1rem 0;
     float: left;
     position: relative;
@@ -97,23 +113,27 @@
 }
 
 .classroom-card > div:nth-of-type(1) {
-    font-size: 3rem;
-    color: rgb(8, 209, 255);
+    font-size: 18px;
+    color: #1caff6;
 }
 
 .classroom-card > div:nth-of-type(2) {
-    font-size: 3rem;
-    color: rgb(216, 216, 216);
+    font-size: 16px;
+    color: #666666;
 }
 
 .classroom-card > div:nth-of-type(4) {
-    font-size: 3rem;
+    font-size: 16px;
     color: rgb(121, 121, 121);
     position: absolute;
     bottom: 0;
     width: 100%;
     background: #efefef;
     overflow: hidden;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    height: 30px;
+    line-height: 30px;
 }
 /* classroom card*/
 
@@ -132,7 +152,7 @@
 }
 
 .curriculum-card:hover {
-    border-color: rgb(8, 209, 255);
+    border-color: #1caff6;
 }
 
 .selected-curriculum-card {
@@ -156,9 +176,8 @@
     border-radius: 2rem;
     border-width: 1px;
     color: white;
-    padding: 2rem;
-    margin: 0 2rem 0 2rem;
-    float: right;
+    padding: 1rem 4rem 1rem 4rem;
+    margin: 1rem 0 1rem 0;
 }
 
 .disabled-button{

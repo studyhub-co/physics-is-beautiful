@@ -32,15 +32,15 @@ class CurriculumInfoPanel extends React.Component {
                     {/*title*/}
                     <div className='curriculum-title-wrapper'>
                       <span className='curriculum-title'>{this.props.curriculum.name}</span>
-                      <span style={{fontSize: '25px', color: 'darkgrey'}}>
+                      <span style={{fontSize: '20px', color: 'darkgrey'}}>
                       {' by '}
                         <a target={"_blank"}
                            href={this.props.curriculum.author.get_absolute_url}
                            className="curriculum-user-link">
-                          {this.props.curriculum.author.full_name}
+                          {this.props.curriculum.author.display_name}
                         </a>
                       </span>
-                    {this.state.showMore?<div>{this.props.curriculum.description}</div>:null}
+                    {this.state.showMore?<div style={{float: "left"}}>{this.props.curriculum.description}</div>:null}
                       {this.state.showMore?<div style={{float: "right"}}><a href={"/editor"} style={{cursor: "pointer", color: "grey"}}>{"Select other curriculum"}</a></div>:null}
                     </div>
                     <div style={{float: 'right'}}>
