@@ -45,13 +45,13 @@ html, body {
 .section-sheet {
     position: relative;
     width: 80%;
-    margin-top: 30px;
+    margin-top: 0px;
     border-radius: 15px;
     padding: 30px 60px;
     height: 80%;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
     height: auto;
 }
 .section-sheet h1 {font-size: 100%;}
@@ -145,9 +145,10 @@ html, body {
 }
 
 .section-title {
+    font-family: 'Museosansrounded';
     font-size: 20px;
     color: #1caff6;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
 }
 
 .btn-group-lg>.btn, .btn-lg {
@@ -185,12 +186,11 @@ html, body {
     border: 0 none;
     box-shadow: none;
     margin-bottom: 0;
-    height: 64px;
 }
 
 .section-thumbnail > img {
     display: block;
-    height: 60px;
+    height: 93px;
 }
 
 .question-thumbnail {
@@ -229,10 +229,11 @@ img.grayed-out-img {
 }
 
 .col-md-1 h1 {
+    font-family: 'Museosansrounded';
     font-size: 14px;
     text-align: center;
     margin: 0;
-    padding: 0;
+    padding: 8px;
     text-transform: capitalize;
     height: 40px;
 }
@@ -247,7 +248,8 @@ img.grayed-out-img {
 }
 
 .module-completed {
-    color: #8d8;
+    color: #8d8 !important;
+    box-shadow: 0px 0px 10px #8d8 !important;
 }
 
 .module-accessible {
@@ -255,9 +257,8 @@ img.grayed-out-img {
 }
 
 .module-accessible-block {
-    border-radius: 5px;
-    box-shadow: 5px 5px 15px #BBB;
 }
+
 
 .module-skipped {
     color: #FA0;
@@ -268,11 +269,24 @@ img.grayed-out-img {
 }
 
 .col-md-1 {
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0);
     margin: 10px;
     margin-right: 35px;
-    padding: 15px;
+    padding: 0px;
     display: inline-block;
-    width: 110px;
+    width: 150px;
+    color: #666666;
+    box-shadow: 0px 0px 10px #BBB;
+    transition: color 500ms, box-shadow 500ms, border-color 500ms;
+}
+.col-md-1:hover {
+    color: #1caff6;
+    border-style: solid;
+    border-color:#1caff6;
+    box-shadow: 0px 0px 16px #BBB;
 }
 
 .col-md-1.disabled {
@@ -502,7 +516,7 @@ img.grayed-out-img {
 }
 
 .red-border {
-    border: .3rem solid red !important;;
+    border: .3rem solid red !important;
 }
 
 .green-border {
@@ -576,25 +590,27 @@ img.grayed-out-img {
 .curriculum-panel-font{
     /*font-family: Tw Cen MT;*/
     font-family: Museosansrounded;
-    font-size: 25px;
+    font-size: 2px;
     color: #c8c8c8;
 }
 
 .curriculum-title{
-    font-size: 35px;
+    font-size: 25px;
     color: #1caff6;
 }
 
 .curriculum-more-less{
-    font-size: 25px !important;
+    font-size: 16px !important;
     text-decoration: underline;
     cursor: pointer;
+    float: right;
 }
 
 .curriculum-user-link{
     text-decoration: none;
     color: darkgrey;
     font-style: italic;
+    font-size: 18px;
 }
 
 .curriculum-user-link:hover{

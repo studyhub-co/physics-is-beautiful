@@ -32,7 +32,7 @@ class CurriculumInfoPanel extends React.Component {
                     {/*title*/}
                     <div style={{float: 'left', position: 'relative', width:'80%'}}>
                       <span className='curriculum-title'>{this.props.curriculum.name}</span>
-                      <span style={{fontSize: '25px', color: 'darkgrey'}}>
+                      <span style={{fontSize: '20px', color: 'darkgrey'}}>
                       {' by '}
                         <a target={"_blank"}
                            href={this.props.curriculum.author.get_absolute_url}

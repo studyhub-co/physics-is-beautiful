@@ -48,11 +48,11 @@ class CompleteItem extends React.Component {
     render() {
         return (
             <Link to={this.props.item.href}>
-                <div className="col-md-1">
+                <div className="col-md-1 module-completed">
                     <div className="thumbnail section-thumbnail">
                         <img src={this.props.item.image}/>
                     </div>
-                    <h1 className="module-completed">
+                    <h1>
                         {this.props.item.name}
                         <span className="glyphicon glyphicon-ok"></span>
                     </h1>
