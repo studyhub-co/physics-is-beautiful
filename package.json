@@ -4,8 +4,8 @@
   "description": "## Installation",
   "main": "index.js",
   "scripts": {
-    "devwatch": "./node_modules/.bin/webpack --config webpack.config.js --watch --env.NODE_ENV=development",
-    "watch": "./node_modules/.bin/webpack --config webpack.config.js --watch"
+    "dev": "./node_modules/.bin/webpack --config webpack.config.js --watch --env.NODE_ENV=development",
+    "prod": "./node_modules/.bin/webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
