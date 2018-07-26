@@ -1,11 +1,12 @@
 import { push } from 'connected-react-router'
 
 import { checkHttpStatus, getAxios } from '../utils'
-import { CLASSROOM_RECEIVE_CLASSROOMS_LIST, CLASSROOM_CREATE_CLASSROOM_SUCCESS } from '../constants'
+import { CLASSROOM_RECEIVE_CLASSROOMS_LIST, CLASSROOM_CREATE_CLASSROOM_SUCCESS,
+  CLASSROOM_JOIN_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST } from '../constants'
 
 const API_PREFIX = '/api/v1/classroom/'
 
-export function dataReceiveClassroomsList (classroomList) {
+export function receiveClassroomsList (classroomList) {
   return {
     type: CLASSROOM_RECEIVE_CLASSROOMS_LIST,
     payload: {
@@ -17,10 +18,10 @@ export function dataReceiveClassroomsList (classroomList) {
 export function classroomFetchClassroomsList () {
   return (dispatch, state) => {
     // dispatch(classroomFetchClassroomlistRequest()) // to the future
-    return getAxios().get(API_PREFIX)
+    return getAxios().get(API_PREFIX + '?filter=as_teacher')
       .then(checkHttpStatus)
       .then((response) => {
-        dispatch(dataReceiveClassroomsList(response.data))
+        dispatch(receiveClassroomsList(response.data))
       })
   }
 }
@@ -43,6 +44,49 @@ export function classroomCreateClassroom (classroomForm) {
         // todo move to edit page
         dispatch(classroomFetchClassroomsList())
         dispatch(push('/classroom/'))
+      })
+  }
+}
+
+export function joinClassroomSuccess (classroom) {
+  return {
+    type: CLASSROOM_JOIN_CLASSROOM_SUCCESS,
+    payload: {
+      classroom
+    }
+  }
+}
+
+export function classroomJoinClassroom (classroomCode) {
+  return (dispatch, state) => {
+    return getAxios().post(API_PREFIX + 'join/', {code: classroomCode})
+      .then((response) => {
+        dispatch(joinClassroomSuccess(response.data))
+        // todo move to claasrom page
+        dispatch(push('/classroom/'))
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
+  }
+}
+
+export function receiveStudentClassroomsList (classroomStudentList) {
+  return {
+    type: CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
+    payload: {
+      classroomStudentList
+    }
+  }
+}
+
+export function classroomFetchStudentClassroomsList () {
+  return (dispatch, state) => {
+    // dispatch(classroomFetchClassroomlistRequest()) // to the future
+    return getAxios().get(API_PREFIX + '?filter=as_student')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveStudentClassroomsList(response.data))
       })
   }
 }

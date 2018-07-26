@@ -76,9 +76,9 @@ class EditClassroomView extends React.Component {
     return (
       <PopupWindow goBack={history.goBack}>
         <form onSubmit={this.saveClassroom}>
-          <div style={{paddingTop: '2rem'}}>Name of you classroom:</div>
+          <div style={{paddingTop: '2rem'}}>Name of your classroom:</div>
           <div>
-            <input type='text' name='name' value={this.state.value} className={'form-control'}
+            <input type='text' name='name' className={'form-control'}
               onChange={this.handleClassroomFormChange} />
           </div>
           <br />
@@ -100,7 +100,7 @@ class EditClassroomView extends React.Component {
           </div> : null }
           <div className={'grey-text pointer'} onClick={() => { window.open('/editor/', '_blank') }}>Browse other curricula</div>
           <button disabled={!this.state.classroomFormIsValid}
-            className={'classroom-common-button' + (this.state.classroomFormIsValid ? '' : ' disabled-button')}
+            className={'classroom-common-button float-right' + (this.state.classroomFormIsValid ? '' : ' disabled-button')}
             type='submit'>
             Create classroom
           </button>

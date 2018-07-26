@@ -5,11 +5,13 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
+
 import { ClassroomCard } from '../../components/ClassroomCard'
+import { JoinClassroomButton } from '../../components/JoinClassroomButton'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { EditClassroomView } from '../../containers/index'
+import { EditClassroomView, JoinClassroomView } from '../../containers/index'
 
 import * as actionCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
@@ -23,11 +25,13 @@ class IndexView extends React.Component {
 
   componentWillMount () {
     this.props.classroomActions.classroomFetchClassroomsList()
+    this.props.classroomActions.classroomFetchStudentClassroomsList()
   }
 
   render () {
     var createUrl = this.props.match.url.replace(/\/$/, '') + '/create'
     var editUrl = this.props.match.url.replace(/\/$/, '') + '/edit/:uuid/'
+    var joinUrl = this.props.match.url.replace(/\/$/, '') + '/join'
 
     return (
       <Sheet>
@@ -42,7 +46,23 @@ class IndexView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='student'>
-              student
+              <Route path={joinUrl} component={JoinClassroomView} />
+              {this.props.classroomStudentList ? <div>{ this.props.classroomStudentList.map(function (classroom, i) {
+                return <ClassroomCard classroom={classroom} key={i} />
+              })}
+              <div style={{'clear': 'both'}} />
+              </div> : null }
+              {/* TODO if classrooms list and not empty */}
+              {this.props.classroomStudentList && this.props.classroomStudentList.length > 0
+                ? <div>
+                  {this.props.location.pathname === '/classroom/' ? <div className={'create-classroom-button'}
+                    onClick={() => this.props.dispatch(push(joinUrl))}>
+                  + Join classroom
+                  </div> : null}
+                </div>
+                : null }
+              {this.props.classroomStudentList && this.props.classroomStudentList.length === 0
+                ? <JoinClassroomView /> : null }
             </TabContent>
             <TabContent for='teacher'>
               {this.props.location.pathname === '/classroom/'
@@ -51,7 +71,7 @@ class IndexView extends React.Component {
                   {this.props.classroomList ? <div>{ this.props.classroomList.map(function (classroom, i) {
                     return <ClassroomCard classroom={classroom} key={i} />
                   })}
-                  <div style={{'clear': 'both'}}></div>
+                  <div style={{'clear': 'both'}} />
                   </div> : null }
                 </div>
                 : null
@@ -75,17 +95,20 @@ IndexView.propTypes = {
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   classroomActions: PropTypes.shape({
-    classroomFetchClassroomsList: PropTypes.func.isRequired
+    classroomFetchClassroomsList: PropTypes.func.isRequired,
+    classroomFetchStudentClassroomsList: PropTypes.func.isRequired
   }).isRequired,
   tab: PropTypes.string,
   classroomList: PropTypes.array,
+  classroomStudentList: PropTypes.array,
   dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => {
   return {
     tab: state.tab.tab,
-    classroomList: state.classroom.classroomList
+    classroomList: state.classroom.classroomList,
+    classroomStudentList: state.classroom.classroomStudentList
   }
 }
 
