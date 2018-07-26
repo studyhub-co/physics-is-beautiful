@@ -7,15 +7,15 @@ export class ImageWithText extends React.Component {
     this.state = { checked: false }
   }
 
-   keydown(e) {
-    if (this.props.hasAnswer) {return}
+  keydown (e) {
+    if (this.props.hasAnswer) { return }
     if (e.code.startsWith('Digit')){
-        if (e.key === (this.props.index+1).toString()){
-          this.setState({
-            checked: !this.state.checked
-          }, function () {
-            this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
-          })
+      if (e.key === (this.props.index+1).toString()){
+        this.setState({
+          checked: !this.state.checked
+        }, function () {
+          this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
+        })
       }
     }
   }
@@ -85,28 +85,30 @@ export class ImageWithText extends React.Component {
     }
 
     var toReturn
+    var style = {marginRight: '10px', width: '10px', display: 'inline-block'}
+
     if (this.props.textOnlyMode){
-      if (this.props.type == 'RADIO_BUTTON'){
+      if (this.props.type === 'RADIO_BUTTON') {
         // TEXT ONLY RADIO
         toReturn = <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
-              <span style={{marginRight: '1rem'}}>{this.props.index+1}</span>
-              <input id={'radio'+this.props.choice.uuid} value={this.props.choice.content.text} name='radio'
-                     type='radio' checked={this.state.checked}/>
-          {this.props.choice.content.text ?
-              <label htmlFor={'radio'+this.props.choice.uuid}>{this.props.choice.content.text}</label> :
-              <label htmlFor={'radio'+this.props.choice.uuid} style={{padding: '1rem'}}></label>
-                  }
-       </div>
+          <span style={style}>{this.props.index + 1}</span>
+          <input id={'radio' + this.props.choice.uuid} value={this.props.choice.content.text} name='radio'
+            type='radio' checked={this.state.checked} />
+          {this.props.choice.content.text
+            ? <label htmlFor={'radio' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
+            : <label htmlFor={'radio' + this.props.choice.uuid} style={style} />
+          }
+        </div>
       } else {
         // TEXT ONLY CHECKBOXES
-      toReturn = <div className={'pure-checkbox answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
-                      <span style={{marginRight: '1rem'}}>{this.props.index+1}</span>
-                <input id={'checkbox'+this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked}/>
-                {this.props.choice.content.text ?
-                  <label htmlFor={'checkbox'+this.props.choice.uuid}>{this.props.choice.content.text}</label> :
-                  <label htmlFor={'checkbox'+this.props.choice.uuid} style={{padding: '1rem'}}></label>
-                  }
-            </div>
+        toReturn = <div className={'pure-checkbox answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
+          <span style={style}>{this.props.index + 1}</span>
+          <input id={'checkbox' + this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked}/>
+          {this.props.choice.content.text
+            ? <label htmlFor={'checkbox'+this.props.choice.uuid}>{this.props.choice.content.text}</label>
+            : <label htmlFor={'checkbox'+this.props.choice.uuid} style={style}></label>
+          }
+        </div>
       }
 
     }
