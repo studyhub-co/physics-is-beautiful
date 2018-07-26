@@ -24,6 +24,8 @@
 
     {# JQuery #}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    {# csrf from cookie to headers #}
+    <script src="{% static 'js/csrf.js' %}"></script>
 
     {# Bootstrap CSS #}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -80,13 +82,16 @@
         </div>
         {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
         <div id="navbar" class="navbar-collapse collapse">
-            <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">
-                {% render_bundle 'profile' %}
-                {% if user.is_authenticated %}
+            <ul class="nav navbar-nav nav-pills">
+            {% if user.is_authenticated %}
      	        <li class="nav-item"><a href="{% url 'editor' %}">Curriculum</a></li>
                 <li class="nav-item"><a href="{% url 'classroom' %}">Classroom</a></li>
+                <li class="nav-item"><a href="{% url 'topics' %}">Discussion</a></li>
 	        {% endif %}
-                <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Blog</a></li>
+                <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Resources</a></li>
+            </ul>
+            <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">
+                {% render_bundle 'profile' %}
                 <li class="nav-item">
                     {% if user.is_authenticated %}
                         <a id="logout-action" href="#">Logout</a>

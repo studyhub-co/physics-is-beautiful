@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% extends BASE_TEMPLATE %}
+{% load djeddit_tags %}
+{% block title %}
+    <h2><a target="_blank" href="{% url "user-profile" pageUser.pk %}">{{ pageUser.display_name }}</a></h2>
+    <div>Username: {{ pageUser.username }}</div>
+{% endblock %}
+{% block content %}
+    <div>
+        <ul class="nav nav-tabs">
+            {% block navtabs %}{% endblock %}
+        </ul>
+    </div>
+    <br>
+    <div class="col-md-8">
+        <ul class="list-group">
+            {% block groupItems %}{% endblock %}
+        </ul>
+    </div>
+    <div class="col-md-4">
+        {% block sideContent %}{% endblock %}
+    </div>
+{% endblock %}

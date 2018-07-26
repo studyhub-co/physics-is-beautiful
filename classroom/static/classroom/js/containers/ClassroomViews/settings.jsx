@@ -1,6 +1,10 @@
 import React from 'react'
 
+import { bindActionCreators } from 'redux'
+
 import { connect } from 'react-redux'
+
+import * as classroomCreators from '../../actions/classroom'
 
 class SettingsClassroomView extends React.Component {
 
@@ -8,9 +12,7 @@ class SettingsClassroomView extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    // tab: state.tab.tab
-    curriculaList: state.curricula.curriculaList,
-    curriculaOtherList: state.curricula.curriculaOtherList
+    // classroom: state.classroom.classroom
   }
 }
 
