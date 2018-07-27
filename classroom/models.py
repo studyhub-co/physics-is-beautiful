@@ -34,9 +34,12 @@ class Classroom(models.Model):
 
 class ClassroomStudent(models.Model):
     code_entered_on = models.DateTimeField(blank=True, null=True)
-    leave_on = models.DateTimeField(blank=True, null=True)
+    # leave_on = models.DateTimeField(blank=True, null=True)
     student = models.ForeignKey(Profile)
     classroom = models.ForeignKey(Classroom)
+
+    class Meta:
+        unique_together = (("student", "classroom"),)
 
 
 @receiver(pre_save, sender=Classroom)
