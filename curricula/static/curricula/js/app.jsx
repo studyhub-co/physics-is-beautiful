@@ -41,7 +41,7 @@ class CurriculumInfoPanel extends React.Component {
                         </a>
                       </span>
                     {this.state.showMore?<div style={{float: "left"}}>{this.props.curriculum.description}</div>:null}
-                      {this.state.showMore?<div style={{float: "right"}}><a href={"/editor"} style={{cursor: "pointer", color: "grey"}}>{"Select other curriculum"}</a></div>:null}
+                    {this.state.showMore?<div style={{float: "right", fontSize: 15}}><a href={"/editor"} style={{cursor: "pointer", color: "grey"}}>{"Select other curriculum"}</a></div>:null}
                     </div>
                     <div style={{float: 'right'}}>
                       {this.state.showMore?
