@@ -11,6 +11,9 @@
     }
 });
 
+// When the user has their finger on the vector canvas, it should not scroll.
+// TODO fix on Android. Seems to work for Firefox & Chromium on desktop, strangely.
+
 $(document).ready(function(){
     fixCanvas();
 })
