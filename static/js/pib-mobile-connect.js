@@ -10,3 +10,22 @@
         window.history.back();
     }
 });
+
+$(document).ready(function(){
+    fixCanvas();
+})
+
+// Waits till at least one canvas container is loaded onto the page.
+// Note that we are only going to have one.
+function fixCanvas() {
+    if (document.getElementsByClassName('canvas-container').length == 0) {
+       window.requestAnimationFrame(fixCanvas);
+    } else {
+        var noScroll = document.getElementsByClassName('canvas-container');
+        for (var i = 0; i < noScroll.length; i++) {
+            noScroll[i].addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, false);
+        }
+    }
+};
