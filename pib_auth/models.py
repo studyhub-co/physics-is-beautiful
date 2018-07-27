@@ -92,7 +92,7 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @property
     def username(self):
-        return 'user{}'.format(self.id)
+        return '{}'.format(self.id)
 
     def get_short_name(self):
         return self.first_name or "User"
