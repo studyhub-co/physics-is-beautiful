@@ -1,7 +1,21 @@
 @font-face {
     font-family: 'Museosansrounded';
+    src: url('fonts/museosansrounded-300-webfont.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Museosansrounded';
     src: url('fonts/museosansrounded-500-webfont.woff2') format('woff2');
     font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Museosansrounded';
+    src: url('fonts/museosansrounded-700-webfont.woff2') format('woff2');
+    font-weight: 700;
     font-style: normal;
 }
 
@@ -145,7 +159,7 @@ html, body {
 }
 
 .section-title {
-    font-family: 'Museosansrounded';
+    font-family: Museosansrounded;
     font-size: 20px;
     color: #1caff6;
     /*text-transform: uppercase;*/
@@ -172,6 +186,7 @@ html, body {
     padding-bottom: 10px;
     padding-left: 10px;
     width: 45vw;
+    font-family: Museosansrounded;
 }
 
 .section-bounding-box {
@@ -335,16 +350,15 @@ img.grayed-out-img {
     padding-right: 15px;
     padding-top: 9px;
     padding-bottom: 9px;
-    background: rgba(255, 255, 255, 0);
-    color: #1caff6;
-    transition: color .3s,border .3s;
+    background: #1caff6;
+    color: white;
+    transition: color .5s,border .5s;
     outline: none;
+    font-family: Museosansrounded;
 }
 
 #checkButton:hover,
 #checkButton:focus{
-    border-radius: 12rem;
-    color: #105e84;
     border: .2rem solid #105e84;
 }
 #checkButton.disabled{
@@ -374,6 +388,7 @@ img.grayed-out-img {
     padding-right: 21px;
     text-align: center;
     font-size:18;
+    font-family: Museosansrounded;
 }
 #modalContainer{
     display: inline-block;
