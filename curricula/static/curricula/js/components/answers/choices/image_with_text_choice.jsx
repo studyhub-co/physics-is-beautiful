@@ -57,6 +57,8 @@ export class ImageWithText extends React.Component {
   render () {
     var cardStyle = {width: '16rem', float: 'left'}
     var buttonStyle = {}
+    var hiddenCircle = {}
+    hiddenCircle['visibility'] = 'hidden'
     if (this.props.hasAnswer) {
       cardStyle['pointerEvents'] = 'none'
       buttonStyle['pointerEvents'] = 'none'
@@ -93,7 +95,7 @@ export class ImageWithText extends React.Component {
         toReturn = <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
           <span style={style}>{this.props.index + 1}</span>
           <input id={'radio' + this.props.choice.uuid} value={this.props.choice.content.text} name='radio'
-            type='radio' checked={this.state.checked} />
+            type='radio' checked={this.state.checked} style={hiddenCircle}/>
           {this.props.choice.content.text
             ? <label htmlFor={'radio' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
             : <label htmlFor={'radio' + this.props.choice.uuid} style={style} />
@@ -123,7 +125,7 @@ export class ImageWithText extends React.Component {
           <div className={'card-block'} style={{padding: '.5rem'}}>
             {this.props.type == 'RADIO_BUTTON' ?
             <div className='pure-radiobutton'  style={{float: 'left'}}>
-              <input id={'radio'+this.props.choice.uuid} value={this.props.choice.content.text} name='radio' type='radio' checked={this.state.checked}/>
+              <input id={'radio'+this.props.choice.uuid} value={this.props.choice.content.text} name='radio' type='radio' checked={this.state.checked} style={hiddenCircle}/>
               {this.props.choice.content.text ?
                   <label htmlFor={'radio'+this.props.choice.uuid}>{this.props.choice.content.text}</label> :
                   <label htmlFor={'radio'+this.props.choice.uuid} style={{padding: '1rem'}}></label>
