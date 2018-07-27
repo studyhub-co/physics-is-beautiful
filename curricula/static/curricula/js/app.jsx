@@ -322,6 +322,10 @@ class LessonsApp extends React.Component {
     continueAction() {
         playAudio('continue');
 
+        if (window.IS_MOBILE_APP) {
+            window.scrollTo(0, 0);
+        }
+
         this.fetchState();
     }
 
