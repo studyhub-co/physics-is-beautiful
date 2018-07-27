@@ -9,6 +9,15 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'curricula/images/favicon/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'curricula/navbar.css' %}" />
 
+    {# Pass on variables to react #}
+    <script>
+        {% if request.GET.pib_mobile %}
+        window.IS_MOBILE_APP = true;
+        {% else %}
+        window.IS_MOBILE_APP = false;
+        {% endif %}
+    </script>
+
     {# Mathjax #}
     {% block mathjax_config %} {% endblock %}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -48,6 +57,8 @@
 </head>
 
 <body>
+
+{% if not request.GET.pib_mobile %}
 
 <nav id="navTopOfScreen" class="navbar navbar-default navbar-static-top"><!-- navbar-fixed-top -->
     <div class="container-fluid">
@@ -95,8 +106,12 @@
     </div>
 </nav>
 
+{% endif %}
+
 {% auth_modal user request.get_full_path %}
 
 {% block body_content %} {% endblock %}
+
+<script type="text/javascript" src="{% static 'js/pib-mobile-connect.js' %}"></script>
 
 </body>
