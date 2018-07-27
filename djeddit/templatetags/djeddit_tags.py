@@ -37,7 +37,10 @@ def getAmount(num, name, infix=''):
 
 @register.simple_tag
 def postUserName(created_by):
-    return created_by or 'guest'
+    if created_by and created_by.display_name:
+        return created_by.display_name
+    else:
+        return 'unbeknown'
 
 
 @register.simple_tag

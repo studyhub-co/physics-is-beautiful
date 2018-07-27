@@ -21,7 +21,7 @@ class LessonComplete extends React.Component {
               You rock! Lesson complete!
           </h2>
         </div>
-        <a className='btn btn-primary btn-lg btn-block' href={'/curriculum/modules/' + this.props.lesson.module}>
+        <a className='btn btn-primary btn-lg btn-block' href={'/curriculum/modules/' + this.props.lesson.module + window.IS_MOBILE_APP ? '?pib_mobile=true' : ''}>
               Proceed to next level
         </a>
       </div>

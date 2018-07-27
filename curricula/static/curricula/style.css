@@ -59,7 +59,7 @@ html, body {
 .section-sheet {
     position: relative;
     width: 80%;
-    margin-top: 0px;
+    margin-top: 20px;
     border-radius: 15px;
     padding: 30px 60px;
     height: 80%;
@@ -607,6 +607,22 @@ img.grayed-out-img {
     font-family: Museosansrounded;
     font-size: 25px;
     color: #c8c8c8;
+}
+
+.curriculum-title-wrapper {
+    float: left;
+    position: relative;
+    right: 30px;
+}
+
+@media (max-width: 770px) {
+    .curriculum-title-wrapper {
+        margin-left: 20px;
+    }
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
 }
 
 .curriculum-title{
