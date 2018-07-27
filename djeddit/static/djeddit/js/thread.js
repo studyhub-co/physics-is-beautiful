@@ -73,6 +73,9 @@ window.postFuncs = {
         var params = {post: post ? post : op, excluded: JSON.stringify(excluded)};
         $.get(url, params, function (data) {
             $elem.replaceWith(data);
+
+            // render new MathJax
+            window.MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         });
     }
 };
