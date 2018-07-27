@@ -25,13 +25,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #     WEBPACK_LOADER["DEFAULT"]["CACHE"] = not DEBUG
 #     WEBPACK_LOADER["DEFAULT"]["POLL_INTERVAL"] = 0.1
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pib',
-        'USER': 'pib',
-        'PASSWORD': 'pib',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'pib',
+#         'USER': 'postgresql',
+#         'PASSWORD': 'pib',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
+
+# Permit local access from app
+X_FRAME_OPTIONS = 'WHATEVER_YOU_WANT'
