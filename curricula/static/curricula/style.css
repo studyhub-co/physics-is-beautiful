@@ -619,6 +619,10 @@ img.grayed-out-img {
     .curriculum-title-wrapper {
         margin-left: 20px;
     }
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
 }
 
 .curriculum-title{
