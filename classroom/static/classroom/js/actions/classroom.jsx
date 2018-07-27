@@ -62,11 +62,12 @@ export function classroomJoinClassroom (classroomCode) {
     return getAxios().post(API_PREFIX + 'join/', {code: classroomCode})
       .then((response) => {
         dispatch(joinClassroomSuccess(response.data))
-        // todo move to claasrom page
-        dispatch(push('/classroom/'))
+        // todo move to claasroom page
+        dispatch(push('/classroom/' + response.data['uuid'] + '/student/'))
       })
       .catch(error => {
-        console.log(error.response)
+        dispatch(joinClassroomSuccess(null))
+        // console.log(error.response)
       })
   }
 }

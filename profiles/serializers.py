@@ -18,6 +18,14 @@ class BaseSerializer(serializers.ModelSerializer):
             return super(BaseSerializer, self).to_internal_value(data)
 
 
+class PublicProfileSerializer(BaseSerializer):
+    display_name = serializers.CharField(source='user.display_name')
+
+    class Meta:
+        model = Profile
+        fields = ['display_name', ]
+
+
 class ProfileSerializer(BaseSerializer):
 
     class Meta:

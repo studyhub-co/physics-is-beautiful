@@ -13,12 +13,21 @@
     color: rgb(216, 216, 216);
 }
 
+.red-text {
+    color: red;
+}
+
+
 .pointer {
     cursor: pointer;
 }
 
 .float-right {
     float: right;
+}
+
+.text-align-center{
+    text-align: center;
 }
 
 /* tabs */
@@ -66,6 +75,9 @@
     padding: 30px 60px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
 }
 
 .create-classroom-button{
@@ -179,6 +191,23 @@
     padding: 1rem 4rem 1rem 4rem;
     margin: 1rem 0 1rem 0;
 }
+
+/* student-classroom-row */
+
+.student-classroom-row {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 1rem 0 1rem 0;
+    padding: 2rem;
+    vertical-align: top;
+    cursor: pointer;
+    min-height: 7rem;
+}
+
 
 .disabled-button{
     background-color: rgb(216, 216, 216);

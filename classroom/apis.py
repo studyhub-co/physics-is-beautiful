@@ -47,8 +47,14 @@ class ClassroomViewSet(ModelViewSet):
 def join_classroom(request):
     try:
         classroom = Classroom.objects.get(code=request.data.get('code', ''))
-        # todo join
     except Classroom.DoesNotExist:
         raise NotFound()
 
-    return classroom
+    # check ther user not if classrom
+    if ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).count() == 0:
+        # add current user to classroom as student
+        ClassroomStudent.objects.create(student=request.user.profile, classroom=classroom)
+
+    serializer = ClassroomSerializer(classroom)
+
+    return Response(serializer.data)
