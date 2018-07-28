@@ -17,6 +17,9 @@ import * as actionCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
 
 import { Route } from 'react-router'
+import { ClassroomStudentRow } from '../../components/ClassroomStudentRow'
+
+import { Grid } from 'react-bootstrap'
 
 class IndexView extends React.Component {
   // goToProtected () {
@@ -46,12 +49,12 @@ class IndexView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='student'>
-              <Route path={joinUrl} component={JoinClassroomView} />
-              {this.props.classroomStudentList ? <div>{ this.props.classroomStudentList.map(function (classroom, i) {
-                return <ClassroomCard classroom={classroom} key={i} />
+              {this.props.classroomStudentList ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
+                return <ClassroomStudentRow classroom={classroom} key={i} />
               })}
-              <div style={{'clear': 'both'}} />
-              </div> : null }
+              {/* <div style={{'clear': 'both'}} /> */}
+              </Grid> : null }
+              <Route path={joinUrl} component={JoinClassroomView} />
               {/* TODO if classrooms list and not empty */}
               {this.props.classroomStudentList && this.props.classroomStudentList.length > 0
                 ? <div>

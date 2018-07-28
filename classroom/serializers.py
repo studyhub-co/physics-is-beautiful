@@ -5,14 +5,14 @@ from .models import Classroom, Assignment, ClassroomStudent
 
 from curricula.models import Curriculum
 
-from profiles.serializers import ProfileSerializer
+from profiles.serializers import PublicProfileSerializer
 from curricula.serializers import SimpleCurriculumSerializer
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
-    less_students = ProfileSerializer(many=True, read_only=True)
+    less_students = PublicProfileSerializer(many=True, read_only=True)
     count_students = serializers.IntegerField(read_only=True)
-    teacher = ProfileSerializer(read_only=True)
+    teacher = PublicProfileSerializer(read_only=True)
     curriculum = SimpleCurriculumSerializer(read_only=True)
     # TODO limit to my Curricula
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
