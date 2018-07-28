@@ -50,12 +50,12 @@ class IndexView extends React.Component {
           <div className='content'>
             <TabContent for='student'>
               {this.props.classroomStudentList ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
-                return <ClassroomStudentRow classroom={classroom} key={i} />
-              })}
+                return <ClassroomStudentRow leaveClassroom={ this.props.classroomActions.classroomLeaveClassroom } classroom={classroom} key={i} />
+              }, this)}
               {/* <div style={{'clear': 'both'}} /> */}
               </Grid> : null }
               <Route path={joinUrl} component={JoinClassroomView} />
-              {/* TODO if classrooms list and not empty */}
+              {/* if classrooms list and not empty */}
               {this.props.classroomStudentList && this.props.classroomStudentList.length > 0
                 ? <div>
                   {this.props.location.pathname === '/classroom/' ? <div className={'create-classroom-button'}
@@ -99,7 +99,8 @@ IndexView.propTypes = {
   }).isRequired,
   classroomActions: PropTypes.shape({
     classroomFetchClassroomsList: PropTypes.func.isRequired,
-    classroomFetchStudentClassroomsList: PropTypes.func.isRequired
+    classroomFetchStudentClassroomsList: PropTypes.func.isRequired,
+    classroomLeaveClassroom: PropTypes.func.isRequired
   }).isRequired,
   tab: PropTypes.string,
   classroomList: PropTypes.array,

@@ -2,7 +2,8 @@ import { push } from 'connected-react-router'
 
 import { checkHttpStatus, getAxios } from '../utils'
 import { CLASSROOM_RECEIVE_CLASSROOMS_LIST, CLASSROOM_CREATE_CLASSROOM_SUCCESS,
-  CLASSROOM_JOIN_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST } from '../constants'
+  CLASSROOM_JOIN_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
+  CLASSROOM_LEAVE_CLASSROOM_SUCCESS} from '../constants'
 
 const API_PREFIX = '/api/v1/classroom/'
 
@@ -88,6 +89,28 @@ export function classroomFetchStudentClassroomsList () {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveStudentClassroomsList(response.data))
+      })
+  }
+}
+
+export function leaveClassroomSuccess (classroom) {
+  return {
+    type: CLASSROOM_LEAVE_CLASSROOM_SUCCESS,
+    payload: {
+      classroom
+    }
+  }
+}
+
+export function classroomLeaveClassroom (classroom) {
+  return (dispatch, state) => {
+    console.log(state);
+    return getAxios().post(API_PREFIX + 'leave/', {uuid: classroom.uuid})
+      .then((response) => {
+        dispatch(leaveClassroomSuccess(response.data))
+        // todo remove class room from classrooms list
+        // move to clasrooms list page
+        dispatch(push('/classroom/'))
       })
   }
 }
