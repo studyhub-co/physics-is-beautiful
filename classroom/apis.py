@@ -58,3 +58,19 @@ def join_classroom(request):
     serializer = ClassroomSerializer(classroom)
 
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+def leave_classroom(request):
+    try:
+        classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''))
+    except Classroom.DoesNotExist:
+        raise NotFound()
+
+    ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).delete()
+
+    # fixme to reduce data we can return simple uuid
+    serializer = ClassroomSerializer(classroom)
+
+    return Response(serializer.data)
