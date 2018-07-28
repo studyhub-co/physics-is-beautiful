@@ -19,7 +19,7 @@ module.exports = function (env) {
     output: {
       path: path.resolve('./static/bundles/'),
       filename: "[name]-[hash].js",
-      publicPath: '/' // https://github.com/webpack/webpack-dev-middleware/issues/205#issuecomment-315847782
+      // publicPath: '/' // https://github.com/webpack/webpack-dev-middleware/issues/205#issuecomment-315847782
     },
 
     plugins: [
