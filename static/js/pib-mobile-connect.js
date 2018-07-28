@@ -32,3 +32,24 @@ function fixCanvas() {
         }
     }
 };
+
+// Copy query string across link clicks.
+
+if (window.IS_MOBILE_APP)
+$( 'a' )
+    .click(function() {
+        if (this.href.trim().startsWith('javascript'))
+            // actually running javascript, not going to a link
+            return;
+
+        if (this.href.indexOf('?') !== -1) {
+            if (this.href.indexOf('pib_mobile') !== -1) {
+                window.location = this.href;
+            } else {
+                window.location = this.href + '&pib_mobile=true';
+            }
+        } else {
+            window.location = this.href + '?pib_mobile=true';
+        }
+        return;
+    });
