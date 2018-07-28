@@ -40,14 +40,24 @@ class JoinClassroomView extends React.Component {
     )
   }
 
+  // componentWillReceiveProps (props) {
+  //   if(props.classroom && props.classroom){
+  //     // redirect ro classroom page
+  //
+  //   }
+  // }
+
   render () {
     return (
-      <div className="pop-up-windows">
-        Enter your teacher's classroom code below:
+      <div className="pop-up-windows text-align-center">
+        <div>Enter your teacher's classroom code below:</div>
         <form className="form-inline" onSubmit={this.joinClassroom}>
           <div>
             <input maxLength={'6'} type='text' name='name' className={'form-control input-sm'} onChange={this.handleCodeChange} />
           </div>
+          {this.props.classroom === null
+            ? <div className={'red-text'}>This code does not match any classroom.<br />
+            Please double check what you typed</div> : null }
           <button disabled={!this.state.codeIsValid}
             className={'classroom-common-button' + (this.state.codeIsValid ? '' : ' disabled-button')}
             type='submit'>
@@ -62,15 +72,13 @@ class JoinClassroomView extends React.Component {
 JoinClassroomView.propTypes = {
   classroomActions: PropTypes.shape({
     classroomJoinClassroom: PropTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  classroom: PropTypes.shape()
 }
 
 const mapStateToProps = (state) => {
   return {
-    classroom: state.classroom.classroom
-    // tab: state.tab.tab
-    // curriculaList: state.curricula.curriculaList,
-    // curriculaOtherList: state.curricula.curriculaOtherList
+    classroom: state.classroom.classroomClassroom
   }
 }
 
@@ -78,8 +86,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     classroomActions: bindActionCreators(classroomCreators, dispatch),
-    // tabActions: bindActionCreators(tabCreators, dispatch),
-    // curriculaActions: bindActionCreators(curriculaCreators, dispatch)
   }
 }
 
