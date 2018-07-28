@@ -26,8 +26,19 @@
     float: right;
 }
 
-.text-align-center{
+.text-align-center {
     text-align: center;
+}
+
+.pib-link {
+    color: rgb(8, 209, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.grey-link {
+    color: #d8d8d8;
+    cursor: pointer;
 }
 
 /* tabs */
@@ -204,7 +215,6 @@
     margin: 1rem 0 1rem 0;
     padding: 2rem;
     vertical-align: top;
-    cursor: pointer;
     min-height: 7rem;
 }
 
