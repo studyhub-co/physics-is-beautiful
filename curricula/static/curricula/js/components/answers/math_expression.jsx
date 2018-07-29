@@ -17,8 +17,8 @@ export class MathematicalExpressionAnswer extends React.Component {
 
   componentWillReceiveProps (newProps) {
     if (newProps.question.uuid !== this.props.question.uuid) {
-       // reset answer
-       this.reset()
+      // reset answer
+      this.reset()
     }
   }
 
@@ -31,7 +31,7 @@ export class MathematicalExpressionAnswer extends React.Component {
         edit: (mathField) => {
           // if change by API (not user), then not fire
           if (mathField.data.fromJsCall) { return }
-          if (mathField.latex()){
+          if (mathField.latex()) {
             this.props.updateAnswer([
               this.props.question.uuid,
               {
@@ -48,7 +48,7 @@ export class MathematicalExpressionAnswer extends React.Component {
   }
 
   insertLatex (val) {
-    if (this.props.answer){ return }
+    if (this.props.answer) { return }
     this.answer.write(val)
     this.answer.focus()
   }
@@ -61,18 +61,16 @@ export class MathematicalExpressionAnswer extends React.Component {
     // this.stoppedProcessing = true
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     // mathquill focus is lost after render
     if (this.props.answer == null) {
       this.answer.focus()
-    }
-    else {
+    } else {
       this.answer.blur()
     }
   }
 
   render () {
-
     // var disabled = ''
     // if (this.props.answer) {
     //   disabled = ' disabled'
@@ -99,7 +97,7 @@ export class MathematicalExpressionAnswer extends React.Component {
 
     if (this.props.vectorComponentButtons) {
       var buttonsLst = ['\\hat{x}', '\\hat{y}', '1', '2', '3', '4', '+', '-']
-      for(var i=0; i < buttonsLst.length; i++){
+      for (var i = 0; i < buttonsLst.length; i++) {
         var button = (
           <a
             className={'btn btn-primary btn-lg mathClickEntryButton'}
@@ -111,7 +109,6 @@ export class MathematicalExpressionAnswer extends React.Component {
         )
         buttons.push(button)
       }
-
     }
 
     // if (this.props.xHat) {
@@ -162,20 +159,20 @@ export class MathematicalExpressionAnswer extends React.Component {
 
     return (
       <div className='bounding-box'>
-        <p style={{marginBottom: 5}}><span id='math-field-answer' style={mathFieldStyle}></span></p>
+        <p style={{marginBottom: 5}}><span id='math-field-answer' style={mathFieldStyle} /></p>
         <RMathJax.Context {...DEFAULT_MATHJAX_OPTIONS}>
           <div style={{marginBottom: 10}}>
-            {buttons.map(function(button, index){
-                return <span key={index}>{ button }</span>
+            {buttons.map(function (button, index) {
+              return <span key={index}>{ button }</span>
             })}
-            {/*{x}{y}*/}
+            {/* {x}{y} */}
           </div>
         </RMathJax.Context>
-        {/*<div className={'button-group' + (this.props.answer === null ? '' : ' hidden')} id='vectorButton' >*/}
-          {/*<a className={'btn btn-primary' + disabled} id='checkAnswer' onClick={this.checkAnswer.bind(this)}>Check</a>*/}
-        {/*</div>*/}
+        {/* <div className={'button-group' + (this.props.answer === null ? '' : ' hidden')} id='vectorButton' > */}
+        {/* <a className={'btn btn-primary' + disabled} id='checkAnswer' onClick={this.checkAnswer.bind(this)}>Check</a> */}
+        {/* </div> */}
         <p>{ this.props.question.is_correct }</p>
-        {/*<ContinueButton continueClick={this.props.continueAction} hidden={this.props.answer === null} />*/}
+        {/* <ContinueButton continueClick={this.props.continueAction} hidden={this.props.answer === null} /> */}
       </div>
     )
   }

@@ -28,7 +28,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       document.getElementById('15').firstElementChild.firstElementChild.setAttribute('tabindex', '-1')
 
       this.setState({
-        answer: { 'data': props.answer_number + '\ ' + props.answer_unit, 'box': answerBox },
+        answer: { 'data': props.answer_number + ' ' + props.answer_unit, 'box': answerBox },
         numColumns: 1,
         answersSteps: [[
           {'data': '', 'box': MQ(document.getElementById('11'))},

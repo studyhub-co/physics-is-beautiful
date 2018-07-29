@@ -15,7 +15,7 @@ class LessonComplete extends React.Component {
   render () {
     return (
       <div className='question' id='ajaxDiv'>
-        <div style={{height: '15px'}}></div>
+        <div style={{height: '15px'}} />
         <div className='jumbotron'>
           <h2 className='animated rubberBand' style={{color: '#33A', textAlign: 'center'}}>
               You rock! Lesson complete!
@@ -30,7 +30,6 @@ class LessonComplete extends React.Component {
 }
 
 class LessonCompleteSheet extends React.Component {
-
   render () {
     return (
       <div className='container problem-sheet'>
@@ -42,7 +41,6 @@ class LessonCompleteSheet extends React.Component {
 }
 
 class QuestionSheet extends React.Component {
-
   constructor () {
     super()
     this.updateAnswer = this.updateAnswer.bind(this)
@@ -53,35 +51,35 @@ class QuestionSheet extends React.Component {
     }
   }
 
-  clearAnswerContinue(){
-    //TODO now we can remove all updateAnswer(null) in child answers
+  clearAnswerContinue () {
+    // TODO now we can remove all updateAnswer(null) in child answers
     this.updateAnswer(null)
     this.props.continueAction()
   }
 
   updateAnswer (answer) {
     this.answer = answer
-    if(this.answer) {
+    if (this.answer) {
       this.setState({
         disabledCheck: false,
         questionShouldUpdate: false
       })
     } else {
-      if (this.state.disabledCheck == false){
+      if (this.state.disabledCheck == false) {
         this.setState({
           disabledCheck: true,
           questionShouldUpdate: false
         })
       }
-     }
+    }
   }
 
   checkAnswer () {
     if (this.answer) {
       this.setState({
-          questionShouldUpdate: true,
-          // disabledCheck: true
-        }, function () {
+        questionShouldUpdate: true
+        // disabledCheck: true
+      }, function () {
         this.props.question.submitAnswer(...this.answer)
       })
     }
@@ -114,19 +112,18 @@ class QuestionSheet extends React.Component {
 }
 
 export class SectionSheet extends React.Component {
-
   render () {
     var backLink = ''
     if (this.props.backLink) {
       backLink = (
         <a id='backToDashboard' href={this.props.backLink} type='button' className='btn btn-default btn-sm'>
-          <span className='glyphicon glyphicon-chevron-left' style={{color: '#888'}}></span>
+          <span className='glyphicon glyphicon-chevron-left' style={{color: '#888'}} />
         </a>
       )
     }
     var sections = []
-    this.props.sections.forEach(function(el) {
-      sections.push(<Section key={el.uuid} name={el.name} items={el.items}/>)
+    this.props.sections.forEach(function (el) {
+      sections.push(<Section key={el.uuid} name={el.name} items={el.items} />)
     })
     return (
       <div className='container section-sheet'>
@@ -138,7 +135,6 @@ export class SectionSheet extends React.Component {
 }
 
 export class Sheet extends React.Component {
-
   render () {
     var Component = null
     if (this.props.question) {
