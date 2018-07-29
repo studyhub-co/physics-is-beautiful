@@ -7,13 +7,13 @@ import {CheckContinueButton} from './utils/check_continue_button'
 
 export class Footer extends React.Component {
   componentDidMount () {
-    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
 
   componentDidUpdate () {
-    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
 
   render () {
@@ -21,20 +21,20 @@ export class Footer extends React.Component {
     var correctMessage = ''
     // var continueButton = ''
     if (this.props.correct === true) {
-      checkMarks = (<span id='correct' className='glyphicon glyphicon-ok-sign pull-right'></span>)
+      checkMarks = (<span id='correct' className='glyphicon glyphicon-ok-sign pull-right' />)
       correctMessage = 'Correct'
     } else if (this.props.correct === false) {
-      checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right'></span>)
-      if(Array.isArray(this.props.correct_answer)){
-        var message = "Incorrect, the correct answers are:"
-        if (this.props.correct_answer.length == 1){
-          message = "Incorrect, the correct answer is:"
+      checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right' />)
+      if (Array.isArray(this.props.correct_answer)) {
+        var message = 'Incorrect, the correct answers are:'
+        if (this.props.correct_answer.length == 1) {
+          message = 'Incorrect, the correct answer is:'
         }
         correctMessage = <div>
           <span>{message}<br /></span>
           {this.props.correct_answer.map((answer, i) => <span key={i}>
-              {!!i && ", "}
-              <Answer key={i} answer={answer} />
+            {!!i && ', '}
+            <Answer key={i} answer={answer} />
           </span>)}
         </div>
       } else {
@@ -63,14 +63,14 @@ export class Footer extends React.Component {
               aria-valuemin='0'
               aria-valuemax='100'
               style={{width: this.props.progress + '%'}}>
-              <span className='sr-only'></span>
+              <span className='sr-only' />
             </div>
           </div>
         </div>
-        <div className="float-left">
+        <div className='float-left'>
           <div id='correctMessage'>{correctMessage}</div>
         </div>
-        <div style={{clear: "both"}}></div>
+        <div style={{clear: 'both'}} />
         <div id='checkMarks'>{checkMarks}</div>
         <div id='checkContainer'>
           {/* {continueButton} */}
@@ -80,7 +80,7 @@ export class Footer extends React.Component {
             isCheck={typeof this.props.correct === 'undefined'}
             disabledCheck={this.props.disabledCheck} />
         </div>
-        <div style={{clear: "both"}}></div>
+        <div style={{clear: 'both'}} />
       </div>
     )
   }
