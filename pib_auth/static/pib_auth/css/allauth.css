@@ -34,3 +34,19 @@ body {
 #navTopOfScreen{
     padding: 0px;
 }
+
+@media (max-width: 480px) {
+    .modal-content {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0px !important;
+    }
+
+    #content-wrap {
+        margin: 0px;
+    }
+
+    .modal-dialog {
+        margin: 0px !important;
+    }
+}
