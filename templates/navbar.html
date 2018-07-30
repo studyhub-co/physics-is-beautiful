@@ -9,15 +9,6 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'curricula/images/favicon/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'curricula/navbar.css' %}" />
 
-    {# Pass on variables to react #}
-    <script>
-        {% if request.GET.pib_mobile %}
-        window.IS_MOBILE_APP = true;
-        {% else %}
-        window.IS_MOBILE_APP = false;
-        {% endif %}
-    </script>
-
     {# Mathjax #}
     {% block mathjax_config %} {% endblock %}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -58,19 +49,18 @@
 
 <body>
 
-{% if not request.GET.pib_mobile %}
-
 <nav id="navTopOfScreen" class="navbar navbar-default navbar-static-top"><!-- navbar-fixed-top -->
     <div class="container-fluid">
         <div class="navbar-header">
             {# Physics is Beautiful logo #}
             <a class="navbar-brand" href="/">
-                <span class="nb-drop-level-1">
-                    Physics is
-                </span>
-                <span style="white-space: nowrap;">
-                    <span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul.</span>
-                </span>
+                <img src="{% static 'curricula/images/pib.svg' %}" style="max-height: 34px;">
+{#                <span class="nb-drop-level-1">#}
+{#                    Physics is#}
+{#                </span>#}
+{#                <span style="white-space: nowrap;">#}
+{#                    <span class="nb-drop-level-1"> beauti</span>\(\!\int\!\)<span class="nb-drop-level-1">ul.</span>#}
+{#                </span>#}
             </a>
             {# Toggle which appears only on small screens/mobile with three icon-bar lines #}
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -106,12 +96,8 @@
     </div>
 </nav>
 
-{% endif %}
-
 {% auth_modal user request.get_full_path %}
 
 {% block body_content %} {% endblock %}
-
-<script type="text/javascript" src="{% static 'js/pib-mobile-connect.js' %}"></script>
 
 </body>
