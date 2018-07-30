@@ -11,7 +11,7 @@ import { JoinClassroomButton } from '../../components/JoinClassroomButton'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { EditClassroomView, JoinClassroomView } from '../../containers/index'
+import { EditClassroomView, JoinClassroomView, StudentView } from '../../containers/index'
 
 import * as actionCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
@@ -32,9 +32,11 @@ class IndexView extends React.Component {
   }
 
   render () {
-    var createUrl = this.props.match.url.replace(/\/$/, '') + '/create'
-    var editUrl = this.props.match.url.replace(/\/$/, '') + '/edit/:uuid/'
-    var joinUrl = this.props.match.url.replace(/\/$/, '') + '/join'
+    var baseUrl =  this.props.match.url.replace(/\/$/, '')
+    var createUrl = baseUrl + '/create'
+    var editUrl = baseUrl + '/:uuid/edit/'
+    var studentUrl = baseUrl + '/:uuid/student/'
+    var joinUrl = baseUrl + '/join'
 
     return (
       <Sheet>
@@ -49,11 +51,16 @@ class IndexView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='student'>
-              {this.props.classroomStudentList ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
-                return <ClassroomStudentRow leaveClassroom={ this.props.classroomActions.classroomLeaveClassroom } classroom={classroom} key={i} />
+              {this.props.location.pathname === '/classroom/' && this.props.classroomStudentList ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
+                return <ClassroomStudentRow
+                  classroom={classroom}
+                  onAssignmentsClick={(url) => this.props.dispatch(push(url))}
+                  baseUrl={baseUrl}
+                  key={i} />
               }, this)}
-              {/* <div style={{'clear': 'both'}} /> */}
+              {/* <div style={{'clear': 'both'}} /> leaveClassroom={this.props.classroomActions.classroomLeaveClassroom}  */}
               </Grid> : null }
+              <Route path={studentUrl} component={StudentView} />
               <Route path={joinUrl} component={JoinClassroomView} />
               {/* if classrooms list and not empty */}
               {this.props.classroomStudentList && this.props.classroomStudentList.length > 0
