@@ -121,6 +121,17 @@ html, body {
     margin:3px;
 }
 
+.progress-bottom-container{
+    position: relative;
+    display: inline-block;
+    /*bottom: 0;*/
+    float: left;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    width: 45vw;
+    font-family: Museosansrounded;
+}
+
 @media all and (max-width: 770px) { /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
     .bounding-box{
         margin-bottom:3px;
@@ -153,9 +164,30 @@ html, body {
         margin-right: 1%;
     }
     #footer{
-        /*position:relative;*/
+        position:fixed;
         width: 100%;
+        border-radius: 0px;
+        height: 80px;
     }
+    .progress-bottom-container{
+        padding-bottom: 0px;
+        padding-left: 5vw;
+        width: 95vw;
+        position: fixed;
+        bottom: 4px;
+    }
+    .progress {
+        height: 12px;
+    }
+    #progress-h4 {
+        visibility: hidden;
+    }
+}
+.navbar-brand {
+    transition: filter .5s;
+}
+.navbar-brand:hover {
+    filter: brightness(50%);
 }
 
 .section-title {
@@ -176,17 +208,6 @@ html, body {
     border: 1px solid rgba(214, 214, 214, 1);
     border-radius: 4px;
     margin-bottom:0px;
-}
-
-.progress-bottom-container{
-    position: relative;
-    display: inline-block;
-    /*bottom: 0;*/
-    float: left;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    width: 45vw;
-    font-family: Museosansrounded;
 }
 
 .section-bounding-box {

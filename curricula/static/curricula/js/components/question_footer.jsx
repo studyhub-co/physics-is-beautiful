@@ -53,7 +53,7 @@ export class Footer extends React.Component {
     return (
       <div id='footer'>
         <div className='progress-bottom-container'>
-          <h4>Progress</h4>
+          <h4 id='progress-h4'>Progress</h4>
           <div className='progress'>
             <div
               className='progress-bar progress-bar-info progress-bar-striped'
