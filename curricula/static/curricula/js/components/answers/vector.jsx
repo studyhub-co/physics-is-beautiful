@@ -13,9 +13,9 @@ export class VectorAnswer extends React.Component {
   }
 
   componentWillReceiveProps (newProps) {
-     if (newProps.question.uuid !== this.props.question.uuid) {
-       // reset answer
-       this.reset()
+    if (newProps.question.uuid !== this.props.question.uuid) {
+      // reset answer
+      this.reset()
     }
   }
 
@@ -48,8 +48,7 @@ export class VectorAnswer extends React.Component {
 
       // if answer is not null vector
       if (this.props.answer['x'] != 0 || this.props.answer['y'] != 0) {
-
-        if(!this.props.question.response.vector.x_component && !this.props.question.response.vector.y_component){
+        if (!this.props.question.response.vector.x_component && !this.props.question.response.vector.y_component) {
           // user gave wrong answer
           isNotNullAnswer = true
         }
@@ -66,7 +65,7 @@ export class VectorAnswer extends React.Component {
         var vector = new CanvasVector(null, pointer, 'green')
         vector.complete(endPointer)
         var textPoint = {
-          left: endPointer.x - VectorCanvas.calcCanvasMagnitude(.65) + this.props.answer.x,
+          left: endPointer.x - VectorCanvas.calcCanvasMagnitude(0.65) + this.props.answer.x,
           top: endPointer.y - this.props.answer.y - VectorCanvas.calcCanvasMagnitude(1)
         }
         var text = new CanvasText(null, textPoint, 'correct\nsolution')

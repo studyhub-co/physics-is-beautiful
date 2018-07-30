@@ -42,9 +42,9 @@ class UNITS {
 
   static get MASS () {
     return {
-    'mg': 'milligrams',
-    'g': 'grams',
-    'oz': 'ounces'
+      'mg': 'milligrams',
+      'g': 'grams',
+      'oz': 'ounces'
     }
   }
 
@@ -105,7 +105,7 @@ export class MathquillBox extends React.Component {
     //   this.answer.focus()
     // }
   }
-  componentDidUpdate() {
+  componentDidUpdate () {
     // mathquill focus is lost after render
     if (this.props.answer == null && this.props.focus) {
       this.answer.focus()
@@ -335,7 +335,7 @@ export class UnitConversionBase extends React.Component {
     }
 
     var alreadyStrikeDenumIndex = []
-    
+
     // strikethrough units
     numeratorsC:
     for (var column = -1; column < answers.length; column++) { // walk through numerators
@@ -344,7 +344,7 @@ export class UnitConversionBase extends React.Component {
       } else {
         splitNumerator = answers[column][0]['splitData']
       } // "2 cm"
-      
+
       if (splitNumerator) {
         for (var column2 = -1; column2 < answers.length; column2++) { // walk through denominators
           if (column2 === -1) {
@@ -386,7 +386,7 @@ export class UnitConversionBase extends React.Component {
                   var newLatexDN = answers[column2][1]['data'].replace(splitNumerator[1], '\\class{strikethrough}{' + splitNumerator[1] + '}')
 
                   answers[column2][1]['data'] = newLatexDN // data will not fill, because edit event not fire onMathQuillChange
-                  
+
                   this.setLatexWoFireEvent(denominatorBox, newLatexDN)
 
                   // remove denominator unit from uncrossed out
@@ -444,7 +444,6 @@ export class UnitConversionBase extends React.Component {
 
   // result answer change
   onResultChange (data, row, col, mathquillObj) {
-
     this.setState({
       answer: {'data': data, 'box': mathquillObj}
     })
@@ -460,7 +459,7 @@ export class UnitConversionBase extends React.Component {
     // convert scientific notation
     tmpData = tmpData.replace(/\\cdot/g, '*')
     tmpData = tmpData.replace(/\^{\s*(\S+)\s*}/, '^($1)') // fix for math.parser()
-    
+
     var parsedToValUnit = this.constructor.parseToValueUnit(tmpData)
 
     if (parsedToValUnit && parsedToValUnit[0]) {
@@ -526,15 +525,15 @@ export class UnitConversionBase extends React.Component {
 
     var equal = '' + baseCompareLst[0] === '' + baseCompareLst[1]
 
-    if (!equal){
+    if (!equal) {
       var a = baseCompareLst[0]
       var b = baseCompareLst[1]
-      var percent = (Math.abs(a-b)/Math.max(Math.abs(a), Math.abs(b))) * 100
-      if (percent <= 11){
-         equal = true
+      var percent = (Math.abs(a - b) / Math.max(Math.abs(a), Math.abs(b))) * 100
+      if (percent <= 11) {
+        equal = true
       }
     }
-    
+
     return equal
   }
 
@@ -600,21 +599,20 @@ export class UnitConversionCanvas extends UnitConversionBase {
     this.submitQuestion = this.submitQuestion.bind(this)
   }
 
-  keydown(e) {
-    if (e.code === "Enter"){
+  keydown (e) {
+    if (e.code === 'Enter') {
       // detect that calculator field and button is not focused
-      if(!document.getElementById('calculatorField').classList.contains("mq-focused") &&
+      if (!document.getElementById('calculatorField').classList.contains('mq-focused') &&
           (document.activeElement !== document.getElementById('checkButton')) &&
           (document.activeElement !== document.getElementById('addStep')) &&
           (document.activeElement !== document.getElementById('removeStep'))
-      )
-      {
+      ) {
         this.submitQuestion()
       }
     }
   }
 
-  updateAnswer(answer){
+  updateAnswer (answer) {
     var MQ = MathQuill.getInterface(2)
     MQ.MathField(document.getElementById('15')).latex(answer)
     MQ.MathField(document.getElementById('15')).focus()
@@ -634,11 +632,11 @@ export class UnitConversionCanvas extends UnitConversionBase {
         ]]
       })
     }
-    document.addEventListener("keydown", this.keydown.bind(this), false)
+    document.addEventListener('keydown', this.keydown.bind(this), false)
   }
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.keydown, false)
+  componentWillUnmount () {
+    document.removeEventListener('keydown', this.keydown, false)
   }
 
   submitQuestion () {
@@ -652,7 +650,7 @@ export class UnitConversionCanvas extends UnitConversionBase {
 
     var isRightAnswer = true
 
-    if (!this.state.answersSteps || this.state.answersSteps.length == 0 || !this.state.answer || !this.state.answer['data']){
+    if (!this.state.answersSteps || this.state.answersSteps.length == 0 || !this.state.answer || !this.state.answer['data']) {
       return
     }
 
@@ -787,11 +785,10 @@ export class UnitConversionCanvas extends UnitConversionBase {
     }
 
     // erase calculator
-    if(document.getElementById('calculatorField')) {
+    if (document.getElementById('calculatorField')) {
       var MQ = MathQuill.getInterface(2)
       MQ(document.getElementById('calculatorField')).latex('')
     }
-
   }
   render () {
     var buttonStyle = {
@@ -814,14 +811,13 @@ export class UnitConversionCanvas extends UnitConversionBase {
       backgroundColor: '#ffffff'
     }
 
-
     var pointerEvents = 'auto'
 
-    if (this.props.gameState === GameState.GAME_OVER){
+    if (this.props.gameState === GameState.GAME_OVER) {
       pointerEvents = 'none'
       document.getElementById('tryAgain').focus()
     }
-    
+
     return (
       <div style={{pointerEvents: pointerEvents }}>
         <div style={{display: 'block'}}>
@@ -898,14 +894,13 @@ UnitConversionCanvas.propTypes = {
 }
 
 class UnitConversionQuestionBoard extends React.Component {
-
   constructor (props) {
     super(props)
     this.state = {calulatorAnswer: '', copy2Answer: null}
     this.copy2Answer = this.copy2Answer.bind(this)
   }
 
-  copy2Answer (){
+  copy2Answer () {
     if (this.state.calulatorAnswer != '') {
       this.conversionCanvas.updateAnswer(this.state.calulatorAnswer)
     }
@@ -922,23 +917,24 @@ class UnitConversionQuestionBoard extends React.Component {
     tmpData = tmpData.replace(/\\right\)/g, ')')
 
     var parser = math.parser()
-      try {
-        var value = parser.eval(tmpData)
-        if (value) {
-          if (value < 1) {
-            // leave just significant figures for answer
-            var mult = Math.pow(10, 4 - Math.floor(Math.log(value) / Math.LN10) - 1)
-            value = Math.round(value * mult) / mult
-          } else {
-            value = value.toFixed(2)
-          }
+    try {
+      var value = parser.eval(tmpData)
+      if (value) {
+        if (value < 1) {
+          // leave just significant figures for answer
+          var mult = Math.pow(10, 4 - Math.floor(Math.log(value) / Math.LN10) - 1)
+          value = Math.round(value * mult) / mult
+        } else {
+          value = value.toFixed(2)
         }
+      }
 
-        return value
-
-      } catch (e) {if (!(e instanceof SyntaxError)) { // catch SyntaxError
-          throw e
-        }}
+      return value
+    } catch (e) {
+      if (!(e instanceof SyntaxError)) { // catch SyntaxError
+        throw e
+      }
+    }
 
     return false
   }
@@ -952,12 +948,11 @@ class UnitConversionQuestionBoard extends React.Component {
       handlers: {
         edit: (mathField) => {
           var calcedValue = this.clearCalculatorInput(mathField.latex())
-          if (calcedValue){
+          if (calcedValue) {
             this.setState({
               calulatorAnswer: calcedValue
             })
-          }
-          else{
+          } else {
             this.setState({
               calulatorAnswer: ''
             })
@@ -970,7 +965,6 @@ class UnitConversionQuestionBoard extends React.Component {
   }
 
   render () {
-
     var mathFieldStyle = {
       minWidth: '25rem',
       fontSize: 30
@@ -980,13 +974,13 @@ class UnitConversionQuestionBoard extends React.Component {
       border: '1px solid #d8d8d8',
       display: 'table-cell',
       verticalAlign: 'middle',
-      padding: '1rem',
+      padding: '1rem'
     }
 
     return (
       <div>
-        <Draggable disabled={screen.width > 736} axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
-         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
+        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}} cancel='.mq-root-block'>
+          <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
             <MediaQuery minDeviceWidth={736}>
               <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
             </MediaQuery>
@@ -1000,39 +994,39 @@ class UnitConversionQuestionBoard extends React.Component {
               gameOver={this.props.gameOver}
               gameState={this.props.gameState}
               level={this.props.level}
-              ref={(conversionCanvas) => { this.conversionCanvas = conversionCanvas; }}
+              ref={(conversionCanvas) => { this.conversionCanvas = conversionCanvas }}
             />
-         </div>
+          </div>
         </Draggable>
-        <Draggable disabled={screen.width > 736} axis="x" bounds={{left: -screen.width+100, top: 0, right: screen.width-100, bottom: 0}} cancel=".mq-root-block">
-        <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
-          <div className='text-center'>
-            <h2>Calculator</h2>
-            <div>
-             <div style={{display: 'table-cell', verticalAlign: 'middle'}}>
-               <p style={{marginBottom: 5}}>
-                 <span id={'calculatorField'} style={mathFieldStyle} />
-               </p>
-             </div>
-             <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
+        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}} cancel='.mq-root-block'>
+          <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
+            <div className='text-center'>
+              <h2>Calculator</h2>
+              <div>
+                <div style={{display: 'table-cell', verticalAlign: 'middle'}}>
+                  <p style={{marginBottom: 5}}>
+                    <span id={'calculatorField'} style={mathFieldStyle} />
+                  </p>
+                </div>
+                <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
                  =
-             </div>
-             <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
-               {this.state.calulatorAnswer}
-             </div>
-             <div style={{textAlign: 'right'}}>
-               <div className='button-group'>
-                  <button id='checkButton'
-                    className={'btn btn-primary' + (this.state.calulatorAnswer === '' ? ' disabled' : '')}
-                    onClick={this.copy2Answer}
+                </div>
+                <div style={{fontSize: 30, display: 'table-cell', verticalAlign: 'middle', paddingLeft: 15, paddingRight: 15}}>
+                  {this.state.calulatorAnswer}
+                </div>
+                <div style={{textAlign: 'right'}}>
+                  <div className='button-group'>
+                    <button id='checkButton'
+                      className={'btn btn-primary' + (this.state.calulatorAnswer === '' ? ' disabled' : '')}
+                      onClick={this.copy2Answer}
                     >
                     Copy to answer
-                  </button>
+                    </button>
+                  </div>
                 </div>
-             </div>
+              </div>
             </div>
           </div>
-        </div>
         </Draggable>
         <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
           <div className='text-center'>
@@ -1121,7 +1115,7 @@ class UnitConversionGameBoard extends React.Component {
     }
     this.state = {clockSeconds: 600}
   }
-  componentDidMount() {
+  componentDidMount () {
     if (this.props.state == GameState.NEW) {
       document.getElementById('start').focus()
     }
@@ -1197,7 +1191,7 @@ class UnitConversionGameBoard extends React.Component {
                 {this.props.scoreList ? this.props.scoreList.map(function (score, i) {
                   return <tr key={i}>
                     <td style={{'padding': 5}}>{score.row_num}</td>
-                    <td style={{'padding': 5}}>{score.profile ? score.profile: 'Anonymous'}</td>
+                    <td style={{'padding': 5}}>{score.profile ? score.profile : 'Anonymous'}</td>
                     <td style={{'padding': 5}}>{score.duration}</td>
                   </tr>
                 }) : null}
@@ -1241,7 +1235,7 @@ export class UnitConversionGame extends React.Component {
       state: GameState.NEW,
       pausedOnState: null,
       score: 0,
-      //level: 4,
+      // level: 4,
       level: 1,
       question: null,
       unit: null,
@@ -1313,15 +1307,14 @@ export class UnitConversionGame extends React.Component {
       unit = this.getRandomFromArray(Object.keys(UNITS.SPEED))
       unitLong = UNITS.SPEED[unit]
     } else if (newLevel === 5) {
-
       var INPUT_UNITS = []
 
       Object.getOwnPropertyNames(UNITS)
-      .map(key => [key, Object.getOwnPropertyDescriptor(UNITS, key)])
-      .filter(([key, descriptor]) => typeof descriptor.get === 'function')
-      .map(([key]) => key).forEach(function (key) {
-        INPUT_UNITS = INPUT_UNITS.concat(key)
-      })
+        .map(key => [key, Object.getOwnPropertyDescriptor(UNITS, key)])
+        .filter(([key, descriptor]) => typeof descriptor.get === 'function')
+        .map(([key]) => key).forEach(function (key) {
+          INPUT_UNITS = INPUT_UNITS.concat(key)
+        })
 
       var unitType = this.getRandomFromArray(INPUT_UNITS)
       unit = this.getRandomFromArray(Object.keys(UNITS[unitType]))

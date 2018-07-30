@@ -3,8 +3,7 @@ import RMathJax from 'react-mathjax'
 
 export class VectorAnswer extends React.Component {
   render () {
-
-    if (this.props.answer.x == 0 && this.props.answer.y == 0){
+    if (this.props.answer.x == 0 && this.props.answer.y == 0) {
       return (<div>Null vector</div>)
     }
 
@@ -70,7 +69,7 @@ export class UnitConversionAnswer extends React.Component {
     var component = ''
 
     var answer = this.props.answer.answer
-    var originalQuestion = (''+answer.question_number+'\\ '+answer.question_unit).split('/')
+    var originalQuestion = ('' + answer.question_number + '\\ ' + answer.question_unit).split('/')
 
     if (answer.unit_conversion_type === '10' || '30') {
       var qsDenom = ''
@@ -83,11 +82,11 @@ export class UnitConversionAnswer extends React.Component {
           data += ' | \\frac{' + answer.conversion_steps[i]['numerator'] + '}{' + answer.conversion_steps[i]['denominator'] + '} '
         }
       }
-      data += ' = ' + answer.answer_number+"\\ "+answer.answer_unit;
+      data += ' = ' + answer.answer_number + '\\ ' + answer.answer_unit
       component = <RMathJax.Node>{data}</RMathJax.Node>
     }
     if (answer.unit_conversion_type === '20') {
-      component = <RMathJax.Node>{answer.answer_number+"\\ "+answer.answer_unit}</RMathJax.Node>
+      component = <RMathJax.Node>{answer.answer_number + '\\ ' + answer.answer_unit}</RMathJax.Node>
     }
 
     return (
