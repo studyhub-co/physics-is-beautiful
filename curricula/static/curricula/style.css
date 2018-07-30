@@ -182,6 +182,9 @@ html, body {
     #progress-h4 {
         visibility: hidden;
     }
+    .row {
+        padding-bottom: 80px;
+    }
 }
 .navbar-brand {
     transition: filter .5s;
