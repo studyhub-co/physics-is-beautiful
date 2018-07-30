@@ -142,6 +142,7 @@ html, body {
 		width: 100%;
 		padding: 0px;
 		margin-top: -15px;
+        margin-bottom: 80px;
 	}
 	.section-sheet {
 		width: 99%;
@@ -181,9 +182,6 @@ html, body {
     }
     #progress-h4 {
         visibility: hidden;
-    }
-    .row {
-        padding-bottom: 80px;
     }
 }
 .navbar-brand {
