@@ -1,6 +1,6 @@
 import { CLASSROOM_RECEIVE_CLASSROOMS_LIST, CLASSROOM_CREATE_CLASSROOM_SUCCESS,
   CLASSROOM_JOIN_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
-  CLASSROOM_LEAVE_CLASSROOM_SUCCESS} from '../constants'
+  CLASSROOM_LEAVE_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_CLASSROOM} from '../constants'
 
 const initialState = {
   classroomList: null,
@@ -18,6 +18,10 @@ export default function classroomReducer (state = initialState, action) {
         classroomClassroom: action.payload.classroom
       })
     case CLASSROOM_JOIN_CLASSROOM_SUCCESS:
+      return Object.assign({}, state, {
+        classroomClassroom: action.payload.classroom
+      })
+    case CLASSROOM_RECEIVE_CLASSROOM:
       return Object.assign({}, state, {
         classroomClassroom: action.payload.classroom
       })
