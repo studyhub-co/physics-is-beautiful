@@ -3,16 +3,15 @@ import React from 'react'
 import {ImageWithText} from './choices/image_with_text_choice'
 
 export class MultiSelectAnswer extends React.Component {
-
   constructor (props) {
     super(props)
     this.selectedItems = []
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.question.uuid !== this.props.question.uuid){
-       // reset answer
-       this.reset()
+    if (nextProps.question.uuid !== this.props.question.uuid) {
+      // reset answer
+      this.reset()
     }
   }
 
@@ -21,20 +20,20 @@ export class MultiSelectAnswer extends React.Component {
     this.props.updateAnswer(null)
   }
 
-  updateAnswer(uuid, state) {
-    if (state){
+  updateAnswer (uuid, state) {
+    if (state) {
       this.selectedItems.push(uuid)
     } else {
       var index = this.selectedItems.indexOf(uuid)
       if (index !== -1) {
-          this.selectedItems.splice(index, 1)
+        this.selectedItems.splice(index, 1)
       }
     }
     if (this.selectedItems.length > 0) {
       var answersList = []
-      for(var i = 0; i<this.selectedItems.length;i++){
+      for (var i = 0; i < this.selectedItems.length; i++) {
         answersList.push(
-           {
+          {
             uuid: this.selectedItems[i]
           }
         )
@@ -46,8 +45,7 @@ export class MultiSelectAnswer extends React.Component {
           answers_list: answersList
         }
       ])
-    }
-    else {
+    } else {
       this.props.updateAnswer(null)
     }
   }
@@ -59,50 +57,49 @@ export class MultiSelectAnswer extends React.Component {
     var textOnlyMode = true
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
-      if (choice.content.image){
+      if (choice.content.image) {
         textOnlyMode = false
       }
     }
 
     var hasAnswer = false // user clicked check button
     if (this.props.answer || this.props.question.is_correct) {
-        hasAnswer = true
+      hasAnswer = true
     }
 
     for (var i = 0; i < this.props.question.choices.length; i++) {
       var choice = this.props.question.choices[i]
 
-      if (hasAnswer){
+      if (hasAnswer) {
         var isRightChoice = false // is right answer
         var wasWrongChoice = false // was wrong answer
 
-
         // compare current choice with right answers and checked answers
         // set intial values for selected choice
-        for (var j=0; j < this.selectedItems.length; j++){ // go throw clicked answers
+        for (var j = 0; j < this.selectedItems.length; j++) { // go throw clicked answers
           if (this.selectedItems[j] == choice.uuid) {
-            if (!this.props.answer){ // if has no answer is right answer
+            if (!this.props.answer) { // if has no answer is right answer
               isRightChoice = true
             } else { // if we have props.answer answer was wrong
               wasWrongChoice = true
             }
-           }
+          }
         }
 
         // rewrite values for selected choice nad set values for right answers
-        if (this.props.answer){ // if we has answer, answer was wrong
-          for (var y=0; y < this.props.answer.length; y++){ // go throw right answers
+        if (this.props.answer) { // if we has answer, answer was wrong
+          for (var y = 0; y < this.props.answer.length; y++) { // go throw right answers
             if (this.props.answer[y].uuid == choice.uuid) {
-              for (var j=0; j < this.selectedItems.length; j++){ //go throw cheched answers
+              for (var j = 0; j < this.selectedItems.length; j++) { // go throw cheched answers
                 if (this.selectedItems[j] == choice.uuid) {
                   wasWrongChoice = true
                 } else {
                   isRightChoice = true
                 }
-              }}
+              }
             }
           }
-
+        }
       }
 
       choices.push(
@@ -120,13 +117,13 @@ export class MultiSelectAnswer extends React.Component {
       )
     }
     return (
-        <div className='bounding-box'>
-          <h1>Select answer below:</h1>
-          <div className={textOnlyMode ? 'button-group': 'card-columns'}>
-            {choices}
-          </div>
-          <div style={{clear: 'both'}}></div>
+      <div className='bounding-box'>
+        <h1>Select answer below:</h1>
+        <div className={textOnlyMode ? 'button-group' : 'card-columns'}>
+          {choices}
         </div>
+        <div style={{clear: 'both'}} />
+      </div>
     )
   }
 }

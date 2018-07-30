@@ -114,8 +114,7 @@ export class ScoreBoard extends React.Component {
     }
     return (
       <div className='row text-center'>
-        <div className='col-md-2'>
-        </div>
+        <div className='col-md-2' />
         <div className='col-md-2 text-center'>
           <MediaQuery minDeviceWidth={736}>
             <div style={clockStyle}>

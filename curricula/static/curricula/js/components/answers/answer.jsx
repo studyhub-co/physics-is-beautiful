@@ -37,12 +37,12 @@ export class Answer extends React.Component {
             </div>
           </div>
         )
-      }
+    }
 
-      return (
-        <div className='col-md-6 text-center'>
-          <Component {...this.props} {...options} />
-        </div>
-      )
+    return (
+      <div className='col-md-6 text-center'>
+        <Component {...this.props} {...options} />
+      </div>
+    )
   }
 }
