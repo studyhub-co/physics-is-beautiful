@@ -5,6 +5,7 @@ import {VectorGame} from './games/vector'
 import {UnitConversionGame} from './games/unit_conversion'
 import {Vector} from 'vector_canvas'
 import {UnitConversion} from './components/answers/correct_answers/correct_answers'
+import { Grid, Row, Col } from 'react-bootstrap'
 
 class CurriculumInfoPanel extends React.Component {
   constructor (obj) {
@@ -24,37 +25,54 @@ class CurriculumInfoPanel extends React.Component {
     return (<div className='container section-sheet curriculum-panel-font'>
       <div>
         {this.props.curriculum
-          ? <div>
+          ? <Grid fluid>
             {/* title */}
-            <div className='curriculum-title-wrapper'>
-              <span className='curriculum-title'>{this.props.curriculum.name}</span>
-              <span style={{fontSize: '20px', color: 'darkgrey'}}>
-                {' by '}
-                <a target={'_blank'}
-                  href={this.props.curriculum.author.get_absolute_url}
-                  className='curriculum-user-link'>
-                  {this.props.curriculum.author.display_name}
-                </a>
-              </span>
-              {this.state.showMore ? <div style={{float: 'left'}}>{this.props.curriculum.description}</div> : null}
-              {this.state.showMore ? <div style={{float: 'right', fontSize: 15}}><a href={'/editor'} style={{cursor: 'pointer', color: 'grey'}}>{'Select other curriculum'}</a></div> : null}
-            </div>
-            <div style={{float: 'right'}}>
-              {this.state.showMore
-                ? <div>
-                  {this.props.curriculum.image ? <img style={{maxWidth: '240px'}} src={this.props.curriculum.image} /> : null}
-                </div>
-                : null}
-              <div>
-                <a
+            <Row>
+              <Col md={10} xs={8}>
+                <Row>
+                  <Col md={12}>
+                    <span className='curriculum-title'>{this.props.curriculum.name}</span>
+                    <span style={{fontSize: '20px', color: 'darkgrey'}}>&nbsp;
+                      {' by '}&nbsp;
+                      <a target={'_blank'}
+                        href={this.props.curriculum.author.get_absolute_url}
+                        className='curriculum-user-link'>
+                        {this.props.curriculum.author.display_name}
+                      </a>
+                    </span>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={12}>
+                    {this.state.showMore ? <div>{this.props.curriculum.description}</div> : null}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={8} />
+                  <Col md={4}>
+                    {this.state.showMore ? <div>
+                      <a href={'/editor'} style={{cursor: 'pointer', color: 'grey'}}>{'Select other curriculum'}</a>
+                    </div> : null}
+                  </Col>
+                </Row>
+              </Col>
+              <Col md={2} xs={4}>
+                {this.state.showMore
+                  ? <Row>
+                    <Col md={12}>
+                      {this.props.curriculum.image ? <img className={'img-responsive'} src={this.props.curriculum.image} /> : null}
+                    </Col>
+                  </Row>
+                  : null}
+                <Row><a
                   className='curriculum-title curriculum-more-less'
                   onClick={(e) => { this.showLessMore(e) }}>
                   {this.state.showMore ? 'Show less' : 'Show details'}
                 </a>
-              </div>
-            </div>
-            <div style={{clear: 'both', width: '100%'}} />
-          </div>
+                </Row>
+              </Col>
+            </Row>
+          </Grid>
           : null}
       </div>
     </div>)
