@@ -27,7 +27,10 @@ class TeacherClassroomView extends React.Component {
               {'< All classrooms'}
             </Col>
             <Col sm={7} md={7}>
-              <span className={'blue-title'}>{this.props.classroomTeacher.teacher.display_name}'s Classroom - {this.props.classroomTeacher.name}</span>
+              <span className='editable-label'>
+                <span className={'blue-title'}>{this.props.classroomTeacher.teacher.display_name}'s Classroom - {this.props.classroomTeacher.name}</span>
+                <span className='glyphicon glyphicon-pencil' />
+              </span>
             </Col>
             <Col sm={2} md={2}>
               {/*<span onClick={() => this.props.dispatch(push('/classroom/'))} className={'pib-link'}>Assignments</span>*/}
@@ -47,10 +50,18 @@ class TeacherClassroomView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='settings'>
-                settings
+              { this.props.classroomTeacher
+                ? <div className={'pop-up-window text-align-center'}>
+                  <div className={'gray-text title'}>Share classroom code</div>
+                  <div>
+                    <span className={'blue-title'} style={{ letterSpacing: '2rem'}}>{this.props.classroomTeacher.code}</span>&nbsp;
+                    <span className={'gray-text'}><i>copy</i></span>
+                  </div>
+                </div>
+                : null }
             </TabContent>
             <TabContent for='students'>
-              { this.props.classroomTeacher && this.props.classroomTeacher.less_students.lenth > 1
+              { this.props.classroomTeacher && this.props.classroomTeacher.less_students.length > 1
                 ? null
                 : <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
                   Share the <u>classroom code</u> with your students so they can join your classroom.</div>}
