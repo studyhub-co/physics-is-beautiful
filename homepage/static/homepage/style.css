@@ -81,7 +81,8 @@ p.justify{
     }
 }
 
-#profile-row .col-md-2 {
-    width: 20%;
+@media (min-width: 1200px) {
+    #profile-row .col-md-2 {
+        width: 20%;
+    }    
 }
-
