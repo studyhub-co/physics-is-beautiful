@@ -81,9 +81,10 @@
 
 .tabs-1 .tabContent {}
 
-.pop-up-windows {
+.pop-up-window {
     border-radius: 15px;
     padding: 30px 60px;
+    margin: 2rem 15px 2rem 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 1px;
@@ -95,16 +96,17 @@
     border-radius: 15px;
     text-align: center;
     vertical-align: middle;
-    line-height: 25rem;
+    line-height: 5rem;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 1px;
     border-style: dashed;
-    width: 30rem;
-    height: 25rem;
+    width: auto;
+    height: 5rem;
     color: rgb(216, 216, 216);
     font-size: 18px;
     cursor: pointer;
+    margin: 2rem 15px 2rem 15px;
     transition: border-color 500ms, border-style 500ms, color 500ms, background 500ms;
 }
 
@@ -222,3 +224,4 @@
 .disabled-button{
     background-color: rgb(216, 216, 216);
 }
+

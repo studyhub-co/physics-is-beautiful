@@ -40,18 +40,11 @@ class JoinClassroomView extends React.Component {
     )
   }
 
-  // componentWillReceiveProps (props) {
-  //   if(props.classroom && props.classroom){
-  //     // redirect ro classroom page
-  //
-  //   }
-  // }
-
   render () {
     return (
-      <div className="pop-up-windows text-align-center">
+      <div className='pop-up-window text-align-center'>
         <div>Enter your teacher's classroom code below:</div>
-        <form className="form-inline" onSubmit={this.joinClassroom}>
+        <form className='form-inline' onSubmit={this.joinClassroom}>
           <div>
             <input maxLength={'6'} type='text' name='name' className={'form-control input-sm'} onChange={this.handleCodeChange} />
           </div>

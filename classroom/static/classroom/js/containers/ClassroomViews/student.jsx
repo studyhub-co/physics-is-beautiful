@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 
 import * as classroomCreators from '../../actions/classroom'
 
-class StudentView extends React.Component {
+class StudentClassroomView extends React.Component {
   componentWillMount () {
     this.props.classroomActions.classroomFetchClassroom(this.props.match.params['uuid'])
   }
@@ -20,13 +20,13 @@ class StudentView extends React.Component {
     return (
       <Grid fluid>
         { this.props.classroom
-          ? <div>
+          ? <div className={'student-classroom-row'}>
             <Row>
               <Col sm={10} md={10}>
                 {this.props.classroom.name}
               </Col>
               <Col sm={2} md={2}>
-                <span onClick={() => this.props.dispatch(push('classroom'))} className={'pib-link'}>Assignments</span>
+                <span onClick={() => this.props.dispatch(push('/classroom/'))} className={'pib-link'}>Assignments</span>
               </Col>
             </Row>
             <Row>
@@ -40,7 +40,7 @@ class StudentView extends React.Component {
   }
 }
 
-StudentView.propTypes = {
+StudentClassroomView.propTypes = {
   classroomActions: PropTypes.shape({
     classroomFetchClassroom: PropTypes.func.isRequired,
     classroomLeaveClassroom: PropTypes.func.isRequired
@@ -57,9 +57,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    classroomActions: bindActionCreators(classroomCreators, dispatch),
+    classroomActions: bindActionCreators(classroomCreators, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudentView)
-export { StudentView as StudentViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(StudentClassroomView)
+export { StudentClassroomView as StudentViewNotConnected }

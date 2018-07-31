@@ -7,11 +7,10 @@ import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
 
 import { ClassroomCard } from '../../components/ClassroomCard'
-import { JoinClassroomButton } from '../../components/JoinClassroomButton'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { EditClassroomView, JoinClassroomView, StudentView } from '../../containers/index'
+import { EditClassroomView, JoinClassroomView, StudentClassroomView } from '../../containers/index'
 
 import * as actionCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
@@ -60,14 +59,14 @@ class IndexView extends React.Component {
               }, this)}
               {/* <div style={{'clear': 'both'}} /> leaveClassroom={this.props.classroomActions.classroomLeaveClassroom}  */}
               </Grid> : null }
-              <Route path={studentUrl} component={StudentView} />
+              <Route path={studentUrl} component={StudentClassroomView} />
               <Route path={joinUrl} component={JoinClassroomView} />
               {/* if classrooms list and not empty */}
               {this.props.classroomStudentList && this.props.classroomStudentList.length > 0
                 ? <div>
-                  {this.props.location.pathname === '/classroom/' ? <div className={'create-classroom-button'}
+                  {this.props.location.pathname.lastIndexOf('/classroom/', 0) === 0 ? <div className={'create-classroom-button'}
                     onClick={() => this.props.dispatch(push(joinUrl))}>
-                  + Join classroom
+                  + Join another classroom
                   </div> : null}
                 </div>
                 : null }
