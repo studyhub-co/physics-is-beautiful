@@ -10,7 +10,7 @@ export class ClassroomCard extends React.Component {
         <div>{this.props.classroom.teacher.first_name} - {this.props.classroom.name}</div>
         <div>{this.props.classroom.curriculum.name}</div>
         <div>Students photos list</div>
-        <div>{this.props.classroom.count_students} students</div>
+        <div>{this.props.classroom.count_students} student{this.props.classroom.count_students === 1 ? null : 's'}</div>
       </div>
     )
   }

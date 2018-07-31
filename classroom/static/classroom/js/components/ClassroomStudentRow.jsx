@@ -22,15 +22,13 @@ export class ClassroomStudentRow extends React.Component {
     return (
       <div className={className}>
         <Row>
-          <Row>
-            <Col sm={10} md={10}>
-              {this.props.classroom.name}
-            </Col>
-            <Col sm={2} md={2}>
-              <span onClick={() => this.props.onAssignmentsClick(this.props.baseUrl +
-                '/' + this.props.classroom.uuid + '/student/')} className={'pib-link'}>Assignments</span>
-            </Col>
-          </Row>
+          <Col sm={10} md={10}>
+            {this.props.classroom.name}
+          </Col>
+          <Col sm={2} md={2}>
+            <span onClick={() => this.props.onAssignmentsClick(this.props.baseUrl +
+              '/' + this.props.classroom.uuid + '/student/')} className={'pib-link'}>Assignments</span>
+          </Col>
         </Row>
       </div>
     )

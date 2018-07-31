@@ -63,7 +63,11 @@ export function classroomJoinClassroom (classroomCode) {
     return getAxios().post(API_PREFIX + 'join/', {code: classroomCode})
       .then((response) => {
         dispatch(joinClassroomSuccess(response.data))
-        // todo move to claasroom page
+
+        // filter classroom to list
+        dispatch(classroomFetchStudentClassroomsList())
+
+        // move to classroom page
         dispatch(push('/classroom/' + response.data['uuid'] + '/student/'))
       })
       .catch(error => {
@@ -104,9 +108,14 @@ export function leaveClassroomSuccess (classroom) {
 
 export function classroomLeaveClassroom (classroom) {
   return (dispatch, state) => {
+    var newClassroomList = state().classroom.classroomStudentList
+
+    newClassroomList.splice(newClassroomList.indexOf('foo'), 1)
+
     return getAxios().post(API_PREFIX + 'leave/', {uuid: classroom.uuid})
       .then((response) => {
         dispatch(leaveClassroomSuccess(response.data))
+        dispatch(receiveClassroomsList(newClassroomList))
         // todo remove class room from classrooms list
         // move to clasrooms list page
         dispatch(push('/classroom/'))
