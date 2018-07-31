@@ -1,0 +1,15 @@
+{% extends "navbar.html" %}
+
+{% load static %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+{% endblock %}
+
+{% block body_content %}
+<div class="container section-sheet">
+<div class='curriculum-title'>{{ object.user.display_name }}</div>
+<div>Username: {{ object.user.username }}</div>
+Registration date: {{ object.created_on }}
+</div>
+{% endblock %}

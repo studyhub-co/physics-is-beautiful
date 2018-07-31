@@ -5,11 +5,11 @@ from . import views
 app_name = 'blog'
 
 urlpatterns = [
-    url(r'^$', views.BlogHomepage, name='bloghomepage'),
-    url(r'^collegescorecard-analysis/$', views.CollegeScorecard, name='collegescorecard-analysis'),
-    url(r'^shankar/$', views.Shankar, name='shankar'),
-    url(r'^collegescorecard/$', views.CollegeScorecardApp, name='collegescorecard'),
-    url(r'^collegemap/$', views.CollegeMap, name='collegemap'),
-    url(r'^wordpairs/$', views.WordPairs, name='wordpairs'),
-    url(r'^wordpairs/getWordPairs$', views.getWordPairs, name='getwordpairs'),
+    url(r'^$', views.blog_homepage, name='bloghomepage'),
+    url(r'^collegescorecard-analysis/$', views.college_scorecard, name='collegescorecard-analysis'),
+    url(r'^shankar/$', views.shankar, name='shankar'),
+    url(r'^collegescorecard/$', views.college_scorecard_app, name='collegescorecard'),
+    url(r'^collegemap/$', views.college_map, name='collegemap'),
+    url(r'^wordpairs/$', views.word_pairs, name='wordpairs'),
+    url(r'^wordpairs/getWordPairs$', views.get_word_pairs, name='getwordpairs'),
 ]

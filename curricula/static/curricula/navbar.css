@@ -1,4 +1,25 @@
 @font-face {
+    font-family: 'Museosansrounded';
+    src: url('fonts/museosansrounded-300-webfont.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Museosansrounded';
+    src: url('fonts/museosansrounded-500-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Museosansrounded';
+    src: url('fonts/museosansrounded-700-webfont.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Tw Cen MT';
     src: url('typeface/hinted-TwCenMT-Regular.eot');
     src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
@@ -29,7 +50,7 @@
 .navbar.navbar-default a {
     color:white;
     font-size:25px;
-    font-family: Tw Cen MT;
+    font-family: Museosansrounded;
 }
 
 .nav.navbar-nav.navbar-right a {
@@ -40,19 +61,45 @@
 .nav.navbar-nav.navbar-right p {
     color:white;
     font-size:15px;
-    font-family: Tw Cen MT;
+    font-family: Museosansrounded;
 }
 .nav.navbar-nav.navbar-right a:hover{
-    background: #EEE;
+    background: #1493d1;
 }
 
 .navbar.navbar-default button {
     background-color: aliceblue;
 }
 
+.nav.navbar-nav.nav-pills a {
+    color:white;
+    font-size:15px;
+    background: #1caff600;
+    transition: background 1s;
+    border-radius: 98px;
+    padding: 8px;
+    margin-top: 8px;
+}
+
+.nav.navbar-nav.nav-pills p {
+    color:white;
+    font-size:15px;
+    font-family: 'museo';
+}
+.nav.navbar-nav.nav-pills a:hover{
+    background: #1493d1;
+    color: white;
+}
+
+.navbar.navbar-default button {
+    background-color: aliceblue;
+}
+
+
 .navbar-brand {
     position: relative;
     top: -5px;
+    font-family: Tw Cen MT !important;
 }
 
 .navbar-brand:hover {

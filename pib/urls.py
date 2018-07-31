@@ -25,8 +25,11 @@ urlpatterns = [
     url(r'^api/v1/', include('pib.urls_api', namespace='api')),
     url(r'^curriculum/', include('curricula.urls')),
     url(r'^editor/', include('editor.urls')),
+    url(r'^classroom/', include('classroom.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
+    url(r'^discussion/', include('djeddit.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

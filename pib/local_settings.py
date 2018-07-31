@@ -29,9 +29,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'pib',
-#         'USER': 'pib',
+#         'USER': 'postgresql',
 #         'PASSWORD': 'pib',
 #         'HOST': '127.0.0.1',
 #         'PORT': '5432',
 #     }
 # }
+
+# Permit local access from app
+X_FRAME_OPTIONS = 'WHATEVER_YOU_WANT'

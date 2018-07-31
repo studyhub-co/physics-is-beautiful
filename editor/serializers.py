@@ -37,13 +37,12 @@ class SimpleModuleSerializer(BaseSerializer):
             'url' : {'lookup_field' : 'uuid'}
         }
 
-    
 
 class MiniCurriculumSerializer(BaseSerializer):
     author = serializers.SerializerMethodField()
 
     def get_author(self, obj):
-        return obj.author.get_full_name()
+        return obj.author.display_name
     
     class Meta:
         model = Curriculum
@@ -57,7 +56,8 @@ class AnswerContentField(serializers.Field):
             return {'image' : img_field.to_representation(obj.image),
                     'text' : obj.text}
         return 'UNKNOWN'
-      
+
+
 class AnswerSerializer(BaseSerializer):
 
     question = serializers.CharField(source='question.uuid')
@@ -156,6 +156,7 @@ class VectorSerializer(BaseSerializer):
         fields = ['x_component', 'y_component']
         list_serializer_class = VectorListSerializer
 
+
 class AnswersField(serializers.Field):
     def get_attribute(self, obj):
         return obj
@@ -166,14 +167,14 @@ class AnswersField(serializers.Field):
     
     def to_internal_value(self, data):
         return Answer.objects.filter(uuid__in=json.loads(data), question__isnull=True)
-        
+
+
 class QuestionSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
     
     answers = AnswersField(required=False)
     vectors = VectorSerializer(many=True, required=False)
-    
-   
+
     def validate_lesson(self, value):
         return Lesson.objects.get(uuid=value)
 
@@ -206,7 +207,6 @@ class QuestionSerializer(BaseSerializer):
             new_question.vectors.add(Vector.objects.create(**v))
         return new_question
 
-    
     class Meta:
         model = Question
         fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers', 'vectors']
@@ -258,7 +258,8 @@ class MiniLessonSerializer(LessonSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields.pop('questions')
-        
+
+
 class ModuleSerializer(BaseSerializer):
     lessons = MiniLessonSerializer(many=True, read_only=True)
 
@@ -287,15 +288,15 @@ class ModuleSerializer(BaseSerializer):
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons'] #, 'curriculum']
         read_only_fields = ('uuid', )
         extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
+            'url': {'lookup_field' : 'uuid'}
         }
+
 
 class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
     modules = SimpleModuleSerializer(many=True, read_only=True)
     
     curriculum = serializers.CharField(source='curriculum.uuid')
 
-    
     def validate_curriculum(self, value):
         return Curriculum.objects.get(uuid=value)
 
@@ -323,7 +324,8 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         extra_kwargs = {
             'url' : {'lookup_field' : 'uuid'}
         }
-        
+
+
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
 
@@ -346,5 +348,5 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
             'units': (UnitSerializer, (), {'many': True}),
         }
         extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }

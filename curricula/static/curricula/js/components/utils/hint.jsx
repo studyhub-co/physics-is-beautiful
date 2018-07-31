@@ -28,5 +28,4 @@ export class Hint extends React.Component {
       </div>
     )
   }
-
 }

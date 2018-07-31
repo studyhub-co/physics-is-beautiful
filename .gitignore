@@ -114,3 +114,10 @@ library_test
 
 # emacs
 *~
+/package-lock.json
+
+# git windows
+sh.exe.stackdump
+
+# vscode settings
+.vscode/settings.json

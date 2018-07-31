@@ -1,0 +1,74 @@
+{% extends "navbar.html" %}
+
+{% load staticfiles %}
+
+{% block extrahead %}
+{% include 'meta/meta.html' %}
+{% include 'djeddit/base_stylesheets.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+{% endblock %}
+
+{% block body_content %}
+
+<body class="body">
+    <!-- Fixed navbar -->
+	<div id="wrap">
+{#        <nav class="navbar navbar-fixed-top">#}
+{#          <div class="container">#}
+{#            <div>#}
+{#              <ul class="nav navbar-nav navbar-right">#}
+{#                {% if user.is_authenticated %}#}
+{#                    <li><a href="{% url 'userSummary' user.display_name %}">Profile</a></li>#}
+{#                    {% if user.is_superuser %}#}
+{#                        <li><a href="{% url 'usersPage' %}">Users</a></li>#}
+{#                    {% endif %}#}
+{#                    <li><a href="/accounts/logout">Logout</a></li>#}
+{#                {% else %}#}
+{#                    <li><a href="/accounts/login">Login</a></li>#}
+{#                    <li><a href="/accounts/register">Register</a></li>#}
+{#                {% endif %}#}
+{#              </ul>#}
+{#            </div><!--/.nav-collapse -->#}
+{#          </div>#}
+{#        </nav>#}
+    <!-- Content -->
+        <div id="main" class="container section-sheet" role="main">
+            {% block title %}{% endblock %}
+            <div class="row">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+  	<!-- Bootstrap core JavaScript
+	================================================== -->
+    {% include 'djeddit/base_scripts.html' %}
+    {% block scripts %}{% endblock %}
+
+<script type="text/javascript">
+    window.BASE_URL = "http://{{ request.get_host }}";
+		{% if user.is_superuser %}
+		window.USER_URLS ={
+		'setUserStatus':"{% url 'setUserStatus' %}"
+	};
+		{% endif %}
+</script>
+{% endblock %}
+
+{% block mathjax_config %}
+
+<script type="text/x-mathjax-config" src="{% static 'djeddit/js/mathjax-settings.js' %}">
+    MathJax.Ajax.config.path["mhchem"] =
+  "https://cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.0";
+MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "[mhchem]/mhchem.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+});
+</script>
+
+{% endblock %}

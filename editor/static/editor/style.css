@@ -1,3 +1,7 @@
+.editor{
+    font-family: Museosansrounded;
+}
+
 .section-sheet .thumbnail .glyphicon { font-size:60px; }
 .editor .section-sheet .thumbnail img {
     max-width:100%; 
@@ -28,9 +32,23 @@
 .editor .question .question-type { margin-bottom: 20px; }
 .editor .question .answer-block .mathematical-expression { font-size:36px; padding:20px; }
 
+.editor .thumbnail { margin-bottom: 8px}
 .editor .thumbnail img { max-width: 100%; }
 
-.editor .module-accessible-block { height:134px; line-height:16px; text-align:center; overflow:hidden;}
+.editor .module-accessible-block { height:auto; min-height: 140px; line-height:16px; text-align:center; overflow:hidden;}
+.editor .add-answer {
+    cursor: pointer;
+    border: dashed;
+    border-width: 1px;
+    color: rgb(216, 216, 216);
+    line-height: 130px;
+    transition: border .5s, color .5s;
+}
+.editor .add-answer:hover {
+    border: solid;
+    border-width: 1px;
+    color: #1caff6;
+}
 
 .editor .conversion-steps { margin-top:20px; display:inline-block; font-size:20px; }
 .editor .conversion-steps .conversion-step { border-right:1px solid black; display:inline-block;}
@@ -82,3 +100,54 @@
 .editor .lesson-questions .btn { height: 65px; vertical-align: top; margin: 5px;}
 .editor .lesson-questions .btn-arrow { padding:22px 10px;}
 .editor .lesson-questions .btn-add { padding-top:16px; }
+
+
+.tabs {
+    width: 100%;
+    display: inline-block;
+    margin-right: 30px;
+    vertical-align: top;
+    padding-top: 2rem;
+    /*font-size: 3rem;*/
+}
+
+.tab-link {
+    font-size: 16px;
+    font-weight: normal;
+    outline:0
+}
+
+/*.tabs-1 .tab-links {*/
+    /*margin: 0;*/
+    /*padding-top: 0;*/
+    /*border: 1px solid #CCC;*/
+    /*border-bottom: 1px solid #868686;*/
+    /*border-top-left-radius: 5px;*/
+    /*border-top-right-radius: 5px;*/
+    /*height: 35px;*/
+    /*position: relative;*/
+    /*top: 5px;*/
+/*}*/
+
+.tabs .tab-link {
+    padding: 0 5rem;
+    cursor: pointer;
+    /*border: 1px solid transparent;*/
+    display: inline-block;
+    position: relative;
+    border-bottom: 3px solid rgb(216, 216, 216);
+    height: 40px;
+    line-height: 41px;
+    top: -6px;
+    left: -1px;
+    color: rgb(216, 216, 216);
+}
+
+.tabs .tab-link-active {
+    border-bottom: 3px solid #1caff6;
+    color: #1caff6;
+    font-weight: normal !important;
+}
+
+.tabs-1 .tabContent {}
+

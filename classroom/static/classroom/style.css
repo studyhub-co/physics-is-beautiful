@@ -1,0 +1,224 @@
+.classroom{
+    font-family: Museosansrounded;
+    font-size: 16px;
+}
+
+/* common */
+
+.blue-text {
+    color: rgb(8, 209, 255)
+}
+
+.grey-text {
+    color: rgb(216, 216, 216);
+}
+
+.red-text {
+    color: red;
+}
+
+
+.pointer {
+    cursor: pointer;
+}
+
+.float-right {
+    float: right;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.pib-link {
+    color: rgb(8, 209, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.grey-link {
+    color: #d8d8d8;
+    cursor: pointer;
+}
+
+/* tabs */
+
+.tabs {
+    width: 100%;
+    display: inline-block;
+    margin-right: 30px;
+    vertical-align: top;
+    padding-top: 2rem;
+    /*font-size: 3rem;*/
+}
+
+.tab-link{
+    font-size: 16px;
+    font-weight: normal;
+    outline:0
+}
+
+.tabs .tab-link {
+    padding: 0 5rem;
+    cursor: pointer;
+    /*border: 1px solid transparent;*/
+    display: inline-block;
+    position: relative;
+    border-bottom: 3px solid rgb(216, 216, 216);
+    height: 40px;
+    line-height: 41px;
+    top: -6px;
+    left: -1px;
+    color: rgb(216, 216, 216);
+}
+
+.tabs .tab-link-active {
+    border-bottom: 3px solid #1caff6;
+    color: #1caff6;
+    font-weight: normal !important;
+}
+
+
+.tabs-1 .tabContent {}
+
+.pop-up-windows {
+    border-radius: 15px;
+    padding: 30px 60px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+}
+
+.create-classroom-button{
+    border-radius: 15px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 25rem;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: dashed;
+    width: 30rem;
+    height: 25rem;
+    color: rgb(216, 216, 216);
+    font-size: 18px;
+    cursor: pointer;
+    transition: border-color 500ms, border-style 500ms, color 500ms, background 500ms;
+}
+
+.create-classroom-button:hover {
+    border-style: solid;
+    border-color: #1caff6;
+    color: #1caff6;
+    box-shadow: 0 0 15px #d8d8d8;
+    background: #fbfbfb;
+}
+
+/* classroom card*/
+
+.classroom-card{
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    width: 30rem;
+    height: 25rem;
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    vertical-align: top;
+}
+
+.classroom-card > div:nth-of-type(1) {
+    font-size: 18px;
+    color: #1caff6;
+}
+
+.classroom-card > div:nth-of-type(2) {
+    font-size: 16px;
+    color: #666666;
+}
+
+.classroom-card > div:nth-of-type(4) {
+    font-size: 16px;
+    color: rgb(121, 121, 121);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #efefef;
+    overflow: hidden;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    height: 30px;
+    line-height: 30px;
+}
+/* classroom card*/
+
+.curriculum-card {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    padding: 2rem;
+    vertical-align: top;
+    cursor: pointer;
+    min-height: 7rem;
+}
+
+.curriculum-card:hover {
+    border-color: #1caff6;
+}
+
+.selected-curriculum-card {
+    background-color: rgba(8, 209, 255, 0.35);
+}
+
+.create-curriculum-button {
+    text-align: center;
+    vertical-align: middle;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: dashed;
+    /*width: 50rem;*/
+    /*height: 30rem;*/
+    color: rgb(216, 216, 216);
+}
+
+.classroom-common-button{
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 1rem 4rem 1rem 4rem;
+    margin: 1rem 0 1rem 0;
+}
+
+/* student-classroom-row */
+
+.student-classroom-row {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 1rem 0 1rem 0;
+    padding: 2rem;
+    vertical-align: top;
+    min-height: 7rem;
+}
+
+
+.disabled-button{
+    background-color: rgb(216, 216, 216);
+}
