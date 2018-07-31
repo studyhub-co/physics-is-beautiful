@@ -3,19 +3,7 @@ import PropTypes from 'prop-types'
 
 import { Row, Col } from 'react-bootstrap'
 
-export class ClassroomStudentRow extends React.Component {
-  // constructor (props) {
-  //   super(props)
-  //   this.state = {
-  //     expand: false
-  //   }
-  //   this.expand = this.expand.bind(this)
-  // }
-  //
-  // expand () {
-  //   this.setState({expand: !this.state.expand})
-  // }
-
+export class StudentClassroomRow extends React.Component {
   render () {
     var className = 'student-classroom-row'
 
@@ -23,7 +11,7 @@ export class ClassroomStudentRow extends React.Component {
       <div className={className}>
         <Row>
           <Col sm={10} md={10}>
-            {this.props.classroom.name}
+            <span className={'blue-title'}>{this.props.classroom.name}</span>
           </Col>
           <Col sm={2} md={2}>
             <span onClick={() => this.props.onAssignmentsClick(this.props.baseUrl +
@@ -35,7 +23,7 @@ export class ClassroomStudentRow extends React.Component {
   }
 }
 
-ClassroomStudentRow.propTypes = {
+StudentClassroomRow.propTypes = {
   classroom: PropTypes.object,
   baseUrl: PropTypes.string.isRequired,
   onAssignmentsClick: PropTypes.func.isRequired

@@ -1,6 +1,7 @@
-import { CLASSROOM_RECEIVE_CLASSROOMS_LIST, CLASSROOM_CREATE_CLASSROOM_SUCCESS,
-  CLASSROOM_JOIN_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
-  CLASSROOM_LEAVE_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_CLASSROOM} from '../constants'
+import { CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
+  CLASSROOM_RECEIVE_TEACHER_CLASSROOM,
+  CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
+  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM, } from '../constants'
 
 const initialState = {
   classroomList: null,
@@ -9,25 +10,29 @@ const initialState = {
 
 export default function classroomReducer (state = initialState, action) {
   switch (action.type) {
-    case CLASSROOM_RECEIVE_CLASSROOMS_LIST:
+    case CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST:
       return Object.assign({}, state, {
         classroomList: action.payload.classroomList
       })
-    case CLASSROOM_CREATE_CLASSROOM_SUCCESS:
+    case CLASSROOM_RECEIVE_TEACHER_CLASSROOM:
       return Object.assign({}, state, {
-        classroomClassroom: action.payload.classroom
+        classroomTeacherClassroom: action.payload.classroomTeacher
       })
-    case CLASSROOM_JOIN_CLASSROOM_SUCCESS:
+    case CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS:
       return Object.assign({}, state, {
-        classroomClassroom: action.payload.classroom
+        classroomStudentClassroom: action.payload.classroom
       })
-    case CLASSROOM_RECEIVE_CLASSROOM:
+    case CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS:
       return Object.assign({}, state, {
-        classroomClassroom: action.payload.classroom
+        classroomStudentClassroom: action.payload.classroomStudent
       })
-    case CLASSROOM_LEAVE_CLASSROOM_SUCCESS:
+    case CLASSROOM_RECEIVE_STUDENT_CLASSROOM:
       return Object.assign({}, state, {
-        classroomClassroom: undefined
+        classroomStudentClassroom: action.payload.classroomStudent
+      })
+    case CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS:
+      return Object.assign({}, state, {
+        classroomStudentClassroom: undefined
       })
     case CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST:
       return Object.assign({}, state, {

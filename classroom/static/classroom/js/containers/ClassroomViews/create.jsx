@@ -14,7 +14,7 @@ import * as classroomCreators from '../../actions/classroom'
 import * as tabCreators from '../../actions/tab'
 import * as curriculaCreators from '../../actions/curricula'
 
-class EditClassroomView extends React.Component {
+class CreateClassroomView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -98,7 +98,7 @@ class EditClassroomView extends React.Component {
             </div>
           }, this)}
           </div> : null }
-          <div className={'grey-text pointer'} onClick={() => { window.open('/editor/', '_blank') }}>Browse other curricula</div>
+          <div className={'gray-text pointer'} onClick={() => { window.open('/editor/', '_blank') }}>Browse other curricula</div>
           <button disabled={!this.state.classroomFormIsValid}
             className={'classroom-common-button float-right' + (this.state.classroomFormIsValid ? '' : ' disabled-button')}
             type='submit'>
@@ -111,7 +111,7 @@ class EditClassroomView extends React.Component {
   }
 }
 
-EditClassroomView.propTypes = {
+CreateClassroomView.propTypes = {
   tabActions: PropTypes.shape({
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
@@ -125,7 +125,7 @@ EditClassroomView.propTypes = {
   curriculaList: PropTypes.array,
   curriculaOtherList: PropTypes.array
 }
-EditClassroomView.defaultProps = {
+CreateClassroomView.defaultProps = {
   // statusText: '',
   // userName: ''
 }
@@ -147,5 +147,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditClassroomView)
-export { EditClassroomView as EditClassroomViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(CreateClassroomView)
+export { CreateClassroomView as CreateClassroomViewNotConnected }

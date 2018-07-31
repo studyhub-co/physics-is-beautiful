@@ -6,17 +6,18 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
 
-import { ClassroomCard } from '../../components/ClassroomCard'
+import { TeacherClassroomCard } from '../../components/TeacherClassroomCard'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { EditClassroomView, JoinClassroomView, StudentClassroomView } from '../../containers/index'
+import { CreateClassroomView, JoinClassroomView,
+  StudentClassroomView, TeacherClassroomView } from '../../containers/index'
 
-import * as actionCreators from '../../actions/tab'
+import * as tabsCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
 
 import { Route } from 'react-router'
-import { ClassroomStudentRow } from '../../components/ClassroomStudentRow'
+import { StudentClassroomRow } from '../../components/StudentClassroomRow'
 
 import { Grid } from 'react-bootstrap'
 
@@ -33,7 +34,7 @@ class IndexView extends React.Component {
   render () {
     var baseUrl =  this.props.match.url.replace(/\/$/, '')
     var createUrl = baseUrl + '/create'
-    var editUrl = baseUrl + '/:uuid/edit/'
+    var teacherUrl = baseUrl + '/:uuid/teacher/'
     var studentUrl = baseUrl + '/:uuid/student/'
     var joinUrl = baseUrl + '/join'
 
@@ -41,7 +42,7 @@ class IndexView extends React.Component {
       <Sheet>
         <Tabs name='tab'
           className='tabs'
-          handleSelect={this.props.actions.changeSelectedTab}
+          handleSelect={this.props.tabActions.changeSelectedTab}
           selectedTab={this.props.tab}
         >
           <div className='tab-links'>
@@ -50,15 +51,15 @@ class IndexView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='student'>
-              {this.props.location.pathname === '/classroom/' && this.props.classroomStudentList ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
-                return <ClassroomStudentRow
-                  classroom={classroom}
-                  onAssignmentsClick={(url) => this.props.dispatch(push(url))}
-                  baseUrl={baseUrl}
-                  key={i} />
-              }, this)}
-              {/* <div style={{'clear': 'both'}} /> leaveClassroom={this.props.classroomActions.classroomLeaveClassroom}  */}
-              </Grid> : null }
+              {this.props.location.pathname === '/classroom/' && this.props.classroomStudentList
+                ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
+                  return <StudentClassroomRow
+                    classroom={classroom}
+                    onAssignmentsClick={(url) => this.props.dispatch(push(url))}
+                    baseUrl={baseUrl}
+                    key={i} />
+                }, this)}
+                </Grid> : null }
               <Route path={studentUrl} component={StudentClassroomView} />
               <Route path={joinUrl} component={JoinClassroomView} />
               {/* if classrooms list and not empty */}
@@ -75,18 +76,22 @@ class IndexView extends React.Component {
             </TabContent>
             <TabContent for='teacher'>
               {this.props.location.pathname === '/classroom/'
-                ? <div>
+                ? <Grid fluid>
                   <h2>All classrooms</h2>
-                  {this.props.classroomList ? <div>{ this.props.classroomList.map(function (classroom, i) {
-                    return <ClassroomCard classroom={classroom} key={i} />
-                  })}
-                  <div style={{'clear': 'both'}} />
-                  </div> : null }
-                </div>
+                  {this.props.classroomList
+                    ? <div> { this.props.classroomList.map(function (classroom, i) {
+                      return <TeacherClassroomCard classroom={classroom}
+                                                   onTitleClick={(url) => this.props.dispatch(push(url))}
+                                                   baseUrl={baseUrl}
+                                                   key={i} />
+                    }, this)}
+                    <div style={{'clear': 'both'}} />
+                    </div> : null }
+                </Grid>
                 : null
               }
-              <Route path={createUrl} component={EditClassroomView} />
-              <Route path={editUrl} component={EditClassroomView} />
+              <Route path={createUrl} component={CreateClassroomView} />
+              <Route path={teacherUrl} component={TeacherClassroomView} />
               {this.props.location.pathname === '/classroom/' ? <div className={'create-classroom-button'}
                 onClick={() => this.props.dispatch(push(createUrl))}>
                 + Create classroom
@@ -100,13 +105,13 @@ class IndexView extends React.Component {
 }
 
 IndexView.propTypes = {
-  actions: PropTypes.shape({
+  tabActions: PropTypes.shape({
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   classroomActions: PropTypes.shape({
     classroomFetchClassroomsList: PropTypes.func.isRequired,
     classroomFetchStudentClassroomsList: PropTypes.func.isRequired,
-    classroomLeaveClassroom: PropTypes.func.isRequired
+    // classroomLeaveStudentClassroom: PropTypes.func.isRequired
   }).isRequired,
   tab: PropTypes.string,
   classroomList: PropTypes.array,
@@ -125,7 +130,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    actions: bindActionCreators(actionCreators, dispatch),
+    tabActions: bindActionCreators(tabsCreators, dispatch),
     classroomActions: bindActionCreators(classroomCreators, dispatch)
   }
 }
