@@ -9,7 +9,7 @@
     color: rgb(8, 209, 255)
 }
 
-.grey-text {
+.gray-text {
     color: rgb(216, 216, 216);
 }
 
@@ -17,6 +17,10 @@
     color: red;
 }
 
+.blue-title {
+    font-size: 18px;
+    color: rgb(8, 209, 255);
+}
 
 .pointer {
     cursor: pointer;
@@ -36,7 +40,7 @@
     text-decoration: underline;
 }
 
-.grey-link {
+.gray-link {
     color: #d8d8d8;
     cursor: pointer;
 }
@@ -137,9 +141,18 @@
     vertical-align: top;
 }
 
+.gray-background-info-panel{
+    border-radius: 15px;
+    background-color: rgb(236, 236, 236);
+    text-align: center;
+    margin: 3rem;
+    padding: 2rem;
+}
+
 .classroom-card > div:nth-of-type(1) {
     font-size: 18px;
     color: #1caff6;
+    cursor: pointer;
 }
 
 .classroom-card > div:nth-of-type(2) {

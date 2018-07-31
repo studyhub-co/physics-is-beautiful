@@ -1,29 +1,27 @@
 import React from 'react'
-
-import { push } from 'connected-react-router'
-
 import PropTypes from 'prop-types'
 
 import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+
+import { push } from 'connected-react-router'
 
 import { Grid, Row, Col } from 'react-bootstrap'
-
-import { connect } from 'react-redux'
 
 import * as classroomCreators from '../../actions/classroom'
 
 class StudentClassroomView extends React.Component {
   componentWillMount () {
-    this.props.classroomActions.classroomFetchClassroom(this.props.match.params['uuid'])
+    this.props.classroomActions.classroomFetchStudentClassroom(this.props.match.params['uuid'])
   }
   render () {
     return (
       <Grid fluid>
-        { this.props.classroom
+        { this.props.classroomStudent
           ? <div className={'student-classroom-row'}>
             <Row>
               <Col sm={10} md={10}>
-                {this.props.classroom.name}
+                <span className={'blue-title'}>{this.props.classroomStudent.name}</span>
               </Col>
               <Col sm={2} md={2}>
                 <span onClick={() => this.props.dispatch(push('/classroom/'))} className={'pib-link'}>Assignments</span>
@@ -32,7 +30,7 @@ class StudentClassroomView extends React.Component {
             <Row>
               <Col sm={10} md={10} />
               <Col sm={2} md={2}>
-                <span onClick={() => this.props.classroomActions.classroomLeaveClassroom(this.props.classroom)} className={'grey-link'}>Leave classroom</span>
+                <span onClick={() => this.props.classroomActions.classroomLeaveStudentClassroom(this.props.classroomStudent)} className={'gray-link'}>Leave classroom</span>
               </Col>
             </Row></div>
           : null }
@@ -42,15 +40,15 @@ class StudentClassroomView extends React.Component {
 
 StudentClassroomView.propTypes = {
   classroomActions: PropTypes.shape({
-    classroomFetchClassroom: PropTypes.func.isRequired,
-    classroomLeaveClassroom: PropTypes.func.isRequired
+    classroomFetchStudentClassroom: PropTypes.func.isRequired,
+    classroomLeaveStudentClassroom: PropTypes.func.isRequired
   }).isRequired,
   classroom: PropTypes.shape()
 }
 
 const mapStateToProps = (state) => {
   return {
-    classroom: state.classroom.classroomClassroom
+    classroomStudent: state.classroom.classroomStudentClassroom
   }
 }
 

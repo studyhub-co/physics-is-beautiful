@@ -1,4 +1,4 @@
-import { CHANGE_SELECTED_TAB } from '../constants'
+import { CHANGE_SELECTED_TAB, CHANGE_SELECTED_TAB_TEACHER_CLASSROOM } from '../constants'
 import history from '../history'
 
 export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = false) {
@@ -7,5 +7,11 @@ export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = fal
   }
   return { type: CHANGE_SELECTED_TAB,
     tab: selectedTab,
+    namespace: tabNamespace }
+}
+
+export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace) {
+  return { type: CHANGE_SELECTED_TAB_TEACHER_CLASSROOM,
+    teacherClassroomTab: selectedTab,
     namespace: tabNamespace }
 }
