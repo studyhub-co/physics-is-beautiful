@@ -242,3 +242,9 @@
     background-color: rgb(216, 216, 216);
 }
 
+
+/* like editor */
+
+.classroom .editable-label:not(.empty) + .glyphicon-pencil{ display:none; }
+.classroom .editable-label:hover + .glyphicon-pencil{ display:inline; }
+/*.classroom .editable-label:hover, .editor .mq-editable-label:hover{ cursor:pointer; }*/

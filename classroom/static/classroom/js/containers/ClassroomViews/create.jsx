@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -35,6 +34,28 @@ class CreateClassroomView extends React.Component {
     this.props.curriculaActions.curriculaFetchOtherCurriculaList()
     // select teacher tab by default
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
+
+    if (this.props.match.params && this.props.match.params['uuid']) {
+      // load classroom if unavailable
+      if (!this.props.classroomTeacher) {
+        this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
+      }
+    } else {
+      // new class room
+      this.props.classroomActions.classroomEraseTeacherClassroom()
+    }
+  }
+
+  componentWillReceiveProps (props) {
+    if (props.classroomTeacher) {
+      this.setState(
+        { classroomFormValues: {
+          name: props.classroomTeacher.name,
+          curriculum_uuid: props.classroomTeacher.curriculum.uuid
+        }},
+        this.validateClassroomForm
+      )
+    }
   }
 
   handleClassroomFormChange (e) {
@@ -68,7 +89,16 @@ class CreateClassroomView extends React.Component {
   saveClassroom (e) {
     e.preventDefault()
     if (this.state.classroomFormIsValid) {
-      this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues)
+      if (!this.props.classroomTeacher) {
+        // save
+        this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues)
+      } else {
+        // update
+        this.props.classroomActions.classroomPartialUpdateTeacherClassroom(
+          Object.assign({}, this.state.classroomFormValues, { uuid: this.props.classroomTeacher.uuid }),
+          true
+        )
+      }
     }
   }
 
@@ -78,7 +108,10 @@ class CreateClassroomView extends React.Component {
         <form onSubmit={this.saveClassroom}>
           <div style={{paddingTop: '2rem'}}>Name of your classroom:</div>
           <div>
-            <input type='text' name='name' className={'form-control'}
+            <input
+              type='text' name='name'
+              className={'form-control'}
+              value={this.state.classroomFormValues ? this.state.classroomFormValues.name : ''}
               onChange={this.handleClassroomFormChange} />
           </div>
           <br />
@@ -102,7 +135,7 @@ class CreateClassroomView extends React.Component {
           <button disabled={!this.state.classroomFormIsValid}
             className={'classroom-common-button float-right' + (this.state.classroomFormIsValid ? '' : ' disabled-button')}
             type='submit'>
-            Create classroom
+            {this.props.classroomTeacher ? 'Save classroom' : 'Create classroom'}
           </button>
           <div style={{'clear': 'both'}}></div>
         </form>
@@ -120,10 +153,14 @@ CreateClassroomView.propTypes = {
     curriculaFetchOtherCurriculaList: PropTypes.func.isRequired
   }).isRequired,
   classroomActions: PropTypes.shape({
-    classroomCreateClassroom: PropTypes.func.isRequired
+    classroomCreateClassroom: PropTypes.func.isRequired,
+    classroomFetchTeacherClassroom: PropTypes.func.isRequired,
+    classroomEraseTeacherClassroom: PropTypes.func.isRequired,
+    classroomPartialUpdateTeacherClassroom: PropTypes.func.isRequired
   }).isRequired,
   curriculaList: PropTypes.array,
-  curriculaOtherList: PropTypes.array
+  curriculaOtherList: PropTypes.array,
+  classroomTeacher: PropTypes.object
 }
 CreateClassroomView.defaultProps = {
   // statusText: '',
@@ -134,7 +171,8 @@ const mapStateToProps = (state) => {
   return {
     // tab: state.tab.tab
     curriculaList: state.curricula.curriculaList,
-    curriculaOtherList: state.curricula.curriculaOtherList
+    curriculaOtherList: state.curricula.curriculaOtherList,
+    classroomTeacher: state.classroom.classroomTeacherClassroom
   }
 }
 

@@ -2,9 +2,12 @@ import { push } from 'connected-react-router'
 
 import { checkHttpStatus, getAxios } from '../utils'
 import { CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
-  CLASSROOM_RECEIVE_TEACHER_CLASSROOM,
+  CLASSROOM_RECEIVE_TEACHER_CLASSROOM, CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
   CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
-  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM} from '../constants'
+  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM,
+  CHANGE_SELECTED_TAB } from '../constants'
+
+import { BASE_URL } from '../utils/config'
 
 const API_PREFIX = '/api/v1/classroom/'
 
@@ -49,12 +52,11 @@ export function classroomFetchTeacherClassroom (classroomUuid) {
   }
 }
 
-
-export function classroomCreationSuccess (classroom) {
+export function classroomCreationSuccess (classroomTeacher) {
   return {
     type: CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
     payload: {
-      classroom
+      classroomTeacher
     }
   }
 }
@@ -65,9 +67,55 @@ export function classroomCreateClassroom (classroomForm) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(classroomCreationSuccess(response.data))
-        // todo move to edit page
-        dispatch(classroomFetchClassroomsList())
-        dispatch(push('/classroom/'))
+        //  move to edit page
+        dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
+      })
+  }
+}
+
+export function classroomEraseTeacherClassroom () {
+  return (dispatch, state) => {
+    dispatch(classroomCreationSuccess(undefined))
+  }
+}
+
+export function classroomPartialUpdateSuccess (classroomTeacher) {
+  return {
+    type: CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
+    payload: {
+      classroomTeacher
+    }
+  }
+}
+
+export function classroomPartialUpdateTeacherClassroom (classroomJson, redirectToTeacher = false) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_PREFIX + classroomJson.uuid + '/', classroomJson)
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(classroomPartialUpdateSuccess(response.data))
+        if (redirectToTeacher) {
+          dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
+        }
+      })
+  }
+}
+
+export function classroomDeleteTeacherClassroom (classroomUuid) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_PREFIX + classroomUuid + '/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(classroomPartialUpdateSuccess(undefined))
+        dispatch(() => {
+          return {
+            type: CHANGE_SELECTED_TAB,
+            payload: {
+              tab: 'teacher',
+              namespace: 'tab'
+            }
+          }
+        })
       })
   }
 }
@@ -93,7 +141,7 @@ export function classroomJoinClassroom (classroomCode) {
         dispatch(classroomFetchStudentClassroomsList())
 
         // move to classroom page
-        dispatch(push('/classroom/' + response.data['uuid'] + '/student/'))
+        dispatch(push(BASE_URL + response.data['uuid'] + '/student/'))
       })
       .catch(error => {
         dispatch(joinClassroomSuccess(null))
@@ -143,7 +191,7 @@ export function classroomLeaveStudentClassroom (classroom) {
         // remove class room from classrooms list
         dispatch(receiveStudentClassroomsList(newClassroomList))
         // move to clasrooms list page
-        dispatch(push('/classroom/'))
+        dispatch(push(BASE_URL))
       })
   }
 }
@@ -166,3 +214,5 @@ export function classroomFetchStudentClassroom (classroomUuid) {
       })
   }
 }
+
+
