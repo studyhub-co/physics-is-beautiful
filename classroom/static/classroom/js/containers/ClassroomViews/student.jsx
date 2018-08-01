@@ -10,6 +10,8 @@ import { Grid, Row, Col } from 'react-bootstrap'
 
 import * as classroomCreators from '../../actions/classroom'
 
+import { BASE_URL } from '../../utils/config'
+
 class StudentClassroomView extends React.Component {
   componentWillMount () {
     this.props.classroomActions.classroomFetchStudentClassroom(this.props.match.params['uuid'])
@@ -24,7 +26,7 @@ class StudentClassroomView extends React.Component {
                 <span className={'blue-title'}>{this.props.classroomStudent.name}</span>
               </Col>
               <Col sm={2} md={2}>
-                <span onClick={() => this.props.dispatch(push('/classroom/'))} className={'pib-link'}>Assignments</span>
+                <span onClick={() => this.props.dispatch(push(BASE_URL))} className={'pib-link'}>Assignments</span>
               </Col>
             </Row>
             <Row>

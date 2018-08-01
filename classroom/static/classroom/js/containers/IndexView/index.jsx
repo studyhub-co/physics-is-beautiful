@@ -36,6 +36,7 @@ class IndexView extends React.Component {
     var createUrl = baseUrl + '/create'
     var teacherUrl = baseUrl + '/:uuid/teacher/'
     var studentUrl = baseUrl + '/:uuid/student/'
+    var editUrl = baseUrl + '/:uuid/edit/'
     var joinUrl = baseUrl + '/join'
 
     return (
@@ -80,10 +81,11 @@ class IndexView extends React.Component {
                   <h2>All classrooms</h2>
                   {this.props.classroomList
                     ? <div> { this.props.classroomList.map(function (classroom, i) {
-                      return <TeacherClassroomCard classroom={classroom}
-                                                   onTitleClick={(url) => this.props.dispatch(push(url))}
-                                                   baseUrl={baseUrl}
-                                                   key={i} />
+                      return <TeacherClassroomCard
+                        classroom={classroom}
+                        onTitleClick={(url) => this.props.dispatch(push(url))}
+                        baseUrl={baseUrl}
+                        key={i} />
                     }, this)}
                     <div style={{'clear': 'both'}} />
                     </div> : null }
@@ -91,6 +93,7 @@ class IndexView extends React.Component {
                 : null
               }
               <Route path={createUrl} component={CreateClassroomView} />
+              <Route path={editUrl} component={CreateClassroomView} />
               <Route path={teacherUrl} component={TeacherClassroomView} />
               {this.props.location.pathname === '/classroom/' ? <div className={'create-classroom-button'}
                 onClick={() => this.props.dispatch(push(createUrl))}>
