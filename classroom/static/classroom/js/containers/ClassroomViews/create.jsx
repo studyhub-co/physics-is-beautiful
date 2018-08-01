@@ -91,7 +91,7 @@ class CreateClassroomView extends React.Component {
           }, this)}
           </div> : null }
           <div className={'create-curriculum-button curriculum-card'} onClick={() => { window.open('/editor/', '_blank') }}>+ Create new curriculum</div>
-          <div className={'blue-text'}>Other curricula:</div>
+          <div className={'blue-text'}>Physics is Beautiful curricula:</div>
           {this.props.curriculaOtherList ? <div>{ this.props.curriculaOtherList.map(function (curriculum, i) {
             return <div key={i} onClick={() => { this.selectCurriculum(curriculum) }}>
               <CurriculumCard curriculum={curriculum} selectedUuid={this.state.classroomFormValues.curriculum_uuid} />
