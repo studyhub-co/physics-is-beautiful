@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 export class PopupWindow extends React.Component {
   render () {
-    var className = 'pop-up-windows'
+    var className = 'pop-up-window'
 
     return (
       <div className={className}>

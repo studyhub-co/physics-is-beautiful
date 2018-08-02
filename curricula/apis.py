@@ -174,11 +174,13 @@ class CurriculaViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         filter_by = self.request.query_params.get('filter', None)
-        if filter_by in ('other', 'my') and self.request.user.is_authenticated():
+        if filter_by and self.request.user.is_authenticated():
             if filter_by == 'my':
                 queryset = queryset.filter(author=self.request.user)
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
+            elif filter_by == 'default':
+                queryset = queryset.filter(author__pk=2)  # Physics Is Beautiful
 
         return queryset
 

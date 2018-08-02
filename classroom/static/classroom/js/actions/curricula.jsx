@@ -38,11 +38,10 @@ export function dataReceiveOtherCurriculaList (curriculaOtherList) {
 
 export function curriculaFetchOtherCurriculaList () {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + '?filter=other')
+    return getAxios().get(API_PREFIX + '?filter=default')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(dataReceiveOtherCurriculaList(response.data))
       })
   }
 }
-
