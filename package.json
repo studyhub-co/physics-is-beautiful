@@ -44,6 +44,7 @@
     "prop-types": "^15.6.2",
     "react": "15.5.4",
     "react-bootstrap": "^0.32.0",
+    "react-clipboard.js": "^2.0.0",
     "react-countdown-clock": "^1.1.0",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
