@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 from shortuuidfield import ShortUUIDField
 
-from curricula.models import Curriculum, Module
+from curricula.models import Curriculum, Lesson
 from profiles.models import Profile
 
 # ASSIGNMENT_TYPE = (
@@ -63,7 +63,7 @@ def generate_classroom_code(sender, instance, *args, **kwargs):
 
 class Assignment(models.Model):
     uuid = ShortUUIDField(unique=True)
-    lessons = models.ManyToManyField(Module)
+    lessons = models.ManyToManyField(Lesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     start_on = models.DateTimeField()
