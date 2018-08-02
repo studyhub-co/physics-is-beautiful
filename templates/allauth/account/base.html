@@ -7,7 +7,16 @@
     <link rel="stylesheet" type="text/css" href="{% static 'pib_auth/css/allauth.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'pib_auth/css/auth.css' %}" />
 
-    {# Mathjax#}
+    {# Pass on variables #}
+    <script>
+        {% if request.GET.pib_mobile %}
+            window.IS_MOBILE_APP = true;
+        {% else %}
+            window.IS_MOBILE_APP = false;
+        {% endif %}
+    </script>
+
+    {# Mathjax #}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     {# JQuery #}
@@ -33,7 +42,7 @@
     </script>
 </head>
 
-
+{% if not request.GET.pib_mobile %}
 <nav id="navTopOfScreen" class="navbar navbar-default navbar-static-top"><!-- navbar-fixed-top -->
     <div class="container-fluid">
         <div class="navbar-header">
@@ -50,7 +59,9 @@
         </div>
     </div>
 </nav>
+{% endif %}
 
 <div id="content-wrap">
 {% block content %} {% endblock %}
 </div>
+<script type="text/javascript" src="{% static 'js/pib-mobile-connect.js' %}"></script>
