@@ -19,7 +19,7 @@ export function dataReceiveExpandedCurriculum (curriculum) {
 
 export function curriculaFetchExpandedCurriculum (curriculumUuid) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + curriculumUuid + '?expand=units.modules')
+    return getAxios().get(API_PREFIX + curriculumUuid + '?expand=units.modules.lessons')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(dataReceiveExpandedCurriculum(response.data))
