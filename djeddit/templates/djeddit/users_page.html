@@ -35,7 +35,7 @@
                                 <div class="count-box-score text-muted">{{ User.rCount }}</div>
                                 <div class="count-box-context text-muted">Replies</div>
                             </div>
-                            <div class="count-box" onclick="window.location='{% url 'userThreads' User.display_name %}'">
+                            <div class="count-box" onclick="window.location='{% url 'userThreads' User.pk %}'">
                                 <div class="count-box-score text-muted">{{ User.tCount }}</div>
                                 <div class="count-box-context text-muted">Threads</div>
                             </div>
