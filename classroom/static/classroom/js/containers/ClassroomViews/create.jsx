@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import history from '../../history'
 
 import { PopupWindow } from '../../components/PopupWindow'
-import { CurriculumCard } from '../../components/CurriculumCard'
+import { CurriculumRow } from '../../components/CurriculumRow'
 
 import * as classroomCreators from '../../actions/classroom'
 import * as tabCreators from '../../actions/tab'
@@ -119,7 +119,7 @@ class CreateClassroomView extends React.Component {
           <div style={{color: 'rgb(8, 209, 255)'}}>My curricula</div>
           {this.props.curriculaList ? <div>{ this.props.curriculaList.map(function (curriculum, i) {
             return <div key={i} onClick={() => { this.selectCurriculum(curriculum) }}>
-              <CurriculumCard curriculum={curriculum} selectedUuid={this.state.classroomFormValues.curriculum_uuid} />
+              <CurriculumRow curriculum={curriculum} selectedUuid={this.state.classroomFormValues.curriculum_uuid} />
             </div>
           }, this)}
           </div> : null }
@@ -127,7 +127,7 @@ class CreateClassroomView extends React.Component {
           <div className={'blue-text'}>Physics is Beautiful curricula:</div>
           {this.props.curriculaOtherList ? <div>{ this.props.curriculaOtherList.map(function (curriculum, i) {
             return <div key={i} onClick={() => { this.selectCurriculum(curriculum) }}>
-              <CurriculumCard curriculum={curriculum} selectedUuid={this.state.classroomFormValues.curriculum_uuid} />
+              <CurriculumRow curriculum={curriculum} selectedUuid={this.state.classroomFormValues.curriculum_uuid} />
             </div>
           }, this)}
           </div> : null }
