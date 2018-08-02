@@ -11,8 +11,8 @@ export class MultipleChoiceAnswers extends React.Component {
     }
     return <div>
       {answers}
-      <div className="col-md-1 module-accessible-block">
-      <a href="" onClick={e => {e.preventDefault();this.props.onAddAnswerClick()}}><span className="glyphicon glyphicon-plus-sign"/><br/>Add answer</a>
+      <div className="col-md-1 module-accessible-block add-answer" onClick={e => {e.preventDefault();this.props.onAddAnswerClick()}}>
+      + Add answer
       </div>    
     </div>;
   }

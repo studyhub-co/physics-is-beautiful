@@ -631,21 +631,21 @@ img.grayed-out-img {
     color: #c8c8c8;
 }
 
-.curriculum-title-wrapper {
-    float: left;
-    position: relative;
-    right: 30px;
-}
+/*.curriculum-title-wrapper {*/
+    /*float: left;*/
+    /*position: relative;*/
+    /*right: 30px;*/
+/*}*/
 
-@media (max-width: 770px) {
-    .curriculum-title-wrapper {
-        margin-left: 20px;
-    }
-    html, body {
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-}
+/*@media (max-width: 770px) {*/
+    /*.curriculum-title-wrapper {*/
+        /*margin-left: 20px;*/
+    /*}*/
+    /*html, body {*/
+        /*max-width: 100%;*/
+        /*overflow-x: hidden;*/
+    /*}*/
+/*}*/
 
 .curriculum-title{
     font-size: 25px;
