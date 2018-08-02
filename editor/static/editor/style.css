@@ -32,9 +32,23 @@
 .editor .question .question-type { margin-bottom: 20px; }
 .editor .question .answer-block .mathematical-expression { font-size:36px; padding:20px; }
 
+.editor .thumbnail { margin-bottom: 8px}
 .editor .thumbnail img { max-width: 100%; }
 
-.editor .module-accessible-block { height:134px; line-height:16px; text-align:center; overflow:hidden;}
+.editor .module-accessible-block { height:auto; min-height: 140px; line-height:16px; text-align:center; overflow:hidden;}
+.editor .add-answer {
+    cursor: pointer;
+    border: dashed;
+    border-width: 1px;
+    color: rgb(216, 216, 216);
+    line-height: 130px;
+    transition: border .5s, color .5s;
+}
+.editor .add-answer:hover {
+    border: solid;
+    border-width: 1px;
+    color: #1caff6;
+}
 
 .editor .conversion-steps { margin-top:20px; display:inline-block; font-size:20px; }
 .editor .conversion-steps .conversion-step { border-right:1px solid black; display:inline-block;}
