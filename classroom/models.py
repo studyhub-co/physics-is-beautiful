@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 from shortuuidfield import ShortUUIDField
 
-from curricula.models import Curriculum, Lesson
+from curricula.models import Curriculum, Module
 from profiles.models import Profile
 
 # ASSIGNMENT_TYPE = (
@@ -63,10 +63,12 @@ def generate_classroom_code(sender, instance, *args, **kwargs):
 
 class Assignment(models.Model):
     uuid = ShortUUIDField(unique=True)
-    lessons = models.ManyToManyField(Lesson)
+    lessons = models.ManyToManyField(Module)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     start_on = models.DateTimeField()
     due_on = models.DateTimeField()
+    name = models.CharField(max_length=200)
     classroom = models.ForeignKey(Classroom, related_name='assignments')
+    # TODO add image?
 

@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export class CurriculumCard extends React.Component {
+export class CurriculumRow extends React.Component {
   render () {
     var className = 'curriculum-card'
-    if (this.props.selectedUuid === this.props.curriculum.uuid){
+    if (this.props.selectedUuid === this.props.curriculum.uuid) {
       className += ' selected-curriculum-card'
     }
 
@@ -18,7 +18,7 @@ export class CurriculumCard extends React.Component {
   }
 }
 
-CurriculumCard.propTypes = {
+CurriculumRow.propTypes = {
   curriculum: PropTypes.object,
   selectedUuid: PropTypes.string
 }

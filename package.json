@@ -61,5 +61,7 @@
     "webpack": "^2.2.0",
     "webpack-bundle-tracker": "^0.3.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-bootstrap-date-picker": "^5.1.0"
+  }
 }

@@ -9,12 +9,14 @@ import { BASE_URL } from '../../utils/config'
 
 import history from '../../history'
 
+import EditAssignmentView from './editAssignment'
+
 import Clipboard from 'react-clipboard.js'
 import EditableLabel from '../../utils/editableLabel'
 
-import { CurriculumCard } from '../../components/CurriculumCard'
+import { CurriculumRow } from '../../components/CurriculumRow'
 
-import { Grid, Row, Col, InputGroup, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
 import * as classroomCreators from '../../actions/classroom'
 import * as tabsCreators from '../../actions/tab'
@@ -30,10 +32,19 @@ class TeacherClassroomView extends React.Component {
 
   constructor (props) {
     super(props)
-    this.hableTitleChange = this.hableTitleChange.bind(this)
+    this.handleTitleChange = this.handleTitleChange.bind(this)
+    this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
+
+    this.state = {
+      showCreateAssigment: false
+    }
   }
 
-  hableTitleChange (name) {
+  handleCreateAssigment () {
+    this.setState({ showCreateAssigment: !this.state.showCreateAssigment })
+  }
+
+  handleTitleChange (name) {
     var newClassroom = {}
 
     if (!name) {
@@ -58,7 +69,7 @@ class TeacherClassroomView extends React.Component {
               <span className={'blue-title'}>
                 <span className={'editable-label'}>
                   {this.props.classroomTeacher.teacher.display_name}'s Classroom - <EditableLabel
-                    onFocusOut={this.hableTitleChange}
+                    onFocusOut={this.handleTitleChange}
                     labelClassName={'pointer'}
                     text={this.props.classroomTeacher.name} />
                 </span>
@@ -114,7 +125,7 @@ class TeacherClassroomView extends React.Component {
                   </div>
                   <div className={'pop-up-window text-align-center'}>
                     <div className={'gray-text title'}>Curriculum</div>
-                    <CurriculumCard curriculum={this.props.classroomTeacher.curriculum} />
+                    <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
                     <div
                       className={'gray-text title pointer'}
                       onClick={() => { this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/edit/')) }}>
@@ -129,13 +140,32 @@ class TeacherClassroomView extends React.Component {
                 : null }
             </TabContent>
             <TabContent for='students'>
-              { this.props.classroomTeacher && this.props.classroomTeacher.less_students.length > 1
+              { this.props.classroomTeacher && this.props.classroomTeacher.less_students.length > 0
                 ? null
                 : <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
                   Share the <u>classroom code</u> with your students so they can join your classroom.</div>}
             </TabContent>
             <TabContent for='assignments'>
-              assignments
+              <div className={'create-classroom-button'} onClick={this.handleCreateAssigment}>
+                + Create an assignment
+              </div>
+              { !this.state.showCreateAssigment
+                ? null
+                : <Modal
+                  show={this.state.showCreateAssigment}
+                  onHide={this.handleCreateAssigment}
+                  container={this} >
+                  <Modal.Header closeButton>
+                    <Modal.Title>Create an assignment</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <EditAssignmentView />
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
+                  </Modal.Footer>
+                </Modal>
+              }
             </TabContent>
           </div>
         </Tabs>
@@ -160,7 +190,7 @@ TeacherClassroomView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     classroomTeacher: state.classroom.classroomTeacherClassroom,
-    teacherClassroomTab: state.tab.teacherClassroomTab,
+    teacherClassroomTab: state.tab.teacherClassroomTab
   }
 }
 
