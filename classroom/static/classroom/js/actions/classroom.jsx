@@ -4,8 +4,7 @@ import { checkHttpStatus, getAxios } from '../utils'
 import { CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
   CLASSROOM_RECEIVE_TEACHER_CLASSROOM, CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
   CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
-  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM,
-  CHANGE_SELECTED_TAB } from '../constants'
+  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM  } from '../constants'
 
 import { BASE_URL } from '../utils/config'
 
@@ -13,7 +12,7 @@ const API_PREFIX = '/api/v1/classroom/'
 
 // ----------------------  TEACHER ACTIONS
 
-export function receiveClassroomsList (classroomList) {
+export function receiveTeacherClassroomsList (classroomList) {
   return {
     type: CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST,
     payload: {
@@ -22,13 +21,13 @@ export function receiveClassroomsList (classroomList) {
   }
 }
 
-export function classroomFetchClassroomsList () {
+export function classroomFetchTeacherClassroomsList () {
   return (dispatch, state) => {
     // dispatch(classroomFetchClassroomlistRequest()) // to the future
     return getAxios().get(API_PREFIX + '?filter=as_teacher')
       .then(checkHttpStatus)
       .then((response) => {
-        dispatch(receiveClassroomsList(response.data))
+        dispatch(receiveTeacherClassroomsList(response.data))
       })
   }
 }
@@ -107,15 +106,8 @@ export function classroomDeleteTeacherClassroom (classroomUuid) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(classroomPartialUpdateSuccess(undefined))
-        dispatch(() => {
-          return {
-            type: CHANGE_SELECTED_TAB,
-            payload: {
-              tab: 'teacher',
-              namespace: 'tab'
-            }
-          }
-        })
+        dispatch(classroomFetchTeacherClassroomsList())
+        dispatch(push(BASE_URL))
       })
   }
 }

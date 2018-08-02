@@ -27,7 +27,7 @@ class IndexView extends React.Component {
   // }
 
   componentWillMount () {
-    this.props.classroomActions.classroomFetchClassroomsList()
+    this.props.classroomActions.classroomFetchTeacherClassroomsList()
     this.props.classroomActions.classroomFetchStudentClassroomsList()
   }
 
@@ -36,8 +36,15 @@ class IndexView extends React.Component {
     var createUrl = baseUrl + '/create'
     var teacherUrl = baseUrl + '/:uuid/teacher/'
     var studentUrl = baseUrl + '/:uuid/student/'
+    // var autoJointUrl = baseUrl + '/:uuid/join/'
     var editUrl = baseUrl + '/:uuid/edit/'
     var joinUrl = baseUrl + '/join'
+
+    if (this.props.match.params && this.props.match.params.joinCode){
+      var joinCode = this.props.match.params.joinCode
+      // join to classroom and redirect to classroom student view
+      this.props.classroomActions.classroomJoinClassroom(joinCode)
+    }
 
     return (
       <Sheet>
@@ -112,9 +119,9 @@ IndexView.propTypes = {
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   classroomActions: PropTypes.shape({
-    classroomFetchClassroomsList: PropTypes.func.isRequired,
+    classroomFetchTeacherClassroomsList: PropTypes.func.isRequired,
     classroomFetchStudentClassroomsList: PropTypes.func.isRequired,
-    // classroomLeaveStudentClassroom: PropTypes.func.isRequired
+    classroomJoinClassroom: PropTypes.func.isRequired
   }).isRequired,
   tab: PropTypes.string,
   classroomList: PropTypes.array,

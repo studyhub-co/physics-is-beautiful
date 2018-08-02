@@ -51,7 +51,7 @@ class TeacherClassroomView extends React.Component {
         <Grid fluid> { this.props.classroomTeacher
           ? <Row>
             <Col sm={3} md={3}>
-              <a className={'pointer'} onClick={history.goBack}>{'< All classrooms'}</a>
+              <a className={'pointer'} onClick={() => { history.push(BASE_URL) }}>{'< All classrooms'}</a>
             </Col>
             <Col sm={7} md={7}>
               {/*<span className={'blue-title'}>{this.props.classroomTeacher.teacher.display_name}'s Classroom - {this.props.classroomTeacher.name}</span>*/}
