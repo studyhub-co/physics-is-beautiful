@@ -1,12 +1,13 @@
+from django.db import transaction
+
 from rest_framework import serializers
-from rest_framework.fields import empty
 
-from .models import Classroom, Assignment, ClassroomStudent
+from .models import Classroom, Assignment
 
-from curricula.models import Curriculum
+from curricula.models import Curriculum, Lesson
 
 from profiles.serializers import PublicProfileSerializer
-from curricula.serializers import SimpleCurriculumSerializer, CurriculumSerializer
+from curricula.serializers import SimpleCurriculumSerializer, CurriculumSerializer, LessonSerializer
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -15,7 +16,6 @@ class ClassroomSerializer(serializers.ModelSerializer):
     teacher = PublicProfileSerializer(read_only=True)
     # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum = CurriculumSerializer(read_only=True)
-    # TODO limit to my Curricula
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
                                                    slug_field='uuid',  write_only=True)
 
@@ -23,12 +23,27 @@ class ClassroomSerializer(serializers.ModelSerializer):
         model = Classroom
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'less_students', 'count_students',
                   'teacher', 'curriculum_uuid']
-        read_only_fields = ('uuid', 'code')
+        read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
 
 
-# class ClassroomStudentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ClassroomStudent
-#         # list_serializer_class = DictSerializer
-#         fields = ['code_entered_on', 'leave_on', 'student', 'classroom']
-#         read_only_fields = ('code_entered_on', 'classroom', 'student')
+class AssignmentSerializer(serializers.ModelSerializer):
+    lessons = LessonSerializer(read_only=True, many=True)
+    lessons_uuids = serializers.SlugRelatedField(queryset=Lesson.objects.all(), source='lessons',
+                                                 slug_field='uuid', many=True, write_only=True)
+    # classroom = ClassroomSerializer(read_only=True)
+    classroom_uuid = serializers.SlugRelatedField(queryset=Classroom.objects.all(), source='classroom',
+                                                  slug_field='uuid', write_only=True)
+
+    def create(self, validated_data):
+        lessons = validated_data.pop('lessons')
+        # with transaction.atomic():
+        assignment = Assignment.objects.create(**validated_data)
+        assignment.lessons = lessons
+        assignment.save()
+        return assignment
+
+    class Meta:
+        model = Assignment
+        fields = ['uuid', 'name', 'created_on', 'updated_on', 'lessons', 'start_on', 'due_on',
+                  'classroom_uuid', 'lessons_uuids']
+        read_only_fields = ('uuid', 'created_on', 'updated_on')
