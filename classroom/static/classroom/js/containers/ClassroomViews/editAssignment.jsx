@@ -33,7 +33,6 @@ class EditAssignmentView extends React.Component {
   }
 
   componentWillMount () {
-    console.log(this.props.classroomTeacher);
     this.props.curriculaActions.curriculaFetchExpandedCurriculum(this.props.classroomTeacher.curriculum.uuid)
   }
 
@@ -44,50 +43,43 @@ class EditAssignmentView extends React.Component {
     console.log(value)
   }
 
+  addChildren (children) {
+    var data = []
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].hasOwnProperty('modules') || children[i].hasOwnProperty('lessons')) {
+        var childrenAttr
+        if (children[i].hasOwnProperty('modules')) { childrenAttr = 'modules' }
+        if (children[i].hasOwnProperty('lessons')) { childrenAttr = 'lessons' }
+        var newchildren = this.addChildren(children[i][childrenAttr])
+        // console.log(newchildren);
+        data.push({
+          label: children[i].name,
+          value: children[i].uuid,
+          children: newchildren,
+          expanded: true,
+          disabled: true
+        })
+      } else {
+        data.push({
+          label: children[i].name,
+          value: children[i].name,
+          disabled: false })
+      }
+    }
+    return data
+  }
+
   componentWillReceiveProps (props) {
     if (props.curriculumExpanded && props.curriculumExpanded.units.length > 0 && this.state.lessonsTreeData.length === 0) {
       // populate with modulesTreeData
       var newLessonsTreeData = []
 
-      for (var i = 0; i < props.curriculumExpanded.units.length; i++) {
-        var modules = []
-        for (var j = 0; j < props.curriculumExpanded.units[i].modules.length; j++) {
-          var lessons = []
-          for (var x = 0; x < props.curriculumExpanded.units[i].modules[j].lessons.length; x++) {
-            var lesson = props.curriculumExpanded.units[i].modules[j].lessons[x]
-            // lessons
-            lessons.push({
-              label: lesson.name,
-              value: lesson.value,
-              disabled: false
-            })
-          }
-          var module = props.curriculumExpanded.units[i].modules[j]
-          // modules
-          modules.push({
-            label: module.name,
-            value: module.value,
-            children: lessons,
-            expanded: true,
-            disabled: true
-          })
-        }
-        var unit = props.curriculumExpanded.units[i]
-        // units
-        newLessonsTreeData.push({
-          label: unit.name,
-          value: unit.uuid,
-          children: modules,
-          expanded: true,
-          disabled: true
-        })
-      }
-      console.log(newLessonsTreeData);
+      newLessonsTreeData = this.addChildren(props.curriculumExpanded.units)
       this.setState({lessonsTreeData: newLessonsTreeData})
     }
   }
 
-  validateAssignment (){
+  validateAssignment () {
 
   }
 
