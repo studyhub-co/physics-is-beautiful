@@ -5,45 +5,53 @@
 
 /* common */
 
-.blue-text {
+.classroom .blue-text {
     color: rgb(8, 209, 255)
 }
 
-.grey-text {
+.classroom .gray-text {
     color: rgb(216, 216, 216);
 }
 
-.red-text {
+.classroom .red-text {
     color: red;
 }
 
+.classroom .title {
+    font-size: 2.5rem;
+}
 
-.pointer {
+.classroom .blue-title {
+    font-size: 2.5rem;
+    color: rgb(8, 209, 255);
+}
+
+.classroom .pointer {
     cursor: pointer;
 }
 
-.float-right {
+.classroom .float-right {
     float: right;
 }
 
-.text-align-center {
+.classroom .text-align-center {
     text-align: center;
 }
 
-.pib-link {
+.classroom .pib-link {
     color: rgb(8, 209, 255);
     cursor: pointer;
     text-decoration: underline;
 }
 
-.grey-link {
+.classroom .gray-link {
     color: #d8d8d8;
     cursor: pointer;
 }
 
 /* tabs */
 
-.tabs {
+.classroom .tabs {
     width: 100%;
     display: inline-block;
     margin-right: 30px;
@@ -52,13 +60,13 @@
     /*font-size: 3rem;*/
 }
 
-.tab-link{
+.classroom .tab-link{
     font-size: 16px;
     font-weight: normal;
     outline:0
 }
 
-.tabs .tab-link {
+.classroom .tabs .tab-link {
     padding: 0 5rem;
     cursor: pointer;
     /*border: 1px solid transparent;*/
@@ -72,18 +80,19 @@
     color: rgb(216, 216, 216);
 }
 
-.tabs .tab-link-active {
+.classroom .tabs .tab-link-active {
     border-bottom: 3px solid #1caff6;
     color: #1caff6;
     font-weight: normal !important;
 }
 
 
-.tabs-1 .tabContent {}
+/*.tabs-1 .tabContent {}*/
 
-.pop-up-windows {
+.classroom .pop-up-window {
     border-radius: 15px;
     padding: 30px 60px;
+    margin: 2rem 15px 2rem 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 1px;
@@ -91,24 +100,25 @@
     border-color: rgb(216, 216, 216);
 }
 
-.create-classroom-button{
+.classroom .create-classroom-button{
     border-radius: 15px;
     text-align: center;
     vertical-align: middle;
-    line-height: 25rem;
+    line-height: 5rem;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 1px;
     border-style: dashed;
-    width: 30rem;
-    height: 25rem;
+    width: auto;
+    height: 5rem;
     color: rgb(216, 216, 216);
     font-size: 18px;
     cursor: pointer;
+    margin: 2rem 15px 2rem 15px;
     transition: border-color 500ms, border-style 500ms, color 500ms, background 500ms;
 }
 
-.create-classroom-button:hover {
+.classroom .create-classroom-button:hover {
     border-style: solid;
     border-color: #1caff6;
     color: #1caff6;
@@ -118,7 +128,7 @@
 
 /* classroom card*/
 
-.classroom-card{
+.classroom .classroom-card {
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
@@ -135,17 +145,26 @@
     vertical-align: top;
 }
 
-.classroom-card > div:nth-of-type(1) {
-    font-size: 18px;
-    color: #1caff6;
+.classroom  .gray-background-info-panel {
+    border-radius: 15px;
+    background-color: rgb(236, 236, 236);
+    text-align: center;
+    margin: 3rem;
+    padding: 2rem;
 }
 
-.classroom-card > div:nth-of-type(2) {
+.classroom .classroom-card > div:nth-of-type(1) {
+    font-size: 18px;
+    color: #1caff6;
+    cursor: pointer;
+}
+
+.classroom  .classroom-card > div:nth-of-type(2) {
     font-size: 16px;
     color: #666666;
 }
 
-.classroom-card > div:nth-of-type(4) {
+.classroom .classroom-card > div:nth-of-type(4) {
     font-size: 16px;
     color: rgb(121, 121, 121);
     position: absolute;
@@ -160,7 +179,7 @@
 }
 /* classroom card*/
 
-.curriculum-card {
+.classroom .curriculum-card {
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
@@ -174,15 +193,15 @@
     min-height: 7rem;
 }
 
-.curriculum-card:hover {
+.classroom .curriculum-card:hover {
     border-color: #1caff6;
 }
 
-.selected-curriculum-card {
+.classroom .selected-curriculum-card {
     background-color: rgba(8, 209, 255, 0.35);
 }
 
-.create-curriculum-button {
+.classroom .create-curriculum-button {
     text-align: center;
     vertical-align: middle;
     background-color: white;
@@ -194,7 +213,7 @@
     color: rgb(216, 216, 216);
 }
 
-.classroom-common-button{
+.classroom .classroom-common-button{
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
     border-width: 1px;
@@ -205,7 +224,7 @@
 
 /* student-classroom-row */
 
-.student-classroom-row {
+.classroom .student-classroom-row {
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
@@ -219,6 +238,13 @@
 }
 
 
-.disabled-button{
+.classroom .disabled-button{
     background-color: rgb(216, 216, 216);
 }
+
+
+/* like editor */
+
+.classroom .editable-label:not(.empty) + .glyphicon-pencil{ display:none; }
+.classroom .editable-label:hover + .glyphicon-pencil{ display:inline; }
+/*.classroom .editable-label:hover, .editor .mq-editable-label:hover{ cursor:pointer; }*/
