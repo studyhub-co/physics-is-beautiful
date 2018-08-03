@@ -11,11 +11,9 @@ import TimePicker from 'react-bootstrap-time-picker'
 
 import DropdownTreeSelect from 'react-dropdown-tree-select'
 
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Grid, Row, Col, FormControl } from 'react-bootstrap'
 
-// import { Grid, Row, Col, InputGroup, FormControl, Modal, Button } from 'react-bootstrap'
-
-// import * as classroomCreators from '../../actions/classroom'
+import * as assignmentCreators from '../../actions/assignment'
 import * as curriculaCreators from '../../actions/curricula'
 
 // import { BASE_URL } from '../../utils/config'
@@ -29,15 +27,18 @@ class EditAssignmentView extends React.Component {
     this.handleStartTimeChange = this.handleStartTimeChange.bind(this)
     this.handleDueTimeChange = this.handleDueTimeChange.bind(this)
     this.onLessonTreeChange = this.onLessonTreeChange.bind(this)
+    this.handleNameChange = this.handleNameChange.bind(this)
+    this.saveAssignment = this.saveAssignment.bind(this)
 
     this.state = {
       lessonsTreeData: [],
       selectedLessons: [],
       startDate: null,
       dueDate: null,
-      startTime: 3600,
-      dueTime: 3600,
-      assignmentIsValid: false
+      startTime: 36000,
+      dueTime: 36000,
+      assignmentIsValid: false,
+      assignmentName: ''
     }
   }
 
@@ -70,28 +71,29 @@ class EditAssignmentView extends React.Component {
   }
 
   copyValidateTree (value) {
-    this.copySelectedNodesToTree(this.state.lessonsTreeData)
+    this.copyCheckStateNodesToTree(this.state.lessonsTreeData)
     this.validateAssignment()
+  }
+
+  handleNameChange (e) {
+    this.setState({ assignmentName: e.target.value }, this.validateAssignment)
   }
 
   onLessonTreeChange (currentNode, selectedNodes) {
     this.setState({selectedLessons: selectedNodes}, this.copyValidateTree)
   }
 
-  copySelectedNodesToTree (treeNodes) {
+  copyCheckStateNodesToTree (treeNodes) {
     for (var x = 0; x < treeNodes.length; x++) {
       treeNodes[x].checked = false // unchek by default
       for (var y = 0; y < this.state.selectedLessons.length; y++) {
         if (this.state.selectedLessons[y].value === treeNodes[x].value) {
-          // copy all data from changed node
-          // Object.assign(treeNodes[x], this.state.selectedLessons[y])
-          console.log(treeNodes[x].checked);
           treeNodes[x].checked = this.state.selectedLessons[y].checked
         }
       }
       if (treeNodes[x].hasOwnProperty('children')) {
-        // walk by children
-        this.copySelectedNodesToTree(treeNodes[x].children)
+        // walk on children
+        this.copyCheckStateNodesToTree(treeNodes[x].children)
       }
     }
   }
@@ -101,11 +103,39 @@ class EditAssignmentView extends React.Component {
         !this.state.dueDate ||
         !this.state.startTime ||
         !this.state.dueTime ||
+        !this.state.assignmentName ||
         this.state.selectedLessons.length === 0) {
       this.setState({assignmentIsValid: false})
     } else {
       this.setState({assignmentIsValid: true})
     }
+  }
+
+  saveAssignment () {
+    var lessonsUuids = []
+
+    for (var x = 0; x < this.state.selectedLessons.length; x++ ) {
+      lessonsUuids.push(this.state.selectedLessons[x].value)
+    }
+
+    var startDateTime = new Date(this.state.startDate)
+    startDateTime.setHours(0, 0, 0, 0)
+    startDateTime.setSeconds(startDateTime.getSeconds() + this.state.startTime)
+    var dueDateTime = new Date(this.state.dueDate)
+    dueDateTime.setSeconds(dueDateTime.getSeconds() + this.state.dueTime)
+
+    var assignmentJson = {
+      name: this.state.assignmentName,
+      start_on: startDateTime.toISOString(),
+      due_on: dueDateTime.toISOString(),
+      classroom_uuid: this.props.classroomTeacher.uuid,
+      lessons_uuids: lessonsUuids
+    }
+
+    this.props.assignmentActions.assignmentCreateAssignment(assignmentJson)
+    this.props.assignmentActions.assignmentFetchAssignmentList(this.props.classroomTeacher.uuid)
+    // close Window
+    if (typeof this.props.onSave === 'function') { this.props.onSave() }
   }
 
   addChildren (children) {
@@ -136,6 +166,20 @@ class EditAssignmentView extends React.Component {
   render () {
     return (
       <Grid fluid>
+        <Row>
+          <Col sm={3} md={3} className={'text-right'}>
+            Name
+          </Col>
+          <Col sm={9} md={9}>
+            <FormControl
+              type='text'
+              value={this.state.assignmentName}
+              placeholder='Enter name'
+              onChange={this.handleNameChange}
+            />
+          </Col>
+        </Row>
+        <br />
         <Row>
           <Col sm={3} md={3} className={'text-right'}>
             Assignment
@@ -181,7 +225,12 @@ class EditAssignmentView extends React.Component {
         <br />
         <Row>
           <Col sm={12} md={12} className={'text-center'}>
-            <button className={'classroom-common-button' + (this.state.assignmentIsValid ? '' : ' disabled-button')} disabled={!this.state.assignmentIsValid}>Shedule assignment</button>
+            <button
+              className={'classroom-common-button' + (this.state.assignmentIsValid ? '' : ' disabled-button')}
+              disabled={!this.state.assignmentIsValid}
+              onClick={this.saveAssignment}>
+              Shedule assignment
+            </button>
           </Col>
         </Row>
       </Grid>)
@@ -193,12 +242,12 @@ EditAssignmentView.propTypes = {
     curriculaFetchExpandedCurriculum: PropTypes.func.isRequired
   }).isRequired,
   curriculumExpanded: PropTypes.object,
-  classroomTeacher: PropTypes.object.isRequired
-  // classroomActions: PropTypes.shape({
-  //   classroomFetchStudentClassroom: PropTypes.func.isRequired,
-  //   classroomLeaveStudentClassroom: PropTypes.func.isRequired
-  // }).isRequired,
-  // classroom: PropTypes.shape()
+  classroomTeacher: PropTypes.object.isRequired,
+  assignmentActions: PropTypes.shape({
+    assignmentCreateAssignment: PropTypes.func.isRequired,
+    assignmentFetchAssignmentList: PropTypes.func.isRequired
+  }).isRequired,
+  onSave: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -212,8 +261,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    curriculaActions: bindActionCreators(curriculaCreators, dispatch)
-    // classroomActions: bindActionCreators(classroomCreators, dispatch)
+    curriculaActions: bindActionCreators(curriculaCreators, dispatch),
+    assignmentActions: bindActionCreators(assignmentCreators, dispatch)
   }
 }
 

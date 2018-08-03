@@ -66,6 +66,7 @@ class Assignment(models.Model):
     lessons = models.ManyToManyField(Lesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
+    updated_on = models.DateTimeField(auto_now=True)
     start_on = models.DateTimeField()
     due_on = models.DateTimeField()
     name = models.CharField(max_length=200)

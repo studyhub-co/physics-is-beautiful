@@ -15,9 +15,11 @@ import Clipboard from 'react-clipboard.js'
 import EditableLabel from '../../utils/editableLabel'
 
 import { CurriculumRow } from '../../components/CurriculumRow'
+import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
 
 import { Grid, Row, Col, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
+import * as assignmentCreators from '../../actions/assignment'
 import * as classroomCreators from '../../actions/classroom'
 import * as tabsCreators from '../../actions/tab'
 
@@ -28,6 +30,7 @@ class TeacherClassroomView extends React.Component {
     this.props.tabActions.changeTeacherClassroomSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', true)
     this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
+    this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
   }
 
   constructor (props) {
@@ -146,6 +149,15 @@ class TeacherClassroomView extends React.Component {
                   Share the <u>classroom code</u> with your students so they can join your classroom.</div>}
             </TabContent>
             <TabContent for='assignments'>
+              {this.props.assignmentsList
+                ? <Grid fluid> { this.props.assignmentsList.map(function (assignment, i) {
+                  return <AssignmentTeacherRow
+                    assignment={assignment}
+                    // onTitleClick={(url) => this.props.dispatch(push(url))}
+                    baseUrl={BASE_URL}
+                    key={i} />
+                }, this)}
+                </Grid> : null }
               <div className={'create-classroom-button'} onClick={this.handleCreateAssigment}>
                 + Create an assignment
               </div>
@@ -159,7 +171,7 @@ class TeacherClassroomView extends React.Component {
                     <Modal.Title>Create an assignment</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <EditAssignmentView />
+                    <EditAssignmentView onSave={this.handleCreateAssigment} />
                   </Modal.Body>
                   <Modal.Footer>
                     <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
@@ -183,14 +195,18 @@ TeacherClassroomView.propTypes = {
     classroomPartialUpdateTeacherClassroom: PropTypes.func.isRequired,
     classroomDeleteTeacherClassroom: PropTypes.func.isRequired
   }).isRequired,
-  classroomTeacher: PropTypes.object
-
+  assignmentActions: PropTypes.shape({
+    assignmentFetchAssignmentList: PropTypes.func.isRequired
+  }).isRequired,
+  classroomTeacher: PropTypes.object,
+  assignmentsList: PropTypes.array
 }
 
 const mapStateToProps = (state) => {
   return {
     classroomTeacher: state.classroom.classroomTeacherClassroom,
-    teacherClassroomTab: state.tab.teacherClassroomTab
+    teacherClassroomTab: state.tab.teacherClassroomTab,
+    assignmentsList: state.assignment.assignmentsList
   }
 }
 
@@ -198,7 +214,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
-    classroomActions: bindActionCreators(classroomCreators, dispatch)
+    classroomActions: bindActionCreators(classroomCreators, dispatch),
+    assignmentActions: bindActionCreators(assignmentCreators, dispatch)
   }
 }
 
