@@ -21,6 +21,10 @@
     font-size: 2.5rem;
 }
 
+.classroom .small-text {
+    font-size: 1.5rem;
+}
+
 .classroom .blue-title {
     font-size: 2.5rem;
     color: rgb(8, 209, 255);
@@ -47,6 +51,12 @@
 .classroom .gray-link {
     color: #d8d8d8;
     cursor: pointer;
+}
+
+.vcenter {
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 
 /* tabs */

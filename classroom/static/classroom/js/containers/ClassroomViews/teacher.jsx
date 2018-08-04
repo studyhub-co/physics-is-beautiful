@@ -39,12 +39,32 @@ class TeacherClassroomView extends React.Component {
     this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
 
     this.state = {
-      showCreateAssigment: false
+      showCreateAssigment: false,
+      assignmentToEdit: null
     }
   }
 
   handleCreateAssigment () {
-    this.setState({ showCreateAssigment: !this.state.showCreateAssigment })
+    this.setState({
+      assignmentToEdit: null
+    },
+    () =>
+    { this.setState({
+      showCreateAssigment: !this.state.showCreateAssigment
+    })
+    })
+  }
+
+  handleEditAssignmentModal (assignment) {
+    this.setState({
+      assignmentToEdit: assignment
+    },
+    () =>
+    { this.setState({
+      showCreateAssigment: !this.state.showCreateAssigment
+    })
+    }
+    )
   }
 
   handleTitleChange (name) {
@@ -60,6 +80,12 @@ class TeacherClassroomView extends React.Component {
   }
 
   render () {
+
+    var studentsS = ''
+    if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
+      studentsS = 's'
+    }
+
     return (
       <div className={'pop-up-window'}>
         <Grid fluid> { this.props.classroomTeacher
@@ -68,7 +94,6 @@ class TeacherClassroomView extends React.Component {
               <a className={'pointer'} onClick={() => { history.push(BASE_URL) }}>{'< All classrooms'}</a>
             </Col>
             <Col sm={7} md={7}>
-              {/*<span className={'blue-title'}>{this.props.classroomTeacher.teacher.display_name}'s Classroom - {this.props.classroomTeacher.name}</span>*/}
               <span className={'blue-title'}>
                 <span className={'editable-label'}>
                   {this.props.classroomTeacher.teacher.display_name}'s Classroom - <EditableLabel
@@ -81,7 +106,7 @@ class TeacherClassroomView extends React.Component {
               </span>
             </Col>
             <Col sm={2} md={2}>
-              {/*<span onClick={() => this.props.dispatch(push('/classroom/'))} className={'pib-link'}>Assignments</span>*/}
+              { /* <span onClick={() => this.props.dispatch(push('/classroom/'))} className={'pib-link'}>Assignments</span> */ }
             </Col>
           </Row>
           : null }
@@ -143,20 +168,43 @@ class TeacherClassroomView extends React.Component {
                 : null }
             </TabContent>
             <TabContent for='students'>
-              { this.props.classroomTeacher && this.props.classroomTeacher.less_students.length > 0
+              { this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0
                 ? null
                 : <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
                   Share the <u>classroom code</u> with your students so they can join your classroom.</div>}
             </TabContent>
             <TabContent for='assignments'>
+              <span className={'title'}>Class Assignments</span> {this.props.classroomTeacher
+                ? <span className={'gray-text'}>{this.props.classroomTeacher.count_students + ' student' + studentsS}</span>
+                : null}
               {this.props.assignmentsList
-                ? <Grid fluid> { this.props.assignmentsList.map(function (assignment, i) {
-                  return <AssignmentTeacherRow
-                    assignment={assignment}
-                    // onTitleClick={(url) => this.props.dispatch(push(url))}
-                    baseUrl={BASE_URL}
-                    key={i} />
-                }, this)}
+                ? <Grid fluid>
+                  <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
+                    <Col sm={5} md={5}>
+                      <span className={'gray-text'}>Active assignments</span>
+                    </Col>
+                    <Col sm={2} md={2} className={'vcenter'}>
+                        Start on
+                    </Col>
+                    <Col sm={2} md={2} className={'vcenter'}>
+                      Due on
+                    </Col>
+                    <Col sm={2} md={2} className={'vcenter'}>
+                      <span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp;
+                      <span title={'Missed'} className='glyphicon glyphicon-remove' />
+                    </Col>
+                    <Col sm={1} md={1}>
+                    </Col>
+                  </Row>
+                  <hr style={{margin: '0'}} />
+                  { this.props.assignmentsList.map(function (assignment, i) {
+                    return <AssignmentTeacherRow
+                      assignment={assignment}
+                      // onTitleClick={(url) => this.props.dispatch(push(url))}
+                      onAssignmentsClick={() => this.handleEditAssignmentModal(assignment)}
+                      baseUrl={BASE_URL}
+                      key={i} />
+                  }, this)}
                 </Grid> : null }
               <div className={'create-classroom-button'} onClick={this.handleCreateAssigment}>
                 + Create an assignment
@@ -168,10 +216,10 @@ class TeacherClassroomView extends React.Component {
                   onHide={this.handleCreateAssigment}
                   container={this} >
                   <Modal.Header closeButton>
-                    <Modal.Title>Create an assignment</Modal.Title>
+                    <Modal.Title>{this.state.assignmentToEdit ? 'Edit' : 'Create'}  an assignment</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <EditAssignmentView onSave={this.handleCreateAssigment} />
+                    <EditAssignmentView assignment={this.state.assignmentToEdit} onSave={this.handleCreateAssigment} />
                   </Modal.Body>
                   <Modal.Footer>
                     <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>

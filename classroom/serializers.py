@@ -36,11 +36,23 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         lessons = validated_data.pop('lessons')
-        # with transaction.atomic():
-        assignment = Assignment.objects.create(**validated_data)
-        assignment.lessons = lessons
-        assignment.save()
+        with transaction.atomic():
+            assignment = Assignment.objects.create(**validated_data)
+            assignment.lessons = lessons
+            assignment.save()
         return assignment
+
+    def update(self, instance, validated_data):
+        lessons = validated_data.pop('lessons')
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        with transaction.atomic():
+            instance.lessons.clear()
+            instance.lessons = lessons
+            instance.save()
+        return instance
 
     class Meta:
         model = Assignment
