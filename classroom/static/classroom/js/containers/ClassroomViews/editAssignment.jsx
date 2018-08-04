@@ -19,7 +19,6 @@ import * as curriculaCreators from '../../actions/curricula'
 // import { BASE_URL } from '../../utils/config'
 
 class EditAssignmentView extends React.Component {
-
   constructor (props) {
     super(props)
     this.handleStartOn = this.handleStartOn.bind(this)
@@ -46,6 +45,23 @@ class EditAssignmentView extends React.Component {
     this.props.curriculaActions.curriculaFetchExpandedCurriculum(this.props.classroomTeacher.curriculum.uuid)
   }
 
+  componentDidMount () {
+    if (this.props.assignment) {
+      // Edit assignment
+      var startDate = new Date(this.props.assignment.start_on)
+      var dueDate = new Date(this.props.assignment.due_on)
+
+      // lessons are populates in componentWillReceiveProps
+      this.setState({
+        startDate: this.props.assignment.start_on,
+        startTime: startDate.getHours() * 60 * 60,
+        dueDate: this.props.assignment.due_on,
+        dueTime: dueDate.getHours() * 60 * 60,
+        assignmentName: this.props.assignment.name
+      }, this.copyNodesFromAssignmentValidate)
+    }
+  }
+
   componentWillReceiveProps (props) {
     if (props.curriculumExpanded && props.curriculumExpanded.units.length > 0 && this.state.lessonsTreeData.length === 0) {
       // populate with modulesTreeData
@@ -70,7 +86,7 @@ class EditAssignmentView extends React.Component {
     this.setState({dueTime: value}, this.validateAssignment)
   }
 
-  copyValidateTree (value) {
+  copyValidateTree () {
     this.copyCheckStateNodesToTree(this.state.lessonsTreeData)
     this.validateAssignment()
   }
@@ -80,9 +96,13 @@ class EditAssignmentView extends React.Component {
   }
 
   onLessonTreeChange (currentNode, selectedNodes) {
-    this.setState({selectedLessons: selectedNodes}, this.copyValidateTree)
+    this.setState({ selectedLessons: selectedNodes }, this.copyValidateTree)
   }
 
+  /**
+   * copy selected nodes from selectedLessons (from multiselect) to lessonsTreeData
+   * @param treeNodes
+   */
   copyCheckStateNodesToTree (treeNodes) {
     for (var x = 0; x < treeNodes.length; x++) {
       treeNodes[x].checked = false // unchek by default
@@ -98,11 +118,31 @@ class EditAssignmentView extends React.Component {
     }
   }
 
+  /**
+   *  copy cheked nodes to selectedLessons
+   */
+  copyNodesFromAssignmentValidate () {
+    var selectedLessons = []
+    for (var x = 0; x < this.props.assignment.lessons.length; x++) {
+      var checkedLesson = this.props.assignment.lessons[x]
+      selectedLessons.push({
+        label: checkedLesson.name,
+        value: checkedLesson.uuid,
+        checked: true,
+        disabled: false
+      })
+    }
+
+    this.setState({
+      selectedLessons: selectedLessons
+    }, this.validateAssignment)
+  }
+
   validateAssignment () {
     if (!this.state.startDate ||
         !this.state.dueDate ||
-        !this.state.startTime ||
-        !this.state.dueTime ||
+        this.state.startTime == null ||
+        this.state.dueTime == null ||
         !this.state.assignmentName ||
         this.state.selectedLessons.length === 0) {
       this.setState({assignmentIsValid: false})
@@ -122,6 +162,7 @@ class EditAssignmentView extends React.Component {
     startDateTime.setHours(0, 0, 0, 0)
     startDateTime.setSeconds(startDateTime.getSeconds() + this.state.startTime)
     var dueDateTime = new Date(this.state.dueDate)
+    dueDateTime.setHours(0, 0, 0, 0)
     dueDateTime.setSeconds(dueDateTime.getSeconds() + this.state.dueTime)
 
     var assignmentJson = {
@@ -131,9 +172,14 @@ class EditAssignmentView extends React.Component {
       classroom_uuid: this.props.classroomTeacher.uuid,
       lessons_uuids: lessonsUuids
     }
-
-    this.props.assignmentActions.assignmentCreateAssignment(assignmentJson)
-    this.props.assignmentActions.assignmentFetchAssignmentList(this.props.classroomTeacher.uuid)
+    if (this.props.assignment && this.props.assignment.uuid) {
+      // update
+      assignmentJson.uuid = this.props.assignment.uuid
+      this.props.assignmentActions.assignmentPartialUpdateAssignment(assignmentJson, true)
+    } else {
+      // save
+      this.props.assignmentActions.assignmentCreateAssignment(assignmentJson, true)
+    }
     // close Window
     if (typeof this.props.onSave === 'function') { this.props.onSave() }
   }
@@ -154,9 +200,20 @@ class EditAssignmentView extends React.Component {
           disabled: true
         })
       } else {
+        // lesson
+        var checked = false
+        if (this.props.assignment && this.props.assignment.uuid) {
+          for (var y = 0; y < this.props.assignment.lessons.length; y++) {
+            if (this.props.assignment.lessons[y].uuid === children[i].uuid) {
+              checked = true
+              break
+            }
+          }
+        }
         data.push({
           label: children[i].name,
           value: children[i].uuid,
+          checked: checked,
           disabled: false })
       }
     }
@@ -167,7 +224,7 @@ class EditAssignmentView extends React.Component {
     return (
       <Grid fluid>
         <Row>
-          <Col sm={3} md={3} className={'text-right'}>
+          <Col sm={3} md={3} className={'text-right vcenter'}>
             Name
           </Col>
           <Col sm={9} md={9}>
@@ -245,9 +302,11 @@ EditAssignmentView.propTypes = {
   classroomTeacher: PropTypes.object.isRequired,
   assignmentActions: PropTypes.shape({
     assignmentCreateAssignment: PropTypes.func.isRequired,
-    assignmentFetchAssignmentList: PropTypes.func.isRequired
+    assignmentFetchAssignmentList: PropTypes.func.isRequired,
+    assignmentPartialUpdateAssignment: PropTypes.func.isRequired
   }).isRequired,
-  onSave: PropTypes.func
+  onSave: PropTypes.func,
+  assignment: PropTypes.object
 }
 
 const mapStateToProps = (state) => {

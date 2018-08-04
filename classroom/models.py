@@ -73,3 +73,7 @@ class Assignment(models.Model):
     classroom = models.ForeignKey(Classroom, related_name='assignments')
     # TODO add image?
 
+    class Meta:
+        ordering = ['-start_on']
+
+

@@ -1,4 +1,6 @@
-import { ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST } from '../constants'
+import {
+  ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST
+} from '../constants'
 
 const initialState = {
   assignmentsList: null

@@ -10,7 +10,7 @@ from rest_framework.exceptions import NotFound
 
 
 from .models import Classroom, Assignment, ClassroomStudent
-from .permissions import IsClassroomTeacherOrStudentReadonly
+from .permissions import IsClassroomTeacherOrStudentReadonly, IsAssignmentClassroomTeacherOrStudentReadonly
 from .serializers import ClassroomSerializer, AssignmentSerializer
 
 
@@ -78,7 +78,7 @@ def leave_classroom(request):
 
 
 class AssignmentViewSet(ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly)
+    permission_classes = (permissions.IsAuthenticated, IsAssignmentClassroomTeacherOrStudentReadonly)
     serializer_class = AssignmentSerializer
     queryset = Assignment.objects.all()
     lookup_field = 'uuid'
