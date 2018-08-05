@@ -1,10 +1,32 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import {
-  ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST, ASSIGNMENT_CREATE_ASSIGNMENT_SUCCESS
-  // ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS
+  ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST, ASSIGNMENT_CREATE_ASSIGNMENT_SUCCESS,
+  ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS, ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS
 } from '../constants'
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
+
+
+export function receiveAssignment (assignment) {
+  return {
+    type: ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS,
+    payload: {
+      assignment
+    }
+  }
+}
+
+export function assignmentFetchAssignment (classroomUuid, assignmentUuid) {
+  return (dispatch, state) => {
+    // dispatch(classroomFetchClassroomlistRequest()) // to the future
+    return getAxios().get(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid)
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveAssignment(response.data))
+      })
+  }
+}
+
 
 export function receiveAssignmentsList (assignmentsList) {
   return {
@@ -48,22 +70,39 @@ export function assignmentCreateAssignment (assignmentJson, refreshAssignmentsLi
   }
 }
 
-// export function assignmentPartialUpdateSuccess (assignment) {
-//   return {
-//     type: ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS,
-//     payload: {
-//       assignment
-//     }
-//   }
-// }
+export function assignmentPartialUpdateSuccess (assignment) {
+  return {
+    type: ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS,
+    payload: {
+      assignment
+    }
+  }
+}
 
 export function assignmentPartialUpdateAssignment (assignmentJson, refreshAssignmentsList = false) {
   return (dispatch, state) => {
     return getAxios().patch(API_PREFIX + assignmentJson.classroom_uuid + '/assignment/' + assignmentJson.uuid + '/', assignmentJson)
       .then(checkHttpStatus)
       .then((response) => {
+        dispatch(assignmentPartialUpdateSuccess(response.data))
         if (refreshAssignmentsList) {
           dispatch(assignmentFetchAssignmentList(assignmentJson.classroom_uuid))
+        }
+      })
+  }
+}
+
+export function assignmentDeleteAssignment (classroomUuid, assignmentUuid, refreshAssignmentsList = false, callback = null) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid + '/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(assignmentPartialUpdateSuccess(undefined))
+        if (refreshAssignmentsList) {
+          dispatch(assignmentFetchAssignmentList(classroomUuid))
+        }
+        if (typeof callback === 'function'){
+          callback()
         }
       })
   }

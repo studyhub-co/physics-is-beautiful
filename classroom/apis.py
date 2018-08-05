@@ -11,7 +11,7 @@ from rest_framework.exceptions import NotFound
 
 from .models import Classroom, Assignment, ClassroomStudent
 from .permissions import IsClassroomTeacherOrStudentReadonly, IsAssignmentClassroomTeacherOrStudentReadonly
-from .serializers import ClassroomSerializer, AssignmentSerializer
+from .serializers import ClassroomSerializer, AssignmentSerializer, AssignmentListSerializer
 
 
 class ClassroomViewSet(ModelViewSet):
@@ -40,7 +40,6 @@ class ClassroomViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(teacher=self.request.user.profile)
-
 
 
 @api_view(['POST'])
@@ -83,8 +82,16 @@ class AssignmentViewSet(ModelViewSet):
     queryset = Assignment.objects.all()
     lookup_field = 'uuid'
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return AssignmentListSerializer
+        if self.action in ('retrieve', 'partial_update', 'iupdate'):
+            return AssignmentSerializer
+        return AssignmentListSerializer
+
     def get_queryset(self):
         queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom__uuid']).prefetch_related('lessons')
+        queryset = queryset.annotate(count_lessons=Count('lessons'))
 
         return queryset
 

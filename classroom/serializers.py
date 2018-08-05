@@ -26,13 +26,14 @@ class ClassroomSerializer(serializers.ModelSerializer):
         read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
 
 
-class AssignmentSerializer(serializers.ModelSerializer):
-    lessons = LessonSerializer(read_only=True, many=True)
+class AssignmentListSerializer(serializers.ModelSerializer):
     lessons_uuids = serializers.SlugRelatedField(queryset=Lesson.objects.all(), source='lessons',
                                                  slug_field='uuid', many=True, write_only=True)
     # classroom = ClassroomSerializer(read_only=True)
     classroom_uuid = serializers.SlugRelatedField(queryset=Classroom.objects.all(), source='classroom',
                                                   slug_field='uuid', write_only=True)
+
+    count_lessons = serializers.IntegerField(read_only=True)
 
     def create(self, validated_data):
         lessons = validated_data.pop('lessons')
@@ -56,6 +57,13 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ['uuid', 'name', 'created_on', 'updated_on', 'lessons', 'start_on', 'due_on',
-                  'classroom_uuid', 'lessons_uuids']
+        fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on',
+                  'classroom_uuid', 'lessons_uuids', 'count_lessons']
         read_only_fields = ('uuid', 'created_on', 'updated_on')
+
+
+class AssignmentSerializer(AssignmentListSerializer):
+    lessons = LessonSerializer(read_only=True, many=True)
+
+    class Meta(AssignmentListSerializer.Meta):
+        fields = AssignmentListSerializer.Meta.fields + ['lessons']

@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import { Route } from 'react-router'
+
 import { push } from 'connected-react-router'
 import { BASE_URL } from '../../utils/config'
 
 import history from '../../history'
-
-import EditAssignmentView from './editAssignment'
 
 import Clipboard from 'react-clipboard.js'
 import EditableLabel from '../../utils/editableLabel'
@@ -24,6 +24,7 @@ import * as classroomCreators from '../../actions/classroom'
 import * as tabsCreators from '../../actions/tab'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
+import { AssignmentTeacherView, EditAssignmentView } from '../index'
 
 class TeacherClassroomView extends React.Component {
   componentWillMount () {
@@ -40,31 +41,39 @@ class TeacherClassroomView extends React.Component {
 
     this.state = {
       showCreateAssigment: false,
-      assignmentToEdit: null
+      showAssingment: false
     }
   }
 
   handleCreateAssigment () {
-    this.setState({
-      assignmentToEdit: null
-    },
-    () =>
-    { this.setState({
-      showCreateAssigment: !this.state.showCreateAssigment
-    })
-    })
+    this.setState(
+      {
+        showCreateAssigment: !this.state.showCreateAssigment
+      })
+  }
+
+  handleSettingsMenuClickAssignment (assignment, e) {
+    if (e === 'edit') {
+      this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], assignment.uuid)
+      this.handleEditAssignmentModal()
+    } else if (e === 'delete') {
+      this.props.assignmentActions.assignmentDeleteAssignment(
+        this.props.match.params['uuid'], // may be: this.props.classroomTeacher.uuid, ? fixme
+        assignment.uuid,
+        true,
+        this.props.match.params['uuid']
+      )
+    }
   }
 
   handleEditAssignmentModal (assignment) {
     this.setState({
-      assignmentToEdit: assignment
-    },
-    () =>
-    { this.setState({
       showCreateAssigment: !this.state.showCreateAssigment
     })
-    }
-    )
+  }
+
+  handleViewAssignment (assignment) {
+    this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/assignments/' + assignment.uuid))
   }
 
   handleTitleChange (name) {
@@ -80,6 +89,8 @@ class TeacherClassroomView extends React.Component {
   }
 
   render () {
+    var assignmentUrl = BASE_URL + ':uuid/teacher/assignments/:assigmentUuid'
+    var isExactUrl = this.props.match.isExact
 
     var studentsS = ''
     if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
@@ -174,10 +185,15 @@ class TeacherClassroomView extends React.Component {
                   Share the <u>classroom code</u> with your students so they can join your classroom.</div>}
             </TabContent>
             <TabContent for='assignments'>
-              <span className={'title'}>Class Assignments</span> {this.props.classroomTeacher
+              <Route path={assignmentUrl} component={AssignmentTeacherView} />
+              {isExactUrl
+                ? <span className={'title'}>Class Assignments&nbsp;</span>
+                : null}
+              {/* TODO refactor */}
+              {this.props.classroomTeacher && isExactUrl
                 ? <span className={'gray-text'}>{this.props.classroomTeacher.count_students + ' student' + studentsS}</span>
                 : null}
-              {this.props.assignmentsList
+              {this.props.assignmentsList && isExactUrl
                 ? <Grid fluid>
                   <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
                     <Col sm={5} md={5}>
@@ -193,38 +209,37 @@ class TeacherClassroomView extends React.Component {
                       <span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp;
                       <span title={'Missed'} className='glyphicon glyphicon-remove' />
                     </Col>
-                    <Col sm={1} md={1}>
-                    </Col>
+                    <Col sm={1} md={1} />
                   </Row>
                   <hr style={{margin: '0'}} />
                   { this.props.assignmentsList.map(function (assignment, i) {
                     return <AssignmentTeacherRow
                       assignment={assignment}
-                      // onTitleClick={(url) => this.props.dispatch(push(url))}
-                      onAssignmentsClick={() => this.handleEditAssignmentModal(assignment)}
+                      // onAssignmentsClick={() => this.handleEditAssignmentModal(assignment)}
+                      onAssignmentsClick={() => this.handleViewAssignment(assignment)}
+                      onSettingsMenuClick={(e) => this.handleSettingsMenuClickAssignment(assignment, e)}
                       baseUrl={BASE_URL}
                       key={i} />
                   }, this)}
                 </Grid> : null }
-              <div className={'create-classroom-button'} onClick={this.handleCreateAssigment}>
+              { isExactUrl ? <div className={'create-classroom-button'} onClick={this.handleCreateAssigment}>
                 + Create an assignment
-              </div>
-              { !this.state.showCreateAssigment
-                ? null
-                : <Modal
+              </div> : null }
+              { this.state.showCreateAssigment
+                ? <Modal
                   show={this.state.showCreateAssigment}
                   onHide={this.handleCreateAssigment}
                   container={this} >
                   <Modal.Header closeButton>
-                    <Modal.Title>{this.state.assignmentToEdit ? 'Edit' : 'Create'}  an assignment</Modal.Title>
+                    <Modal.Title>{this.props.assignment ? 'Edit' : 'Create'}  an assignment</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <EditAssignmentView assignment={this.state.assignmentToEdit} onSave={this.handleCreateAssigment} />
+                    <EditAssignmentView assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
                   </Modal.Body>
                   <Modal.Footer>
                     <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
                   </Modal.Footer>
-                </Modal>
+                </Modal> : null
               }
             </TabContent>
           </div>
@@ -244,17 +259,21 @@ TeacherClassroomView.propTypes = {
     classroomDeleteTeacherClassroom: PropTypes.func.isRequired
   }).isRequired,
   assignmentActions: PropTypes.shape({
-    assignmentFetchAssignmentList: PropTypes.func.isRequired
+    assignmentFetchAssignmentList: PropTypes.func.isRequired,
+    assignmentDeleteAssignment: PropTypes.func.isRequired,
+    assignmentFetchAssignment: PropTypes.func.isRequired
   }).isRequired,
   classroomTeacher: PropTypes.object,
-  assignmentsList: PropTypes.array
+  assignmentsList: PropTypes.array,
+  assignment: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
     classroomTeacher: state.classroom.classroomTeacherClassroom,
     teacherClassroomTab: state.tab.teacherClassroomTab,
-    assignmentsList: state.assignment.assignmentsList
+    assignmentsList: state.assignment.assignmentsList,
+    assignment: state.assignment.assignment
   }
 }
 
