@@ -41,14 +41,16 @@ class TeacherClassroomView extends React.Component {
 
     this.state = {
       showCreateAssigment: false,
-      showAssingment: false
+      showAssingment: false,
+      createNewAssigment: false
     }
   }
 
   handleCreateAssigment () {
     this.setState(
       {
-        showCreateAssigment: !this.state.showCreateAssigment
+        showCreateAssigment: !this.state.showCreateAssigment,
+        createNewAssigment: !this.state.showCreateAssigment
       })
   }
 
@@ -68,7 +70,7 @@ class TeacherClassroomView extends React.Component {
 
   handleEditAssignmentModal (assignment) {
     this.setState({
-      showCreateAssigment: !this.state.showCreateAssigment
+      showCreateAssigment: !this.state.showCreateAssigment,
     })
   }
 
@@ -96,7 +98,6 @@ class TeacherClassroomView extends React.Component {
     if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
       studentsS = 's'
     }
-
     return (
       <div className={'pop-up-window'}>
         <Grid fluid> { this.props.classroomTeacher
@@ -231,10 +232,10 @@ class TeacherClassroomView extends React.Component {
                   onHide={this.handleCreateAssigment}
                   container={this} >
                   <Modal.Header closeButton>
-                    <Modal.Title>{this.props.assignment ? 'Edit' : 'Create'}  an assignment</Modal.Title>
+                    <Modal.Title>{this.state.createNewAssigment ? 'Create' : 'Edit'}  an assignment</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <EditAssignmentView assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
+                    <EditAssignmentView createNew={this.state.createNewAssigment} assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
                   </Modal.Body>
                   <Modal.Footer>
                     <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
