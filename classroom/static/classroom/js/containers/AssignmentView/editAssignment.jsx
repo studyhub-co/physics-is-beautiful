@@ -45,7 +45,7 @@ class EditAssignmentView extends React.Component {
     this.props.curriculaActions.curriculaFetchExpandedCurriculum(this.props.classroomTeacher.curriculum.uuid)
   }
 
-  componentDidMount () {
+  componentWillReceiveProps (props) {
     if (this.props.assignment) {
       // Edit assignment
       var startDate = new Date(this.props.assignment.start_on)
@@ -60,9 +60,6 @@ class EditAssignmentView extends React.Component {
         assignmentName: this.props.assignment.name
       }, this.copyNodesFromAssignmentValidate)
     }
-  }
-
-  componentWillReceiveProps (props) {
     if (props.curriculumExpanded && props.curriculumExpanded.units.length > 0 && this.state.lessonsTreeData.length === 0) {
       // populate with modulesTreeData
       var newLessonsTreeData = []
@@ -154,7 +151,7 @@ class EditAssignmentView extends React.Component {
   saveAssignment () {
     var lessonsUuids = []
 
-    for (var x = 0; x < this.state.selectedLessons.length; x++ ) {
+    for (var x = 0; x < this.state.selectedLessons.length; x++) {
       lessonsUuids.push(this.state.selectedLessons[x].value)
     }
 

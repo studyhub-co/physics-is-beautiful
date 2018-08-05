@@ -248,10 +248,30 @@
 }
 
 
-.classroom .disabled-button{
+.classroom .disabled-button {
     background-color: rgb(216, 216, 216);
 }
 
+.classroom  .assignment-teacher-card {
+    border-radius: 15px;
+    background-color: rgb(247, 247, 247);
+    padding-top: 1rem;
+}
+
+.red-missed-box {
+    padding: 1rem 2rem;
+    margin: 2rem;
+    color: #dd381d;
+    background: #f9d4cd;
+    width: 80px;
+}
+
+.green-completed-box {
+    padding: 1rem 2rem;
+    margin: 2rem;
+    color: #7eb530;
+    background: #dff0c6;
+}
 
 /* like editor */
 
