@@ -18,6 +18,17 @@ import * as curriculaCreators from '../../actions/curricula'
 
 // import { BASE_URL } from '../../utils/config'
 
+const DEFAULT_STATE = {
+  lessonsTreeData: [],
+  selectedLessons: [],
+  startDate: null,
+  dueDate: null,
+  startTime: 36000,
+  dueTime: 36000,
+  assignmentIsValid: false,
+  assignmentName: ''
+}
+
 class EditAssignmentView extends React.Component {
   constructor (props) {
     super(props)
@@ -29,16 +40,7 @@ class EditAssignmentView extends React.Component {
     this.handleNameChange = this.handleNameChange.bind(this)
     this.saveAssignment = this.saveAssignment.bind(this)
 
-    this.state = {
-      lessonsTreeData: [],
-      selectedLessons: [],
-      startDate: null,
-      dueDate: null,
-      startTime: 36000,
-      dueTime: 36000,
-      assignmentIsValid: false,
-      assignmentName: ''
-    }
+    this.state = Object.assign({}, DEFAULT_STATE)
   }
 
   componentWillMount () {
@@ -46,12 +48,11 @@ class EditAssignmentView extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (this.props.assignment) {
+    if (this.props.assignment && !this.props.createNew) {
       // Edit assignment
       var startDate = new Date(this.props.assignment.start_on)
       var dueDate = new Date(this.props.assignment.due_on)
 
-      // lessons are populates in componentWillReceiveProps
       this.setState({
         startDate: this.props.assignment.start_on,
         startTime: startDate.getHours() * 60 * 60,
@@ -60,11 +61,24 @@ class EditAssignmentView extends React.Component {
         assignmentName: this.props.assignment.name
       }, this.copyNodesFromAssignmentValidate)
     }
-    if (props.curriculumExpanded && props.curriculumExpanded.units.length > 0 && this.state.lessonsTreeData.length === 0) {
+
+    // todo needs refactoring for create new and edit
+
+    if (props.curriculumExpanded &&
+      props.curriculumExpanded.units.length > 0 &&
+      this.state.lessonsTreeData.length === 0) {
       // populate with modulesTreeData
       var newLessonsTreeData = []
       newLessonsTreeData = this.addChildren(props.curriculumExpanded.units)
-      this.setState({lessonsTreeData: newLessonsTreeData})
+
+      if (this.props.createNew) {
+        console.log(Object.assign(DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData}));
+        this.setState(Object.assign(DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData}),
+          this.copyCheckStateNodesToTree(newLessonsTreeData)
+        ) // todo run validate
+      } else {
+        this.setState({lessonsTreeData: newLessonsTreeData})
+      }
     }
   }
 
@@ -169,7 +183,7 @@ class EditAssignmentView extends React.Component {
       classroom_uuid: this.props.classroomTeacher.uuid,
       lessons_uuids: lessonsUuids
     }
-    if (this.props.assignment && this.props.assignment.uuid) {
+    if (this.props.assignment && this.props.assignment.uuid && !this.props.createNew) {
       // update
       assignmentJson.uuid = this.props.assignment.uuid
       this.props.assignmentActions.assignmentPartialUpdateAssignment(assignmentJson, true)
@@ -303,7 +317,8 @@ EditAssignmentView.propTypes = {
     assignmentPartialUpdateAssignment: PropTypes.func.isRequired
   }).isRequired,
   onSave: PropTypes.func,
-  assignment: PropTypes.object
+  assignment: PropTypes.object,
+  createNew: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => {

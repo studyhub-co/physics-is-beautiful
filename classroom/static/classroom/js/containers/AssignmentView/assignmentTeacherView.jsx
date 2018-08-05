@@ -124,7 +124,7 @@ export class AssignmentTeacherView extends React.Component {
               <Modal.Title>{this.props.assignment ? 'Edit' : 'Create'}  an assignment</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <EditAssignmentView assignment={this.props.assignment} onSave={this.handleEditAssignmentModal} />
+              <EditAssignmentView createNew={false} assignment={this.props.assignment} onSave={this.handleEditAssignmentModal} />
             </Modal.Body>
             <Modal.Footer>
               <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
