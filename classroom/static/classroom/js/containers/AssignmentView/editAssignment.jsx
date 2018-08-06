@@ -19,8 +19,8 @@ import * as curriculaCreators from '../../actions/curricula'
 // import { BASE_URL } from '../../utils/config'
 
 const DEFAULT_STATE = {
-  lessonsTreeData: [],
-  selectedLessons: [],
+  lessonsTreeData: [], // data for multiselect
+  selectedLessons: [], // data from multiselect
   startDate: null,
   dueDate: null,
   startTime: 36000,
@@ -48,6 +48,22 @@ class EditAssignmentView extends React.Component {
   }
 
   componentWillReceiveProps (props) {
+    var newLessonsTreeData = []
+    if (props.curriculumExpanded) {
+      if (props.curriculumExpanded.units.length > 0 &&
+        this.state.lessonsTreeData.length === 0) {
+        // populate with modulesTreeData
+        newLessonsTreeData = this.addChildren(props.curriculumExpanded.units)
+      }
+      if (this.props.createNew) {
+        this.setState(Object.assign({}, DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData})) // reset tree selection
+      } else {
+        this.setState({lessonsTreeData: newLessonsTreeData}, this.reloadFromAssignment)
+      }
+    }
+  }
+
+  reloadFromAssignment () {
     if (this.props.assignment && !this.props.createNew) {
       // Edit assignment
       var startDate = new Date(this.props.assignment.start_on)
@@ -59,26 +75,7 @@ class EditAssignmentView extends React.Component {
         dueDate: this.props.assignment.due_on,
         dueTime: dueDate.getHours() * 60 * 60,
         assignmentName: this.props.assignment.name
-      }, this.copyNodesFromAssignmentValidate)
-    }
-
-    // todo needs refactoring for create new and edit
-
-    if (props.curriculumExpanded &&
-      props.curriculumExpanded.units.length > 0 &&
-      this.state.lessonsTreeData.length === 0) {
-      // populate with modulesTreeData
-      var newLessonsTreeData = []
-      newLessonsTreeData = this.addChildren(props.curriculumExpanded.units)
-
-      if (this.props.createNew) {
-        console.log(Object.assign(DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData}));
-        this.setState(Object.assign(DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData}),
-          this.copyCheckStateNodesToTree(newLessonsTreeData)
-        ) // todo run validate
-      } else {
-        this.setState({lessonsTreeData: newLessonsTreeData})
-      }
+      }, this.copyNodesFromAssignmentValidate) // copy selected lessons from assignment
     }
   }
 
@@ -143,7 +140,6 @@ class EditAssignmentView extends React.Component {
         disabled: false
       })
     }
-
     this.setState({
       selectedLessons: selectedLessons
     }, this.validateAssignment)
@@ -213,7 +209,7 @@ class EditAssignmentView extends React.Component {
       } else {
         // lesson
         var checked = false
-        if (this.props.assignment && this.props.assignment.uuid) {
+        if (this.props.assignment && this.props.assignment.uuid && !this.props.createNew) {
           for (var y = 0; y < this.props.assignment.lessons.length; y++) {
             if (this.props.assignment.lessons[y].uuid === children[i].uuid) {
               checked = true
