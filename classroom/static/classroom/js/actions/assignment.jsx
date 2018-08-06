@@ -16,17 +16,19 @@ export function receiveAssignment (assignment) {
   }
 }
 
-export function assignmentFetchAssignment (classroomUuid, assignmentUuid) {
+export function assignmentFetchAssignment (classroomUuid, assignmentUuid, callback = null) {
   return (dispatch, state) => {
     // dispatch(classroomFetchClassroomlistRequest()) // to the future
     return getAxios().get(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveAssignment(response.data))
+        if (typeof callback === 'function'){
+          callback()
+        }
       })
   }
 }
-
 
 export function receiveAssignmentsList (assignmentsList) {
   return {
@@ -79,7 +81,7 @@ export function assignmentPartialUpdateSuccess (assignment) {
   }
 }
 
-export function assignmentPartialUpdateAssignment (assignmentJson, refreshAssignmentsList = false) {
+export function assignmentPartialUpdateAssignment (assignmentJson, refreshAssignmentsList = false, callback = null) {
   return (dispatch, state) => {
     return getAxios().patch(API_PREFIX + assignmentJson.classroom_uuid + '/assignment/' + assignmentJson.uuid + '/', assignmentJson)
       .then(checkHttpStatus)
@@ -87,6 +89,9 @@ export function assignmentPartialUpdateAssignment (assignmentJson, refreshAssign
         dispatch(assignmentPartialUpdateSuccess(response.data))
         if (refreshAssignmentsList) {
           dispatch(assignmentFetchAssignmentList(assignmentJson.classroom_uuid))
+        }
+        if (typeof callback === 'function') {
+          callback()
         }
       })
   }

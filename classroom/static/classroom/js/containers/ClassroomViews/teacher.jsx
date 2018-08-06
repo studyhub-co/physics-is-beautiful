@@ -38,6 +38,7 @@ class TeacherClassroomView extends React.Component {
     super(props)
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
+    this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
 
     this.state = {
       showCreateAssigment: false,
@@ -56,8 +57,7 @@ class TeacherClassroomView extends React.Component {
 
   handleSettingsMenuClickAssignment (assignment, e) {
     if (e === 'edit') {
-      this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], assignment.uuid)
-      this.handleEditAssignmentModal()
+      this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], assignment.uuid, this.handleEditAssignmentModal)
     } else if (e === 'delete') {
       this.props.assignmentActions.assignmentDeleteAssignment(
         this.props.match.params['uuid'], // may be: this.props.classroomTeacher.uuid, ? fixme

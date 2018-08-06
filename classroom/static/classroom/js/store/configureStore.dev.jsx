@@ -19,9 +19,17 @@ export default function configureStore (initialState, history) {
 
   const middleware = applyMiddleware(thunk, routerMiddleware(history), logger)
 
-  const middlewareWithDevTools = compose(
-    middleware,
-    DevTools.instrument()
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+  // uncomment this for using inline dev tools, need comment compose below DevTools works only in one place
+  // const middlewareWithDevTools = compose(
+  //   middleware,
+  //   DevTools.instrument()
+  // )
+
+  // use redux-devtools-extension (chrome) comment this for using redux-devtools, need comment compose above DevTools works only in one place
+  const middlewareWithDevTools = composeEnhancers(
+    middleware
   )
 
   // Add the reducer to your store on the `router` key
@@ -30,8 +38,8 @@ export default function configureStore (initialState, history) {
     // rootReducer,
     connectRouter(history)(rootReducer),
     initialState,
-    middlewareWithDevTools,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    middlewareWithDevTools
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(
   )
 
   if (module.hot) {
