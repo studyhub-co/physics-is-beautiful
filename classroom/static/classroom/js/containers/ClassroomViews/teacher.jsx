@@ -15,6 +15,7 @@ import Clipboard from 'react-clipboard.js'
 import EditableLabel from '../../utils/editableLabel'
 
 import { CurriculumRow } from '../../components/CurriculumRow'
+import { TeacherStudentCard } from '../../components/TeacherStudentCard'
 import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
 
 import { Grid, Row, Col, InputGroup, FormControl, Modal } from 'react-bootstrap'
@@ -24,11 +25,12 @@ import * as classroomCreators from '../../actions/classroom'
 import * as tabsCreators from '../../actions/tab'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { AssignmentTeacherView, EditAssignmentView } from '../index'
+import { AssignmentTeacherView, EditAssignmentView, StudentClassroomProfileView } from '../index'
+
 
 class TeacherClassroomView extends React.Component {
   componentWillMount () {
-    this.props.tabActions.changeTeacherClassroomSelectedTab('teacher', 'tab', true)
+    this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', true)
     this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
     this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
@@ -92,7 +94,8 @@ class TeacherClassroomView extends React.Component {
 
   render () {
     var assignmentUrl = BASE_URL + ':uuid/teacher/assignments/:assigmentUuid'
-    var isExactUrl = this.props.match.isExact
+    var studentProfileUrl = BASE_URL + ':uuid/teacher/students/:username'
+    var isExactUrl = this.props.match.isExact // exact url for teacher view
 
     var studentsS = ''
     if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
@@ -125,7 +128,7 @@ class TeacherClassroomView extends React.Component {
         </Grid>
         <Tabs name='teacherClassroomTab'
           className='tabs'
-          handleSelect={this.props.tabActions.changeTeacherClassroomSelectedTab}
+          handleSelect={(tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }}
           selectedTab={this.props.teacherClassroomTab}
         >
           <div className='tab-links'>
@@ -180,10 +183,24 @@ class TeacherClassroomView extends React.Component {
                 : null }
             </TabContent>
             <TabContent for='students'>
-              { this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0
-                ? null
-                : <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
-                  Share the <u>classroom code</u> with your students so they can join your classroom.</div>}
+              <Route path={studentProfileUrl} component={StudentClassroomProfileView} />
+              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0
+                ? <span>
+                  { this.props.classroomTeacher.students.map(function (student, i) {
+                    return <TeacherStudentCard
+                      student={student}
+                      onStudentClick={() =>
+                        this.props.dispatch(push(BASE_URL +
+                        this.props.classroomTeacher.uuid +
+                        '/teacher/students/' + student.username))}
+                      key={i} />
+                  }, this)}
+                </span>
+                : null }
+                { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students == 0
+                  ? <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
+                  Share the <u>classroom code</u> with your students so they can join your classroom.</div>
+                  : null}
             </TabContent>
             <TabContent for='assignments'>
               <Route path={assignmentUrl} component={AssignmentTeacherView} />
@@ -216,7 +233,6 @@ class TeacherClassroomView extends React.Component {
                   { this.props.assignmentsList.map(function (assignment, i) {
                     return <AssignmentTeacherRow
                       assignment={assignment}
-                      // onAssignmentsClick={() => this.handleEditAssignmentModal(assignment)}
                       onAssignmentsClick={() => this.handleViewAssignment(assignment)}
                       onSettingsMenuClick={(e) => this.handleSettingsMenuClickAssignment(assignment, e)}
                       baseUrl={BASE_URL}

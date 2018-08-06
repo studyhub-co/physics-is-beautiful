@@ -26,8 +26,8 @@ export class AssignmentTeacherView extends React.Component {
   }
 
   componentWillMount () {
-    this.props.tabActions.changeTeacherClassroomSelectedTab('teacher', 'tab', true)
-    this.props.tabActions.changeTeacherClassroomSelectedTab('assignments', 'teacherClassroomTab', true)
+    this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
+    this.props.tabActions.changeTeacherClassroomSelectedTab('assignments', 'teacherClassroomTab')
     this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], this.props.match.params['assigmentUuid'])
   }
 
@@ -61,24 +61,26 @@ export class AssignmentTeacherView extends React.Component {
     }
     return (
       <div>
-        <Row style={{padding: '2rem 0'}}>
-          <Col sm={6} md={6}>
-            <a className={'pointer'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }}>{'< All assignment'}</a>
-          </Col>
-          <Col sm={6} md={6} className={'text-right'}>
-            <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
-              <Dropdown.Toggle className={'classroom-common-button'}>
-                <Glyphicon glyph='cog' />&nbsp;
-                Manage assignment
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <MenuItem eventKey='delete'>Delete assignment</MenuItem>
-                {/*<MenuItem eventKey='send'>Send reminder</MenuItem>*/}
-                <MenuItem eventKey='edit'>Edit assignment</MenuItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Col>
-        </Row>
+        <Grid fluid>
+          <Row style={{padding: '2rem 0'}}>
+            <Col sm={6} md={6}>
+              <a className={'pointer'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }}>{'< All assignment'}</a>
+            </Col>
+            <Col sm={6} md={6} className={'text-right'}>
+              <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
+                <Dropdown.Toggle className={'classroom-common-button'}>
+                  <Glyphicon glyph='cog' />&nbsp;
+                  Manage assignment
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <MenuItem eventKey='delete'>Delete assignment</MenuItem>
+                  {/*<MenuItem eventKey='send'>Send reminder</MenuItem>*/}
+                  <MenuItem eventKey='edit'>Edit assignment</MenuItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+          </Row>
+        </Grid>
         <Grid fluid>
           <Row className={className}>
             <Col sm={1} md={1}>
@@ -104,7 +106,7 @@ export class AssignmentTeacherView extends React.Component {
                 </span>
                 &nbsp;
                 <span className={'red-missed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-remove' />-
+                  <span title={'Missed'} className='glyphicon glyphicon-remove' />&nbsp; -
                 </span>
               </div>
               <br />
@@ -144,10 +146,7 @@ AssignmentTeacherView.propTypes = {
   assignmentActions: PropTypes.shape({
     assignmentFetchAssignment: PropTypes.func.isRequired,
     assignmentDeleteAssignment: PropTypes.func.isRequired
-  }).isRequired,
-  // onDeleteClick: PropTypes.func.isRequired,
-  // onEditClick: PropTypes.func.isRequired,
-  // onSendReminderClick: PropTypes.func.isRequired
+  }).isRequired
 }
 
 const mapStateToProps = (state) => {
