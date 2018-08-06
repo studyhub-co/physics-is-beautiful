@@ -77,3 +77,14 @@ class Assignment(models.Model):
         ordering = ['-start_on']
 
 
+class AssignmentProgress(models.Model):
+    uuid = ShortUUIDField(unique=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    start_on = models.DateTimeField(auto_now_add=True)
+    completed_on = models.DateTimeField()
+    name = models.CharField(max_length=200)
+    assignment = models.ForeignKey(Classroom, related_name='assignment_progress')
+    student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')
+
+    class Meta:
+        ordering = ['-start_on']

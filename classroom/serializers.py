@@ -5,25 +5,39 @@ from rest_framework import serializers
 from .models import Classroom, Assignment
 
 from curricula.models import Curriculum, Lesson
+from profiles.models import Profile
 
 from profiles.serializers import PublicProfileSerializer
 from curricula.serializers import SimpleCurriculumSerializer, CurriculumSerializer, LessonSerializer
 
 
-class ClassroomSerializer(serializers.ModelSerializer):
-    less_students = PublicProfileSerializer(many=True, read_only=True)
+class ClassroomBaseSerializer(serializers.ModelSerializer):
     count_students = serializers.IntegerField(read_only=True)
     teacher = PublicProfileSerializer(read_only=True)
     # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum = CurriculumSerializer(read_only=True)
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
-                                                   slug_field='uuid',  write_only=True)
+                                                   slug_field='uuid', write_only=True)
 
     class Meta:
         model = Classroom
-        fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'less_students', 'count_students',
+        fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'count_students',
                   'teacher', 'curriculum_uuid']
         read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
+
+
+class ClassroomListSerializer(ClassroomBaseSerializer):
+    less_students = PublicProfileSerializer(many=True, read_only=True)
+
+    class Meta(ClassroomBaseSerializer.Meta):
+        fields = ClassroomBaseSerializer.Meta.fields + ['less_students']
+
+
+class ClassroomSerializer(ClassroomBaseSerializer):
+    students = PublicProfileSerializer(read_only=True, many=True)
+
+    class Meta(ClassroomBaseSerializer.Meta):
+        fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
 class AssignmentListSerializer(serializers.ModelSerializer):
@@ -67,3 +81,14 @@ class AssignmentSerializer(AssignmentListSerializer):
 
     class Meta(AssignmentListSerializer.Meta):
         fields = AssignmentListSerializer.Meta.fields + ['lessons']
+
+
+class StudentProfileSerializer(PublicProfileSerializer):
+    counts = serializers.SerializerMethodField()
+
+    def get_counts(self, obj):
+        return {'num_completed': 1, 'num_missed': 0}
+
+    class Meta:
+        model = Profile
+        fields = PublicProfileSerializer.Meta.fields + ['counts']
