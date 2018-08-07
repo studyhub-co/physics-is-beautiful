@@ -113,11 +113,11 @@ export function classroomDeleteTeacherClassroom (classroomUuid) {
 
 // --------------------------- STUDENT ACTIONS
 
-export function joinClassroomSuccess (classroom) {
+export function joinClassroomSuccess (classroomStudent) {
   return {
     type: CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS,
     payload: {
-      classroom
+      classroomStudent
     }
   }
 }

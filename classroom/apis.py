@@ -121,12 +121,12 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                 break
         except AssignmentProgress.DoesNotExist:
             # create new progress
-            sudent_profile, created = Profile.objects.get_or_create(user=request.user)
+            student_profile, created = Profile.objects.get_or_create(user=request.user)
             AssignmentProgress.objects.create(
-                student=sudent_profile,
+                student=student_profile,
                 assignment=assignment
             )
-            first_uncompleted_lesson = assignment.lessons.all().get(0, None)
+            first_uncompleted_lesson = assignment.lessons.first()
 
         # todo find first uncompleted lesson
 

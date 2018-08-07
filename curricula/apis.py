@@ -40,6 +40,23 @@ class QuestionViewSet(ModelViewSet):
         except LessonLocked as e:
             raise serializers.ValidationError(e)
         data = LessonProgressSerializer(service.current_lesson_progress).data
+        if self.request.user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
+            # find classroom progress
+            from classroom.models import Assignment, AssignmentProgress
+            assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
+            for assignment in assignments:
+                # user can have several assignments (from different classroom e.g.) to one lesson
+                # we need to create AssignmentProgress to understand that user take part in a assingment
+                # created via /api/v1/classroom/classroom_uuid/assignment/assignment_uuid/first_uncompleted_lesson
+                try:
+                    assignment_progress = AssignmentProgress.objects.get(assignment=assignment,
+                                                                         student__user=self.request.user)
+                    assignment_progress.completed_on = datetime.datetime.now()
+                    assignment_progress.completed_lessons.add(service.current_lesson)
+                    assignment_progress.save()
+                except AssignmentProgress.DoesNotExist:
+                    pass
+
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
         if not is_correct:
