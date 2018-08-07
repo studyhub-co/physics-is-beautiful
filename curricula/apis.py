@@ -44,13 +44,14 @@ class QuestionViewSet(ModelViewSet):
             # find classroom progress
             from classroom.models import Assignment, AssignmentProgress
             assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
-            for assignment in assignments:
+            assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
+                                                                         student__user=self.request.user)
+            for assignment_progress in assignment_progress_list:
                 # user can have several assignments (from different classroom e.g.) to one lesson
                 # we need to create AssignmentProgress to understand that user take part in a assingment
                 # created via /api/v1/classroom/classroom_uuid/assignment/assignment_uuid/first_uncompleted_lesson
                 try:
-                    assignment_progress = AssignmentProgress.objects.get(assignment=assignment,
-                                                                         student__user=self.request.user)
+
                     assignment_progress.completed_on = datetime.datetime.now()
                     assignment_progress.completed_lessons.add(service.current_lesson)
                     assignment_progress.save()
