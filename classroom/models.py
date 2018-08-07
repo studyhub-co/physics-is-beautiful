@@ -88,3 +88,4 @@ class AssignmentProgress(models.Model):
 
     class Meta:
         ordering = ['-start_on']
+        unique_together = (("assignment", "student"), )  # one progress per user and  assignment

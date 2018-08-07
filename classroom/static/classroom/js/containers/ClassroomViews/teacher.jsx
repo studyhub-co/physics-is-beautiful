@@ -100,6 +100,7 @@ class TeacherClassroomView extends React.Component {
     if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
       studentsS = 's'
     }
+
     return (
       <div className={'pop-up-window'}>
         <Grid fluid> { this.props.classroomTeacher
