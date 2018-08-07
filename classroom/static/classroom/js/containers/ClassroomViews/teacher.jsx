@@ -27,7 +27,6 @@ import * as tabsCreators from '../../actions/tab'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { AssignmentTeacherView, EditAssignmentView, StudentClassroomProfileView } from '../index'
 
-
 class TeacherClassroomView extends React.Component {
   componentWillMount () {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
@@ -197,10 +196,10 @@ class TeacherClassroomView extends React.Component {
                   }, this)}
                 </span>
                 : null }
-                { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students == 0
-                  ? <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
-                  Share the <u>classroom code</u> with your students so they can join your classroom.</div>
-                  : null}
+              { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students == 0
+                ? <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
+                Share the <u>classroom code</u> with your students so they can join your classroom.</div>
+                : null}
             </TabContent>
             <TabContent for='assignments'>
               <Route path={assignmentUrl} component={AssignmentTeacherView} />

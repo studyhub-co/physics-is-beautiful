@@ -78,12 +78,12 @@ class Assignment(models.Model):
 
 
 class AssignmentProgress(models.Model):
+    assignment = models.ForeignKey(Assignment, related_name='assignment_progress')
     uuid = ShortUUIDField(unique=True)
+    completed_lessons = models.ManyToManyField(Lesson)
     updated_on = models.DateTimeField(auto_now=True)
     start_on = models.DateTimeField(auto_now_add=True)
-    completed_on = models.DateTimeField()
-    name = models.CharField(max_length=200)
-    assignment = models.ForeignKey(Classroom, related_name='assignment_progress')
+    completed_on = models.DateTimeField(blank=True, null=True)
     student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')
 
     class Meta:

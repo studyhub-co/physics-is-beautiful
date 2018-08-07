@@ -1,11 +1,11 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import {
   ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST, ASSIGNMENT_CREATE_ASSIGNMENT_SUCCESS,
-  ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS, ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS
+  ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS, ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS,
+  ASSIGNMENT_FETCH_FIRST_UNCOMPLETEDED_LESSON
 } from '../constants'
 
-import { BASE_URL, API_PREFIX } from '../utils/config'
-
+import { API_PREFIX } from '../utils/config'
 
 export function receiveAssignment (assignment) {
   return {
@@ -18,7 +18,6 @@ export function receiveAssignment (assignment) {
 
 export function assignmentFetchAssignment (classroomUuid, assignmentUuid, callback = null) {
   return (dispatch, state) => {
-    // dispatch(classroomFetchClassroomlistRequest()) // to the future
     return getAxios().get(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid)
       .then(checkHttpStatus)
       .then((response) => {
@@ -41,7 +40,6 @@ export function receiveAssignmentsList (assignmentsList) {
 
 export function assignmentFetchAssignmentList (classroomUuid) {
   return (dispatch, state) => {
-    // dispatch(classroomFetchClassroomlistRequest()) // to the future
     return getAxios().get(API_PREFIX + classroomUuid + '/assignment/')
       .then(checkHttpStatus)
       .then((response) => {
@@ -106,6 +104,28 @@ export function assignmentDeleteAssignment (classroomUuid, assignmentUuid, refre
         if (refreshAssignmentsList) {
           dispatch(assignmentFetchAssignmentList(classroomUuid))
         }
+        if (typeof callback === 'function'){
+          callback()
+        }
+      })
+  }
+}
+
+export function receiveFirstUncompletedLesson (uncompletedLesson) {
+  return {
+    type: ASSIGNMENT_FETCH_FIRST_UNCOMPLETEDED_LESSON,
+    payload: {
+      uncompletedLesson
+    }
+  }
+}
+
+export function assignmentFetchFirstUncompletedLesson (classroomUuid, assignmentUuid, callback = null) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid + '/first_uncompleted_lesson/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveFirstUncompletedLesson(response.data))
         if (typeof callback === 'function'){
           callback()
         }

@@ -11,7 +11,10 @@ export class StudentClassroomRow extends React.Component {
       <div className={className}>
         <Row>
           <Col sm={10} md={10}>
-            <span className={'blue-title'}>{this.props.classroom.name}</span>
+            <span
+              onClick={() => this.props.onAssignmentsClick(this.props.baseUrl + '/' + this.props.classroom.uuid + '/student/')}
+              className={'blue-title pointer'}>{this.props.classroom.name}
+            </span>
           </Col>
           <Col sm={2} md={2}>
             <span onClick={() => this.props.onAssignmentsClick(this.props.baseUrl +
