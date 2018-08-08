@@ -83,7 +83,7 @@ class AssignmentProgress(models.Model):
     completed_lessons = models.ManyToManyField(Lesson)
     updated_on = models.DateTimeField(auto_now=True)
     start_on = models.DateTimeField(auto_now_add=True)
-    completed_on = models.DateTimeField(blank=True, null=True)
+    completed_on = models.DateTimeField(blank=True, null=True)  # TODO should erase if new assignments added?
     student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')
 
     class Meta:

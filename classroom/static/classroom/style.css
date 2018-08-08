@@ -17,6 +17,10 @@
     color: red;
 }
 
+.classroom .green-text {
+    color: #7eb530;
+}
+
 .classroom .title {
     font-size: 2.5rem;
 }

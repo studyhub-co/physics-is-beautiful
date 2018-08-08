@@ -1,5 +1,6 @@
 import os
 
+from pib.common_settings import *  # noqa: E402, F401
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -12,8 +13,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
-from pib.common_settings import *  # noqa: E402, F401
+# debug_toolbar
 
+INSTALLED_APPS.append('debug_toolbar')
+MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+INTERNAL_IPS = ALLOWED_HOSTS
 
 # STATIC_ROOT = 'static/'
 MEDIA_ROOT = 'media/'

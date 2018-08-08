@@ -19,10 +19,10 @@ export class AssignmentStudentRow extends React.Component {
           <div className={'gray-text small-text'}>{this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}</div>
         </Col>
         <Col sm={4} md={4} className={'vcenter'}>
-          Past due: 6/3/2018 at 11:59 pm
+          { this.props.assignment.completed_on ? <div className={'green-text'}>Complete</div> : null }
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
-          3/3
+          { this.props.assignment.completed_on ? <div className={'green-text'}> {this.props.assignment.count_completed_lessons} / {this.props.assignment.count_lessons}</div> : null }
         </Col>
         <Col sm={1} md={1}>
           status img

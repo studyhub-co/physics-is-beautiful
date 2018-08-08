@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.db.models import Count
+from django.db.models import Prefetch
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions
@@ -128,19 +129,26 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             )
             first_uncompleted_lesson = assignment.lessons.first()
 
-        # todo find first uncompleted lesson
-
+        # find first uncompleted lesson
         if first_uncompleted_lesson is None:
             raise NotFound('Can\'t find the first uncompleted lesson')
 
         serializer = LessonSerializer(first_uncompleted_lesson, many=False)
         return Response(serializer.data)
 
-        # LessonSerializer
-
     def get_queryset(self):
-        queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid']).prefetch_related('lessons')
-        queryset = queryset.annotate(count_lessons=Count('lessons'))
+        queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid']).\
+            prefetch_related('lessons',
+                             Prefetch('assignment_progress',
+                                      queryset=
+                                      AssignmentProgress.objects.filter(student__user=self.request.user)
+                                      )
+                             )
+        queryset = queryset.annotate(count_lessons=Count('lessons'),
+                                     count_completed_lessons=Count('assignment_progress__completed_lessons'))
+
+        # TODO remove prefetch_related for create\update
+
         return queryset
 
 
