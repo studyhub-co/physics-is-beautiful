@@ -2,7 +2,7 @@ import { checkHttpStatus, getAxios } from '../utils'
 import {
   ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST, ASSIGNMENT_CREATE_ASSIGNMENT_SUCCESS,
   ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS, ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS,
-  ASSIGNMENT_FETCH_FIRST_UNCOMPLETEDED_LESSON
+  ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON
 } from '../constants'
 
 import { API_PREFIX } from '../utils/config'
@@ -113,7 +113,7 @@ export function assignmentDeleteAssignment (classroomUuid, assignmentUuid, refre
 
 export function receiveFirstUncompletedLesson (uncompletedLesson) {
   return {
-    type: ASSIGNMENT_FETCH_FIRST_UNCOMPLETEDED_LESSON,
+    type: ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON,
     payload: {
       uncompletedLesson
     }
