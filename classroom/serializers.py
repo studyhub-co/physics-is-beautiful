@@ -49,6 +49,22 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
     count_lessons = serializers.IntegerField(read_only=True)
 
+    # count_completed_lessons = serializers.SerializerMethodField()
+    count_completed_lessons = serializers.IntegerField(read_only=True)
+
+    completed_on = serializers.SerializerMethodField()
+
+    def get_completed_on(self, obj):
+        if obj.assignment_progress.count() > 0:
+            return obj.assignment_progress.first().completed_on
+        return None
+
+    # def get_count_completed_lessons(self, obj):
+    #     if obj.assignment_progress.count() > 0:
+    #         obj.assignment_progress.first().completed_lessons
+    #     return None
+
+
     def create(self, validated_data):
         lessons = validated_data.pop('lessons')
         with transaction.atomic():
@@ -72,7 +88,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on',
-                  'classroom_uuid', 'lessons_uuids', 'count_lessons']
+                  'classroom_uuid', 'lessons_uuids', 'count_lessons', 'completed_on', 'count_completed_lessons']
         read_only_fields = ('uuid', 'created_on', 'updated_on')
 
 
