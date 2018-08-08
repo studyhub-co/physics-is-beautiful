@@ -49,21 +49,20 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
     count_lessons = serializers.IntegerField(read_only=True)
 
-    # count_completed_lessons = serializers.SerializerMethodField()
-    count_completed_lessons = serializers.IntegerField(read_only=True)
+    count_completed_lessons = serializers.SerializerMethodField(read_only=True)
+    # count_completed_lessons = serializers.IntegerField(read_only=True, source='assignment_progress.first().count_completed_lessons')
 
-    completed_on = serializers.SerializerMethodField()
+    completed_on = serializers.SerializerMethodField(read_only=True)
 
     def get_completed_on(self, obj):
         if obj.assignment_progress.count() > 0:
             return obj.assignment_progress.first().completed_on
         return None
 
-    # def get_count_completed_lessons(self, obj):
-    #     if obj.assignment_progress.count() > 0:
-    #         obj.assignment_progress.first().completed_lessons
-    #     return None
-
+    def get_count_completed_lessons(self, obj):
+        if obj.assignment_progress.count() > 0:
+            return obj.assignment_progress.first().count_completed_lessons
+        return None
 
     def create(self, validated_data):
         lessons = validated_data.pop('lessons')
