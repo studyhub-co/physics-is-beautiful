@@ -172,15 +172,11 @@ export function leaveStudentClassroomSuccess (classroomStudent) {
 
 export function classroomLeaveStudentClassroom (classroom) {
   return (dispatch, state) => {
-    var newClassroomList = state().classroom.classroomStudentList
-
-    newClassroomList.splice(newClassroomList.indexOf('foo'), 1)
-
     return getAxios().post(API_PREFIX + 'leave/', {uuid: classroom.uuid})
       .then((response) => {
         dispatch(leaveStudentClassroomSuccess(response.data))
         // remove class room from classrooms list
-        dispatch(receiveStudentClassroomsList(newClassroomList))
+        dispatch(classroomFetchStudentClassroomsList())
         // move to clasrooms list page
         dispatch(push(BASE_URL))
       })

@@ -40,7 +40,7 @@ class StudentClassroomView extends React.Component {
     }
   }
 
-  leaveClassroom (classroom) {
+  leaveClassroom () {
     this.props.classroomActions.classroomLeaveStudentClassroom(this.props.classroomStudent)
   }
 

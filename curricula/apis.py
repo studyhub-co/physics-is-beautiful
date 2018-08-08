@@ -40,23 +40,32 @@ class QuestionViewSet(ModelViewSet):
         except LessonLocked as e:
             raise serializers.ValidationError(e)
         data = LessonProgressSerializer(service.current_lesson_progress).data
+
+        # ================= classroom progress start
+        # TODO check start and due to date
         if self.request.user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
-            # find classroom progress
             from classroom.models import Assignment, AssignmentProgress
             assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
             assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
-                                                                         student__user=self.request.user)
+                                                                         student__user=self.request.user,
+                                                                         completed_on__isnull=True)
             for assignment_progress in assignment_progress_list:
                 # user can have several assignments (from different classroom e.g.) to one lesson
                 # we need to create AssignmentProgress to understand that user take part in a assingment
                 # created via /api/v1/classroom/classroom_uuid/assignment/assignment_uuid/first_uncompleted_lesson
+                assignment_progress.completed_lessons.add(service.current_lesson)
                 try:
-
-                    assignment_progress.completed_on = datetime.datetime.now()
                     assignment_progress.completed_lessons.add(service.current_lesson)
-                    assignment_progress.save()
+
+                    if assignment_progress.assignment.lessons.difference(assignment_progress.assignment.lessons.all())\
+                            .count() == 0:
+                        assignment_progress.completed_on = datetime.datetime.now()
+
+                    assignment_progress.save()  # update updated_on date
+
                 except AssignmentProgress.DoesNotExist:
                     pass
+        # ================= classroom progress end
 
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct

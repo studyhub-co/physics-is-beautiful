@@ -1,6 +1,6 @@
 import {
   ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST, ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS, ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS,
-  ASSIGNMENT_FETCH_FIRST_UNCOMPLETEDED_LESSON
+  ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON
 } from '../constants'
 
 const initialState = {
@@ -14,7 +14,7 @@ export default function assignmentReducer (state = initialState, action) {
       return Object.assign({}, state, {
         assignmentsList: action.payload.assignmentsList
       })
-    case ASSIGNMENT_FETCH_FIRST_UNCOMPLETEDED_LESSON:
+    case ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON:
       return Object.assign({}, state, {
         uncompletedLesson: action.payload.uncompletedLesson
       })
