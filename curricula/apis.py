@@ -57,7 +57,7 @@ class QuestionViewSet(ModelViewSet):
                 try:
                     assignment_progress.completed_lessons.add(service.current_lesson)
 
-                    if assignment_progress.assignment.lessons.difference(assignment_progress.assignment.lessons.all())\
+                    if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
                             .count() == 0:
                         assignment_progress.completed_on = datetime.datetime.now()
 

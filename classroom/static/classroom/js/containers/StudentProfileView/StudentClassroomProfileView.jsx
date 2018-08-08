@@ -16,11 +16,11 @@ class StudentClassroomProfileView extends React.Component {
   componentWillMount () {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', true)
-    // this.props.studentActions.classroomFetchStudentClassroomAssignmentsList(
-    //   this.props.match.params['uuid'],
-    //   this.props.match.params['username']
-    // )
     this.props.studentActions.classroomFetchStudentClassroomProfile(
+      this.props.match.params['uuid'],
+      this.props.match.params['username']
+    )
+    this.props.studentActions.classroomFetchStudentClassroomAssignmentsList(
       this.props.match.params['uuid'],
       this.props.match.params['username']
     )
@@ -57,7 +57,7 @@ class StudentClassroomProfileView extends React.Component {
                 <Dropdown.Menu>
                   <MenuItem eventKey='remove'>Remove from class</MenuItem>
                   {/*<MenuItem eventKey='send'>Send reminder</MenuItem>*/}
-                  <MenuItem eventKey='edit'>Move student</MenuItem>
+                  {/*<MenuItem eventKey='edit'>Move student</MenuItem>*/}
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
@@ -69,10 +69,10 @@ class StudentClassroomProfileView extends React.Component {
             <Col sm={8} md={8}>
               { this.props.studentClassroomProfile ? <div>
                 <div className={'title'}>{this.props.studentClassroomProfile.display_name}</div>
-                <div>{this.props.studentClassroomProfile.username}</div></div>
+                <div className={'deep-gray-text'}>{this.props.studentClassroomProfile.username}</div></div>
                 : null }
             </Col>
-            <Col sm={3} md={3} className={'text-right'}>
+            <Col sm={3} md={3} className={'vcenter'}>
               <div className={'gray-text'}>
                 <span className={'green-completed-box'}>
                   <span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp; 1
