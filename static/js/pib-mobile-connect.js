@@ -41,10 +41,21 @@ if (window.IS_MOBILE_APP) {
       return;
     }
 
+    e.preventDefault();
+
+    // social account provider (i.e. Google or Facebook)
+    if (this.classList.contains('socialaccount_provider')) {
+      if (this.classList.contains('google')) {
+        window.parent.postMessage('googleLogin', '*');
+      } else if (this.classList.contains('facebook')) {
+        window.parent.postMessage('facebookLogin', '*');
+      }
+      return false;
+    }
+
     // tell the parent page that we are adding to the navigation stack.
     window.parent.postMessage('pagePushed', '*');
 
-    e.preventDefault();
     if (this.href.indexOf('?') !== -1) {
       if (this.href.indexOf('pib_mobile') !== -1) {
         window.location = this.href;
@@ -54,5 +65,6 @@ if (window.IS_MOBILE_APP) {
     } else {
       window.location = this.href + '?pib_mobile=true';
     }
+    return false;
   });
 }
