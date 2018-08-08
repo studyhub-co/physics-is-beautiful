@@ -64,7 +64,7 @@ class StudentClassroomProfileView extends React.Component {
           </Row>
           <Row className={className}>
             <Col sm={1} md={1}>
-              Will be image
+              {/*Will be image TODO */}
             </Col>
             <Col sm={8} md={8}>
               { this.props.studentClassroomProfile ? <div>

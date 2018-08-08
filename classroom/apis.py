@@ -32,7 +32,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly)
     serializer_class = ClassroomSerializer
     list_serializer_class = ClassroomListSerializer
-    queryset = Classroom.objects.all().select_related('curriculum')
+    queryset = Classroom.objects.all().select_related('curriculum', 'teacher').prefetch_related('students')
     lookup_field = 'uuid'
 
     def get_queryset(self):
@@ -141,15 +141,16 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             prefetch_related('lessons',
                              Prefetch('assignment_progress',
                                       queryset=
-                                      AssignmentProgress.objects.filter(student__user=self.request.user)
+                                      AssignmentProgress.objects.filter(student__user=self.request.user).annotate(count_completed_lessons=Count('completed_lessons'))
                                       )
                              )
-        queryset = queryset.annotate(count_lessons=Count('lessons'),
-                                     count_completed_lessons=Count('assignment_progress__completed_lessons'))
+        queryset = queryset.annotate(count_lessons=Count('lessons'))
 
         # TODO remove prefetch_related for create\update
 
         return queryset
+
+    # TODO need to erase AssignmentProgress.completed_on if new assignments added
 
 
 class StudentProfileViewSet(GenericViewSet):

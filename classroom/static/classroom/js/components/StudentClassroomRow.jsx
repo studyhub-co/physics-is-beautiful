@@ -18,7 +18,7 @@ export class StudentClassroomRow extends React.Component {
           </Col>
           <Col sm={2} md={2}>
             <span onClick={() => this.props.onAssignmentsClick(this.props.baseUrl +
-              '/' + this.props.classroom.uuid + '/student/')} className={'gray-link'}>Assignments</span>
+              '/' + this.props.classroom.uuid + '/student/')} className={'pib-link'}>Assignments</span>
           </Col>
         </Row>
       </div>

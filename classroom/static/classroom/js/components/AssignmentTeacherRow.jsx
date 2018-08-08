@@ -28,7 +28,7 @@ export class AssignmentTeacherRow extends React.Component {
               {/*circle />*/}
             {/*: null}*/}
           <div className={'gray-text small-text'}>
-          image
+          {/*image*/}
           </div>
         </Col>
         <Col sm={4} md={4}>
