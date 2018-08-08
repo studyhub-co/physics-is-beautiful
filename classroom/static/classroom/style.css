@@ -13,6 +13,10 @@
     color: rgb(216, 216, 216);
 }
 
+.classroom .deep-gray-text {
+    color: #717171;
+}
+
 .classroom .red-text {
     color: red;
 }
@@ -259,10 +263,11 @@
 .classroom  .assignment-teacher-card {
     border-radius: 15px;
     background-color: rgb(247, 247, 247);
-    padding-top: 1rem;
+    padding: 1rem 0 1rem 0;
 }
 
 .red-missed-box {
+    border-radius: 1rem;
     padding: 1rem 2rem;
     margin: 2rem;
     color: #dd381d;
@@ -271,6 +276,7 @@
 }
 
 .green-completed-box {
+    border-radius: 1rem;
     padding: 1rem 2rem;
     margin: 2rem;
     color: #7eb530;

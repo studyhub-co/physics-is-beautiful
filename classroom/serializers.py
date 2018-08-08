@@ -62,7 +62,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     def get_count_completed_lessons(self, obj):
         if obj.assignment_progress.count() > 0:
             return obj.assignment_progress.first().count_completed_lessons
-        return None
+        return 0
 
     def create(self, validated_data):
         lessons = validated_data.pop('lessons')

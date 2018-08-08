@@ -166,6 +166,8 @@ class StudentProfileViewSet(GenericViewSet):
         user_id = username.replace('user', '')
         profile = Profile.objects.get(user__pk=user_id)
 
+        # profile.prefetch_related('')
+
         # TODO count for current classroom assignment progress
         # queryset = queryset.annotate(count_lessons=Count('lessons'))
         serializer = StudentProfileSerializer(profile, many=False)
@@ -176,7 +178,7 @@ class StudentProfileViewSet(GenericViewSet):
         """
         urls like /api/v1/classroom/:classroomuuid/students/:username/assignments/
         """
-        # TODO get all assignments and add AssignmentProgress data for current user
+        # TODO get all user assignments and add AssignmentProgress data for current user
         pass
 
 
