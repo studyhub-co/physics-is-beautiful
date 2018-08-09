@@ -77,6 +77,7 @@ class StudentClassroomView extends React.Component {
             { this.props.assignmentsList
               ? this.props.assignmentsList.map(function (assignment, i) {
                 return <AssignmentStudentRow
+                  isTeacher={Boolean(false)}
                   assignment={assignment}
                   onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
                   key={i} />

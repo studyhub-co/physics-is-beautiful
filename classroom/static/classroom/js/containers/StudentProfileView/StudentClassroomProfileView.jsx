@@ -6,11 +6,14 @@ import { connect } from 'react-redux'
 
 import history from '../../history'
 import { BASE_URL } from '../../utils/config'
+import { push } from 'connected-react-router'
 
 import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
+import * as assignmentCreators from '../../actions/assignment'
 
 import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { AssignmentStudentRow } from '../../components/AssignmentStudentRow'
 
 class StudentClassroomProfileView extends React.Component {
   componentWillMount () {
@@ -37,6 +40,11 @@ class StudentClassroomProfileView extends React.Component {
     //     () => { this.props.dispatch(push(BASE_URL + this.props.match.params['uuid'] + '/teacher/')) }
     //   )
     // }
+  }
+
+  onAssignmentTitleClick (assignment) {
+    // redirect to first uncompleted lesson
+    this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/assignments/' + assignment.uuid))
   }
 
   render () {
@@ -75,14 +83,28 @@ class StudentClassroomProfileView extends React.Component {
             <Col sm={3} md={3} className={'vcenter'}>
               <div className={'gray-text'}>
                 <span className={'green-completed-box'}>
-                  <span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp; 1
+                  <span title={'Completed'} className='glyphicon glyphicon-ok'>
+                    &nbsp;{this.props.studentClassroomProfile.counts.num_missed}
+                  </span>
                 </span>
                 <span className={'red-missed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-remove' />&nbsp; -
+                  <span title={'Missed'} className='glyphicon glyphicon-remove'>
+                    &nbsp;{this.props.studentClassroomProfile.counts.num_completed}
+                  </span>
                 </span>
               </div>
             </Col>
           </Row>
+        </Grid>
+        <Grid fluid>
+          { this.props.studentAssignmentsList
+            ? this.props.studentAssignmentsList.map(function (assignment, i) {
+              return <AssignmentStudentRow
+                isTeacher={Boolean(true)}
+                assignment={assignment}
+                onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
+                key={i} />
+            }, this) : null}
         </Grid>
       </div>
     )
@@ -98,7 +120,8 @@ StudentClassroomProfileView.propTypes = {
   studentActions: PropTypes.shape({
     classroomFetchStudentClassroomAssignmentsList: PropTypes.func.isRequired,
     classroomFetchStudentClassroomProfile: PropTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  studentAssignmentsList: PropTypes.array
 }
 
 const mapStateToProps = (state) => {
@@ -115,7 +138,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     // assignmentActions: bindActionCreators(assignmentCreators, dispatch),
     tabActions: bindActionCreators(tabsCreators, dispatch),
-    studentActions: bindActionCreators(studentCreators, dispatch)
+    studentActions: bindActionCreators(studentCreators, dispatch),
+    assignmentActions: bindActionCreators(assignmentCreators, dispatch)
   }
 }
 

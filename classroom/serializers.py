@@ -102,7 +102,9 @@ class StudentProfileSerializer(PublicProfileSerializer):
     counts = serializers.SerializerMethodField()
 
     def get_counts(self, obj):
-        return {'num_completed': 1, 'num_missed': 0}
+        return {'num_completed': obj.count_completed_lessons if hasattr(obj, 'count_completed_lessons') else 0,
+                'num_missed': obj.count_missed_lessons if hasattr(obj, 'count_missed_lessons') else 0
+                }
 
     class Meta:
         model = Profile
