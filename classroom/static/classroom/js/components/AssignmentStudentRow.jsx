@@ -25,7 +25,7 @@ export class AssignmentStudentRow extends React.Component {
           </div>
         </Col>
         <Col sm={4} md={4}>
-          { textColorClassName !== 'gray-text' // TODO check start date
+          { !this.props.isTeacher && textColorClassName !== 'gray-text' // TODO check start date
             ? <div className={'blue-title'}>{this.props.assignment.name}</div>
             : <div className={'blue-title pointer'} onClick={this.props.onTitleClick}>{this.props.assignment.name}</div>
           }
@@ -55,6 +55,7 @@ export class AssignmentStudentRow extends React.Component {
 }
 
 AssignmentStudentRow.propTypes = {
-  assignment: PropTypes.object,
-  onTitleClick: PropTypes.func
+  assignment: PropTypes.object.isRequired,
+  onTitleClick: PropTypes.func,
+  isTeacher: PropTypes.bool.isRequired
 }

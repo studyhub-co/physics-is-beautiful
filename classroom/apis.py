@@ -1,6 +1,6 @@
-from django.db.models import Q
-from django.db.models import Count
-from django.db.models import Prefetch
+import datetime
+
+from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions
@@ -141,7 +141,8 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             prefetch_related('lessons',
                              Prefetch('assignment_progress',
                                       queryset=
-                                      AssignmentProgress.objects.filter(student__user=self.request.user).annotate(count_completed_lessons=Count('completed_lessons'))
+                                      AssignmentProgress.objects.filter(student__user=self.request.user).
+                                      annotate(count_completed_lessons=Count('completed_lessons'))
                                       )
                              )
         queryset = queryset.annotate(count_lessons=Count('lessons'))
@@ -150,7 +151,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         return queryset
 
-    # TODO need to erase AssignmentProgress.completed_on if new assignments added
+    # TODO need to erase AssignmentProgress.completed_on if new lessons added
 
 
 class StudentProfileViewSet(GenericViewSet):
@@ -158,28 +159,66 @@ class StudentProfileViewSet(GenericViewSet):
     lookup_field = 'username'
     # serializer_class = StudentProfileSerializer
 
-    @action(methods=['get'], detail=True, permission_classes=[])
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def profile(self, request, classroom_uuid, username=None):
         """
         url like /api/v1/classroom/:classroomuuid/students/:username/profile/
         """
         user_id = username.replace('user', '')
-        profile = Profile.objects.get(user__pk=user_id)
 
-        # profile.prefetch_related('')
+        profile_qs = Profile.objects
 
-        # TODO count for current classroom assignment progress
-        # queryset = queryset.annotate(count_lessons=Count('lessons'))
+        # count for current user and classroom assignment progress
+        profile_qs = profile_qs.annotate(count_completed_lessons=Count(
+            Case(
+                When(as_students_assignment_progress__completed_on__isnull=False,
+                     then=1),
+                output_field=IntegerField()
+            )
+        ))
+
+        profile_qs = profile_qs.annotate(
+            count_missed_lessons=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
+                Case(
+                    When(as_students_assignment_progress__isnull=True,
+                         as_students_assignment_progress__assignment__due_on__gt=datetime.datetime.now(),
+                         then=1),
+                    output_field=IntegerField()
+                )
+            ))
+
+        try:
+            profile = profile_qs.get(user__pk=user_id)
+        except Profile.DoesNotExist:
+            raise NotFound()
+
         serializer = StudentProfileSerializer(profile, many=False)
         return Response(serializer.data)
 
-    @action(methods=['get'], detail=False, permission_classes=[])
-    def assignments(self, classroom_uuid, request, pk=None):
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
+    def assignments(self, request, classroom_uuid, username=None):
         """
         urls like /api/v1/classroom/:classroomuuid/students/:username/assignments/
         """
         # TODO get all user assignments and add AssignmentProgress data for current user
-        pass
+        user_id = username.replace('user', '')
 
+        try:
+            profile = Profile.objects.get(user__pk=user_id)
+        except Profile.DoesNotExist:
+            raise NotFound()
+
+        assignments = Assignment.objects.filter(classroom__uuid=classroom_uuid)\
+            .prefetch_related('lessons',
+                              Prefetch('assignment_progress',
+                                       queryset=AssignmentProgress.objects.filter(student=profile).
+                                       annotate(count_completed_lessons=Count('completed_lessons')))
+                              )
+        assignments = assignments.annotate(count_lessons=Count('lessons'))
+
+        self.queryset = assignments
+
+        serializer = AssignmentListSerializer(assignments, many=True)
+        return Response(serializer.data)
 
 
