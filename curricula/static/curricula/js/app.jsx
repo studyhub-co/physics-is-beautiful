@@ -23,7 +23,7 @@ class CurriculumInfoPanel extends React.Component {
   }
   render () {
     return (<div className='container section-sheet curriculum-panel-font'>
-      <div>
+      <div className='curriculum-display-wrap'>
         {this.props.curriculum
           ? <Grid fluid>
             {/* title */}
