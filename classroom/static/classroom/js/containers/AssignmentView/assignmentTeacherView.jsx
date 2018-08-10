@@ -102,11 +102,13 @@ export class AssignmentTeacherView extends React.Component {
             <Col sm={5} md={5} className={'text-right'}>
               <div className={'gray-text'}>
                 <span className={'green-completed-box'}>
-                  <span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp; 1
+                  <span title={'Completed'} className='glyphicon glyphicon-ok' />
+                  &nbsp;{this.props.assignment ? this.props.assignment.count_completed_lessons : null}
                 </span>
                 &nbsp;
                 <span className={'red-missed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-remove' />&nbsp; -
+                  <span title={'Missed'} className='glyphicon glyphicon-remove' />
+                  &nbsp;{this.props.assignment ? this.props.assignment.count_missed_lessons : null}
                 </span>
               </div>
               <br />

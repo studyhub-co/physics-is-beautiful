@@ -48,9 +48,9 @@ export class AssignmentTeacherRow extends React.Component {
           </span>
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
-          <span style={{width: '15px', height: '15px'}}>1</span>
+          <span style={{width: '15px', height: '15px'}}>{this.props.assignment ? this.props.assignment.count_completed_lessons : null}</span>
           &nbsp;
-          <span style={{width: '15px', height: '15px'}}>-</span>
+          <span style={{width: '15px', height: '15px'}}>{this.props.assignment ? this.props.assignment.count_missed_lessons : null}</span>
         </Col>
         <Col sm={1} md={1}>
           <Dropdown onSelect={this.handleSettingsClick} id={'dropdown-settings'}>

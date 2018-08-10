@@ -49,20 +49,34 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
     count_lessons = serializers.IntegerField(read_only=True)
 
+    # total user statistics
+    count_students_completed_assingment = serializers.SerializerMethodField(read_only=True)
+    # count_students_missed_assingment = serializers.SerializerMethodField(read_only=True)
+
+    # current user statistics
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
+    count_missed_lessons = serializers.SerializerMethodField(read_only=True)
     # count_completed_lessons = serializers.IntegerField(read_only=True, source='assignment_progress.first().count_completed_lessons')
 
     completed_on = serializers.SerializerMethodField(read_only=True)
+
+    def get_count_missed_lessons(self, obj):
+        return obj.count_missed_lessons if hasattr(obj, 'count_missed_lessons') \
+                                           and obj.classroom.teacher.user == self.context['request'].user\
+               else 0
+
+    def get_count_completed_lessons(self, obj):
+        return obj.count_completed_lessons if hasattr(obj, 'count_completed_lessons')  \
+                                           and obj.classroom.teacher.user == self.context['request'].user\
+               else 0
 
     def get_completed_on(self, obj):
         if obj.assignment_progress.count() > 0:
             return obj.assignment_progress.first().completed_on
         return None
 
-    def get_count_completed_lessons(self, obj):
-        if obj.assignment_progress.count() > 0:
-            return obj.assignment_progress.first().count_completed_lessons
-        return 0
+    def get_count_students_completed_assingment(self, obj):
+        return obj.count_students_completed_assingment if hasattr(obj, 'count_students_completed_assingment') else 0
 
     def create(self, validated_data):
         lessons = validated_data.pop('lessons')
@@ -86,8 +100,9 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on',
-                  'classroom_uuid', 'lessons_uuids', 'count_lessons', 'completed_on', 'count_completed_lessons']
+        fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on', 'classroom_uuid', 'lessons_uuids',
+                  'count_lessons', 'completed_on', 'count_students_completed_assingment', 'count_completed_lessons',
+                  'count_missed_lessons']
         read_only_fields = ('uuid', 'created_on', 'updated_on')
 
 

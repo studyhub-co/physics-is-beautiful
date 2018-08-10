@@ -138,16 +138,29 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid']).\
-            prefetch_related('lessons',
-                             Prefetch('assignment_progress',
-                                      queryset=
-                                      AssignmentProgress.objects.filter(student__user=self.request.user).
-                                      annotate(count_completed_lessons=Count('completed_lessons'))
-                                      )
-                             )
+            prefetch_related('lessons', 'assignment_progress')
+
+                             # Prefetch('assignment_progress',
+                             #          queryset=
+                             #          AssignmentProgress.objects.filter(student__user=self.request.user,
+                             #                                            completed_on__isnull=False).
+                             #          annotate(count_student_completed_lessons=Count('completed_lessons')),
+                             #          # to_attr='assignment_completed_by_user_progress'
+
         queryset = queryset.annotate(count_lessons=Count('lessons'))
+        queryset = queryset.annotate(count_students_completed_assingment=Count(
+                                         Case(
+                                             When(assignment_progress__isnull=False,
+                                                  then=1),
+                                             output_field=IntegerField()
+                                         )
+                                     ))
+
+        # TODO counts for lessons and count_students_missed_assingment
 
         # TODO remove prefetch_related for create\update
+
+        # print(queryset.query)
 
         return queryset
 
