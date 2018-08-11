@@ -1,14 +1,13 @@
 import { push } from 'connected-react-router'
 
 import { checkHttpStatus, getAxios } from '../utils'
-import { CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
+import {
+  CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
   CLASSROOM_RECEIVE_TEACHER_CLASSROOM, CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
   CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
-  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM  } from '../constants'
+  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM } from '../constants'
 
-import { BASE_URL } from '../utils/config'
-
-const API_PREFIX = '/api/v1/classroom/'
+import { BASE_URL, API_PREFIX } from '../utils/config'
 
 // ----------------------  TEACHER ACTIONS
 
@@ -114,11 +113,11 @@ export function classroomDeleteTeacherClassroom (classroomUuid) {
 
 // --------------------------- STUDENT ACTIONS
 
-export function joinClassroomSuccess (classroom) {
+export function joinClassroomSuccess (classroomStudent) {
   return {
     type: CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS,
     payload: {
-      classroom
+      classroomStudent
     }
   }
 }
@@ -173,15 +172,11 @@ export function leaveStudentClassroomSuccess (classroomStudent) {
 
 export function classroomLeaveStudentClassroom (classroom) {
   return (dispatch, state) => {
-    var newClassroomList = state().classroom.classroomStudentList
-
-    newClassroomList.splice(newClassroomList.indexOf('foo'), 1)
-
     return getAxios().post(API_PREFIX + 'leave/', {uuid: classroom.uuid})
       .then((response) => {
         dispatch(leaveStudentClassroomSuccess(response.data))
         // remove class room from classrooms list
-        dispatch(receiveStudentClassroomsList(newClassroomList))
+        dispatch(classroomFetchStudentClassroomsList())
         // move to clasrooms list page
         dispatch(push(BASE_URL))
       })

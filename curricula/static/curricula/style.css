@@ -164,7 +164,7 @@ html, body {
 		padding: 20px;
 		margin-top: -15px;
 	}
-	.col-md-1 {
+.curriculum	.col-md-1 {
 		margin-right: 0px !important;
 	}
     .col-md-6 {
@@ -301,7 +301,7 @@ img.grayed-out-img {
     color: #AAA;
 }
 
-.col-md-1 {
+.curriculum .col-md-1 {
     border-radius: 5px;
     border-style: solid;
     border-width: 2px;
@@ -315,14 +315,14 @@ img.grayed-out-img {
     box-shadow: 0px 0px 10px #BBB;
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
 }
-.col-md-1:hover {
+.curriculum .col-md-1:hover {
     color: #1caff6;
     border-style: solid;
     border-color:#1caff6;
     box-shadow: 0px 0px 16px #BBB;
 }
 
-.col-md-1.disabled {
+.curriculum .col-md-1.disabled {
     pointer-events: none;
     opacity: 0.35;
     filter: alpha(opacity=40);

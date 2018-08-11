@@ -151,6 +151,8 @@ export class VectorGame extends React.Component {
       pausedOnState: null,
       score: 0,
       level: 1,
+      // score: 1200,
+      // level: 4,
       question: null,
       x: null,
       y: null,
@@ -211,7 +213,8 @@ export class VectorGame extends React.Component {
           this.setState({
             scoreList: response.data,
             level: newLevel,
-            state: newState
+            state: newState,
+            score: newScore
           })
         }.bind(this))
         // newLevel = 4;
