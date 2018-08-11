@@ -13,6 +13,7 @@ import { EditAssignmentView } from '../index'
 import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem} from 'react-bootstrap'
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
+import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 export class AssignmentTeacherView extends React.Component {
   constructor (props) {
@@ -103,12 +104,17 @@ export class AssignmentTeacherView extends React.Component {
               <div className={'gray-text'}>
                 <span className={'green-completed-box'}>
                   <span title={'Completed'} className='glyphicon glyphicon-ok' />
-                  &nbsp;{this.props.assignment ? this.props.assignment.count_completed_lessons : null}
+                  &nbsp;{this.props.assignment ? this.props.assignment.count_students_completed_assingment : null}
+                </span>
+                &nbsp;
+                <span className={'yellow-delayed-box'}>
+                  <span title={'Missed'} className='glyphicon glyphicon-time' />
+                  &nbsp;{this.props.assignment ? this.props.assignment.count_students_delayed_assingment : null}
                 </span>
                 &nbsp;
                 <span className={'red-missed-box'}>
                   <span title={'Missed'} className='glyphicon glyphicon-remove' />
-                  &nbsp;{this.props.assignment ? this.props.assignment.count_missed_lessons : null}
+                  &nbsp;{this.props.assignment ? this.props.assignment.count_students_completed_assingment : null}
                 </span>
               </div>
               <br />
@@ -118,6 +124,11 @@ export class AssignmentTeacherView extends React.Component {
             </Col>
           </Row>
           <hr />
+        </Grid>
+        <Grid fluid>
+          <Row className={''}>
+           <TeacherStudentAssignmentRow />
+          </Row>
         </Grid>
         { this.state.showEditAssigment
           ? <Modal

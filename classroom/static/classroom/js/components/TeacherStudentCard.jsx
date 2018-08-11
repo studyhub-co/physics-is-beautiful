@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-
 export class TeacherStudentCard extends React.Component {
+  // Card to show user in classroom students list
+  // Card to swon user inside assignment view
   render () {
     var className = 'classroom-card pointer'
-
+    console.log(this.props)
     return (
       <div className={className} onClick={() => this.props.onStudentClick()}>
         <span className={'blue-title'}>{this.props.student.display_name}</span>
