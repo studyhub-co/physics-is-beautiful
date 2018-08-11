@@ -6,6 +6,7 @@ import {UnitConversionGame} from './games/unit_conversion';
 import {Vector} from 'vector_canvas';
 import {UnitConversion} from './components/answers/correct_answers/correct_answers';
 import { Grid, Row, Col } from 'react-bootstrap';
+import { RingLoader } from 'react-spinners';
 
 class CurriculumInfoPanel extends React.Component {
   constructor (obj) {
@@ -84,7 +85,8 @@ class CurriculumApp extends React.Component {
     super();
     this.state = {
       currentId: obj.match.params.currentId || 'default',
-      sections: []
+      sections: [],
+      loading: true
     };
     this.fetchState();
 
@@ -141,15 +143,32 @@ class CurriculumApp extends React.Component {
     });
   }
 
+  componentDidMount () {
+    setTimeout(function () { // Start the timer
+      this.setState({loading: false});
+    }.bind(this), 1500);
+  }
+
   render () {
-    return (
-      <div>
-        <CurriculumInfoPanel curriculum={this.curriculum} />
-        <SectionSheet
-          sections={this.state.sections}
-        />
-      </div>
-    );
+    if (this.state.loading) {
+      return (
+        <div className='sweet-loading'>
+          <RingLoader
+            color={'#1caff6'}
+            loading={this.state.loading}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <CurriculumInfoPanel curriculum={this.curriculum} />
+          <SectionSheet
+            sections={this.state.sections}
+          />
+        </div>
+      );
+    }
   }
 }
 

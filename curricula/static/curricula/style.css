@@ -666,3 +666,10 @@ img.grayed-out-img {
     display: flex;
     flex-wrap: wrap;
 }
+
+.sweet-loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
