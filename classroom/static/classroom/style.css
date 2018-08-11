@@ -13,12 +13,24 @@
     color: rgb(216, 216, 216);
 }
 
+.classroom .deep-gray-text {
+    color: #717171;
+}
+
 .classroom .red-text {
     color: red;
 }
 
+.classroom .green-text {
+    color: #7eb530;
+}
+
 .classroom .title {
     font-size: 2.5rem;
+}
+
+.classroom .small-text {
+    font-size: 1.5rem;
 }
 
 .classroom .blue-title {
@@ -47,6 +59,12 @@
 .classroom .gray-link {
     color: #d8d8d8;
     cursor: pointer;
+}
+
+.vcenter {
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 
 /* tabs */
@@ -238,13 +256,50 @@
 }
 
 
-.classroom .disabled-button{
+.classroom .disabled-button {
     background-color: rgb(216, 216, 216);
 }
 
+.classroom  .assignment-teacher-card {
+    border-radius: 15px;
+    background-color: rgb(247, 247, 247);
+    padding: 1rem 0 1rem 0;
+    margin: 1rem 0 1rem 0;
+}
+
+.red-missed-box {
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
+    color: #dd381d;
+    background: #f9d4cd;
+}
+
+.yellow-delayed-box{
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
+    color: #ff9400;
+    background: #ffeed6;
+}
+
+.green-completed-box {
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
+    color: #7eb530;
+    background: #dff0c6;
+}
 
 /* like editor */
 
 .classroom .editable-label:not(.empty) + .glyphicon-pencil{ display:none; }
 .classroom .editable-label:hover + .glyphicon-pencil{ display:inline; }
 /*.classroom .editable-label:hover, .editor .mq-editable-label:hover{ cursor:pointer; }*/
+
+/*react-dropdown-tree-select styles */
+
+.tag{background-color:#f4f4f4;border:1px solid #e9e9e9;padding:2px 0 2px 2px;border-radius:2px;display:inline-block}.tag-remove{color:#a0a0a0;font-size:75%;line-height:100%;cursor:pointer;background-color:transparent;border:none;outline:none}
+.node>label{cursor:pointer;margin-left:2px}.tag-list{display:inline;padding:0;margin:0}.tag-item{display:inline-block;margin:4px}.tag-item .search{border:none;border-bottom:1px solid #ccc;outline:none}.tag-item:last-child{margin-right:4px}
+.node{list-style:none;white-space:nowrap;padding:4px}.node.leaf.collapsed{display:none}.node.disabled>*{color:gray;cursor:not-allowed}.node.match-in-children.hide .node-label{opacity:.5}.toggle{white-space:pre;margin-right:4px}.toggle:after{content:" "}.toggle.collapsed:after{cursor:pointer;content:"+"}.toggle.expanded:after{cursor:pointer;content:"-"}.searchModeOn .toggle{display:none}.checkbox-item{vertical-align:middle;margin:0 4px 0 0}.checkbox-item.simple-select{display:none}
+.hide:not(.match-in-children){display:none}.react-dropdown-tree-select .dropdown{position:relative;display:table}.react-dropdown-tree-select .dropdown .dropdown-trigger{padding:4px;line-height:20px;max-height:200px;display:inline-block;overflow:auto;border:1px solid #b9b9b9}.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow{cursor:pointer}.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after{content:"\25BC";vertical-align:middle;color:#3c3c3c;margin-right:2px}.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after{content:"\25B2";vertical-align:middle;color:#3c3c3c;margin-right:2px}.react-dropdown-tree-select .dropdown .dropdown-content{position:absolute;padding:4px;z-index:999;background:#fff;border-top:1px solid rgba(0,0,0,.05);-webkit-box-shadow:0 5px 8px rgba(0,0,0,.15);box-shadow:0 5px 8px rgba(0,0,0,.15)}.react-dropdown-tree-select .dropdown .dropdown-content ul{margin:0;padding:0}

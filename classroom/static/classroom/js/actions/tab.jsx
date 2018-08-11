@@ -11,7 +11,14 @@ export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = fal
     namespace: tabNamespace }
 }
 
-export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace) {
+export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace, match) {
+  if (match &&
+    match.isExact === false &&
+    !match.params.hasOwnProperty('assigmentUuid') &&
+    !match.params.hasOwnProperty('username')) {
+    history.push(match.url) // rewrite url to teacher tab url. fixme: seems it's need a better solution
+  }
+
   return { type: CHANGE_SELECTED_TAB_TEACHER_CLASSROOM,
     teacherClassroomTab: selectedTab,
     namespace: tabNamespace }
