@@ -1,30 +1,30 @@
-import React from 'react'
-import {BrowserRouter, Switch, Route} from 'react-router-dom'
-import {SectionSheet, Sheet} from './containers/sheet'
-import {VectorGame} from './games/vector'
-import {UnitConversionGame} from './games/unit_conversion'
-import {Vector} from 'vector_canvas'
-import {UnitConversion} from './components/answers/correct_answers/correct_answers'
-import { Grid, Row, Col } from 'react-bootstrap'
-import { RingLoader } from 'react-spinners'
+import React from 'react';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
+import {SectionSheet, Sheet} from './containers/sheet';
+import {VectorGame} from './games/vector';
+import {UnitConversionGame} from './games/unit_conversion';
+import {Vector} from 'vector_canvas';
+import {UnitConversion} from './components/answers/correct_answers/correct_answers';
+import { Grid, Row, Col } from 'react-bootstrap';
+import { RingLoader } from 'react-spinners';
 
 class CurriculumInfoPanel extends React.Component {
   constructor (obj) {
-    super()
+    super();
     this.state = {
       showMore: false
-    }
+    };
   }
 
   showLessMore (e) {
     this.setState({
       showMore: !this.state.showMore
-    })
-    e.preventDefault()
+    });
+    e.preventDefault();
   }
   render () {
     return (<div className='container section-sheet curriculum-panel-font'>
-      <div>
+      <div className='curriculum-display-wrap'>
         {this.props.curriculum
           ? <Grid fluid>
             {/* title */}
@@ -67,7 +67,7 @@ class CurriculumInfoPanel extends React.Component {
                   : null}
                 <Row><a
                   className='curriculum-title curriculum-more-less'
-                  onClick={(e) => { this.showLessMore(e) }}>
+                  onClick={(e) => { this.showLessMore(e); }}>
                   {this.state.showMore ? 'Show less' : 'Show details'}
                 </a>
                 </Row>
@@ -76,36 +76,36 @@ class CurriculumInfoPanel extends React.Component {
           </Grid>
           : null}
       </div>
-    </div>)
+    </div>);
   }
 }
 
 class CurriculumApp extends React.Component {
   constructor (obj) {
-    super()
+    super();
     this.state = {
       currentId: obj.match.params.currentId || 'default',
       sections: [],
       loading: true
-    }
-    this.fetchState()
+    };
+    this.fetchState();
 
-    this.curriculum = null
+    this.curriculum = null;
   }
 
   load () {
     if (!this.curriculum) {
-      return
+      return;
     }
-    var sections = []
+    var sections = [];
     for (var unitIndex = 0; unitIndex < this.curriculum.units.length; unitIndex++) {
-      var unit = this.curriculum.units[unitIndex]
-      var items = []
+      var unit = this.curriculum.units[unitIndex];
+      var items = [];
       for (var moduleIndex = 0; moduleIndex < unit.modules.length; moduleIndex++) {
-        var module = unit.modules[moduleIndex]
-        var name = module.name + ' '
+        var module = unit.modules[moduleIndex];
+        var name = module.name + ' ';
         if (!module.is_locked) {
-          name += '(' + module.lesson_completed_count + '/' + module.lesson_count + ') '
+          name += '(' + module.lesson_completed_count + '/' + module.lesson_count + ') ';
         }
         items.push({
           name: name,
@@ -113,13 +113,13 @@ class CurriculumApp extends React.Component {
           href: '/modules/' + module.uuid,
           uuid: module.uuid,
           status: module.status
-        })
+        });
       }
       sections.push({
         name: unit.name,
         items: items,
         uuid: unit.uuid
-      })
+      });
     }
     this.setState({
       sections: sections,
@@ -127,7 +127,7 @@ class CurriculumApp extends React.Component {
       question: null,
       progress: 0,
       answer: null
-    })
+    });
   }
 
   fetchState () {
@@ -137,16 +137,16 @@ class CurriculumApp extends React.Component {
       data: {'expand': 'units.modules'},
       context: this,
       success: function (data, status, jqXHR) {
-        this.curriculum = data
-        this.load()
+        this.curriculum = data;
+        this.load();
       }
-    })
+    });
   }
 
   componentDidMount () {
-    setTimeout(function() { //Start the timer
-      this.setState({loading: false})
-    }.bind(this), 1500)
+    setTimeout(function () { // Start the timer
+      this.setState({loading: false});
+    }.bind(this), 1500);
   }
 
   render () {
@@ -158,9 +158,8 @@ class CurriculumApp extends React.Component {
             loading={this.state.loading}
           />
         </div>
-      )
-    }
-    else {
+      );
+    } else {
       return (
         <div>
           <CurriculumInfoPanel curriculum={this.curriculum} />
@@ -168,36 +167,36 @@ class CurriculumApp extends React.Component {
             sections={this.state.sections}
           />
         </div>
-      )
+      );
     }
   }
 }
 
 class ModulesApp extends React.Component {
   constructor (obj) {
-    super()
+    super();
     this.state = {
       currentId: obj.match.params.currentId || 'default',
       sections: []
-    }
-    this.fetchState()
+    };
+    this.fetchState();
 
-    this.curriculum = null
-    this.module = null
+    this.curriculum = null;
+    this.module = null;
   }
 
   load () {
     if (!this.module) {
-      return
+      return;
     }
-    var items = []
+    var items = [];
     for (var lessonIndex = 0; lessonIndex < this.module.lessons.length; lessonIndex++) {
-      var lesson = this.module.lessons[lessonIndex]
-      var href
+      var lesson = this.module.lessons[lessonIndex];
+      var href;
       if (lesson.lesson_type == 'GAME') {
-        href = '/games/' + lesson.game_slug
+        href = '/games/' + lesson.game_slug;
       } else {
-        href = '/lessons/' + lesson.uuid
+        href = '/lessons/' + lesson.uuid;
       }
       items.push({
         name: lesson.name + ' ',
@@ -205,18 +204,18 @@ class ModulesApp extends React.Component {
         href: href,
         uuid: lesson.uuid,
         status: lesson.status
-      })
+      });
     }
     var sections = [{
       name: this.module.name,
       items: items,
       uuid: this.module.uuid
-    }]
+    }];
 
-    var backLink = '/curriculum/'
+    var backLink = '/curriculum/';
 
     // If we are using the mobile app, make the query persist.
-    if (window.IS_MOBILE_APP) backLink += '?pib_mobile=true'
+    if (window.IS_MOBILE_APP) backLink += '?pib_mobile=true';
 
     this.setState({
       sections: sections,
@@ -224,7 +223,7 @@ class ModulesApp extends React.Component {
       question: null,
       progress: 0,
       answer: null
-    })
+    });
   }
 
   fetchState () {
@@ -234,10 +233,10 @@ class ModulesApp extends React.Component {
       data: {'expand': 'lessons'},
       context: this,
       success: function (data, status, jqXHR) {
-        this.module = data
-        this.load()
+        this.module = data;
+        this.load();
       }
-    })
+    });
   }
 
   render () {
@@ -246,13 +245,13 @@ class ModulesApp extends React.Component {
         backLink={this.state.backLink}
         sections={this.state.sections}
       />
-    )
+    );
   }
 }
 
 export class Expression {
   constructor (representation) {
-    this.expression = representation
+    this.expression = representation;
   }
 }
 
@@ -265,30 +264,30 @@ export class Expression {
 
 class LessonsApp extends React.Component {
   constructor (obj) {
-    super()
+    super();
     this.state = {
       currentId: obj.match.params.currentId || 'default',
       question: null,
       progress: 0
-    }
-    this.fetchState()
+    };
+    this.fetchState();
 
-    this.curriculum = null
-    this.module = null
-    this.question = null
-    this.progress = 0
-    this.correct_answer = null
+    this.curriculum = null;
+    this.module = null;
+    this.question = null;
+    this.progress = 0;
+    this.correct_answer = null;
   }
 
   load () {
     if (!this.question) {
-      return
+      return;
     }
     this.setState({
       question: this.question,
       progress: this.progress,
       correct_answer: this.correct_answer
-    })
+    });
   }
 
   submitAnswer (questionId, obj) {
@@ -304,37 +303,37 @@ class LessonsApp extends React.Component {
       // async: true,
       context: this,
       success: function (data, status, jqXHR) {
-        this.question.response = obj
-        this.progress = data['score'] / data['required_score'] * 100
+        this.question.response = obj;
+        this.progress = data['score'] / data['required_score'] * 100;
         if (data.was_correct) {
-          this.question.is_correct = true
-          playAudio('correct')
+          this.question.is_correct = true;
+          window.playAudio('correct');
         } else {
-          this.question.is_correct = false
+          this.question.is_correct = false;
           switch (data.correct_answer.type) {
             case 'vector':
               this.correct_answer = new Vector(
                 data.correct_answer.content.x_component,
                 data.correct_answer.content.y_component
-              )
-              break
+              );
+              break;
             case 'text':
               // this.correct_answer = new Text(data.correct_answer.content.text);
-              this.correct_answer = new Text(data.correct_answer.content.text, data.correct_answer.uuid)
-              break
+              this.correct_answer = new Text(data.correct_answer.content.text, data.correct_answer.uuid);
+              break;
             case 'mathematicalexpression':
-              this.correct_answer = new Expression(data.correct_answer.content.representation)
-              break
+              this.correct_answer = new Expression(data.correct_answer.content.representation);
+              break;
             case 'unitconversion':
-              this.correct_answer = new UnitConversion(data.correct_answer.content, this.question)
-              break
+              this.correct_answer = new UnitConversion(data.correct_answer.content, this.question);
+              break;
             default:
-              this.correct_answer = data.correct_answer
-              break
+              this.correct_answer = data.correct_answer;
+              break;
           }
-          playAudio('incorrect')
+          playAudio('incorrect');
         }
-        this.load()
+        this.load();
         if (data.was_correct) {
           // setTimeout(
           //     function() {
@@ -344,28 +343,28 @@ class LessonsApp extends React.Component {
           // );
         }
       }
-    })
+    });
   }
 
   continueAction () {
-    playAudio('continue')
+    playAudio('continue');
 
     if (window.IS_MOBILE_APP) {
-      window.scrollTo(0, 0)
+      window.scrollTo(0, 0);
     }
 
-    this.fetchState()
+    this.fetchState();
   }
 
   hintClick () {
-    this.question.hintCollapsed = !this.question.hintCollapsed
-    this.load()
+    this.question.hintCollapsed = !this.question.hintCollapsed;
+    this.load();
   }
 
   fetchState () {
-    var data = {}
+    var data = {};
     if (this.question) {
-      data['previous_question'] = this.question.uuid
+      data['previous_question'] = this.question.uuid;
     }
     $.ajax({
       async: true,
@@ -373,14 +372,14 @@ class LessonsApp extends React.Component {
       context: this,
       data: data,
       success: function (data, status, jqXHR) {
-        this.progress = data['score'] / data['required_score'] * 100
-        data.submitAnswer = this.submitAnswer.bind(this)
-        this.question = data
-        this.question.hintCollapsed = true
-        this.correct_answer = null
-        this.load()
+        this.progress = data['score'] / data['required_score'] * 100;
+        data.submitAnswer = this.submitAnswer.bind(this);
+        this.question = data;
+        this.question.hintCollapsed = true;
+        this.correct_answer = null;
+        this.load();
       }
-    })
+    });
   }
 
   render () {
@@ -392,16 +391,16 @@ class LessonsApp extends React.Component {
         continueAction={this.continueAction.bind(this)}
         hintClick={this.hintClick.bind(this)}
       />
-    )
+    );
   }
 }
 
 class GamesApp extends React.Component {
   constructor (obj) {
-    super()
+    super();
     this.state = {
       slug: obj.match.params.slug
-    }
+    };
   }
 
   gameWon () { // todo remove
@@ -414,20 +413,20 @@ class GamesApp extends React.Component {
       success: function (data, status, jqXHR) {
 
       }
-    })
+    });
   }
 
   render () {
-    var Game
+    var Game;
     switch (this.state.slug) {
       case 'vector-game':
-        Game = VectorGame
-        break
+        Game = VectorGame;
+        break;
       case 'unit-conversion':
-        Game = UnitConversionGame
-        break
+        Game = UnitConversionGame;
+        break;
     }
-    return <Game gameWon={this.gameWon.bind(this)} />
+    return <Game gameWon={this.gameWon.bind(this)} />;
   }
 }
 
@@ -443,6 +442,6 @@ export default class CurriculumRouter extends React.Component {
           <Route path='/' component={CurriculumApp} />
         </Switch>
       </BrowserRouter>
-    )
+    );
   }
 }
