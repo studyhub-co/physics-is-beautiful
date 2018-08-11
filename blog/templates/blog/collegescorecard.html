@@ -1,4 +1,4 @@
-{% extends "blog/navbar.html" %}
+{% extends "navbar.html" %}
 {% load static %}
 {% block extrahead %}
     <link rel="stylesheet" type="text/css" href="{% static 'blog/style.css' %}" />
@@ -6,10 +6,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.4.min.css" rel="stylesheet" type="text/css">
-    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.4.min.css" rel="stylesheet" type="text/css">
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.4.min.js"></script>
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.4.min.js"></script>
+    <link href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.4.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.4.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.4.min.js"></script>
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.4.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     {{ script | safe }}
     {% load static %}
@@ -18,8 +18,8 @@
     <script type = "text/javascript"  src="{% static 'blog/js/nces.js' %}"></script>
 {% endblock %}
 
-{% block content %}
-    <div class="container">
+{% block body_content %}
+    <div class="container" style="margin-bottom:20px;">
         <div class="col-md-3">
             <form id='input' method='post' action='{% url 'blog:collegescorecard' %}' class="form-group">
                 {% csrf_token %}
