@@ -84,12 +84,17 @@ class StudentClassroomProfileView extends React.Component {
               <div className={'gray-text'}>
                 <span className={'green-completed-box'}>
                   <span title={'Completed'} className='glyphicon glyphicon-ok'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed : ''}
+                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}
+                  </span>
+                </span>
+                <span className={'yellow-delayed-box'}>
+                  <span title={'Missed'} className='glyphicon glyphicon-remove'>
+                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
                   </span>
                 </span>
                 <span className={'red-missed-box'}>
                   <span title={'Missed'} className='glyphicon glyphicon-remove'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_missed: ''}
+                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_missed_assignments : ''}
                   </span>
                 </span>
               </div>

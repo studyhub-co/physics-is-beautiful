@@ -197,7 +197,7 @@ class TeacherClassroomView extends React.Component {
                   }, this)}
                 </span>
                 : null }
-              { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students == 0
+              { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students === 0
                 ? <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
                 Share the <u>classroom code</u> with your students so they can join your classroom.</div>
                 : null}
@@ -224,8 +224,9 @@ class TeacherClassroomView extends React.Component {
                       Due on
                     </Col>
                     <Col sm={2} md={2} className={'vcenter'}>
-                      <span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp;
-                      <span title={'Missed'} className='glyphicon glyphicon-remove' />
+                      <span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' />
+                      <span title={'Delayed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' />
+                      <span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' />
                     </Col>
                     <Col sm={1} md={1} />
                   </Row>

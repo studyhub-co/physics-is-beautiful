@@ -269,17 +269,24 @@
 
 .red-missed-box {
     border-radius: 1rem;
-    padding: 1rem 2rem;
-    margin: 2rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
     color: #dd381d;
     background: #f9d4cd;
-    width: 80px;
+}
+
+.yellow-delayed-box{
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
+    color: #ff9400;
+    background: #ffeed6;
 }
 
 .green-completed-box {
     border-radius: 1rem;
-    padding: 1rem 2rem;
-    margin: 2rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
     color: #7eb530;
     background: #dff0c6;
 }

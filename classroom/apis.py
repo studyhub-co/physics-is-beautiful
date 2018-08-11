@@ -36,6 +36,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        # TODO add counts for students assignments like counts assignments in profile
 
         queryset = self.queryset. \
                 annotate(count_students=Count('students'))
@@ -138,33 +139,48 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid']).\
-            prefetch_related('lessons', 'assignment_progress')
-
-                             # Prefetch('assignment_progress',
-                             #          queryset=
-                             #          AssignmentProgress.objects.filter(student__user=self.request.user,
-                             #                                            completed_on__isnull=False).
-                             #          annotate(count_student_completed_lessons=Count('completed_lessons')),
-                             #          # to_attr='assignment_completed_by_user_progress'
+            prefetch_related('lessons',
+                             Prefetch('assignment_progress',
+                                      queryset=AssignmentProgress.objects.filter(student=self.request.user.profile),
+                                      to_attr='assignment_student_progress')
+                             )
 
         queryset = queryset.annotate(count_lessons=Count('lessons'))
-        queryset = queryset.annotate(count_students_completed_assingment=Count(
+        queryset = queryset.annotate(count_students_completed_assingment=
+                                     Count(
                                          Case(
-                                             When(assignment_progress__isnull=False,
+                                             When(assignment_progress__completed_on__isnull=False,
                                                   then=1),
                                              output_field=IntegerField()
-                                         )
-                                     ))
-
-        # TODO counts for lessons and count_students_missed_assingment
-
+                                             )
+                                          )
+                                     )
+        queryset = queryset.annotate(count_students_delayed_assingment=
+                                     Count(
+                                            Case(
+                                                When(Q(due_on__gt=datetime.datetime.now())
+                                                     & Q(assignment_progress__delayed_on__isnull=False),
+                                                     then=1),
+                                                output_field=IntegerField()
+                                            )
+                                        )
+                                     )
+        queryset = queryset.annotate(count_students_missed_assingment=
+                                     Count(
+                                        Case(
+                                            When(Q(due_on__gt=datetime.datetime.now())
+                                                 & Q(assignment_progress__completed_on__isnull=True),
+                                                 then=1),
+                                            output_field=IntegerField()
+                                            )
+                                          )
+                                     )
         # TODO remove prefetch_related for create\update
-
-        # print(queryset.query)
 
         return queryset
 
-    # TODO need to erase AssignmentProgress.completed_on if new lessons added
+    # TODO need to erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
+    # TODO need to create new AssignmentProgress for all students while Assignment is created, background mode is preferable
 
 
 class StudentProfileViewSet(GenericViewSet):
@@ -182,7 +198,7 @@ class StudentProfileViewSet(GenericViewSet):
         profile_qs = Profile.objects
 
         # count for current user and classroom assignment progress
-        profile_qs = profile_qs.annotate(count_completed_lessons=Count(
+        profile_qs = profile_qs.annotate(num_completed_assignments=Count(
             Case(
                 When(as_students_assignment_progress__completed_on__isnull=False,
                      then=1),
@@ -191,7 +207,17 @@ class StudentProfileViewSet(GenericViewSet):
         ))
 
         profile_qs = profile_qs.annotate(
-            count_missed_lessons=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
+            num_missed_assignments=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
+                Case(
+                    When(as_students_assignment_progress__isnull=True,
+                         as_students_assignment_progress__assignment__due_on__gt=datetime.datetime.now(),
+                         then=1),
+                    output_field=IntegerField()
+                )
+            ))
+
+        profile_qs = profile_qs.annotate(
+            num_delayed_assignments=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
                 Case(
                     When(as_students_assignment_progress__isnull=True,
                          as_students_assignment_progress__assignment__due_on__gt=datetime.datetime.now(),
@@ -211,6 +237,7 @@ class StudentProfileViewSet(GenericViewSet):
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def assignments(self, request, classroom_uuid, username=None):
         """
+        assignments for custom user
         urls like /api/v1/classroom/:classroomuuid/students/:username/assignments/
         """
         # TODO get all user assignments and add AssignmentProgress data for current user
@@ -221,12 +248,17 @@ class StudentProfileViewSet(GenericViewSet):
         except Profile.DoesNotExist:
             raise NotFound()
 
+        # FIXME need to create SQl query or upgrade Django to > 2.0
+        # https://docs.djangoproject.com/en/2.1/topics/db/aggregation/#filtering-on-annotations
+        # Changed in Django 2.0:
+        # The filter argument was added to aggregates.
         assignments = Assignment.objects.filter(classroom__uuid=classroom_uuid)\
             .prefetch_related('lessons',
                               Prefetch('assignment_progress',
-                                       queryset=AssignmentProgress.objects.filter(student=profile).
-                                       annotate(count_completed_lessons=Count('completed_lessons')))
+                                       queryset=AssignmentProgress.objects.filter(student=profile),
+                                       to_attr='assignment_student_progress')
                               )
+
         assignments = assignments.annotate(count_lessons=Count('lessons'))
 
         self.queryset = assignments

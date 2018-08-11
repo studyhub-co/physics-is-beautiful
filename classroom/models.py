@@ -146,6 +146,7 @@ class AssignmentProgress(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     start_on = models.DateTimeField(auto_now_add=True)
     completed_on = models.DateTimeField(blank=True, null=True)
+    delayed_on = models.DateTimeField(blank=True, null=True)  # Assignment completed but after due_on datetime
     student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')
 
     class Meta:
