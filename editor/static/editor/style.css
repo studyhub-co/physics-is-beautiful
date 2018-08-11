@@ -2,6 +2,38 @@
     font-family: Museosansrounded;
 }
 
+.editor	.col-md-1 {
+		margin-right: 0px !important;
+	}
+
+
+.editor .col-md-1 {
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0);
+    margin: 10px;
+    margin-right: 35px;
+    padding: 0px;
+    display: inline-block;
+    width: 150px;
+    color: #666666;
+    box-shadow: 0px 0px 10px #BBB;
+    transition: color 500ms, box-shadow 500ms, border-color 500ms;
+}
+.editor .col-md-1:hover {
+    color: #1caff6;
+    border-style: solid;
+    border-color:#1caff6;
+    box-shadow: 0px 0px 16px #BBB;
+}
+
+.editor .col-md-1.disabled {
+    pointer-events: none;
+    opacity: 0.35;
+    filter: alpha(opacity=40);
+}
+
 .section-sheet .thumbnail .glyphicon { font-size:60px; }
 .editor .section-sheet .thumbnail img {
     max-width:100%; 

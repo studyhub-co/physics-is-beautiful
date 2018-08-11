@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .classroom-common-button {
+                background-color: rgb(8, 209, 255);
+                border-radius: 2rem;
+                border-width: 1px;
+                color: white;
+                padding: 1rem 4rem 1rem 4rem;
+                margin: 1rem 0 1rem 0;
+            }
+        </style>
+    </head>
+    <div>You have a new assignment on Physics is Beautiful!</div>
+
+    Hey {{ user_full_name }}, your new assignment is to complete the lessons{% for lesson in assignment.lessons.all %}&nbsp;{{ lesson.name }}{% if forloop.last %}.{% else %},{% endif %}{% endfor %}
+    <div>It is due on <b>{{ assignment.due_on }}</b> - so you have {{ days }} days!</div>
+    <br />
+    <a href="{{ url }}" class="classroom-common-button">Start the assignment</a>
+    </body>
+</html>
