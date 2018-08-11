@@ -181,6 +181,9 @@ html, body {
     #checkButton {
         width: 100%;
     }
+    .curriculum-display-wrap {
+        padding-top: 10px;
+    }
 }
 
 .navbar-brand {
