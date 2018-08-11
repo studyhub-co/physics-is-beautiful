@@ -1,4 +1,4 @@
-{% extends "blog/navbar.html" %}
+{% extends "navbar.html" %}
 {% load static %}
 
 {% block extrahead %}
@@ -8,12 +8,17 @@
 {% endblock %}
 
 
-{% block content %}
-    <div class="container">
+{% block body_content %}
+    <div class="container" style="margin-bottom:20px;">
         <h2>Word pairing app</h2>
 
-        <p>Enter a word for which you'd like to find pre-words. The data is based on the
-            <a href="https://www.nltk.org/book/ch02.html" target="_blank">NLTK Reuters dataset</a>
+        <p>Enter a word for which you'd like to find pre-words. For example if you want to know what are common
+            words that come before the word "confirmed," enter "confirmed" into the search box and you'll be returned
+            bi-grams like "been confirmed", "last confirmed" and "commission confirmed," with the corresponding
+            number of times that bi-gram appeared in the dataset.
+        </p>
+        <p>
+            The data is based on the <a href="https://www.nltk.org/book/ch02.html" target="_blank">NLTK Reuters dataset</a>
             which contains 1.3M words. The number output below refers to the number of times the pair is
             found in the dataset. Currently ignoring punctuation, so "I am hungry. She is happy." would include
             the pairs "I am", "am hungry", "hungry she", "she is" and "is happy".

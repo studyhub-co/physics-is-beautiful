@@ -1,12 +1,12 @@
-{% extends "blog/navbar.html" %}
+{% extends "navbar.html" %}
 {% load static %}
 
 {% block extrahead %}
     <link rel="stylesheet" type="text/css" href="{% static 'blog/style.css' %}" />
 {% endblock %}
 
-{% block content %}
-    <div class="container">
+{% block body_content %}
+    <div class="container" style="margin-bottom:20px;">
         <h1 id='headline' class="headline">Shankar Principles of Quantum Mechanics Solutions</h1>
         <img style = "width:40%; float: right;" src="{% static 'blog/images/shankar/shankar.jpg' %}" />
         Chapter 1 Exercises:<br>
