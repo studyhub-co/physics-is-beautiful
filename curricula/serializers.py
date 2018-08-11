@@ -169,9 +169,12 @@ class LessonSerializer(BaseSerializer):
         return obj.module.uuid
 
     def get_status(self, obj):
-        return LessonProgress.Status.get_name(
-            self.context['progress_service'].get_lesson_status(obj)
-        ).lower()
+        if 'progress_service' in self.context:
+            return LessonProgress.Status.get_name(
+                self.context['progress_service'].get_lesson_status(obj)
+            ).lower()
+        else:
+            return ''
 
 
 class QuestionSerializer(BaseSerializer):

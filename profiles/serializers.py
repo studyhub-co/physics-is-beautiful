@@ -20,10 +20,11 @@ class BaseSerializer(serializers.ModelSerializer):
 
 class PublicProfileSerializer(BaseSerializer):
     display_name = serializers.CharField(source='user.display_name')
+    username = serializers.CharField(source='user.username')
 
     class Meta:
         model = Profile
-        fields = ['display_name', ]
+        fields = ['display_name', 'username']
 
 
 class ProfileSerializer(BaseSerializer):
