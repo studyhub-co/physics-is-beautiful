@@ -29,7 +29,7 @@ class CurriculumInfoPanel extends React.Component {
           ? <Grid fluid>
             {/* title */}
             <Row>
-              <Col md={10} xs={8}>
+              <Col md={10} xs={8} >
                 <Row>
                   <Col md={12}>
                     <span className='curriculum-title'>{this.props.curriculum.name}</span>
@@ -43,21 +43,29 @@ class CurriculumInfoPanel extends React.Component {
                     </span>
                   </Col>
                 </Row>
-                <Row>
+                <Row style={{fontWeight: 300, fontSize: 18, color: '#555'}}>
                   <Col md={12}>
                     {this.state.showMore ? <div>{this.props.curriculum.description}</div> : null}
                   </Col>
                 </Row>
                 <Row>
                   <Col md={8} />
-                  <Col md={4}>
+                  <Col md={12} style={{textAlign: 'right', fontSize: 15}}>
                     {this.state.showMore ? <div>
                       <a href={'/editor'} style={{cursor: 'pointer', color: 'grey'}}>{'Select other curriculum'}</a>
                     </div> : null}
                   </Col>
                 </Row>
               </Col>
-              <Col md={2} xs={4}>
+              <Col md={2} xs={4} style={{textAlign: "center"}}>
+                <Row>
+                  <a
+                    style={{margin: 'auto'}}
+                    className='curriculum-title curriculum-more-less'
+                    onClick={(e) => { this.showLessMore(e); }}>
+                    {this.state.showMore ? 'Show less' : 'Show details'}
+                  </a>
+                </Row>
                 {this.state.showMore
                   ? <Row>
                     <Col md={12}>
@@ -65,12 +73,6 @@ class CurriculumInfoPanel extends React.Component {
                     </Col>
                   </Row>
                   : null}
-                <Row><a
-                  className='curriculum-title curriculum-more-less'
-                  onClick={(e) => { this.showLessMore(e); }}>
-                  {this.state.showMore ? 'Show less' : 'Show details'}
-                </a>
-                </Row>
               </Col>
             </Row>
           </Grid>
