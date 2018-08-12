@@ -104,26 +104,40 @@ class TeacherClassroomView extends React.Component {
     return (
       <div className={'pop-up-window'}>
         <Grid fluid> { this.props.classroomTeacher
-          ? <Row>
-            <Col sm={3} md={3}>
-              <a className={'pointer'} onClick={() => { history.push(BASE_URL) }}>{'< All classrooms'}</a>
-            </Col>
-            <Col sm={7} md={7}>
-              <span className={'blue-title'}>
-                <span className={'editable-label'}>
-                  {this.props.classroomTeacher.teacher.display_name}'s Classroom - <EditableLabel
-                    onFocusOut={this.handleTitleChange}
-                    labelClassName={'pointer'}
-                    text={this.props.classroomTeacher.name} />
+          ? <Col sm={12} md={12} style={{padding: 0}}>
+            <Row style={{padding: 0}}>
+              <Col
+                sm={12}
+                md={12}
+                style={{textAlign: 'left', padding: 0}}
+              >
+                <a
+                  className={'back-button'}
+                  onClick={() => { history.push(BASE_URL)}}
+                >
+                  <span
+                    className='glyphicon glyphicon-menu-left'
+                    style={{fontSize: 16}}
+                  />
+                  All Classrooms
+                </a>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={12} md={12} style={{textAlign: 'center'}}>
+                <span className={'blue-title'}>
+                  <span className={'editable-label'}>
+                    <EditableLabel
+                      onFocusOut={this.handleTitleChange}
+                      labelClassName={'pointer'}
+                      text={this.props.classroomTeacher.name} />
+                  </span>
+                  &nbsp;
+                  <span className='glyphicon glyphicon-pencil' />
                 </span>
-                &nbsp;
-                <span className='glyphicon glyphicon-pencil' />
-              </span>
-            </Col>
-            <Col sm={2} md={2}>
-              { /* <span onClick={() => this.props.dispatch(push('/classroom/'))} className={'pib-link'}>Assignments</span> */ }
-            </Col>
-          </Row>
+              </Col>
+            </Row>
+          </Col>
           : null }
         </Grid>
         <Tabs name='teacherClassroomTab'
@@ -143,7 +157,7 @@ class TeacherClassroomView extends React.Component {
                   <div className={'pop-up-window text-align-center'}>
                     <div className={'gray-text title'}>Share classroom code</div>
                     <div>
-                      <span className={'blue-title'} style={{ letterSpacing: '2rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
+                      <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
                       <span className={'gray-text pointer'}>
                         <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.code}>
                           copy

@@ -8,7 +8,7 @@ export class TeacherClassroomCard extends React.Component {
     return (
       <div className={className}>
         <div onClick={() => { this.props.onTitleClick(this.props.baseUrl + '/' + this.props.classroom.uuid + '/teacher/') }}>
-          {this.props.classroom.teacher.display_name}'s Classroom - {this.props.classroom.name}</div>
+          {this.props.classroom.name}</div>
         <div>{this.props.classroom.curriculum.name}</div>
         <div>Students photos list</div>
         <div>{this.props.classroom.count_students} student{this.props.classroom.count_students === 1 ? null : 's'}</div>

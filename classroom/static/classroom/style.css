@@ -291,6 +291,22 @@
     background: #dff0c6;
 }
 
+label {
+    font-weight: 300;
+}
+
+.back-button {
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #d8d8d8;
+    transition: color 300ms;
+}
+
+.back-button:hover {
+    text-decoration: none;
+    color: #1caff6;
+}
 /* like editor */
 
 .classroom .editable-label:not(.empty) + .glyphicon-pencil{ display:none; }
