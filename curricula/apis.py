@@ -124,6 +124,8 @@ def game_success(request, slug):
     game = Game.objects.get(slug=slug)  # TODO here is raise exception is game not found by slug and if if more than one
     service = get_progress_service(request, game.lesson)
 
+    n = 10  # max number of results to show
+
     duration_ms = request.data.get('duration', None)
     score = request.data.get('score', None)
     if duration_ms:
@@ -136,18 +138,18 @@ def game_success(request, slug):
     if game.slug == 'unit-conversion' or game.slug == 'vector-game':  # temp fix
         # get score list for
         # try:
-        scores = service.get_score_board_qs(game.lesson)
+        scores = service.get_score_board_qs(game.lesson).exclude(duration__isnull=True)
         data_scores_list = []
         current_user_in_score_list = False
 
         already_anon_insert = False
 
-        for row_num, row in enumerate(scores[:10]):
+        for row_num, row in enumerate(scores):
             if request.user.is_authenticated:
                 if request.user.profile.id == row.profile_id:
                     current_user_in_score_list = True
             else:
-                if row.duration > dur or row_num == len(scores[:10])-1:
+                if row.duration and row.duration > dur or row_num == len(scores[:n])-1:
                     if not already_anon_insert:
                         currrent_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
                         setattr(currrent_user_score, 'row_num', row_num + 1)
@@ -159,16 +161,17 @@ def game_success(request, slug):
                 else:
                     setattr(row, 'row_num', row_num + 2)
 
-            data_scores_list.append(row)
+            if row.duration:
+                data_scores_list.append(row)
 
         if request.user.is_authenticated:
             if not current_user_in_score_list:
-                currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
-                position = service.get_score_board_qs(game.lesson).filter(duration__lt=currrent_user_score.duration).count()
+                currrent_user_score = scores.get(profile__user=request.user)
+                position = scores.filter(duration__lt=currrent_user_score.duration).count()
                 setattr(currrent_user_score, 'row_num', position + 1)
                 data_scores_list.append(currrent_user_score)
 
-        data = ScoreBoardSerializer(data_scores_list, many=True).data
+        data = ScoreBoardSerializer(data_scores_list[:n], many=True).data
         return Response(data)
         # except NotImplementedError:
         #     pass
