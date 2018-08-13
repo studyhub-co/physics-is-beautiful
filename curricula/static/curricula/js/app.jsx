@@ -57,7 +57,7 @@ class CurriculumInfoPanel extends React.Component {
                   </Col>
                 </Row>
               </Col>
-              <Col md={2} xs={4} style={{textAlign: "center"}}>
+              <Col md={2} xs={4} style={{textAlign: 'center'}}>
                 <Row>
                   <a
                     style={{margin: 'auto'}}
