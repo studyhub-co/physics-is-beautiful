@@ -139,14 +139,21 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid']).\
-            prefetch_related('lessons',
+
+        queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid'])
+
+        if self.action not in ('get', 'list'):
+            return queryset
+
+        queryset = queryset.prefetch_related('lessons',
                              Prefetch('assignment_progress',
                                       queryset=AssignmentProgress.objects.filter(student=self.request.user.profile),
                                       to_attr='assignment_student_progress')
                              )
 
-        queryset = queryset.annotate(count_lessons=Count('lessons'))
+        queryset = queryset.annotate(count_lessons=Count('lessons', distinct=True))
+
+        # counts for teacher
         queryset = queryset.annotate(count_students_completed_assingment=
                                      Count(
                                          Case(
@@ -176,7 +183,6 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                             )
                                           )
                                      )
-        # TODO remove prefetch_related for create\update
 
         return queryset
 

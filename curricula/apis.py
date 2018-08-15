@@ -59,7 +59,7 @@ class QuestionViewSet(ModelViewSet):
 
                     if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
                             .count() == 0:
-                        if datetime.datetime.now() < assignment_progress.assignment.due_on:
+                        if datetime.datetime.now() < assignment_progress.assignment.due_on.replace(tzinfo=None):
                             assignment_progress.completed_on = datetime.datetime.now()
                         else:
                             assignment_progress.delayed_on = datetime.datetime.now()

@@ -74,6 +74,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     # current user (request.user) completed lessons
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
 
+    # this is for current user (student)
     def get_count_completed_lessons(self, obj):
         # return obj.count_completed_lessons if hasattr(obj, 'count_completed_lessons')  \
         #                                    and obj.classroom.teacher.user == self.context['request'].user\
