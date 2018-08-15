@@ -83,7 +83,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
         # https://docs.djangoproject.com/en/2.1/topics/db/aggregation/#filtering-on-annotations
         # Changed in Django 2.0:
         # The filter argument was added to aggregates.
-        if len(obj.assignment_student_progress) > 0 and hasattr(obj, 'assignment_student_progress'):
+        if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
             return obj.assignment_student_progress[0].completed_lessons.count()
         else:
             return 0
