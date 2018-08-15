@@ -13,7 +13,7 @@ import * as tabsCreators from '../../actions/tab'
 import * as assignmentCreators from '../../actions/assignment'
 
 import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
-import { AssignmentStudentRow } from '../../components/AssignmentStudentRow'
+import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 class StudentClassroomProfileView extends React.Component {
   componentWillMount () {
@@ -101,7 +101,7 @@ class StudentClassroomProfileView extends React.Component {
                   </span>
                 </span>
                 <span className={'yellow-delayed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-remove'>
+                  <span title={'Missed'} className='glyphicon glyphicon-time'>
                     &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
                   </span>
                 </span>
@@ -115,9 +115,26 @@ class StudentClassroomProfileView extends React.Component {
           </Row>
         </Grid>
         <Grid fluid>
+          <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
+            <Col sm={6} md={6}>
+              <span className={'gray-text'}>Assignment</span>
+            </Col>
+            <Col sm={2} md={2} className={'vcenter'}>
+              Assigned on
+            </Col>
+            <Col sm={2} md={2} className={'vcenter'}>
+              Status
+            </Col>
+            <Col sm={2} md={2} className={'vcenter'}>
+              Completed on
+            </Col>
+          </Row>
+        </Grid>
+        <hr style={{margin: '0'}} />
+        <Grid fluid>
           { this.props.studentAssignmentsList
             ? this.props.studentAssignmentsList.map(function (assignment, i) {
-              return <AssignmentStudentRow
+              return <TeacherStudentAssignmentRow
                 isTeacher={Boolean(true)}
                 assignment={assignment}
                 onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
