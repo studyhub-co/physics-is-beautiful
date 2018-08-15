@@ -53,9 +53,22 @@ class StudentClassroomProfileView extends React.Component {
       <div>
         <Grid fluid>
           <Row>
-            <Col sm={6} md={6}>
-              <a className={'pointer'} onClick={() => { history.goBack() }}>{'< All students'}</a>
+            <Col
+              sm={6}
+              md={6}
+              style={{textAlign: 'left', paddingTop: '1rem'}} >
+              <a
+                className={'back-button'}
+                onClick={() => { history.goBack()}} >
+                <span
+                  className='glyphicon glyphicon-menu-left'
+                  style={{fontSize: 16}} />
+                All students
+              </a>
             </Col>
+            {/*<Col sm={6} md={6}>*/}
+              {/*<a className={'pointer'} onClick={() => { history.goBack() }}>{'< All students'}</a>*/}
+            {/*</Col>*/}
             <Col sm={6} md={6} className={'text-right'}>
               <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
                 <Dropdown.Toggle className={'classroom-common-button'}>
