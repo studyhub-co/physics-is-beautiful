@@ -147,9 +147,13 @@ def game_success(request, uuid):
         already_anon_insert = False
 
         for row_num, row in enumerate(scores[:10]):
+            # current user
             if request.user.is_authenticated:
                 if request.user.profile.id == row.profile_id:
+                    currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+                    setattr(currrent_user_score, 'row_num', row_num + 1)
                     current_user_in_score_list = True
+
             else:
                 if row.duration > dur or row_num == len(scores[:10])-1:
                     if not already_anon_insert:
@@ -158,10 +162,10 @@ def game_success(request, uuid):
                         data_scores_list.append(currrent_user_score)
                         already_anon_insert = True
 
-                if not already_anon_insert:
-                    setattr(row, 'row_num', row_num + 1)
-                else:
-                    setattr(row, 'row_num', row_num + 2)
+            if not already_anon_insert:
+                setattr(row, 'row_num', row_num + 1)
+            else:
+                setattr(row, 'row_num', row_num + 2)
 
             data_scores_list.append(row)
 
