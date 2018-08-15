@@ -193,12 +193,13 @@ class ModulesApp extends React.Component {
     }
     var items = [];
     for (var lessonIndex = 0; lessonIndex < this.module.lessons.length; lessonIndex++) {
-      var lesson = this.module.lessons[lessonIndex];
-      var href;
-      if (lesson.lesson_type == 'GAME') {
-        href = '/games/' + lesson.game_slug;
+      var lesson = this.module.lessons[lessonIndex]
+      var href
+      if (lesson.lesson_type === 'GAME') {
+        // href = '/games/' + lesson.game_slug;
+        href = '/games/' + lesson.uuid + '/' + lesson.game_slug
       } else {
-        href = '/lessons/' + lesson.uuid;
+        href = '/lessons/' + lesson.uuid
       }
       items.push({
         name: lesson.name + ' ',
@@ -399,36 +400,42 @@ class LessonsApp extends React.Component {
 
 class GamesApp extends React.Component {
   constructor (obj) {
-    super();
+    super()
+    // this.state = {
+    //   slug: obj.match.params.slug
+    // };
     this.state = {
+      uuid: obj.match.params.uuid,
       slug: obj.match.params.slug
-    };
+    }
   }
 
-  gameWon () { // todo remove
-    $.ajax({
-      async: true,
-      url: '/api/v1/curricula/games/' + this.state.slug + '/success',
-      context: this,
-      type: 'POST',
-      data: {},
-      success: function (data, status, jqXHR) {
-
-      }
-    });
-  }
+  // gameWon () { // todo remove
+  //   $.ajax({
+  //     async: true,
+  //     // url: '/api/v1/curricula/games/' + this.state.slug + '/success',
+  //     url: '/api/v1/curricula/games/' + this.state.uuid + '/success',
+  //     context: this,
+  //     type: 'POST',
+  //     data: {},
+  //     success: function (data, status, jqXHR) {
+  //
+  //     }
+  //   });
+  // }
 
   render () {
-    var Game;
+    var Game
     switch (this.state.slug) {
       case 'vector-game':
-        Game = VectorGame;
-        break;
+        Game = VectorGame
+        break
       case 'unit-conversion':
-        Game = UnitConversionGame;
-        break;
+        Game = UnitConversionGame
+        break
     }
-    return <Game gameWon={this.gameWon.bind(this)} />;
+    // return <Game gameWon={this.gameWon.bind(this)} />
+    return <Game uuid={this.state.uuid} />
   }
 }
 
@@ -439,7 +446,8 @@ export default class CurriculumRouter extends React.Component {
         <Switch>
           <Route path='/lessons/:currentId' component={LessonsApp} />
           <Route path='/modules/:currentId' component={ModulesApp} />
-          <Route path='/games/:slug' component={GamesApp} />
+          {/*<Route path='/games/:slug' component={GamesApp} />*/}
+          <Route path='/games/:uuid/:slug' component={GamesApp} />
           <Route path='/:currentId' component={CurriculumApp} />
           <Route path='/' component={CurriculumApp} />
         </Switch>

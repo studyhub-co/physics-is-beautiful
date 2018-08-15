@@ -5,6 +5,7 @@ import {Prompt} from 'react-router-dom'
 import {VectorCanvas, CanvasVector, CanvasText} from 'vector_canvas'
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
+import PropTypes from 'prop-types'
 
 import axios from 'axios'
 
@@ -151,7 +152,7 @@ export class VectorGame extends React.Component {
       pausedOnState: null,
       score: 0,
       level: 1,
-      // score: 1200,
+      // score: 1200, // start from a last level
       // level: 4,
       question: null,
       x: null,
@@ -194,8 +195,8 @@ export class VectorGame extends React.Component {
   }
 
   checkAnswer (arrow) {
-    if (this.state.x == (arrow.getXComponent() || 0) &&
-            this.state.y == (arrow.getYComponent() || 0)) {
+    if (this.state.x === (arrow.getXComponent() || 0) &&
+            this.state.y === (arrow.getYComponent() || 0)) {
       playAudio('correct')
       var newScore = this.state.score + 100
       var newLevel = Math.floor(newScore / 400) + 1
@@ -204,7 +205,8 @@ export class VectorGame extends React.Component {
         stopBackgroundAudio()
         clearInterval(this.timer)
         // this.props.gameWon();
-        axios.post('/api/v1/curricula/games/vector-game/success', {
+        // axios.post('/api/v1/curricula/games/vector-game/success', {
+        axios.post('/api/v1/curricula/games/' + this.props.uuid + '/success', {
           duration: this.elapsed,
           score: newScore
         }).then(function (response) {
@@ -368,4 +370,7 @@ export class VectorGame extends React.Component {
       />
     )
   }
+}
+VectorGame.propTypes = {
+  uuid: PropTypes.string
 }

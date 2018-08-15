@@ -6,7 +6,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes
-
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
 
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
@@ -120,8 +120,12 @@ def get_unit_conversion_units(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def game_success(request, slug):
-    game = Game.objects.get(slug=slug)  # TODO here is raise exception is game not found by slug and if if more than one
+def game_success(request, uuid):
+    try:
+        game = Game.objects.get(lesson__uuid=uuid)
+    except Game.DoesNotExist:
+        raise NotFound()
+
     service = get_progress_service(request, game.lesson)
 
     duration_ms = request.data.get('duration', None)
