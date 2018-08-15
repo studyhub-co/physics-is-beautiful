@@ -7,14 +7,21 @@ export class AssignmentStudentRow extends React.Component {
   render () {
     var className = 'student-classroom-row'
 
+    var dueDateTime = null
+
     var textColorClassName = 'green-text'
-    if (!this.props.assignment.completed_on) {
+    if (!this.props.assignment.completed_on && !this.props.assignment.delayed_on) {
       if (new Date(this.props.assignment.due_on) < new Date()) {
         textColorClassName = 'red-text'
       } else {
         textColorClassName = 'gray-text'
       }
-      var dueDateTime = new Date(this.props.assignment.due_on).toLocaleDateString() + ' ' + new Date(this.props.assignment.due_on).toLocaleTimeString()
+    } else if (this.props.assignment.delayed_on) {
+      textColorClassName = 'yellow-text'
+    }
+
+    if (this.props.assignment.due_on) {
+      dueDateTime = new Date(this.props.assignment.due_on).toLocaleDateString() + ' ' + new Date(this.props.assignment.due_on).toLocaleTimeString()
     }
 
     return (
@@ -25,17 +32,24 @@ export class AssignmentStudentRow extends React.Component {
           </div>
         </Col>
         <Col sm={4} md={4}>
-          { !this.props.isTeacher && textColorClassName !== 'gray-text' // TODO check start date
+          { this.props.assignment.completed_on || this.props.assignment.delayed_on // TODO check start date
             ? <div className={'blue-title'}>{this.props.assignment.name}</div>
             : <div className={'blue-title pointer'} onClick={this.props.onTitleClick}>{this.props.assignment.name}</div>
           }
           <div className={'gray-text small-text'}>{this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}</div>
         </Col>
         <Col sm={4} md={4} className={'vcenter'}>
-          { this.props.assignment.completed_on ? <div className={textColorClassName}>Completed</div> : <div>
-            {new Date(this.props.assignment.due_on) > new Date() ? <div className={textColorClassName}>Due:&nbsp;{dueDateTime}</div> : null }
-            {new Date(this.props.assignment.due_on) < new Date() ? <div className={textColorClassName}>Past due:&nbsp;{dueDateTime}</div> : null }
-          </div> }
+          { this.props.assignment.completed_on && new Date(this.props.assignment.due_on) > new Date(this.props.assignment.completed_on)
+            ? <div className={textColorClassName}>Completed</div>
+            : null }
+          { this.props.assignment.delayed_on
+            ? <div className={textColorClassName}>Delayed</div>
+            : null }
+          { !this.props.assignment.completed_on && !this.props.assignment.delayed_on
+            ? <div>
+              {new Date(this.props.assignment.due_on) > new Date() ? <div className={textColorClassName}>Due:&nbsp;{dueDateTime}</div> : null }
+              {new Date(this.props.assignment.due_on) < new Date() ? <div className={textColorClassName}>Past due:&nbsp;{dueDateTime}</div> : null }
+            </div> : null }
 
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
@@ -48,6 +62,8 @@ export class AssignmentStudentRow extends React.Component {
             ? <span className='glyphicon glyphicon-ok-sign' style={{color: 'green', fontSize: '3rem'}} /> : null }
           { textColorClassName === 'red-text'
             ? <span className='glyphicon glyphicon-exclamation-sign' style={{color: 'red', fontSize: '3rem'}} /> : null }
+          { textColorClassName === 'yellow-text'
+            ? <span className='glyphicon glyphicon-time yellow-text' style={{fontSize: '3rem'}} /> : null }
         </Col>
       </Row>
     )
@@ -56,6 +72,6 @@ export class AssignmentStudentRow extends React.Component {
 
 AssignmentStudentRow.propTypes = {
   assignment: PropTypes.object.isRequired,
-  onTitleClick: PropTypes.func,
-  isTeacher: PropTypes.bool.isRequired
+  onTitleClick: PropTypes.func
+  // isTeacher: PropTypes.bool.isRequired
 }

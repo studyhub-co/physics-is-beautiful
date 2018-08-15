@@ -21,6 +21,10 @@
     color: red;
 }
 
+.classroom .yellow-text {
+    color: #ff9400;
+}
+
 .classroom .green-text {
     color: #7eb530;
 }
@@ -34,7 +38,7 @@
 }
 
 .classroom .blue-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: rgb(8, 209, 255);
 }
 
@@ -149,6 +153,27 @@
     background: #fbfbfb;
 }
 
+/* student-card */
+
+.classroom .student-card {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    width: 45rem;
+    height: 10rem;
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    vertical-align: top;
+}
+
+
 /* classroom card*/
 
 .classroom .classroom-card {
@@ -165,6 +190,7 @@
     position: relative;
     text-align: center;
     padding-top: 1rem;
+    margin-top: 1rem;
     vertical-align: top;
 }
 
@@ -259,7 +285,7 @@
     background-color: rgb(216, 216, 216);
 }
 
-.classroom  .assignment-teacher-card {
+.classroom .assignment-teacher-card {
     border-radius: 15px;
     background-color: rgb(247, 247, 247);
     padding: 1rem 0 1rem 0;

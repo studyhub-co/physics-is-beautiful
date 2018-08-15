@@ -142,7 +142,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid'])
 
-        if self.action not in ('get', 'list'):
+        if self.action not in ('list', 'retrieve'):
             return queryset
 
         queryset = queryset.prefetch_related('lessons',
@@ -166,7 +166,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         queryset = queryset.annotate(count_students_delayed_assingment=
                                      Count(
                                             Case(
-                                                When(Q(due_on__gt=datetime.datetime.now())
+                                                When(Q(due_on__lt=datetime.datetime.now())
                                                      & Q(assignment_progress__delayed_on__isnull=False),
                                                      then=1),
                                                 output_field=IntegerField()
@@ -176,7 +176,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         queryset = queryset.annotate(count_students_missed_assingment=
                                      Count(
                                         Case(
-                                            When(Q(due_on__gt=datetime.datetime.now())
+                                            When(Q(due_on__lt=datetime.datetime.now())
                                                  & Q(assignment_progress__completed_on__isnull=True),
                                                  then=1),
                                             output_field=IntegerField()
@@ -199,6 +199,7 @@ class StudentProfileViewSet(GenericViewSet):
     def profile(self, request, classroom_uuid, username=None):
         """
         url like /api/v1/classroom/:classroomuuid/students/:username/profile/
+        profile statistics for classroom
         """
         user_id = username.replace('user', '')
 
@@ -207,27 +208,30 @@ class StudentProfileViewSet(GenericViewSet):
         # count for current user and classroom assignment progress
         profile_qs = profile_qs.annotate(num_completed_assignments=Count(
             Case(
-                When(as_students_assignment_progress__completed_on__isnull=False,
+                When(Q(as_students_assignment_progress__completed_on__isnull=False)
+                     & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                      then=1),
                 output_field=IntegerField()
             )
         ))
 
         profile_qs = profile_qs.annotate(
-            num_missed_assignments=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
+            num_missed_assignments=Count(
                 Case(
-                    When(as_students_assignment_progress__isnull=True,
-                         as_students_assignment_progress__assignment__due_on__gt=datetime.datetime.now(),
+                    When(Q(as_students_assignment_progress__isnull=True)
+                         & Q(as_students_assignment_progress__assignment__due_on__lt=datetime.datetime.now())
+                         & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                          then=1),
                     output_field=IntegerField()
                 )
             ))
 
         profile_qs = profile_qs.annotate(
-            num_delayed_assignments=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
+            num_delayed_assignments=Count(
                 Case(
-                    When(as_students_assignment_progress__isnull=True,
-                         as_students_assignment_progress__assignment__due_on__gt=datetime.datetime.now(),
+                    When(Q(as_students_assignment_progress__delayed_on__isnull=False)
+                         & Q(as_students_assignment_progress__assignment__due_on__lt=datetime.datetime.now())
+                         & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                          then=1),
                     output_field=IntegerField()
                 )

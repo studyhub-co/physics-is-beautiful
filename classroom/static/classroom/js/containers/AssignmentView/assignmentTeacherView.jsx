@@ -13,7 +13,7 @@ import { EditAssignmentView } from '../index'
 import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem} from 'react-bootstrap'
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
-import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
+import { TeacherStudentRow } from '../../components/TeacherStudentRow'
 
 export class AssignmentTeacherView extends React.Component {
   constructor (props) {
@@ -114,7 +114,7 @@ export class AssignmentTeacherView extends React.Component {
                 &nbsp;
                 <span className={'red-missed-box'}>
                   <span title={'Missed'} className='glyphicon glyphicon-remove' />
-                  &nbsp;{this.props.assignment ? this.props.assignment.count_students_completed_assingment : null}
+                  &nbsp;{this.props.assignment ? this.props.assignment.count_students_missed_assingment : null}
                 </span>
               </div>
               <br />
@@ -123,11 +123,37 @@ export class AssignmentTeacherView extends React.Component {
               </div>
             </Col>
           </Row>
-          <hr />
         </Grid>
         <Grid fluid>
+          <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
+            <Col sm={6} md={6}>
+              <span className={'gray-text'}>Assignment</span>
+            </Col>
+            <Col sm={2} md={2} className={'vcenter'}>
+              Assigned on
+            </Col>
+            <Col sm={2} md={2} className={'vcenter'}>
+              Status
+            </Col>
+            <Col sm={2} md={2} className={'vcenter'}>
+              Completed on
+            </Col>
+          </Row>
+        </Grid>
+        <hr style={{margin: '0'}} />
+        <Grid fluid>
           <Row className={''}>
-           <TeacherStudentAssignmentRow />
+            <Col sm={12} md={12}>
+              {this.props.classroomTeacher ? <div>{this.props.classroomTeacher.students.map(function (student, i) {
+                return <TeacherStudentRow student={student}
+                  onStudentClick={() =>
+                    this.props.dispatch(push(BASE_URL +
+                    this.props.classroomTeacher.uuid +
+                    '/teacher/students/' + student.username))}
+                  key={i} />
+              }, this)}</div>
+                : null}
+            </Col>
           </Row>
         </Grid>
         { this.state.showEditAssigment
