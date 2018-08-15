@@ -2,8 +2,5 @@
   "extends": ["standard", "standard-react"],
   "env": {
     "jquery": true
-  },
-  "rules": {
-    "semi": [2, "always"]
   }
 }
