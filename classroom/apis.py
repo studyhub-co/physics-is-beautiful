@@ -57,6 +57,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(teacher=self.request.user.profile)
 
+
 # fixme move to ClassroomViewSet
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
