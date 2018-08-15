@@ -10,7 +10,7 @@
 }
 
 .classroom .gray-text {
-    color: rgb(216, 216, 216);
+    color: #ababab;
 }
 
 .classroom .deep-gray-text {
@@ -26,7 +26,7 @@
 }
 
 .classroom .title {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
 }
 
 .classroom .small-text {
@@ -74,34 +74,42 @@
     display: inline-block;
     margin-right: 30px;
     vertical-align: top;
-    padding-top: 2rem;
-    /*font-size: 3rem;*/
+    padding: 0 2rem 0 2rem;
+    font-weight: lighter;
 }
 
 .classroom .tab-link{
     font-size: 16px;
-    font-weight: normal;
-    outline:0
+    font-weight: lighter !important;
+    outline:0;
 }
 
 .classroom .tabs .tab-link {
-    padding: 0 5rem;
+    padding: 0 3rem;
     cursor: pointer;
-    /*border: 1px solid transparent;*/
     display: inline-block;
     position: relative;
-    border-bottom: 3px solid rgb(216, 216, 216);
     height: 40px;
     line-height: 41px;
-    top: -6px;
+    top: 3px;
     left: -1px;
+    border-bottom: solid #d8d8d8;
     color: rgb(216, 216, 216);
+    transition: color 500ms, border-bottom 500ms;
+}
+
+.classroom .tabs .tab-link:hover {
+    border-bottom: solid #1caff6;
+    color: #1caff6;
 }
 
 .classroom .tabs .tab-link-active {
     border-bottom: 3px solid #1caff6;
     color: #1caff6;
-    font-weight: normal !important;
+}
+
+.classroom .tabs .tab-links {
+    border-bottom: solid #d8d8d8;
 }
 
 
@@ -109,13 +117,10 @@
 
 .classroom .pop-up-window {
     border-radius: 15px;
-    padding: 30px 60px;
-    margin: 2rem 15px 2rem 15px;
+    padding: 10px 10px;
+    margin: 1rem 0px 1rem 0px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
 }
 
 .classroom .create-classroom-button{
@@ -201,9 +206,6 @@
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
     margin: 0 1rem 1rem 0;
     padding: 2rem;
     vertical-align: top;
@@ -246,9 +248,6 @@
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
     margin: 1rem 0 1rem 0;
     padding: 2rem;
     vertical-align: top;
@@ -307,6 +306,29 @@ label {
     text-decoration: none;
     color: #1caff6;
 }
+
+@media all and (max-width: 770px) {  /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
+    .section-sheet {
+        padding: 5px;
+    }
+
+    .classroom .tabs {
+        padding: 0;
+    }
+
+    .classroom .pop-up-window {
+        padding: 5px 10px;
+    }
+
+    .classroom .tabs .tab-links {
+        margin-bottom: 10px;
+    }
+
+    .classroom .tabs .tab-link {
+        padding: 0px 1.5rem;
+    }
+}
+
 /* like editor */
 
 .classroom .editable-label:not(.empty) + .glyphicon-pencil{ display:none; }
