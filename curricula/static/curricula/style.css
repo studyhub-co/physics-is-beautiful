@@ -164,9 +164,9 @@ html, body {
 		padding: 20px;
 		margin-top: -15px;
 	}
-.curriculum	.col-md-1 {
-		margin-right: 0px !important;
-	}
+    .curriculum	.col-md-1 {
+            margin-right: 0px !important;
+        }
     .col-md-6 {
         padding:0px;
     }

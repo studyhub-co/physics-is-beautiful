@@ -109,16 +109,13 @@ class TeacherClassroomView extends React.Component {
               <Col
                 sm={12}
                 md={12}
-                style={{textAlign: 'left', padding: 0}}
-              >
+                style={{textAlign: 'left', padding: 0}} >
                 <a
                   className={'back-button'}
-                  onClick={() => { history.push(BASE_URL)}}
-                >
+                  onClick={() => { history.push(BASE_URL)}} >
                   <span
                     className='glyphicon glyphicon-menu-left'
-                    style={{fontSize: 16}}
-                  />
+                    style={{fontSize: 16}} />
                   All Classrooms
                 </a>
               </Col>
@@ -155,6 +152,15 @@ class TeacherClassroomView extends React.Component {
               { this.props.classroomTeacher
                 ? <div>
                   <div className={'pop-up-window text-align-center'}>
+                    <div
+                      className={'gray-text title'}
+                      style={
+                        {fontSize: '2rem',
+                          color: '#676767',
+                          marginBottom: '1rem'
+                        }}>
+                      Classroom Code
+                    </div>
                     <div className={'gray-text title'}>Share classroom code</div>
                     <div>
                       <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
@@ -181,7 +187,15 @@ class TeacherClassroomView extends React.Component {
                     </InputGroup>
                   </div>
                   <div className={'pop-up-window text-align-center'}>
-                    <div className={'gray-text title'}>Curriculum</div>
+                    <div
+                      className={'gray-text title'}
+                      style={
+                        {fontSize: '2rem',
+                          color: '#676767',
+                          marginBottom: '1rem'
+                        }}>
+                      Curriculum
+                    </div>
                     <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
                     <div
                       className={'gray-text title pointer'}
