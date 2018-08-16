@@ -65,15 +65,20 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     count_lessons = serializers.IntegerField(read_only=True)
 
     completed_on = serializers.SerializerMethodField(read_only=True)
+    delayed_on = serializers.SerializerMethodField(read_only=True)
 
     # total Assignment per students statistics
     count_students_completed_assingment = serializers.SerializerMethodField(read_only=True)
     count_students_missed_assingment = serializers.SerializerMethodField(read_only=True)
     count_students_delayed_assingment = serializers.SerializerMethodField(read_only=True)
+    count_completed_lessons = serializers.SerializerMethodField(read_only=True)
+    assigned_on = serializers.SerializerMethodField(read_only=True)
 
     # current user (request.user) completed lessons
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
 
+
+    # this is for current user (student)
     def get_count_completed_lessons(self, obj):
         # return obj.count_completed_lessons if hasattr(obj, 'count_completed_lessons')  \
         #                                    and obj.classroom.teacher.user == self.context['request'].user\
@@ -82,14 +87,26 @@ class AssignmentListSerializer(serializers.ModelSerializer):
         # https://docs.djangoproject.com/en/2.1/topics/db/aggregation/#filtering-on-annotations
         # Changed in Django 2.0:
         # The filter argument was added to aggregates.
-        if len(obj.assignment_student_progress) > 0 and hasattr(obj, 'assignment_student_progress'):
+        if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
             return obj.assignment_student_progress[0].completed_lessons.count()
         else:
             return 0
 
+    # assigned_on to user
+    def get_assigned_on(self, obj):
+        if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
+            return obj.assignment_student_progress[0].updated_on
+        else:
+            return None
+
     def get_completed_on(self, obj):
-        if obj.assignment_progress.count() > 0:
+        if obj.assignment_progress.count() > 0:  # fixme  generate new sql query
             return obj.assignment_progress.first().completed_on
+        return None
+
+    def get_delayed_on(self, obj):
+        if obj.assignment_progress.count() > 0:  # fixme  generate new sql query
+            return obj.assignment_progress.first().delayed_on
         return None
 
     # follow counters for teacher
@@ -128,7 +145,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on', 'classroom_uuid', 'lessons_uuids',
-                  'count_lessons', 'completed_on',
+                  'count_lessons', 'completed_on', 'delayed_on', 'assigned_on',
                   'count_students_completed_assingment', 'count_students_missed_assingment',
                   'count_students_delayed_assingment',
                   'count_completed_lessons' ]

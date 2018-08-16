@@ -57,6 +57,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(teacher=self.request.user.profile)
 
+
 # fixme move to ClassroomViewSet
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
@@ -138,14 +139,21 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid']).\
-            prefetch_related('lessons',
+
+        queryset = self.queryset.filter(classroom__uuid=self.kwargs['classroom_uuid'])
+
+        if self.action not in ('list', 'retrieve'):
+            return queryset
+
+        queryset = queryset.prefetch_related('lessons',
                              Prefetch('assignment_progress',
                                       queryset=AssignmentProgress.objects.filter(student=self.request.user.profile),
                                       to_attr='assignment_student_progress')
                              )
 
-        queryset = queryset.annotate(count_lessons=Count('lessons'))
+        queryset = queryset.annotate(count_lessons=Count('lessons', distinct=True))
+
+        # counts for teacher
         queryset = queryset.annotate(count_students_completed_assingment=
                                      Count(
                                          Case(
@@ -158,7 +166,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         queryset = queryset.annotate(count_students_delayed_assingment=
                                      Count(
                                             Case(
-                                                When(Q(due_on__gt=datetime.datetime.now())
+                                                When(Q(due_on__lt=datetime.datetime.now())
                                                      & Q(assignment_progress__delayed_on__isnull=False),
                                                      then=1),
                                                 output_field=IntegerField()
@@ -168,14 +176,13 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         queryset = queryset.annotate(count_students_missed_assingment=
                                      Count(
                                         Case(
-                                            When(Q(due_on__gt=datetime.datetime.now())
+                                            When(Q(due_on__lt=datetime.datetime.now())
                                                  & Q(assignment_progress__completed_on__isnull=True),
                                                  then=1),
                                             output_field=IntegerField()
                                             )
                                           )
                                      )
-        # TODO remove prefetch_related for create\update
 
         return queryset
 
@@ -192,6 +199,7 @@ class StudentProfileViewSet(GenericViewSet):
     def profile(self, request, classroom_uuid, username=None):
         """
         url like /api/v1/classroom/:classroomuuid/students/:username/profile/
+        profile statistics for classroom
         """
         user_id = username.replace('user', '')
 
@@ -200,27 +208,30 @@ class StudentProfileViewSet(GenericViewSet):
         # count for current user and classroom assignment progress
         profile_qs = profile_qs.annotate(num_completed_assignments=Count(
             Case(
-                When(as_students_assignment_progress__completed_on__isnull=False,
+                When(Q(as_students_assignment_progress__completed_on__isnull=False)
+                     & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                      then=1),
                 output_field=IntegerField()
             )
         ))
 
         profile_qs = profile_qs.annotate(
-            num_missed_assignments=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
+            num_missed_assignments=Count(
                 Case(
-                    When(as_students_assignment_progress__isnull=True,
-                         as_students_assignment_progress__assignment__due_on__gt=datetime.datetime.now(),
+                    When(Q(as_students_assignment_progress__isnull=True)
+                         & Q(as_students_assignment_progress__assignment__due_on__lt=datetime.datetime.now())
+                         & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                          then=1),
                     output_field=IntegerField()
                 )
             ))
 
         profile_qs = profile_qs.annotate(
-            num_delayed_assignments=Count(  # fixme what we have if AssignmentProgress is not exist for that time?
+            num_delayed_assignments=Count(
                 Case(
-                    When(as_students_assignment_progress__isnull=True,
-                         as_students_assignment_progress__assignment__due_on__gt=datetime.datetime.now(),
+                    When(Q(as_students_assignment_progress__delayed_on__isnull=False)
+                         & Q(as_students_assignment_progress__assignment__due_on__lt=datetime.datetime.now())
+                         & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                          then=1),
                     output_field=IntegerField()
                 )
