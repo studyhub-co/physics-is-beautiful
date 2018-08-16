@@ -150,16 +150,16 @@ def game_success(request, uuid):
             # current user
             if request.user.is_authenticated:
                 if request.user.profile.id == row.profile_id:
-                    currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
-                    setattr(currrent_user_score, 'row_num', row_num + 1)
+                    current_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+                    setattr(current_user_score, 'row_num', row_num + 1)
                     current_user_in_score_list = True
 
             else:
                 if row.duration > dur or row_num == len(scores[:10])-1:
                     if not already_anon_insert:
-                        currrent_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
-                        setattr(currrent_user_score, 'row_num', row_num + 1)
-                        data_scores_list.append(currrent_user_score)
+                        current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+                        setattr(current_user_score, 'row_num', row_num + 1)
+                        data_scores_list.append(current_user_score)
                         already_anon_insert = True
 
             if not already_anon_insert:
@@ -171,10 +171,10 @@ def game_success(request, uuid):
 
         if request.user.is_authenticated:
             if not current_user_in_score_list:
-                currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
-                position = service.get_score_board_qs(game.lesson).filter(duration__lt=currrent_user_score.duration).count()
-                setattr(currrent_user_score, 'row_num', position + 1)
-                data_scores_list.append(currrent_user_score)
+                current_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+                position = service.get_score_board_qs(game.lesson).filter(duration__lt=current_user_score.duration).count()
+                setattr(current_user_score, 'row_num', position + 1)
+                data_scores_list.append(current_user_score)
 
         data = ScoreBoardSerializer(data_scores_list, many=True).data
         return Response(data)
