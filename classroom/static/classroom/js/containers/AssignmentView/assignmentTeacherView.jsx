@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 
 import * as assignmentCreators from '../../actions/assignment'
+import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 
 import { EditAssignmentView } from '../index'
@@ -14,6 +15,7 @@ import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem} from 'reac
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 import { TeacherStudentRow } from '../../components/TeacherStudentRow'
+
 
 export class AssignmentTeacherView extends React.Component {
   constructor (props) {
@@ -144,15 +146,14 @@ export class AssignmentTeacherView extends React.Component {
         <Grid fluid>
           <Row className={''}>
             <Col sm={12} md={12}>
-              {this.props.classroomTeacher ? <div>{this.props.classroomTeacher.students.map(function (student, i) {
+              {this.props.classroomTeacher && this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
                 return <TeacherStudentRow student={student}
                   onStudentClick={() =>
                     this.props.dispatch(push(BASE_URL +
                     this.props.classroomTeacher.uuid +
                     '/teacher/students/' + student.username))}
                   key={i} />
-              }, this)}</div>
-                : null}
+              }, this): null}
             </Col>
           </Row>
         </Grid>
@@ -192,6 +193,7 @@ const mapStateToProps = (state) => {
   return {
     // classroomStudent: state.classroom.classroomStudentClassroom
     classroomTeacher: state.classroom.classroomTeacherClassroom,
+    teacherClassroomStudentsList: state.student.classroomStudentsList,
     assignment: state.assignment.assignment
   }
 }
@@ -200,7 +202,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     assignmentActions: bindActionCreators(assignmentCreators, dispatch),
-    tabActions: bindActionCreators(tabsCreators, dispatch)
+    tabActions: bindActionCreators(tabsCreators, dispatch),
+    studentActions: bindActionCreators(studentCreators, dispatch)
   }
 }
 
