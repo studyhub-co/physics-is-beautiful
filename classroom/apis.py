@@ -37,7 +37,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset. \
-                annotate(count_students=Count('students'))
+                annotate(count_students=Count('students', distinct=True))
 
         filter_by = self.request.query_params.get('filter', None)
 
@@ -159,7 +159,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                                   then=1),
                                              output_field=IntegerField()
                                              )
-                                          )
+                                         , distinct=True)
                                      )
         queryset = queryset.annotate(count_students_delayed_assingment=
                                      Count(
@@ -168,7 +168,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                                      & Q(assignment_progress__delayed_on__isnull=False),
                                                      then=1),
                                                 output_field=IntegerField()
-                                            )
+                                                , distinct=True )
                                         )
                                      )
         queryset = queryset.annotate(count_students_missed_assingment=
@@ -179,7 +179,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                                  then=1),
                                             output_field=IntegerField()
                                             )
-                                          )
+                                         , distinct=True)
                                      )
 
         return queryset
@@ -253,7 +253,7 @@ class StudentProfileViewSet(GenericViewSet):
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def profile(self, request, classroom_uuid, username=None):
         """
-        url like /api/v1/classroom/:classroomuuid/students/:username/profile/
+        /api/v1/classroom/:classroomuuid/students/:username/profile/
         profile statistics for classroom
         """
         user_id = username.replace('user', '')
