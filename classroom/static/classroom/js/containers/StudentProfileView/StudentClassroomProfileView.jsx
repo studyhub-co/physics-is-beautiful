@@ -85,7 +85,12 @@ class StudentClassroomProfileView extends React.Component {
           </Row>
           <Row className={className}>
             <Col sm={1} md={1}>
-              {/*Will be image TODO */}
+              {this.props.studentClassroomProfile && this.props.studentClassroomProfile.gravatar_url
+                ? <Image
+                  responsive
+                  src={this.props.studentClassroomProfile.gravatar_url}
+                  circle />
+                : null}
             </Col>
             <Col sm={8} md={8}>
               { this.props.studentClassroomProfile ? <div>
