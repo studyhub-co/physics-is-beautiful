@@ -6,7 +6,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes
-
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
 
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
@@ -59,7 +59,7 @@ class QuestionViewSet(ModelViewSet):
 
                     if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
                             .count() == 0:
-                        if datetime.datetime.now() < assignment_progress.assignment.due_on:
+                        if datetime.datetime.now() < assignment_progress.assignment.due_on.replace(tzinfo=None):
                             assignment_progress.completed_on = datetime.datetime.now()
                         else:
                             assignment_progress.delayed_on = datetime.datetime.now()
@@ -120,8 +120,12 @@ def get_unit_conversion_units(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def game_success(request, slug):
-    game = Game.objects.get(slug=slug)  # TODO here is raise exception is game not found by slug and if if more than one
+def game_success(request, uuid):
+    try:
+        game = Game.objects.get(lesson__uuid=uuid)
+    except Game.DoesNotExist:
+        raise NotFound()
+
     service = get_progress_service(request, game.lesson)
 
     n = 10  # max number of results to show
@@ -144,10 +148,14 @@ def game_success(request, slug):
 
         already_anon_insert = False
 
-        for row_num, row in enumerate(scores):
+        for row_num, row in enumerate(scores[:10]):
+            # current user
             if request.user.is_authenticated:
                 if request.user.profile.id == row.profile_id:
+                    currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+                    setattr(currrent_user_score, 'row_num', row_num + 1)
                     current_user_in_score_list = True
+
             else:
                 if row.duration and row.duration > dur or row_num == len(scores[:n])-1:
                     if not already_anon_insert:
@@ -156,10 +164,10 @@ def game_success(request, slug):
                         data_scores_list.append(currrent_user_score)
                         already_anon_insert = True
 
-                if not already_anon_insert:
-                    setattr(row, 'row_num', row_num + 1)
-                else:
-                    setattr(row, 'row_num', row_num + 2)
+            if not already_anon_insert:
+                setattr(row, 'row_num', row_num + 1)
+            else:
+                setattr(row, 'row_num', row_num + 2)
 
             if row.duration:
                 data_scores_list.append(row)

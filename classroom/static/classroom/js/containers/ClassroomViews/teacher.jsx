@@ -223,6 +223,7 @@ class TeacherClassroomView extends React.Component {
                         '/teacher/students/' + student.username))}
                       key={i} />
                   }, this)}
+                  <div style={{clear: 'both'}} />
                 </span>
                 : null }
               { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students === 0
