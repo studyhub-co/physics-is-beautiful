@@ -3,7 +3,8 @@ import { push } from 'connected-react-router'
 import { checkHttpStatus, getAxios } from '../utils'
 
 import {
-  STUDENT_RECEIVE_CLASSROOM_PROFILE, STUDENT_RECEIVE_CLASSROOM_ASSIGNMENTS
+  STUDENT_RECEIVE_CLASSROOM_PROFILE, STUDENT_RECEIVE_CLASSROOM_ASSIGNMENTS,
+  STUDENT_RECEIVE_STUDENTS_CLASSROOM_LIST
 } from '../constants'
 
 import { API_PREFIX } from '../utils/config'
@@ -44,6 +45,26 @@ export function classroomFetchStudentClassroomProfile (classroomUuid, userName) 
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveStudentClassroomProfile(response.data))
+      })
+  }
+}
+
+
+export function receiveStudentsClassroomList (classroomStudentsList) {
+  return {
+    type: STUDENT_RECEIVE_STUDENTS_CLASSROOM_LIST,
+    payload: {
+      classroomStudentsList
+    }
+  }
+}
+
+export function classroomFetchStudentsClassroomList (classroomUuid) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + classroomUuid + '/students/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveStudentsClassroomList(response.data))
       })
   }
 }

@@ -22,6 +22,7 @@ import { Grid, Row, Col, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
 import * as assignmentCreators from '../../actions/assignment'
 import * as classroomCreators from '../../actions/classroom'
+import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
@@ -32,6 +33,7 @@ class TeacherClassroomView extends React.Component {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', true)
     this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
+    this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
     this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
   }
 
@@ -71,7 +73,7 @@ class TeacherClassroomView extends React.Component {
 
   handleEditAssignmentModal (assignment) {
     this.setState({
-      showCreateAssigment: !this.state.showCreateAssigment,
+      showCreateAssigment: !this.state.showCreateAssigment
     })
   }
 
@@ -214,7 +216,7 @@ class TeacherClassroomView extends React.Component {
               <Route path={studentProfileUrl} component={StudentClassroomProfileView} />
               { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0
                 ? <span>
-                  { this.props.classroomTeacher.students.map(function (student, i) {
+                  { this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
                     return <TeacherStudentCard
                       student={student}
                       onStudentClick={() =>
@@ -222,7 +224,7 @@ class TeacherClassroomView extends React.Component {
                         this.props.classroomTeacher.uuid +
                         '/teacher/students/' + student.username))}
                       key={i} />
-                  }, this)}
+                  }, this) : null}
                   <div style={{clear: 'both'}} />
                 </span>
                 : null }
@@ -300,6 +302,9 @@ TeacherClassroomView.propTypes = {
     changeTeacherClassroomSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   teacherClassroomTab: PropTypes.string,
+  studentActions: PropTypes.shape({
+    classroomFetchStudentsClassroomList: PropTypes.func.isRequired
+  }).isRequired,
   classroomActions: PropTypes.shape({
     classroomFetchTeacherClassroom: PropTypes.func.isRequired,
     classroomPartialUpdateTeacherClassroom: PropTypes.func.isRequired,
@@ -312,7 +317,8 @@ TeacherClassroomView.propTypes = {
   }).isRequired,
   classroomTeacher: PropTypes.object,
   assignmentsList: PropTypes.array,
-  assignment: PropTypes.object
+  assignment: PropTypes.object,
+  teacherClassroomStudentsList: PropTypes.array
 }
 
 const mapStateToProps = (state) => {
@@ -320,7 +326,8 @@ const mapStateToProps = (state) => {
     classroomTeacher: state.classroom.classroomTeacherClassroom,
     teacherClassroomTab: state.tab.teacherClassroomTab,
     assignmentsList: state.assignment.assignmentsList,
-    assignment: state.assignment.assignment
+    assignment: state.assignment.assignment,
+    teacherClassroomStudentsList: state.student.classroomStudentsList
   }
 }
 
@@ -329,7 +336,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
     classroomActions: bindActionCreators(classroomCreators, dispatch),
-    assignmentActions: bindActionCreators(assignmentCreators, dispatch)
+    assignmentActions: bindActionCreators(assignmentCreators, dispatch),
+    studentActions: bindActionCreators(studentCreators, dispatch)
   }
 }
 
