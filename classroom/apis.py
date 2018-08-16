@@ -36,8 +36,6 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        # TODO add counts for students assignments like counts assignments in profile
-
         queryset = self.queryset. \
                 annotate(count_students=Count('students'))
 
@@ -191,20 +189,11 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
 
 class StudentProfileViewSet(GenericViewSet):
-    # queryset = Profile.objects.all()
+    queryset = Profile.objects.all()
     lookup_field = 'username'
-    # serializer_class = StudentProfileSerializer
+    serializer_class = StudentProfileSerializer
 
-    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
-    def profile(self, request, classroom_uuid, username=None):
-        """
-        url like /api/v1/classroom/:classroomuuid/students/:username/profile/
-        profile statistics for classroom
-        """
-        user_id = username.replace('user', '')
-
-        profile_qs = Profile.objects
-
+    def add_counts_to_profiles_qs(self, profile_qs, classroom_uuid):
         # count for current user and classroom assignment progress
         profile_qs = profile_qs.annotate(num_completed_assignments=Count(
             Case(
@@ -236,6 +225,42 @@ class StudentProfileViewSet(GenericViewSet):
                     output_field=IntegerField()
                 )
             ))
+
+        return profile_qs
+
+    def list(self, request, classroom_uuid, *args, **kwargs):
+        """
+        list of all students in a classrooom
+        /api/v1/classroom/:classroomuuid/students/
+        """
+        # queryset = self.filter_queryset(self.get_queryset())
+        #
+        # TODO add support for pagination
+        # page = self.paginate_queryset(queryset)
+        # if page is not None:
+        #     serializer = self.get_serializer(page, many=True)
+        #     return self.get_paginated_response(serializer.data)
+
+        profile_qs = Profile.objects
+
+        queryset = self.add_counts_to_profiles_qs(profile_qs, classroom_uuid)
+        # filter current classroom
+        queryset = queryset.filter(as_student_classrooms__uuid=classroom_uuid)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
+    def profile(self, request, classroom_uuid, username=None):
+        """
+        url like /api/v1/classroom/:classroomuuid/students/:username/profile/
+        profile statistics for classroom
+        """
+        user_id = username.replace('user', '')
+
+        profile_qs = Profile.objects
+
+        profile_qs = self.add_counts_to_profiles_qs(profile_qs, classroom_uuid)
 
         try:
             profile = profile_qs.get(user__pk=user_id)
@@ -273,6 +298,8 @@ class StudentProfileViewSet(GenericViewSet):
         assignments = assignments.annotate(count_lessons=Count('lessons'))
 
         self.queryset = assignments
+
+        # TODO add support for pagination
 
         serializer = AssignmentListSerializer(assignments, many=True)
         return Response(serializer.data)

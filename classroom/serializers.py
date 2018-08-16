@@ -48,11 +48,12 @@ class ClassroomListSerializer(ClassroomBaseSerializer):
 
 
 class ClassroomSerializer(ClassroomBaseSerializer):
+    pass
     # students = PublicProfileSerializer(read_only=True, many=True)
-    students = StudentProfileSerializer(read_only=True, many=True)
+    # students = StudentProfileSerializer(read_only=True, many=True)
 
-    class Meta(ClassroomBaseSerializer.Meta):
-        fields = ClassroomBaseSerializer.Meta.fields + ['students']
+    # class Meta(ClassroomBaseSerializer.Meta):
+    # fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
 class AssignmentListSerializer(serializers.ModelSerializer):
