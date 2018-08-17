@@ -3,11 +3,11 @@ import datetime
 from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, NotAcceptable
 
 from profiles.models import Profile
 
@@ -84,8 +84,8 @@ def leave_classroom(request):
         raise NotFound()
 
     ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).delete()
+    # todo remove assigmnet progress here?
 
-    # fixme to reduce data we can return simple uuid
     serializer = ClassroomSerializer(classroom)
 
     return Response(serializer.data)
@@ -304,4 +304,30 @@ class StudentProfileViewSet(GenericViewSet):
         serializer = AssignmentListSerializer(assignments, many=True)
         return Response(serializer.data)
 
+    def destroy(self, request, classroom_uuid, *args, **kwargs):
+        """
+        remove user from classroom
+        """
+        if 'username' in kwargs:
+            user_id = kwargs['username'].replace('user', '')
+        else:
+            raise NotFound()
+
+        try:
+            profile = Profile.objects.get(user__pk=user_id)
+        except Profile.DoesNotExist:
+            raise NotFound('profile not found')
+
+        try:
+            classroom = Classroom.objects.get(uuid=classroom_uuid)
+        except Profile.DoesNotExist:
+            raise NotFound('classroom not found')
+
+        if request.user != classroom.teacher.user:
+            raise NotAcceptable
+
+        ClassroomStudent.objects.filter(student=profile, classroom=classroom).delete()
+        # TODO remove assignment progress
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -16,7 +16,6 @@ import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 import { TeacherAssigmentStudentRow } from '../../components/TeacherAssigmentStudentRow'
 
-
 export class AssignmentTeacherView extends React.Component {
   constructor (props) {
     super(props)
@@ -148,12 +147,12 @@ export class AssignmentTeacherView extends React.Component {
             <Col sm={12} md={12}>
               {this.props.classroomTeacher && this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
                 return <TeacherAssigmentStudentRow student={student}
-                                                   onStudentClick={() =>
+                  onStudentClick={() =>
                     this.props.dispatch(push(BASE_URL +
                     this.props.classroomTeacher.uuid +
                     '/teacher/students/' + student.username))}
-                                                   key={i} />
-              }, this): null}
+                  key={i} />
+              }, this) : null}
             </Col>
           </Row>
         </Grid>

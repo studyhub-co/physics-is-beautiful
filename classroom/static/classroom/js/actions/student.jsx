@@ -7,7 +7,7 @@ import {
   STUDENT_RECEIVE_STUDENTS_CLASSROOM_LIST
 } from '../constants'
 
-import { API_PREFIX } from '../utils/config'
+import { API_PREFIX, BASE_URL } from '../utils/config'
 
 // studentClassroomProfile
 
@@ -49,7 +49,6 @@ export function classroomFetchStudentClassroomProfile (classroomUuid, userName) 
   }
 }
 
-
 export function receiveStudentsClassroomList (classroomStudentsList) {
   return {
     type: STUDENT_RECEIVE_STUDENTS_CLASSROOM_LIST,
@@ -65,6 +64,18 @@ export function classroomFetchStudentsClassroomList (classroomUuid) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveStudentsClassroomList(response.data))
+      })
+  }
+}
+
+export function removeFromClass (classroomUuid, userName) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_PREFIX + classroomUuid + '/students/' + userName)
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(classroomFetchStudentsClassroomList(classroomUuid))
+        dispatch(push(BASE_URL + classroomUuid + '/teacher'))
+        // todo check tabs
       })
   }
 }

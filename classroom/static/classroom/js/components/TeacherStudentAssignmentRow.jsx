@@ -70,7 +70,7 @@ export class TeacherStudentAssignmentRow extends React.Component {
           { this.props.assignment.delayed_on
             ? <div className={textColorClassName}>
               <span className={'yellow-delayed-box'}>
-                <span className='glyphicon glyphicon-time yellow-text' />&nbsp;Delayed
+                <span className='glyphicon glyphicon-time yellow-text' />&nbsp;Completed late
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && new Date(this.props.assignment.due_on) < new Date()
