@@ -46,6 +46,7 @@ class Classroom(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
+    # TODO we need erase student AssignmentProgress when student is left classroom
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
     curriculum = models.ForeignKey(Curriculum)

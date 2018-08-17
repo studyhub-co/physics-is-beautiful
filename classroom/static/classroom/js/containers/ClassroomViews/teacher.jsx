@@ -256,7 +256,7 @@ class TeacherClassroomView extends React.Component {
                     </Col>
                     <Col sm={2} md={2} className={'vcenter'}>
                       <span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' />
-                      <span title={'Delayed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' />
+                      <span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' />
                       <span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' />
                     </Col>
                     <Col sm={1} md={1} />

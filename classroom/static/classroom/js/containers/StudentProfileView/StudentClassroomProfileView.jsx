@@ -12,10 +12,15 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 import * as assignmentCreators from '../../actions/assignment'
 
-import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { Grid, Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 class StudentClassroomProfileView extends React.Component {
+  constructor (props) {
+    super(props)
+    this.handleSettingsClick = this.handleSettingsClick.bind(this)
+  }
+
   componentWillMount () {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', true)
@@ -30,16 +35,9 @@ class StudentClassroomProfileView extends React.Component {
   }
 
   handleSettingsClick (e) {
-    // if (e === 'edit') {
-    //   this.handleEditAssignmentModal()
-    // } else if (e === 'delete') {
-    //   this.props.assignmentActions.assignmentDeleteAssignment(
-    //     this.props.match.params['uuid'],
-    //     this.props.match.params['assigmentUuid'],
-    //     true,
-    //     () => { this.props.dispatch(push(BASE_URL + this.props.match.params['uuid'] + '/teacher/')) }
-    //   )
-    // }
+    if (e === 'remove') {
+      this.props.studentActions.removeFromClass(this.props.classroomTeacher.uuid, this.props.studentClassroomProfile.username)
+    }
   }
 
   onAssignmentTitleClick (assignment) {
@@ -159,7 +157,8 @@ StudentClassroomProfileView.propTypes = {
   }).isRequired,
   studentActions: PropTypes.shape({
     classroomFetchStudentClassroomAssignmentsList: PropTypes.func.isRequired,
-    classroomFetchStudentClassroomProfile: PropTypes.func.isRequired
+    classroomFetchStudentClassroomProfile: PropTypes.func.isRequired,
+    removeFromClass: PropTypes.func.isRequired
   }).isRequired,
   studentAssignmentsList: PropTypes.array
 }
