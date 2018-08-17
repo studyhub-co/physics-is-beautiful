@@ -104,7 +104,7 @@ class StudentClassroomProfileView extends React.Component {
                   </span>
                 </span>
                 <span className={'yellow-delayed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-time'>
+                  <span title={'Completed late'} className='glyphicon glyphicon-time'>
                     &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
                   </span>
                 </span>

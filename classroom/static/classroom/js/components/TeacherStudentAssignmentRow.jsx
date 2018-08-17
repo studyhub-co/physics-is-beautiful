@@ -35,13 +35,10 @@ export class TeacherStudentAssignmentRow extends React.Component {
       completedOnTime = new Date(this.props.assignment.completed_on).toLocaleDateString() + ' ' +
         new Date(this.props.assignment.completed_on).toLocaleTimeString()
     }
-    // if (this.props.assignment.start_on) {
-    //   startDateOn = new Date(this.props.assignment.start_on).toLocaleDateString() + ' ' +
-    //     new Date(this.props.assignment.start_on).toLocaleTimeString()
-    // }
-
-
-    // console.log(this.props.assignment);
+    if (this.props.assignment.delayed_on) {
+      completedOnTime = new Date(this.props.assignment.delayed_on).toLocaleDateString() + ' ' +
+        new Date(this.props.assignment.delayed_on).toLocaleTimeString()
+    }
 
     return (
       <Row className={className}>
@@ -61,19 +58,19 @@ export class TeacherStudentAssignmentRow extends React.Component {
           { assingmentDate ? <div> { assingmentDate } </div> : null }
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
-          { this.props.assignment.completed_on && new Date(this.props.assignment.due_on) > new Date(this.props.assignment.completed_on)
+          { this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'green-completed-box'}>
                 <span className='glyphicon glyphicon-ok-sign' style={{color: 'green'}} />&nbsp;Completed
               </span>
             </div> : null }
-          { this.props.assignment.delayed_on
+          { this.props.assignment.delayed_on && !this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'yellow-delayed-box'}>
                 <span className='glyphicon glyphicon-time yellow-text' />&nbsp;Completed late
               </span>
             </div> : null }
-          { !this.props.assignment.completed_on && new Date(this.props.assignment.due_on) < new Date()
+          { !this.props.assignment.completed_on && !this.props.assignment.delayed_on && new Date(this.props.assignment.due_on) < new Date()
             ? <div className={textColorClassName}>
               <span className={'red-missed-box'}>
                 <span className='glyphicon glyphicon-remove' style={{color: 'red'}} />&nbsp;Missed
