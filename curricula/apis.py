@@ -144,45 +144,47 @@ def game_success(request, uuid):
         # try:
         scores = service.get_score_board_qs(game.lesson).exclude(duration__isnull=True)
         data_scores_list = []
-        current_user_in_score_list = False
-
-        already_anon_insert = False
+        user_already_in_score_list = False
 
         for row_num, row in enumerate(scores[:10]):
-            # current user
+            # add score if user in top 10
+            # current registered user
             if request.user.is_authenticated:
                 if request.user.profile.id == row.profile_id:
-                    currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
-                    setattr(currrent_user_score, 'row_num', row_num + 1)
-                    current_user_in_score_list = True
-
+                    current_user_score = service.get_score_board_qs(game.lesson).\
+                                                 get(profile__user=request.user)
+                    setattr(current_user_score, 'row_num', row_num + 1)
+                    data_scores_list.append(current_user_score)
+                    user_already_in_score_list = True
+                    continue
+            # current anon user
             else:
-                if row.duration and row.duration > dur or row_num == len(scores[:n])-1:
-                    if not already_anon_insert:
-                        currrent_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
-                        setattr(currrent_user_score, 'row_num', row_num + 1)
-                        data_scores_list.append(currrent_user_score)
-                        already_anon_insert = True
+                if row.duration > dur:
+                    if not user_already_in_score_list:
+                        current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+                        setattr(current_user_score, 'row_num', row_num + 1)
+                        data_scores_list.append(current_user_score)
+                        user_already_in_score_list = True
+                        continue
 
-            if not already_anon_insert:
-                setattr(row, 'row_num', row_num + 1)
-            else:
-                setattr(row, 'row_num', row_num + 2)
+            setattr(row, 'row_num', row_num + 1)
 
             if row.duration:
                 data_scores_list.append(row)
 
-        if request.user.is_authenticated:
-            if not current_user_in_score_list:
-                currrent_user_score = scores.get(profile__user=request.user)
-                position = scores.filter(duration__lt=currrent_user_score.duration).count()
-                setattr(currrent_user_score, 'row_num', position + 1)
-                data_scores_list.append(currrent_user_score)
+        # add score if user not in top 10
+        if not user_already_in_score_list:
+            if request.user.is_authenticated:
+                current_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+            else:
+                current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+
+            position = service.get_score_board_qs(game.lesson).filter(duration__lt=current_user_score.duration).count()
+            setattr(current_user_score, 'row_num', position + 1)
+            data_scores_list.append(current_user_score)
 
         data = ScoreBoardSerializer(data_scores_list[:n], many=True).data
         return Response(data)
-        # except NotImplementedError:
-        #     pass
 
     return Response(status=status.HTTP_204_NO_CONTENT)
 

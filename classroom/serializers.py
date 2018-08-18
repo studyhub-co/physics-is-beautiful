@@ -48,11 +48,12 @@ class ClassroomListSerializer(ClassroomBaseSerializer):
 
 
 class ClassroomSerializer(ClassroomBaseSerializer):
+    pass
     # students = PublicProfileSerializer(read_only=True, many=True)
-    students = StudentProfileSerializer(read_only=True, many=True)
+    # students = StudentProfileSerializer(read_only=True, many=True)
 
-    class Meta(ClassroomBaseSerializer.Meta):
-        fields = ClassroomBaseSerializer.Meta.fields + ['students']
+    # class Meta(ClassroomBaseSerializer.Meta):
+    # fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
 class AssignmentListSerializer(serializers.ModelSerializer):
@@ -100,13 +101,13 @@ class AssignmentListSerializer(serializers.ModelSerializer):
             return None
 
     def get_completed_on(self, obj):
-        if obj.assignment_progress.count() > 0:  # fixme  generate new sql query
-            return obj.assignment_progress.first().completed_on
+        if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
+            return obj.assignment_student_progress[0].completed_on
         return None
 
     def get_delayed_on(self, obj):
-        if obj.assignment_progress.count() > 0:  # fixme  generate new sql query
-            return obj.assignment_progress.first().delayed_on
+        if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
+            return obj.assignment_student_progress[0].delayed_on
         return None
 
     # follow counters for teacher

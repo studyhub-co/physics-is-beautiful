@@ -39,3 +39,4 @@ class IsAssignmentClassroomTeacherOrStudentReadonly(permissions.BasePermission):
             safe = True
 
         return self._is_teacher_or_student(request.user, obj, safe)
+

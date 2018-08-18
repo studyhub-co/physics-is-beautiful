@@ -43,7 +43,7 @@ export class AssignmentStudentRow extends React.Component {
             ? <div className={textColorClassName}>Completed</div>
             : null }
           { this.props.assignment.delayed_on
-            ? <div className={textColorClassName}>Delayed</div>
+            ? <div className={textColorClassName}>Completed late</div>
             : null }
           { !this.props.assignment.completed_on && !this.props.assignment.delayed_on
             ? <div>
