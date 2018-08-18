@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     # Nested admin
     'nested_admin',
+    'django_gravatar',
     # pib apps
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',

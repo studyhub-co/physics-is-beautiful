@@ -13,7 +13,31 @@ var SoundSingleton = {
 };
 var bgAudio = null;
 var playAudio = function(key, volume = 1) {
-  if (SoundSingleton.soundEnabled) {
+  if (window.IS_MOBILE_APP) {
+    switch (key) {
+      case "correct":
+        window.parent.postMessage("audioCorrect", "*");
+        break;
+      case "incorrect":
+        window.parent.postMessage("audioIncorrect", "*");
+        break;
+      case "continue":
+        window.parent.postMessage("audioContinue", "*");
+        break;
+      case "complete":
+        window.parent.postMessage("audioComplete", "*");
+        break;
+      case "exam_start":
+        window.parent.postMessage("audioExamStart", "*");
+        break;
+      case "exam_correct":
+        window.parent.postMessage("audioExamCorrect", "*");
+        break;
+      case "rainbow":
+        window.parent.postMessage("audioDoubleRainbow", "*");
+        break;
+    }
+  } else if (SoundSingleton.soundEnabled) {
     var audio = SoundSingleton.soundFiles[key];
     audio.volume = volume;
     audio.play();

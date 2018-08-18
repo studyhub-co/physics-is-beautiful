@@ -19,7 +19,6 @@ export class Footer extends React.Component {
   render () {
     var checkMarks = ''
     var correctMessage = ''
-    // var continueButton = ''
     if (this.props.correct === true) {
       checkMarks = (<span id='correct' className='glyphicon glyphicon-ok-sign pull-right' />)
       correctMessage = 'Correct'
@@ -51,37 +50,37 @@ export class Footer extends React.Component {
     }
 
     return (
-      <div id='footer'>
-        <div className='progress-bottom-container'>
-          <h4 id='progress-h4'>Progress</h4>
-          <div className='progress'>
-            <div
-              className='progress-bar progress-bar-info progress-bar-striped'
-              id='progressbar'
-              role='progressbar'
-              aria-valuenow='0'
-              aria-valuemin='0'
-              aria-valuemax='100'
-              style={{width: this.props.progress + '%'}}>
-              <span className='sr-only' />
+        <div id='footer' >
+          <div className='row'>
+            <div className='col-md-6 text-center' style={{height: (checkMarks ? 'auto' : 0)}}>
+              <div id='checkMarks'>{checkMarks}</div>
+              <div id='correctMessage'>{correctMessage}</div>
+            </div>
+            <div className='col-md-6 text-center'>
+              <div id='checkContainer'>
+                <CheckContinueButton
+                    checkAction={this.props.checkAction}
+                    continueAction={this.props.continueAction}
+                    isCheck={typeof this.props.correct === 'undefined'}
+                    disabledCheck={this.props.disabledCheck} />
+              </div>
+            </div>
+          </div>
+          <div className='progress-bottom-container'>
+            <div className='progress'>
+              <div
+                  className='progress-bar progress-bar-info progress-bar-striped'
+                  id='progressbar'
+                  role='progressbar'
+                  aria-valuenow='0'
+                  aria-valuemin='0'
+                  aria-valuemax='100'
+                  style={{width: this.props.progress + '%'}}>
+                <span className='sr-only' />
+              </div>
             </div>
           </div>
         </div>
-        <div className='float-left'>
-          <div id='correctMessage'>{correctMessage}</div>
-        </div>
-        <div style={{clear: 'both'}} />
-        <div id='checkMarks'>{checkMarks}</div>
-        <div id='checkContainer'>
-          {/* {continueButton} */}
-          <CheckContinueButton
-            checkAction={this.props.checkAction}
-            continueAction={this.props.continueAction}
-            isCheck={typeof this.props.correct === 'undefined'}
-            disabledCheck={this.props.disabledCheck} />
-        </div>
-        <div style={{clear: 'both'}} />
-      </div>
     )
   }
 }

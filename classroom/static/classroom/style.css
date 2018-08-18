@@ -5,110 +5,147 @@
 
 /* common */
 
-.blue-text {
+.classroom .blue-text {
     color: rgb(8, 209, 255)
 }
 
-.grey-text {
-    color: rgb(216, 216, 216);
+.classroom .gray-text {
+    color: #ababab;
 }
 
-.red-text {
+.classroom .deep-gray-text {
+    color: #717171;
+}
+
+.classroom .red-text {
     color: red;
 }
 
+.classroom .yellow-text {
+    color: #ff9400;
+}
 
-.pointer {
+.classroom .green-text {
+    color: #7eb530;
+}
+
+.classroom .title {
+    font-size: 2rem;
+}
+
+.classroom .small-text {
+    font-size: 1.5rem;
+}
+
+.classroom .blue-title {
+    font-size: 2rem;
+    color: rgb(8, 209, 255);
+}
+
+.classroom .pointer {
     cursor: pointer;
 }
 
-.float-right {
+.classroom .float-right {
     float: right;
 }
 
-.text-align-center {
+.classroom .text-align-center {
     text-align: center;
 }
 
-.pib-link {
+.classroom .pib-link {
     color: rgb(8, 209, 255);
     cursor: pointer;
     text-decoration: underline;
 }
 
-.grey-link {
+.classroom .gray-link {
     color: #d8d8d8;
     cursor: pointer;
 }
 
+.vcenter {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
 /* tabs */
 
-.tabs {
+.classroom .tabs {
     width: 100%;
     display: inline-block;
     margin-right: 30px;
     vertical-align: top;
-    padding-top: 2rem;
-    /*font-size: 3rem;*/
+    padding: 0 2rem 0 2rem;
+    font-weight: lighter;
 }
 
-.tab-link{
+.classroom .tab-link{
     font-size: 16px;
-    font-weight: normal;
-    outline:0
+    font-weight: lighter !important;
+    outline:0;
 }
 
-.tabs .tab-link {
-    padding: 0 5rem;
+.classroom .tabs .tab-link {
+    padding: 0 3rem;
     cursor: pointer;
-    /*border: 1px solid transparent;*/
     display: inline-block;
     position: relative;
-    border-bottom: 3px solid rgb(216, 216, 216);
     height: 40px;
     line-height: 41px;
-    top: -6px;
+    top: 3px;
     left: -1px;
+    border-bottom: solid #d8d8d8;
     color: rgb(216, 216, 216);
+    transition: color 500ms, border-bottom 500ms;
 }
 
-.tabs .tab-link-active {
+.classroom .tabs .tab-link:hover {
+    border-bottom: solid #1caff6;
+    color: #1caff6;
+}
+
+.classroom .tabs .tab-link-active {
     border-bottom: 3px solid #1caff6;
     color: #1caff6;
-    font-weight: normal !important;
+}
+
+.classroom .tabs .tab-links {
+    border-bottom: solid #d8d8d8;
 }
 
 
-.tabs-1 .tabContent {}
+/*.tabs-1 .tabContent {}*/
 
-.pop-up-windows {
+.classroom .pop-up-window {
     border-radius: 15px;
-    padding: 30px 60px;
+    padding: 10px 10px;
+    margin: 1rem 0px 1rem 0px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
 }
 
-.create-classroom-button{
+.classroom .create-classroom-button{
     border-radius: 15px;
     text-align: center;
     vertical-align: middle;
-    line-height: 25rem;
+    line-height: 5rem;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 1px;
     border-style: dashed;
-    width: 30rem;
-    height: 25rem;
+    width: auto;
+    height: 5rem;
     color: rgb(216, 216, 216);
     font-size: 18px;
     cursor: pointer;
+    margin: 2rem 15px 2rem 15px;
     transition: border-color 500ms, border-style 500ms, color 500ms, background 500ms;
 }
 
-.create-classroom-button:hover {
+.classroom .create-classroom-button:hover {
     border-style: solid;
     border-color: #1caff6;
     color: #1caff6;
@@ -116,9 +153,30 @@
     background: #fbfbfb;
 }
 
+/* student-card */
+
+.classroom .student-card {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    width: 45rem;
+    height: 10rem;
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    vertical-align: top;
+}
+
+
 /* classroom card*/
 
-.classroom-card{
+.classroom .classroom-card {
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
@@ -132,20 +190,30 @@
     position: relative;
     text-align: center;
     padding-top: 1rem;
+    margin-top: 1rem;
     vertical-align: top;
 }
 
-.classroom-card > div:nth-of-type(1) {
-    font-size: 18px;
-    color: #1caff6;
+.classroom  .gray-background-info-panel {
+    border-radius: 15px;
+    background-color: rgb(236, 236, 236);
+    text-align: center;
+    margin: 3rem;
+    padding: 2rem;
 }
 
-.classroom-card > div:nth-of-type(2) {
+.classroom .classroom-card > div:nth-of-type(1) {
+    font-size: 18px;
+    color: #1caff6;
+    cursor: pointer;
+}
+
+.classroom  .classroom-card > div:nth-of-type(2) {
     font-size: 16px;
     color: #666666;
 }
 
-.classroom-card > div:nth-of-type(4) {
+.classroom .classroom-card > div:nth-of-type(4) {
     font-size: 16px;
     color: rgb(121, 121, 121);
     position: absolute;
@@ -160,13 +228,10 @@
 }
 /* classroom card*/
 
-.curriculum-card {
+.classroom .curriculum-card {
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
     margin: 0 1rem 1rem 0;
     padding: 2rem;
     vertical-align: top;
@@ -174,15 +239,15 @@
     min-height: 7rem;
 }
 
-.curriculum-card:hover {
+.classroom .curriculum-card:hover {
     border-color: #1caff6;
 }
 
-.selected-curriculum-card {
+.classroom .selected-curriculum-card {
     background-color: rgba(8, 209, 255, 0.35);
 }
 
-.create-curriculum-button {
+.classroom .create-curriculum-button {
     text-align: center;
     vertical-align: middle;
     background-color: white;
@@ -194,7 +259,7 @@
     color: rgb(216, 216, 216);
 }
 
-.classroom-common-button{
+.classroom .classroom-common-button{
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
     border-width: 1px;
@@ -205,13 +270,10 @@
 
 /* student-classroom-row */
 
-.student-classroom-row {
+.classroom .student-classroom-row {
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
     margin: 1rem 0 1rem 0;
     padding: 2rem;
     vertical-align: top;
@@ -219,6 +281,89 @@
 }
 
 
-.disabled-button{
+.classroom .disabled-button {
     background-color: rgb(216, 216, 216);
 }
+
+.classroom .assignment-teacher-card {
+    border-radius: 15px;
+    background-color: rgb(247, 247, 247);
+    padding: 1rem 0 1rem 0;
+    margin: 1rem 0 1rem 0;
+}
+
+.red-missed-box {
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
+    color: #dd381d;
+    background: #f9d4cd;
+}
+
+.yellow-delayed-box{
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
+    color: #ff9400;
+    background: #ffeed6;
+}
+
+.green-completed-box {
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 1rem 0 0;
+    color: #7eb530;
+    background: #dff0c6;
+}
+
+label {
+    font-weight: 300;
+}
+
+.back-button {
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #d8d8d8;
+    transition: color 300ms;
+}
+
+.back-button:hover {
+    text-decoration: none;
+    color: #1caff6;
+}
+
+@media all and (max-width: 770px) {  /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
+    .section-sheet {
+        padding: 5px;
+    }
+
+    .classroom .tabs {
+        padding: 0;
+    }
+
+    .classroom .pop-up-window {
+        padding: 5px 10px;
+    }
+
+    .classroom .tabs .tab-links {
+        margin-bottom: 10px;
+    }
+
+    .classroom .tabs .tab-link {
+        padding: 0px 1.5rem;
+    }
+}
+
+/* like editor */
+
+.classroom .editable-label:not(.empty) + .glyphicon-pencil{ display:none; }
+.classroom .editable-label:hover + .glyphicon-pencil{ display:inline; }
+/*.classroom .editable-label:hover, .editor .mq-editable-label:hover{ cursor:pointer; }*/
+
+/*react-dropdown-tree-select styles */
+
+.tag{background-color:#f4f4f4;border:1px solid #e9e9e9;padding:2px 0 2px 2px;border-radius:2px;display:inline-block}.tag-remove{color:#a0a0a0;font-size:75%;line-height:100%;cursor:pointer;background-color:transparent;border:none;outline:none}
+.node>label{cursor:pointer;margin-left:2px}.tag-list{display:inline;padding:0;margin:0}.tag-item{display:inline-block;margin:4px}.tag-item .search{border:none;border-bottom:1px solid #ccc;outline:none}.tag-item:last-child{margin-right:4px}
+.node{list-style:none;white-space:nowrap;padding:4px}.node.leaf.collapsed{display:none}.node.disabled>*{color:gray;cursor:not-allowed}.node.match-in-children.hide .node-label{opacity:.5}.toggle{white-space:pre;margin-right:4px}.toggle:after{content:" "}.toggle.collapsed:after{cursor:pointer;content:"+"}.toggle.expanded:after{cursor:pointer;content:"-"}.searchModeOn .toggle{display:none}.checkbox-item{vertical-align:middle;margin:0 4px 0 0}.checkbox-item.simple-select{display:none}
+.hide:not(.match-in-children){display:none}.react-dropdown-tree-select .dropdown{position:relative;display:table}.react-dropdown-tree-select .dropdown .dropdown-trigger{padding:4px;line-height:20px;max-height:200px;display:inline-block;overflow:auto;border:1px solid #b9b9b9}.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow{cursor:pointer}.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after{content:"\25BC";vertical-align:middle;color:#3c3c3c;margin-right:2px}.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after{content:"\25B2";vertical-align:middle;color:#3c3c3c;margin-right:2px}.react-dropdown-tree-select .dropdown .dropdown-content{position:absolute;padding:4px;z-index:999;background:#fff;border-top:1px solid rgba(0,0,0,.05);-webkit-box-shadow:0 5px 8px rgba(0,0,0,.15);box-shadow:0 5px 8px rgba(0,0,0,.15)}.react-dropdown-tree-select .dropdown .dropdown-content ul{margin:0;padding:0}

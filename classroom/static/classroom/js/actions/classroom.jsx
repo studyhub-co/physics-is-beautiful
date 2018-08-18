@@ -1,37 +1,60 @@
 import { push } from 'connected-react-router'
 
 import { checkHttpStatus, getAxios } from '../utils'
-import { CLASSROOM_RECEIVE_CLASSROOMS_LIST, CLASSROOM_CREATE_CLASSROOM_SUCCESS,
-  CLASSROOM_JOIN_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
-  CLASSROOM_LEAVE_CLASSROOM_SUCCESS} from '../constants'
+import {
+  CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
+  CLASSROOM_RECEIVE_TEACHER_CLASSROOM, CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
+  CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
+  CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM } from '../constants'
 
-const API_PREFIX = '/api/v1/classroom/'
+import { BASE_URL, API_PREFIX } from '../utils/config'
 
-export function receiveClassroomsList (classroomList) {
+// ----------------------  TEACHER ACTIONS
+
+export function receiveTeacherClassroomsList (classroomList) {
   return {
-    type: CLASSROOM_RECEIVE_CLASSROOMS_LIST,
+    type: CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST,
     payload: {
       classroomList
     }
   }
 }
 
-export function classroomFetchClassroomsList () {
+export function classroomFetchTeacherClassroomsList () {
   return (dispatch, state) => {
     // dispatch(classroomFetchClassroomlistRequest()) // to the future
     return getAxios().get(API_PREFIX + '?filter=as_teacher')
       .then(checkHttpStatus)
       .then((response) => {
-        dispatch(receiveClassroomsList(response.data))
+        dispatch(receiveTeacherClassroomsList(response.data))
       })
   }
 }
 
-export function classroomCreationSuccess (classroom) {
+export function receiveTeacherClassroomSuccess (classroomTeacher) {
   return {
-    type: CLASSROOM_CREATE_CLASSROOM_SUCCESS,
+    type: CLASSROOM_RECEIVE_TEACHER_CLASSROOM,
     payload: {
-      classroom
+      classroomTeacher
+    }
+  }
+}
+
+export function classroomFetchTeacherClassroom (classroomUuid) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + classroomUuid + '/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveTeacherClassroomSuccess(response.data))
+      })
+  }
+}
+
+export function classroomCreationSuccess (classroomTeacher) {
+  return {
+    type: CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
+    payload: {
+      classroomTeacher
     }
   }
 }
@@ -42,18 +65,60 @@ export function classroomCreateClassroom (classroomForm) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(classroomCreationSuccess(response.data))
-        // todo move to edit page
-        dispatch(classroomFetchClassroomsList())
-        dispatch(push('/classroom/'))
+        //  move to edit page
+        dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
       })
   }
 }
 
-export function joinClassroomSuccess (classroom) {
+export function classroomEraseTeacherClassroom () {
+  return (dispatch, state) => {
+    dispatch(classroomCreationSuccess(undefined))
+  }
+}
+
+export function classroomPartialUpdateSuccess (classroomTeacher) {
   return {
-    type: CLASSROOM_JOIN_CLASSROOM_SUCCESS,
+    type: CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
     payload: {
-      classroom
+      classroomTeacher
+    }
+  }
+}
+
+export function classroomPartialUpdateTeacherClassroom (classroomJson, redirectToTeacher = false) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_PREFIX + classroomJson.uuid + '/', classroomJson)
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(classroomPartialUpdateSuccess(response.data))
+        if (redirectToTeacher) {
+          dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
+        }
+        dispatch(classroomFetchTeacherClassroomsList())
+      })
+  }
+}
+
+export function classroomDeleteTeacherClassroom (classroomUuid) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_PREFIX + classroomUuid + '/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(classroomPartialUpdateSuccess(undefined))
+        dispatch(classroomFetchTeacherClassroomsList())
+        dispatch(push(BASE_URL))
+      })
+  }
+}
+
+// --------------------------- STUDENT ACTIONS
+
+export function joinClassroomSuccess (classroomStudent) {
+  return {
+    type: CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS,
+    payload: {
+      classroomStudent
     }
   }
 }
@@ -63,8 +128,12 @@ export function classroomJoinClassroom (classroomCode) {
     return getAxios().post(API_PREFIX + 'join/', {code: classroomCode})
       .then((response) => {
         dispatch(joinClassroomSuccess(response.data))
-        // todo move to claasroom page
-        dispatch(push('/classroom/' + response.data['uuid'] + '/student/'))
+
+        // filter classroom to list
+        dispatch(classroomFetchStudentClassroomsList())
+
+        // move to classroom page
+        dispatch(push(BASE_URL + response.data['uuid'] + '/student/'))
       })
       .catch(error => {
         dispatch(joinClassroomSuccess(null))
@@ -93,24 +162,45 @@ export function classroomFetchStudentClassroomsList () {
   }
 }
 
-export function leaveClassroomSuccess (classroom) {
+export function leaveStudentClassroomSuccess (classroomStudent) {
   return {
-    type: CLASSROOM_LEAVE_CLASSROOM_SUCCESS,
+    type: CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS,
     payload: {
-      classroom
+      classroomStudent
     }
   }
 }
 
-export function classroomLeaveClassroom (classroom) {
+export function classroomLeaveStudentClassroom (classroom) {
   return (dispatch, state) => {
-    console.log(state);
     return getAxios().post(API_PREFIX + 'leave/', {uuid: classroom.uuid})
       .then((response) => {
-        dispatch(leaveClassroomSuccess(response.data))
-        // todo remove class room from classrooms list
+        dispatch(leaveStudentClassroomSuccess(response.data))
+        // remove class room from classrooms list
+        dispatch(classroomFetchStudentClassroomsList())
         // move to clasrooms list page
-        dispatch(push('/classroom/'))
+        dispatch(push(BASE_URL))
       })
   }
 }
+
+export function receiveStudentClassroomSuccess (classroomStudent) {
+  return {
+    type: CLASSROOM_RECEIVE_STUDENT_CLASSROOM,
+    payload: {
+      classroomStudent
+    }
+  }
+}
+
+export function classroomFetchStudentClassroom (classroomUuid) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + classroomUuid + '/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveStudentClassroomSuccess(response.data))
+      })
+  }
+}
+
+

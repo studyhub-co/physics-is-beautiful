@@ -75,11 +75,11 @@ html, body {
     position:relative;
     min-width: 80vw;
     margin-top: 1%;
-    border-radius: 15px;
+    margin-bottom: 80px;
+    border-radius: 25px;
     min-height: 60vh;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
-    /*padding-bottom:8vh*/
 }
 .problem-sheet h1 {font-size: 120%;}
 
@@ -97,52 +97,62 @@ html, body {
 }
 .section-sheet h1 {font-size: 100%;}
 
-#footer{
-    position:relative;
-    padding:0;
-    bottom:0;
-    left:0;
-    right:0;
-    border-radius: 0 0 15px 15px;
-    background-color: #dbdbdb;
-    margin-top:5px;
-}
-
 .bounding-box{
     border-radius: 25px;
     padding: 2vh;
     background-color: white;
     box-shadow: 0px 0px 10px #d8d8d8;
     margin: 2vh;
-    padding-bottom: 2vh;
     font-family: "Benton Sans", monospace;
 }
 .bounding-box a{
     margin:3px;
 }
 
+#footer{
+    padding:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color: #dbdbdb;
+    margin-top:5px;
+    position:fixed;
+    width: 100%;
+    border-radius: 0;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+
+.progress{
+    background: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(214, 214, 214, 1);
+    border-radius: 4px;
+    margin-bottom:0px;
+    height: 12px;
+}
 .progress-bottom-container{
-    position: relative;
     display: inline-block;
     /*bottom: 0;*/
     float: left;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    width: 45vw;
     font-family: Museosansrounded;
+    padding-bottom: 0px;
+    width: 90vw;
+    position: fixed;
+    bottom: 4px;
 }
 
 @media all and (max-width: 770px) { /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
     .bounding-box{
         margin-bottom:3px;
-        margin-top:3px;
+        margin-top: 3px;
+        margin-left: 0;
+        margin-right: 0;
     }
     .problem-sheet {
         /*height: calc(100% - 60px);*/
 		width: 100%;
 		padding: 0px;
 		margin-top: -15px;
-        margin-bottom: 80px;
 	}
 	.section-sheet {
 		width: 99%;
@@ -154,9 +164,9 @@ html, body {
 		padding: 20px;
 		margin-top: -15px;
 	}
-	.col-md-1 {
-		margin-right: 0px !important;
-	}
+    .curriculum	.col-md-1 {
+            margin-right: 0px !important;
+        }
     .col-md-6 {
         padding:0px;
     }
@@ -164,29 +174,22 @@ html, body {
         margin-left: 1%;
         margin-right: 1%;
     }
-    #footer{
-        position:fixed;
+    .question .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    #checkButton {
         width: 100%;
-        border-radius: 0px;
-        height: 80px;
     }
-    .progress-bottom-container{
-        padding-bottom: 0px;
-        padding-left: 5vw;
-        width: 95vw;
-        position: fixed;
-        bottom: 4px;
-    }
-    .progress {
-        height: 12px;
-    }
-    #progress-h4 {
-        visibility: hidden;
+    .curriculum-display-wrap {
+        padding-top: 10px;
     }
 }
+
 .navbar-brand {
     transition: filter .5s;
 }
+
 .navbar-brand:hover {
     filter: brightness(50%);
 }
@@ -202,13 +205,6 @@ html, body {
     white-space: normal;
     padding: 8px 10px;
     font-size: 18px;
-}
-
-.progress{
-    background: rgba(255, 255, 255, 1);
-    border: 1px solid rgba(214, 214, 214, 1);
-    border-radius: 4px;
-    margin-bottom:0px;
 }
 
 .section-bounding-box {
@@ -305,7 +301,7 @@ img.grayed-out-img {
     color: #AAA;
 }
 
-.col-md-1 {
+.curriculum .col-md-1 {
     border-radius: 5px;
     border-style: solid;
     border-width: 2px;
@@ -319,14 +315,14 @@ img.grayed-out-img {
     box-shadow: 0px 0px 10px #BBB;
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
 }
-.col-md-1:hover {
+.curriculum .col-md-1:hover {
     color: #1caff6;
     border-style: solid;
     border-color:#1caff6;
     box-shadow: 0px 0px 16px #BBB;
 }
 
-.col-md-1.disabled {
+.curriculum .col-md-1.disabled {
     pointer-events: none;
     opacity: 0.35;
     filter: alpha(opacity=40);
@@ -344,6 +340,7 @@ img.grayed-out-img {
     padding: 0px 30px;
     margin: 16px 0;
 }
+
 #spacer{
     float:left;
     bottom:0;
@@ -355,17 +352,20 @@ img.grayed-out-img {
 }
 
 #checkMarks{
-    float:right;
-    position: absolute;
-    bottom: 2rem;
-    right: 1rem;
+    float: left;
 }
-#checkContainer{
-    position: absolute;
-    bottom: 2rem;
-    right: 8rem;
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
 }
-#checkButton{
+
+#checkContainer {
+    padding-top: 6px;
+    padding-bottom: 20px;
+}
+
+#checkButton {
     border-radius: 12rem;
     border: .2rem solid #1caff6;
     padding-left: 15px;
@@ -377,24 +377,19 @@ img.grayed-out-img {
     transition: color .5s,border .5s;
     outline: none;
     font-family: Museosansrounded;
+    width: 90%;
 }
 
 #checkButton:hover,
 #checkButton:focus{
     border: .2rem solid #105e84;
 }
+
 #checkButton.disabled{
     border-radius: 12rem;
     color: #dddddd;
     background: gray;
     border: .2rem solid gray;
-}
-#vectorButton{
-
-}
-
-.float-lefteft{
-    float:left;
 }
 
 #blockRight{
@@ -404,6 +399,7 @@ img.grayed-out-img {
     padding-top:4px;
     padding-left: 10px;
 }
+
 #correctMessage{
     display: inline-block;
     max-width:300px;
@@ -412,10 +408,12 @@ img.grayed-out-img {
     font-size:18;
     font-family: Museosansrounded;
 }
+
 #modalContainer{
     display: inline-block;
     padding-right:100px;
 }
+
 #modal{
     border: none;
     border-radius: 10px;
@@ -424,11 +422,11 @@ img.grayed-out-img {
 
 #correct{
     color:rgb(90, 200, 100);
-    font-size: 58px;
+    font-size: 50px;
 }
 #incorrect{
     color:rgb(210, 50, 50);
-    font-size: 58px;
+    font-size: 50px;
 }
 
 .ajax-banner{
@@ -631,22 +629,6 @@ img.grayed-out-img {
     color: #c8c8c8;
 }
 
-/*.curriculum-title-wrapper {*/
-    /*float: left;*/
-    /*position: relative;*/
-    /*right: 30px;*/
-/*}*/
-
-/*@media (max-width: 770px) {*/
-    /*.curriculum-title-wrapper {*/
-        /*margin-left: 20px;*/
-    /*}*/
-    /*html, body {*/
-        /*max-width: 100%;*/
-        /*overflow-x: hidden;*/
-    /*}*/
-/*}*/
-
 .curriculum-title{
     font-size: 25px;
     color: #1caff6;
@@ -683,4 +665,11 @@ img.grayed-out-img {
 .section-sheet .row {
     display: flex;
     flex-wrap: wrap;
+}
+
+.sweet-loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

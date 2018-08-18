@@ -6,7 +6,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes
-
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
 
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
@@ -40,6 +40,36 @@ class QuestionViewSet(ModelViewSet):
         except LessonLocked as e:
             raise serializers.ValidationError(e)
         data = LessonProgressSerializer(service.current_lesson_progress).data
+
+        # ================= classroom progress start
+        # TODO check start and due to date
+        if self.request.user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
+            from classroom.models import Assignment, AssignmentProgress
+            assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
+            assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
+                                                                         student__user=self.request.user,
+                                                                         completed_on__isnull=True)
+            for assignment_progress in assignment_progress_list:
+                # user can have several assignments (from different classroom e.g.) to one lesson
+                # we need to create AssignmentProgress to understand that user take part in a assingment
+                # created via /api/v1/classroom/classroom_uuid/assignment/assignment_uuid/first_uncompleted_lesson
+                assignment_progress.completed_lessons.add(service.current_lesson)
+                try:
+                    assignment_progress.completed_lessons.add(service.current_lesson)
+
+                    if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
+                            .count() == 0:
+                        if datetime.datetime.now() < assignment_progress.assignment.due_on.replace(tzinfo=None):
+                            assignment_progress.completed_on = datetime.datetime.now()
+                        else:
+                            assignment_progress.delayed_on = datetime.datetime.now()
+
+                    assignment_progress.save()  # update updated_on date
+
+                except AssignmentProgress.DoesNotExist:
+                    pass
+        # ================= classroom progress end
+
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
         if not is_correct:
@@ -90,8 +120,12 @@ def get_unit_conversion_units(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def game_success(request, slug):
-    game = Game.objects.get(slug=slug)  # TODO here is raise exception is game not found by slug and if if more than one
+def game_success(request, uuid):
+    try:
+        game = Game.objects.get(lesson__uuid=uuid)
+    except Game.DoesNotExist:
+        raise NotFound()
+
     service = get_progress_service(request, game.lesson)
 
     duration_ms = request.data.get('duration', None)
@@ -106,42 +140,48 @@ def game_success(request, slug):
     if game.slug == 'unit-conversion' or game.slug == 'vector-game':  # temp fix
         # get score list for
         # try:
-        scores = service.get_score_board_qs(game.lesson)
+        scores = service.get_score_board_qs(game.lesson).exclude(duration__isnull=True)
         data_scores_list = []
-        current_user_in_score_list = False
-
-        already_anon_insert = False
+        user_already_in_score_list = False
 
         for row_num, row in enumerate(scores[:10]):
+            # add score if user in top 10
+            # current registered user
             if request.user.is_authenticated:
                 if request.user.profile.id == row.profile_id:
-                    current_user_in_score_list = True
+                    current_user_score = service.get_score_board_qs(game.lesson).\
+                                                 get(profile__user=request.user)
+                    setattr(current_user_score, 'row_num', row_num + 1)
+                    data_scores_list.append(current_user_score)
+                    user_already_in_score_list = True
+                    continue
+            # current anon user
             else:
-                if row.duration > dur or row_num == len(scores[:10])-1:
-                    if not already_anon_insert:
-                        currrent_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
-                        setattr(currrent_user_score, 'row_num', row_num + 1)
-                        data_scores_list.append(currrent_user_score)
-                        already_anon_insert = True
+                if row.duration > dur:
+                    if not user_already_in_score_list:
+                        current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+                        setattr(current_user_score, 'row_num', row_num + 1)
+                        data_scores_list.append(current_user_score)
+                        user_already_in_score_list = True
+                        continue
 
-                if not already_anon_insert:
-                    setattr(row, 'row_num', row_num + 1)
-                else:
-                    setattr(row, 'row_num', row_num + 2)
+            setattr(row, 'row_num', row_num + 1)
 
             data_scores_list.append(row)
 
-        if request.user.is_authenticated:
-            if not current_user_in_score_list:
-                currrent_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
-                position = service.get_score_board_qs(game.lesson).filter(duration__lt=currrent_user_score.duration).count()
-                setattr(currrent_user_score, 'row_num', position + 1)
-                data_scores_list.append(currrent_user_score)
+        # add score if user not in top 10
+        if not user_already_in_score_list:
+            if request.user.is_authenticated:
+                current_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+            else:
+                current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+
+            position = service.get_score_board_qs(game.lesson).filter(duration__lt=current_user_score.duration).count()
+            setattr(current_user_score, 'row_num', position + 1)
+            data_scores_list.append(current_user_score)
 
         data = ScoreBoardSerializer(data_scores_list, many=True).data
         return Response(data)
-        # except NotImplementedError:
-        #     pass
 
     return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -174,11 +214,13 @@ class CurriculaViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         filter_by = self.request.query_params.get('filter', None)
-        if filter_by in ('other', 'my') and self.request.user.is_authenticated():
+        if filter_by and self.request.user.is_authenticated():
             if filter_by == 'my':
                 queryset = queryset.filter(author=self.request.user)
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
+            elif filter_by == 'default':
+                queryset = queryset.filter(author__pk=2)  # Physics Is Beautiful
 
         return queryset
 

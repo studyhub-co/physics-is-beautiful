@@ -12,6 +12,7 @@ import {Prompt} from 'react-router-dom'
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
 import Draggable from 'react-draggable'
+import PropTypes from 'prop-types'
 
 var math = require('mathjs')
 var Qty = require('js-quantities')
@@ -129,10 +130,11 @@ export class MathquillBox extends React.Component {
   }
 }
 MathquillBox.propTypes = {
-  onMathQuillChange: React.PropTypes.func,
-  row: React.PropTypes.number.isRequired,
-  column: React.PropTypes.number.isRequired,
-  focus: React.PropTypes.bool
+  onMathQuillChange: PropTypes.func,
+  row: PropTypes.number.isRequired,
+  column: PropTypes.number.isRequired,
+  focus: PropTypes.bool,
+  answer: PropTypes.object
 }
 
 export class ConversionTable extends React.Component {
@@ -227,12 +229,12 @@ export class ConversionTable extends React.Component {
   }
 }
 ConversionTable.propTypes = {
-  onMathQuillChange: React.PropTypes.func,
-  strikethroughN: React.PropTypes.bool,
-  strikethroughD: React.PropTypes.bool,
-  numColumns: React.PropTypes.number,
-  number: React.PropTypes.any,
-  unit: React.PropTypes.string
+  onMathQuillChange: PropTypes.func,
+  strikethroughN: PropTypes.bool,
+  strikethroughD: PropTypes.bool,
+  numColumns: PropTypes.number,
+  number: PropTypes.any,
+  unit: PropTypes.string
 }
 
 export class UnitConversionBase extends React.Component {
@@ -650,7 +652,7 @@ export class UnitConversionCanvas extends UnitConversionBase {
 
     var isRightAnswer = true
 
-    if (!this.state.answersSteps || this.state.answersSteps.length == 0 || !this.state.answer || !this.state.answer['data']) {
+    if (!this.state.answersSteps || this.state.answersSteps.length === 0 || !this.state.answer || !this.state.answer['data']) {
       return
     }
 
@@ -819,7 +821,7 @@ export class UnitConversionCanvas extends UnitConversionBase {
     }
 
     return (
-      <div style={{pointerEvents: pointerEvents }}>
+      <div style={{ pointerEvents: pointerEvents }}>
         <div style={{display: 'block'}}>
           <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}}>
             <ConversionTable
@@ -885,12 +887,12 @@ export class UnitConversionCanvas extends UnitConversionBase {
   }
 }
 UnitConversionCanvas.propTypes = {
-  number: React.PropTypes.any,
-  unit: React.PropTypes.string,
-  gameState: React.PropTypes.string,
-  level: React.PropTypes.number,
-  nextQuestion: React.PropTypes.func,
-  gameOver: React.PropTypes.func
+  number: PropTypes.any,
+  unit: PropTypes.string,
+  gameState: PropTypes.string,
+  level: PropTypes.number,
+  nextQuestion: PropTypes.func,
+  gameOver: PropTypes.func
 }
 
 class UnitConversionQuestionBoard extends React.Component {
@@ -901,7 +903,7 @@ class UnitConversionQuestionBoard extends React.Component {
   }
 
   copy2Answer () {
-    if (this.state.calulatorAnswer != '') {
+    if (this.state.calulatorAnswer !== '') {
       this.conversionCanvas.updateAnswer(this.state.calulatorAnswer)
     }
   }
@@ -1094,13 +1096,13 @@ class UnitConversionQuestionBoard extends React.Component {
   }
 }
 UnitConversionQuestionBoard.propTypes = {
-  question: React.PropTypes.any,
-  number: React.PropTypes.any,
-  gameOver: React.PropTypes.func,
-  unit: React.PropTypes.string,
-  gameState: React.PropTypes.string,
-  nextQuestion: React.PropTypes.func,
-  level: React.PropTypes.number
+  question: PropTypes.any,
+  number: PropTypes.any,
+  gameOver: PropTypes.func,
+  unit: PropTypes.string,
+  gameState: PropTypes.string,
+  nextQuestion: PropTypes.func,
+  level: PropTypes.number
 }
 
 class UnitConversionGameBoard extends React.Component {
@@ -1116,7 +1118,7 @@ class UnitConversionGameBoard extends React.Component {
     this.state = {clockSeconds: 600}
   }
   componentDidMount () {
-    if (this.props.state == GameState.NEW) {
+    if (this.props.state === GameState.NEW) {
       document.getElementById('start').focus()
     }
   }
@@ -1204,19 +1206,19 @@ class UnitConversionGameBoard extends React.Component {
   }
 }
 UnitConversionGameBoard.propTypes = {
-  number: React.PropTypes.any,
-  unit: React.PropTypes.string,
-  level: React.PropTypes.number,
-  state: React.PropTypes.string, // TODO don't use 'state' name for anything, but react component state. rename to gameState
-  start: React.PropTypes.func,
-  score: React.PropTypes.number,
-  timesUp: React.PropTypes.func,
-  pause: React.PropTypes.func,
-  restart: React.PropTypes.func,
-  question: React.PropTypes.any,
-  nextQuestion: React.PropTypes.func,
-  gameOver: React.PropTypes.func,
-  scoreList: React.PropTypes.array
+  number: PropTypes.any,
+  unit: PropTypes.string,
+  level: PropTypes.number,
+  state: PropTypes.string, // TODO don't use 'state' name for anything, but react component state. rename to gameState
+  start: PropTypes.func,
+  score: PropTypes.number,
+  timesUp: PropTypes.func,
+  pause: PropTypes.func,
+  restart: PropTypes.func,
+  question: PropTypes.any,
+  nextQuestion: PropTypes.func,
+  gameOver: PropTypes.func,
+  scoreList: PropTypes.array
 }
 
 export class UnitConversionGame extends React.Component {
@@ -1326,7 +1328,8 @@ export class UnitConversionGame extends React.Component {
       // TODO add more secure, i.e. server token when game starts, etc
       // TODO move it to games.jsx (replace jQuery), remove ajaxSetup from main page
       clearInterval(this.timer)
-      axios.post('/api/v1/curricula/games/unit-conversion/success', {
+      // axios.post('/api/v1/curricula/games/unit-conversion/success', {
+      axios.post('/api/v1/curricula/games/' + this.props.uuid + '/success', {
         duration: this.elapsed,
         score: newScore
       }).then(function (response) {
@@ -1380,6 +1383,7 @@ export class UnitConversionGame extends React.Component {
     }
     playBackgroundAudio('rainbow', 0.2)
     this.setState(this.generateQuestion())
+    this.elapsed = 0
     this.timer = setInterval(this.tick.bind(this), 10)
   }
 
@@ -1402,4 +1406,8 @@ export class UnitConversionGame extends React.Component {
       />
     )
   }
+}
+
+UnitConversionGame.propTypes = {
+  uuid: PropTypes.string
 }

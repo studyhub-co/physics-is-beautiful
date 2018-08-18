@@ -5,6 +5,7 @@ import {Prompt} from 'react-router-dom'
 import {VectorCanvas, CanvasVector, CanvasText} from 'vector_canvas'
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
+import PropTypes from 'prop-types'
 
 import axios from 'axios'
 
@@ -151,6 +152,8 @@ export class VectorGame extends React.Component {
       pausedOnState: null,
       score: 0,
       level: 1,
+      // score: 1200, // start from a last level
+      // level: 4,
       question: null,
       x: null,
       y: null,
@@ -192,8 +195,8 @@ export class VectorGame extends React.Component {
   }
 
   checkAnswer (arrow) {
-    if (this.state.x == (arrow.getXComponent() || 0) &&
-            this.state.y == (arrow.getYComponent() || 0)) {
+    if (this.state.x === (arrow.getXComponent() || 0) &&
+            this.state.y === (arrow.getYComponent() || 0)) {
       playAudio('correct')
       var newScore = this.state.score + 100
       var newLevel = Math.floor(newScore / 400) + 1
@@ -202,7 +205,12 @@ export class VectorGame extends React.Component {
         stopBackgroundAudio()
         clearInterval(this.timer)
         // this.props.gameWon();
-        axios.post('/api/v1/curricula/games/vector-game/success', {
+        // axios.post('/api/v1/curricula/games/vector-game/success', {
+
+        // set game state is won
+        this.setState({state: newState,
+          score: newScore})
+        axios.post('/api/v1/curricula/games/' + this.props.uuid + '/success', {
           duration: this.elapsed,
           score: newScore
         }).then(function (response) {
@@ -210,8 +218,7 @@ export class VectorGame extends React.Component {
           window.onbeforeunload = null
           this.setState({
             scoreList: response.data,
-            level: newLevel,
-            state: newState
+            level: newLevel
           })
         }.bind(this))
         // newLevel = 4;
@@ -323,7 +330,6 @@ export class VectorGame extends React.Component {
 
   restart () {
     clearInterval(this.timer)
-    this.timer = setInterval(this.tick.bind(this), 10)
 
     var state = Object.assign(
       this.generateQuestion(),
@@ -344,6 +350,7 @@ export class VectorGame extends React.Component {
     }
     playBackgroundAudio('rainbow', 0.2)
     this.setState(this.generateQuestion())
+    this.elapsed = 0
     this.timer = setInterval(this.tick.bind(this), 10)
   }
 
@@ -365,4 +372,7 @@ export class VectorGame extends React.Component {
       />
     )
   }
+}
+VectorGame.propTypes = {
+  uuid: PropTypes.string
 }
