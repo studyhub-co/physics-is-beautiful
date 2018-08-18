@@ -12,10 +12,15 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 import * as assignmentCreators from '../../actions/assignment'
 
-import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { Grid, Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 class StudentClassroomProfileView extends React.Component {
+  constructor (props) {
+    super(props)
+    this.handleSettingsClick = this.handleSettingsClick.bind(this)
+  }
+
   componentWillMount () {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', true)
@@ -30,16 +35,9 @@ class StudentClassroomProfileView extends React.Component {
   }
 
   handleSettingsClick (e) {
-    // if (e === 'edit') {
-    //   this.handleEditAssignmentModal()
-    // } else if (e === 'delete') {
-    //   this.props.assignmentActions.assignmentDeleteAssignment(
-    //     this.props.match.params['uuid'],
-    //     this.props.match.params['assigmentUuid'],
-    //     true,
-    //     () => { this.props.dispatch(push(BASE_URL + this.props.match.params['uuid'] + '/teacher/')) }
-    //   )
-    // }
+    if (e === 'remove') {
+      this.props.studentActions.removeFromClass(this.props.classroomTeacher.uuid, this.props.studentClassroomProfile.username)
+    }
   }
 
   onAssignmentTitleClick (assignment) {
@@ -85,7 +83,12 @@ class StudentClassroomProfileView extends React.Component {
           </Row>
           <Row className={className}>
             <Col sm={1} md={1}>
-              {/*Will be image TODO */}
+              {this.props.studentClassroomProfile && this.props.studentClassroomProfile.gravatar_url
+                ? <Image
+                  responsive
+                  src={this.props.studentClassroomProfile.gravatar_url}
+                  circle />
+                : null}
             </Col>
             <Col sm={8} md={8}>
               { this.props.studentClassroomProfile ? <div>
@@ -101,7 +104,7 @@ class StudentClassroomProfileView extends React.Component {
                   </span>
                 </span>
                 <span className={'yellow-delayed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-time'>
+                  <span title={'Completed late'} className='glyphicon glyphicon-time'>
                     &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
                   </span>
                 </span>
@@ -154,7 +157,8 @@ StudentClassroomProfileView.propTypes = {
   }).isRequired,
   studentActions: PropTypes.shape({
     classroomFetchStudentClassroomAssignmentsList: PropTypes.func.isRequired,
-    classroomFetchStudentClassroomProfile: PropTypes.func.isRequired
+    classroomFetchStudentClassroomProfile: PropTypes.func.isRequired,
+    removeFromClass: PropTypes.func.isRequired
   }).isRequired,
   studentAssignmentsList: PropTypes.array
 }

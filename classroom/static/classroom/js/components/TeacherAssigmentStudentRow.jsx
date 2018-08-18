@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col, Image } from 'react-bootstrap'
 
-export class TeacherStudentRow extends React.Component {
+export class TeacherAssigmentStudentRow extends React.Component {
   // Row to show user inside assignment or user profile view
   render () {
     var className = 'student-classroom-row pointer'
@@ -11,7 +11,15 @@ export class TeacherStudentRow extends React.Component {
     return (
       <div className={className}>
         <Row>
-          <Col sm={6} md={6}>
+          <Col sm={1} md={1}>
+            {this.props.student && this.props.student.gravatar_url
+              ? <Image
+                responsive
+                src={this.props.student.gravatar_url}
+                circle />
+              : null}
+          </Col>
+          <Col sm={5} md={5}>
             <span
               onClick={() => this.props.onStudentClick()}
               className={'blue-title pointer'}>{this.props.student.display_name}
@@ -33,7 +41,7 @@ export class TeacherStudentRow extends React.Component {
   }
 }
 
-TeacherStudentRow.propTypes = {
+TeacherAssigmentStudentRow.propTypes = {
   student: PropTypes.object,
   onStudentClick: PropTypes.func.isRequired
 }

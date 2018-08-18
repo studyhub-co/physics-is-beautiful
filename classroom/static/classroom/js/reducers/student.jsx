@@ -1,5 +1,6 @@
 import {
-  STUDENT_RECEIVE_CLASSROOM_PROFILE, STUDENT_RECEIVE_CLASSROOM_ASSIGNMENTS
+  STUDENT_RECEIVE_CLASSROOM_PROFILE, STUDENT_RECEIVE_CLASSROOM_ASSIGNMENTS,
+  STUDENT_RECEIVE_STUDENTS_CLASSROOM_LIST
 } from '../constants'
 
 const initialState = {
@@ -16,6 +17,10 @@ export default function assignmentReducer (state = initialState, action) {
     case STUDENT_RECEIVE_CLASSROOM_PROFILE:
       return Object.assign({}, state, {
         studentClassroomProfile: action.payload.studentClassroomProfile
+      })
+    case STUDENT_RECEIVE_STUDENTS_CLASSROOM_LIST:
+      return Object.assign({}, state, {
+        classroomStudentsList: action.payload.classroomStudentsList
       })
     default:
       return state

@@ -8,6 +8,7 @@ import {
   CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM } from '../constants'
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
+import { assignmentFetchAssignmentList } from './assignment'
 
 // ----------------------  TEACHER ACTIONS
 
@@ -86,7 +87,8 @@ export function classroomPartialUpdateSuccess (classroomTeacher) {
   }
 }
 
-export function classroomPartialUpdateTeacherClassroom (classroomJson, redirectToTeacher = false) {
+export function classroomPartialUpdateTeacherClassroom
+(classroomJson, redirectToTeacher = false) {
   return (dispatch, state) => {
     return getAxios().patch(API_PREFIX + classroomJson.uuid + '/', classroomJson)
       .then(checkHttpStatus)
@@ -95,6 +97,7 @@ export function classroomPartialUpdateTeacherClassroom (classroomJson, redirectT
         if (redirectToTeacher) {
           dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
         }
+        dispatch(classroomFetchTeacherClassroomsList())
       })
   }
 }
