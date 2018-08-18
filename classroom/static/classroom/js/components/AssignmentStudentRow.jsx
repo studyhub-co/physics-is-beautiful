@@ -28,7 +28,12 @@ export class AssignmentStudentRow extends React.Component {
       <Row className={className}>
         <Col sm={1} md={1}>
           <div className={'gray-text small-text'}>
-          {/*image*/}
+            {this.props.assignment && this.props.assignment.image
+              ? <Image
+                responsive
+                src={this.props.assignment.image}
+                circle />
+              : null}
           </div>
         </Col>
         <Col sm={4} md={4}>

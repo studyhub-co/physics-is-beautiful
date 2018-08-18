@@ -1,5 +1,7 @@
 from django.db import transaction
 
+from django.core.files.storage import get_storage_class
+
 from rest_framework import serializers
 
 from .models import Classroom, Assignment
@@ -77,7 +79,15 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
     # current user (request.user) completed lessons
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
+    image = serializers.SerializerMethodField(read_only=True)
 
+    def get_image(self, obj):
+        if obj.denormalized_image:
+            storage = get_storage_class()()
+            if storage.exists(obj.denormalized_image):
+                return storage.url(obj.denormalized_image)
+
+        return None
 
     # this is for current user (student)
     def get_count_completed_lessons(self, obj):
@@ -149,7 +159,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
                   'count_lessons', 'completed_on', 'delayed_on', 'assigned_on',
                   'count_students_completed_assingment', 'count_students_missed_assingment',
                   'count_students_delayed_assingment',
-                  'count_completed_lessons' ]
+                  'count_completed_lessons', 'image']
         read_only_fields = ('uuid', 'created_on', 'updated_on')
 
 

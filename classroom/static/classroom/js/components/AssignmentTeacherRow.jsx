@@ -19,21 +19,20 @@ export class AssignmentTeacherRow extends React.Component {
     return (
       <Row className={className}>
         <Col sm={1} md={1}>
-          {/*{this.props.assignment.lessons[0].image*/}
-            {/*? <Image*/}
-              {/*className={'pointer'}*/}
-              {/*onClick={this.props.onAssignmentsClick}*/}
-              {/*width={'100%'}*/}
-              {/*src={this.props.assignment.lessons[0].image}*/}
-              {/*circle />*/}
-            {/*: null}*/}
           <div className={'gray-text small-text'}>
-          {/*image*/}
+            {this.props.assignment && this.props.assignment.image
+              ? <Image
+                responsive
+                src={this.props.assignment.image}
+                circle />
+              : null}
           </div>
         </Col>
         <Col sm={4} md={4}>
           <div onClick={this.props.onAssignmentsClick} className={'blue-title pointer'}>{this.props.assignment.name}</div>
-          <div className={'gray-text small-text'}>{this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}</div>
+          <div className={'gray-text small-text'}>
+            {this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}
+          </div>
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
           <div className={'gray-text small-text'}>
@@ -59,7 +58,6 @@ export class AssignmentTeacherRow extends React.Component {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <MenuItem eventKey='delete'>Delete assignment</MenuItem>
-              {/*<MenuItem eventKey='send'>Send reminder</MenuItem>*/}
               <MenuItem eventKey='edit'>Edit assignment</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
