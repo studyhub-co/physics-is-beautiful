@@ -7,7 +7,7 @@ from django.db.models.functions import Concat
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Generate user names'
 
     def handle(self, *args, **options):
 
