@@ -1378,8 +1378,10 @@ export class UnitConversionGame extends React.Component {
   }
 
   start () {
-    window.onbeforeunload = function () {
-      return 'Changes you made may not be saved.'
+    if (!window.IS_MOBILE_APP) {
+      window.onbeforeunload = function () {
+        return 'Changes you made may not be saved.'
+      }
     }
     playBackgroundAudio('rainbow', 0.2)
     this.setState(this.generateQuestion())
