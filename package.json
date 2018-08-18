@@ -44,7 +44,7 @@
     "mathjs": "^3.20.2",
     "prop-types": "^15.6.2",
     "react": "15.5.4",
-    "react-bootstrap": "^0.32.0",
+    "react-bootstrap": "0.32.0",
     "react-bootstrap-date-picker": "^5.1.0",
     "react-bootstrap-time-picker": "^1.0.3",
     "react-clipboard.js": "^2.0.0",
