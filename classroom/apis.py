@@ -187,6 +187,12 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     # TODO need to erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
     # TODO need to create new AssignmentProgress for all students while Assignment is created, background mode is preferable
 
+    # TODO add API for assinment user stats
+    # /api/v1/classroom/SMbtRzzNLtrR46ucL2jkvB/assignment/hwUX6e8kevC7jWpWf3WrBb/students
+    # with Info:
+    # Assigned on (date of creation AP)
+    # Completed on
+    # delayed on
 
 class StudentProfileViewSet(GenericViewSet):
     queryset = Profile.objects.all()
