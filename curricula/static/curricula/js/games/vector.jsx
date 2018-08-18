@@ -195,6 +195,7 @@ export class VectorGame extends React.Component {
   }
 
   checkAnswer (arrow) {
+    // console.log(this.elapsed/1000);
     if (this.state.x === (arrow.getXComponent() || 0) &&
             this.state.y === (arrow.getYComponent() || 0)) {
       playAudio('correct')
@@ -206,6 +207,9 @@ export class VectorGame extends React.Component {
         clearInterval(this.timer)
         // this.props.gameWon();
         // axios.post('/api/v1/curricula/games/vector-game/success', {
+
+        // set game state is won
+        this.setState({state: newState})
         axios.post('/api/v1/curricula/games/' + this.props.uuid + '/success', {
           duration: this.elapsed,
           score: newScore
@@ -215,7 +219,6 @@ export class VectorGame extends React.Component {
           this.setState({
             scoreList: response.data,
             level: newLevel,
-            state: newState,
             score: newScore
           })
         }.bind(this))
@@ -328,7 +331,6 @@ export class VectorGame extends React.Component {
 
   restart () {
     clearInterval(this.timer)
-    this.timer = setInterval(this.tick.bind(this), 10)
 
     var state = Object.assign(
       this.generateQuestion(),
@@ -349,6 +351,7 @@ export class VectorGame extends React.Component {
     }
     playBackgroundAudio('rainbow', 0.2)
     this.setState(this.generateQuestion())
+    this.elapsed = 0
     this.timer = setInterval(this.tick.bind(this), 10)
   }
 

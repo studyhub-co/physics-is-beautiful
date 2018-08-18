@@ -1383,6 +1383,7 @@ export class UnitConversionGame extends React.Component {
     }
     playBackgroundAudio('rainbow', 0.2)
     this.setState(this.generateQuestion())
+    this.elapsed = 0
     this.timer = setInterval(this.tick.bind(this), 10)
   }
 
