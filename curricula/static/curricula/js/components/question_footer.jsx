@@ -25,11 +25,15 @@ export class Footer extends React.Component {
   render () {
     var checkMarks = ''
     var correctMessage = ''
+    var backgroundColor = '#dbdbdb'
     if (this.props.correct === true) {
       checkMarks = (<span id='correct' className='glyphicon glyphicon-ok-sign pull-right' style={{fontSize: '35px'}} />)
       correctMessage = 'Correct'
+      backgroundColor = '#bff199'
     } else if (this.props.correct === false) {
       checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right'style={{fontSize: '35px'}} />)
+      backgroundColor = '#ffd3d1'
+
       if (Array.isArray(this.props.correct_answer)) {
         var message = 'Incorrect, the correct answers are:'
         if (this.props.correct_answer.length == 1) {
@@ -56,10 +60,11 @@ export class Footer extends React.Component {
     }
 
     return (
-      <div id='footer' >
+      <div id='footer' style={{backgroundColor: backgroundColor}}>
         <div className='row'>
           <div className='col-md-6 text-center' style={{
-            minHeight: (checkMarks ? '50' : 0),
+            minHeight: (checkMarks ? '50px' : 'none'),
+            height: (checkMarks ? 'none' : 0),
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'}}>
