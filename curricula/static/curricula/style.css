@@ -402,7 +402,7 @@ img.grayed-out-img {
 
 #correctMessage{
     display: inline-block;
-    max-width:300px;
+    /* max-width:300px; */
     padding-right: 21px;
     text-align: center;
     font-size:18;
