@@ -63,7 +63,7 @@ export class Footer extends React.Component {
       <div id='footer' style={{backgroundColor: backgroundColor}}>
         <div className='row'>
           <div className='col-md-6 text-center' style={{
-            minHeight: (checkMarks ? '50px' : 'none'),
+            minHeight: (checkMarks ? '50px' : '1px'),
             height: (checkMarks ? 'none' : 0),
             display: 'flex',
             alignItems: 'center',
