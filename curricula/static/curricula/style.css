@@ -114,7 +114,7 @@ html, body {
     bottom:0;
     left:0;
     right:0;
-    background-color: #dbdbdb;
+    /* background-color: #dbdbdb; */
     margin-top:5px;
     position:fixed;
     width: 100%;
