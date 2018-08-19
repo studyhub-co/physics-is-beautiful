@@ -9,11 +9,17 @@ export class Footer extends React.Component {
   componentDidMount () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
+
+    let problemSheet = document.querySelectorAll('.problem-sheet')[0]
+    problemSheet.style.marginBottom = document.getElementById('footer').clientHeight + 'px'
   }
 
   componentDidUpdate () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
+
+    let problemSheet = document.querySelectorAll('.problem-sheet')[0]
+    problemSheet.style.marginBottom = document.getElementById('footer').clientHeight + 'px'
   }
 
   render () {
@@ -52,7 +58,12 @@ export class Footer extends React.Component {
     return (
       <div id='footer' >
         <div className='row'>
-          <div className='col-md-6 text-center' style={{height: (checkMarks ? 'auto' : 0), display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div className='col-md-6 text-center' style={{
+            minHeight: (checkMarks ? '50' : 0),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'}}>
+
             <div id='checkMarks'>{checkMarks}</div>
             <div id='correctMessage'>{correctMessage}</div>
           </div>
