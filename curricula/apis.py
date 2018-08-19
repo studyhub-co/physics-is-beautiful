@@ -128,6 +128,8 @@ def game_success(request, uuid):
 
     service = get_progress_service(request, game.lesson)
 
+    n = 10  # max number of results to show
+
     duration_ms = request.data.get('duration', None)
     score = request.data.get('score', None)
     if duration_ms:
@@ -167,7 +169,8 @@ def game_success(request, uuid):
 
             setattr(row, 'row_num', row_num + 1)
 
-            data_scores_list.append(row)
+            if row.duration:
+                data_scores_list.append(row)
 
         # add score if user not in top 10
         if not user_already_in_score_list:
@@ -180,7 +183,7 @@ def game_success(request, uuid):
             setattr(current_user_score, 'row_num', position + 1)
             data_scores_list.append(current_user_score)
 
-        data = ScoreBoardSerializer(data_scores_list, many=True).data
+        data = ScoreBoardSerializer(data_scores_list[:n], many=True).data
         return Response(data)
 
     return Response(status=status.HTTP_204_NO_CONTENT)

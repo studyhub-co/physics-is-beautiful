@@ -37,8 +37,10 @@ export class Question extends React.Component {
   componentDidMount () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
-    window.onbeforeunload = function () {
-      return 'Changes you made may not be saved.'
+    if (!window.IS_MOBILE_APP) {
+      window.onbeforeunload = function () {
+        return 'Changes you made may not be saved.'
+      }
     }
     this.setState({'hintCollapsed': this.props.question.hintCollapsed})
   }
