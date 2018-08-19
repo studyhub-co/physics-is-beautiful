@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% extends BASE_TEMPLATE %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load djeddit_tags %}
+{% block title %}
+    <div class="">
+        <h3 id="discussion-title">Discussion</h3>
+        <button class="btn btn-primary" onclick="window.location='{% url 'topics' %}'">All Topics</button>
+        <button class="btn btn-primary" onclick="window.location='{% url 'createThreadWithoutTopic' %}'">New Thread</button>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="col-md-8">
+        <ul class="list-group">
+            {% for thread in threads %}
+                {% include 'djeddit/thread_item.html' %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'djeddit/js/util.js' %}"></script>
+{% endblock %}
