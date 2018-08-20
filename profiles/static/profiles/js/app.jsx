@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Popover, OverlayTrigger, Button, OverlayMixin, FormGroup,
-        ControlLabel, Checkbox, FormControl } from 'react-bootstrap';
+        ControlLabel, Checkbox, FormControl, Image } from 'react-bootstrap';
 
 
 class Form extends React.Component {
@@ -8,6 +8,12 @@ class Form extends React.Component {
     render() {
         return (
             <form>
+              { this.props.gravatar_url ? <FormGroup>
+                  <Image
+                    responsive
+                    src={this.props.gravatar_url}
+                    circle /></FormGroup>
+                : null }
                 <FormGroup>
                     <ControlLabel>First Name</ControlLabel>
                     <FormControl
@@ -185,7 +191,8 @@ export default class ProfileModalApp extends React.Component {
             lastName: profile.last_name,
             displayName: profile.display_name,
             soundEnabled: profile.sound_enabled,
-            isAnonymous: profile.is_anonymous
+            isAnonymous: profile.is_anonymous,
+            gravatarUrl: profile.gravatar_url
         });
         SoundSingleton.soundEnabled = profile.sound_enabled;
     }
@@ -230,6 +237,7 @@ export default class ProfileModalApp extends React.Component {
                 soundEnabled={this.state.soundEnabled}
                 hasErrors={this.state.hasErrors}
                 isAnonymous={this.state.isAnonymous}
+                gravatar_url={this.state.gravatarUrl}
                 show={this.state.show}
                 toggleSound={this.toggleSound.bind(this)}
                 open={this.modalOpen.bind(this)}
