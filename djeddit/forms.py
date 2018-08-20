@@ -19,7 +19,7 @@ class TopicForm(forms.ModelForm):
 class ThreadForm(forms.ModelForm):
     class Meta:
         model = Thread
-        fields = ['title', 'url']
+        fields = ['topic', 'title', 'url']
 
 
 class PostForm(forms.ModelForm):

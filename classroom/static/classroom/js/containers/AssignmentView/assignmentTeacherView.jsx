@@ -146,7 +146,8 @@ export class AssignmentTeacherView extends React.Component {
           <Row className={''}>
             <Col sm={12} md={12}>
               {this.props.classroomTeacher && this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
-                return <TeacherAssigmentStudentRow student={student}
+                return <TeacherAssigmentStudentRow
+                  student={student}
                   onStudentClick={() =>
                     this.props.dispatch(push(BASE_URL +
                     this.props.classroomTeacher.uuid +

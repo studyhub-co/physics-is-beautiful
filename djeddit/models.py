@@ -41,7 +41,7 @@ class NamedModel(models.Model):
 @python_2_unicode_compatible
 class Topic(NamedModel):
     alphanumeric = RegexValidator(r'^[0-9a-zA-Z ]*$', 'Only alphanumeric characters are allowed.')
-    title = models.CharField(max_length=20, blank=False, unique=True, validators=[alphanumeric])
+    title = models.CharField(max_length=30, blank=False, unique=True, validators=[alphanumeric])
     description = models.CharField(max_length=120, blank=True, default='')
 
     def __str__(self):
