@@ -77,5 +77,8 @@ window.postFuncs = {
             // render new MathJax
             window.MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         });
+    },
+    loginNeeded: function() {
+        document.getElementById('login-signup-link').click();
     }
 };
