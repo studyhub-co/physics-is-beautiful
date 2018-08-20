@@ -237,36 +237,33 @@ def votePost(request):
         post = Post.objects.get(uid=post_uid)
     except (KeyError, ValueError, Post.DoesNotExist):
         return HttpResponseBadRequest()
-    if post.created_by != request.user or request.user.is_superuser:
-        try:
-            userPostVote = UserPostVote.objects.get(user=request.user, post=post)
-            oldval = userPostVote.val
-            userPostVote.val = max(min(int(vote_val), 1), -1)
-            userPostVote.save()
-            voteDelta = userPostVote.val - oldval
-        except UserPostVote.DoesNotExist:
-            userPostVote = UserPostVote.objects.create(user=request.user, post=post, val=max(min(int(vote_val), 1), -1))
-            voteDelta = userPostVote.val
-        if voteDelta:
-            if voteDelta > 0:
-                if userPostVote.val:
-                    post.upvotes += 1
-                    if voteDelta == 2:
-                        post.downvotes -= 1
-                else:
+    try:
+        userPostVote = UserPostVote.objects.get(user=request.user, post=post)
+        oldval = userPostVote.val
+        userPostVote.val = max(min(int(vote_val), 1), -1)
+        userPostVote.save()
+        voteDelta = userPostVote.val - oldval
+    except UserPostVote.DoesNotExist:
+        userPostVote = UserPostVote.objects.create(user=request.user, post=post, val=max(min(int(vote_val), 1), -1))
+        voteDelta = userPostVote.val
+    if voteDelta:
+        if voteDelta > 0:
+            if userPostVote.val:
+                post.upvotes += 1
+                if voteDelta == 2:
                     post.downvotes -= 1
             else:
-                if userPostVote.val:
-                    post.downvotes += 1
-                    if voteDelta == -2:
-                        post.upvotes -= 1
-                else:
+                post.downvotes -= 1
+        else:
+            if userPostVote.val:
+                post.downvotes += 1
+                if voteDelta == -2:
                     post.upvotes -= 1
-            post.save()
-        scoreStr = postScore(post.score)
-        return JsonResponse(dict(scoreStr=scoreStr, score=post.score))
-    else:
-        return HttpResponseForbidden()
+            else:
+                post.upvotes -= 1
+        post.save()
+    scoreStr = postScore(post.score)
+    return JsonResponse(dict(scoreStr=scoreStr, score=post.score))
 
 
 @user_passes_test(lambda u: u.is_superuser)
