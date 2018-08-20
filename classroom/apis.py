@@ -2,6 +2,8 @@ import datetime
 
 from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField
 
+from django.utils import timezone
+
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes, action
@@ -16,7 +18,7 @@ from curricula.serializers import LessonSerializer
 from .models import Classroom, Assignment, ClassroomStudent, AssignmentProgress
 from .permissions import IsClassroomTeacherOrStudentReadonly, IsAssignmentClassroomTeacherOrStudentReadonly
 from .serializers import ClassroomSerializer, AssignmentSerializer, AssignmentListSerializer, ClassroomListSerializer,\
-    StudentProfileSerializer
+    StudentProfileSerializer, StudentAssignmentSerializer
 
 
 class SeparateListObjectSerializerMixin:
@@ -108,7 +110,8 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         first_uncompleted_lesson = None
 
         try:
-            completed_lessons = assignment.assignment_progress.get(student__user=request.user).completed_lessons.all()
+            ap = assignment.assignment_progress.get(student__user=request.user)
+            completed_lessons = ap.completed_lessons.all()
             for lesson in assignment.lessons.all():
                 if completed_lessons.count() == 0:
                     first_uncompleted_lesson = lesson
@@ -123,11 +126,17 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         except AssignmentProgress.DoesNotExist:
             # create new progress
             student_profile, created = Profile.objects.get_or_create(user=request.user)
-            AssignmentProgress.objects.create(
+
+            ap = AssignmentProgress.objects.create(
                 student=student_profile,
                 assignment=assignment
             )
+
             first_uncompleted_lesson = assignment.lessons.first()
+
+        # save start on
+        ap.start_on = timezone.now()
+        ap.save()
 
         # find first uncompleted lesson
         if first_uncompleted_lesson is None:
@@ -164,7 +173,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         queryset = queryset.annotate(count_students_delayed_assingment=
                                      Count(
                                             Case(
-                                                When(Q(due_on__lt=datetime.datetime.now())
+                                                When(Q(due_on__lt=timezone.now())
                                                      & Q(assignment_progress__delayed_on__isnull=False),
                                                      then=1),
                                                 output_field=IntegerField()
@@ -174,7 +183,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         queryset = queryset.annotate(count_students_missed_assingment=
                                      Count(
                                         Case(
-                                            When(Q(due_on__lt=datetime.datetime.now())
+                                            When(Q(due_on__lt=timezone.now())
                                                  & Q(assignment_progress__completed_on__isnull=True),
                                                  then=1),
                                             output_field=IntegerField()
@@ -187,12 +196,26 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     # TODO need to erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
     # TODO need to create new AssignmentProgress for all students while Assignment is created, background mode is preferable
 
-    # TODO add API for assinment user stats
-    # /api/v1/classroom/SMbtRzzNLtrR46ucL2jkvB/assignment/hwUX6e8kevC7jWpWf3WrBb/students
-    # with Info:
-    # Assigned on (date of creation AP)
-    # Completed on
-    # delayed on
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
+    def students(self, request, classroom_uuid, uuid):
+        # /api/v1/classroom/classroomuuid/assignment/uuid/students/
+        # with Info:
+        # Assigned on (date of creation AP) Completed on delayed on
+        try:
+            assignment = Assignment.objects.get(uuid=uuid, classroom__teacher__user=request.user)
+        except Assignment.DoesNotExist:
+            raise NotFound('Can\'t find the assignment')
+
+        qs = Profile.objects.prefetch_related(Prefetch('as_students_assignment_progress',
+                                              queryset=AssignmentProgress.objects.filter(assignment=assignment).
+                                                       select_related('assignment'),
+                                              to_attr='as_students_current_assignment_progress'))
+
+        students_list = qs.filter(as_students_assignment_progress__in=assignment.assignment_progress.all())
+
+        serializer = StudentAssignmentSerializer(students_list, many=True)
+        return Response(serializer.data)
+
 
 class StudentProfileViewSet(GenericViewSet):
     queryset = Profile.objects.all()
@@ -214,7 +237,7 @@ class StudentProfileViewSet(GenericViewSet):
             num_missed_assignments=Count(
                 Case(
                     When(Q(as_students_assignment_progress__isnull=True)
-                         & Q(as_students_assignment_progress__assignment__due_on__lt=datetime.datetime.now())
+                         & Q(as_students_assignment_progress__assignment__due_on__lt=timezone.now())
                          & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                          then=1),
                     output_field=IntegerField()
@@ -225,7 +248,7 @@ class StudentProfileViewSet(GenericViewSet):
             num_delayed_assignments=Count(
                 Case(
                     When(Q(as_students_assignment_progress__delayed_on__isnull=False)
-                         & Q(as_students_assignment_progress__assignment__due_on__lt=datetime.datetime.now())
+                         & Q(as_students_assignment_progress__assignment__due_on__lt=timezone.now())
                          & Q(as_students_assignment_progress__assignment__classroom__uuid=classroom_uuid),
                          then=1),
                     output_field=IntegerField()

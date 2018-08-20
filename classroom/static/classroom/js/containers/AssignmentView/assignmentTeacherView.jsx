@@ -31,6 +31,7 @@ export class AssignmentTeacherView extends React.Component {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('assignments', 'teacherClassroomTab')
     this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], this.props.match.params['assigmentUuid'])
+    this.props.assignmentActions.assignmentFetchStudentsList(this.props.match.params['uuid'], this.props.match.params['assigmentUuid'])
   }
 
   handleEditAssignmentModal () {
@@ -127,11 +128,8 @@ export class AssignmentTeacherView extends React.Component {
         </Grid>
         <Grid fluid>
           <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-            <Col sm={6} md={6}>
+            <Col sm={7} md={7}>
               <span className={'gray-text'}>Student</span>
-            </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
-              Assigned on
             </Col>
             <Col sm={2} md={2} className={'vcenter'}>
               Status
@@ -145,15 +143,19 @@ export class AssignmentTeacherView extends React.Component {
         <Grid fluid>
           <Row className={''}>
             <Col sm={12} md={12}>
-              {this.props.classroomTeacher && this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
-                return <TeacherAssigmentStudentRow
-                  student={student}
-                  onStudentClick={() =>
-                    this.props.dispatch(push(BASE_URL +
-                    this.props.classroomTeacher.uuid +
-                    '/teacher/students/' + student.username))}
-                  key={i} />
-              }, this) : null}
+              {this.props.assignment &&
+              this.props.classroomTeacher &&
+              this.props.assignmentStudentsList
+                ? this.props.assignmentStudentsList.map(function (student, i) {
+                  return <TeacherAssigmentStudentRow
+                    assignment={this.props.assignment}
+                    student={student}
+                    onStudentClick={() =>
+                      this.props.dispatch(push(BASE_URL +
+                      this.props.classroomTeacher.uuid +
+                      '/teacher/students/' + student.username))}
+                    key={i} />
+                }, this) : null}
             </Col>
           </Row>
         </Grid>
@@ -181,11 +183,13 @@ export class AssignmentTeacherView extends React.Component {
 AssignmentTeacherView.propTypes = {
   assignment: PropTypes.object,
   tabActions: PropTypes.shape({
-    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired
+    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired,
+    changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   assignmentActions: PropTypes.shape({
     assignmentFetchAssignment: PropTypes.func.isRequired,
-    assignmentDeleteAssignment: PropTypes.func.isRequired
+    assignmentDeleteAssignment: PropTypes.func.isRequired,
+    assignmentFetchStudentsList: PropTypes.func.isRequired
   }).isRequired
 }
 
@@ -194,7 +198,8 @@ const mapStateToProps = (state) => {
     // classroomStudent: state.classroom.classroomStudentClassroom
     classroomTeacher: state.classroom.classroomTeacherClassroom,
     teacherClassroomStudentsList: state.student.classroomStudentsList,
-    assignment: state.assignment.assignment
+    assignment: state.assignment.assignment,
+    assignmentStudentsList: state.assignment.assignmentStudentsList
   }
 }
 
