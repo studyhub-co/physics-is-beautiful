@@ -32,7 +32,7 @@ class ProfileSerializer(BaseSerializer):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name']
+        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'gravatar_url']
 
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
