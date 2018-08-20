@@ -94,10 +94,20 @@ class Assignment(models.Model):
     due_on = models.DateTimeField()
     name = models.CharField(max_length=200)
     classroom = models.ForeignKey(Classroom, related_name='assignments')
-    # TODO add image?
+    denormalized_image = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         ordering = ['-start_on']
+
+# TODO move signals to signals.py
+
+
+@receiver(pre_save, sender=Assignment)
+def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
+    first_lesson = instance.lessons.first()
+    if instance.lessons.first():
+        if first_lesson.image:
+            instance.denormalized_image = first_lesson.image.name
 
 
 @receiver(post_save, sender=Assignment)
@@ -118,6 +128,11 @@ def send_emails(sender, instance, *args, **kwargs):
     lesson_url = reverse('curricula:lesson', args=[lesson.uuid])
 
     url = urljoin('http://{}/'.format(current_site.domain), lesson_url)
+
+    # TODO we need to send letter if assignment is:
+    # 1. created
+    # 2. new lessons have been added
+    # 3. dates have been changed
 
     for student in instance.classroom.students.all():
         html_message = loader.render_to_string(

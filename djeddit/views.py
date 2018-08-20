@@ -29,32 +29,45 @@ from djeddit.utils.utility_funcs import is_authenticated
 
 @login_required
 def createThread(request, topic_title=None):
-    if topic_title:
+    if request.method == 'POST':
+        if topic_title == 'None':
+            topic_id = request.POST['thread-topic']
+            topic_title = Topic.objects.get(pk=topic_id)
         try:
-            if request.method == 'POST':
-                topic = Topic.getTopic(topic_title)
-                threadForm = ThreadForm(request.POST, prefix='thread')
-                postForm = PostForm(request.POST, prefix='post')
-                if threadForm.is_valid() and postForm.is_valid():
-                    thread = threadForm.save(commit=False)
-                    post = postForm.save(commit=False)
-                    thread.op = post
-                    thread.topic = topic
-                    post.setMeta(request)
-                    post.save()
-                    thread.save()
-                    if is_authenticated(request):
-                        post.created_by = request.user
-                    post.save()
-                    return HttpResponseRedirect(thread.relativeUrl)
-            else:
-                threadForm = ThreadForm(prefix='thread')
-                postForm = PostForm(prefix='post')
-            context = dict(threadForm=threadForm, postForm=postForm)
-            return render(request, 'djeddit/create_thread.html', context)
+            topic = Topic.getTopic(topic_title)
+            threadForm = ThreadForm(request.POST, prefix='thread')
+            postForm = PostForm(request.POST, prefix='post')
+            if threadForm.is_valid() and postForm.is_valid():
+                thread = threadForm.save(commit=False)
+                post = postForm.save(commit=False)
+                thread.op = post
+                thread.topic = topic
+                post.setMeta(request)
+                post.save()
+                thread.save()
+                if is_authenticated(request):
+                    post.created_by = request.user
+                post.save()
+                return HttpResponseRedirect(thread.relativeUrl)
         except Topic.DoesNotExist:
             pass
-    return redirect('topics')
+    # Else it's a GET request
+    else:
+        if topic_title:
+            topic = Topic.getTopic(topic_title)
+            threadForm = ThreadForm(prefix='thread', initial={'topic': topic.id})
+        else:
+            threadForm = ThreadForm(prefix='thread')
+        postForm = PostForm(prefix='post')
+        context = dict(threadForm=threadForm, postForm=postForm, topic=topic_title)
+        return render(request, 'djeddit/create_thread.html', context)
+
+    # else:
+    #     threadForm = ThreadForm(prefix='thread')
+    #     postForm = PostForm(prefix='post')
+    #     context = dict(threadForm=threadForm, postForm=postForm, topic=None)
+    #     return render(request, 'djeddit/create_thread.html', context)
+    # return redirect('topics')
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -127,6 +140,12 @@ def topicPage(request, topic_title):
     context = dict(topic=topic, threads=threads, showCreatedBy=True, showTopic=False,
                    topicForm=form, showForm=showForm)
     return render(request, 'djeddit/topic.html', context)
+
+
+def discussionPage(request):
+    threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
+    context = dict(threads=threads)
+    return render(request, 'djeddit/discussion.html', context)
 
 
 def threadPage(request, topic_title='', thread_id='', slug=''):
