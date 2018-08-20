@@ -2,7 +2,7 @@ import uuid
 
 from urllib.parse import urljoin
 
-from datetime import datetime
+from django.utils import timezone
 
 # from django.contrib.auth import get_user_model
 from django.db import models
@@ -89,7 +89,7 @@ class Assignment(models.Model):
     lessons = models.ManyToManyField(Lesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True)
+    updated_on = models.DateTimeField(auto_now=True)  # assigned On date
     start_on = models.DateTimeField()
     due_on = models.DateTimeField()
     name = models.CharField(max_length=200)
@@ -117,7 +117,7 @@ def send_emails(sender, instance, *args, **kwargs):
     # TODO if we will have a large number of students we need to think about sending email asynchronously
 
     # send email to students in classroom
-    d1 = datetime.now()
+    d1 = timezone.now()
     d0 = instance.due_on.replace(tzinfo=None)
     delta = d0 - d1
 
@@ -160,7 +160,8 @@ class AssignmentProgress(models.Model):
     uuid = ShortUUIDField(unique=True)
     completed_lessons = models.ManyToManyField(Lesson)
     updated_on = models.DateTimeField(auto_now=True)
-    start_on = models.DateTimeField(auto_now_add=True)
+    # assigned_on = assignment.updated_on
+    start_on = models.DateTimeField(blank=True, null=True)  # 1st lesson has been requested by student
     completed_on = models.DateTimeField(blank=True, null=True)
     delayed_on = models.DateTimeField(blank=True, null=True)  # Assignment completed but after due_on datetime
     student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')

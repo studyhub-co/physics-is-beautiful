@@ -27,6 +27,28 @@ class StudentProfileSerializer(PublicProfileSerializer):
         fields = PublicProfileSerializer.Meta.fields + ['counts']
 
 
+class StudentAssignmentSerializer(PublicProfileSerializer):
+    completed_on = serializers.SerializerMethodField()
+    delayed_on = serializers.SerializerMethodField()
+    start_on = serializers.SerializerMethodField()
+
+    def get_completed_on(self, obj):
+        return obj.as_students_current_assignment_progress[0].completed_on\
+            if hasattr(obj, 'as_students_current_assignment_progress') else None
+
+    def get_delayed_on(self, obj):
+        return obj.as_students_current_assignment_progress[0].delayed_on\
+            if hasattr(obj, 'as_students_current_assignment_progress') else None
+
+    def get_start_on(self, obj):
+        return obj.as_students_current_assignment_progress[0].start_on\
+            if hasattr(obj, 'as_students_current_assignment_progress') else None
+
+    class Meta:
+        model = PublicProfileSerializer.Meta.model
+        fields = PublicProfileSerializer.Meta.fields + ['completed_on', 'delayed_on', 'start_on']
+
+
 class ClassroomBaseSerializer(serializers.ModelSerializer):
     count_students = serializers.IntegerField(read_only=True)
     teacher = PublicProfileSerializer(read_only=True)
