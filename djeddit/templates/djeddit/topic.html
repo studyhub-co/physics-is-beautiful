@@ -18,7 +18,6 @@
         </h2>
         <div class="text-muted full-line">{{ topic.description }}</div>
         {% if user.is_superuser %}
-            <br>
             <div id="topic-form-wrapper" class="{% if not showForm %} hidden {% endif %} row">
                 <div class="col-sm-5">
                     {% crispy topicForm %}

@@ -30,7 +30,7 @@
             {% endif %}
             <div class="bs-callout-main">
                 <div class="minicol">
-                    {% if user.is_authenticated and user != node.created_by or user.is_superuser %}
+                    {% if user.is_authenticated %}
                         <div class="glyphicon glyphicon-chevron-up hover-point {% postVoteClicked user node True %} {% postVoteOP thread node %}"
                              onclick="window.postFuncs.votePost('{{ node.uid }}', !$(this).hasClass('color-primary'), false)"></div>
                         {% if node == thread.op %}
@@ -38,6 +38,12 @@
                         {% endif %}
                         <div class="glyphicon glyphicon-chevron-down hover-point {% postVoteClicked user node False %}"
                              onclick="window.postFuncs.votePost('{{ node.uid }}', false, !$(this).hasClass('color-primary'))"></div>
+                    {% else %}
+                        <div class="glyphicon glyphicon-chevron-up hover-point" onclick="javascript:window.postFuncs.loginNeeded()"></div>
+                        {% if node == thread.op %}
+                            <h4 class="post-score">{{ node.score }}</h4>
+                        {% endif %}
+                        <div class="glyphicon glyphicon-chevron-down hover-point" onclick="javascript:window.postFuncs.loginNeeded()"></div>
                     {% endif %}
                 </div>
                 <div class="postcol">
