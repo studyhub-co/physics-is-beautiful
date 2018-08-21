@@ -18,7 +18,7 @@ import { CurriculumRow } from '../../components/CurriculumRow'
 import { TeacherStudentCard } from '../../components/TeacherStudentCard'
 import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
 
-import { Grid, Row, Col, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Grid, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
 import * as assignmentCreators from '../../actions/assignment'
 import * as classroomCreators from '../../actions/classroom'
@@ -42,6 +42,7 @@ class TeacherClassroomView extends React.Component {
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
     this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
+    this.hideCopiedToolTip = this.hideCopiedToolTip.bind(this)
 
     this.state = {
       showCreateAssigment: false,
@@ -93,6 +94,11 @@ class TeacherClassroomView extends React.Component {
     this.props.classroomActions.classroomPartialUpdateTeacherClassroom(newClassroom)
   }
 
+  hideCopiedToolTip () {
+    this.refs.overlay1.hide()
+    this.refs.overlay2.hide()
+  }
+
   render () {
     var assignmentUrl = BASE_URL + ':uuid/teacher/assignments/:assigmentUuid'
     var studentProfileUrl = BASE_URL + ':uuid/teacher/students/:username'
@@ -102,6 +108,12 @@ class TeacherClassroomView extends React.Component {
     if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
       studentsS = 's'
     }
+
+    var copiedTooltip = (
+      <Tooltip id='copiedTooltip'>
+        Copied!
+      </Tooltip>
+    )
 
     return (
       <div className={'pop-up-window'}>
@@ -167,9 +179,16 @@ class TeacherClassroomView extends React.Component {
                     <div>
                       <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
                       <span className={'gray-text pointer'}>
-                        <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.code}>
-                          copy
-                        </Clipboard>
+                        <OverlayTrigger
+                          delayShow={300}
+                          ref='overlay1'
+                          trigger='click'
+                          placement='top'
+                          overlay={copiedTooltip}>
+                          <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.code}>
+                            <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>copy</span>
+                          </Clipboard>
+                        </OverlayTrigger>
                       </span>
                     </div>
                     <br />
@@ -183,7 +202,14 @@ class TeacherClassroomView extends React.Component {
                           className={'btn btn-default'}
                           component='button'
                           data-clipboard-text={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'}>
-                          Copy
+                          <OverlayTrigger
+                            delayShow={300}
+                            trigger='click'
+                            placement='top'
+                            ref='overlay2'
+                            overlay={copiedTooltip}>
+                            <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>Copy</span>
+                          </OverlayTrigger>
                         </Clipboard>
                       </span>
                     </InputGroup>
