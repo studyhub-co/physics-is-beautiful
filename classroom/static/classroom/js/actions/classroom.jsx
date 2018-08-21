@@ -65,6 +65,8 @@ export function classroomCreateClassroom (classroomForm) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(classroomCreationSuccess(response.data))
+        // update classroomslist
+        dispatch(classroomFetchTeacherClassroomsList())
         //  move to edit page
         dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
       })
@@ -95,6 +97,7 @@ export function classroomPartialUpdateTeacherClassroom (classroomJson, redirectT
         if (redirectToTeacher) {
           dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
         }
+        // update classroomslist
         dispatch(classroomFetchTeacherClassroomsList())
       })
   }

@@ -13,6 +13,8 @@ from rest_framework.exceptions import NotFound, NotAcceptable
 
 from profiles.models import Profile
 
+from curricula.models import Lesson
+
 from curricula.serializers import LessonSerializer
 
 from .models import Classroom, Assignment, ClassroomStudent, AssignmentProgress
@@ -57,40 +59,51 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(teacher=self.request.user.profile)
 
+    @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
+    def join(self, request):
+        try:
+            classroom = Classroom.objects.get(code=request.data.get('code', ''))
+        except Classroom.DoesNotExist:
+            raise NotFound()
 
-# fixme move to ClassroomViewSet
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def join_classroom(request):
-    try:
-        classroom = Classroom.objects.get(code=request.data.get('code', ''))
-    except Classroom.DoesNotExist:
-        raise NotFound()
+        # check ther user not if classrom
+        if ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).count() == 0:
+            # add current user to classroom as student
+            ClassroomStudent.objects.create(student=request.user.profile, classroom=classroom)
 
-    # check ther user not if classrom
-    if ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).count() == 0:
-        # add current user to classroom as student
-        ClassroomStudent.objects.create(student=request.user.profile, classroom=classroom)
+        serializer = ClassroomSerializer(classroom)
 
-    serializer = ClassroomSerializer(classroom)
+        # create AssignmentProgress for all Assignments for joined student
+        ap_objects = []
 
-    return Response(serializer.data)
+        for assignment in classroom.assignments.all():
+            ap_objects.append(AssignmentProgress(student=request.user.profile, assignment=assignment))
 
-# fixme move to ClassroomViewSet
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def leave_classroom(request):
-    try:
-        classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''))
-    except Classroom.DoesNotExist:
-        raise NotFound()
+        # TODO async background mode is preferable
+        AssignmentProgress.objects.bulk_create(
+            ap_objects
+        )
 
-    ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).delete()
-    # todo remove assigmnet progress here?
+        return Response(serializer.data)
 
-    serializer = ClassroomSerializer(classroom)
+    @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
+    def leave(self, request):
+        try:
+            classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''))
+        except Classroom.DoesNotExist:
+            raise NotFound()
 
-    return Response(serializer.data)
+        ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).delete()
+
+        # remove AssignmentProgress for all Assignments for joined student
+        # TODO async background mode is preferable
+        assignments = AssignmentProgress.objets.filter(student=request.user.profile)
+        if assignments.exist():
+            assignments._raw_delete(assignments.db)
+
+        serializer = ClassroomSerializer(classroom)
+
+        return Response(serializer.data)
 
 
 class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
@@ -193,14 +206,58 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         return queryset
 
-    # TODO need to erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
-    # TODO need to create new AssignmentProgress for all students while Assignment is created, background mode is preferable
+    def perform_create(self, serializer):
+        """
+        assignment creation
+        """
+        assignment = serializer.save()
+
+        ap_objects = []
+
+        # create AssignmentProgress for all students in a classroom
+        for student in assignment.classroom.students.all():
+            ap_objects.append(AssignmentProgress(student=student, assignment=assignment))
+
+        # TODO async background mode is preferable
+        AssignmentProgress.objects.bulk_create(
+            ap_objects
+        )
+
+        serializer.send_emails(assignment)
+
+    def perform_update(self, serializer):
+        # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
+        new_lessons_uuids = []
+
+        for lesson_uuid in serializer.initial_data.get('lessons_uuids', []):
+            new_lessons_uuids.append(lesson_uuid)
+
+        # new_lessons = Lesson.object.filter(uuid__in=new_lessons_uuids)
+
+        # if assignment have new lessons
+        # if new_lessons.exlude(uuid__in=serializer.instance.lessons.values_list('uuid', flat=True)).count() > 0:
+        #     AssignmentProgress.objets.filter(assignment=serializer.instance)\
+        #         .update(completed_on=None, delayed_on=None)
+
+        existing_lesson_uuids = serializer.instance.lessons.values_list('uuid', flat=True)
+        for existing_lesson in existing_lesson_uuids:
+            # remove old lessons from new lessons
+            if existing_lesson in new_lessons_uuids:
+                new_lessons_uuids.remove(existing_lesson)
+
+        serializer.save()
+
+        # TODO Check dates
+        # if there are still new lessons
+        if len(new_lessons_uuids) > 0:
+            # reset AssignmentProgresses dates
+            AssignmentProgress.objects.filter(assignment=serializer.instance)\
+                    .update(completed_on=None, delayed_on=None)
+            serializer.send_emails(serializer.instance)
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def students(self, request, classroom_uuid, uuid):
         # /api/v1/classroom/classroomuuid/assignment/uuid/students/
-        # with Info:
-        # Assigned on (date of creation AP) Completed on delayed on
         try:
             assignment = Assignment.objects.get(uuid=uuid, classroom__teacher__user=request.user)
         except Assignment.DoesNotExist:

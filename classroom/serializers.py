@@ -80,6 +80,18 @@ class ClassroomSerializer(ClassroomBaseSerializer):
     # fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
+from urllib.parse import urljoin
+
+from django.utils import timezone
+from django.conf import settings
+from django.urls import reverse
+
+from django.template import loader
+
+from django.core.mail import EmailMessage
+
+from django.contrib.sites.models import Site
+
 class AssignmentListSerializer(serializers.ModelSerializer):
     lessons_uuids = serializers.SlugRelatedField(queryset=Lesson.objects.all(), source='lessons',
                                                  slug_field='uuid', many=True, write_only=True)
@@ -102,6 +114,49 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     # current user (request.user) completed lessons
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(read_only=True)
+
+
+    def send_emails(sender, instance, *args, **kwargs):
+
+        # TODO if we will have a large number of students we need to think about sending email asynchronously
+
+        # send email to students in classroom
+        d1 = timezone.now()
+        d0 = instance.due_on.replace()
+        delta = d0 - d1
+
+        current_site = Site.objects.get_current()
+
+        lesson = instance.lessons.first()
+
+        lesson_url = reverse('curricula:lesson', args=[lesson.uuid])
+
+        url = urljoin('http://{}/'.format(current_site.domain), lesson_url)
+
+        # TODO we need to send letter if assignment is:
+        # 1. created
+        # 2. new lessons have been added
+        # 3. dates have been changed
+
+        for student in instance.classroom.students.all():
+            html_message = loader.render_to_string(
+                'classroom/notification_email.html',
+                {
+                    'user_full_name': student.user.full_name,
+                    'assignment': instance,
+                    'days': delta.days,
+                    'url': url
+                }
+            )
+
+            email = EmailMessage(
+                'You have a new assignment on Physics is Beautiful!',
+                html_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [student.user.email, ]
+            )
+
+            email.send()
 
     def get_image(self, obj):
         if obj.denormalized_image:
@@ -128,7 +183,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     # assigned_on to user
     def get_assigned_on(self, obj):
         if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
-            return obj.assignment_student_progress[0].updated_on
+            return obj.assignment_student_progress[0].start_on  # start date of assignment
         else:
             return None
 
