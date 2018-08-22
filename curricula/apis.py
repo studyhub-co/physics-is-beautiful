@@ -225,6 +225,7 @@ class CurriculaViewSet(ModelViewSet):
             elif filter_by == 'default':
                 queryset = queryset.filter(author__pk=2)  # Physics Is Beautiful
 
+
         return queryset
 
     def get_serializer_context(self):
@@ -235,5 +236,8 @@ class CurriculaViewSet(ModelViewSet):
     def get_object(self):
         lookup_id = self.kwargs.get(self.lookup_url_kwarg or self.lookup_field)
         if lookup_id and lookup_id.lower() == 'default':
-            return Curriculum.objects.get_default()
+            user = None
+            if self.request.user.is_authenticated:
+                user = self.request.user
+            return Curriculum.objects.get_default(user=user)
         return super(CurriculaViewSet, self).get_object()
