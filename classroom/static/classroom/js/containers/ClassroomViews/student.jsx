@@ -36,7 +36,11 @@ class StudentClassroomView extends React.Component {
 
   componentWillReceiveProps (props) {
     if (!this.props.uncompletedLesson && props.uncompletedLesson) {
-      window.location.href = '/curriculum/lessons/' + props.uncompletedLesson.uuid
+      if (props.uncompletedLesson.lesson_type === 'GAME') {
+        window.location.href = '/curriculum/games/' + props.uncompletedLesson.uuid + '/' + props.uncompletedLesson.game_slug
+      } else {
+        window.location.href = '/curriculum/lessons/' + props.uncompletedLesson.uuid
+      }
     }
   }
 
