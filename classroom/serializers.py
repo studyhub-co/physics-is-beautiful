@@ -161,8 +161,8 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         if obj.denormalized_image:
             storage = get_storage_class()()
-            if storage.exists(obj.denormalized_image):
-                return storage.url(obj.denormalized_image)
+            # if storage.exists(obj.denormalized_image): # do not work with s3
+            return storage.url(obj.denormalized_image)
 
         return None
 

@@ -95,8 +95,8 @@ class TeacherClassroomView extends React.Component {
   }
 
   hideCopiedToolTip () {
-    this.refs.overlay1.hide()
-    this.refs.overlay2.hide()
+    if(this.refs.overlay1) { this.refs.overlay1.hide() }
+    if(this.refs.overlay2) { this.refs.overlay2.hide() }
   }
 
   render () {
