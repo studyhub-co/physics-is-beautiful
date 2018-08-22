@@ -9,7 +9,11 @@ from . import BaseModel, get_earliest_gap
 
 class CurriculumQuerySet(models.QuerySet):
 
-    def get_default(self):
+    def get_default(self, user=None):
+        # try to find curriculum in a last classrooms
+        if user and user.profile.as_student_classrooms.count() > 0:
+            return user.profile.as_student_classrooms.last().curriculum
+
         return self.get(name=Curriculum.Name.DEFAULT)
 
 
