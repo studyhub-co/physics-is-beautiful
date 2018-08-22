@@ -42,6 +42,11 @@
     color: rgb(8, 209, 255);
 }
 
+.classroom .blue-on-hover:hover {
+    color: #1caff6;
+}
+
+
 .classroom .pointer {
     cursor: pointer;
 }

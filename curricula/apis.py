@@ -56,8 +56,13 @@ class QuestionViewSet(ModelViewSet):
                 try:
                     assignment_progress.completed_lessons.add(service.current_lesson)
 
-                    if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
-                            .count() == 0:
+                    # do not support by mysql db
+                    # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
+                    #        .count() == 0:
+                    completed_lessons_ids = []
+                    [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
+                    difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
+                    if difference.count() > 0:
                         if datetime.datetime.now() < assignment_progress.assignment.due_on.replace(tzinfo=None):
                             assignment_progress.completed_on = datetime.datetime.now()
                         else:
