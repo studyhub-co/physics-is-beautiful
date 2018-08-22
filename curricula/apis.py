@@ -2,6 +2,8 @@ import datetime
 
 from django.utils import timezone
 
+from django.db.models import Q
+
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -219,12 +221,12 @@ class CurriculaViewSet(ModelViewSet):
         filter_by = self.request.query_params.get('filter', None)
         if filter_by and self.request.user.is_authenticated():
             if filter_by == 'my':
+                # todo do wee need to get curricula of user classrooms?
                 queryset = queryset.filter(author=self.request.user)
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
             elif filter_by == 'default':
                 queryset = queryset.filter(author__pk=2)  # Physics Is Beautiful
-
 
         return queryset
 
