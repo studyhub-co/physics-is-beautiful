@@ -53,9 +53,6 @@ class QuestionViewSet(ModelViewSet):
                                                                          completed_on__isnull=True)
             for assignment_progress in assignment_progress_list:
                 # user can have several assignments (from different classroom e.g.) to one lesson
-                # we need to create AssignmentProgress to understand that user take part in a assingment
-                # created via /api/v1/classroom/classroom_uuid/assignment/assignment_uuid/first_uncompleted_lesson
-                assignment_progress.completed_lessons.add(service.current_lesson)
                 try:
                     assignment_progress.completed_lessons.add(service.current_lesson)
 
