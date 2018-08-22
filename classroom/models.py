@@ -96,7 +96,7 @@ def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
 class AssignmentProgress(models.Model):
     assignment = models.ForeignKey(Assignment, related_name='assignment_progress')
     uuid = ShortUUIDField(unique=True)
-    completed_lessons = models.ManyToManyField(Lesson)
+    completed_lessons = models.ManyToManyField(Lesson, related_name='assignment_progress_completed_lessons')
     updated_on = models.DateTimeField(auto_now=True)
     # assigned_on = assignment.start_on
     start_on = models.DateTimeField(blank=True, null=True)  # 1st lesson has been requested by student

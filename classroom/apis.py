@@ -99,7 +99,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         # TODO async background mode is preferable
         assignments = AssignmentProgress.objects.filter(student=request.user.profile)
         if assignments.exists():
-            assignments._raw_delete(assignments.db)
+            assignments.delete()
 
         serializer = ClassroomSerializer(classroom)
 
@@ -154,6 +154,8 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         # find first uncompleted lesson
         if first_uncompleted_lesson is None:
             raise NotFound('Can\'t find the first uncompleted lesson')
+
+        # TODO Unlock lesson!
 
         serializer = LessonSerializer(first_uncompleted_lesson, many=False)
         return Response(serializer.data)
