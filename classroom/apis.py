@@ -97,8 +97,8 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         # remove AssignmentProgress for all Assignments for joined student
         # TODO async background mode is preferable
-        assignments = AssignmentProgress.objets.filter(student=request.user.profile)
-        if assignments.exist():
+        assignments = AssignmentProgress.objects.filter(student=request.user.profile)
+        if assignments.exists():
             assignments._raw_delete(assignments.db)
 
         serializer = ClassroomSerializer(classroom)

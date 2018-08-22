@@ -82,13 +82,13 @@ class Assignment(models.Model):
     class Meta:
         ordering = ['-start_on']
 
-# TODO move signals to signals.py
 
+# TODO move signals to signals.py
 @receiver(pre_save, sender=Assignment)
 @on_transaction_commit
 def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
     first_lesson = instance.lessons.first()
-    if instance.lessons.first():
+    if first_lesson:
         if first_lesson.image:
             instance.denormalized_image = first_lesson.image.name
 
