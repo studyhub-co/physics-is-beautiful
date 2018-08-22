@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^collegemap/$', views.college_map, name='collegemap'),
     url(r'^wordpairs/$', views.word_pairs, name='wordpairs'),
     url(r'^wordpairs/getWordPairs$', views.get_word_pairs, name='getwordpairs'),
+    url(r'^blank/$', views.blank, name='blank'),
 ]
