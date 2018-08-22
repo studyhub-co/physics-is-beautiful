@@ -7,14 +7,6 @@ window.addEventListener('message', function (event) {
 
   if (event.data === 'goBack') {
     window.history.back()
-  } else if (event.data === 'profileInfo') {
-    $.get('/api/v1/profiles/me', function (data, status) {
-      // const loggedIn = 'is_anonymous' in data
-      window.parent.postMessage({
-        message: 'profileInformation',
-        data: data
-      }, '*')
-    })
   }
 })
 
@@ -74,5 +66,13 @@ if (window.IS_MOBILE_APP) {
       window.location = this.href + '?pib_mobile=true'
     }
     return false
+  })
+
+  // Get profile data asynchronously and send it to the app
+  $.get('/api/v1/profiles/me', function (data) {
+    window.parent.postMessage({
+      'message': 'loginInfo',
+      'data': data
+    }, 'http://localhost:8080')
   })
 }
