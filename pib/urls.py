@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^classroom/', include('classroom.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^accounts/', include('pib_auth.urls')),
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
