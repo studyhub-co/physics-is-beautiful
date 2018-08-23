@@ -206,7 +206,7 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = False
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialAccountAdapter'
 
-LOGIN_REDIRECT_URL = 'curricula:curriculum'
+LOGIN_REDIRECT_URL = 'pib_auth:login-next'
 
 
 MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT')
