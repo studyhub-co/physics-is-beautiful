@@ -120,22 +120,15 @@ class TeacherClassroomView extends React.Component {
         <Grid fluid> { this.props.classroomTeacher
           ? <Col sm={12} md={12} style={{padding: 0}}>
             <Row style={{padding: 0}}>
-              <Col
-                sm={12}
-                md={12}
-                style={{textAlign: 'left', padding: 0}} >
-                <a
-                  className={'back-button'}
-                  onClick={() => { history.push(BASE_URL)}} >
-                  <span
-                    className='glyphicon glyphicon-menu-left'
-                    style={{fontSize: 16}} />
+              <Col sm={12} md={12} style={{textAlign: 'left', padding: 0}} >
+                <a className={'back-button'} onClick={() => { history.push(BASE_URL)}} >
+                  <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                   All Classrooms
                 </a>
               </Col>
             </Row>
             <Row>
-              <Col sm={12} md={12} style={{textAlign: 'center'}}>
+              <Col sm={12} md={12} style={{textAlign: 'center', width:'100%'}}>
                 <span className={'blue-title'}>
                   <span className={'editable-label'}>
                     <EditableLabel

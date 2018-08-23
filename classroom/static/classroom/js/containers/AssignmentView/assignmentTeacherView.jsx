@@ -57,21 +57,26 @@ export class AssignmentTeacherView extends React.Component {
     var className = 'assignment-teacher-card'
     var dateText = ''
     if (this.props.assignment) {
-      dateText = 'Assigned on ' + new Date(this.props.assignment.due_on).toLocaleDateString() + ' ' +
-                new Date(this.props.assignment.due_on).toLocaleTimeString() +
-                ' and due on ' + new Date(this.props.assignment.start_on).toLocaleDateString() + ' ' +
-                new Date(this.props.assignment.start_on).toLocaleTimeString()
+      dateText = 'Assigned on ' + new Date(this.props.assignment.due_on).toLocaleDateString() + ' at ' +
+                new Date(this.props.assignment.due_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
+                ' and due on ' + new Date(this.props.assignment.start_on).toLocaleDateString() + ' at ' +
+                new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
     }
     return (
       <div>
         <Grid fluid>
-          <Row style={{padding: '2rem 0'}}>
-            <Col sm={6} md={6}>
-              <a className={'pointer'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }}>{'< All assignment'}</a>
+          <Row id='all-assignments'>
+            <Col md={12} style={{padding:0}}>
+              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }} >
+                <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                All assignments
+              </a>
             </Col>
-            <Col sm={6} md={6} className={'text-right'}>
-              <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
-                <Dropdown.Toggle className={'classroom-common-button'}>
+          </Row>
+          <Row style={{padding: 0}} >
+            <Col md={12} className={'text-right'} style={{width: '100%'}}>
+              <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings' >
+                <Dropdown.Toggle className={'classroom-common-button'} style={{marginTop: 0}}>
                   <Glyphicon glyph='cog' />&nbsp;
                   Manage assignment
                 </Dropdown.Toggle>
@@ -86,13 +91,13 @@ export class AssignmentTeacherView extends React.Component {
         </Grid>
         <Grid fluid>
           <Row className={className}>
-            <Col sm={1} md={1}>
+            <Col sm={1} md={1} style={{maxWidth: '35%'}}>
               {this.props.assignment && this.props.assignment.lessons[0].image
                 ? <Image
                   className={'pointer'}
                   width={'100%'}
                   src={this.props.assignment.lessons[0].image}
-                  circle />
+                />
                 : null}
             </Col>
             <Col sm={6} md={6}>
