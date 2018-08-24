@@ -11,8 +11,8 @@ export class TeacherStudentAssignmentRow extends React.Component {
 
     // var dueDateTime = null
     // var startDateOn = null
-    var assingmentDate = null
-    var completedOnTime = null
+    var assignedOnDate = null
+    var completedOnDate = null
 
     if (!this.props.assignment.completed_on && !this.props.assignment.delayed_on) {
       if (new Date(this.props.assignment.due_on) < new Date()) {
@@ -28,15 +28,15 @@ export class TeacherStudentAssignmentRow extends React.Component {
     //   new Date(this.props.assignment.due_on).toLocaleTimeString()
 
     if (this.props.assignment.assigned_on) {
-      assingmentDate = new Date(this.props.assignment.assigned_on).toLocaleDateString() + ' ' +
+      assignedOnDate = new Date(this.props.assignment.assigned_on).toLocaleDateString() + ' ' +
         new Date(this.props.assignment.assigned_on).toLocaleTimeString()
     }
     if (this.props.assignment.completed_on) {
-      completedOnTime = new Date(this.props.assignment.completed_on).toLocaleDateString() + ' ' +
+      completedOnDate = new Date(this.props.assignment.completed_on).toLocaleDateString() + ' ' +
         new Date(this.props.assignment.completed_on).toLocaleTimeString()
     }
     if (this.props.assignment.delayed_on) {
-      completedOnTime = new Date(this.props.assignment.delayed_on).toLocaleDateString() + ' ' +
+      completedOnDate = new Date(this.props.assignment.delayed_on).toLocaleDateString() + ' ' +
         new Date(this.props.assignment.delayed_on).toLocaleTimeString()
     }
 
@@ -60,32 +60,32 @@ export class TeacherStudentAssignmentRow extends React.Component {
           <div className={'gray-text small-text'}>{this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}</div>
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
-          { assingmentDate ? <div> { assingmentDate } </div> : null }
+          { assignedOnDate ? <div> { assignedOnDate } </div> : null }
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
           { this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'green-completed-box'}>
-                <span className='glyphicon glyphicon-ok-sign' style={{color: 'green'}} />&nbsp;Completed
+                <span className='glyphicon glyphicon-ok-sign' />&nbsp;Completed
               </span>
             </div> : null }
           { this.props.assignment.delayed_on && !this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'yellow-delayed-box'}>
-                <span className='glyphicon glyphicon-time yellow-text' />&nbsp;Completed late
+                <span className='glyphicon glyphicon-time' />&nbsp;Completed late
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && !this.props.assignment.delayed_on && new Date(this.props.assignment.due_on) < new Date()
             ? <div className={textColorClassName}>
               <span className={'red-missed-box'}>
-                <span className='glyphicon glyphicon-remove' style={{color: 'red'}} />&nbsp;Missed
+                <span className='glyphicon glyphicon-remove' />&nbsp;Missed
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && new Date(this.props.assignment.due_on) > new Date()
-            ? <span>{this.props.assignment.assigned_on ? <span>Started</span> : <span>Not started</span>}</span> : null}
+            ? <span>{this.props.assignment.start_on ? <span>Started</span> : <span>Not started</span>}</span> : null}
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
-          { completedOnTime ? <div> { completedOnTime } </div> : null }
+          { completedOnDate ? <div> { completedOnDate } </div> : null }
         </Col>
       </Row>
     )

@@ -31,6 +31,7 @@ export class AssignmentTeacherView extends React.Component {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
     this.props.tabActions.changeTeacherClassroomSelectedTab('assignments', 'teacherClassroomTab')
     this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], this.props.match.params['assigmentUuid'])
+    this.props.assignmentActions.assignmentFetchStudentsList(this.props.match.params['uuid'], this.props.match.params['assigmentUuid'])
   }
 
   handleEditAssignmentModal () {
@@ -56,21 +57,26 @@ export class AssignmentTeacherView extends React.Component {
     var className = 'assignment-teacher-card'
     var dateText = ''
     if (this.props.assignment) {
-      dateText = 'Assigned on ' + new Date(this.props.assignment.due_on).toLocaleDateString() + ' ' +
-                new Date(this.props.assignment.due_on).toLocaleTimeString() +
-                ' and due on ' + new Date(this.props.assignment.start_on).toLocaleDateString() + ' ' +
-                new Date(this.props.assignment.start_on).toLocaleTimeString()
+      dateText = 'Assigned on ' + new Date(this.props.assignment.due_on).toLocaleDateString() + ' at ' +
+                new Date(this.props.assignment.due_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
+                ' and due on ' + new Date(this.props.assignment.start_on).toLocaleDateString() + ' at ' +
+                new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
     }
     return (
       <div>
         <Grid fluid>
-          <Row style={{padding: '2rem 0'}}>
-            <Col sm={6} md={6}>
-              <a className={'pointer'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }}>{'< All assignment'}</a>
+          <Row id='all-assignments'>
+            <Col md={12} style={{padding:0}}>
+              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }} >
+                <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                All assignments
+              </a>
             </Col>
-            <Col sm={6} md={6} className={'text-right'}>
-              <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
-                <Dropdown.Toggle className={'classroom-common-button'}>
+          </Row>
+          <Row style={{padding: 0}} >
+            <Col md={12} className={'text-right'} style={{width: '100%'}}>
+              <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings' >
+                <Dropdown.Toggle className={'classroom-common-button'} style={{marginTop: 0}}>
                   <Glyphicon glyph='cog' />&nbsp;
                   Manage assignment
                 </Dropdown.Toggle>
@@ -85,13 +91,13 @@ export class AssignmentTeacherView extends React.Component {
         </Grid>
         <Grid fluid>
           <Row className={className}>
-            <Col sm={1} md={1}>
+            <Col sm={1} md={1} style={{maxWidth: '35%'}}>
               {this.props.assignment && this.props.assignment.lessons[0].image
                 ? <Image
                   className={'pointer'}
                   width={'100%'}
                   src={this.props.assignment.lessons[0].image}
-                  circle />
+                />
                 : null}
             </Col>
             <Col sm={6} md={6}>
@@ -127,11 +133,8 @@ export class AssignmentTeacherView extends React.Component {
         </Grid>
         <Grid fluid>
           <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-            <Col sm={6} md={6}>
+            <Col sm={7} md={7}>
               <span className={'gray-text'}>Student</span>
-            </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
-              Assigned on
             </Col>
             <Col sm={2} md={2} className={'vcenter'}>
               Status
@@ -145,15 +148,19 @@ export class AssignmentTeacherView extends React.Component {
         <Grid fluid>
           <Row className={''}>
             <Col sm={12} md={12}>
-              {this.props.classroomTeacher && this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
-                return <TeacherAssigmentStudentRow
-                  student={student}
-                  onStudentClick={() =>
-                    this.props.dispatch(push(BASE_URL +
-                    this.props.classroomTeacher.uuid +
-                    '/teacher/students/' + student.username))}
-                  key={i} />
-              }, this) : null}
+              {this.props.assignment &&
+              this.props.classroomTeacher &&
+              this.props.assignmentStudentsList
+                ? this.props.assignmentStudentsList.map(function (student, i) {
+                  return <TeacherAssigmentStudentRow
+                    assignment={this.props.assignment}
+                    student={student}
+                    onStudentClick={() =>
+                      this.props.dispatch(push(BASE_URL +
+                      this.props.classroomTeacher.uuid +
+                      '/teacher/students/' + student.username))}
+                    key={i} />
+                }, this) : null}
             </Col>
           </Row>
         </Grid>
@@ -181,11 +188,13 @@ export class AssignmentTeacherView extends React.Component {
 AssignmentTeacherView.propTypes = {
   assignment: PropTypes.object,
   tabActions: PropTypes.shape({
-    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired
+    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired,
+    changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   assignmentActions: PropTypes.shape({
     assignmentFetchAssignment: PropTypes.func.isRequired,
-    assignmentDeleteAssignment: PropTypes.func.isRequired
+    assignmentDeleteAssignment: PropTypes.func.isRequired,
+    assignmentFetchStudentsList: PropTypes.func.isRequired
   }).isRequired
 }
 
@@ -194,7 +203,8 @@ const mapStateToProps = (state) => {
     // classroomStudent: state.classroom.classroomStudentClassroom
     classroomTeacher: state.classroom.classroomTeacherClassroom,
     teacherClassroomStudentsList: state.student.classroomStudentsList,
-    assignment: state.assignment.assignment
+    assignment: state.assignment.assignment,
+    assignmentStudentsList: state.assignment.assignmentStudentsList
   }
 }
 

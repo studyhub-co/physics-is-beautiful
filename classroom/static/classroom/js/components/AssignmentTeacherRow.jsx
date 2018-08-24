@@ -36,14 +36,16 @@ export class AssignmentTeacherRow extends React.Component {
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
           <div className={'gray-text small-text'}>
-            {new Date(this.props.assignment.start_on).toLocaleDateString()}&nbsp;
-            {new Date(this.props.assignment.start_on).toLocaleTimeString()}
+            {new Date(this.props.assignment.start_on).toLocaleDateString()}
+            <br />
+            {new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           </div>
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
           <span className={'gray-text small-text'}>
             {new Date(this.props.assignment.due_on).toLocaleDateString()}&nbsp;
-            {new Date(this.props.assignment.due_on).toLocaleTimeString()}
+            <br />
+            {new Date(this.props.assignment.due_on).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           </span>
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>

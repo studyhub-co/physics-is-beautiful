@@ -24,7 +24,9 @@ class CurriculumViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Curriculum.objects.filter(Q(author=self.request.user) | Q(collaborators=self.request.user))
+        return Curriculum.objects.filter(Q(author=self.request.user)
+                                         | Q(collaborators=self.request.user)
+                                         | Q(classroom__students__user=self.request.user))
     
     def perform_create(self, serializer):
         new_curriculum = serializer.save(author=self.request.user)

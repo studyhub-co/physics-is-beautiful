@@ -41,7 +41,6 @@ class StudentClassroomProfileView extends React.Component {
   }
 
   onAssignmentTitleClick (assignment) {
-    // redirect to first uncompleted lesson
     this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/assignments/' + assignment.uuid))
   }
 
