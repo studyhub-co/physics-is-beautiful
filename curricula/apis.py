@@ -2,6 +2,8 @@ import datetime
 
 from django.utils import timezone
 
+from django.db.models import Q
+
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -51,14 +53,16 @@ class QuestionViewSet(ModelViewSet):
                                                                          completed_on__isnull=True)
             for assignment_progress in assignment_progress_list:
                 # user can have several assignments (from different classroom e.g.) to one lesson
-                # we need to create AssignmentProgress to understand that user take part in a assingment
-                # created via /api/v1/classroom/classroom_uuid/assignment/assignment_uuid/first_uncompleted_lesson
-                assignment_progress.completed_lessons.add(service.current_lesson)
                 try:
                     assignment_progress.completed_lessons.add(service.current_lesson)
 
-                    if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
-                            .count() == 0:
+                    # do not support by mysql db
+                    # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
+                    #        .count() == 0:
+                    completed_lessons_ids = []
+                    [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
+                    difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
+                    if difference.count() > 0:
                         if datetime.datetime.now() < assignment_progress.assignment.due_on.replace(tzinfo=None):
                             assignment_progress.completed_on = datetime.datetime.now()
                         else:
@@ -219,6 +223,7 @@ class CurriculaViewSet(ModelViewSet):
         filter_by = self.request.query_params.get('filter', None)
         if filter_by and self.request.user.is_authenticated():
             if filter_by == 'my':
+                # todo do wee need to get curricula of user classrooms?
                 queryset = queryset.filter(author=self.request.user)
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
@@ -235,5 +240,8 @@ class CurriculaViewSet(ModelViewSet):
     def get_object(self):
         lookup_id = self.kwargs.get(self.lookup_url_kwarg or self.lookup_field)
         if lookup_id and lookup_id.lower() == 'default':
-            return Curriculum.objects.get_default()
+            user = None
+            if self.request.user.is_authenticated:
+                user = self.request.user
+            return Curriculum.objects.get_default(user=user)
         return super(CurriculaViewSet, self).get_object()

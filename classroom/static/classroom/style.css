@@ -42,6 +42,11 @@
     color: rgb(8, 209, 255);
 }
 
+.classroom .blue-on-hover:hover {
+    color: #1caff6;
+}
+
+
 .classroom .pointer {
     cursor: pointer;
 }
@@ -76,7 +81,6 @@
 .classroom .tabs {
     width: 100%;
     display: inline-block;
-    margin-right: 30px;
     vertical-align: top;
     padding: 0 2rem 0 2rem;
     font-weight: lighter;
@@ -333,6 +337,15 @@ label {
     color: #1caff6;
 }
 
+.section-sheet {
+    padding: 0px;
+}
+
+#all-assignments {
+    textAlign: left;
+    padding: 10px 0 0 0;
+}
+
 @media all and (max-width: 770px) {  /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
     .section-sheet {
         padding: 5px;
@@ -352,6 +365,15 @@ label {
 
     .classroom .tabs .tab-link {
         padding: 0px 1.5rem;
+    }
+
+    .classroom .student-classroom-row{
+        margin: 10px 0 0 0;
+        padding: 0;
+    }
+
+    #all-assignments {
+        padding: 0;
     }
 }
 
