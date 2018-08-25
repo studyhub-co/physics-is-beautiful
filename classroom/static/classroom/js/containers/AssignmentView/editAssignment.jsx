@@ -293,7 +293,7 @@ class EditAssignmentView extends React.Component {
               className={'classroom-common-button' + (this.state.assignmentIsValid ? '' : ' disabled-button')}
               disabled={!this.state.assignmentIsValid}
               onClick={this.saveAssignment}>
-              Shedule assignment
+              Schedule assignment
             </button>
           </Col>
         </Row>
