@@ -19,6 +19,37 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
     CurriculumSerializer, LessonProgressSerializer
 
 
+def check_classroom_progress(service, user):
+    # TODO check start and due to date
+    if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
+        from classroom.models import Assignment, AssignmentProgress
+        assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
+        assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
+                                                                     student__user=user,
+                                                                     completed_on__isnull=True)
+        for assignment_progress in assignment_progress_list:
+            # user can have several assignments (from different classroom e.g.) to one lesson
+            try:
+                assignment_progress.completed_lessons.add(service.current_lesson)
+
+                # do not support by mysql db
+                # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
+                #        .count() == 0:
+                completed_lessons_ids = []
+                [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
+                difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
+                if difference.count() == 0:
+                    if timezone.now() < assignment_progress.assignment.due_on.replace():
+                        assignment_progress.completed_on = datetime.datetime.now()
+                    else:
+                        assignment_progress.delayed_on = datetime.datetime.now()
+
+                assignment_progress.save()  # update updated_on date
+
+            except AssignmentProgress.DoesNotExist:
+                pass
+
+
 class QuestionViewSet(ModelViewSet):
 
     serializer_class = QuestionSerializer
@@ -43,36 +74,7 @@ class QuestionViewSet(ModelViewSet):
             raise serializers.ValidationError(e)
         data = LessonProgressSerializer(service.current_lesson_progress).data
 
-        # ================= classroom progress start
-        # TODO check start and due to date
-        if self.request.user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
-            from classroom.models import Assignment, AssignmentProgress
-            assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
-            assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
-                                                                         student__user=self.request.user,
-                                                                         completed_on__isnull=True)
-            for assignment_progress in assignment_progress_list:
-                # user can have several assignments (from different classroom e.g.) to one lesson
-                try:
-                    assignment_progress.completed_lessons.add(service.current_lesson)
-
-                    # do not support by mysql db
-                    # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
-                    #        .count() == 0:
-                    completed_lessons_ids = []
-                    [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
-                    difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
-                    if difference.count() > 0:
-                        if datetime.datetime.now() < assignment_progress.assignment.due_on.replace(tzinfo=None):
-                            assignment_progress.completed_on = datetime.datetime.now()
-                        else:
-                            assignment_progress.delayed_on = datetime.datetime.now()
-
-                    assignment_progress.save()  # update updated_on date
-
-                except AssignmentProgress.DoesNotExist:
-                    pass
-        # ================= classroom progress end
+        check_classroom_progress(service, self.request.user)
 
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
@@ -142,6 +144,8 @@ def game_success(request, uuid):
         dur = None
 
     service.game_success(game, dur, score)
+
+    check_classroom_progress(service, request.user)
 
     if game.slug == 'unit-conversion' or game.slug == 'vector-game':  # temp fix
         # get score list for
