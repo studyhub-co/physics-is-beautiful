@@ -156,7 +156,8 @@ class AssignmentListSerializer(serializers.ModelSerializer):
                 [student.user.email, ]
             )
 
-            email.send()
+            # Suppress email until it's fixed.
+            # email.send()
 
     def get_image(self, obj):
         if obj.denormalized_image:
