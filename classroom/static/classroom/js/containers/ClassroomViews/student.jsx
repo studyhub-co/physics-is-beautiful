@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { AssignmentStudentRow } from '../../components/AssignmentStudentRow'
+import AssignmentStudentRow from '../../components/AssignmentStudentRow'
 
 import { push } from 'connected-react-router'
 
@@ -82,6 +82,7 @@ class StudentClassroomView extends React.Component {
               ? this.props.assignmentsList.map(function (assignment, i) {
                 return <AssignmentStudentRow
                   // isTeacher={Boolean(false)}
+                  classrroom_uuid={this.props.match.params['uuid']}
                   assignment={assignment}
                   onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
                   key={i} />
