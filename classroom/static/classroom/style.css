@@ -157,17 +157,13 @@
     background: #fbfbfb;
 }
 
-/* student-card */
-
-.classroom .student-card {
+.basic-card {
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 2px;
     border-style: solid;
     border-color: rgb(216, 216, 216);
-    width: 45rem;
-    height: 10rem;
     margin: 0 1rem 1rem 0;
     float: left;
     position: relative;
@@ -177,18 +173,16 @@
     vertical-align: top;
 }
 
+/* student-card */
 
-/* classroom card*/
-
-.classroom .classroom-card {
+.classroom .student-card {
+    /* todo move elements with this class to basic card */
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 2px;
     border-style: solid;
     border-color: rgb(216, 216, 216);
-    width: 30rem;
-    height: 25rem;
     margin: 0 1rem 1rem 0;
     float: left;
     position: relative;
@@ -196,6 +190,33 @@
     padding-top: 1rem;
     margin-top: 1rem;
     vertical-align: top;
+
+    width: 45rem;
+    height: 10rem;
+
+}
+
+
+/* classroom card*/
+
+.classroom .classroom-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    vertical-align: top;
+
+    width: 30rem;
+    height: 25rem;
 }
 
 .classroom  .gray-background-info-panel {

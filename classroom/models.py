@@ -1,7 +1,7 @@
 import uuid
 
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 
 
 from django.dispatch import receiver
@@ -84,13 +84,13 @@ class Assignment(models.Model):
 
 
 # TODO move signals to signals.py
-@receiver(pre_save, sender=Assignment)
-@on_transaction_commit
+@receiver(post_save, sender=Assignment)
+# @on_transaction_commit
 def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
     first_lesson = instance.lessons.first()
     if first_lesson:
         if first_lesson.image:
-            instance.denormalized_image = first_lesson.image.name
+            sender.objects.filter(pk=instance.pk).update(denormalized_image=first_lesson.image.name)
 
 
 class AssignmentProgress(models.Model):
