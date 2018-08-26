@@ -1,3 +1,61 @@
+/* reusable */
+
+.google-button {
+    background-color: #ffffff;
+    color: #4c5359;
+    outline: none;
+    display: flex;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem;
+    width: 20rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid #8993a1;
+    font-size: 1.25rem;
+    font-family: GTPressuraMono,Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    text-align: center;
+    border-radius: 10rem;
+}
+.google-button:hover {
+    background-color: #f0f1f2;
+}
+
+.google-button img:nth-child(1) { /* google icon */
+    margin-right: 1.5rem;
+}
+
+.google-button span:nth-of-type(1) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1;
+}
+
+.google-button span span:nth-of-type(1) {
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 1.14;
+    color: #4c5359;
+    text-align: left;
+    margin-bottom: 0.2rem;
+}
+
+.google-button span span:nth-of-type(2) {
+    font-size: 1.3rem;
+    line-height: 1.14;
+    color: #4c5359;
+    text-align: left;
+}
+
+.vcenter {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+
 .classroom{
     font-family: Museosansrounded;
     font-size: 16px;
@@ -68,12 +126,6 @@
 .classroom .gray-link {
     color: #d8d8d8;
     cursor: pointer;
-}
-
-.vcenter {
-   display: flex;
-   align-items: center;
-   justify-content: center;
 }
 
 /* tabs */

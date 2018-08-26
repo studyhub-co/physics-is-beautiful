@@ -56,9 +56,10 @@ class AssignmentStudentRow extends React.Component {
               <div className={'gray-text small-text'}>
                 {this.props.assignment && this.props.assignment.image
                   ? <Image
+                    style={{maxHeight: '4rem'}}
                     responsive
                     src={this.props.assignment.image}
-                    circle />
+                    rounded />
                   : null}
               </div>
             </Col>

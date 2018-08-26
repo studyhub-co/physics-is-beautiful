@@ -32,5 +32,5 @@ class Profile(BaseModel):
 
 @receiver(pre_save, sender=Profile)
 def save_gravatar_url(sender, instance, *args, **kwargs):
-    if has_gravatar(instance.user.email):
-        instance.gravatar_url = get_gravatar_url(instance.user.email)
+    # if has_gravatar(instance.user.email):
+    instance.gravatar_url = get_gravatar_url(instance.user.email, default='identicon')

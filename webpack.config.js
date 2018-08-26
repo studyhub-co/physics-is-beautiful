@@ -40,10 +40,13 @@ module.exports = function (env) {
           query: {
             presets: ['es2015', 'react']
           }
+        },
+        {
+          test: /\.jpe?g$|\.gif$|\.png$/,
+          loader: 'file-loader?name=/static/bundles/images/[name].[ext]?[hash]'
         }
-      ],
+      ]
     },
-
     resolve: {
       modules: ['static/js/common', 'node_modules', 'bower_components'],
       extensions: ['.js', '.jsx']
