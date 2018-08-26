@@ -67,12 +67,14 @@ if (window.IS_MOBILE_APP) {
     }
     return false
   })
-
-  // Get profile data asynchronously and send it to the app
-  $.get('/api/v1/profiles/me', function (data) {
-    window.parent.postMessage({
-      'message': 'loginInfo',
-      'data': data
-    }, 'http://localhost:8080')
-  })
 }
+
+// TODO move this to window.IS_MOBILE_APP and check parent origin before sending
+// Get profile data asynchronously and send it to the app
+$.get('/api/v1/profiles/me', function (data) {
+  // document.body.innerHTML = data
+  window.parent.postMessage({
+    'message': 'loginInfo',
+    'data': data
+  }, 'http://localhost:8080')
+})
