@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
 
+import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
+
 import { TeacherClassroomCard } from '../../components/TeacherClassroomCard'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
@@ -19,12 +21,12 @@ import * as classroomCreators from '../../actions/classroom'
 import { Route } from 'react-router'
 import { StudentClassroomRow } from '../../components/StudentClassroomRow'
 
-import { Grid } from 'react-bootstrap'
+import { Grid, Row, Col } from 'react-bootstrap'
 
 class IndexView extends React.Component {
-  // goToProtected () {
-  //   this.props.dispatch(push('/protected'))
-  // }
+  getGoogleClassroomList() {
+
+  }
 
   componentWillMount () {
     this.props.classroomActions.classroomFetchTeacherClassroomsList()
@@ -85,7 +87,20 @@ class IndexView extends React.Component {
             <TabContent for='teacher'>
               {this.props.location.pathname === '/classroom/'
                 ? <Grid fluid>
-                  <h2>All classrooms</h2>
+                  <Row>
+                    <Col sm={6} md={6}>
+                      <h2>All classrooms</h2>
+                    </Col>
+                    <Col sm={4} md={3} smOffset={2} mdOffset={3}>
+                      <button onClick={this.getGoogleClassroomList} className='google-button' type='button'>
+                        <img className='' src={GoooleClassromIcon} alt='Import from Google Classroom' />
+                        <span>
+                          <span>Import from</span>
+                          <span>Google Classroom</span>
+                        </span>
+                      </button>
+                    </Col>
+                  </Row>
                   {this.props.classroomList
                     ? <div> { this.props.classroomList.map(function (classroom, i) {
                       return <TeacherClassroomCard

@@ -1,4 +1,16 @@
 @font-face {
+    font-family: 'GTPressuraMono';
+    src: url('fonts/GT-Pressura-Mono-Regular.woff2') format('woff2');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GTPressuraMono';
+    src: url('fonts/GT-Pressura-Mono-Regular.woff2') format('woff2');
+    font-style: bold;
+}
+
+@font-face {
     font-family: 'Museosansrounded';
     src: url('fonts/museosansrounded-300-webfont.woff2') format('woff2');
     font-weight: 300;
