@@ -44,7 +44,7 @@ export class MathematicalExpressionAnswer extends React.Component {
         }
       }
     })
-    this.answer.focus()
+    window.IS_MOBILE_APP ? this.answer.blur() : this.answer.focus()
   }
 
   insertLatex (val) {
@@ -54,7 +54,10 @@ export class MathematicalExpressionAnswer extends React.Component {
     } else {
       this.answer.write(val)
     }
-    this.answer.focus()
+
+    if (!window.IS_MOBILE_APP) {
+      this.answer.focus()
+    }
   }
 
   reset () {
@@ -67,7 +70,7 @@ export class MathematicalExpressionAnswer extends React.Component {
 
   componentDidUpdate () {
     // mathquill focus is lost after render
-    if (this.props.answer == null) {
+    if (this.props.answer == null && !window.IS_MOBILE_APP) {
       this.answer.focus()
     } else {
       this.answer.blur()
