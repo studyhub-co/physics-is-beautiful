@@ -49,7 +49,11 @@ export class MathematicalExpressionAnswer extends React.Component {
 
   insertLatex (val) {
     if (this.props.answer) { return }
-    this.answer.write(val)
+    if (val === '⌫') {
+      this.answer.keystroke('Backspace')
+    } else {
+      this.answer.write(val)
+    }
     this.answer.focus()
   }
 
@@ -97,6 +101,11 @@ export class MathematicalExpressionAnswer extends React.Component {
 
     if (this.props.vectorComponentButtons) {
       var buttonsLst = ['\\hat{x}', '\\hat{y}', '1', '2', '3', '4', '+', '-']
+
+      if (window.IS_MOBILE_APP) {
+        buttonsLst.push('⌫')
+      }
+
       for (var i = 0; i < buttonsLst.length; i++) {
         var button = (
           <a
