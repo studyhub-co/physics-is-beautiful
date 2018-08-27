@@ -17,3 +17,7 @@ def login_next(request):
 
 def blank(request):
     return render(request, 'pib_auth/blank.html')
+
+@login_required
+def mobile_next(request):
+    return render(request, 'pib_auth/mobile_next.html')
