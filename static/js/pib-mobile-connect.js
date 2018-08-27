@@ -10,28 +10,6 @@ window.addEventListener('message', function (event) {
   }
 })
 
-// When the user has their finger on the vector canvas, it should not scroll.
-// TODO fix on Android. Seems to work for Firefox & Chromium on desktop, strangely.
-
-$(document).ready(function () {
-  fixCanvas()
-})
-
-// Waits till at least one canvas container is loaded onto the page.
-// Note that we are only going to have one.
-function fixCanvas () {
-  if (document.getElementsByClassName('canvas-container').length === 0) {
-    window.requestAnimationFrame(fixCanvas)
-  } else {
-    var noScroll = document.getElementsByClassName('canvas-container')
-    for (var i = 0; i < noScroll.length; i++) {
-      noScroll[i].addEventListener('touchmove', function (e) {
-        e.preventDefault()
-      }, false)
-    }
-  }
-};
-
 // Copy query string across link clicks.
 
 if (window.IS_MOBILE_APP) {
