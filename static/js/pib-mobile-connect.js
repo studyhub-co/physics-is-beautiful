@@ -67,6 +67,13 @@ if (window.IS_MOBILE_APP) {
     }
     return false
   })
+
+  $(window).on('resize', function () {
+    if ($(document.activeElement).prop('type') === 'text') {
+      // If soft keyboard is visible, scroll to bottom
+      $('html,body').animate({scrollTop: document.body.scrollHeight}, 'fast')
+    }
+  })
 }
 
 // TODO move this to window.IS_MOBILE_APP and check parent origin before sending
