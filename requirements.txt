@@ -40,3 +40,5 @@ awesome-slugify==1.6.5
 django-ipware
 django-meta
 django-gravatar2==1.4.2
+#google-api-python-client==1.7.4
+#oauthlib==2.1.0

@@ -6,6 +6,7 @@ import classroomReducer from './classroom'
 import curriculaReducer from './curricula'
 import assignmentReducer from './assignment'
 import studentReducer from './student'
+import googleReducer from './google'
 
 export default combineReducers({
   data: dataReducer,
@@ -13,5 +14,6 @@ export default combineReducers({
   classroom: classroomReducer,
   curricula: curriculaReducer,
   assignment: assignmentReducer,
-  student: studentReducer
+  student: studentReducer,
+  google: googleReducer
 })

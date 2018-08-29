@@ -1,3 +1,61 @@
+/* reusable */
+
+.google-button {
+    background-color: #ffffff;
+    color: #4c5359;
+    outline: none;
+    display: flex;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem;
+    width: 20rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid #8993a1;
+    font-size: 1.25rem;
+    font-family: GTPressuraMono,Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    text-align: center;
+    border-radius: 10rem;
+}
+.google-button:hover {
+    background-color: #f0f1f2;
+}
+
+.google-button img:nth-child(1) { /* google icon */
+    margin-right: 1.5rem;
+}
+
+.google-button span:nth-of-type(1) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1;
+}
+
+.google-button span span:nth-of-type(1) {
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 1.14;
+    color: #4c5359;
+    text-align: left;
+    margin-bottom: 0.2rem;
+}
+
+.google-button span span:nth-of-type(2) {
+    font-size: 1.3rem;
+    line-height: 1.14;
+    color: #4c5359;
+    text-align: left;
+}
+
+.vcenter {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+
 .classroom{
     font-family: Museosansrounded;
     font-size: 16px;
@@ -70,12 +128,6 @@
     cursor: pointer;
 }
 
-.vcenter {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-}
-
 /* tabs */
 
 .classroom .tabs {
@@ -131,7 +183,98 @@
     box-shadow: 0 0 10px #d8d8d8;
 }
 
+.basic-card {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    vertical-align: top;
+}
+
+/* student-card */
+
+.classroom .student-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    vertical-align: top;
+
+    width: 45rem;
+    height: 10rem;
+
+}
+
+
+/* classroom card*/
+
+.classroom .classroom-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    vertical-align: top;
+
+    width: 30rem;
+    height: 25rem;
+}
+
 .classroom .create-classroom-button{
+    border-radius: 15px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 5rem;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 1px;
+    border-style: dashed;
+    color: rgb(216, 216, 216);
+    font-size: 2rem;
+    cursor: pointer;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    transition: border-color 500ms, border-style 500ms, color 500ms, background 500ms;
+
+    width: 30rem;
+    height: 25rem;
+}
+
+.classroom .create-classroom-button:hover {
+    border-style: solid;
+    border-color: #1caff6;
+    color: #1caff6;
+    box-shadow: 0 0 15px #d8d8d8;
+    background: #fbfbfb;
+}
+
+
+.classroom .join-another-classroom {
     border-radius: 15px;
     text-align: center;
     vertical-align: middle;
@@ -149,7 +292,7 @@
     transition: border-color 500ms, border-style 500ms, color 500ms, background 500ms;
 }
 
-.classroom .create-classroom-button:hover {
+.classroom .join-another-classroom:hover {
     border-style: solid;
     border-color: #1caff6;
     color: #1caff6;
@@ -157,46 +300,6 @@
     background: #fbfbfb;
 }
 
-/* student-card */
-
-.classroom .student-card {
-    border-radius: 15px;
-    background-color: white;
-    box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
-    width: 45rem;
-    height: 10rem;
-    margin: 0 1rem 1rem 0;
-    float: left;
-    position: relative;
-    text-align: center;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    vertical-align: top;
-}
-
-
-/* classroom card*/
-
-.classroom .classroom-card {
-    border-radius: 15px;
-    background-color: white;
-    box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
-    width: 30rem;
-    height: 25rem;
-    margin: 0 1rem 1rem 0;
-    float: left;
-    position: relative;
-    text-align: center;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    vertical-align: top;
-}
 
 .classroom  .gray-background-info-panel {
     border-radius: 15px;

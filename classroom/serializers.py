@@ -12,6 +12,18 @@ from profiles.models import Profile
 from profiles.serializers import PublicProfileSerializer
 from curricula.serializers import SimpleCurriculumSerializer, CurriculumSerializer, LessonSerializer
 
+from urllib.parse import urljoin
+
+from django.utils import timezone
+from django.conf import settings
+from django.urls import reverse
+
+from django.template import loader
+
+from django.core.mail import EmailMessage
+
+from django.contrib.sites.models import Site
+
 
 class StudentProfileSerializer(PublicProfileSerializer):
     counts = serializers.SerializerMethodField()
@@ -80,18 +92,6 @@ class ClassroomSerializer(ClassroomBaseSerializer):
     # fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
-from urllib.parse import urljoin
-
-from django.utils import timezone
-from django.conf import settings
-from django.urls import reverse
-
-from django.template import loader
-
-from django.core.mail import EmailMessage
-
-from django.contrib.sites.models import Site
-
 class AssignmentListSerializer(serializers.ModelSerializer):
     lessons_uuids = serializers.SlugRelatedField(queryset=Lesson.objects.all(), source='lessons',
                                                  slug_field='uuid', many=True, write_only=True)
@@ -155,7 +155,9 @@ class AssignmentListSerializer(serializers.ModelSerializer):
                 settings.DEFAULT_FROM_EMAIL,
                 [student.user.email, ]
             )
+            email.content_subtype = "html"
 
+            # Suppress email until it's fixed.
             email.send()
 
     def get_image(self, obj):
