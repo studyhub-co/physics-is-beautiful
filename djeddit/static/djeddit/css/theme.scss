@@ -114,6 +114,11 @@ h6, .text-muted{line-height: 0;}
   .fa-stack-1x {color: $gray;}
 }
 
+.col-icon {
+  display: flex;
+  align-items: center;
+}
+
 .post-heading {
   h3, h4, h5, h6 {
     display: inline;

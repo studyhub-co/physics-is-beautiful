@@ -3,7 +3,8 @@
 <li class="list-group-item">
     <div class="row vertical-align">
         <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% threadUrl thread %}'">
-            <i class="fa {% threadIconClass thread %} fa-2x"></i>
+            {# As we are disallowing link posts, this part is not necessary: <i class="fa {% threadIconClass thread %} fa-2x"></i> #}
+            <i class="far fa-comments fa-2x"></i>
         </div>
         <div class="col-sm-8 col-xs-9 list-group-item-main-col">
             <a href="{% threadUrl thread %}"><h4 class="inline">{% firstLine thread.title 50 %}</h4></a>
