@@ -1,7 +1,7 @@
 import uuid
 
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 
 
 from django.dispatch import receiver
@@ -16,11 +16,25 @@ from profiles.models import Profile
 from django.db import transaction
 
 
+# TODO move to utils
 def on_transaction_commit(func):
     def inner(*args, **kwargs):
         transaction.on_commit(lambda: func(*args, **kwargs))
 
     return inner
+
+
+class ExternalClassroom(models.Model):
+    GOOGLE_CLASSRROM = 'GC'
+    EXTERNAL_PROVIDER_CHOICES = (
+        (GOOGLE_CLASSRROM, 'google classrrrom'),
+    )
+
+    external_id = models.CharField(max_length=400)
+    title = models.CharField(max_length=400)
+    teacher_id = models.CharField(max_length=400)
+    code = models.CharField(max_length=400)
+    provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
 
 
 class Classroom(models.Model):
@@ -29,6 +43,7 @@ class Classroom(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
+    # external_classroom = models.OneToOneField(ExternalClassroom, related_name='classroom', blank=True, null=True)
     teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
@@ -84,13 +99,13 @@ class Assignment(models.Model):
 
 
 # TODO move signals to signals.py
-@receiver(pre_save, sender=Assignment)
-@on_transaction_commit
+@receiver(post_save, sender=Assignment)
+# @on_transaction_commit
 def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
     first_lesson = instance.lessons.first()
     if first_lesson:
         if first_lesson.image:
-            instance.denormalized_image = first_lesson.image.name
+            sender.objects.filter(pk=instance.pk).update(denormalized_image=first_lesson.image.name)
 
 
 class AssignmentProgress(models.Model):
@@ -107,3 +122,8 @@ class AssignmentProgress(models.Model):
     class Meta:
         ordering = ['-start_on']
         unique_together = (("assignment", "student"), )  # one progress per user and  assignment
+
+
+# class OAuthUserToken(models.Model):
+#     token = models.CharField(max_length=200)
+#     refresh_token = models.CharField(max_length=200)

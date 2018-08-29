@@ -2,7 +2,8 @@ import { checkHttpStatus, getAxios } from '../utils'
 import {
   ASSIGNMENTS_RECEIVE_ASSIGNMENTS_LIST, ASSIGNMENT_CREATE_ASSIGNMENT_SUCCESS,
   ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS, ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS,
-  ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON, ASSIGNMENTS_RECEIVE_ASSIGNMENT_STUDENTS_LIST
+  ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON, ASSIGNMENTS_RECEIVE_ASSIGNMENT_STUDENTS_LIST,
+  ASSIGNMENT_RECEIVE_STUDENT_LESSONS_LIST
 } from '../constants'
 
 import { API_PREFIX } from '../utils/config'
@@ -148,7 +149,31 @@ export function assignmentFetchFirstUncompletedLesson (classroomUuid, assignment
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveFirstUncompletedLesson(response.data))
-        if (typeof callback === 'function'){
+        if (typeof callback === 'function') {
+          callback()
+        }
+      })
+  }
+}
+
+export function receiveAssignmentStudentLessonsList (assignmentsStudentLessonsList) {
+  return {
+    type: ASSIGNMENT_RECEIVE_STUDENT_LESSONS_LIST,
+    payload: {
+      assignmentsStudentLessonsList
+    }
+  }
+}
+
+export function assignmentFetchStudentLessonsList (classroomUuid, assignmentUuid, callback = null) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid + '/lessons/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        var assignmentsLessons = {}
+        assignmentsLessons[assignmentUuid] = response.data
+        dispatch(receiveAssignmentStudentLessonsList(assignmentsLessons))
+        if (typeof callback === 'function') {
           callback()
         }
       })

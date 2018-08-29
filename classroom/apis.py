@@ -275,6 +275,20 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         serializer = StudentAssignmentSerializer(students_list, many=True)
         return Response(serializer.data)
 
+    @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
+    def lessons(self, request, classroom_uuid, uuid):
+        # /api/v1/classroom/classroomuuid/assignment/uuid/lessons/
+        try:
+            # FIXME to think do we need lessons list for a teacher
+            assignment = Assignment.objects.get(uuid=uuid)
+        except Assignment.DoesNotExist:
+            raise NotFound('Can\'t find the assignment')
+
+        lessons_list = assignment.lessons.all()
+
+        serializer = LessonSerializer(lessons_list, many=True)
+        return Response(serializer.data)
+
 
 class StudentProfileViewSet(GenericViewSet):
     queryset = Profile.objects.all()
