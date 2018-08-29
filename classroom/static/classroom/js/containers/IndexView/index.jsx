@@ -9,6 +9,7 @@ import { Sheet } from '../../components/Sheet'
 import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
 
 import { TeacherClassroomCard } from '../../components/TeacherClassroomCard'
+import { GoogleClassroomRow } from '../../components/GoogleClassroomRow'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
@@ -17,18 +18,39 @@ import { CreateClassroomView, JoinClassroomView,
 
 import * as tabsCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
+import * as googleCreators from '../../actions/google'
 
 import { Route } from 'react-router'
 import { StudentClassroomRow } from '../../components/StudentClassroomRow'
 
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Grid, Row, Col, Modal } from 'react-bootstrap'
+
+import { RingLoader } from 'react-spinners'
 
 class IndexView extends React.Component {
-  getGoogleClassroomList() {
+  constructor (props) {
+    super(props)
+    this.getGoogleClassroomList = this.getGoogleClassroomList.bind(this)
+    this.handleImportGoogleClassroom = this.handleImportGoogleClassroom.bind(this)
+    this.onGoogleClassroomClick  = this.onGoogleClassroomClick .bind(this)
+    this.state = { showSelectGooleClassroom: false, googleSelected: [] }
+  }
 
+  getGoogleClassroomList () {
+    this.props.googleActions.googleFetchClassroomList()
+    this.handleImportGoogleClassroom()
+  }
+
+  onGoogleClassroomClick (classroom) {
+    // TODO  add classroom to googleSelected list, remove classroom from list if exist
+  }
+
+  handleImportGoogleClassroom () {
+    this.setState({'showSelectGooleClassroom': !this.state.showSelectGooleClassroom})
   }
 
   componentWillMount () {
+    this.props.googleActions.gapiInitialize()
     this.props.classroomActions.classroomFetchTeacherClassroomsList()
     this.props.classroomActions.classroomFetchStudentClassroomsList()
   }
@@ -42,7 +64,7 @@ class IndexView extends React.Component {
     var editUrl = baseUrl + '/:uuid/edit/'
     var joinUrl = baseUrl + '/join'
 
-    if (this.props.match.params && this.props.match.params.joinCode){
+    if (this.props.match.params && this.props.match.params.joinCode) {
       var joinCode = this.props.match.params.joinCode
       // join to classroom and redirect to classroom student view
       this.props.classroomActions.classroomJoinClassroom(joinCode)
@@ -75,7 +97,7 @@ class IndexView extends React.Component {
               {/* if classrooms list and not empty */}
               {this.props.classroomStudentList && this.props.classroomStudentList.length > 0
                 ? <div>
-                  {this.props.location.pathname.lastIndexOf('/classroom/', 0) === 0 ? <div className={'create-classroom-button'}
+                  {this.props.location.pathname.lastIndexOf('/classroom/', 0) === 0 ? <div className={'join-another-classroom'}
                     onClick={() => this.props.dispatch(push(joinUrl))}>
                   + Join another classroom
                   </div> : null}
@@ -92,13 +114,52 @@ class IndexView extends React.Component {
                       <h2>All classrooms</h2>
                     </Col>
                     <Col sm={4} md={3} smOffset={2} mdOffset={3}>
-                      <button onClick={this.getGoogleClassroomList} className='google-button' type='button'>
+                      <button disabled={!this.props.gapiInitState}
+                        onClick={this.getGoogleClassroomList}
+                        className='google-button' type='button'>
                         <img className='' src={GoooleClassromIcon} alt='Import from Google Classroom' />
                         <span>
                           <span>Import from</span>
                           <span>Google Classroom</span>
                         </span>
                       </button>
+                      {/* Google Modal start */}
+                      { this.state.showSelectGooleClassroom
+                        ? <Modal
+                          show={this.state.showSelectGooleClassroom}
+                          onHide={this.handleImportGoogleClassroom}
+                          container={this} >
+                          <Modal.Header closeButton>
+                            <Modal.Title>Please select the classes you want to import</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Grid fluid>
+                              { this.props.googleClassroomsList
+                                ? this.props.googleClassroomsList.map(function (classroom, i) {
+                                  return <GoogleClassroomRow
+                                    onGoogleClassroomClick={this.onGoogleClassroomClick }
+                                    classroom={classroom}
+                                    key={i} />
+                                }, this)
+                                : <Row style={{height:"10rem"}}>
+                                  <Col sm={12} md={12}>
+                                    <div className='sweet-loading'>
+                                      <RingLoader
+                                        color={'#1caff6'}
+                                        loading={this.state.loading}
+                                      />
+                                    </div>
+                                  </Col>
+                                </Row>
+                              }
+                            </Grid>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <button className={'classroom-common-button'} onClick={this.importFromGoogle}>Import classes</button>
+                          </Modal.Footer>
+                        </Modal> : null
+                      }
+                      {/* Google Modal end */}
                     </Col>
                   </Row>
                   {this.props.classroomList
@@ -109,6 +170,12 @@ class IndexView extends React.Component {
                         baseUrl={baseUrl}
                         key={i} />
                     }, this)}
+                    <div style={{float: 'left'}}>
+                      {this.props.location.pathname === '/classroom/' ? <div className={'vcenter create-classroom-button'}
+                        onClick={() => this.props.dispatch(push(createUrl))}>
+                      + Create another classroom
+                      </div> : null}
+                    </div>
                     <div style={{'clear': 'both'}} />
                     </div> : null }
                 </Grid>
@@ -117,10 +184,7 @@ class IndexView extends React.Component {
               <Route path={createUrl} component={CreateClassroomView} />
               <Route path={editUrl} component={CreateClassroomView} />
               <Route path={teacherUrl} component={TeacherClassroomView} />
-              {this.props.location.pathname === '/classroom/' ? <div className={'create-classroom-button'}
-                onClick={() => this.props.dispatch(push(createUrl))}>
-                + Create classroom
-              </div> : null}
+
             </TabContent>
           </div>
         </Tabs>
@@ -133,6 +197,10 @@ IndexView.propTypes = {
   tabActions: PropTypes.shape({
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
+  googleActions: PropTypes.shape({
+    googleFetchClassroomList: PropTypes.func.isRequired,
+    gapiInitialize: PropTypes.func.isRequired
+  }).isRequired,
   classroomActions: PropTypes.shape({
     classroomFetchTeacherClassroomsList: PropTypes.func.isRequired,
     classroomFetchStudentClassroomsList: PropTypes.func.isRequired,
@@ -141,6 +209,8 @@ IndexView.propTypes = {
   tab: PropTypes.string,
   classroomList: PropTypes.array,
   classroomStudentList: PropTypes.array,
+  googleClassroomsList: PropTypes.array,
+  gapiInitState: PropTypes.bool,
   dispatch: PropTypes.func.isRequired
 }
 
@@ -148,7 +218,9 @@ const mapStateToProps = (state) => {
   return {
     tab: state.tab.tab,
     classroomList: state.classroom.classroomList,
-    classroomStudentList: state.classroom.classroomStudentList
+    classroomStudentList: state.classroom.classroomStudentList,
+    googleClassroomsList: state.google.googleClassroomsList,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
@@ -156,7 +228,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
-    classroomActions: bindActionCreators(classroomCreators, dispatch)
+    classroomActions: bindActionCreators(classroomCreators, dispatch),
+    googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 
