@@ -20,7 +20,7 @@ def college_scorecard(request):
 
 def shankar(request):
     return render(request, 'blog/shankar.html')
-
+    
 
 def college_map(request):
     intensity_variable = 'tuitionfee_in'

@@ -464,6 +464,7 @@ label {
 
     .classroom .tabs .tab-links {
         margin-bottom: 10px;
+        padding-top: 10px;
     }
 
     .classroom .tabs .tab-link {
@@ -472,7 +473,11 @@ label {
 
     .classroom .student-classroom-row{
         margin: 10px 0 0 0;
-        padding: 0;
+        padding: 1rem;
+    }
+
+    .classroom .classroom-card {
+        width: 100%;
     }
 
     #all-assignments {

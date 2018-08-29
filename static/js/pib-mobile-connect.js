@@ -7,38 +7,8 @@ window.addEventListener('message', function (event) {
 
   if (event.data === 'goBack') {
     window.history.back()
-  } else if (event.data === 'profileInfo') {
-    $.get('/api/v1/profiles/me', function (data, status) {
-      // const loggedIn = 'is_anonymous' in data
-      window.parent.postMessage({
-        message: 'profileInformation',
-        data: data
-      }, '*')
-    })
   }
 })
-
-// When the user has their finger on the vector canvas, it should not scroll.
-// TODO fix on Android. Seems to work for Firefox & Chromium on desktop, strangely.
-
-$(document).ready(function () {
-  fixCanvas()
-})
-
-// Waits till at least one canvas container is loaded onto the page.
-// Note that we are only going to have one.
-function fixCanvas () {
-  if (document.getElementsByClassName('canvas-container').length === 0) {
-    window.requestAnimationFrame(fixCanvas)
-  } else {
-    var noScroll = document.getElementsByClassName('canvas-container')
-    for (var i = 0; i < noScroll.length; i++) {
-      noScroll[i].addEventListener('touchmove', function (e) {
-        e.preventDefault()
-      }, false)
-    }
-  }
-};
 
 // Copy query string across link clicks.
 
@@ -75,4 +45,21 @@ if (window.IS_MOBILE_APP) {
     }
     return false
   })
+
+  $(window).on('resize', function () {
+    if ($(document.activeElement).prop('type') === 'text') {
+      // If soft keyboard is visible, scroll to bottom
+      $('html,body').animate({scrollTop: document.body.scrollHeight}, 'fast')
+    }
+  })
 }
+
+// TODO move this to window.IS_MOBILE_APP and check parent origin before sending
+// Get profile data asynchronously and send it to the app
+$.get('/api/v1/profiles/me', function (data) {
+  // document.body.innerHTML = data
+  window.parent.postMessage({
+    'message': 'loginInfo',
+    'data': data
+  }, 'http://localhost:8080')
+})
