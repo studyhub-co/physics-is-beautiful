@@ -290,7 +290,7 @@ class TeacherClassroomView extends React.Component {
                       key={i} />
                   }, this)}
                 </Grid> : null }
-              { isExactUrl ? <div className={'create-classroom-button'} onClick={this.handleCreateAssigment}>
+              { isExactUrl ? <div className={'join-another-classroom'} onClick={this.handleCreateAssigment}>
                 + Create an assignment
               </div> : null }
               { this.state.showCreateAssigment
