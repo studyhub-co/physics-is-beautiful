@@ -162,23 +162,18 @@ h6, .text-muted {
   max-width: 100%;
 }
 
-@media only screen and (max-width: 600px) {
-  #main {
-    padding: 0 0 0 0;
-  }
-
-  #main .djeddit-topic-title {
-    padding: 10px;
-  }
-
-  #main .djeddit-topic-description {
-    padding: 10px;
-  }
-}
 /* Small Devices, Tablets */
 @media only screen and (min-width: 769px) {
   .list-group-item-main-col {
     padding-left: 0;
+  }
+
+  .count-box-small {
+    display: none;
+  }
+
+  .djeddit-thread-item-icon {
+    padding: 5px;
   }
 }
 @media only screen and (max-width: 768px) {
@@ -188,6 +183,30 @@ h6, .text-muted {
 
   .hide-sm {
     visibility: hidden;
+  }
+
+  #main {
+    padding: 0 0 0 0;
+  }
+
+  #main h2 {
+    padding: 10px;
+  }
+
+  #main .djeddit-topic-description {
+    padding: 10px;
+  }
+
+  .count-box {
+    display: none;
+  }
+
+  .count-box-small {
+    display: inline;
+  }
+
+  .list-group-item-main-col {
+    width: 100%;
   }
 }
 /* Medium Devices, Desktops */
@@ -208,6 +227,14 @@ h6, .text-muted {
 
 .djeddit-thread-item-footer {
   line-height: normal;
+}
+
+.djeddit-score-upvote.color-primary {
+  color: green;
+}
+
+.djeddit-score-downvote.color-primary {
+  color: red;
 }
 
 /*# sourceMappingURL=theme.css.map */
