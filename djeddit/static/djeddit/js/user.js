@@ -3,8 +3,8 @@
  */
 
 window.userFuncs = {
-    setUserStatus: function (username, status) {
-        var url = window.USER_URLS['setUserStatus'];
-        $.post(url, {username: username, status: status});
-    }
-};
+  setUserStatus: function (username, status) {
+    var url = window.USER_URLS['setUserStatus']
+    $.post(url, {username: username, status: status})
+  }
+}
