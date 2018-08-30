@@ -12,6 +12,15 @@
             <br>
             <div class="text-muted inline full-line">
                 {% firstLine topic.description 90 %}
+                <span class="djeddit-count-box-overflow">
+                    &middot;
+                    {{ topic.getThreadCount }}
+                    {% if topic.getThreadCount == 1 %}
+                    Thread
+                    {% else %}
+                    Threads
+                    {% endif %}
+                </span>
             </div>
         </div>
         <div class="col-xs-1" style="margin-left: auto">
