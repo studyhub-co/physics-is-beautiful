@@ -52,7 +52,7 @@ class Topic(NamedModel):
 
     @property
     def urlTitle(self):
-        return self.title.replace(' ', '-')
+        return self.title.replace(' ', '-').lower()
 
     def get_absolute_url(self):
         return reverse('topicPage', args=[self.urlTitle])
@@ -65,13 +65,13 @@ class Topic(NamedModel):
             try:
                 return Topic.objects.get(title=title.replace('-', ' '))
             except ObjectDoesNotExist:
-                return Topic.objects.get(title=title.replace('_', ' '))
+                return Topic.objects.get(title=title.replace('_', ' ').lower())
 
 
 @python_2_unicode_compatible
 class Thread(NamedModel):
     title = models.CharField(max_length=70, blank=False)
-    slug = models.SlugField(unique=False, null=True)
+    slug = models.SlugField(unique=False, null=True, max_length=200)
     url = models.URLField(max_length=120, blank=True, default='')
     views = models.IntegerField(blank=True, default=0)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
@@ -94,7 +94,7 @@ class Thread(NamedModel):
         super(Thread, self).delete(*args, **kwargs)
 
     def _genSlug(self):
-        slug = slugify(self.title, to_lower=True, max_length=80)
+        slug = slugify(self.title, to_lower=True, max_length=180)
         return slug
 
     @property
