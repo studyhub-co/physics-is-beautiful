@@ -170,6 +170,10 @@ h6, .text-muted{line-height: 0;}
   .djeddit-thread-item-icon {
     padding: 5px;
   }
+
+  .djeddit-count-box-overflow {
+    display: none;
+  }
   
 }
 
@@ -191,6 +195,10 @@ h6, .text-muted{line-height: 0;}
 
   .count-box {
     display: none;
+  }
+
+  .djeddit-count-box-overflow {
+    display: inline;
   }
 
   .count-box-small {

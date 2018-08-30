@@ -193,6 +193,10 @@ h6, .text-muted {
   .djeddit-thread-item-icon {
     padding: 5px;
   }
+
+  .djeddit-count-box-overflow {
+    display: none;
+  }
 }
 @media only screen and (max-width: 768px) {
   .list-group-item-main-col {
@@ -217,6 +221,10 @@ h6, .text-muted {
 
   .count-box {
     display: none;
+  }
+
+  .djeddit-count-box-overflow {
+    display: inline;
   }
 
   .count-box-small {

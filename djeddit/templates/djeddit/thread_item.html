@@ -14,11 +14,19 @@
             <br>
             <div class="text-muted inline full-lined djeddit-thread-item-footer">
                 <div class="djeddit-score">
+                    {% if user.is_authenticated %}
                     <i class="fas fa-arrow-up djeddit-score-upvote {% postVoteClicked user thread.op True %} " 
-                        onclick="window.topicFuncs.votePost(this, '{{ thread.op.uid }}', true, $(this).hasClass('color-primary'), '{% url "votePost" %}')"></i>
+                        onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', true, $(this).hasClass('color-primary'), '{% url "votePost" %}')"></i>
                     <span class="djeddit-score-number">{{ thread.op.score }}</span>
                     <i class="fas fa-arrow-down djeddit-score-downvote {% postVoteClicked user thread.op False %}"
-                        onclick="window.topicFuncs.votePost(this, '{{ thread.op.uid }}', $(this).hasClass('color-primary'), true, '{% url "votePost" %}')"></i>
+                        onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', $(this).hasClass('color-primary'), true, '{% url "votePost" %}')"></i>
+                    {% else %}
+                    <i class="fas fa-arrow-up djeddit-score-upvote" 
+                        onclick="javascript:window.topicFuncs.loginNeeded()"></i>
+                    <span class="djeddit-score-number">{{ thread.op.score }}</span>
+                    <i class="fas fa-arrow-down djeddit-score-downvote"
+                        onclick="javascript:window.topicFuncs.loginNeeded()"></i>
+                    {% endif %}
                 </div>
                 <div class="djeddit-created-by">
                     {% if showCreatedBy %}

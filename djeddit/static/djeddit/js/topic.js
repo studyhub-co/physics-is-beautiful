@@ -28,5 +28,8 @@ window.topicFuncs = {
       parent.find('.djeddit-score-number').text(data.score)
     //   $post.find('>.bs-callout-main>.minicol>.post-score').text(data.score)
     })
+  },
+  loginNeeded: function () {
+    document.getElementById('login-signup-link').click()
   }
 }
