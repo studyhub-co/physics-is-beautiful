@@ -2,7 +2,7 @@
 {% load djeddit_tags %}
 <li class="list-group-item">
     <div class="row vertical-align">
-        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% threadUrl thread %}'">
+        <div class="col-sm-1 hidden-sm hidden-xs col-icon hover-point" onclick="window.location='{% threadUrl thread %}'">
             {# As we are disallowing link posts, this part is not necessary: <i class="fa {% threadIconClass thread %} fa-2x"></i> #}
             <i class="far fa-comments fa-2x"></i>
         </div>
@@ -14,9 +14,11 @@
             <br>
             <div class="text-muted inline full-lined djeddit-thread-item-footer">
                 <div class="djeddit-score">
-                    <i class="fas fa-arrow-up djeddit-score-upvote"></i>
+                    <i class="fas fa-arrow-up djeddit-score-upvote {% postVoteClicked user thread.op True %} " 
+                        onclick="window.topicFuncs.votePost(this, '{{ thread.op.uid }}', true, $(this).hasClass('color-primary'), '{% url "votePost" %}')"></i>
                     <span class="djeddit-score-number">{{ thread.op.score }}</span>
-                    <i class="fas fa-arrow-down djeddit-score-downvote"></i>
+                    <i class="fas fa-arrow-down djeddit-score-downvote {% postVoteClicked user thread.op False %}"
+                        onclick="window.topicFuncs.votePost(this, '{{ thread.op.uid }}', $(this).hasClass('color-primary'), true, '{% url "votePost" %}')"></i>
                 </div>
                 <div class="djeddit-created-by">
                     {% if showCreatedBy %}
@@ -25,10 +27,18 @@
                         {% else %} 
                             {% postUserName thread.op.created_by %} 
                         {% endif %} 
+                        &middot;
                         {% postDate thread.op.created_on 'on ' %}
                     {% else %}
                         {{ thread.op.created_on }}
                     {% endif %}
+                </div>
+                <div class="count-box-small" onclick="window.location='{{ thread.relativeUrl }}'">
+                    &middot;
+                    <i class="far fa-comment"></i>
+                    {% with thread.op.getReplies|length as commentsCount %}
+                        {{ commentsCount }}
+                    {% endwith%}
                 </div>
             </div>
         </div>
