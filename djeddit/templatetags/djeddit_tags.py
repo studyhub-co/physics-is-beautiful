@@ -15,7 +15,7 @@ register = template.Library()
 def getAmountContext(num, name, infix=''):
     if num:
         if abs(num) > 1:
-            if name.endswith('y'):
+            if name.endswith('y') and name != 'day':
                 name = '{name}ies'.format(name=name[:-1])
             else:
                 name += 's'
@@ -80,19 +80,37 @@ def postContainer(parent):
 
 
 @register.simple_tag
-def postDate(dt, prefix=''):
+def postDate(dt, prefix='', verbose=True):
     dt_now = datetime.utcnow().replace(tzinfo=utc)
-    if dt.date() == dt_now.date():
-        delta = dt_now - dt
-        hours = int(delta.seconds / 3600)
-        string = getAmountContext(hours, 'hour')
-        if string:
-            return '%s ago' % string
-        minutes = int(delta.seconds / 60)
-        string = getAmountContext(minutes, 'minute')
-        if string:
-            return '%s ago' % string
-        return 'less than a minute ago'
+    # if dt.date() == dt_now.date():
+    delta = (dt_now - dt).total_seconds()
+
+    years = int(delta / 31556926)
+    string = getAmountContext(years, 'year')
+    if string:
+        return '%s ago' % string if verbose else '%sy' % years
+
+    months = int(delta / 2592000)
+    string = getAmountContext(months, 'day')
+    if string:
+        return '%s ago' % string if verbose else '%smo' % months
+
+    days = int(delta / 86400)
+    string = getAmountContext(days, 'day')
+    if string:
+        return '%s ago' % string if verbose else '%sd' % days
+   
+    hours = int(delta / 3600)
+    string = getAmountContext(hours, 'hour')
+    if string:
+        return '%s ago' % string if verbose else '%sh' % hours
+   
+    minutes = int(delta / 60)
+    string = getAmountContext(minutes, 'minute')
+    if string:
+        return '%s ago' % string if verbose else '%sm' % minutes
+    return 'less than a minute ago' if verbose else '<1m'
+   
     return prefix + formats.date_format(dt.date(), "DATE_FORMAT")
 
 

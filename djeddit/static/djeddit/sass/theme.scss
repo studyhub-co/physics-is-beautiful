@@ -139,8 +139,24 @@ h6, .text-muted{line-height: 0;}
 
 //.list-group-item-main-col {padding-left: 0;}
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 500px) {
+  .djeddit-date-silly {
+    display: inline;
+  }
 
+  .djeddit-date-verbose {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 501px) {
+  .djeddit-date-silly {
+    display: none;
+  }
+
+  .djeddit-date-verbose {
+    display: inline;
+  }
 }
 
 /* Small Devices, Tablets */
@@ -154,6 +170,7 @@ h6, .text-muted{line-height: 0;}
   .djeddit-thread-item-icon {
     padding: 5px;
   }
+  
 }
 
 @media only screen and (max-width : 768px) {
