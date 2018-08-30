@@ -8,6 +8,7 @@ import {
   GOOGLE_RECEIVE_CLASSROOMS_LIST, GOOGLE_INIT_STATE_CHANGED
 } from '../constants'
 
+// TODO as Open Source we must replace this with data from dev or AWS environment while webpack compile bundle
 var CLIENT_ID = '1090448644110-r8o52h1sqpbq7pp1j8ougcr1e35qicqg.apps.googleusercontent.com'
 var API_KEY = 'AIzaSyBNaX7xo_Vo08-myCDEzY4AKZkkfyJYIc8'
 
