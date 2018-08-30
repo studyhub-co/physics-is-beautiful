@@ -9,38 +9,47 @@
         <div class="col-sm-8 col-xs-9 list-group-item-main-col">
             <a href="{% threadUrl thread %}"><h4 class="inline">{% firstLine thread.title 50 %}</h4></a>
             <div class="text-muted inline">
-                {% with thread.op.getReplies|length as commentsCount %}
-                    {% if commentsCount %}
-                        <a href='{{ thread.relativeUrl }}/#comments-callout'>{% getAmount commentsCount 'comment' %}</a>
-                    {% else %}
-                        {% getAmount commentsCount 'comment' %}
-                    {% endif %}
-                    {% if thread.is_stickied %}
-                        &nbsp;<i class="fa fa-map-pin"></i>
-                    {% endif %}
-                {% endwith %}
                 {% if showTopic %}on <a href="{% url 'topicPage' thread.topic.urlTitle %}">{{ thread.topic.title }}</a> {% endif %}
             </div>
             <br>
-            <div class="text-muted inline full-line">
-                {% if showCreatedBy %}
-{#                    Submitted by {% if thread.op.created_by %}#}
-{#                                    <a href="{% url 'userSummary' thread.op.created_by %}">{% postUserName thread.op.created_by %}</a> {% else %} {% postUserName thread.op.created_by %} {% endif %} {% postDate thread.op.created_on 'on ' %}#}
-                    Submitted by {% if thread.op.created_by %}
-                                    <a href="{% url 'userSummary' thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> {% else %} {% postUserName thread.op.created_by %} {% endif %} {% postDate thread.op.created_on 'on ' %}
-                {% else %}
-                    {{ thread.op.created_on }}
-                {% endif %}
+            <div class="text-muted inline full-lined djeddit-thread-item-footer">
+                <div class="djeddit-score">
+                    <i class="fas fa-arrow-up djeddit-score-upvote"></i>
+                    <span class="djeddit-score-number">{{ thread.op.score }}</span>
+                    <i class="fas fa-arrow-down djeddit-score-downvote"></i>
+                </div>
+                <div class="djeddit-created-by">
+                    {% if showCreatedBy %}
+                        {% if thread.op.created_by %}
+                            <a href="{% url 'userSummary' thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> 
+                        {% else %} 
+                            {% postUserName thread.op.created_by %} 
+                        {% endif %} 
+                        {% postDate thread.op.created_on 'on ' %}
+                    {% else %}
+                        {{ thread.op.created_on }}
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="col-xs-3">
-            <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
+            {% comment %} <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
                 <div class="count-box-score text-muted">{{ thread.op.score }}</div>
                 <div class="count-box-context text-muted">Points</div>
-            </div>
-            <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
+            </div> {% endcomment %}
+            {% comment %} <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
                 <div class="count-box-score text-muted">{{ thread.views }}</div>
                 <div class="count-box-context text-muted">Views</div>
+            </div> {% endcomment %}
+            <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
+                {% with thread.op.getReplies|length as commentsCount %}
+                    <div class="count-box-score text-muted">{{ commentsCount }}</div>
+                    {% if commentsCount == 1 %}
+                    <div class="count-box-context text-muted">Comment</div>
+                    {% else %}
+                    <div class="count-box-context text-muted">Comments</div>
+                    {% endif %}
+                {% endwith%}
             </div>
         </div>
     </div>

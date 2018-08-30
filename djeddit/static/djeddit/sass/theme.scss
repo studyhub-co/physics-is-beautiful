@@ -14,7 +14,7 @@ body {background: #f6f6f6;}
 
 #main {
   //overflow: auto;
-  padding-bottom: 60px; /* this needs to be bigger than footer height*/
+  // padding-bottom: 60px; /* this needs to be bigger than footer height*/
 }
 
 footer {
@@ -139,6 +139,20 @@ h6, .text-muted{line-height: 0;}
 
 //.list-group-item-main-col {padding-left: 0;}
 
+@media only screen and (max-width: 600px) {
+  #main {
+    padding: 0 0 0 0;
+  }
+
+  #main .djeddit-topic-title {
+    padding: 10px;
+  }
+
+  #main .djeddit-topic-description {
+    padding: 10px;
+  }
+}
+
 /* Small Devices, Tablets */
 @media only screen and (min-width : 769px) {
   .list-group-item-main-col {padding-left: 0;}
@@ -152,4 +166,24 @@ h6, .text-muted{line-height: 0;}
 /* Medium Devices, Desktops */
 @media only screen and (max-width : 993px) {
 
+}
+
+.djeddit-score {
+  display: inline;
+  // background-color: #ddd;
+  padding: 2px 5px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.djeddit-created-by {
+  display: inline;
+}
+
+.djeddit-score-upvote, .djeddit-score-downvote {
+  margin: 0px 2px;
+}
+
+.djeddit-thread-item-footer {
+  line-height: normal;
 }
