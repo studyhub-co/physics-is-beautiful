@@ -10,11 +10,6 @@ body {
   min-height: 100%;
 }
 
-#main {
-  padding-bottom: 60px;
-  /* this needs to be bigger than footer height*/
-}
-
 footer {
   position: relative;
   margin-top: -50px;
@@ -167,6 +162,19 @@ h6, .text-muted {
   max-width: 100%;
 }
 
+@media only screen and (max-width: 600px) {
+  #main {
+    padding: 0 0 0 0;
+  }
+
+  #main .djeddit-topic-title {
+    padding: 10px;
+  }
+
+  #main .djeddit-topic-description {
+    padding: 10px;
+  }
+}
 /* Small Devices, Tablets */
 @media only screen and (min-width: 769px) {
   .list-group-item-main-col {
@@ -183,5 +191,23 @@ h6, .text-muted {
   }
 }
 /* Medium Devices, Desktops */
+.djeddit-score {
+  display: inline;
+  padding: 2px 5px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.djeddit-created-by {
+  display: inline;
+}
+
+.djeddit-score-upvote, .djeddit-score-downvote {
+  margin: 0px 2px;
+}
+
+.djeddit-thread-item-footer {
+  line-height: normal;
+}
 
 /*# sourceMappingURL=theme.css.map */

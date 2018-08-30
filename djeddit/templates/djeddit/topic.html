@@ -5,7 +5,7 @@
 {% load djeddit_tags %}
 {% block title %}
     <div class="">
-        <h2>{{ topic.title }}
+        <h2 class="djeddit-topic-title">{{ topic.title }}
             <div class="btn-group btn-group-xs fixed-80" role="group">
                 {% if user.is_superuser %}
                     <button class="btn btn-primary" onclick="$('#topic-form-wrapper').toggleClass('hidden')">Edit Topic</button>
@@ -16,7 +16,7 @@
 {#                {% endif %}#}
             </div>
         </h2>
-        <div class="text-muted full-line">{{ topic.description }}</div>
+        <div class="djeddit-topic-description text-muted full-line">{{ topic.description }}</div>
         {% if user.is_superuser %}
             <div id="topic-form-wrapper" class="{% if not showForm %} hidden {% endif %} row">
                 <div class="col-sm-5">
