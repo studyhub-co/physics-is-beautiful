@@ -251,6 +251,10 @@ h6, .text-muted {
   .djeddit-score-large {
     display: none !important;
   }
+
+  #discussion-title {
+    margin-left: 15px;
+  }
 }
 /* Medium Devices, Desktops */
 .djeddit-score {
@@ -307,6 +311,10 @@ h6, .text-muted {
 .list-group-item h4 {
   font-weight: bold;
   color: #333;
+}
+
+.discussion-toolbar {
+  padding-bottom: 1em;
 }
 
 /*# sourceMappingURL=theme.css.map */

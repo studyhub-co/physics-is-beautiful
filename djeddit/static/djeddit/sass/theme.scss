@@ -227,6 +227,10 @@ h6, .text-muted{line-height: 0;}
   .djeddit-score-large {
     display: none !important;
   }
+
+  #discussion-title {
+    margin-left: 15px;
+  }
 }
 
 /* Medium Devices, Desktops */
@@ -288,4 +292,8 @@ h6, .text-muted{line-height: 0;}
 .list-group-item h4 {
   font-weight: bold;
   color: $title-color;
+}
+
+.discussion-toolbar {
+  padding-bottom: 1em;
 }
