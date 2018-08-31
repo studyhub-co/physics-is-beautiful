@@ -27,7 +27,23 @@
             <li class="active">{{ topic.title }}</li>
         </ol> -->
         <div class="btn-group discussion-toolbar" role="group" aria-label="Discussion Toolbar">
+            <div class="btn-group mr-2" role="group" aria-label="First group">
             <button onclick="window.location = {% url 'discussion' %}" class="btn btn-secondary">Home<i class="fas fa-home"></i></button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                Topics <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    {% for list_topic in topics %}
+                        {% if list_topic == topic %}
+                        <li class="disabled"><a>{{ list_topic }}</a></li>
+                        {% else %}
+                        <li><a href="{{ list_topic.url }}">{{ list_topic }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="divider"></li> 
+                    <li><a href="{% url 'topics' %}">Topic List</a></li>
+                </ul>
+            </div>
             <button onclick="window.location='{% url 'createThread' topic.urlTitle %}'" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
             {% if user.is_superuser %}
             <button onclick="$('#topic-form-wrapper').toggleClass('hidden')" type="button" class="btn btn-secondary">Edit Topic</button>
