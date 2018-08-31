@@ -6,8 +6,11 @@
 {% block title %}
     <div class="">
         <h3 id="discussion-title">Discussion</h3>
-        <button class="btn btn-primary" onclick="window.location='{% url 'topics' %}'">All Topics</button>
-        <button class="btn btn-primary" onclick="window.location='{% url 'createThreadWithoutTopic' %}'">New Thread</button>
+
+        <div class="btn-group discussion-toolbar" role="group" aria-label="Discussion Toolbar">
+            <button onclick="window.location = '{% url "topics" %}'" type="button" class="btn btn-secondary">All Topics</button>
+            <button onclick="window.location = '{% url "createThreadWithoutTopic" %}'" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
+        </div>
     </div>
 {% endblock %}
 {% block content %}

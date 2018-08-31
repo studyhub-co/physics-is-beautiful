@@ -4,24 +4,18 @@
 {% load djeddit_tags %}
 {% load crispy_forms_tags %}
 {% block title %}
-    <div class="">
-        <h2 id="pageTitle">Topics
-        {% if user.is_superuser %}
-            <button id="btnNewTopic" class="btn btn-primary btn-xs" onclick="$('#topic-form-wrapper').toggleClass('hidden')">New Topic</button>
-        {% endif %}
-        </h2>
-        {% if user.is_superuser %}
-            <div id="topic-form-wrapper" class="{% if not showForm %} hidden {% endif %} row">
-                <div class="col-sm-5">
-                    {% crispy topicForm %}
-                </div>
+    <h2 id="pageTitle">Topics</h2>
+    {% if user.is_superuser %}
+        <div class="btn-group discussion-toolbar" role="group" aria-label="Discussion Toolbar">
+            <button onclick="$('#topic-form-wrapper').toggleClass('hidden')" type="button" class="btn btn-secondary">New Topic</button>
+        </div>
+
+        <div id="topic-form-wrapper" class="{% if not showForm %} hidden {% endif %} row">
+            <div class="col-sm-5">
+                {% crispy topicForm %}
             </div>
-        {% endif %}
-        <ol class="breadcrumb">
-            <li><a href="{% url 'topics' %}">Home</a></li>
-            <li class="active">{{ topic.title }}</li>
-        </ol>
-    </div>
+        </div>
+    {% endif %}
 {% endblock %}
 {% block content %}
     <div>
