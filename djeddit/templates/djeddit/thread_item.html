@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 {% load djeddit_tags %}
 <li class="list-group-item">
-    <div class="row vertical-align">
-        <div class="col-sm-1 col-icon">
+    <div class="row">
+        <div class="col-sm-1 col-icon djeddit-score-container">
             <div class="djeddit-score-large">
                 {% if user.is_authenticated %}
                 <i class="fas fa-chevron-up djeddit-score-upvote-large {% postVoteClicked user thread.op True %} " 
