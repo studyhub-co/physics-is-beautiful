@@ -8,6 +8,8 @@ import { Sheet } from '../../components/Sheet'
 
 import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
 
+import SelectCurriculum from '../../components/SelectCurriculum'
+
 import { TeacherClassroomCard } from '../../components/TeacherClassroomCard'
 import { GoogleClassroomRow } from '../../components/GoogleClassroomRow'
 
@@ -32,8 +34,14 @@ class IndexView extends React.Component {
     super(props)
     this.getGoogleClassroomList = this.getGoogleClassroomList.bind(this)
     this.handleImportGoogleClassroom = this.handleImportGoogleClassroom.bind(this)
-    this.onGoogleClassroomClick  = this.onGoogleClassroomClick .bind(this)
-    this.state = { showSelectGooleClassroom: false, googleSelected: [] }
+    this.onGoogleClassroomClick = this.onGoogleClassroomClick.bind(this)
+    this.nextStepGoogleImportClick = this.nextStepGoogleImportClick.bind(this)
+    this.selectedCurriculumGoogleImportChanged = this.selectedCurriculumGoogleImportChanged.bind(this)
+    this.state = { showSelectGooleClassroom: false,
+      googleClassroomsSelected: [],
+      googleCurriculumSelected: null,
+      googleClassroomsImportStep: 1
+    }
   }
 
   getGoogleClassroomList () {
@@ -42,7 +50,32 @@ class IndexView extends React.Component {
   }
 
   onGoogleClassroomClick (classroom) {
-    // TODO  add classroom to googleSelected list, remove classroom from list if exist
+    // add classroom to googleSelected list, remove classroom from list if exist
+    var classroomIdx = this.state.googleClassroomsSelected.indexOf(classroom)
+    var newGoogleClassroomsSelected = this.state.googleClassroomsSelected
+    if (classroomIdx === -1) {
+      newGoogleClassroomsSelected.push(classroom)
+      this.setState({googleClassroomsSelected: newGoogleClassroomsSelected})
+    } else {
+      newGoogleClassroomsSelected.splice(classroomIdx, 1)
+      this.setState({googleClassroomsSelected: newGoogleClassroomsSelected})
+    }
+  }
+
+  nextStepGoogleImportClick () {
+    if(this.state.googleClassroomsImportStep === 1) {
+      this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep + 1})
+    } else if (this.state.googleClassroomsImportStep === 2){
+      // TODO save imported classrooms
+      this.setState({'googleClassroomsImportStep': 1})
+    }
+
+  }
+
+  selectedCurriculumGoogleImportChanged (curriculum) {
+    this.setState({
+      googleCurriculumSelected: curriculum
+    })
   }
 
   handleImportGoogleClassroom () {
@@ -135,13 +168,21 @@ class IndexView extends React.Component {
                           <Modal.Body>
                             <Grid fluid>
                               { this.props.googleClassroomsList
-                                ? this.props.googleClassroomsList.map(function (classroom, i) {
-                                  return <GoogleClassroomRow
-                                    onGoogleClassroomClick={this.onGoogleClassroomClick }
-                                    classroom={classroom}
-                                    key={i} />
-                                }, this)
-                                : <Row style={{height:"10rem"}}>
+                                ? <div>{this.state.googleClassroomsImportStep === 1
+                                  ? this.props.googleClassroomsList.map(function (classroom, i) {
+                                    return <GoogleClassroomRow
+                                      onGoogleClassroomClick={this.onGoogleClassroomClick }
+                                      classroom={classroom}
+                                      key={i} />
+                                  }, this)
+                                  // step 2
+                                  : <div>
+                                    <SelectCurriculum
+                                      selectedCurriculumChanged={this.selectedCurriculumGoogleImportChanged}
+                                      selectedUuid={this.state.googleCurriculumSelected? this.state.googleCurriculumSelected.uuid:''} />
+                                  </div>}
+                                </div>
+                                : <Row style={{height: '10rem'}}>
                                   <Col sm={12} md={12}>
                                     <div className='sweet-loading'>
                                       <RingLoader
@@ -155,7 +196,17 @@ class IndexView extends React.Component {
                             </Grid>
                           </Modal.Body>
                           <Modal.Footer>
-                            <button className={'classroom-common-button'} onClick={this.importFromGoogle}>Import classes</button>
+                            {this.state.googleClassroomsImportStep === 1
+                              ? <button
+                                disabled={this.state.googleClassroomsSelected.length === 0}
+                                className={'classroom-common-button' + (this.state.googleClassroomsSelected.length > 0 ? '' : ' disabled-button')}
+                                onClick={this.nextStepGoogleImportClick}>Next step</button>
+                              : <button
+                                disabled={!this.state.googleCurriculumSelected}
+                                className={'classroom-common-button' + (this.state.googleCurriculumSelected ? '' : ' disabled-button')}
+                                onClick={this.nextStepGoogleImportClick}>Import classes</button>
+                            }
+                            {/*<button className={'classroom-common-button'} onClick={this.importFromGoogle}>Import classes</button>*/}
                           </Modal.Footer>
                         </Modal> : null
                       }
@@ -220,7 +271,7 @@ const mapStateToProps = (state) => {
     classroomList: state.classroom.classroomList,
     classroomStudentList: state.classroom.classroomStudentList,
     googleClassroomsList: state.google.googleClassroomsList,
-    gapiInitState: state.google.gapiInitState
+    gapiInitState: state.google.gapiInitState,
   }
 }
 
@@ -229,7 +280,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
     classroomActions: bindActionCreators(classroomCreators, dispatch),
-    googleActions: bindActionCreators(googleCreators, dispatch)
+    googleActions: bindActionCreators(googleCreators, dispatch),
   }
 }
 
