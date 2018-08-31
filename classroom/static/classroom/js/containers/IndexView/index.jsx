@@ -71,18 +71,29 @@ class IndexView extends React.Component {
     if (this.state.googleClassroomsImportStep === 1) {
       this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep + 1})
     } else if (this.state.googleClassroomsImportStep === 2) {
-      // ADD external_classroom data to classroomForm
-      this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues)
+      // external_classroom data to classroom
       for (var i = 0; i < this.state.googleClassroomsSelected.length; i++) {
-        // var googleClassRoom = this.state.googleClassroomsSelected
-        // this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues)
-        // TODO save imported classrooms
+        var googleClassRoom = this.state.googleClassroomsSelected[i]
+        var newClassroom = {}
+        newClassroom['name'] = googleClassRoom['name']
+        newClassroom['curriculum_uuid'] = this.state.googleCurriculumSelected.uuid
+        newClassroom['external'] = {}
+        newClassroom['external']['external_id'] = googleClassRoom['id']
+        newClassroom['external']['name'] = googleClassRoom['name']
+        newClassroom['external']['teacher_id'] = googleClassRoom['ownerId']
+        newClassroom['external']['code'] = googleClassRoom['enrollmentCode']
+
+        this.props.classroomActions.classroomCreateClassroom(newClassroom)
+        // TODO reload classroom teacher list
       }
       // TODO after all classrooms are created:
       // 1 bacth fetch all students of all classrroms from google API
       // 2 save students in classrooms (create classroom API for students batch adding)
 
-      this.setState({'googleClassroomsImportStep': 1})
+      this.setState({'googleClassroomsImportStep': 1,
+        googleClassroomsSelected: [],
+        googleCurriculumSelected: null
+      })
       this.handleImportGoogleClassroom()
     }
   }

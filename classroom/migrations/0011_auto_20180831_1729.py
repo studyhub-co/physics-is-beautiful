@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('external_id', models.CharField(max_length=400)),
-                ('title', models.CharField(max_length=400)),
+                ('name', models.CharField(max_length=400)),
                 ('teacher_id', models.CharField(max_length=400)),
                 ('code', models.CharField(max_length=400)),
                 ('provider', models.CharField(choices=[('GC', 'google classrrrom')], default='GC', max_length=2)),
