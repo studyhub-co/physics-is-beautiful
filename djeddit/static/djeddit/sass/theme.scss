@@ -6,7 +6,10 @@ html, body {
   height: 100%;
 }
 
-body {background: #f6f6f6;}
+body {
+  background: #f6f6f6;
+  font-family: $font-family-base;
+}
 
 #wrap {
   min-height: 100%;
@@ -174,6 +177,14 @@ h6, .text-muted{line-height: 0;}
   .djeddit-count-box-overflow {
     display: none;
   }
+
+  .djeddit-score {
+    display: none;
+  }
+
+  .djeddit-score-large {
+    display: flex;
+  }
   
 }
 
@@ -208,6 +219,14 @@ h6, .text-muted{line-height: 0;}
   .list-group-item-main-col {
     width: 100%;
   }
+
+  .djeddit-score {
+    display: inline;
+  }
+
+  .djeddit-score-large {
+    display: none !important;
+  }
 }
 
 /* Medium Devices, Desktops */
@@ -216,8 +235,6 @@ h6, .text-muted{line-height: 0;}
 }
 
 .djeddit-score {
-  display: inline;
-  // background-color: #ddd;
   padding: 2px 5px;
   border-radius: 5px;
   margin-right: 5px;
@@ -235,10 +252,40 @@ h6, .text-muted{line-height: 0;}
   line-height: normal;
 }
 
-.djeddit-score-upvote.color-primary {
-  color: green;
+.djeddit-score-upvote.color-primary, .djeddit-score-upvote-large.color-primary {
+  color: $upvote-color;
 }
 
-.djeddit-score-downvote.color-primary {
-  color: red;
+.djeddit-score-downvote.color-primary, .djeddit-score-downvote-large.color-primary {
+  color: $downvote-color;
+}
+
+.djeddit-score-number-large.color-upvote, .djeddit-score-number.color-upvote {
+  color: $upvote-color;
+}
+
+.djeddit-score-number-large.color-downvote, .djeddit-score-number.color-downvote {
+  color: $downvote-color;
+}
+
+.djeddit-score-large {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.djeddit-score-large > div {
+  padding: 3px;
+  font-family: Museosansrounded;
+}
+
+.djeddit-created-by a {
+  color: inherit;
+}
+
+.list-group-item h4 {
+  font-weight: bold;
+  color: $title-color;
 }

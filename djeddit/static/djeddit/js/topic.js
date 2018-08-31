@@ -18,14 +18,40 @@ window.topicFuncs = {
     console.log(url, params)
     $.post(url, params, function (data) {
       console.log(data)
-      let parent = $(element).parent()
+      let parent = $(element).parent().parent().parent()
       // update arrow icons
       var $upvoteIcon = parent.find('.djeddit-score-upvote')
       var $downvoteIcon = parent.find('.djeddit-score-downvote')
-      if (vote === 1) { $upvoteIcon.addClass('color-primary') } else { $upvoteIcon.removeClass('color-primary') }
-      if (vote === -1) { $downvoteIcon.addClass('color-primary') } else { $downvoteIcon.removeClass('color-primary') }
+      var $upvoteIconLarge = parent.find('.djeddit-score-upvote-large')
+      var $downvoteIconLarge = parent.find('.djeddit-score-downvote-large')
+      var $text = parent.find('.djeddit-score-number')
+      var $textLarge = parent.find('.djeddit-score-number-large')
+
+      if (vote === 1) {
+        $upvoteIcon.addClass('color-primary')
+        $upvoteIconLarge.addClass('color-primary')
+        $text.addClass('color-upvote')
+        $textLarge.addClass('color-upvote')
+      } else {
+        $upvoteIcon.removeClass('color-primary')
+        $upvoteIconLarge.removeClass('color-primary')
+        $text.removeClass('color-upvote')
+        $textLarge.removeClass('color-upvote')
+      }
+      if (vote === -1) {
+        $downvoteIcon.addClass('color-primary')
+        $downvoteIconLarge.addClass('color-primary')
+        $text.addClass('color-downvote')
+        $textLarge.addClass('color-downvote')
+      } else {
+        $downvoteIcon.removeClass('color-primary')
+        $downvoteIconLarge.removeClass('color-primary')
+        $text.removeClass('color-downvote')
+        $textLarge.removeClass('color-downvote')
+      }
       // update post's displayed score
-      parent.find('.djeddit-score-number').text(data.score)
+      $text.text(data.score)
+      $textLarge.text(data.score)
     //   $post.find('>.bs-callout-main>.minicol>.post-score').text(data.score)
     })
   },

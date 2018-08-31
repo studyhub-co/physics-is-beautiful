@@ -69,6 +69,19 @@ def postVoteClicked(user, post, upvote):
         pass
     return ''
 
+
+@register.simple_tag
+def postVoteColor(user, post):
+    try:
+        userPostVote = UserPostVote.objects.get(user=user, post=post)
+        if (userPostVote.val == 1):
+            return 'color-upvote'
+        elif (userPostVote.val == -1):
+            return 'color-downvote'
+    except UserPostVote.DoesNotExist:
+        pass
+    return ''
+
 @register.simple_tag
 def postVoteOP(thread, post):
     return 'glyphicon-chevron-up-op' if thread.op != post else ''
