@@ -21,3 +21,7 @@ window.util = {
     $toggle.toggleClass('clicked')
   }
 }
+
+$(document).ready(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})

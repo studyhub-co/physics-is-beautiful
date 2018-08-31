@@ -333,4 +333,13 @@ h6, .text-muted {
   max-width: 5em;
 }
 
+.djeddit-topic-description {
+  padding-bottom: 0.5em;
+}
+
+.discussion-toolbar .tooltip-inner {
+  width: 20em;
+  font-family: "Museosansrounded";
+}
+
 /*# sourceMappingURL=theme.css.map */

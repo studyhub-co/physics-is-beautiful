@@ -118,6 +118,7 @@ def topicsPage(request):
 
 
 def topicPage(request, topic_title):
+    topics = Topic.objects.all()
     try:
         topic = Topic.getTopic(topic_title)
     except Topic.DoesNotExist:
@@ -138,13 +139,14 @@ def topicPage(request, topic_title):
         showForm = False
     threads = Thread.objects.filter(topic=topic).order_by('-is_stickied', '-op__created_on')
     context = dict(topic=topic, threads=threads, showCreatedBy=True, showTopic=False,
-                   topicForm=form, showForm=showForm)
+                   topicForm=form, showForm=showForm, topics=topics)
     return render(request, 'djeddit/topic.html', context)
 
 
 def discussionPage(request):
+    topics = Topic.objects.all()
     threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
-    context = dict(threads=threads)
+    context = dict(threads=threads, topics=topics)
     return render(request, 'djeddit/discussion.html', context)
 
 

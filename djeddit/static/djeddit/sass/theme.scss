@@ -314,3 +314,12 @@ h6, .text-muted{line-height: 0;}
 .djeddit-topic-container {
   max-width: 5em;
 }
+
+.djeddit-topic-description {
+  padding-bottom: 0.5em
+}
+
+.discussion-toolbar .tooltip-inner {
+  width: 20em;
+  font-family: $font-family-base;
+}
