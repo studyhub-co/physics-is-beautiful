@@ -31,7 +31,7 @@ class ExternalClassroom(models.Model):
     )
 
     external_id = models.CharField(max_length=400)
-    title = models.CharField(max_length=400)
+    name = models.CharField(max_length=400)
     teacher_id = models.CharField(max_length=400)
     code = models.CharField(max_length=400)
     provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
