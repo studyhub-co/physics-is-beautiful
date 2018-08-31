@@ -36,6 +36,7 @@ class IndexView extends React.Component {
     this.handleImportGoogleClassroom = this.handleImportGoogleClassroom.bind(this)
     this.onGoogleClassroomClick = this.onGoogleClassroomClick.bind(this)
     this.nextStepGoogleImportClick = this.nextStepGoogleImportClick.bind(this)
+    this.prevStepGoogleImportClick = this.prevStepGoogleImportClick.bind(this)
     this.selectedCurriculumGoogleImportChanged = this.selectedCurriculumGoogleImportChanged.bind(this)
     this.state = { showSelectGooleClassroom: false,
       googleClassroomsSelected: [],
@@ -62,14 +63,28 @@ class IndexView extends React.Component {
     }
   }
 
-  nextStepGoogleImportClick () {
-    if(this.state.googleClassroomsImportStep === 1) {
-      this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep + 1})
-    } else if (this.state.googleClassroomsImportStep === 2){
-      // TODO save imported classrooms
-      this.setState({'googleClassroomsImportStep': 1})
-    }
+  prevStepGoogleImportClick () {
+    this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep - 1})
+  }
 
+  nextStepGoogleImportClick () {
+    if (this.state.googleClassroomsImportStep === 1) {
+      this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep + 1})
+    } else if (this.state.googleClassroomsImportStep === 2) {
+      // ADD external_classroom data to classroomForm
+      this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues)
+      for (var i = 0; i < this.state.googleClassroomsSelected.length; i++) {
+        // var googleClassRoom = this.state.googleClassroomsSelected
+        // this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues)
+        // TODO save imported classrooms
+      }
+      // TODO after all classrooms are created:
+      // 1 bacth fetch all students of all classrroms from google API
+      // 2 save students in classrooms (create classroom API for students batch adding)
+
+      this.setState({'googleClassroomsImportStep': 1})
+      this.handleImportGoogleClassroom()
+    }
   }
 
   selectedCurriculumGoogleImportChanged (curriculum) {
@@ -179,7 +194,7 @@ class IndexView extends React.Component {
                                   : <div>
                                     <SelectCurriculum
                                       selectedCurriculumChanged={this.selectedCurriculumGoogleImportChanged}
-                                      selectedUuid={this.state.googleCurriculumSelected? this.state.googleCurriculumSelected.uuid:''} />
+                                      selectedUuid={this.state.googleCurriculumSelected ? this.state.googleCurriculumSelected.uuid : ''} />
                                   </div>}
                                 </div>
                                 : <Row style={{height: '10rem'}}>
@@ -197,16 +212,23 @@ class IndexView extends React.Component {
                           </Modal.Body>
                           <Modal.Footer>
                             {this.state.googleClassroomsImportStep === 1
-                              ? <button
-                                disabled={this.state.googleClassroomsSelected.length === 0}
-                                className={'classroom-common-button' + (this.state.googleClassroomsSelected.length > 0 ? '' : ' disabled-button')}
-                                onClick={this.nextStepGoogleImportClick}>Next step</button>
-                              : <button
-                                disabled={!this.state.googleCurriculumSelected}
-                                className={'classroom-common-button' + (this.state.googleCurriculumSelected ? '' : ' disabled-button')}
-                                onClick={this.nextStepGoogleImportClick}>Import classes</button>
+                              ? <div>
+                                <button
+                                  disabled={this.state.googleClassroomsSelected.length === 0}
+                                  className={'classroom-common-button' +
+                                            (this.state.googleClassroomsSelected.length > 0 ? '' : ' disabled-button')}
+                                  onClick={this.nextStepGoogleImportClick}>Next step</button>
+                              </div>
+                              : <div>
+                                <button
+                                  className={'classroom-common-button'}
+                                  onClick={this.prevStepGoogleImportClick}>Back</button>&nbsp;
+                                <button
+                                  disabled={!this.state.googleCurriculumSelected}
+                                  className={'classroom-common-button' + (this.state.googleCurriculumSelected ? '' : ' disabled-button')}
+                                  onClick={this.nextStepGoogleImportClick}>Import classes</button>
+                              </div>
                             }
-                            {/*<button className={'classroom-common-button'} onClick={this.importFromGoogle}>Import classes</button>*/}
                           </Modal.Footer>
                         </Modal> : null
                       }
@@ -253,6 +275,7 @@ IndexView.propTypes = {
     gapiInitialize: PropTypes.func.isRequired
   }).isRequired,
   classroomActions: PropTypes.shape({
+    classroomCreateClassroom: PropTypes.func.isRequired,
     classroomFetchTeacherClassroomsList: PropTypes.func.isRequired,
     classroomFetchStudentClassroomsList: PropTypes.func.isRequired,
     classroomJoinClassroom: PropTypes.func.isRequired
