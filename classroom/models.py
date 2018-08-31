@@ -43,7 +43,7 @@ class Classroom(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
-    # external_classroom = models.OneToOneField(ExternalClassroom, related_name='classroom', blank=True, null=True)
+    external_classroom = models.OneToOneField(ExternalClassroom, related_name='classroom', blank=True, null=True)
     teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
