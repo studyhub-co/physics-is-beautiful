@@ -231,6 +231,11 @@ h6, .text-muted{line-height: 0;}
   #discussion-title {
     margin-left: 15px;
   }
+
+  .discussion-toolbar {
+    padding-left: 15px;
+  }
+  
 }
 
 /* Medium Devices, Desktops */
@@ -296,4 +301,16 @@ h6, .text-muted{line-height: 0;}
 
 .discussion-toolbar {
   padding-bottom: 1em;
+}
+
+.discussion-toolbar i {
+  padding-left: 0.5em;
+}
+
+.djeddit-score-container {
+  max-width: 4em;
+}
+
+.djeddit-topic-container {
+  max-width: 5em;
 }

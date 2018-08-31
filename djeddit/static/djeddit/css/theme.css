@@ -255,6 +255,10 @@ h6, .text-muted {
   #discussion-title {
     margin-left: 15px;
   }
+
+  .discussion-toolbar {
+    padding-left: 15px;
+  }
 }
 /* Medium Devices, Desktops */
 .djeddit-score {
@@ -315,6 +319,18 @@ h6, .text-muted {
 
 .discussion-toolbar {
   padding-bottom: 1em;
+}
+
+.discussion-toolbar i {
+  padding-left: 0.5em;
+}
+
+.djeddit-score-container {
+  max-width: 4em;
+}
+
+.djeddit-topic-container {
+  max-width: 5em;
 }
 
 /*# sourceMappingURL=theme.css.map */

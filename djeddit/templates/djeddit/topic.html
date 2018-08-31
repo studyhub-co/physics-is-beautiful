@@ -6,15 +6,13 @@
 {% block title %}
     <div class="">
         <h2 class="djeddit-topic-title">{{ topic.title }}
-            <div class="btn-group btn-group-xs fixed-80" role="group">
+            <!-- <div class="btn-group btn-group-xs fixed-80" role="group">
                 {% if user.is_superuser %}
                     <button class="btn btn-primary" onclick="$('#topic-form-wrapper').toggleClass('hidden')">Edit Topic</button>
                     <button class="btn btn-primary" onclick="window.topicFuncs.deleteTopic('{{ topic.urlTitle }}')">Delete Topic</button>
                 {% endif %}
-{#                {% if user.is_authenticated %}#}
                 <button class="btn btn-primary" onclick="window.location='{% url 'createThread' topic.urlTitle %}'">New Thread</button>
-{#                {% endif %}#}
-            </div>
+            </div> -->
         </h2>
         <div class="djeddit-topic-description text-muted full-line">{{ topic.description }}</div>
         {% if user.is_superuser %}
@@ -24,10 +22,18 @@
                 </div>
             </div>
         {% endif %}
-        <ol class="breadcrumb">
+        <!-- <ol class="breadcrumb">
             <li><a href="{% url 'topics' %}">Home</a></li>
             <li class="active">{{ topic.title }}</li>
-        </ol>
+        </ol> -->
+        <div class="btn-group discussion-toolbar" role="group" aria-label="Discussion Toolbar">
+            <button onclick="window.location = {% url 'discussion' %}" class="btn btn-secondary">Home<i class="fas fa-home"></i></button>
+            <button onclick="window.location='{% url 'createThread' topic.urlTitle %}'" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
+            {% if user.is_superuser %}
+            <button onclick="$('#topic-form-wrapper').toggleClass('hidden')" type="button" class="btn btn-secondary">Edit Topic</button>
+            <button onclick="window.topicFuncs.deleteTopic('{{ topic.urlTitle }}') " class="btn btn-secondary" >Delete Topic</button>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 {% block content %}
