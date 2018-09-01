@@ -9,7 +9,7 @@ window.postFuncs = {
   togglePostForm: function (post, toggle, url) {
     url = urljoin(url, post)
     var $placeAfter = $('#' + post + '>.bs-callout-main')
-    window.util.toggleForm(url, $placeAfter, {}, $(toggle))
+    window.util.toggleForm(url, post, $placeAfter, {}, $(toggle))
   },
   toggleEditForm: function (post, toggle, toggleHeader) {
     var $placeAfter = $('#' + post + '>.bs-callout-main')
