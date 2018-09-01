@@ -39,4 +39,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # }
 
 # Permit local access from app
-X_FRAME_OPTIONS = 'WHATEVER_YOU_WANT'
+X_FRAME_OPTIONS = 'ALLOWALL'
