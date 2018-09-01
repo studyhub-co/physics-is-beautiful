@@ -342,4 +342,9 @@ h6, .text-muted {
   font-family: "Museosansrounded";
 }
 
+.wmd-panel {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 /*# sourceMappingURL=theme.css.map */
