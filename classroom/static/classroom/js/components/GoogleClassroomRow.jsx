@@ -9,15 +9,15 @@ export class GoogleClassroomRow extends React.Component {
   }
 
   render () {
-    var className = 'student-classroom-row'
+    var className = 'google-classroom-row'
 
     return (
       <div className={className}>
         <Row>
-          <Col sm={2} md={2}>
+          <Col sm={1} md={1}>
             <Checkbox onChange={() => this.handleChange(this.props.classroom)} />
           </Col>
-          <Col sm={10} md={10}>
+          <Col sm={11} md={11}>
             <span
               className={'blue-title'}>{this.props.classroom.name} {this.props.classroom.section}
             </span>

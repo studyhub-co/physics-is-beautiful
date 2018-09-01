@@ -4,7 +4,7 @@ from django.core.files.storage import get_storage_class
 
 from rest_framework import serializers
 
-from .models import Classroom, Assignment
+from .models import Classroom, Assignment, ExternalClassroom
 
 from curricula.models import Curriculum, Lesson
 from profiles.models import Profile
@@ -61,6 +61,12 @@ class StudentAssignmentSerializer(PublicProfileSerializer):
         fields = PublicProfileSerializer.Meta.fields + ['completed_on', 'delayed_on', 'start_on']
 
 
+class ExternalClassroomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExternalClassroom
+        fields = ['external_id', 'name', 'teacher_id', 'code']
+
+
 class ClassroomBaseSerializer(serializers.ModelSerializer):
     count_students = serializers.IntegerField(read_only=True)
     teacher = PublicProfileSerializer(read_only=True)
@@ -69,10 +75,24 @@ class ClassroomBaseSerializer(serializers.ModelSerializer):
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
                                                    slug_field='uuid', write_only=True)
 
+    external = ExternalClassroomSerializer(source='external_classroom', many=False, required=False)
+
+    def create(self, validated_data):
+        external = None
+        if 'external_classroom' in validated_data:
+            external = validated_data.pop('external_classroom')
+
+        to_return = super(ClassroomBaseSerializer, self).create(validated_data)
+
+        if external:
+            # TODO save external data
+            pass
+        return to_return
+
     class Meta:
         model = Classroom
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'count_students',
-                  'teacher', 'curriculum_uuid']
+                  'teacher', 'curriculum_uuid', 'external']
         read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
 
 
@@ -114,7 +134,6 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     # current user (request.user) completed lessons
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(read_only=True)
-
 
     def send_emails(sender, instance, *args, **kwargs):
 
