@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 {% load djeddit_tags %}
 {% load crispy_forms_tags %}
+
+{{ postForm.media }}
+
+
 <form method="post" accept-charset="utf-8" action="{% url 'editPost' post_uid %}">{% csrf_token %}
     {% if threadForm %}
         {{ threadForm|crispy }}

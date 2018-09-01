@@ -131,6 +131,7 @@
 
     this.run = function () {
       if (panels) { return } // already initialized
+      window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub])
 
       panels = new PanelCollection(idButton, idPreview, idInput, idPostfix)
       var commandManager = new CommandManager(hooks, getString)
