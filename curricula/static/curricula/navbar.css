@@ -90,6 +90,10 @@
     background: #1493d1;
     color: white;
 }
+.nav.navbar-nav.nav-pills .active a{
+    background: #1493d1;
+    color: white;
+}
 
 .navbar.navbar-default button {
     background-color: aliceblue;

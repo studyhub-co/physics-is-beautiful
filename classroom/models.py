@@ -31,7 +31,7 @@ class ExternalClassroom(models.Model):
     )
 
     external_id = models.CharField(max_length=400)
-    title = models.CharField(max_length=400)
+    name = models.CharField(max_length=400)
     teacher_id = models.CharField(max_length=400)
     code = models.CharField(max_length=400)
     provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
@@ -43,7 +43,7 @@ class Classroom(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
-    # external_classroom = models.OneToOneField(ExternalClassroom, related_name='classroom', blank=True, null=True)
+    external_classroom = models.OneToOneField(ExternalClassroom, related_name='classroom', blank=True, null=True)
     teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')

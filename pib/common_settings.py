@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'homepage.apps.HomepageConfig',
     'curricula.apps.CurriculaConfig',
+    # lib
+    'piblib',
     # blog
     'blog',
     'admin_reorder',
