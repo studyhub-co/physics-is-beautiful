@@ -1,16 +1,24 @@
-body 
+/* body 
 { 
 	background-color: White;
+} */
+@media only screen and (min-width : 769px) {
+	.wmd-panel
+	{
+		/* width: 50%; */
+		min-width: 300px;
+	}
+
+	.wmd-input {
+		height: 300px;
+	}
 }
 
-.wmd-panel
-{
-	margin-left: 25%;
-	margin-right: 25%;
-	width: 50%;
-	min-width: 500px;
+@media only screen and (max-width : 768px) {
+	.wmd-input {
+		height: 8em;
+	}
 }
-
 .wmd-button-bar 
 {
 	width: 100%;
@@ -19,10 +27,10 @@ body
 
 .wmd-input 
 { 
-	height: 300px;
 	width: 100%;
 	background-color: Gainsboro;
 	border: 1px solid DarkGray;
+	
 }
 
 .wmd-preview 

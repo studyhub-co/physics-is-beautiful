@@ -199,12 +199,16 @@ h6, .text-muted {
     display: none;
   }
 
-  .djeddit-score {
+  .djeddit-score, .djeddit-score-op {
     display: none;
   }
 
   .djeddit-score-large {
     display: flex;
+  }
+
+  .djeddit-thread-form > div {
+    padding-bottom: 1em;
   }
 }
 @media only screen and (max-width: 768px) {
@@ -244,7 +248,7 @@ h6, .text-muted {
     width: 100%;
   }
 
-  .djeddit-score {
+  .djeddit-score, .djeddit-score-op {
     display: inline;
   }
 
@@ -258,6 +262,19 @@ h6, .text-muted {
 
   .discussion-toolbar {
     padding-left: 15px;
+  }
+
+  .djeddit-thread-form {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .djeddit-thread-form > div {
+    padding-bottom: 0.5em;
+  }
+
+  .djeddit-callout .minicol {
+    display: none;
   }
 }
 /* Medium Devices, Desktops */
@@ -275,7 +292,7 @@ h6, .text-muted {
   margin: 0px 2px;
 }
 
-.djeddit-thread-item-footer {
+.djeddit-thread-item-footer, .djeddit-post-item-footer {
   line-height: normal;
 }
 
@@ -329,6 +346,10 @@ h6, .text-muted {
   max-width: 4em;
 }
 
+.djeddit-post-item-footer .djeddit-score {
+  display: inline;
+}
+
 .djeddit-topic-container {
   max-width: 5em;
 }
@@ -342,9 +363,17 @@ h6, .text-muted {
   font-family: "Museosansrounded";
 }
 
-.wmd-panel {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+.djeddit-callout {
+  display: flex;
+}
+
+#main .bs-callout-main {
+  border: none;
+}
+
+#comments-callout {
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 /*# sourceMappingURL=theme.css.map */
