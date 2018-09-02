@@ -5,7 +5,7 @@
 window.topicFuncs = {
   deleteTopic: function (topic_title) {
     if (confirm('This will permanently delete this topic and all related threads')) {
-      window.location = window.TOPIC_URLS['deleteTopic']
+      window.location = window.util.mobileUrl(window.TOPIC_URLS['deleteTopic'])
     }
   },
   votePost: function (element, post, upvoted, downvoted, url) {

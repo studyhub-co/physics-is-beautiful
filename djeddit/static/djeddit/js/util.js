@@ -19,6 +19,10 @@ window.util = {
       $('#' + post + '-edit').remove()
     }
     $toggle.toggleClass('clicked')
+  },
+  mobileUrl: function (url) {
+    // pib-mobile-connect.js
+    return window.mobilizedUrl(url)
   }
 }
 

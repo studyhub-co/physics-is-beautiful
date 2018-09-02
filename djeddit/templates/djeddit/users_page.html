@@ -12,7 +12,7 @@
                 <li class="list-group-item">
                     <div class="row vertical-align">
                         {#                        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% url 'userSummary' User.display_name %}'">#}
-                        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% url 'userSummary' User.pk %}'">
+                        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location=window.util.mobileUrl('{% url 'userSummary' User.pk %}')">
                             <i class="fa fa-user-o fa-2x"></i>
                         </div>
                         <div class="col-sm-3 col-xs-6 list-group-item-main-col username-col">
@@ -32,11 +32,11 @@
                         </div>
                         <div class="col-sm-3 hidden-xs">
                             {#                            <div class="count-box" onclick="window.location='{% url 'userReplies' User.display_name %}'">#}
-                            <div class="count-box" onclick="window.location='{% url 'userReplies' User.pk %}'">
+                            <div class="count-box" onclick="window.location=window.util.mobileUrl('{% url 'userReplies' User.pk %}')">
                                 <div class="count-box-score text-muted">{{ User.rCount }}</div>
                                 <div class="count-box-context text-muted">Replies</div>
                             </div>
-                            <div class="count-box" onclick="window.location='{% url 'userThreads' User.pk %}'">
+                            <div class="count-box" onclick="window.location=window.util.mobileUrl('{% url 'userThreads' User.pk %}')">
                                 <div class="count-box-score text-muted">{{ User.tCount }}</div>
                                 <div class="count-box-context text-muted">Threads</div>
                             </div>

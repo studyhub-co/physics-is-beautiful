@@ -116,10 +116,10 @@
                                     Delete
                                 </button>
                                 {% if node == thread.op %}
-                                    <button onclick="window.location = '{% url 'lockThread' thread.id %}';" class="btn btn-secondary">
+                                    <button onclick="window.location = window.util.mobileUrl('{% url 'lockThread' thread.id %}')" class="btn btn-secondary">
                                         {% if not thread.locked %}Lock{% else %}Unlock{% endif %}
                                     </button>
-                                    <button onclick="window.location = '{% url 'stickyThread' thread.id %}';" class="btn btn-secondary btn-width-auto">
+                                    <button onclick="window.location = window.util.mobileUrl('{% url 'stickyThread' thread.id %}')" class="btn btn-secondary btn-width-auto">
                                         {% if thread.is_stickied %}Remove Sticky{% else %}Sticky{% endif %}
                                     </button>
                                 {% endif %}
