@@ -34,15 +34,7 @@ if (window.IS_MOBILE_APP) {
     // tell the parent page that we are adding to the navigation stack.
     window.parent.postMessage('pagePushed', '*')
 
-    if (this.href.indexOf('?') !== -1) {
-      if (this.href.indexOf('pib_mobile') !== -1) {
-        window.location = this.href
-      } else {
-        window.location = this.href + '&pib_mobile=true'
-      }
-    } else {
-      window.location = this.href + '?pib_mobile=true'
-    }
+    window.location = window.mobilizedUrl(this.href)
     return false
   })
 
@@ -63,3 +55,35 @@ $.get('/api/v1/profiles/me', function (data) {
     'data': data
   }, 'http://localhost:8080')
 })
+
+window.mobilizedUrl = function (url) {
+  if (url.indexOf('pib_mobile') === -1) {
+    return UpdateQueryString(url, 'pib_mobile', 'true')
+  } else {
+    return url
+  }
+}
+
+// All credit to https://stackoverflow.com/a/11654596/
+function UpdateQueryString (key, value, url) {
+  if (!url) url = window.location.href
+  var re = new RegExp('([?&])' + key + '=.*?(&|#|$)(.*)', 'gi')
+  var hash
+
+  if (re.test(url)) {
+    if (typeof value !== 'undefined' && value !== null) { return url.replace(re, '$1' + key + '=' + value + '$2$3') } else {
+      hash = url.split('#')
+      url = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '')
+      if (typeof hash[1] !== 'undefined' && hash[1] !== null) { url += '#' + hash[1] }
+      return url
+    }
+  } else {
+    if (typeof value !== 'undefined' && value !== null) {
+      var separator = url.indexOf('?') !== -1 ? '&' : '?'
+      hash = url.split('#')
+      url = hash[0] + separator + key + '=' + value
+      if (typeof hash[1] !== 'undefined' && hash[1] !== null) { url += '#' + hash[1] }
+      return url
+    } else { return url }
+  }
+}

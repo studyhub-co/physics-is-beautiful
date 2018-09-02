@@ -8,7 +8,7 @@
     {% if user.is_superuser %}
         <div class="btn-group discussion-toolbar" role="group" aria-label="Discussion Toolbar">
             <div class="btn-group mr-2" role="group" aria-label="First group">
-            <button onclick="window.location = {% url 'discussion' %}" class="btn btn-secondary">Home<i class="fas fa-home"></i></button>
+            <button onclick="window.location = window.util.mobileUrl('{% url "discussion" %}')" class="btn btn-secondary">Home<i class="fas fa-home"></i></button>
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
                 Topics <span class="caret"></span></button>
@@ -20,7 +20,7 @@
                     <li class="disabled"><a>Topic List</a></li>
                 </ul>
             </div>
-            <button onclick="window.location='{% url "createThreadWithoutTopic" %}'" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
+            <button onclick="window.location=window.util.mobileUrl('{% url "createThreadWithoutTopic" %}')" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
         </div>
         <div class="btn-group discussion-toolbar" role="group" aria-label="Discussion Toolbar">
             <button onclick="$('#topic-form-wrapper').toggleClass('hidden')" type="button" class="btn btn-secondary">New Topic</button>

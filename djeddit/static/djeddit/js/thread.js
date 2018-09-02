@@ -72,7 +72,9 @@ window.postFuncs = {
     $('.post-container', '#' + post).slideToggle('fast')
   },
   deletePost: function (post, show_confirm) {
-    if (!show_confirm || confirm('This will permanently delete this thread and all related comments')) { window.location = urljoin(window.THREAD_URLS['deletePost'], post) }
+    if (!show_confirm || confirm('This will permanently delete this thread and all related comments')) {
+      window.location = window.util.mobileUrl(urljoin(window.THREAD_URLS['deletePost'], post))
+    }
   },
   getPostRepliesUids: function (post) {
     // get uids of shown replies to a given post

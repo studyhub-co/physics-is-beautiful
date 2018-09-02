@@ -56,7 +56,7 @@
                             {% postDate thread.op.created_on 'on ' False%}
                         </div>
                 </div>
-                <div class="count-box-small" onclick="window.location='{{ thread.relativeUrl }}'">
+                <div class="count-box-small" onclick="window.location=window.util.mobileUrl('{{ thread.relativeUrl }}')">
                     &middot;
                     <i class="far fa-comment"></i>
                     {% with thread.op.getReplies|length as commentsCount %}
@@ -74,7 +74,7 @@
                 <div class="count-box-score text-muted">{{ thread.views }}</div>
                 <div class="count-box-context text-muted">Views</div>
             </div> {% endcomment %}
-            <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
+            <div class="count-box" onclick="window.location=window.util.mobileUrl('{{ thread.relativeUrl }}')">
                 {% with thread.op.getReplies|length as commentsCount %}
                     <div class="count-box-score text-muted">{{ commentsCount }}</div>
                     {% if commentsCount == 1 %}

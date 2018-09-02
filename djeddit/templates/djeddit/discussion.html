@@ -20,7 +20,7 @@
                     <li><a href="{% url 'topics' %}">Topic List</a></li>
                 </ul>
             </div>
-            <button onclick="window.location='{% url "createThreadWithoutTopic" %}'" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
+            <button onclick="window.location=window.util.mobileUrl('{% url "createThreadWithoutTopic" %}')" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
         </div>
     </div>
 {% endblock %}
