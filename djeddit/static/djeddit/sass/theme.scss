@@ -99,6 +99,10 @@ h6, .text-muted{line-height: 0;}
   margin: 12px 0;
 }
 
+.post-callout {
+  width: 100%;
+}
+
 .fa-plus-square-o, .fa-minus-square-o {
   cursor: pointer;
 }
@@ -189,6 +193,10 @@ h6, .text-muted{line-height: 0;}
   .djeddit-thread-form > div {
     padding-bottom: 1em;
   }
+
+  .post-callout {
+    padding-left: 1em;
+  }
   
 }
 
@@ -263,6 +271,14 @@ h6, .text-muted{line-height: 0;}
     padding: 0;
   }
 
+  #comments-callout {
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+
+  .post-callout {
+    padding-left: 0;
+  }
 }
 
 /* Medium Devices, Desktops */
@@ -363,7 +379,8 @@ h6, .text-muted{line-height: 0;}
   border: none;
 }
 
-#comments-callout {
-  margin-left: -15px;
-  margin-right: -15px;
+
+
+#main .row {
+  margin: 0 !important;
 }
