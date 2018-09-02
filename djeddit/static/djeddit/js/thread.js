@@ -17,7 +17,7 @@ window.postFuncs = {
     this.togglePostForm(post, toggle, window.THREAD_URLS['editPost'])
     if (toggleHeader) { $('.bs-callout-heading').toggle() }
   },
-  votePost: function (post, upvoted, downvoted) {
+  votePost: function (element, post, upvoted, downvoted) {
     var vote = 0
     if (upvoted) { vote += 1 }
     if (downvoted) { vote -= 1 }
@@ -26,15 +26,41 @@ window.postFuncs = {
     console.log(url, params)
     $.post(url, params, function (data) {
       console.log(data)
-      var $post = $('#' + post)
+      let parent = $(element).parent().parent().parent()
       // update arrow icons
-      var $upvoteIcon = $post.find('>.bs-callout-main>.minicol>.glyphicon-chevron-up')
-      var $downvoteIcon = $post.find('>.bs-callout-main>.minicol>.glyphicon-chevron-down')
-      if (vote === 1) { $upvoteIcon.addClass('color-primary') } else { $upvoteIcon.removeClass('color-primary') }
-      if (vote === -1) { $downvoteIcon.addClass('color-primary') } else { $downvoteIcon.removeClass('color-primary') }
+      var $upvoteIcon = parent.find('.djeddit-score-upvote')
+      var $downvoteIcon = parent.find('.djeddit-score-downvote')
+      var $upvoteIconLarge = parent.find('.djeddit-score-upvote-large')
+      var $downvoteIconLarge = parent.find('.djeddit-score-downvote-large')
+      var $text = parent.find('.djeddit-score-number')
+      var $textLarge = parent.find('.djeddit-score-number-large')
+
+      if (vote === 1) {
+        $upvoteIcon.addClass('color-primary')
+        $upvoteIconLarge.addClass('color-primary')
+        $text.addClass('color-upvote')
+        $textLarge.addClass('color-upvote')
+      } else {
+        $upvoteIcon.removeClass('color-primary')
+        $upvoteIconLarge.removeClass('color-primary')
+        $text.removeClass('color-upvote')
+        $textLarge.removeClass('color-upvote')
+      }
+      if (vote === -1) {
+        $downvoteIcon.addClass('color-primary')
+        $downvoteIconLarge.addClass('color-primary')
+        $text.addClass('color-downvote')
+        $textLarge.addClass('color-downvote')
+      } else {
+        $downvoteIcon.removeClass('color-primary')
+        $downvoteIconLarge.removeClass('color-primary')
+        $text.removeClass('color-downvote')
+        $textLarge.removeClass('color-downvote')
+      }
       // update post's displayed score
-      $post.find('>.post-heading>.post-score').text(data.scoreStr)
-      $post.find('>.bs-callout-main>.minicol>.post-score').text(data.score)
+      $text.text(data.score)
+      $textLarge.text(data.score)
+    //   $post.find('>.bs-callout-main>.minicol>.post-score').text(data.score)
     })
   },
   toggleReplies: function (post) {
