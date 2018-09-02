@@ -5,20 +5,20 @@
 
 <div class="row">
     <div class="col-xs-{% postLevelWidth thread node %}"></div>
-    <div class="col-xs-{% postWidth thread node %}">
-        <div id="{{ node.uid }}" class="post-container">
+    <div class="col-xs-{% postWidth thread node %} post-callout">
+        <div id="{{ node.uid }}" class="post-container bs-callout">
             {% if node != thread.op %}
                 <div class="post-heading">
-                    <i class="fa fa-minus-square text-muted toggle-replies"
+                    <i class="far fa-minus-square text-muted toggle-replies"
                        onclick="window.postFuncs.toggleReplies('{{ node.uid }}')"></i>
-                    <h4 class="post-user">
+                    <div class="djeddit-created-by"> 
                         {% if node.created_by %}
 {#                            <a href="{% url 'userSummary' node.created_by %}">{% postUserName node.created_by %}</a>#}
                             <a href="{% url 'userSummary' node.created_by.pk %}">{% postUserName node.created_by %}</a>
                         {% else %}
                             {% postUserName node.created_by %}
                         {% endif %}
-                    </h4>
+                    </div>
 
                     {# <h6 class="text-muted post-score">{% postScore node.score %}</h6> #}
                     <h6>
@@ -28,6 +28,19 @@
                         {% endif %}
                     </h6>
                 </div>
+            {% else %}
+            <div class="text-muted inline djeddit-thread-submitted-by-verbose">
+                <div class="djeddit-date-verbose"> Submitted by </div>
+                <a href="{% url "userSummary" thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> 
+                <div class="djeddit-date-verbose">
+                    &middot;
+                    {% postDate thread.op.created_on 'on ' %}
+                </div>
+                <div class="djeddit-date-silly">
+                    &middot;
+                    {% postDate thread.op.created_on 'on ' False%}
+                </div>
+            </div>
             {% endif %}
             <div class="bs-callout-main djeddit-callout" style="border:none">
                 {% if node == thread.op %}

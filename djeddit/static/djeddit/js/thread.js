@@ -8,6 +8,7 @@ window.postFuncs = {
   },
   togglePostForm: function (post, toggle, url) {
     url = urljoin(url, post)
+    console.log(url)
     var $placeAfter = $('#' + post + '>.bs-callout-main')
     window.util.toggleForm(url, post, $placeAfter, {}, $(toggle))
   },

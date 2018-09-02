@@ -89,9 +89,9 @@ h6, .text-muted{line-height: 0;}
 }
 
 .post-container {
-  border-top: solid;
-  border-width: 1px 0;
-  border-color: #ddd;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  padding: 5px;
 }
 
 .post-content {
@@ -252,7 +252,17 @@ h6, .text-muted{line-height: 0;}
   .djeddit-callout .minicol {
     display: none;
   }
-  
+
+  .row, #comments-callout {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }  
+
+  .breadcrumb {
+    margin: 15px;
+    padding: 0;
+  }
+
 }
 
 /* Medium Devices, Desktops */
@@ -307,7 +317,7 @@ h6, .text-muted{line-height: 0;}
   font-family: Museosansrounded;
 }
 
-.djeddit-created-by a {
+.djeddit-created-by a , .post-container a {
   color: inherit;
 }
 
