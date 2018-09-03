@@ -27,9 +27,11 @@
 {% block content %}
     <div>
         <ul class="list-group">
-            {% for thread in threads %}
-                {% include 'djeddit/thread_item.html' %}
-            {% endfor %}
+            {% with True as showTopic %}
+                {% for thread in threads %}
+                    {% include 'djeddit/thread_item.html' %}
+                {% endfor %}
+            {% endwith %}
         </ul>
     </div>
 {% endblock %}

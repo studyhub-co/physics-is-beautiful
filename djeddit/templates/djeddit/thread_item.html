@@ -22,7 +22,7 @@
         <div class="col-sm-8 col-xs-9 list-group-item-main-col">
             <a href="{% threadUrl thread %}"><h4 class="inline">{% firstLine thread.title 50 %}</h4></a>
             <div class="text-muted inline">
-                {% if showTopic %}on <a href="{% url 'topicPage' thread.topic.urlTitle %}">{{ thread.topic.title }}</a> {% endif %}
+                {% if showTopic %}in <a href="{% url 'topicPage' thread.topic.urlTitle %}">{{ thread.topic.title }}</a> {% endif %}
             </div>
             <br>
             <div class="text-muted inline full-lined djeddit-thread-item-footer">
