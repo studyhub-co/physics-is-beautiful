@@ -99,6 +99,6 @@ window.postFuncs = {
     })
   },
   loginNeeded: function () {
-    document.getElementById('login-signup-link').click()
+    $('#login-modal').modal('toggle')
   }
 }
