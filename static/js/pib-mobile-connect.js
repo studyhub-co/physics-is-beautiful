@@ -58,7 +58,7 @@ $.get('/api/v1/profiles/me', function (data) {
 
 window.mobilizedUrl = function (url) {
   if (url.indexOf('pib_mobile') === -1) {
-    return UpdateQueryString(url, 'pib_mobile', 'true')
+    return UpdateQueryString('pib_mobile', 'true', url)
   } else {
     return url
   }
