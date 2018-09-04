@@ -83,11 +83,19 @@ class IndexView extends React.Component {
         newClassroom['external']['teacher_id'] = googleClassRoom['ownerId']
         newClassroom['external']['code'] = googleClassRoom['enrollmentCode']
 
-        this.props.classroomActions.classroomCreateClassroom(newClassroom)
-        // TODO reload classroom teacher list
+        // // create classroom
+        // if (i === this.state.googleClassroomsSelected.length - 1) {
+        //   this.props.classroomActions.classroomCreateClassroom(newClassroom,
+        //     false,
+        //     () => { this.props.classroomActions.classroomFetchTeacherClassroomsList() })
+        // } else {
+        //   this.props.classroomActions.classroomCreateClassroom(newClassroom)
+        // }
       }
-      // TODO after all classrooms are created:
-      // 1 bacth fetch all students of all classrroms from google API
+      // bacth fetch all students of all classrroms from google API
+      if (this.state.googleClassroomsSelected.length > 0) {
+        this.props.googleActions.googleSaveClassroomsStudentsList(this.state.googleClassroomsSelected)
+      }
       // 2 save students in classrooms (create classroom API for students batch adding)
 
       this.setState({'googleClassroomsImportStep': 1,
@@ -197,7 +205,7 @@ class IndexView extends React.Component {
                                 ? <div>{this.state.googleClassroomsImportStep === 1
                                   ? this.props.googleClassroomsList.map(function (classroom, i) {
                                     return <GoogleClassroomRow
-                                      onGoogleClassroomClick={this.onGoogleClassroomClick }
+                                      onGoogleClassroomClick={this.onGoogleClassroomClick}
                                       classroom={classroom}
                                       key={i} />
                                   }, this)
@@ -283,7 +291,8 @@ IndexView.propTypes = {
   }).isRequired,
   googleActions: PropTypes.shape({
     googleFetchClassroomList: PropTypes.func.isRequired,
-    gapiInitialize: PropTypes.func.isRequired
+    gapiInitialize: PropTypes.func.isRequired,
+    googleSaveClassroomsStudentsList: PropTypes.func.isRequired
   }).isRequired,
   classroomActions: PropTypes.shape({
     classroomCreateClassroom: PropTypes.func.isRequired,
@@ -305,7 +314,7 @@ const mapStateToProps = (state) => {
     classroomList: state.classroom.classroomList,
     classroomStudentList: state.classroom.classroomStudentList,
     googleClassroomsList: state.google.googleClassroomsList,
-    gapiInitState: state.google.gapiInitState,
+    gapiInitState: state.google.gapiInitState
   }
 }
 

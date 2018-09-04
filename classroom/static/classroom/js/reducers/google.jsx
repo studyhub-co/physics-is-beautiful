@@ -1,5 +1,5 @@
 import {
-  GOOGLE_RECEIVE_CLASSROOMS_LIST, GOOGLE_INIT_STATE_CHANGED
+  GOOGLE_RECEIVE_CLASSROOMS_LIST, GOOGLE_INIT_STATE_CHANGED, GOOGLE_RECEIVE_CLASSROOMS_STUDENTS_LIST
 } from '../constants'
 
 const initialState = {
@@ -17,6 +17,10 @@ export default function googleReducer (state = initialState, action) {
       return Object.assign({}, state, {
         gapiInitState: action.payload.gapiInitState
       })
+    // case GOOGLE_RECEIVE_CLASSROOMS_STUDENTS_LIST:
+    //   return Object.assign({}, state, {
+    //     googleClassroomsStudentsList: action.payload.googleClassroomsStudentsList
+    //   })
     default:
       return state
   }

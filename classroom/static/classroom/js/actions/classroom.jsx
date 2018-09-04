@@ -59,16 +59,23 @@ export function classroomCreationSuccess (classroomTeacher) {
   }
 }
 
-export function classroomCreateClassroom (classroomForm) {
+export function classroomCreateClassroom (classroomForm, redirectToClassroom = false, callback = null, refreshList = false) {
   return (dispatch, state) => {
     return getAxios().post(API_PREFIX, classroomForm)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(classroomCreationSuccess(response.data))
         // update classroomslist
-        dispatch(classroomFetchTeacherClassroomsList())
+        if (refreshList) {
+          dispatch(classroomFetchTeacherClassroomsList())
+        }
         //  move to edit page
-        dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
+        if (redirectToClassroom) {
+          dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
+        }
+        if (typeof callback === 'function') {
+          callback()
+        }
       })
   }
 }
@@ -206,4 +213,10 @@ export function classroomFetchStudentClassroom (classroomUuid) {
   }
 }
 
-
+export function bulkStudentsUpdate (classroomUuid, studentsList, origin) {
+  return (dispatch, state) => {
+    return getAxios().post(API_PREFIX + classroomUuid + '/roster/', {students: studentsList, origin: origin})
+      .then((response) => {
+      })
+  }
+}
