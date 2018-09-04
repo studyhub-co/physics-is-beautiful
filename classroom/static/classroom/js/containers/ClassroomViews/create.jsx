@@ -88,7 +88,7 @@ class CreateClassroomView extends React.Component {
     if (this.state.classroomFormIsValid) {
       if (!this.props.classroomTeacher) {
         // save
-        this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues)
+        this.props.classroomActions.classroomCreateClassroom(this.state.classroomFormValues, true, null, true)
       } else {
         // update
         this.props.classroomActions.classroomPartialUpdateTeacherClassroom(
