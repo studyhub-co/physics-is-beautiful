@@ -1,9 +1,15 @@
 // This file specifies any needed connections between the pib_mobile app and the website.
 
+const appOrigin = 'http://localhost:8080'
+// debugging:
+// const appOrigin = '*'
+
 // Return to previous page upon receiving "goBack" message
 window.addEventListener('message', function (event) {
   // Normally we would check event.origin for security purposes.
   // However, this script cannot accomplish anything malicious.
+  // If changes are later made that could create a security risk,
+  // please verify that event.origin == http://localhost:8080
 
   if (event.data === 'goBack') {
     window.history.back()
@@ -31,9 +37,6 @@ if (window.IS_MOBILE_APP) {
       return false
     }
 
-    // tell the parent page that we are adding to the navigation stack.
-    window.parent.postMessage('pagePushed', '*')
-
     window.location = window.mobilizedUrl(this.href)
     return false
   })
@@ -53,8 +56,13 @@ $.get('/api/v1/profiles/me', function (data) {
   window.parent.postMessage({
     'message': 'loginInfo',
     'data': data
-  }, 'http://localhost:8080')
+  }, appOrigin)
 })
+
+window.parent.postMessage({
+  'message': 'canGoBack',
+  'data': !document.referrer.startsWith('http://localhost') // could be appOrigin with ending slash
+}, appOrigin)
 
 window.mobilizedUrl = function (url) {
   if (url.indexOf('pib_mobile') === -1) {
