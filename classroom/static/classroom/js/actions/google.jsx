@@ -129,9 +129,7 @@ function listCoursesStudents (googleClassrooms, callback) {
               {
                 'email': student['profile']['emailAddress'],
                 'first_name': student['profile']['name']['givenName'],
-                'second_name': student['profile']['name']['familyName'],
-                'full_name': student['profile']['name']['fullName']
-                // .....
+                'last_name': student['profile']['name']['familyName']
               }
             )
           }
