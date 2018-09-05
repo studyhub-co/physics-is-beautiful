@@ -36,7 +36,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly)
     serializer_class = ClassroomSerializer
     list_serializer_class = ClassroomListSerializer
-    queryset = Classroom.objects.all().select_related('curriculum', 'teacher', 'teacher__user')\
+    queryset = Classroom.objects.all().select_related('curriculum', 'curriculum__author', 'teacher', 'teacher__user')\
         .prefetch_related('students', 'students__user', 'external_classroom')
     lookup_field = 'uuid'
 

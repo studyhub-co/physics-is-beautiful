@@ -70,8 +70,8 @@ class ExternalClassroomSerializer(serializers.ModelSerializer):
 class ClassroomBaseSerializer(serializers.ModelSerializer):
     count_students = serializers.IntegerField(read_only=True)
     teacher = PublicProfileSerializer(read_only=True)
-    # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum = CurriculumSerializer(read_only=True)
+    # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
                                                    slug_field='uuid', write_only=True)
 
@@ -105,7 +105,6 @@ class ClassroomBaseSerializer(serializers.ModelSerializer):
 
 
 class ClassroomListSerializer(ClassroomBaseSerializer):
-    curriculum = SimpleCurriculumSerializer(read_only=True)
     less_students = serializers.SerializerMethodField(read_only=True)
 
     def get_less_students(self, container):
@@ -119,11 +118,6 @@ class ClassroomListSerializer(ClassroomBaseSerializer):
 
 class ClassroomSerializer(ClassroomBaseSerializer):
     pass
-    # students = PublicProfileSerializer(read_only=True, many=True)
-    # students = StudentProfileSerializer(read_only=True, many=True)
-
-    # class Meta(ClassroomBaseSerializer.Meta):
-    # fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
 class AssignmentListSerializer(serializers.ModelSerializer):
