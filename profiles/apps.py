@@ -7,4 +7,4 @@ class ProfilesConfig(AppConfig):
     name = 'profiles'
 
     def ready(self):
-        from .receivers import create_profile
+        from .receivers import create_profile, save_gravatar_url

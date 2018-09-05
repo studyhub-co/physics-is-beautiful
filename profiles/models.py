@@ -1,11 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-from django.dispatch import receiver
-from django.db.models.signals import pre_save
-
-from django_gravatar.helpers import get_gravatar_url, has_gravatar
-
 
 class BaseModel(models.Model):
 
@@ -30,7 +25,3 @@ class Profile(BaseModel):
         return 'Profile: {}'.format(self.user.email)  # todo seems we need swith to username here
 
 
-@receiver(pre_save, sender=Profile)
-def save_gravatar_url(sender, instance, *args, **kwargs):
-    # if has_gravatar(instance.user.email):
-    instance.gravatar_url = get_gravatar_url(instance.user.email, default='identicon')

@@ -1,4 +1,4 @@
-import datetime
+from django.db import transaction
 
 from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField
 
@@ -110,14 +110,36 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def roster(self, request, uuid):
         # batch API
         try:
-            classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''))
+            classroom = Classroom.objects.get(uuid=uuid)
         except Classroom.DoesNotExist:
             raise NotFound()
 
         if 'students' in request.data:
             # sync students
-            # TODO Create student if not exist (confirmation email?)
-            # add student to the class
+            # Create student if not exist
+            from pib_auth.models import User
+
+            users_in_classroom = []
+
+            for student in request.data['students']:
+                user = None
+                try:
+                    user = User.objects.get(email=student['email'])
+                except User.DoesNotExist:
+                    try:
+                        user = User.objects.create(**student)
+                    except TypeError:
+                        raise NotAcceptable('Student should be json {"email": , "first_name", "last_name":}')
+
+                if user:
+                    # add student to the class
+                    users_in_classroom.append(user)
+
+            if len(users_in_classroom) > 0:
+                with transaction.atomic():
+                    for user in users_in_classroom:
+                        ClassroomStudent.objects.create(student=user.profile, classroom=classroom)
+
             return Response(status=status.HTTP_201_CREATED)
 
         raise NotFound()
