@@ -4,7 +4,7 @@ import $script from 'scriptjs'
 
 import { checkHttpStatus, getAxios } from '../utils'
 
-import { bulkStudentsUpdate } from '../actions/classroom'
+import { classroomCreateClassroom, bulkStudentsUpdate, classroomFetchTeacherClassroomsList } from '../actions/classroom'
 
 import {
   GOOGLE_RECEIVE_CLASSROOMS_LIST, GOOGLE_INIT_STATE_CHANGED, GOOGLE_RECEIVE_CLASSROOMS_STUDENTS_LIST
@@ -88,68 +88,104 @@ export function googleFetchClassroomList () {
   }
 }
 
-// export function receiveGoogleClassroomsStudentsList (googleClassroomsStudentsList) {
-//   return {
-//     type: GOOGLE_RECEIVE_CLASSROOMS_STUDENTS_LIST,
-//     payload: {
-//       googleClassroomsStudentsList
-//     }
-//   }
-// }
+function listCoursesStudents (googleClassrooms, callback) {
+  /***
+   * eacch classroom in googleClassrooms must contain pib_classroom_uuid key
+   */
+  return (dispatch, state) => {
+    var batch = gapi.client.newBatch()
 
-function listCoursesStudents (classrooms, dispatch) {
-  var batch = gapi.client.newBatch()
-
-  for (var i = 0; i < classrooms.length; i++) {
-    var searchRequest = function () {
-      return gapi.client.classroom.courses.students.list({
-        'courseId': classrooms[i].id,
-        'pageSize': 0
-      })
-      // return gapi.client.request({
-      //   'path': '/v1/courses/' + classrooms[i].id + '/students',
-      //   'params': {'pageSize': 0}
-      // })
+    for (var i = 0; i < googleClassrooms.length; i++) {
+      var searchRequest = function () {
+        return gapi.client.classroom.courses.students.list({
+          'courseId': googleClassrooms[i].id,
+          'pageSize': 0
+        })
+      }
+      var request = searchRequest()
+      batch.add(request)
     }
-    var request = searchRequest()
-    batch.add(request)
-  }
-  batch.then(function (response) {
-    for (var key in response.result) { // responses (courses)
-      if ('students' in response.result[key].result) {
-        var googleCourseID = null
-        var googleCourceStudentsList = []
+    batch.then(function (response) {
+      for (var key in response.result) { // responses (courses)
+        if ('students' in response.result[key].result) {
+          var googleCourseID = null
+          var pibClassroomID = null
+          // var classroomId = classrooms['pib_classroom_uuid']
+          var googleCourceStudentsList = []
 
-        if (response.result[key].result.students.length > 0) {
-          googleCourseID = response.result[key].result.students[0]['courseId']
-        }
-        // create googleCourceStudentsList with pib classroom id
-        for (var j = 0; j < response.result[key].result.students.length; j++) { // students
-          var student = response.result[key].result.students[j]
-          googleCourceStudentsList.push(
-            {'email': student['profile']['emailAddress'],
-              'first_name': student['profile']['name']['givenName'],
-              'second_name': student['profile']['name']['familyName'],
-              'full_name': student['profile']['name']['fullName']
-              // .....
+          if (response.result[key].result.students.length > 0) {
+            googleCourseID = response.result[key].result.students[0]['courseId']
+            // find pib classroom uuid with google classroom uuid
+            for (var i = 0; i < googleClassrooms.length; i++) {
+              if (googleClassrooms[i]['id'] === googleCourseID) {
+                pibClassroomID = googleClassrooms[i]['pib_classroom_uuid']
+              }
             }
-          )
+          }
+          // create googleCourceStudentsList with pib classroom id
+          for (var j = 0; j < response.result[key].result.students.length; j++) { // students
+            var student = response.result[key].result.students[j]
+            googleCourceStudentsList.push(
+              {
+                'email': student['profile']['emailAddress'],
+                'first_name': student['profile']['name']['givenName'],
+                'second_name': student['profile']['name']['familyName'],
+                'full_name': student['profile']['name']['fullName']
+                // .....
+              }
+            )
+          }
+        }
+        if (pibClassroomID && googleCourceStudentsList.length > 0) {
+          console.log(pibClassroomID);
+          dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList))
         }
       }
-      // dispatch(bulkStudentsUpdate()) TODO save students in aclassroom
-    }
-    //
-  })
+    })
+  }
 }
 
-export function googleSaveClassroomsStudentsList (classrooms) {
+function googleFetchAndSaveClassroomsStudents (classrooms) {
   return (dispatch, state) => {
     if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
       gapi.auth2.getAuthInstance().signIn().then(function () {
-        listCoursesStudents(classrooms, dispatch)
+        dispatch(listCoursesStudents(classrooms))
       })
     } else {
-      listCoursesStudents(classrooms, dispatch)
+      dispatch(listCoursesStudents(classrooms))
+    }
+  }
+}
+
+export function googleSaveClassroomsWithStudents (googleClassrooms, googleCurriculumSelected) {
+  return (dispatch, state) => {
+    for (var i = 0; i < googleClassrooms.length; i++) {
+      var googleClassRoom = googleClassrooms[i]
+      var newClassroom = {}
+      newClassroom['name'] = googleClassRoom['name']
+      newClassroom['curriculum_uuid'] = googleCurriculumSelected.uuid
+      newClassroom['external_classroom'] = {}
+      newClassroom['external_classroom']['external_id'] = googleClassRoom['id']
+      newClassroom['external_classroom']['name'] = googleClassRoom['name']
+      newClassroom['external_classroom']['teacher_id'] = googleClassRoom['ownerId']
+      newClassroom['external_classroom']['code'] = googleClassRoom['enrollmentCode']
+
+      var getCallback = function (j) {
+        return (createdClassroom) => {
+          // add pib_classroom_uuid to each google classroom for students update
+          googleClassrooms[j]['pib_classroom_uuid'] = createdClassroom.uuid
+          if (j === googleClassrooms.length - 1) {
+            dispatch(classroomFetchTeacherClassroomsList())
+            dispatch(googleFetchAndSaveClassroomsStudents(googleClassrooms))
+          }
+        }
+      }
+
+      // create classroom
+      dispatch(classroomCreateClassroom(newClassroom,
+        false,
+        getCallback(i)
+      ))
     }
   }
 }

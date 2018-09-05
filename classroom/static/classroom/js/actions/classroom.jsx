@@ -74,7 +74,7 @@ export function classroomCreateClassroom (classroomForm, redirectToClassroom = f
           dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
         }
         if (typeof callback === 'function') {
-          callback()
+          callback(response.data)
         }
       })
   }

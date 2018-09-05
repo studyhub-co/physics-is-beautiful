@@ -24,26 +24,13 @@ def on_transaction_commit(func):
     return inner
 
 
-class ExternalClassroom(models.Model):
-    GOOGLE_CLASSRROM = 'GC'
-    EXTERNAL_PROVIDER_CHOICES = (
-        (GOOGLE_CLASSRROM, 'google classrrrom'),
-    )
-
-    external_id = models.CharField(max_length=400)
-    name = models.CharField(max_length=400)
-    teacher_id = models.CharField(max_length=400)
-    code = models.CharField(max_length=400)
-    provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
-
-
 class Classroom(models.Model):
     uuid = ShortUUIDField(unique=True)
     name = models.CharField(max_length=200)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
-    external_classroom = models.OneToOneField(ExternalClassroom, related_name='classroom', blank=True, null=True)
+
     teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
@@ -56,6 +43,20 @@ class Classroom(models.Model):
 
     def __str__(self):
         return '{}'.format(self.name)
+
+
+class ExternalClassroom(models.Model):
+    GOOGLE_CLASSRROM = 'GC'
+    EXTERNAL_PROVIDER_CHOICES = (
+        (GOOGLE_CLASSRROM, 'google classrrrom'),
+    )
+
+    external_id = models.CharField(max_length=400)
+    name = models.CharField(max_length=400)
+    teacher_id = models.CharField(max_length=400)
+    code = models.CharField(max_length=400)
+    provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
+    classroom = models.OneToOneField(Classroom, related_name='external_classroom', blank=True, null=True)
 
 
 class ClassroomStudent(models.Model):
