@@ -79,7 +79,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         for assignment in classroom.assignments.all():
             ap_objects.append(AssignmentProgress(student=request.user.profile, assignment=assignment))
 
-        # TODO async background mode is preferable
+        # FIXME async background mode is preferable
         AssignmentProgress.objects.bulk_create(
             ap_objects
         )
@@ -96,7 +96,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).delete()
 
         # remove AssignmentProgress for all Assignments for joined student
-        # TODO async background mode is preferable
+        # FIXME async background mode is preferable
         assignments = AssignmentProgress.objects.filter(student=request.user.profile)
         if assignments.exists():
             assignments.delete()
@@ -104,6 +104,23 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         serializer = ClassroomSerializer(classroom)
 
         return Response(serializer.data)
+
+    @action(methods=['POST'], detail=True,
+            permission_classes=[permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly])
+    def roster(self, request, uuid):
+        # batch API
+        try:
+            classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''))
+        except Classroom.DoesNotExist:
+            raise NotFound()
+
+        if 'students' in request.data:
+            # sync students
+            # TODO Create student if not exist (confirmation email?)
+            # add student to the class
+            return Response(status=status.HTTP_201_CREATED)
+
+        raise NotFound()
 
 
 class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
@@ -228,18 +245,10 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         serializer.send_emails(assignment)
 
     def perform_update(self, serializer):
-        # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
         new_lessons_uuids = []
 
         for lesson_uuid in serializer.initial_data.get('lessons_uuids', []):
             new_lessons_uuids.append(lesson_uuid)
-
-        # new_lessons = Lesson.object.filter(uuid__in=new_lessons_uuids)
-
-        # if assignment have new lessons
-        # if new_lessons.exlude(uuid__in=serializer.instance.lessons.values_list('uuid', flat=True)).count() > 0:
-        #     AssignmentProgress.objets.filter(assignment=serializer.instance)\
-        #         .update(completed_on=None, delayed_on=None)
 
         existing_lesson_uuids = serializer.instance.lessons.values_list('uuid', flat=True)
         for existing_lesson in existing_lesson_uuids:
@@ -250,7 +259,8 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         serializer.save()
 
         # TODO Check dates
-        # if there are still new lessons
+
+        # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
         if len(new_lessons_uuids) > 0:
             # reset AssignmentProgresses dates
             AssignmentProgress.objects.filter(assignment=serializer.instance)\

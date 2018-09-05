@@ -64,7 +64,7 @@ class StudentAssignmentSerializer(PublicProfileSerializer):
 class ExternalClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalClassroom
-        fields = ['external_id', 'name', 'teacher_id', 'code']
+        fields = ['external_id', 'name', 'teacher_id', 'code', 'provider']
 
 
 class ClassroomBaseSerializer(serializers.ModelSerializer):
@@ -75,24 +75,32 @@ class ClassroomBaseSerializer(serializers.ModelSerializer):
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
                                                    slug_field='uuid', write_only=True)
 
-    external = ExternalClassroomSerializer(source='external_classroom', many=False, required=False)
+    external_classroom = ExternalClassroomSerializer(many=False, required=False)
 
     def create(self, validated_data):
-        external = None
+        external_classroom = None
         if 'external_classroom' in validated_data:
-            external = validated_data.pop('external_classroom')
+            external_classroom = validated_data.pop('external_classroom')
 
         to_return = super(ClassroomBaseSerializer, self).create(validated_data)
 
-        if external:
-            # TODO save external data
-            pass
+        if external_classroom:
+            # save external data
+            kwargs = {}
+            if 'provider' in external_classroom:
+                kwargs['provider'] = external_classroom['provider']
+            ExternalClassroom.objects.create(external_id=external_classroom['external_id'],
+                                             name=external_classroom['name'],
+                                             teacher_id=external_classroom['teacher_id'],
+                                             code=external_classroom['code'],
+                                             classroom=to_return,
+                                             **kwargs)
         return to_return
 
     class Meta:
         model = Classroom
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'count_students',
-                  'teacher', 'curriculum_uuid', 'external']
+                  'teacher', 'curriculum_uuid', 'external_classroom']
         read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
 
 
