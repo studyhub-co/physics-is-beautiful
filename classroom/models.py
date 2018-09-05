@@ -37,10 +37,6 @@ class Classroom(models.Model):
     curriculum = models.ForeignKey(Curriculum)
     code = models.CharField(unique=True, max_length=6)
 
-    def less_students(self):
-        # TODO no so good for lists queries
-        return self.students.order_by("-id")[:10]
-
     def __str__(self):
         return '{}'.format(self.name)
 
