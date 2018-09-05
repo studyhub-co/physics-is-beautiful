@@ -36,7 +36,8 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly)
     serializer_class = ClassroomSerializer
     list_serializer_class = ClassroomListSerializer
-    queryset = Classroom.objects.all().select_related('curriculum', 'teacher').prefetch_related('students')
+    queryset = Classroom.objects.all().select_related('curriculum', 'teacher', 'teacher__user')\
+        .prefetch_related('students', 'students__user', 'external_classroom')
     lookup_field = 'uuid'
 
     def get_queryset(self):
@@ -47,12 +48,12 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         if filter_by in ('as_student', 'as_teacher') and self.request.user.is_authenticated():
             if filter_by == 'as_student':
-                queryset = queryset.filter(students__user=self.request.user)
+                queryset = queryset.filter(students=self.request.user.profile)
             elif filter_by == 'as_teacher':
-                queryset = queryset.filter(teacher__user=self.request.user)
+                queryset = queryset.filter(teacher=self.request.user.profile)
         else:
             queryset = queryset. \
-                filter(Q(teacher__user=self.request.user) | Q(students__user=self.request.user))
+                filter(Q(teacher=self.request.user.profile) | Q(students=self.request.user.profile))
 
         return queryset
 
@@ -119,7 +120,9 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             # Create student if not exist
             from pib_auth.models import User
 
-            users_in_classroom = []
+            to_add_users_in_classroom = []
+            # TODO
+            to_remove_users_in_classroom = []
 
             for student in request.data['students']:
                 user = None
@@ -133,12 +136,12 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
                 if user:
                     # add student to the class
-                    users_in_classroom.append(user)
+                    to_add_users_in_classroom.append(user)
 
-            if len(users_in_classroom) > 0:
-                with transaction.atomic():
-                    for user in users_in_classroom:
-                        ClassroomStudent.objects.create(student=user.profile, classroom=classroom)
+            if len(to_add_users_in_classroom) > 0:
+                objs = (ClassroomStudent(student=user.profile, classroom=classroom)
+                        for user in to_add_users_in_classroom)
+                ClassroomStudent.objects.bulk_create(objs)
 
             return Response(status=status.HTTP_201_CREATED)
 
