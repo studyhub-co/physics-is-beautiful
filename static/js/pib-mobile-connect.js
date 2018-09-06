@@ -1,6 +1,6 @@
 // This file specifies any needed connections between the pib_mobile app and the website.
 
-const appOrigin = 'http://localhost:8080'
+window.appOrigin = 'http://localhost:8080'
 // debugging:
 // window.appOrigin = '*'
 
