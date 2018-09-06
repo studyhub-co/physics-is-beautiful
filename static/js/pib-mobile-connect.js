@@ -2,7 +2,7 @@
 
 const appOrigin = 'http://localhost:8080'
 // debugging:
-// const appOrigin = '*'
+// window.appOrigin = '*'
 
 // Return to previous page upon receiving "goBack" message
 window.addEventListener('message', function (event) {
@@ -37,6 +37,10 @@ if (window.IS_MOBILE_APP) {
       return false
     }
 
+    window.parent.postMessage({
+      'message': 'canGoBack',
+      'data': true
+    }, window.appOrigin)
     window.location = window.mobilizedUrl(this.href)
     return false
   })
@@ -56,13 +60,13 @@ $.get('/api/v1/profiles/me', function (data) {
   window.parent.postMessage({
     'message': 'loginInfo',
     'data': data
-  }, appOrigin)
+  }, window.appOrigin)
 })
 
 window.parent.postMessage({
   'message': 'canGoBack',
-  'data': !document.referrer.startsWith('http://localhost') // could be appOrigin with ending slash
-}, appOrigin)
+  'data': !(document.referrer.startsWith('http://localhost')) && document.referrer.indexOf('accounts') === -1 // could be appOrigin with ending slash
+}, window.appOrigin)
 
 window.mobilizedUrl = function (url) {
   if (url.indexOf('pib_mobile') === -1) {
