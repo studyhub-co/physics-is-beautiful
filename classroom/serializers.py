@@ -108,7 +108,7 @@ class ClassroomListSerializer(ClassroomBaseSerializer):
     less_students = serializers.SerializerMethodField(read_only=True)
 
     def get_less_students(self, container):
-        students = container.students.all()[:10]  # Whatever your query may be
+        students = container.students.all()[:12]  # Whatever your query may be
         serializer = PublicProfileSerializer(instance=students, many=True)
         return serializer.data
 
