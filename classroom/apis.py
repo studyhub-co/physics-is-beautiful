@@ -133,6 +133,11 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                 except User.DoesNotExist:
                     try:
                         user = User.objects.create(**student)
+
+                        # add to account_emailaddress (no need to enter email while students login frist time with google)
+                        from allauth.account.models import EmailAddress
+                        EmailAddress.objects.create(user=user, email=user.email, primary=True, verified=True)
+
                     except TypeError:
                         raise NotAcceptable('Student should be json {"email": , "first_name", "last_name":}')
 
