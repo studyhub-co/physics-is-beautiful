@@ -39,7 +39,7 @@ export class TeacherAssigmentStudentRow extends React.Component {
     }
 
     return (
-      <div className={className}>
+      <div className={className} onClick={() => this.props.onStudentClick()}>
         <Row>
           <Col sm={1} md={1}>
             {this.props.student && this.props.student.gravatar_url
@@ -51,7 +51,6 @@ export class TeacherAssigmentStudentRow extends React.Component {
           </Col>
           <Col sm={6} md={6}>
             <span
-              onClick={() => this.props.onStudentClick()}
               className={'blue-title pointer'}>{this.props.student.display_name}
             </span>
           </Col>
