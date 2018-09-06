@@ -98,7 +98,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         # remove AssignmentProgress for all Assignments for joined student
         # FIXME async background mode is preferable
-        assignments = AssignmentProgress.objects.filter(student=request.user.profile)
+        assignments = AssignmentProgress.objects.filter(student=request.user.profile, assignment__classroom=classroom)
         if assignments.exists():
             assignments.delete()
 
@@ -117,7 +117,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         if 'students' in request.data:
             # sync students
-            # Create student if not exist
+            # Create students if not exists
             from pib_auth.models import User
 
             to_add_users_in_classroom = []
@@ -171,10 +171,9 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                 if completed_lessons.count() == 0:
                     first_uncompleted_lesson = lesson
                 else:
-                    for completed_lesson in completed_lessons:
-                        if completed_lesson != lesson:
-                            first_uncompleted_lesson = lesson
-                            break
+                    if lesson not in completed_lessons:
+                        first_uncompleted_lesson = lesson
+                        break
                     else:
                         continue
                 break
@@ -222,7 +221,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                      Count(
                                          Case(
                                              When(assignment_progress__completed_on__isnull=False,
-                                                  then=1),
+                                                  then=F('assignment_progress__id')),
                                              output_field=IntegerField()
                                              )
                                          , distinct=True)
@@ -231,21 +230,23 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                      Count(
                                             Case(
                                                 When(Q(due_on__lt=timezone.now())
-                                                     & Q(assignment_progress__delayed_on__isnull=False),
-                                                     then=1),
+                                                     & Q(assignment_progress__delayed_on__isnull=False)
+                                                     & Q(assignment_progress__completed_on__isnull=True),
+                                                     then=F('assignment_progress__id')),
                                                 output_field=IntegerField()
-                                                , distinct=True )
-                                        )
+                                                ),
+                                            distinct=True)
                                      )
         queryset = queryset.annotate(count_students_missed_assingment=
                                      Count(
                                         Case(
                                             When(Q(due_on__lt=timezone.now())
+                                                 & Q(assignment_progress__delayed_on__isnull=True)
                                                  & Q(assignment_progress__completed_on__isnull=True),
-                                                 then=1),
+                                                 then=F('assignment_progress__id')),
                                             output_field=IntegerField()
-                                            )
-                                         , distinct=True)
+                                            ), distinct=True
+                                        )
                                      )
 
         return queryset
