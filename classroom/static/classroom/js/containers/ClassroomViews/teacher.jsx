@@ -108,10 +108,7 @@ class TeacherClassroomView extends React.Component {
         pib_classroom_uuid: this.props.classroomTeacher.uuid
       }
     ]
-    var refreshStudentsList = function () {
-      this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
-    }
-    this.props.googleActions.googleFetchAndSaveClassroomsStudents(googleClassroomsList, refreshStudentsList)
+    this.props.googleActions.googleFetchAndSaveClassroomsStudents(googleClassroomsList, true)
   }
 
   render () {
@@ -277,19 +274,21 @@ class TeacherClassroomView extends React.Component {
                 : null }
             </TabContent>
             <TabContent for='students'>
-              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.external_classroom ?
-                <Row>
+              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.external_classroom
+                ? <Row>
                   <Col sm={7} md={7} className={'vcenter'}>
                     <span className={'gray-text'}>Keep your Google Classroom in sync</span>
                   </Col>
                   <Col sm={5} md={5}>
                     <button
+                      disabled={!this.props.gapiInitState}
                       className={'classroom-common-button'}
                       onClick={this.syncExternalStudents}>Sync students</button>
                   </Col>
                 </Row> : null }
               <Route path={studentProfileUrl} component={StudentClassroomProfileView} />
-              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0
+              {/*{ isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0*/}
+              { isExactUrl && this.props.classroomTeacher
                 ? <span>
                   { this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
                     return <TeacherStudentCard
@@ -395,6 +394,7 @@ TeacherClassroomView.propTypes = {
   assignmentsList: PropTypes.array,
   assignment: PropTypes.object,
   teacherClassroomStudentsList: PropTypes.array,
+  gapiInitState: PropTypes.bool,
   googleActions: PropTypes.shape({
     googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
   }).isRequired
@@ -406,7 +406,8 @@ const mapStateToProps = (state) => {
     teacherClassroomTab: state.tab.teacherClassroomTab,
     assignmentsList: state.assignment.assignmentsList,
     assignment: state.assignment.assignment,
-    teacherClassroomStudentsList: state.student.classroomStudentsList
+    teacherClassroomStudentsList: state.student.classroomStudentsList,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
