@@ -63,14 +63,16 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def join(self, request):
         try:
-            classroom = Classroom.objects.get(code=request.data.get('code', ''))
+            classroom = Classroom.objects.get(code=request.data.get('code', ''), external_classroom=None)
         except Classroom.DoesNotExist:
             raise NotFound()
 
-        # check ther user not if classrom
+        # check that user not if classrom
         if ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).count() == 0:
             # add current user to classroom as student
             ClassroomStudent.objects.create(student=request.user.profile, classroom=classroom)
+        else:
+            raise NotFound()
 
         serializer = ClassroomSerializer(classroom)
 
@@ -90,7 +92,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def leave(self, request):
         try:
-            classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''))
+            classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''), external_classroom=None)
         except Classroom.DoesNotExist:
             raise NotFound()
 
@@ -137,7 +139,6 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                 if user:
                     # add student to the class
                     to_add_users_in_classroom.append(user)
-
             if len(to_add_users_in_classroom) > 0:
                 objs = (ClassroomStudent(student=user.profile, classroom=classroom)
                         for user in to_add_users_in_classroom)
@@ -457,7 +458,7 @@ class StudentProfileViewSet(GenericViewSet):
             raise NotFound('profile not found')
 
         try:
-            classroom = Classroom.objects.get(uuid=classroom_uuid)
+            classroom = Classroom.objects.get(uuid=classroom_uuid, external_classroom=None)
         except Profile.DoesNotExist:
             raise NotFound('classroom not found')
 

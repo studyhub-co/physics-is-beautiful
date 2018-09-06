@@ -90,7 +90,7 @@ export function googleFetchClassroomList () {
 
 function listCoursesStudents (googleClassrooms, callback) {
   /***
-   * eacch classroom in googleClassrooms must contain pib_classroom_uuid key
+   * each classroom in googleClassrooms must contain pib_classroom_uuid key
    */
   return (dispatch, state) => {
     var batch = gapi.client.newBatch()
@@ -135,7 +135,6 @@ function listCoursesStudents (googleClassrooms, callback) {
           }
         }
         if (pibClassroomID && googleCourceStudentsList.length > 0) {
-          console.log(pibClassroomID);
           dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList))
         }
       }
@@ -143,7 +142,7 @@ function listCoursesStudents (googleClassrooms, callback) {
   }
 }
 
-function googleFetchAndSaveClassroomsStudents (classrooms) {
+export function googleFetchAndSaveClassroomsStudents (classrooms) {
   return (dispatch, state) => {
     if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
       gapi.auth2.getAuthInstance().signIn().then(function () {
