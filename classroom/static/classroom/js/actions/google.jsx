@@ -88,7 +88,7 @@ export function googleFetchClassroomList () {
   }
 }
 
-function listCoursesStudents (googleClassrooms, callback) {
+function listCoursesStudents (googleClassrooms, refreshClassrroomsStudentsList) {
   /***
    * each classroom in googleClassrooms must contain pib_classroom_uuid key
    */
@@ -135,21 +135,21 @@ function listCoursesStudents (googleClassrooms, callback) {
           }
         }
         if (pibClassroomID && googleCourceStudentsList.length > 0) {
-          dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList))
+          dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList, 'google', refreshClassrroomsStudentsList))
         }
       }
     })
   }
 }
 
-export function googleFetchAndSaveClassroomsStudents (classrooms) {
+export function googleFetchAndSaveClassroomsStudents (classrooms, refreshClassrroomsStudentsList) {
   return (dispatch, state) => {
     if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
       gapi.auth2.getAuthInstance().signIn().then(function () {
-        dispatch(listCoursesStudents(classrooms))
+        dispatch(listCoursesStudents(classrooms, refreshClassrroomsStudentsList))
       })
     } else {
-      dispatch(listCoursesStudents(classrooms))
+      dispatch(listCoursesStudents(classrooms, refreshClassrroomsStudentsList))
     }
   }
 }

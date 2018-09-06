@@ -9,6 +9,8 @@ import {
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
 
+import { classroomFetchStudentsClassroomList } from '../actions/student'
+
 // ----------------------  TEACHER ACTIONS
 
 export function receiveTeacherClassroomsList (classroomList) {
@@ -213,10 +215,14 @@ export function classroomFetchStudentClassroom (classroomUuid) {
   }
 }
 
-export function bulkStudentsUpdate (classroomUuid, studentsList, origin) {
+export function bulkStudentsUpdate (classroomUuid, studentsList, origin, refreshClassrroomsStudentsList) {
   return (dispatch, state) => {
     return getAxios().post(API_PREFIX + classroomUuid + '/roster/', {students: studentsList, origin: origin})
       .then((response) => {
+        if (refreshClassrroomsStudentsList){
+          dispatch(classroomFetchStudentsClassroomList(classroomUuid)
+          )
+        }
       })
   }
 }

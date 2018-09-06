@@ -123,8 +123,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             from pib_auth.models import User
 
             to_add_users_in_classroom = []
-            # TODO
-            to_remove_users_in_classroom = []
+            to_remove_profiles_from_classroom__ids = [profile.id for profile in classroom.students.all()]
 
             for student in request.data['students']:
                 user = None
@@ -134,7 +133,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                     try:
                         user = User.objects.create(**student)
 
-                        # add to account_emailaddress (no need to enter email while students login frist time with google)
+                        # add to account_emailaddress (login instead of sign up)
                         from allauth.account.models import EmailAddress
                         EmailAddress.objects.create(user=user, email=user.email, primary=True, verified=True)
 
@@ -142,12 +141,23 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                         raise NotAcceptable('Student should be json {"email": , "first_name", "last_name":}')
 
                 if user:
-                    # add student to the class
-                    to_add_users_in_classroom.append(user)
+                    try:
+                        to_remove_profiles_from_classroom__ids.remove(user.profile.id)
+                    except ValueError:
+                        pass  # new student
+
+                    if user.profile not in classroom.students.all():  # FIXME test for load
+                        to_add_users_in_classroom.append(user)
+
+            # Add students to classroom
             if len(to_add_users_in_classroom) > 0:
                 objs = (ClassroomStudent(student=user.profile, classroom=classroom)
                         for user in to_add_users_in_classroom)
                 ClassroomStudent.objects.bulk_create(objs)
+            # Remove students to classrrom
+            if len(to_remove_profiles_from_classroom__ids) > 0:
+                ClassroomStudent.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                                                classroom=classroom).delete()
 
             return Response(status=status.HTTP_201_CREATED)
 
