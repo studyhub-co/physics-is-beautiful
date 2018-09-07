@@ -183,6 +183,7 @@ class IndexView extends React.Component {
                                   ? this.props.googleClassroomsList.map(function (classroom, i) {
                                     return <GoogleClassroomRow
                                       onGoogleClassroomClick={this.onGoogleClassroomClick}
+                                      existingClassroomsList={this.props.classroomList}
                                       classroom={classroom}
                                       key={i} />
                                   }, this)
