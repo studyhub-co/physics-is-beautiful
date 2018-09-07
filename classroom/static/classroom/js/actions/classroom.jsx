@@ -215,14 +215,14 @@ export function classroomFetchStudentClassroom (classroomUuid) {
   }
 }
 
-export function bulkStudentsUpdate (classroomUuid, studentsList, origin, refreshClassrroomsStudentsList) {
+export function bulkStudentsUpdate (classroomUuid, studentsList, origin, refreshClassroomsStudentsList) {
   return (dispatch, state) => {
     return getAxios().post(API_PREFIX + classroomUuid + '/roster/', {students: studentsList, origin: origin})
       .then((response) => {
-        if (refreshClassrroomsStudentsList){
-          dispatch(classroomFetchStudentsClassroomList(classroomUuid)
-          )
+        if (refreshClassroomsStudentsList) {
+          dispatch(classroomFetchStudentsClassroomList(classroomUuid))
         }
+        dispatch(classroomFetchTeacherClassroomsList())
       })
   }
 }

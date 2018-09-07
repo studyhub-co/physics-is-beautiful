@@ -88,7 +88,7 @@ export function googleFetchClassroomList () {
   }
 }
 
-function listCoursesStudents (googleClassrooms, refreshClassrroomsStudentsList) {
+function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
   /***
    * each classroom in googleClassrooms must contain pib_classroom_uuid key
    */
@@ -135,21 +135,23 @@ function listCoursesStudents (googleClassrooms, refreshClassrroomsStudentsList) 
           }
         }
         if (pibClassroomID && googleCourceStudentsList.length > 0) {
-          dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList, 'google', refreshClassrroomsStudentsList))
+          dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList, 'google', refreshClassroomsStudentsList))
+        } else {
+          dispatch(classroomFetchTeacherClassroomsList())
         }
       }
     })
   }
 }
 
-export function googleFetchAndSaveClassroomsStudents (classrooms, refreshClassrroomsStudentsList) {
+export function googleFetchAndSaveClassroomsStudents (classrooms, refreshClassroomsStudentsList) {
   return (dispatch, state) => {
     if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
       gapi.auth2.getAuthInstance().signIn().then(function () {
-        dispatch(listCoursesStudents(classrooms, refreshClassrroomsStudentsList))
+        dispatch(listCoursesStudents(classrooms, refreshClassroomsStudentsList))
       })
     } else {
-      dispatch(listCoursesStudents(classrooms, refreshClassrroomsStudentsList))
+      dispatch(listCoursesStudents(classrooms, refreshClassroomsStudentsList))
     }
   }
 }
@@ -172,7 +174,6 @@ export function googleSaveClassroomsWithStudents (googleClassrooms, googleCurric
           // add pib_classroom_uuid to each google classroom for students update
           googleClassrooms[j]['pib_classroom_uuid'] = createdClassroom.uuid
           if (j === googleClassrooms.length - 1) {
-            dispatch(classroomFetchTeacherClassroomsList())
             dispatch(googleFetchAndSaveClassroomsStudents(googleClassrooms))
           }
         }

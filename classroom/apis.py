@@ -146,18 +146,29 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                     except ValueError:
                         pass  # new student
 
-                    if user.profile not in classroom.students.all():  # FIXME test for load
+                    if user.profile not in classroom.students.all():  # FIXME test for load / need to use task quene
                         to_add_users_in_classroom.append(user)
 
             # Add students to classroom
             if len(to_add_users_in_classroom) > 0:
-                objs = (ClassroomStudent(student=user.profile, classroom=classroom)
-                        for user in to_add_users_in_classroom)
-                ClassroomStudent.objects.bulk_create(objs)
-            # Remove students to classrrom
+                student_classroom_s = (ClassroomStudent(student=user.profile, classroom=classroom)
+                                       for user in to_add_users_in_classroom)
+                assingments_progressess = []
+                for user in to_add_users_in_classroom:  # FIXME need to use task quene
+                    for assignment in classroom.assignments.all():
+                        assingments_progressess.append(AssignmentProgress(student=user.profile, assignment=assignment))
+
+                with transaction.atomic():
+                    ClassroomStudent.objects.bulk_create(student_classroom_s)
+                    AssignmentProgress.objects.bulk_create(assingments_progressess)
+
+            # Remove students from classrrom
             if len(to_remove_profiles_from_classroom__ids) > 0:
-                ClassroomStudent.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
-                                                classroom=classroom).delete()
+                with transaction.atomic():
+                    ClassroomStudent.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                                                    classroom=classroom).delete()
+                    AssignmentProgress.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                                                      assignment__classroom=classroom).delete()
 
             return Response(status=status.HTTP_201_CREATED)
 
