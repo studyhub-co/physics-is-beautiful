@@ -149,6 +149,11 @@ class CurriculumApp extends React.Component {
     setTimeout(function () { // Start the timer
       this.setState({loading: false})
     }.bind(this), 1500)
+
+    window.parent.postMessage({
+      'message': 'canGoBack',
+      'data': false
+    }, window.appOrigin)
   }
 
   render () {
@@ -185,6 +190,13 @@ class ModulesApp extends React.Component {
 
     this.curriculum = null
     this.module = null
+  }
+
+  componentDidMount () {
+    window.parent.postMessage({
+      'message': 'canGoBack',
+      'data': true
+    }, window.appOrigin)
   }
 
   load () {
