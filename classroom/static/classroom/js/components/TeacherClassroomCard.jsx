@@ -19,12 +19,24 @@ export class TeacherClassroomCard extends React.Component {
                 key={i}
                 style={{paddingRight: '1rem', paddingBottom: '1rem', display: 'inline-block', cursor: 'pointer'}}
                 onClick={() => { this.props.onTitleClick(studentsProfileUrlMask + student.username) }}>
-                <Image
+                {student.gravatar_url ? <Image
                   src={student.gravatar_url}
                   title={student.display_name}
                   style={{width: '4rem'}}
                   rounded
                 />
+                  : <span
+                    onClick={() => { this.props.onTitleClick(studentsProfileUrlMask + student.username) }}
+                    title={student.display_name}
+                    style={{width: '4rem'}}>
+                    <span
+                      className='glyphicon glyphicon-user'
+                      style={{
+                        fontSize: '3rem',
+                        lineHeight: '0',
+                        top: '1rem'}}
+                    />
+                  </span>}
               </span>
             }, this)}
           </div> : null }
