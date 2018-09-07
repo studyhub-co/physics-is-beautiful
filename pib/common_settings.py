@@ -73,7 +73,9 @@ INSTALLED_APPS = [
     'mptt',
     'djeddit',
     'meta',
-    'classroom'
+    'classroom',
+    'pagedown',
+    'markdown_deux'
 ]
 
 MIDDLEWARE = [

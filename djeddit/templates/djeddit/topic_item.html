@@ -2,7 +2,7 @@
 {% load djeddit_tags %}
 <li class="list-group-item">
     <div class="row">
-        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% url 'topicPage' topic.urlTitle %}'">
+        <div class="col-sm-1 hidden-xs col-icon hover-point djeddit-topic-container" onclick="window.location=window.util.mobileUrl('{% url 'topicPage' topic.urlTitle %}')">
             <i class="far fa-comments fa-2x"></i>
         </div>
         <div class="col-sm-10 list-group-item-main-col">
@@ -12,10 +12,19 @@
             <br>
             <div class="text-muted inline full-line">
                 {% firstLine topic.description 90 %}
+                <span class="djeddit-count-box-overflow">
+                    &middot;
+                    {{ topic.getThreadCount }}
+                    {% if topic.getThreadCount == 1 %}
+                    Thread
+                    {% else %}
+                    Threads
+                    {% endif %}
+                </span>
             </div>
         </div>
         <div class="col-xs-1" style="margin-left: auto">
-            <div class="count-box" onclick="window.location='{% url 'topicPage' topic.urlTitle %}'">
+            <div class="count-box" onclick="window.location=window.util.mobileUrl('{% url 'topicPage' topic.urlTitle %}')">
                 <div class="count-box-score text-muted">{{ topic.getThreadCount }}</div>
                 <div class="count-box-context text-muted">Threads</div>
             </div>

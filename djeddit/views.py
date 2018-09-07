@@ -8,8 +8,6 @@ from django.shortcuts import render, redirect
 # from django.contrib.auth.models import User
 
 from django.contrib.auth import get_user_model
-User = get_user_model()
-
 
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
@@ -25,6 +23,9 @@ from djeddit.forms import TopicForm, ThreadForm, PostForm
 from djeddit.models import Topic, Thread, Post, UserPostVote
 from djeddit.templatetags.djeddit_tags import postScore
 from djeddit.utils.utility_funcs import is_authenticated
+
+
+User = get_user_model()
 
 
 @login_required
@@ -48,7 +49,10 @@ def createThread(request, topic_title=None):
                 if is_authenticated(request):
                     post.created_by = request.user
                 post.save()
-                return HttpResponseRedirect(thread.relativeUrl)
+                url = thread.relativeUrl
+                if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+                    url += '?pib_mobile=true'
+                return HttpResponseRedirect(url)
         except Topic.DoesNotExist:
             pass
     # Else it's a GET request
@@ -88,7 +92,11 @@ def lockThread(request, thread_id):
         raise Http404
     thread.locked = not thread.locked
     thread.save()
-    return HttpResponseRedirect(thread.relativeUrl)
+    url = thread.relativeUrl
+
+    if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+        url += '?pib_mobile=true'
+    return HttpResponseRedirect(url)
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -99,7 +107,11 @@ def stickyThread(request, thread_id):
         raise Http404
     thread.is_stickied = not thread.is_stickied
     thread.save()
-    return HttpResponseRedirect(thread.relativeUrl)
+    url = thread.relativeUrl
+
+    if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+        url += '?pib_mobile=true'
+    return HttpResponseRedirect(url)
 
 
 def topicsPage(request):
@@ -118,6 +130,7 @@ def topicsPage(request):
 
 
 def topicPage(request, topic_title):
+    topics = Topic.objects.all()
     try:
         topic = Topic.getTopic(topic_title)
     except Topic.DoesNotExist:
@@ -138,13 +151,14 @@ def topicPage(request, topic_title):
         showForm = False
     threads = Thread.objects.filter(topic=topic).order_by('-is_stickied', '-op__created_on')
     context = dict(topic=topic, threads=threads, showCreatedBy=True, showTopic=False,
-                   topicForm=form, showForm=showForm)
+                   topicForm=form, showForm=showForm, topics=topics)
     return render(request, 'djeddit/topic.html', context)
 
 
 def discussionPage(request):
+    topics = Topic.objects.all()
     threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
-    context = dict(threads=threads)
+    context = dict(threads=threads, topics=topics)
     return render(request, 'djeddit/discussion.html', context)
 
 
@@ -155,7 +169,10 @@ def threadPage(request, topic_title='', thread_id='', slug=''):
             thread = Thread.objects.get(id=thread_id)
             if thread.topic == topic:
                 if not slug or slug != thread.slug or topic.urlTitle != topic_title:
-                    return HttpResponseRedirect(thread.relativeUrl)
+                        url = thread.relativeUrl
+                        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+                            url += '?pib_mobile=true'
+                        return HttpResponseRedirect(url)
                 if thread.op.content:
                     description = thread.op.content[:160]
                 else:
@@ -194,7 +211,12 @@ def replyPost(request, post_uid=''):
                 post.created_by = request.user
             post.save()
             repliedPost.children.add(post)
-        return HttpResponseRedirect(thread.relativeUrl)
+
+        url = thread.relativeUrl
+
+        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+            url += '?pib_mobile=true'
+        return HttpResponseRedirect(url)
     else:
         postForm = PostForm()
         postForm.fields['content'].label = ''
@@ -217,7 +239,11 @@ def editPost(request, post_uid=''):
             postForm.save()
         if threadForm.is_valid():
             threadForm.save()
-        return HttpResponseRedirect(thread.relativeUrl)
+        url = thread.relativeUrl
+
+        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+            url += '?pib_mobile=true'
+        return HttpResponseRedirect(url)
     else:
         postForm = PostForm(instance=post, prefix='post')
         if request.user.is_superuser and thread.op == post:
@@ -279,7 +305,11 @@ def deletePost(request, post_uid):
     if op.uid == post_uid:
         return redirect('topicPage', thread.topic.urlTitle)
     else:
-        return HttpResponseRedirect(thread.relativeUrl)
+        url = thread.relativeUrl
+
+        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+            url += '?pib_mobile=true'
+        return HttpResponseRedirect(url)
 
 
 def loadAdditionalReplies(request):

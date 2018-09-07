@@ -6,19 +6,36 @@
 {% block title %}
     <div class="">
         <h3 id="discussion-title">Discussion</h3>
-        <button class="btn btn-primary" onclick="window.location='{% url 'topics' %}'">All Topics</button>
-        <button class="btn btn-primary" onclick="window.location='{% url 'createThreadWithoutTopic' %}'">New Thread</button>
+        <div class="btn-group discussion-toolbar" role="group" aria-label="Discussion Toolbar">
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+            <button class="btn btn-secondary disabled">Home<i class="fas fa-home"></i></button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                Topics <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    {% for list_topic in topics %}
+                        <li><a href="{{ list_topic.url }}" data-toggle="tooltip" data-placement="right" title="{{ list_topic.description }}">{{ list_topic }}</a></li>
+                    {% endfor %}
+                    <li class="divider"></li> 
+                    <li><a href="{% url 'topics' %}">Topic List</a></li>
+                </ul>
+            </div>
+            <button onclick="window.location=window.util.mobileUrl('{% url "createThreadWithoutTopic" %}')" type="button" class="btn btn-secondary">New Thread <i class="fas fa-pen"></i></button>
+        </div>
     </div>
 {% endblock %}
 {% block content %}
     <div>
         <ul class="list-group">
-            {% for thread in threads %}
-                {% include 'djeddit/thread_item.html' %}
-            {% endfor %}
+            {% with True as showTopic %}
+                {% for thread in threads %}
+                    {% include 'djeddit/thread_item.html' %}
+                {% endfor %}
+            {% endwith %}
         </ul>
     </div>
 {% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="{% static 'djeddit/js/util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'djeddit/js/topic.js' %}"></script>
 {% endblock %}

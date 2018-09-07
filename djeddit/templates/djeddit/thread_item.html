@@ -1,46 +1,88 @@
 <!DOCTYPE html>
 {% load djeddit_tags %}
 <li class="list-group-item">
-    <div class="row vertical-align">
-        <div class="col-sm-1 hidden-xs col-icon hover-point" onclick="window.location='{% threadUrl thread %}'">
-            {# As we are disallowing link posts, this part is not necessary: <i class="fa {% threadIconClass thread %} fa-2x"></i> #}
-            <i class="far fa-comments fa-2x"></i>
+    <div class="row">
+        <div class="col-sm-1 col-icon djeddit-score-container">
+            <div class="djeddit-score-large">
+                {% if user.is_authenticated %}
+                <i class="fas fa-chevron-up djeddit-score-upvote-large {% postVoteClicked user thread.op True %} " 
+                    onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', true, $(this).hasClass('color-primary'), '{% url "votePost" %}')"></i>
+                <div class="{% postVoteColor user thread.op %} djeddit-score-number-large">{{ thread.op.score }}</div>
+                <i class="fas fa-chevron-down djeddit-score-downvote-large {% postVoteClicked user thread.op False %}"
+                    onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', $(this).hasClass('color-primary'), true, '{% url "votePost" %}')"></i>
+                {% else %}
+                <i class="fas fa-chevron-up djeddit-score-upvote-large" 
+                    onclick="javascript:window.topicFuncs.loginNeeded()"></i>
+                <div class="djeddit-score-number-large">{{ thread.op.score }}</div>
+                <i class="fas fa-chevron-down djeddit-score-downvote-large"
+                    onclick="javascript:window.topicFuncs.loginNeeded()"></i>
+                {% endif %}
+            </div>
         </div>
         <div class="col-sm-8 col-xs-9 list-group-item-main-col">
             <a href="{% threadUrl thread %}"><h4 class="inline">{% firstLine thread.title 50 %}</h4></a>
             <div class="text-muted inline">
-                {% with thread.op.getReplies|length as commentsCount %}
-                    {% if commentsCount %}
-                        <a href='{{ thread.relativeUrl }}/#comments-callout'>{% getAmount commentsCount 'comment' %}</a>
-                    {% else %}
-                        {% getAmount commentsCount 'comment' %}
-                    {% endif %}
-                    {% if thread.is_stickied %}
-                        &nbsp;<i class="fa fa-map-pin"></i>
-                    {% endif %}
-                {% endwith %}
-                {% if showTopic %}on <a href="{% url 'topicPage' thread.topic.urlTitle %}">{{ thread.topic.title }}</a> {% endif %}
+                {% if showTopic %}in <a href="{% url 'topicPage' thread.topic.urlTitle %}">{{ thread.topic.title }}</a> {% endif %}
             </div>
             <br>
-            <div class="text-muted inline full-line">
-                {% if showCreatedBy %}
-{#                    Submitted by {% if thread.op.created_by %}#}
-{#                                    <a href="{% url 'userSummary' thread.op.created_by %}">{% postUserName thread.op.created_by %}</a> {% else %} {% postUserName thread.op.created_by %} {% endif %} {% postDate thread.op.created_on 'on ' %}#}
-                    Submitted by {% if thread.op.created_by %}
-                                    <a href="{% url 'userSummary' thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> {% else %} {% postUserName thread.op.created_by %} {% endif %} {% postDate thread.op.created_on 'on ' %}
-                {% else %}
-                    {{ thread.op.created_on }}
-                {% endif %}
+            <div class="text-muted inline full-lined djeddit-thread-item-footer">
+                <div class="djeddit-score">
+                    {% if user.is_authenticated %}
+                    <i class="fas fa-arrow-up djeddit-score-upvote {% postVoteClicked user thread.op True %} " 
+                        onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', true, $(this).hasClass('color-primary'), '{% url "votePost" %}')"></i>
+                    <span class="{% postVoteColor user thread.op %} djeddit-score-number">{{ thread.op.score }}</span>
+                    <i class="fas fa-arrow-down djeddit-score-downvote {% postVoteClicked user thread.op False %}"
+                        onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', $(this).hasClass('color-primary'), true, '{% url "votePost" %}')"></i>
+                    {% else %}
+                    <i class="fas fa-arrow-up djeddit-score-upvote" 
+                        onclick="javascript:window.topicFuncs.loginNeeded()"></i>
+                    <span class="djeddit-score-number">{{ thread.op.score }}</span>
+                    <i class="fas fa-arrow-down djeddit-score-downvote"
+                        onclick="javascript:window.topicFuncs.loginNeeded()"></i>
+                    {% endif %}
+                </div>
+                <div class="djeddit-created-by">
+                        {% if thread.op.created_by %}
+                            <a href="{% url 'userSummary' thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> 
+                        {% else %} 
+                            {% postUserName thread.op.created_by %} 
+                        {% endif %} 
+                        <div class="djeddit-date-verbose">
+                            &middot;
+                            {% postDate thread.op.created_on 'on ' %}
+                        </div>
+                        <div class="djeddit-date-silly">
+                            &middot;
+                            {% postDate thread.op.created_on 'on ' False%}
+                        </div>
+                </div>
+                <div class="count-box-small" onclick="window.location=window.util.mobileUrl('{{ thread.relativeUrl }}')">
+                    &middot;
+                    <i class="far fa-comment"></i>
+                    {% with thread.op.getReplies|length as commentsCount %}
+                        {{ commentsCount }}
+                    {% endwith%}
+                </div>
             </div>
         </div>
         <div class="col-xs-3">
-            <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
+            {% comment %} <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
                 <div class="count-box-score text-muted">{{ thread.op.score }}</div>
                 <div class="count-box-context text-muted">Points</div>
-            </div>
-            <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
+            </div> {% endcomment %}
+            {% comment %} <div class="count-box" onclick="window.location='{{ thread.relativeUrl }}'">
                 <div class="count-box-score text-muted">{{ thread.views }}</div>
                 <div class="count-box-context text-muted">Views</div>
+            </div> {% endcomment %}
+            <div class="count-box" onclick="window.location=window.util.mobileUrl('{{ thread.relativeUrl }}')">
+                {% with thread.op.getReplies|length as commentsCount %}
+                    <div class="count-box-score text-muted">{{ commentsCount }}</div>
+                    {% if commentsCount == 1 %}
+                    <div class="count-box-context text-muted">Comment</div>
+                    {% else %}
+                    <div class="count-box-context text-muted">Comments</div>
+                    {% endif %}
+                {% endwith%}
             </div>
         </div>
     </div>

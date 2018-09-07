@@ -1,9 +1,15 @@
 // This file specifies any needed connections between the pib_mobile app and the website.
 
+window.appOrigin = 'http://localhost:8080'
+// debugging:
+// window.appOrigin = '*'
+
 // Return to previous page upon receiving "goBack" message
 window.addEventListener('message', function (event) {
   // Normally we would check event.origin for security purposes.
   // However, this script cannot accomplish anything malicious.
+  // If changes are later made that could create a security risk,
+  // please verify that event.origin == http://localhost:8080
 
   if (event.data === 'goBack') {
     window.history.back()
@@ -31,18 +37,11 @@ if (window.IS_MOBILE_APP) {
       return false
     }
 
-    // tell the parent page that we are adding to the navigation stack.
-    window.parent.postMessage('pagePushed', '*')
-
-    if (this.href.indexOf('?') !== -1) {
-      if (this.href.indexOf('pib_mobile') !== -1) {
-        window.location = this.href
-      } else {
-        window.location = this.href + '&pib_mobile=true'
-      }
-    } else {
-      window.location = this.href + '?pib_mobile=true'
-    }
+    window.parent.postMessage({
+      'message': 'canGoBack',
+      'data': true
+    }, window.appOrigin)
+    window.location = window.mobilizedUrl(this.href)
     return false
   })
 
@@ -61,5 +60,42 @@ $.get('/api/v1/profiles/me', function (data) {
   window.parent.postMessage({
     'message': 'loginInfo',
     'data': data
-  }, 'http://localhost:8080')
+  }, window.appOrigin)
 })
+
+window.parent.postMessage({
+  'message': 'canGoBack',
+  'data': !(document.referrer.startsWith('http://localhost')) && document.referrer.indexOf('accounts') === -1 // could be appOrigin with ending slash
+}, window.appOrigin)
+
+window.mobilizedUrl = function (url) {
+  if (url.indexOf('pib_mobile') === -1) {
+    return UpdateQueryString('pib_mobile', 'true', url)
+  } else {
+    return url
+  }
+}
+
+// All credit to https://stackoverflow.com/a/11654596/
+function UpdateQueryString (key, value, url) {
+  if (!url) url = window.location.href
+  var re = new RegExp('([?&])' + key + '=.*?(&|#|$)(.*)', 'gi')
+  var hash
+
+  if (re.test(url)) {
+    if (typeof value !== 'undefined' && value !== null) { return url.replace(re, '$1' + key + '=' + value + '$2$3') } else {
+      hash = url.split('#')
+      url = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '')
+      if (typeof hash[1] !== 'undefined' && hash[1] !== null) { url += '#' + hash[1] }
+      return url
+    }
+  } else {
+    if (typeof value !== 'undefined' && value !== null) {
+      var separator = url.indexOf('?') !== -1 ? '&' : '?'
+      hash = url.split('#')
+      url = hash[0] + separator + key + '=' + value
+      if (typeof hash[1] !== 'undefined' && hash[1] !== null) { url += '#' + hash[1] }
+      return url
+    } else { return url }
+  }
+}

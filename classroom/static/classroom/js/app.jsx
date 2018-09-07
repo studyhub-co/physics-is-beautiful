@@ -6,7 +6,6 @@ import { push } from 'connected-react-router'
 import PropTypes from 'prop-types'
 
 class App extends React.Component {
-
   // goToIndex () {
   //   this.props.dispatch(push('/'))
   // }
