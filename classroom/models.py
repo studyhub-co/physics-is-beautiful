@@ -54,6 +54,9 @@ class ExternalClassroom(models.Model):
     provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
     classroom = models.OneToOneField(Classroom, related_name='external_classroom', blank=True, null=True)
 
+    class Meta:
+        unique_together = ("external_id", "provider")
+
 
 class ClassroomStudent(models.Model):
     code_entered_on = models.DateTimeField(blank=True, null=True)
