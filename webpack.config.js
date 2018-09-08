@@ -16,7 +16,7 @@ module.exports = function (env) {
     output: {
       path: path.resolve('./static/bundles/'),
       filename: '[name]-[hash].js',
-      publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
+      // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
     },
 
     plugins: [
