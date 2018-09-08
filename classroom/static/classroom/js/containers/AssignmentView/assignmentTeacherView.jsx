@@ -11,7 +11,7 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 
 import { EditAssignmentView } from '../index'
-import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem} from 'react-bootstrap'
+import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 import { TeacherAssigmentStudentRow } from '../../components/TeacherAssigmentStudentRow'
@@ -60,13 +60,30 @@ export class AssignmentTeacherView extends React.Component {
       dateText = 'Assigned on ' + new Date(this.props.assignment.due_on).toLocaleDateString() + ' at ' +
                 new Date(this.props.assignment.due_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
                 ' and due on ' + new Date(this.props.assignment.start_on).toLocaleDateString() + ' at ' +
-                new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+    }
+    var postOnGoogleUrl = null
+    if (this.props.classroomTeacher &&
+      this.props.assignment &&
+      this.props.classroomTeacher.external_classroom) {
+      postOnGoogleUrl =
+        this.props.classroomTeacher.external_classroom.alternate_link.replace('/c/', '/share/') +
+        '/assignment?url=' + encodeURIComponent(window.location.origin + '/classroom/' + this.props.classroomTeacher.uuid +
+        '/student/assignments/#' + this.props.assignment.uuid) + '&title=' +
+        this.props.assignment.name + '&body=Only for ' +
+        this.props.classroomTeacher.external_classroom.name + ' classroom'
+      // test
+      // postOnGoogleUrl =
+      //   this.props.classroomTeacher.external_classroom.alternate_link.replace('/c/', '/share/') +
+      //   '/assignment?url=' + encodeURIComponent('https://www.physicsisbeautiful.com/curriculum') + '&title=' +
+      //   this.props.assignment.name + '&body=Only for ' +
+      //   this.props.classroomTeacher.external_classroom.name + ' classroom'
     }
     return (
       <div>
         <Grid fluid>
           <Row id='all-assignments'>
-            <Col md={12} style={{padding:0}}>
+            <Col md={12} style={{padding: 0}}>
               <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All assignments
@@ -74,7 +91,21 @@ export class AssignmentTeacherView extends React.Component {
             </Col>
           </Row>
           <Row style={{padding: 0}} >
-            <Col md={12} className={'text-right'} style={{width: '100%'}}>
+            <Col mdOffset={7} md={2}>
+              {postOnGoogleUrl
+                ? <a
+                // onClick={this.getGoogleClassroomList}
+                  target={'_blank'}
+                  href={postOnGoogleUrl}
+                  className='google-button' type='button'>
+                  <div className='google-classroom-img' />
+                  <span>
+                    <span>Post on</span>
+                    <span>Google Classroom</span>
+                  </span>
+                </a> : null }
+            </Col>
+            <Col md={3} className={'vcenter'}>
               <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings' >
                 <Dropdown.Toggle className={'classroom-common-button'} style={{marginTop: 0}}>
                   <Glyphicon glyph='cog' />&nbsp;
@@ -187,6 +218,7 @@ export class AssignmentTeacherView extends React.Component {
 
 AssignmentTeacherView.propTypes = {
   assignment: PropTypes.object,
+  classroomTeacher: PropTypes.object,
   tabActions: PropTypes.shape({
     changeTeacherClassroomSelectedTab: PropTypes.func.isRequired,
     changeSelectedTab: PropTypes.func.isRequired

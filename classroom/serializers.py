@@ -64,7 +64,7 @@ class StudentAssignmentSerializer(PublicProfileSerializer):
 class ExternalClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalClassroom
-        fields = ['external_id', 'name', 'teacher_id', 'code', 'provider']
+        fields = ['external_id', 'name', 'teacher_id', 'code', 'provider', 'alternate_link']
 
 
 class ClassroomBaseSerializer(serializers.ModelSerializer):
@@ -86,15 +86,18 @@ class ClassroomBaseSerializer(serializers.ModelSerializer):
 
         if external_classroom:
             # save external data
-            kwargs = {}
-            if 'provider' in external_classroom:
-                kwargs['provider'] = external_classroom['provider']
-            ExternalClassroom.objects.create(external_id=external_classroom['external_id'],
-                                             name=external_classroom['name'],
-                                             teacher_id=external_classroom['teacher_id'],
-                                             code=external_classroom['code'],
-                                             classroom=to_return,
+            kwargs = external_classroom
+            # if 'provider' in external_classroom:
+            #     kwargs['provider'] = external_classroom.pop('provider')
+            # external_id=external_classroom['external_id'],
+            #                                              name=external_classroom['name'],
+            #                                              teacher_id=external_classroom['teacher_id'],
+            #                                              code=external_classroom['code'],
+            try:
+                ExternalClassroom.objects.create(classroom=to_return,
                                              **kwargs)
+            except:  # TODO raise error message
+                pass
         return to_return
 
     class Meta:
