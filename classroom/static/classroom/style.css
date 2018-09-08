@@ -76,6 +76,16 @@
 
 /* common */
 
+.seletected-fade-out {
+   animation: fade 2s 6s forwards;
+   background-color: #dddddd !important;
+}
+
+@keyframes fade {
+    from {background-color:#dddddd;}
+    to {background-color:rgba(242, 245, 169, 0);}
+}
+
 .classroom .blue-text {
     color: rgb(8, 209, 255)
 }
