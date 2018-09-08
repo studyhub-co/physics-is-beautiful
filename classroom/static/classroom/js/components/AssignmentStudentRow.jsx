@@ -29,8 +29,16 @@ class AssignmentStudentRow extends React.Component {
   }
 
   render () {
+    var selectedAssignmentUuid = null
+
     var className = 'student-classroom-row'
 
+    if (window.location.hash) {
+      selectedAssignmentUuid = window.location.hash.substr(1)
+      if (selectedAssignmentUuid === this.props.assignment.uuid){
+        className += ' seletected-fade-out'
+      }
+    }
     var dueDateTime = null
 
     var textColorClassName = 'green-text'
@@ -49,7 +57,7 @@ class AssignmentStudentRow extends React.Component {
     }
 
     return (
-      <Row className={className}>
+      <Row className={className} id={this.props.assignment.uuid}>
         <Col sm={12} md={12}>
           <Row>
             <Col sm={1} md={1}>
