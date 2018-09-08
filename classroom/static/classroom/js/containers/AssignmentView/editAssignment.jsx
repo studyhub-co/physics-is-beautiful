@@ -11,7 +11,7 @@ import TimePicker from 'react-bootstrap-time-picker'
 
 import DropdownTreeSelect from 'react-dropdown-tree-select'
 
-import { Grid, Row, Col, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, FormControl, Checkbox } from 'react-bootstrap'
 
 import * as assignmentCreators from '../../actions/assignment'
 import * as curriculaCreators from '../../actions/curricula'
@@ -25,6 +25,7 @@ const DEFAULT_STATE = {
   dueDate: null,
   startTime: 36000,
   dueTime: 36000,
+  sendEmail: false,
   assignmentIsValid: false,
   assignmentName: ''
 }
@@ -39,6 +40,7 @@ class EditAssignmentView extends React.Component {
     this.onLessonTreeChange = this.onLessonTreeChange.bind(this)
     this.handleNameChange = this.handleNameChange.bind(this)
     this.saveAssignment = this.saveAssignment.bind(this)
+    this.handleSendEmailChange = this.handleSendEmailChange.bind(this)
 
     this.state = Object.assign({}, DEFAULT_STATE)
   }
@@ -73,6 +75,7 @@ class EditAssignmentView extends React.Component {
         startDate: this.props.assignment.start_on,
         startTime: startDate.getHours() * 60 * 60,
         dueDate: this.props.assignment.due_on,
+        sendEmail: this.props.assignment.send_email,
         dueTime: dueDate.getHours() * 60 * 60,
         assignmentName: this.props.assignment.name
       }, this.copyNodesFromAssignmentValidate) // copy selected lessons from assignment
@@ -92,6 +95,10 @@ class EditAssignmentView extends React.Component {
 
   handleDueTimeChange (value) {
     this.setState({dueTime: value}, this.validateAssignment)
+  }
+
+  handleSendEmailChange (e) {
+    this.setState({sendEmail: !this.state.sendEmail})
   }
 
   copyValidateTree () {
@@ -177,7 +184,8 @@ class EditAssignmentView extends React.Component {
       start_on: startDateTime.toISOString(),
       due_on: dueDateTime.toISOString(),
       classroom_uuid: this.props.classroomTeacher.uuid,
-      lessons_uuids: lessonsUuids
+      lessons_uuids: lessonsUuids,
+      send_email: this.state.sendEmail
     }
     if (this.props.assignment && this.props.assignment.uuid && !this.props.createNew) {
       // update
@@ -230,8 +238,8 @@ class EditAssignmentView extends React.Component {
   render () {
     return (
       <Grid fluid>
-        <Row>
-          <Col sm={3} md={3} className={'text-right vcenter'}>
+        <Row className={'vcenter'}>
+          <Col sm={3} md={3} className={'text-right'}>
             Name
           </Col>
           <Col sm={9} md={9}>
@@ -284,6 +292,17 @@ class EditAssignmentView extends React.Component {
               end='21:00'
               step={60}
               value={this.state.dueTime} />
+          </Col>
+        </Row>
+        <Row className={'vcenter'}>
+          <Col sm={3} md={3} className={'text-right'}>
+            Email
+          </Col>
+          <Col sm={9} md={9}>
+            <Checkbox
+              checked={this.state.sendEmail}
+              onClick={this.handleSendEmailChange}
+            > Send email notification</Checkbox>
           </Col>
         </Row>
         <br />

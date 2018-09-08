@@ -268,7 +268,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
                   'count_lessons', 'completed_on', 'delayed_on', 'assigned_on',
                   'count_students_completed_assingment', 'count_students_missed_assingment',
                   'count_students_delayed_assingment',
-                  'count_completed_lessons', 'image']
+                  'count_completed_lessons', 'image', 'send_email']
         read_only_fields = ('uuid', 'created_on', 'updated_on')
 
 
