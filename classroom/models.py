@@ -89,6 +89,7 @@ class Assignment(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(auto_now=True)  # assigned On date
+    send_email = models.BooleanField(default=True)
     start_on = models.DateTimeField()
     due_on = models.DateTimeField()
     name = models.CharField(max_length=200)

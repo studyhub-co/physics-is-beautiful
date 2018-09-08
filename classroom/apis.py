@@ -295,7 +295,9 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             ap_objects
         )
 
-        serializer.send_emails(assignment)
+        # test that we need to send emails
+        if assignment.send_email:
+            serializer.send_emails(assignment)
 
     def perform_update(self, serializer):
         new_lessons_uuids = []
