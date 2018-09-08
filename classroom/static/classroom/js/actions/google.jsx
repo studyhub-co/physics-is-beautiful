@@ -168,6 +168,7 @@ export function googleSaveClassroomsWithStudents (googleClassrooms, googleCurric
       newClassroom['external_classroom']['name'] = googleClassRoom['name']
       newClassroom['external_classroom']['teacher_id'] = googleClassRoom['ownerId']
       newClassroom['external_classroom']['code'] = googleClassRoom['enrollmentCode']
+      newClassroom['external_classroom']['alternate_link'] = googleClassRoom['alternateLink']
 
       var getCallback = function (j) {
         return (createdClassroom) => {

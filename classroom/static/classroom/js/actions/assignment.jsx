@@ -171,6 +171,10 @@ export function assignmentFetchStudentLessonsList (classroomUuid, assignmentUuid
       .then(checkHttpStatus)
       .then((response) => {
         var assignmentsLessons = {}
+        if (state().assignment.assignmentsStudentLessonsList &&
+          Object.keys(state().assignment.assignmentsStudentLessonsList).length > 0) {
+          assignmentsLessons = state().assignment.assignmentsStudentLessonsList
+        }
         assignmentsLessons[assignmentUuid] = response.data
         dispatch(receiveAssignmentStudentLessonsList(assignmentsLessons))
         if (typeof callback === 'function') {

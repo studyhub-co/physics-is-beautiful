@@ -53,6 +53,7 @@ class ExternalClassroom(models.Model):
     code = models.CharField(max_length=400)
     provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
     classroom = models.OneToOneField(Classroom, related_name='external_classroom', blank=True, null=True)
+    alternate_link = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         unique_together = ("external_id", "provider")
