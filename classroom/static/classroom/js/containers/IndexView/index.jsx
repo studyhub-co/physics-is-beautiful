@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
 
-import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
+// import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
 
 import SelectCurriculum from '../../components/SelectCurriculum'
 
@@ -158,10 +158,11 @@ class IndexView extends React.Component {
                       <h2>All classrooms</h2>
                     </Col>
                     <Col sm={4} md={3} smOffset={2} mdOffset={3}>
-                      <button disabled={!this.props.gapiInitState}
+                      <button
+                        disabled={!this.props.gapiInitState}
                         onClick={this.getGoogleClassroomList}
                         className='google-button' type='button'>
-                        <img className='' src={GoooleClassromIcon} alt='Import from Google Classroom' />
+                        <div className='google-classroom-img' />
                         <span>
                           <span>Import from</span>
                           <span>Google Classroom</span>

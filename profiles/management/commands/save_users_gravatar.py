@@ -12,6 +12,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for user in User.objects.all():  # can't bulk update
             profile, created = Profile.objects.get_or_create(user=user)
-            if has_gravatar(profile.user.email):
-                profile.gravatar_url = get_gravatar_url(profile.user.email)
-                profile.save()
+            # if has_gravatar(profile.user.email):
+            profile.gravatar_url = get_gravatar_url(profile.user.email)
+            profile.save()
