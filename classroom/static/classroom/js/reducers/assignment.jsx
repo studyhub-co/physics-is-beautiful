@@ -5,8 +5,8 @@ import {
 } from '../constants'
 
 const initialState = {
-  assignmentsList: null
-
+  assignmentsList: null,
+  assignmentsStudentLessonsList: {}
 }
 
 export default function assignmentReducer (state = initialState, action) {
@@ -29,8 +29,10 @@ export default function assignmentReducer (state = initialState, action) {
         assignmentStudentsList: action.payload.assignmentStudentsList
       })
     case ASSIGNMENT_RECEIVE_STUDENT_LESSONS_LIST:
+      var name = 'assignmentStudentLessonsList' + action.payload.assignmentUuid
+
       return Object.assign({}, state, {
-        assignmentsStudentLessonsList: action.payload.assignmentsStudentLessonsList
+        [name]: action.payload.assignmentStudentLessonsList
       })
     default:
       return state

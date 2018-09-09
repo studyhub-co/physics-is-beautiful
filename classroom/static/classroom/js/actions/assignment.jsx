@@ -156,11 +156,12 @@ export function assignmentFetchFirstUncompletedLesson (classroomUuid, assignment
   }
 }
 
-export function receiveAssignmentStudentLessonsList (assignmentsStudentLessonsList) {
+export function receiveAssignmentStudentLessonsList (assignmentStudentLessonsList, assignmentUuid) {
   return {
     type: ASSIGNMENT_RECEIVE_STUDENT_LESSONS_LIST,
     payload: {
-      assignmentsStudentLessonsList
+      assignmentStudentLessonsList,
+      assignmentUuid
     }
   }
 }
@@ -170,13 +171,7 @@ export function assignmentFetchStudentLessonsList (classroomUuid, assignmentUuid
     return getAxios().get(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid + '/lessons/')
       .then(checkHttpStatus)
       .then((response) => {
-        var assignmentsLessons = {}
-        if (state().assignment.assignmentsStudentLessonsList &&
-          Object.keys(state().assignment.assignmentsStudentLessonsList).length > 0) {
-          assignmentsLessons = state().assignment.assignmentsStudentLessonsList
-        }
-        assignmentsLessons[assignmentUuid] = response.data
-        dispatch(receiveAssignmentStudentLessonsList(assignmentsLessons))
+        dispatch(receiveAssignmentStudentLessonsList(response.data, assignmentUuid))
         if (typeof callback === 'function') {
           callback()
         }

@@ -21,6 +21,11 @@ class AssignmentStudentRow extends React.Component {
     }
   }
 
+  // componentWillReceiveProps(nextProps){
+  //   console.log(nextProps);
+  //   console.log(nextProps.assignmentsStudentLessonsList[nextProps.assignment.uuid]);
+  // }
+
   componentWillMount () {
     if (!this.props.assignment.completed_on && !this.props.assignment.delayed_on) {
       // load lessons list
@@ -30,12 +35,13 @@ class AssignmentStudentRow extends React.Component {
 
   render () {
     var selectedAssignmentUuid = null
+    var assignmentStudentLessonsList = this.props['assignmentStudentLessonsList' + this.props.assignment.uuid]
 
     var className = 'student-classroom-row'
 
     if (window.location.hash) {
       selectedAssignmentUuid = window.location.hash.substr(1)
-      if (selectedAssignmentUuid === this.props.assignment.uuid){
+      if (selectedAssignmentUuid === this.props.assignment.uuid) {
         className += ' seletected-fade-out'
       }
     }
@@ -113,8 +119,8 @@ class AssignmentStudentRow extends React.Component {
           </Row>
           <Row>
             <Col sm={12} md={12}>
-              { this.props.assignmentsStudentLessonsList && this.props.assignmentsStudentLessonsList[this.props.assignment.uuid]
-                ? this.props.assignmentsStudentLessonsList[this.props.assignment.uuid].map(function (lesson, i) {
+              { assignmentStudentLessonsList
+                ? assignmentStudentLessonsList.map(function (lesson, i) {
                   return <span
                     className={'basic-card'}
                     style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
@@ -142,16 +148,17 @@ class AssignmentStudentRow extends React.Component {
 AssignmentStudentRow.propTypes = {
   assignment: PropTypes.object.isRequired,
   onTitleClick: PropTypes.func,
-  assignmentsStudentLessonsList: PropTypes.object,
+  // assignmentsStudentLessonsList: PropTypes.object,
   classrroom_uuid: PropTypes.string.isRequired,
   assignmentActions: PropTypes.shape({
     assignmentFetchStudentLessonsList: PropTypes.func.isRequired
   }).isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    assignmentsStudentLessonsList: state.assignment.assignmentsStudentLessonsList
+    ['assignmentStudentLessonsList' + ownProps.assignment.uuid]:
+      state.assignment['assignmentStudentLessonsList' + ownProps.assignment.uuid]
   }
 }
 
