@@ -12,21 +12,21 @@
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('typeface/museosansrounded-300-webfont.woff2') format('woff2');
+    src: url('typeface/museosansrounded/museosansrounded-300-webfont.woff2') format('woff2');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('typeface/museosansrounded-500-webfont.woff2') format('woff2');
+    src: url('typeface/museosansrounded/museosansrounded-500-webfont.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('typeface/museosansrounded-700-webfont.woff2') format('woff2');
+    src: url('typeface/museosansrounded/museosansrounded-700-webfont.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
 }
