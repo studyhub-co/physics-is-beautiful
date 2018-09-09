@@ -241,9 +241,10 @@
 }
 
 .lesson-card div:nth-of-type(2) {
+    padding: .8rem;
     font-family: 'Museosansrounded';
     font-size: 1.4rem;
-    height: 3rem;
+    height: 4rem;
     font-weight: 500;
 }
 
