@@ -117,19 +117,22 @@ class AssignmentStudentRow extends React.Component {
               { assignmentStudentLessonsList
                 ? assignmentStudentLessonsList.map(function (lesson, i) {
                   return <span
-                    className={'basic-card' + (lesson.status === 'completed' ? ' module-completed' : '')}
-                    style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
+                    className={'col-md-1 lesson-card' + (lesson.status === 'completed' ? ' module-completed'
+                      : ' module-accessible-block')}
+                    // style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
                     onClick={() => { this.onLessonClick(lesson) }} key={i}>
-                    <Image
-                      responsive
-                      src={lesson.image}
-                      width={'80%'}
-                      rounded
-                      style={{display: 'inline-block', top: '0', height: '80%'}}
-                    />
+                    <div className={'thumbnail section-thumbnail'}>
+                      <Image
+                        // responsive
+                        src={lesson.image}
+                        // width={'80%'}
+                        // rounded
+                        // style={{display: 'inline-block', top: '0', height: '80%'}}
+                      />
+                    </div>
                     <div>
                       {lesson.name}{lesson.status === 'completed'
-                        ? <span className='glyphicon glyphicon-ok' style={{paddingLeft:'1rem'}}/>
+                        ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '1rem'}}/>
                         : null}
                     </div>
                   </span>
