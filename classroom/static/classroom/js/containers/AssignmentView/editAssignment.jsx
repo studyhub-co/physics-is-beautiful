@@ -158,7 +158,9 @@ class EditAssignmentView extends React.Component {
         this.state.startTime == null ||
         this.state.dueTime == null ||
         !this.state.assignmentName ||
-        this.state.selectedLessons.length === 0) {
+        this.state.selectedLessons.length === 0 ||
+        this.state.startDate > this.state.dueDate || // if start date > due date
+        new Date(this.state.dueDate) < new Date()) { // if due date < date now
       this.setState({assignmentIsValid: false})
     } else {
       this.setState({assignmentIsValid: true})
@@ -271,8 +273,8 @@ class EditAssignmentView extends React.Component {
           <Col sm={3} md={3}>
             <TimePicker
               onChange={this.handleStartTimeChange}
-              start='10:00'
-              end='21:00'
+              start='01:00'
+              end='24:00'
               step={60}
               value={this.state.startTime} />
           </Col>
@@ -288,8 +290,8 @@ class EditAssignmentView extends React.Component {
           <Col sm={3} md={3}>
             <TimePicker
               onChange={this.handleDueTimeChange}
-              start='10:00'
-              end='21:00'
+              start='01:00'
+              end='24:00'
               step={60}
               value={this.state.dueTime} />
           </Col>
