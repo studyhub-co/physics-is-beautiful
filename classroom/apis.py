@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField
+from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField, Value, CharField
 
 from django.utils import timezone
 
@@ -175,6 +175,12 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         raise NotFound()
 
 
+class ClassroomLessonSerializer(LessonSerializer):
+
+    def get_status(self, obj):
+        return obj.ann_status
+
+
 class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsAssignmentClassroomTeacherOrStudentReadonly)
     serializer_class = AssignmentSerializer
@@ -311,16 +317,16 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             if existing_lesson in new_lessons_uuids:
                 new_lessons_uuids.remove(existing_lesson)
 
-        serializer.save()
-
-        # TODO Check dates
-
+        # FIXME Do we need to check start date
         # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
-        if len(new_lessons_uuids) > 0:
+        if len(new_lessons_uuids) > 0 or serializer.instance.due_on != serializer.validated_data['due_on']:
             # reset AssignmentProgresses dates
             AssignmentProgress.objects.filter(assignment=serializer.instance)\
                     .update(completed_on=None, delayed_on=None)
-            serializer.send_emails(serializer.instance)
+            if serializer.instance.send_email:
+                serializer.send_emails(serializer.instance)
+
+        serializer.save()
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def students(self, request, classroom_uuid, uuid):
@@ -344,14 +350,24 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def lessons(self, request, classroom_uuid, uuid):
         # /api/v1/classroom/classroomuuid/assignment/uuid/lessons/
         try:
-            # FIXME to think do we need lessons list for a teacher
             assignment = Assignment.objects.get(uuid=uuid)
         except Assignment.DoesNotExist:
             raise NotFound('Can\'t find the assignment')
 
-        lessons_list = assignment.lessons.all()
+        lessons_list = assignment.lessons.all().annotate(ann_status=Value('', CharField()))
 
-        serializer = LessonSerializer(lessons_list, many=True)
+        try:
+            completed_lessons = \
+                AssignmentProgress.objects.get(student__user=request.user, assignment=assignment).completed_lessons.all().\
+                annotate(ann_status=Value('completed', CharField()))
+
+            # mark completed lessons
+            lessons_list = completed_lessons.union(lessons_list.exclude(Q(id__in=completed_lessons)))
+
+        except AssignmentProgress.DoesNotExist:
+            pass
+
+        serializer = ClassroomLessonSerializer(lessons_list, many=True)
         return Response(serializer.data)
 
 
