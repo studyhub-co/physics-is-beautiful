@@ -21,11 +21,6 @@ class AssignmentStudentRow extends React.Component {
     }
   }
 
-  // componentWillReceiveProps(nextProps){
-  //   console.log(nextProps);
-  //   console.log(nextProps.assignmentsStudentLessonsList[nextProps.assignment.uuid]);
-  // }
-
   componentWillMount () {
     if (!this.props.assignment.completed_on && !this.props.assignment.delayed_on) {
       // load lessons list
@@ -122,7 +117,7 @@ class AssignmentStudentRow extends React.Component {
               { assignmentStudentLessonsList
                 ? assignmentStudentLessonsList.map(function (lesson, i) {
                   return <span
-                    className={'basic-card'}
+                    className={'basic-card' + (lesson.status === 'completed' ? ' module-completed' : '')}
                     style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
                     onClick={() => { this.onLessonClick(lesson) }} key={i}>
                     <Image
@@ -133,7 +128,9 @@ class AssignmentStudentRow extends React.Component {
                       style={{display: 'inline-block', top: '0', height: '80%'}}
                     />
                     <div>
-                      {lesson.name}
+                      {lesson.name}{lesson.status === 'completed'
+                        ? <span className='glyphicon glyphicon-ok' style={{paddingLeft:'1rem'}}/>
+                        : null}
                     </div>
                   </span>
                 }, this) : null}
