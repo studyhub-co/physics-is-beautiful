@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import { RingLoader } from 'react-spinners'
+
 // import { push } from 'connected-react-router'
 
 import DatePicker from 'react-bootstrap-date-picker'
@@ -22,6 +24,7 @@ const DEFAULT_STATE = {
   lessonsTreeData: [], // data for multiselect
   selectedLessons: [], // data from multiselect
   startDate: null,
+  _ispopulated: false,
   dueDate: null,
   startTime: 36000,
   dueTime: 36000,
@@ -43,10 +46,16 @@ class EditAssignmentView extends React.Component {
     this.handleSendEmailChange = this.handleSendEmailChange.bind(this)
 
     this.state = Object.assign({}, DEFAULT_STATE)
+
+    this.props.curriculaActions.curriculaFetchExpandedCurriculum(this.props.classroomTeacher.curriculum.uuid)
   }
 
-  componentWillMount () {
-    this.props.curriculaActions.curriculaFetchExpandedCurriculum(this.props.classroomTeacher.curriculum.uuid)
+  componentWillUnmount () {
+    this.setState({_ispopulated: false})
+  }
+
+  setIsPopulated () {
+    this.setState({_ispopulated: true})
   }
 
   componentWillReceiveProps (props) {
@@ -58,7 +67,8 @@ class EditAssignmentView extends React.Component {
         newLessonsTreeData = this.addChildren(props.curriculumExpanded.units)
       }
       if (this.props.createNew) {
-        this.setState(Object.assign({}, DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData})) // reset tree selection
+        this.setState(Object.assign({}, DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData}),
+          this.setIsPopulated) // reset tree selection
       } else {
         this.setState({lessonsTreeData: newLessonsTreeData}, this.reloadFromAssignment)
       }
@@ -149,7 +159,7 @@ class EditAssignmentView extends React.Component {
     }
     this.setState({
       selectedLessons: selectedLessons
-    }, this.validateAssignment)
+    }, () => { this.validateAssignment(); this.setIsPopulated() })
   }
 
   validateAssignment () {
@@ -239,92 +249,108 @@ class EditAssignmentView extends React.Component {
 
   render () {
     return (
-      <Grid fluid>
-        <Row className={'vcenter'}>
-          <Col sm={3} md={3} className={'text-right'}>
-            Name
-          </Col>
-          <Col sm={9} md={9}>
-            <FormControl
-              type='text'
-              value={this.state.assignmentName}
-              placeholder='Enter name'
-              onChange={this.handleNameChange}
-            />
-          </Col>
-        </Row>
-        <br />
-        <Row>
-          <Col sm={3} md={3} className={'text-right'}>
-            Assignment
-          </Col>
-          <Col sm={9} md={9}>
-            <DropdownTreeSelect onChange={this.onLessonTreeChange} data={this.state.lessonsTreeData} placeholderText={'Pick a goal skill'} />
-          </Col>
-        </Row>
-        <br />
-        <Row>
-          <Col sm={3} md={3} className={'text-right'}>
-            Start on
-          </Col>
-          <Col sm={6} md={6}>
-            <DatePicker onChange={this.handleStartOn} value={this.state.startDate} />
-          </Col>
-          <Col sm={3} md={3}>
-            <TimePicker
-              onChange={this.handleStartTimeChange}
-              start='01:00'
-              end='24:00'
-              step={60}
-              value={this.state.startTime} />
-          </Col>
-        </Row>
-        <br />
-        <Row>
-          <Col sm={3} md={3} className={'text-right'}>
-            Due on
-          </Col>
-          <Col sm={6} md={6}>
-            <DatePicker onChange={this.handleDueOn} value={this.state.dueDate} />
-          </Col>
-          <Col sm={3} md={3}>
-            <TimePicker
-              onChange={this.handleDueTimeChange}
-              start='01:00'
-              end='24:00'
-              step={60}
-              value={this.state.dueTime} />
-          </Col>
-        </Row>
-        <Row className={'vcenter'}>
-          <Col sm={3} md={3} className={'text-right'}>
-            Email
-          </Col>
-          <Col sm={9} md={9}>
-            <Checkbox
-              checked={this.state.sendEmail}
-              onClick={this.handleSendEmailChange}
-            > Send email notification</Checkbox>
-          </Col>
-        </Row>
-        <br />
-        <Row>
-          <Col sm={12} md={12} className={'text-center'}>
-            <button
-              className={'classroom-common-button' + (this.state.assignmentIsValid ? '' : ' disabled-button')}
-              disabled={!this.state.assignmentIsValid}
-              onClick={this.saveAssignment}>
-              Schedule assignment
-            </button>
-          </Col>
-        </Row>
-      </Grid>)
+      <div>{ this.state._ispopulated
+        ? <Grid fluid>
+          <Row className={'vcenter'}>
+            <Col sm={3} md={3} className={'text-right'}>
+              Name
+            </Col>
+            <Col sm={9} md={9}>
+              <FormControl
+                type='text'
+                value={this.state.assignmentName}
+                placeholder='Enter name'
+                onChange={this.handleNameChange}
+              />
+            </Col>
+          </Row>
+          <br />
+          <Row>
+            <Col sm={3} md={3} className={'text-right'}>
+              Assignment
+            </Col>
+            <Col sm={9} md={9}>
+              <DropdownTreeSelect onChange={this.onLessonTreeChange} data={this.state.lessonsTreeData} placeholderText={'Pick a goal skill'} />
+            </Col>
+          </Row>
+          <br />
+          <Row>
+            <Col sm={3} md={3} className={'text-right'}>
+              Start on
+            </Col>
+            <Col sm={6} md={6}>
+              <DatePicker onChange={this.handleStartOn} value={this.state.startDate} />
+            </Col>
+            <Col sm={3} md={3}>
+              <TimePicker
+                onChange={this.handleStartTimeChange}
+                start='01:00'
+                end='24:00'
+                step={60}
+                value={this.state.startTime} />
+            </Col>
+          </Row>
+          <br />
+          <Row>
+            <Col sm={3} md={3} className={'text-right'}>
+              Due on
+            </Col>
+            <Col sm={6} md={6}>
+              <DatePicker onChange={this.handleDueOn} value={this.state.dueDate} />
+            </Col>
+            <Col sm={3} md={3}>
+              <TimePicker
+                onChange={this.handleDueTimeChange}
+                start='01:00'
+                end='24:00'
+                step={60}
+                value={this.state.dueTime} />
+            </Col>
+          </Row>
+          <Row className={'vcenter'}>
+            <Col sm={3} md={3} className={'text-right'}>
+              Email
+            </Col>
+            <Col sm={9} md={9}>
+              <Checkbox
+                defaultChecked={this.state.sendEmail}
+                onClick={this.handleSendEmailChange}
+              > Send email notification</Checkbox>
+            </Col>
+          </Row>
+          <br />
+          <Row>
+            <Col sm={12} md={12} className={'text-center'}>
+              <button
+                className={'classroom-common-button' + (this.state.assignmentIsValid ? '' : ' disabled-button')}
+                disabled={!this.state.assignmentIsValid}
+                onClick={this.saveAssignment}>
+                Schedule assignment
+              </button>
+            </Col>
+          </Row>
+        </Grid>
+        : <Grid fluid>
+          <Row style={{height: '10rem'}}>
+            <Col sm={12} md={12}>
+              <div className='sweet-loading'>
+                <RingLoader
+                  color={'#1caff6'}
+                  loading={this.state.loading}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Grid>}
+      </div>
+    )
   }
 }
 
 EditAssignmentView.propTypes = {
   curriculaActions: PropTypes.shape({
-    curriculaFetchExpandedCurriculum: PropTypes.func.isRequired
+    curriculaFetchExpandedCurriculum: PropTypes.func.isRequired,
+    dataReceiveExpandedCurriculum: PropTypes.func.isRequired
   }).isRequired,
   curriculumExpanded: PropTypes.object,
   classroomTeacher: PropTypes.object.isRequired,
