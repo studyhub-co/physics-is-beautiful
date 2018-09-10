@@ -1,5 +1,7 @@
 import uuid
 
+from django.utils import timezone
+
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 
@@ -110,6 +112,75 @@ def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
             sender.objects.filter(pk=instance.pk).update(denormalized_image=first_lesson.image.name)
 
 
+class AssignmentProgressManager(models.Manager):
+
+    def __process__assignment_progress_list(self, assignment_progress_list):
+        for assignment_progress in assignment_progress_list:
+            student_completed_lessons = Lesson.objects.filter(
+                progress__profile=assignment_progress.student,
+                progress__status=30)
+            need_complete_lessons = assignment_progress.assignment.lessons.all()
+
+            if need_complete_lessons.exclude(id__in=student_completed_lessons).count() == 0:
+                # student already passed all lessons
+                if timezone.now() < assignment_progress.assignment.due_on.replace():
+                    assignment_progress.completed_on = timezone.now()
+                else:
+                    assignment_progress.delayed_on = timezone.now()
+            else:
+                # reset completed if find uncompleted lessons
+                assignment_progress.completed_on = None
+                assignment_progress.delayed_on = None
+
+            # save all lessons completed in Curriculum into classroom progress
+            assignment_progress.completed_lessons = student_completed_lessons.filter(
+                id__in=assignment_progress.assignment.lessons.all())
+
+            assignment_progress.save()
+
+    def recalculate_status_by_assignemnt(self, assignment):
+        assignment_progress_list = AssignmentProgress.objects.filter(assignment=assignment)
+
+        self.__process__assignment_progress_list(assignment_progress_list)
+
+    def recalculate_status_by_classroom(self, classroom, user):
+        assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=classroom.assignments.all(),
+                                                                     student=user)
+
+        self.__process__assignment_progress_list(assignment_progress_list)
+
+    def recalculate_status_by_lesson(self, lesson, user):
+        # from classroom.models import Assignment, AssignmentProgress
+        assignments = Assignment.objects.filter(lessons__id=lesson.id)
+        assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
+                                                                     student__user=user,
+                                                                     completed_on__isnull=True)
+
+        self.__process__assignment_progress_list(assignment_progress_list)
+
+        # for assignment_progress in assignment_progress_list:
+        #     # user can have several assignments (from different classroom e.g.) to one lesson
+        #     try:
+        #         assignment_progress.completed_lessons.add(lesson)
+        #
+        #         # do not support by mysql db
+        #         # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
+        #         #        .count() == 0:
+        #         completed_lessons_ids = []
+        #         [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
+        #         difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
+        #         if difference.count() == 0:
+        #             if timezone.now() < assignment_progress.assignment.due_on.replace():
+        #                 assignment_progress.completed_on = timezone.now()
+        #             else:
+        #                 assignment_progress.delayed_on = timezone.now()
+        #
+        #         assignment_progress.save()  # update updated_on date
+        #
+        #     except AssignmentProgress.DoesNotExist:
+        #         pass
+
+
 class AssignmentProgress(models.Model):
     assignment = models.ForeignKey(Assignment, related_name='assignment_progress')
     uuid = ShortUUIDField(unique=True)
@@ -120,6 +191,8 @@ class AssignmentProgress(models.Model):
     completed_on = models.DateTimeField(blank=True, null=True)
     delayed_on = models.DateTimeField(blank=True, null=True)  # Assignment completed but after due_on datetime
     student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')
+
+    objects = AssignmentProgressManager()
 
     class Meta:
         ordering = ['-start_on']
