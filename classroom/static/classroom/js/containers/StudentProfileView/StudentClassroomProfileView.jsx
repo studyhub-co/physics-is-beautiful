@@ -63,21 +63,18 @@ class StudentClassroomProfileView extends React.Component {
                 All students
               </a>
             </Col>
-            {/*<Col sm={6} md={6}>*/}
-              {/*<a className={'pointer'} onClick={() => { history.goBack() }}>{'< All students'}</a>*/}
-            {/*</Col>*/}
             <Col sm={6} md={6} className={'text-right'}>
-              <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
+              {this.props.classroomTeacher && !this.props.classroomTeacher.external_classroom ? <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
                 <Dropdown.Toggle className={'classroom-common-button'}>
                   <Glyphicon glyph='cog' />&nbsp;
                 Manage student
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem eventKey='remove'>Remove from class</MenuItem>
-                  {/*<MenuItem eventKey='send'>Send reminder</MenuItem>*/}
-                  {/*<MenuItem eventKey='edit'>Move student</MenuItem>*/}
+                  {/* <MenuItem eventKey='send'>Send reminder</MenuItem> */}
+                  {/* <MenuItem eventKey='edit'>Move student</MenuItem> */}
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> : null}
             </Col>
           </Row>
           <Row className={className}>

@@ -64,40 +64,56 @@ class StudentAssignmentSerializer(PublicProfileSerializer):
 class ExternalClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalClassroom
-        fields = ['external_id', 'name', 'teacher_id', 'code']
+        fields = ['external_id', 'name', 'teacher_id', 'code', 'provider', 'alternate_link']
 
 
 class ClassroomBaseSerializer(serializers.ModelSerializer):
     count_students = serializers.IntegerField(read_only=True)
     teacher = PublicProfileSerializer(read_only=True)
-    # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum = CurriculumSerializer(read_only=True)
+    # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
                                                    slug_field='uuid', write_only=True)
 
-    external = ExternalClassroomSerializer(source='external_classroom', many=False, required=False)
+    external_classroom = ExternalClassroomSerializer(many=False, required=False)
 
     def create(self, validated_data):
-        external = None
+        external_classroom = None
         if 'external_classroom' in validated_data:
-            external = validated_data.pop('external_classroom')
+            external_classroom = validated_data.pop('external_classroom')
 
         to_return = super(ClassroomBaseSerializer, self).create(validated_data)
 
-        if external:
-            # TODO save external data
-            pass
+        if external_classroom:
+            # save external data
+            kwargs = external_classroom
+            # if 'provider' in external_classroom:
+            #     kwargs['provider'] = external_classroom.pop('provider')
+            # external_id=external_classroom['external_id'],
+            #                                              name=external_classroom['name'],
+            #                                              teacher_id=external_classroom['teacher_id'],
+            #                                              code=external_classroom['code'],
+            try:
+                ExternalClassroom.objects.create(classroom=to_return,
+                                             **kwargs)
+            except:  # TODO raise error message
+                pass
         return to_return
 
     class Meta:
         model = Classroom
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'count_students',
-                  'teacher', 'curriculum_uuid', 'external']
+                  'teacher', 'curriculum_uuid', 'external_classroom']
         read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
 
 
 class ClassroomListSerializer(ClassroomBaseSerializer):
-    less_students = PublicProfileSerializer(many=True, read_only=True)
+    less_students = serializers.SerializerMethodField(read_only=True)
+
+    def get_less_students(self, container):
+        students = container.students.all()[:12]  # Whatever your query may be
+        serializer = PublicProfileSerializer(instance=students, many=True)
+        return serializer.data
 
     class Meta(ClassroomBaseSerializer.Meta):
         fields = ClassroomBaseSerializer.Meta.fields + ['less_students']
@@ -105,11 +121,6 @@ class ClassroomListSerializer(ClassroomBaseSerializer):
 
 class ClassroomSerializer(ClassroomBaseSerializer):
     pass
-    # students = PublicProfileSerializer(read_only=True, many=True)
-    # students = StudentProfileSerializer(read_only=True, many=True)
-
-    # class Meta(ClassroomBaseSerializer.Meta):
-    # fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
 class AssignmentListSerializer(serializers.ModelSerializer):
@@ -257,7 +268,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
                   'count_lessons', 'completed_on', 'delayed_on', 'assigned_on',
                   'count_students_completed_assingment', 'count_students_missed_assingment',
                   'count_students_delayed_assingment',
-                  'count_completed_lessons', 'image']
+                  'count_completed_lessons', 'image', 'send_email']
         read_only_fields = ('uuid', 'created_on', 'updated_on')
 
 

@@ -1,6 +1,6 @@
-import datetime
+from django.db import transaction
 
-from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField
+from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField, Value, CharField
 
 from django.utils import timezone
 
@@ -36,7 +36,8 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly)
     serializer_class = ClassroomSerializer
     list_serializer_class = ClassroomListSerializer
-    queryset = Classroom.objects.all().select_related('curriculum', 'teacher').prefetch_related('students')
+    queryset = Classroom.objects.all().select_related('curriculum', 'curriculum__author', 'teacher', 'teacher__user')\
+        .prefetch_related('students', 'students__user', 'external_classroom')
     lookup_field = 'uuid'
 
     def get_queryset(self):
@@ -47,12 +48,12 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         if filter_by in ('as_student', 'as_teacher') and self.request.user.is_authenticated():
             if filter_by == 'as_student':
-                queryset = queryset.filter(students__user=self.request.user)
+                queryset = queryset.filter(students=self.request.user.profile)
             elif filter_by == 'as_teacher':
-                queryset = queryset.filter(teacher__user=self.request.user)
+                queryset = queryset.filter(teacher=self.request.user.profile)
         else:
             queryset = queryset. \
-                filter(Q(teacher__user=self.request.user) | Q(students__user=self.request.user))
+                filter(Q(teacher=self.request.user.profile) | Q(students=self.request.user.profile))
 
         return queryset
 
@@ -62,14 +63,16 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def join(self, request):
         try:
-            classroom = Classroom.objects.get(code=request.data.get('code', ''))
+            classroom = Classroom.objects.get(code=request.data.get('code', ''), external_classroom=None)
         except Classroom.DoesNotExist:
             raise NotFound()
 
-        # check ther user not if classrom
+        # check that user not if classrom
         if ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).count() == 0:
             # add current user to classroom as student
             ClassroomStudent.objects.create(student=request.user.profile, classroom=classroom)
+        else:
+            raise NotFound()
 
         serializer = ClassroomSerializer(classroom)
 
@@ -79,7 +82,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         for assignment in classroom.assignments.all():
             ap_objects.append(AssignmentProgress(student=request.user.profile, assignment=assignment))
 
-        # TODO async background mode is preferable
+        # FIXME async background mode is preferable
         AssignmentProgress.objects.bulk_create(
             ap_objects
         )
@@ -89,21 +92,93 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def leave(self, request):
         try:
-            classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''))
+            classroom = Classroom.objects.get(uuid=request.data.get('uuid', ''), external_classroom=None)
         except Classroom.DoesNotExist:
             raise NotFound()
 
         ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).delete()
 
         # remove AssignmentProgress for all Assignments for joined student
-        # TODO async background mode is preferable
-        assignments = AssignmentProgress.objects.filter(student=request.user.profile)
+        # FIXME async background mode is preferable
+        assignments = AssignmentProgress.objects.filter(student=request.user.profile, assignment__classroom=classroom)
         if assignments.exists():
             assignments.delete()
 
         serializer = ClassroomSerializer(classroom)
 
         return Response(serializer.data)
+
+    @action(methods=['POST'], detail=True,
+            permission_classes=[permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly])
+    def roster(self, request, uuid):
+        # batch API
+        try:
+            classroom = Classroom.objects.get(uuid=uuid)
+        except Classroom.DoesNotExist:
+            raise NotFound()
+
+        if 'students' in request.data:
+            # sync students
+            # Create students if not exists
+            from pib_auth.models import User
+
+            to_add_users_in_classroom = []
+            to_remove_profiles_from_classroom__ids = [profile.id for profile in classroom.students.all()]
+
+            for student in request.data['students']:
+                user = None
+                try:
+                    user = User.objects.get(email=student['email'])
+                except User.DoesNotExist:
+                    try:
+                        user = User.objects.create(**student)
+
+                        # add to account_emailaddress (login instead of sign up)
+                        from allauth.account.models import EmailAddress
+                        EmailAddress.objects.create(user=user, email=user.email, primary=True, verified=True)
+
+                    except TypeError:
+                        raise NotAcceptable('Student should be json {"email": , "first_name", "last_name":}')
+
+                if user:
+                    try:
+                        to_remove_profiles_from_classroom__ids.remove(user.profile.id)
+                    except ValueError:
+                        pass  # new student
+
+                    if user.profile not in classroom.students.all():  # FIXME test for load / need to use task quene
+                        to_add_users_in_classroom.append(user)
+
+            # Add students to classroom
+            if len(to_add_users_in_classroom) > 0:
+                student_classroom_s = (ClassroomStudent(student=user.profile, classroom=classroom)
+                                       for user in to_add_users_in_classroom)
+                assingments_progressess = []
+                for user in to_add_users_in_classroom:  # FIXME need to use task quene
+                    for assignment in classroom.assignments.all():
+                        assingments_progressess.append(AssignmentProgress(student=user.profile, assignment=assignment))
+
+                with transaction.atomic():
+                    ClassroomStudent.objects.bulk_create(student_classroom_s)
+                    AssignmentProgress.objects.bulk_create(assingments_progressess)
+
+            # Remove students from classrrom
+            if len(to_remove_profiles_from_classroom__ids) > 0:
+                with transaction.atomic():
+                    ClassroomStudent.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                                                    classroom=classroom).delete()
+                    AssignmentProgress.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                                                      assignment__classroom=classroom).delete()
+
+            return Response(status=status.HTTP_201_CREATED)
+
+        raise NotFound()
+
+
+class ClassroomLessonSerializer(LessonSerializer):
+
+    def get_status(self, obj):
+        return obj.ann_status
 
 
 class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
@@ -129,10 +204,9 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                 if completed_lessons.count() == 0:
                     first_uncompleted_lesson = lesson
                 else:
-                    for completed_lesson in completed_lessons:
-                        if completed_lesson != lesson:
-                            first_uncompleted_lesson = lesson
-                            break
+                    if lesson not in completed_lessons:
+                        first_uncompleted_lesson = lesson
+                        break
                     else:
                         continue
                 break
@@ -180,7 +254,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                      Count(
                                          Case(
                                              When(assignment_progress__completed_on__isnull=False,
-                                                  then=1),
+                                                  then=F('assignment_progress__id')),
                                              output_field=IntegerField()
                                              )
                                          , distinct=True)
@@ -189,21 +263,23 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                      Count(
                                             Case(
                                                 When(Q(due_on__lt=timezone.now())
-                                                     & Q(assignment_progress__delayed_on__isnull=False),
-                                                     then=1),
+                                                     & Q(assignment_progress__delayed_on__isnull=False)
+                                                     & Q(assignment_progress__completed_on__isnull=True),
+                                                     then=F('assignment_progress__id')),
                                                 output_field=IntegerField()
-                                                , distinct=True )
-                                        )
+                                                ),
+                                            distinct=True)
                                      )
         queryset = queryset.annotate(count_students_missed_assingment=
                                      Count(
                                         Case(
                                             When(Q(due_on__lt=timezone.now())
+                                                 & Q(assignment_progress__delayed_on__isnull=True)
                                                  & Q(assignment_progress__completed_on__isnull=True),
-                                                 then=1),
+                                                 then=F('assignment_progress__id')),
                                             output_field=IntegerField()
-                                            )
-                                         , distinct=True)
+                                            ), distinct=True
+                                        )
                                      )
 
         return queryset
@@ -225,21 +301,15 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             ap_objects
         )
 
-        serializer.send_emails(assignment)
+        # test that we need to send emails
+        if assignment.send_email:
+            serializer.send_emails(assignment)
 
     def perform_update(self, serializer):
-        # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
         new_lessons_uuids = []
 
         for lesson_uuid in serializer.initial_data.get('lessons_uuids', []):
             new_lessons_uuids.append(lesson_uuid)
-
-        # new_lessons = Lesson.object.filter(uuid__in=new_lessons_uuids)
-
-        # if assignment have new lessons
-        # if new_lessons.exlude(uuid__in=serializer.instance.lessons.values_list('uuid', flat=True)).count() > 0:
-        #     AssignmentProgress.objets.filter(assignment=serializer.instance)\
-        #         .update(completed_on=None, delayed_on=None)
 
         existing_lesson_uuids = serializer.instance.lessons.values_list('uuid', flat=True)
         for existing_lesson in existing_lesson_uuids:
@@ -247,15 +317,16 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             if existing_lesson in new_lessons_uuids:
                 new_lessons_uuids.remove(existing_lesson)
 
-        serializer.save()
-
-        # TODO Check dates
-        # if there are still new lessons
-        if len(new_lessons_uuids) > 0:
+        # FIXME Do we need to check start date
+        # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
+        if len(new_lessons_uuids) > 0 or serializer.instance.due_on != serializer.validated_data['due_on']:
             # reset AssignmentProgresses dates
             AssignmentProgress.objects.filter(assignment=serializer.instance)\
                     .update(completed_on=None, delayed_on=None)
-            serializer.send_emails(serializer.instance)
+            if serializer.instance.send_email:
+                serializer.send_emails(serializer.instance)
+
+        serializer.save()
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def students(self, request, classroom_uuid, uuid):
@@ -279,14 +350,24 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def lessons(self, request, classroom_uuid, uuid):
         # /api/v1/classroom/classroomuuid/assignment/uuid/lessons/
         try:
-            # FIXME to think do we need lessons list for a teacher
             assignment = Assignment.objects.get(uuid=uuid)
         except Assignment.DoesNotExist:
             raise NotFound('Can\'t find the assignment')
 
-        lessons_list = assignment.lessons.all()
+        lessons_list = assignment.lessons.all().annotate(ann_status=Value('', CharField()))
 
-        serializer = LessonSerializer(lessons_list, many=True)
+        try:
+            completed_lessons = \
+                AssignmentProgress.objects.get(student__user=request.user, assignment=assignment).completed_lessons.all().\
+                annotate(ann_status=Value('completed', CharField()))
+
+            # mark completed lessons
+            lessons_list = completed_lessons.union(lessons_list.exclude(Q(id__in=completed_lessons)))
+
+        except AssignmentProgress.DoesNotExist:
+            pass
+
+        serializer = ClassroomLessonSerializer(lessons_list, many=True)
         return Response(serializer.data)
 
 
@@ -421,7 +502,7 @@ class StudentProfileViewSet(GenericViewSet):
             raise NotFound('profile not found')
 
         try:
-            classroom = Classroom.objects.get(uuid=classroom_uuid)
+            classroom = Classroom.objects.get(uuid=classroom_uuid, external_classroom=None)
         except Profile.DoesNotExist:
             raise NotFound('classroom not found')
 

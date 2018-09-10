@@ -1,32 +1,32 @@
 @font-face {
     font-family: 'GTPressuraMono';
-    src: url('fonts/GT-Pressura-Mono-Regular.woff2') format('woff2');
+    src: url('../../../static/fonts/GT-Pressura-Mono-Regular.woff2') format('woff2');
     font-style: normal;
 }
 
 @font-face {
     font-family: 'GTPressuraMono';
-    src: url('fonts/GT-Pressura-Mono-Regular.woff2') format('woff2');
+    src: url('../../../static/fonts/GT-Pressura-Mono-Regular.woff2') format('woff2');
     font-style: bold;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-300-webfont.woff2') format('woff2');
+    src: url('../../../static/fonts/museosansrounded-300-webfont.woff2') format('woff2');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-500-webfont.woff2') format('woff2');
+    src: url('../../../static/fonts/museosansrounded-500-webfont.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-700-webfont.woff2') format('woff2');
+    src: url('../../../static/fonts/museosansrounded-700-webfont.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
 }
@@ -170,7 +170,11 @@ html, body {
 		width: 99%;
 		padding: 20px;
 		margin-top: -15px;
+        text-align: center;
 	}
+    .section-sheet .row {
+        justify-content: center;
+    }
 	.game-sheet {
 		width: 99%;
 		padding: 20px;

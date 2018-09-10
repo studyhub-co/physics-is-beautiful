@@ -24,6 +24,7 @@ import * as assignmentCreators from '../../actions/assignment'
 import * as classroomCreators from '../../actions/classroom'
 import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
+import * as googleCreators from '../../actions/google'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { AssignmentTeacherView, EditAssignmentView, StudentClassroomProfileView } from '../index'
@@ -43,6 +44,7 @@ class TeacherClassroomView extends React.Component {
     this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
     this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
     this.hideCopiedToolTip = this.hideCopiedToolTip.bind(this)
+    this.syncExternalStudents = this.syncExternalStudents.bind(this)
 
     this.state = {
       showCreateAssigment: false,
@@ -95,8 +97,18 @@ class TeacherClassroomView extends React.Component {
   }
 
   hideCopiedToolTip () {
-    if(this.refs.overlay1) { this.refs.overlay1.hide() }
-    if(this.refs.overlay2) { this.refs.overlay2.hide() }
+    if (this.refs.overlay1) { this.refs.overlay1.hide() }
+    if (this.refs.overlay2) { this.refs.overlay2.hide() }
+  }
+
+  syncExternalStudents () {
+    var googleClassroomsList = [
+      {
+        id: this.props.classroomTeacher.external_classroom.external_id,
+        pib_classroom_uuid: this.props.classroomTeacher.uuid
+      }
+    ]
+    this.props.googleActions.googleFetchAndSaveClassroomsStudents(googleClassroomsList, true)
   }
 
   render () {
@@ -158,7 +170,8 @@ class TeacherClassroomView extends React.Component {
             <TabContent for='settings'>
               { this.props.classroomTeacher
                 ? <div>
-                  <div className={'pop-up-window text-align-center'}>
+                  { this.props.classroomTeacher.external_classroom ? <div className={'pop-up-window text-align-center'}>
+                    {/* FIXME if we will be used other classrooms than google we must finalize this code */}
                     <div
                       className={'gray-text title'}
                       style={
@@ -166,11 +179,12 @@ class TeacherClassroomView extends React.Component {
                           color: '#676767',
                           marginBottom: '1rem'
                         }}>
-                      Classroom Code
+                      Google Classroom Code
                     </div>
-                    <div className={'gray-text title'}>Share classroom code</div>
+                    <div className={'gray-text title'}>Share google classroom code</div>
+                    <div className={'gray-text'}>Join url: <a target={'blank'} href='https://classroom.google.com/h'>https://classroom.google.com/h</a></div>
                     <div>
-                      <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
+                      <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.external_classroom.code}</span>&nbsp;
                       <span className={'gray-text pointer'}>
                         <OverlayTrigger
                           delayShow={300}
@@ -178,35 +192,63 @@ class TeacherClassroomView extends React.Component {
                           trigger='click'
                           placement='top'
                           overlay={copiedTooltip}>
-                          <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.code}>
+                          <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.external_classroom.code}>
                             <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>copy</span>
                           </Clipboard>
                         </OverlayTrigger>
                       </span>
                     </div>
-                    <br />
-                    <div className={'gray-text title'}>
-                      Or invite students with link:
-                    </div>
-                    <InputGroup>
-                      <FormControl type='text' readOnly value={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'} />
-                      <span className='input-group-btn'>
-                        <Clipboard
-                          className={'btn btn-default'}
-                          component='button'
-                          data-clipboard-text={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'}>
+                  </div>
+                    : <div className={'pop-up-window text-align-center'}>
+                      <div
+                        className={'gray-text title'}
+                        style={
+                          {fontSize: '2rem',
+                            color: '#676767',
+                            marginBottom: '1rem'
+                          }}>
+                        Classroom Code
+                      </div>
+                      <div className={'gray-text title'}>Share classroom code</div>
+                      <div>
+                        <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
+                        <span className={'gray-text pointer'}>
                           <OverlayTrigger
                             delayShow={300}
+                            ref='overlay1'
                             trigger='click'
                             placement='top'
-                            ref='overlay2'
                             overlay={copiedTooltip}>
-                            <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>Copy</span>
+                            <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.code}>
+                              <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>copy</span>
+                            </Clipboard>
                           </OverlayTrigger>
-                        </Clipboard>
-                      </span>
-                    </InputGroup>
-                  </div>
+                        </span>
+                      </div>
+                      <br />
+                      <div className={'gray-text title'}>
+                        Or invite students with link:
+                      </div>
+                      <InputGroup>
+                        <FormControl type='text' readOnly value={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'} />
+                        <span className='input-group-btn'>
+                          <Clipboard
+                            className={'btn btn-default'}
+                            component='button'
+                            data-clipboard-text={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'}>
+                            <OverlayTrigger
+                              delayShow={300}
+                              trigger='click'
+                              placement='top'
+                              ref='overlay2'
+                              overlay={copiedTooltip}>
+                              <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>Copy</span>
+                            </OverlayTrigger>
+                          </Clipboard>
+                        </span>
+                      </InputGroup>
+                    </div>
+                  }
                   <div className={'pop-up-window text-align-center'}>
                     <div
                       className={'gray-text title'}
@@ -232,8 +274,21 @@ class TeacherClassroomView extends React.Component {
                 : null }
             </TabContent>
             <TabContent for='students'>
+              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.external_classroom
+                ? <Row>
+                  <Col sm={7} md={7} className={'vcenter'}>
+                    <span className={'gray-text'}>Keep your Google Classroom in sync</span>
+                  </Col>
+                  <Col sm={5} md={5}>
+                    <button
+                      disabled={!this.props.gapiInitState}
+                      className={'classroom-common-button'}
+                      onClick={this.syncExternalStudents}>Sync students</button>
+                  </Col>
+                </Row> : null }
               <Route path={studentProfileUrl} component={StudentClassroomProfileView} />
-              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0
+              {/*{ isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0*/}
+              { isExactUrl && this.props.classroomTeacher
                 ? <span>
                   { this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
                     return <TeacherStudentCard
@@ -318,7 +373,8 @@ class TeacherClassroomView extends React.Component {
 
 TeacherClassroomView.propTypes = {
   tabActions: PropTypes.shape({
-    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired
+    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired,
+    changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   teacherClassroomTab: PropTypes.string,
   studentActions: PropTypes.shape({
@@ -337,7 +393,11 @@ TeacherClassroomView.propTypes = {
   classroomTeacher: PropTypes.object,
   assignmentsList: PropTypes.array,
   assignment: PropTypes.object,
-  teacherClassroomStudentsList: PropTypes.array
+  teacherClassroomStudentsList: PropTypes.array,
+  gapiInitState: PropTypes.bool,
+  googleActions: PropTypes.shape({
+    googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
+  }).isRequired
 }
 
 const mapStateToProps = (state) => {
@@ -346,7 +406,8 @@ const mapStateToProps = (state) => {
     teacherClassroomTab: state.tab.teacherClassroomTab,
     assignmentsList: state.assignment.assignmentsList,
     assignment: state.assignment.assignment,
-    teacherClassroomStudentsList: state.student.classroomStudentsList
+    teacherClassroomStudentsList: state.student.classroomStudentsList,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
@@ -356,7 +417,8 @@ const mapDispatchToProps = (dispatch) => {
     tabActions: bindActionCreators(tabsCreators, dispatch),
     classroomActions: bindActionCreators(classroomCreators, dispatch),
     assignmentActions: bindActionCreators(assignmentCreators, dispatch),
-    studentActions: bindActionCreators(studentCreators, dispatch)
+    studentActions: bindActionCreators(studentCreators, dispatch),
+    googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 

@@ -23,8 +23,8 @@ export class TeacherAssigmentStudentRow extends React.Component {
       boxName = '-completed'
       glyphicon = 'ok-sign'
     } else if (this.props.student.delayed_on) {
-      delayedOnDate = new Date(this.props.student.completed_on).toLocaleDateString() + ' ' +
-        new Date(this.props.student.completed_on).toLocaleTimeString()
+      delayedOnDate = new Date(this.props.student.delayed_on).toLocaleDateString() + ' ' +
+        new Date(this.props.student.delayed_on).toLocaleTimeString()
       statusText = 'Completed late'
       colorName = 'yellow'
       boxName = '-delayed'
@@ -39,7 +39,7 @@ export class TeacherAssigmentStudentRow extends React.Component {
     }
 
     return (
-      <div className={className}>
+      <div className={className} onClick={() => this.props.onStudentClick()}>
         <Row>
           <Col sm={1} md={1}>
             {this.props.student && this.props.student.gravatar_url
@@ -51,7 +51,6 @@ export class TeacherAssigmentStudentRow extends React.Component {
           </Col>
           <Col sm={6} md={6}>
             <span
-              onClick={() => this.props.onStudentClick()}
               className={'blue-title pointer'}>{this.props.student.display_name}
             </span>
           </Col>
@@ -64,7 +63,8 @@ export class TeacherAssigmentStudentRow extends React.Component {
               </div> : <span>{ statusText }</span>}
           </Col>
           <Col sm={2} md={2} className={'vcenter'}>
-            { completedOnDate || delayedOnDate}
+            { completedOnDate ? <span>{completedOnDate}</span> : null}
+            { delayedOnDate ? <span>{delayedOnDate}</span> : null}
           </Col>
           <Col sm={1} md={1} />
         </Row>

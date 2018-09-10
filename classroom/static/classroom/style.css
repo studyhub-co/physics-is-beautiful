@@ -23,8 +23,21 @@
     background-color: #f0f1f2;
 }
 
-.google-button img:nth-child(1) { /* google icon */
+.google-button div:nth-child(1) { /* google icon */
     margin-right: 1.5rem;
+}
+
+.google-button .google-classroom-img {
+    background: url('data:image/png;base64,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');
+    width: 32px;
+    height: 32px;
+}
+
+.google-button:hover {
+    text-decoration: none;
+}
+.google-button:active {
+    text-decoration: none;
 }
 
 .google-button span:nth-of-type(1) {
@@ -62,6 +75,16 @@
 }
 
 /* common */
+
+.seletected-fade-out {
+   animation: fade 2s 6s forwards;
+   background-color: #dddddd !important;
+}
+
+@keyframes fade {
+    from {background-color:#dddddd;}
+    to {background-color:rgba(242, 245, 169, 0);}
+}
 
 .classroom .blue-text {
     color: rgb(8, 209, 255)
@@ -197,6 +220,37 @@
     padding-top: 1rem;
     margin-top: 1rem;
     vertical-align: top;
+}
+
+.lesson-card {
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0);
+    margin: 10px;
+    margin-right: 35px;
+    padding: 0px;
+    display: inline-block;
+    width: 150px;
+    text-align: center;
+    text-transform: capitalize;
+    cursor: pointer;
+    color: #666666;
+    box-shadow: 0px 0px 10px #BBB;
+    transition: color 500ms, box-shadow 500ms, border-color 500ms;
+}
+
+.lesson-card div:nth-of-type(2) {
+    padding: .8rem;
+    font-family: 'Museosansrounded';
+    font-size: 1.4rem;
+    height: 4rem;
+    font-weight: 500;
+}
+
+.lesson-card:hover {
+    border-style: solid;
+    border-color: #1caff6;
 }
 
 /* student-card */
