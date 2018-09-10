@@ -87,6 +87,8 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             ap_objects
         )
 
+        AssignmentProgress.objects.recalculate_status_by_classroom(classroom, request.user.profile)
+
         return Response(serializer.data)
 
     @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
@@ -169,6 +171,8 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                                                     classroom=classroom).delete()
                     AssignmentProgress.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
                                                       assignment__classroom=classroom).delete()
+
+            AssignmentProgress.objects.recalculate_status_by_classroom(classroom, user.profile)
 
             return Response(status=status.HTTP_201_CREATED)
 
@@ -301,6 +305,9 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             ap_objects
         )
 
+        # resfresh assignments states
+        AssignmentProgress.objects.recalculate_status_by_assignemnt(assignment)
+
         # test that we need to send emails
         if assignment.send_email:
             serializer.send_emails(assignment)
@@ -321,12 +328,17 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
         if len(new_lessons_uuids) > 0 or serializer.instance.due_on != serializer.validated_data['due_on']:
             # reset AssignmentProgresses dates
-            AssignmentProgress.objects.filter(assignment=serializer.instance)\
-                    .update(completed_on=None, delayed_on=None)
+            # AssignmentProgress.objects.filter(assignment=serializer.instance)\
+            #         .update(completed_on=None, delayed_on=None)
+            # resfresh assignments states
+            AssignmentProgress.objects.recalculate_status_by_assignemnt(serializer.instance)
+
             if serializer.instance.send_email:
                 serializer.send_emails(serializer.instance)
 
         serializer.save()
+
+
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def students(self, request, classroom_uuid, uuid):
