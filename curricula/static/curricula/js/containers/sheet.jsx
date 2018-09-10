@@ -21,9 +21,8 @@ class LessonComplete extends React.Component {
               You rock! Lesson complete!
           </h2>
         </div>
-        <a className='btn btn-primary btn-lg btn-block' href={
-          window.IS_MOBILE_APP ? '/curriculum/modules/' + this.props.lesson.module + '?pib_mobile=true'
-            : '/curriculum/modules/' + this.props.lesson.module}>
+        <a className='btn btn-primary btn-lg btn-block' onClick={
+          () => window.history.back()} href='javascript:void(0)'>
 
             Proceed to next level
         </a>
