@@ -29,8 +29,17 @@ class AssignmentStudentRow extends React.Component {
   }
 
   render () {
+    var selectedAssignmentUuid = null
+    var assignmentStudentLessonsList = this.props['assignmentStudentLessonsList' + this.props.assignment.uuid]
+
     var className = 'student-classroom-row'
 
+    if (window.location.hash) {
+      selectedAssignmentUuid = window.location.hash.substr(1)
+      if (selectedAssignmentUuid === this.props.assignment.uuid) {
+        className += ' seletected-fade-out'
+      }
+    }
     var dueDateTime = null
 
     var textColorClassName = 'green-text'
@@ -49,7 +58,7 @@ class AssignmentStudentRow extends React.Component {
     }
 
     return (
-      <Row className={className}>
+      <Row className={className} id={this.props.assignment.uuid}>
         <Col sm={12} md={12}>
           <Row>
             <Col sm={1} md={1}>
@@ -105,21 +114,26 @@ class AssignmentStudentRow extends React.Component {
           </Row>
           <Row>
             <Col sm={12} md={12}>
-              { this.props.assignmentsStudentLessonsList && this.props.assignmentsStudentLessonsList[this.props.assignment.uuid]
-                ? this.props.assignmentsStudentLessonsList[this.props.assignment.uuid].map(function (lesson, i) {
+              { assignmentStudentLessonsList
+                ? assignmentStudentLessonsList.map(function (lesson, i) {
                   return <span
-                    className={'basic-card'}
-                    style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
+                    className={'col-md-1 lesson-card' + (lesson.status === 'completed' ? ' module-completed'
+                      : ' module-accessible-block')}
+                    // style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
                     onClick={() => { this.onLessonClick(lesson) }} key={i}>
-                    <Image
-                      responsive
-                      src={lesson.image}
-                      width={'80%'}
-                      rounded
-                      style={{display: 'inline-block', top: '0', height: '80%'}}
-                    />
+                    <div className={'thumbnail section-thumbnail'}>
+                      <Image
+                        // responsive
+                        src={lesson.image}
+                        // width={'80%'}
+                        // rounded
+                        // style={{display: 'inline-block', top: '0', height: '80%'}}
+                      />
+                    </div>
                     <div>
-                      {lesson.name}
+                      {lesson.name}{lesson.status === 'completed'
+                        ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '1rem'}}/>
+                        : null}
                     </div>
                   </span>
                 }, this) : null}
@@ -134,16 +148,17 @@ class AssignmentStudentRow extends React.Component {
 AssignmentStudentRow.propTypes = {
   assignment: PropTypes.object.isRequired,
   onTitleClick: PropTypes.func,
-  assignmentsStudentLessonsList: PropTypes.object,
+  // assignmentsStudentLessonsList: PropTypes.object,
   classrroom_uuid: PropTypes.string.isRequired,
   assignmentActions: PropTypes.shape({
     assignmentFetchStudentLessonsList: PropTypes.func.isRequired
   }).isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    assignmentsStudentLessonsList: state.assignment.assignmentsStudentLessonsList
+    ['assignmentStudentLessonsList' + ownProps.assignment.uuid]:
+      state.assignment['assignmentStudentLessonsList' + ownProps.assignment.uuid]
   }
 }
 

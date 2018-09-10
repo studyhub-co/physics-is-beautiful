@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
 
-import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
+// import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
 
 import SelectCurriculum from '../../components/SelectCurriculum'
 
@@ -71,24 +71,9 @@ class IndexView extends React.Component {
     if (this.state.googleClassroomsImportStep === 1) {
       this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep + 1})
     } else if (this.state.googleClassroomsImportStep === 2) {
-      // external_classroom data to classroom
-      for (var i = 0; i < this.state.googleClassroomsSelected.length; i++) {
-        var googleClassRoom = this.state.googleClassroomsSelected[i]
-        var newClassroom = {}
-        newClassroom['name'] = googleClassRoom['name']
-        newClassroom['curriculum_uuid'] = this.state.googleCurriculumSelected.uuid
-        newClassroom['external'] = {}
-        newClassroom['external']['external_id'] = googleClassRoom['id']
-        newClassroom['external']['name'] = googleClassRoom['name']
-        newClassroom['external']['teacher_id'] = googleClassRoom['ownerId']
-        newClassroom['external']['code'] = googleClassRoom['enrollmentCode']
-
-        this.props.classroomActions.classroomCreateClassroom(newClassroom)
-        // TODO reload classroom teacher list
-      }
-      // TODO after all classrooms are created:
-      // 1 bacth fetch all students of all classrroms from google API
-      // 2 save students in classrooms (create classroom API for students batch adding)
+      this.props.googleActions.googleSaveClassroomsWithStudents(
+        this.state.googleClassroomsSelected,
+        this.state.googleCurriculumSelected)
 
       this.setState({'googleClassroomsImportStep': 1,
         googleClassroomsSelected: [],
@@ -173,10 +158,11 @@ class IndexView extends React.Component {
                       <h2>All classrooms</h2>
                     </Col>
                     <Col sm={4} md={3} smOffset={2} mdOffset={3}>
-                      <button disabled={!this.props.gapiInitState}
+                      <button
+                        disabled={!this.props.gapiInitState}
                         onClick={this.getGoogleClassroomList}
                         className='google-button' type='button'>
-                        <img className='' src={GoooleClassromIcon} alt='Import from Google Classroom' />
+                        <div className='google-classroom-img' />
                         <span>
                           <span>Import from</span>
                           <span>Google Classroom</span>
@@ -197,7 +183,8 @@ class IndexView extends React.Component {
                                 ? <div>{this.state.googleClassroomsImportStep === 1
                                   ? this.props.googleClassroomsList.map(function (classroom, i) {
                                     return <GoogleClassroomRow
-                                      onGoogleClassroomClick={this.onGoogleClassroomClick }
+                                      onGoogleClassroomClick={this.onGoogleClassroomClick}
+                                      existingClassroomsList={this.props.classroomList}
                                       classroom={classroom}
                                       key={i} />
                                   }, this)
@@ -283,7 +270,8 @@ IndexView.propTypes = {
   }).isRequired,
   googleActions: PropTypes.shape({
     googleFetchClassroomList: PropTypes.func.isRequired,
-    gapiInitialize: PropTypes.func.isRequired
+    gapiInitialize: PropTypes.func.isRequired,
+    googleSaveClassroomsWithStudents: PropTypes.func.isRequired
   }).isRequired,
   classroomActions: PropTypes.shape({
     classroomCreateClassroom: PropTypes.func.isRequired,
@@ -305,7 +293,7 @@ const mapStateToProps = (state) => {
     classroomList: state.classroom.classroomList,
     classroomStudentList: state.classroom.classroomStudentList,
     googleClassroomsList: state.google.googleClassroomsList,
-    gapiInitState: state.google.gapiInitState,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
