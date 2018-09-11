@@ -232,13 +232,22 @@ class ModulesApp extends React.Component {
     // If we are using the mobile app, make the query persist.
     if (window.IS_MOBILE_APP) backLink += '?pib_mobile=true'
 
-    this.setState({
-      sections: sections,
-      backLink: backLink,
-      question: null,
-      progress: 0,
-      answer: null
-    })
+    if (window.IS_MOBILE_APP) {
+      this.setState({
+        sections: sections,
+        question: null,
+        progress: 0,
+        answer: null
+      })
+    } else {
+      this.setState({
+        sections: sections,
+        backLink: backLink,
+        question: null,
+        progress: 0,
+        answer: null
+      })
+    }
   }
 
   fetchState () {
