@@ -45,6 +45,24 @@ class IndexView extends React.Component {
     }
   }
 
+  componentWillMount () {
+    this.props.googleActions.gapiInitialize()
+    this.props.classroomActions.classroomFetchTeacherClassroomsList()
+    this.props.classroomActions.classroomFetchStudentClassroomsList()
+  }
+
+  componentWillReceiveProps (props) {
+    if (props.tab !== this.props.tab) {
+      if (props.tab === 'student') {
+        this.props.classroomActions.classroomFetchStudentClassroomsList()
+      } else if (props.tab === 'teacher') {
+        this.props.classroomActions.classroomFetchTeacherClassroomsList()
+      }
+    }
+  }
+
+  // ================ Google start
+
   getGoogleClassroomList () {
     this.props.googleActions.googleFetchClassroomList()
     this.handleImportGoogleClassroom()
@@ -93,11 +111,7 @@ class IndexView extends React.Component {
     this.setState({'showSelectGooleClassroom': !this.state.showSelectGooleClassroom})
   }
 
-  componentWillMount () {
-    this.props.googleActions.gapiInitialize()
-    this.props.classroomActions.classroomFetchTeacherClassroomsList()
-    this.props.classroomActions.classroomFetchStudentClassroomsList()
-  }
+  // ================ Google end
 
   render () {
     var baseUrl =  this.props.match.url.replace(/\/$/, '')
