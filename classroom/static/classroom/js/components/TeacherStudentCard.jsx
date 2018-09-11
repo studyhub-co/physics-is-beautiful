@@ -13,10 +13,10 @@ export class TeacherStudentCard extends React.Component {
       <Grid fluid style={{float: 'left', padding: '0'}}>
         <Row className={className} onClick={() => this.props.onStudentClick()}>
           <Col sm={2} md={2}>
-            {this.props.student.gravatar_url
+            {this.props.student.avatar_url
               ? <Image
                 responsive
-                src={this.props.student.gravatar_url}
+                src={this.props.student.avatar_url}
                 circle />
               : null}
           </Col>

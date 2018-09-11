@@ -21,22 +21,25 @@ class BaseSerializer(serializers.ModelSerializer):
 class PublicProfileSerializer(BaseSerializer):
     display_name = serializers.CharField(source='user.display_name')
     username = serializers.CharField(source='user.username')
+    avatar_url = serializers.CharField(source='get_avatar_url')
 
     class Meta:
         model = Profile
-        fields = ['display_name', 'username', 'gravatar_url']
-        read_only_fields = ['gravatar_url']
+        fields = ['display_name', 'username', 'avatar_url']
+        read_only_fields = ['avatar_url']
 
 
 class ProfileSerializer(BaseSerializer):
-
-    class Meta:
-        model = Profile
-        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'gravatar_url']
-
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
     display_name = serializers.CharField(source='user.display_name')
+    avatar_url = serializers.CharField(source='get_avatar_url')
+    # selected_avatar = serializers.CharField(source='get_selected_avatar_display')
+
+    class Meta:
+        model = Profile
+        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name',
+                  'gravatar_url', 'avatar_url', 'google_avatar_url', 'selected_avatar', 'user_avatar']
 
     def to_representation(self, obj):
         if isinstance(obj, Profile):
@@ -57,7 +60,9 @@ class ProfileSerializer(BaseSerializer):
             instance.user.save()
         if 'sound_enabled' in validated_data:
             instance.sound_enabled = validated_data['sound_enabled']
-        instance.save()
+        if 'selected_avatar' in validated_data:
+            instance.selected_avatar = validated_data['selected_avatar']
+        instance.save()  # ??? Need to save serilizer, not instance / user can be removed from validated_data
         return instance
 
     def save(self):

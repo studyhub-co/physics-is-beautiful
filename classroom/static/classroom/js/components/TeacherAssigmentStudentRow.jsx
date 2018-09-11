@@ -42,10 +42,10 @@ export class TeacherAssigmentStudentRow extends React.Component {
       <div className={className} onClick={() => this.props.onStudentClick()}>
         <Row>
           <Col sm={1} md={1}>
-            {this.props.student && this.props.student.gravatar_url
+            {this.props.student && this.props.student.avatar_url
               ? <Image
                 responsive
-                src={this.props.student.gravatar_url}
+                src={this.props.student.avatar_url}
                 circle />
               : null}
           </Col>
