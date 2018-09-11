@@ -1,114 +1,60 @@
-import React from 'react';
+import React from 'react'
 import { Modal, Popover, OverlayTrigger, Button, OverlayMixin, FormGroup,
-        ControlLabel, Checkbox, FormControl, Image } from 'react-bootstrap';
+  ControlLabel, Checkbox, FormControl, Image, Row, Col } from 'react-bootstrap'
 
-
-class Form extends React.Component {
-
-    render() {
-        return (
-            <form>
-              { this.props.gravatar_url ? <FormGroup>
-                  <Image
-                    responsive
-                    src={this.props.gravatar_url}
-                    circle /></FormGroup>
-                : null }
-                <FormGroup>
-                    <ControlLabel>First Name</ControlLabel>
-                    <FormControl
-                        type="text"
-                        value={this.props.firstName}
-                        placeholder="First"
-                        onChange={this.props.firstNameChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <ControlLabel>Last Name</ControlLabel>
-                    <FormControl
-                        type="text"
-                        value={this.props.lastName}
-                        placeholder="Last"
-                        onChange={this.props.lastNameChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <ControlLabel>Display Name</ControlLabel>
-                    <FormControl
-                        type="text"
-                        value={this.props.displayName}
-                        placeholder="Display"
-                        onChange={this.props.displayNameChange}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <ControlLabel>Sound Enabled</ControlLabel>
-                    <Checkbox checked={this.props.soundEnabled} onChange={this.props.toggleSound}/>
-                </FormGroup>
-            </form>
-        );
-    }
-
-}
-
+import LoggedInForm from './profile_logged_in_form'
 
 class AnonymousForm extends React.Component {
-
-    render() {
-        return (
-            <form>
-                <FormGroup>
-                    <ControlLabel>Sound settings</ControlLabel>
-                    <Checkbox checked={this.props.soundEnabled} onChange={this.props.toggleSound}>
-                        Sound enabled
-                    </Checkbox>
-                </FormGroup>
-            </form>
-        );
-    }
-
+  render () {
+    return (
+      <form>
+        <FormGroup>
+          <ControlLabel>Sound settings</ControlLabel>
+          <Checkbox checked={this.props.soundEnabled} onChange={this.props.toggleSound}>
+              Sound enabled
+          </Checkbox>
+        </FormGroup>
+      </form>
+    )
+  }
 }
-
 
 class ProfileControl extends React.Component {
 
-    render() {
-        var name, form;
-        if (!this.props.isAnonymous) {
-            if(!(this.props.firstName) && !(this.props.lastName)){
-              name = "Profile";
-            } else {
-              name = this.props.firstName + " " + this.props.lastName;
-            }
-            form = <Form {...this.props} />;
-        } else {
-            name = "Settings";
-            form = <AnonymousForm {...this.props} />;
-        }
-        return (
-                <li className="nav-item">
-                    <a className = 'settings' onClick={this.props.open}>
-                        {name}
-                    </a>
-                    <Modal className = 'settings-modal' show={this.props.show} onHide={this.props.close} aria-labelledby="ModalHeader">
-                        <Modal.Header closeButton>
-                            <Modal.Title>Profile</Modal.Title>
-                        </Modal.Header>
-
-                        <Modal.Body>
-                            {form}
-                        </Modal.Body>
-
-                        <Modal.Footer>
-                            <Button bsStyle="primary" onClick={this.props.save} disabled={this.props.hasErrors}>Save changes</Button>
-                        </Modal.Footer>
-                    </Modal>
-                </li>
-        );
+  render () {
+    var name, form
+    if (!this.props.isAnonymous) {
+      if(!(this.props.firstName) && !(this.props.lastName)){
+        name = 'Profile'
+      } else {
+        name = this.props.firstName + ' ' + this.props.lastName
+      }
+      form = <LoggedInForm {...this.props} />
+    } else {
+      name = 'Settings'
+      form = <AnonymousForm {...this.props} />
     }
+    return (
+      <li className='nav-item'>
+        <a className='settings' onClick={this.props.open}>
+          {name}
+        </a>
+        <Modal className='settings-modal' show={this.props.show} onHide={this.props.close} aria-labelledby='ModalHeader'>
+          <Modal.Header closeButton>
+            <Modal.Title>Profile</Modal.Title>
+          </Modal.Header>
 
+          <Modal.Body>
+            {form}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button bsStyle='primary' onClick={this.props.save} disabled={this.props.hasErrors}>Save changes</Button>
+          </Modal.Footer>
+        </Modal>
+      </li>
+    )
+  }
 }
-
 
 export default class ProfileModalApp extends React.Component {
 
@@ -192,7 +138,11 @@ export default class ProfileModalApp extends React.Component {
             displayName: profile.display_name,
             soundEnabled: profile.sound_enabled,
             isAnonymous: profile.is_anonymous,
-            gravatarUrl: profile.gravatar_url
+            selectedAvatar: profile.selected_avatar,
+            googleAvatarUrl: profile.google_avatar_url,
+            gravatarUrl: profile.gravatar_url,
+            userAvatar: profile.user_avatar,
+            avatarUrl: profile.avatar_url
         });
         SoundSingleton.soundEnabled = profile.sound_enabled;
     }
@@ -237,7 +187,12 @@ export default class ProfileModalApp extends React.Component {
                 soundEnabled={this.state.soundEnabled}
                 hasErrors={this.state.hasErrors}
                 isAnonymous={this.state.isAnonymous}
-                gravatar_url={this.state.gravatarUrl}
+                avatar_url={this.state.avatar_url}
+                googleAvatarUrl={this.state.googleAvatarUrl}
+                gravatarUrl={this.state.gravatarUrl}
+                userAvatar={this.state.userAvatar}
+                avatarUrl={this.state.avatarUrl}
+                selectedAvatar={this.state.selectedAvatar}
                 show={this.state.show}
                 toggleSound={this.toggleSound.bind(this)}
                 open={this.modalOpen.bind(this)}
@@ -247,6 +202,7 @@ export default class ProfileModalApp extends React.Component {
                 lastNameChange={this.lastNameChange.bind(this)}
                 displayNameChange={this.displayNameChange.bind(this)}
                 updateProfile={this.updateProfile.bind(this)}
+                profileToState={this.profileToState.bind(this)}
             />
         );
     }

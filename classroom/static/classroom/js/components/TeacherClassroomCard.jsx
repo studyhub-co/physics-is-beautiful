@@ -19,8 +19,8 @@ export class TeacherClassroomCard extends React.Component {
                 key={i}
                 style={{paddingRight: '1rem', paddingBottom: '1rem', display: 'inline-block', cursor: 'pointer'}}
                 onClick={() => { this.props.onTitleClick(studentsProfileUrlMask + student.username) }}>
-                {student.gravatar_url ? <Image
-                  src={student.gravatar_url}
+                {student.avatar_url ? <Image
+                  src={student.avatar_url}
                   title={student.display_name}
                   style={{width: '4rem'}}
                   rounded

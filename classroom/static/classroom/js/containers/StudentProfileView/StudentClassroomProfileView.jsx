@@ -79,10 +79,10 @@ class StudentClassroomProfileView extends React.Component {
           </Row>
           <Row className={className}>
             <Col sm={1} md={1}>
-              {this.props.studentClassroomProfile && this.props.studentClassroomProfile.gravatar_url
+              {this.props.studentClassroomProfile && this.props.studentClassroomProfile.avatar_url
                 ? <Image
                   responsive
-                  src={this.props.studentClassroomProfile.gravatar_url}
+                  src={this.props.studentClassroomProfile.avatar_url}
                   circle />
                 : null}
             </Col>
