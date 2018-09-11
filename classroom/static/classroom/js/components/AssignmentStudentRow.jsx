@@ -11,6 +11,8 @@ class AssignmentStudentRow extends React.Component {
   constructor (props) {
     super(props)
     this.onLessonClick = this.onLessonClick.bind(this)
+    this.onShowLessonsClick = this.onShowLessonsClick.bind(this)
+    this.state = { hideLessons: false }
   }
 
   onLessonClick (lesson) {
@@ -18,6 +20,14 @@ class AssignmentStudentRow extends React.Component {
       window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
     } else {
       window.location.href = '/curriculum/lessons/' + lesson.uuid
+    }
+  }
+
+  onShowLessonsClick () {
+    if (!this.props['assignmentStudentLessonsList' + this.props.assignment.uuid]) {
+      this.props.assignmentActions.assignmentFetchStudentLessonsList(this.props.classrroom_uuid, this.props.assignment.uuid)
+    } else {
+      this.setState({ hideLessons: !this.state.hideLessons })
     }
   }
 
@@ -75,9 +85,18 @@ class AssignmentStudentRow extends React.Component {
             <Col sm={4} md={4}>
               { this.props.assignment.completed_on || this.props.assignment.delayed_on // TODO check start date
                 ? <div className={'blue-title'}>{this.props.assignment.name}</div>
-                : <div className={'blue-title pointer'} onClick={this.props.onTitleClick}>{this.props.assignment.name}</div>
+                : <div
+                  title={'Perfom the assignment'}
+                  className={'blue-title pointer'}
+                  onClick={this.props.onTitleClick}>
+                  {this.props.assignment.name}
+                </div>
               }
-              <div className={'gray-text small-text'}>
+              <div
+                className={'gray-text small-text pointer'}
+                style={{borderBottom: '1px dotted #000', width: 'fit-content'}}
+                title={'Show lessons'}
+                onClick={this.onShowLessonsClick}>
                 {this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}
               </div>
             </Col>
@@ -114,7 +133,7 @@ class AssignmentStudentRow extends React.Component {
           </Row>
           <Row>
             <Col sm={12} md={12}>
-              { assignmentStudentLessonsList
+              { assignmentStudentLessonsList && !this.state.hideLessons
                 ? assignmentStudentLessonsList.map(function (lesson, i) {
                   return <span
                     className={'col-md-1 lesson-card' + (lesson.status === 'completed' ? ' module-completed'
