@@ -10,7 +10,7 @@ import * as assignmentCreators from '../../actions/assignment'
 import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 
-import { EditAssignmentView } from '../index'
+import { AssignmentEdit } from '../index'
 import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
@@ -204,7 +204,7 @@ export class AssignmentView extends React.Component {
               <Modal.Title>{this.props.assignment ? 'Edit' : 'Create'}  an assignment</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <EditAssignmentView createNew={false} assignment={this.props.assignment} onSave={this.handleEditAssignmentModal} />
+              <AssignmentEdit createNew={false} assignment={this.props.assignment} onSave={this.handleEditAssignmentModal} />
             </Modal.Body>
             <Modal.Footer>
               <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
