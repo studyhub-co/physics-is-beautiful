@@ -35,6 +35,9 @@ class TeacherClassroomView extends React.Component {
     // if (this.props.match) {
     //   this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', this.props.match)
     // }
+    if (this.props.teacherClassroomTab === 'students') {
+      this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
+    }
     // data
     this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
     this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
@@ -47,7 +50,6 @@ class TeacherClassroomView extends React.Component {
     this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
     this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
     this.hideCopiedToolTip = this.hideCopiedToolTip.bind(this)
-    this.syncExternalStudents = this.syncExternalStudents.bind(this)
 
     this.state = {
       showCreateAssigment: false,
@@ -104,16 +106,6 @@ class TeacherClassroomView extends React.Component {
     if (this.refs.overlay2) { this.refs.overlay2.hide() }
   }
 
-  syncExternalStudents () {
-    var googleClassroomsList = [
-      {
-        id: this.props.classroomTeacher.external_classroom.external_id,
-        pib_classroom_uuid: this.props.classroomTeacher.uuid
-      }
-    ]
-    this.props.googleActions.googleFetchAndSaveClassroomsStudents(googleClassroomsList, true)
-  }
-
   render () {
     var assignmentUrl = BASE_URL + ':uuid/teacher/assignments/:assigmentUuid'
     var studentsListUrl = this.props.match.path + 'students/'
@@ -124,7 +116,6 @@ class TeacherClassroomView extends React.Component {
     if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
       studentsS = 's'
     }
-
 
     var copiedTooltip = (
       <Tooltip id='copiedTooltip'>
@@ -164,7 +155,7 @@ class TeacherClassroomView extends React.Component {
         <Tabs name='teacherClassroomTab'
           className='tabs'
           handleSelect={
-            (tabname, tabspace) => { console.log(tabname); this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }
+            (tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }
           }
           selectedTab={this.props.teacherClassroomTab}
         >
@@ -368,12 +359,12 @@ TeacherClassroomView.propTypes = {
   }).isRequired,
   classroomTeacher: PropTypes.object,
   assignmentsList: PropTypes.array,
-  assignment: PropTypes.object,
+  assignment: PropTypes.object
   // teacherClassroomStudentsList: PropTypes.array,
   // gapiInitState: PropTypes.bool,
-  googleActions: PropTypes.shape({
-    googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
-  }).isRequired
+  // googleActions: PropTypes.shape({
+  //   googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
+  // }).isRequired
 }
 
 const mapStateToProps = (state) => {

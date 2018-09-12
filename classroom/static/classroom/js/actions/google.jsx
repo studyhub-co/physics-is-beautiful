@@ -7,7 +7,8 @@ import { checkHttpStatus, getAxios } from '../utils'
 import { classroomCreateClassroom, bulkStudentsUpdate, classroomFetchTeacherClassroomsList } from '../actions/classroom'
 
 import {
-  GOOGLE_RECEIVE_CLASSROOMS_LIST, GOOGLE_INIT_STATE_CHANGED, GOOGLE_RECEIVE_CLASSROOMS_STUDENTS_LIST
+  GOOGLE_RECEIVE_CLASSROOMS_LIST, GOOGLE_INIT_STATE_CHANGED
+  // , GOOGLE_RECEIVE_CLASSROOMS_STUDENTS_LIST
 } from '../constants'
 
 // TODO as Open Source we must replace this values with data from dev or AWS environment while webpack compiling bundle
