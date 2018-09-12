@@ -33,7 +33,7 @@ const DEFAULT_STATE = {
   assignmentName: ''
 }
 
-class EditAssignmentView extends React.Component {
+class AssignmentEdit extends React.Component {
   constructor (props) {
     super(props)
     this.handleStartOn = this.handleStartOn.bind(this)
@@ -347,7 +347,7 @@ class EditAssignmentView extends React.Component {
   }
 }
 
-EditAssignmentView.propTypes = {
+AssignmentEdit.propTypes = {
   curriculaActions: PropTypes.shape({
     curriculaFetchExpandedCurriculum: PropTypes.func.isRequired,
     dataReceiveExpandedCurriculum: PropTypes.func.isRequired
@@ -380,5 +380,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditAssignmentView)
-export { EditAssignmentView as EditAssigmentsViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(AssignmentEdit)
+export { AssignmentEdit as EditAssigmentsViewNotConnected }

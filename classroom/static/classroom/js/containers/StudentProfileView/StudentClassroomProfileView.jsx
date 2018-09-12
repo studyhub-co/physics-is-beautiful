@@ -23,7 +23,7 @@ class StudentClassroomProfileView extends React.Component {
 
   componentWillMount () {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
-    this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', true)
+    this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
     this.props.studentActions.classroomFetchStudentClassroomProfile(
       this.props.match.params['uuid'],
       this.props.match.params['username']
@@ -56,7 +56,7 @@ class StudentClassroomProfileView extends React.Component {
               style={{textAlign: 'left', paddingTop: '1rem'}} >
               <a
                 className={'back-button'}
-                onClick={() => { push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/students/') }} >
+                onClick={() => { this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/students/')) }} >
                 <span
                   className='glyphicon glyphicon-menu-left'
                   style={{fontSize: 16}} />

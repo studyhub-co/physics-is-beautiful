@@ -16,7 +16,7 @@ import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 import { TeacherAssigmentStudentRow } from '../../components/TeacherAssigmentStudentRow'
 
-export class AssignmentTeacherView extends React.Component {
+export class AssignmentView extends React.Component {
   constructor (props) {
     super(props)
     this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
@@ -216,7 +216,7 @@ export class AssignmentTeacherView extends React.Component {
   }
 }
 
-AssignmentTeacherView.propTypes = {
+AssignmentView.propTypes = {
   assignment: PropTypes.object,
   classroomTeacher: PropTypes.object,
   tabActions: PropTypes.shape({
@@ -249,5 +249,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssignmentTeacherView)
-export { AssignmentTeacherView as AssignmentTeacherViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(AssignmentView)
+export { AssignmentView as AssignmentViewNotConnected }
