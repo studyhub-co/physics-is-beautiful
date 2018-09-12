@@ -167,22 +167,22 @@ export function renameCurriculum(uuid, newName) {
     }
 }
 
-function loadCurriculum(uuid, dispatch) {
-    $.ajax({
-	async: true,
-	url: '/editor/api/curricula/'+uuid +'/',
-	success: function(data, status, jqXHR) {
-	    dispatch(curriculumLoaded(data));
-	}
-    });    
+function loadCurriculum (uuid, dispatch) {
+  $.ajax({
+    async: true,
+    url: '/editor/api/curricula/' + uuid + '/',
+    success: function (data, status, jqXHR) {
+      dispatch(curriculumLoaded(data))
+    }
+  })
 }
 
-export function loadCurriculumIfNeeded(uuid) {
-    return (dispatch, getState) => {
-	if (!(uuid in getState().curricula)) {
-	    loadCurriculum(uuid, dispatch)
-	}
+export function loadCurriculumIfNeeded (uuid) {
+  return (dispatch, getState) => {
+    if (!(uuid in getState().curricula)) {
+      loadCurriculum(uuid, dispatch)
     }
+  }
 }
 
 export function changeCurriculumImage(uuid, image) {
