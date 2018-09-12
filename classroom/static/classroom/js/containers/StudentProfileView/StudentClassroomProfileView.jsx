@@ -56,7 +56,7 @@ class StudentClassroomProfileView extends React.Component {
               style={{textAlign: 'left', paddingTop: '1rem'}} >
               <a
                 className={'back-button'}
-                onClick={() => { history.goBack()}} >
+                onClick={() => { push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/students/') }} >
                 <span
                   className='glyphicon glyphicon-menu-left'
                   style={{fontSize: 16}} />

@@ -140,7 +140,7 @@ class TeacherClassroomView extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col sm={12} md={12} style={{textAlign: 'center', width:'100%'}}>
+              <Col sm={12} md={12} style={{textAlign: 'center', width: '100%'}}>
                 <span className={'blue-title'}>
                   <span className={'editable-label'}>
                     <EditableLabel
@@ -158,7 +158,9 @@ class TeacherClassroomView extends React.Component {
         </Grid>
         <Tabs name='teacherClassroomTab'
           className='tabs'
-          handleSelect={(tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }}
+          handleSelect={
+            (tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }
+          }
           selectedTab={this.props.teacherClassroomTab}
         >
           <div className='tab-links'>
