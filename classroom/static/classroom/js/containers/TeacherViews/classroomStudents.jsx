@@ -17,8 +17,25 @@ import { Route } from 'react-router'
 import { Row, Col } from 'react-bootstrap'
 
 import { TeacherStudentCard } from '../../components/TeacherStudentCard'
+import * as googleCreators from '../../actions/google'
 
 class TeacherClassroomStudentsView extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.syncExternalStudents = this.syncExternalStudents.bind(this)
+  }
+
+  syncExternalStudents () {
+    var googleClassroomsList = [
+      {
+        id: this.props.classroomTeacher.external_classroom.external_id,
+        pib_classroom_uuid: this.props.classroomTeacher.uuid
+      }
+    ]
+    this.props.googleActions.googleFetchAndSaveClassroomsStudents(googleClassroomsList, true)
+  }
+
   componentWillMount () {
     if (!this.props.teacherClassroomStudentsList) {
       this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
@@ -89,7 +106,10 @@ TeacherClassroomStudentsView.propTypes = {
     classroomDeleteTeacherClassroom: PropTypes.func.isRequired
   }).isRequired,
   classroomTeacher: PropTypes.object,
-  teacherClassroomStudentsList: PropTypes.array
+  teacherClassroomStudentsList: PropTypes.array,
+  googleActions: PropTypes.shape({
+    googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
+  }).isRequired
 }
 
 const mapStateToProps = (state) => {
@@ -99,7 +119,7 @@ const mapStateToProps = (state) => {
     // assignmentsList: state.assignment.assignmentsList,
     // assignment: state.assignment.assignment,
     teacherClassroomStudentsList: state.student.classroomStudentsList,
-    gapiInitState: state.google.gapiInitState
+    gapiInitState: state.google.gapiInitState,
   }
 }
 
@@ -108,7 +128,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
     classroomActions: bindActionCreators(classroomCreators, dispatch),
-    studentActions: bindActionCreators(studentCreators, dispatch)
+    studentActions: bindActionCreators(studentCreators, dispatch),
+    googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 
