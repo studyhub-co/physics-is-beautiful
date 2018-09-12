@@ -171,7 +171,7 @@ class IndexView extends React.Component {
                     <Col sm={6} md={6}>
                       <h2>All classrooms</h2>
                     </Col>
-                    <Col sm={4} md={3} smOffset={2} mdOffset={3}>
+                    <Col sm={4} md={3} smOffset={2} mdOffset={3} style={{marginTop: 10}}>
                       <button
                         disabled={!this.props.gapiInitState}
                         onClick={this.getGoogleClassroomList}
