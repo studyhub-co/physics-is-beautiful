@@ -90,8 +90,8 @@ export class AssignmentTeacherView extends React.Component {
               </a>
             </Col>
           </Row>
-          <Row style={{padding: 0}} >
-            <Col mdOffset={7} md={2}>
+          <Row style={{padding: 0, marginTop: 10}} >
+            <Col md={9}>
               {postOnGoogleUrl
                 ? <a
                 // onClick={this.getGoogleClassroomList}

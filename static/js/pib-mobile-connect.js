@@ -40,7 +40,7 @@ if (window.IS_MOBILE_APP) {
     window.parent.postMessage({
       'message': 'canGoBack',
       'data': true
-    }, window.appOrigin)
+    }, '*')
     window.location = window.mobilizedUrl(this.href)
     return false
   })
@@ -66,7 +66,7 @@ $.get('/api/v1/profiles/me', function (data) {
 window.parent.postMessage({
   'message': 'canGoBack',
   'data': !(document.referrer.startsWith('http://localhost')) && document.referrer.indexOf('accounts') === -1 // could be appOrigin with ending slash
-}, window.appOrigin)
+}, '*')
 
 window.mobilizedUrl = function (url) {
   if (url.indexOf('pib_mobile') === -1) {

@@ -153,7 +153,7 @@ class CurriculumApp extends React.Component {
     window.parent.postMessage({
       'message': 'canGoBack',
       'data': false
-    }, window.appOrigin)
+    }, '*')
   }
 
   render () {
@@ -196,7 +196,7 @@ class ModulesApp extends React.Component {
     window.parent.postMessage({
       'message': 'canGoBack',
       'data': true
-    }, window.appOrigin)
+    }, '*')
   }
 
   load () {
