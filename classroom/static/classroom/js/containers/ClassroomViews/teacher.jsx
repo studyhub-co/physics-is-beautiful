@@ -15,7 +15,6 @@ import Clipboard from 'react-clipboard.js'
 import EditableLabel from '../../utils/editableLabel'
 
 import { CurriculumRow } from '../../components/CurriculumRow'
-import { TeacherStudentCard } from '../../components/TeacherStudentCard'
 import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
 
 import { Grid, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
@@ -27,12 +26,16 @@ import * as tabsCreators from '../../actions/tab'
 import * as googleCreators from '../../actions/google'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { AssignmentTeacherView, EditAssignmentView, StudentClassroomProfileView } from '../index'
+import { AssignmentView, AssignmentEdit, TeacherClassroomStudentsView } from '../index'
 
 class TeacherClassroomView extends React.Component {
   componentWillMount () {
+    // tabs
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
-    this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', true)
+    // if (this.props.match) {
+    //   this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', this.props.match)
+    // }
+    // data
     this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
     this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
     this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
@@ -113,13 +116,15 @@ class TeacherClassroomView extends React.Component {
 
   render () {
     var assignmentUrl = BASE_URL + ':uuid/teacher/assignments/:assigmentUuid'
-    var studentProfileUrl = BASE_URL + ':uuid/teacher/students/:username'
+    var studentsListUrl = this.props.match.path + 'students/'
+
     var isExactUrl = this.props.match.isExact // exact url for teacher view
 
     var studentsS = ''
     if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
       studentsS = 's'
     }
+
 
     var copiedTooltip = (
       <Tooltip id='copiedTooltip'>
@@ -159,7 +164,7 @@ class TeacherClassroomView extends React.Component {
         <Tabs name='teacherClassroomTab'
           className='tabs'
           handleSelect={
-            (tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }
+            (tabname, tabspace) => { console.log(tabname); this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }
           }
           selectedTab={this.props.teacherClassroomTab}
         >
@@ -276,41 +281,10 @@ class TeacherClassroomView extends React.Component {
                 : null }
             </TabContent>
             <TabContent for='students'>
-              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.external_classroom
-                ? <Row>
-                  <Col sm={7} md={7} className={'vcenter'}>
-                    <span className={'gray-text'}>Keep your Google Classroom in sync</span>
-                  </Col>
-                  <Col sm={5} md={5}>
-                    <button
-                      disabled={!this.props.gapiInitState}
-                      className={'classroom-common-button'}
-                      onClick={this.syncExternalStudents}>Sync students</button>
-                  </Col>
-                </Row> : null }
-              <Route path={studentProfileUrl} component={StudentClassroomProfileView} />
-              {/*{ isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0*/}
-              { isExactUrl && this.props.classroomTeacher
-                ? <span>
-                  { this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
-                    return <TeacherStudentCard
-                      student={student}
-                      onStudentClick={() =>
-                        this.props.dispatch(push(BASE_URL +
-                        this.props.classroomTeacher.uuid +
-                        '/teacher/students/' + student.username))}
-                      key={i} />
-                  }, this) : null}
-                  <div style={{clear: 'both'}} />
-                </span>
-                : null }
-              { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students === 0
-                ? <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
-                Share the <u>classroom code</u> with your students so they can join your classroom.</div>
-                : null}
+              <Route path={studentsListUrl} component={TeacherClassroomStudentsView} />
             </TabContent>
             <TabContent for='assignments'>
-              <Route path={assignmentUrl} component={AssignmentTeacherView} />
+              <Route path={assignmentUrl} component={AssignmentView} />
               {isExactUrl
                 ? <span className={'title'}>Class Assignments&nbsp;</span>
                 : null}
@@ -359,7 +333,7 @@ class TeacherClassroomView extends React.Component {
                     <Modal.Title>{this.state.createNewAssigment ? 'Create' : 'Edit'}  an assignment</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <EditAssignmentView createNew={this.state.createNewAssigment} assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
+                    <AssignmentEdit createNew={this.state.createNewAssigment} assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
                   </Modal.Body>
                   <Modal.Footer>
                     <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
@@ -395,8 +369,8 @@ TeacherClassroomView.propTypes = {
   classroomTeacher: PropTypes.object,
   assignmentsList: PropTypes.array,
   assignment: PropTypes.object,
-  teacherClassroomStudentsList: PropTypes.array,
-  gapiInitState: PropTypes.bool,
+  // teacherClassroomStudentsList: PropTypes.array,
+  // gapiInitState: PropTypes.bool,
   googleActions: PropTypes.shape({
     googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
   }).isRequired

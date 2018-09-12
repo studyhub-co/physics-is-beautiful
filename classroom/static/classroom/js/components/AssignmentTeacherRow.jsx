@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem} from 'react-bootstrap'
+import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
 export class AssignmentTeacherRow extends React.Component {
   handleSettingsClick (e) {
