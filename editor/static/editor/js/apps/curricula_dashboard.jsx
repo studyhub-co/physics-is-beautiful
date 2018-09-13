@@ -36,7 +36,7 @@ class CurriculaDashboard extends React.Component {
               the <a href='javascript:void(0)' onClick={() => this.props.onTabChanged('browse', 'tab')}>Browse curricula</a> tab.
               Tutorial and additional help here
             </div>
-            <CurriculaApp></CurriculaApp>
+            <CurriculaApp />
           </TabContent>
         </div>
       </Tabs>

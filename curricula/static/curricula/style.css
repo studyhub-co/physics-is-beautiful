@@ -1,14 +1,15 @@
-@font-face {
-    font-family: 'GTPressuraMono';
-    src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');
-    font-style: normal;
-}
+/* Seems no need anymore (used for google button)*/
+/*@font-face {*/
+    /*font-family: 'GTPressuraMono';*/
+    /*src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');*/
+    /*font-style: normal;*/
+/*}*/
 
-@font-face {
-    font-family: 'GTPressuraMono';
-    src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');
-    font-style: bold;
-}
+/*@font-face {*/
+    /*font-family: 'GTPressuraMono';*/
+    /*src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');*/
+    /*font-style: bold;*/
+/*}*/
 
 @font-face {
     font-family: 'Museosansrounded';
@@ -675,7 +676,8 @@ img.grayed-out-img {
 }
 
 /* fix alignment of adjacent elements */
-.section-sheet .row {
+/* FIXME not so good practice to change bootstrap row class */
+.curriculum .section-sheet .row {
     display: flex;
     flex-wrap: wrap;
 }

@@ -7,7 +7,7 @@
 	}
 
 
-.editor .col-md-1 {
+.editor .col-md-1 { /* not so good practice */
     border-radius: 5px;
     border-style: solid;
     border-width: 2px;
@@ -183,3 +183,63 @@
 
 .tabs-1 .tabContent {}
 
+
+/* features 2008 changes */
+
+.editor .curriculum-card div img {
+    width: 100%;
+    display: block;
+    height: 20rem;
+}
+
+.editor .curriculum-card div span {
+    width: 100%;
+    display: block;
+    height: 20rem;
+    font-size: 20rem;
+}
+
+
+/* common (copy-paste from classroom */
+
+.editor .blue-title {
+    font-size: 2rem;
+    color: rgb(8, 209, 255);
+}
+
+.editor .blue-text {
+    color: rgb(8, 209, 255)
+}
+
+/*.classroom .classroom-card {*/
+.editor .curriculum-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    /*padding-top: 1rem;*/
+    margin-top: 1rem;
+
+    vertical-align: top;
+
+    /* new values */
+    padding: 0;
+    width: 25rem;
+    height: 30rem;
+}
+
+.dotted-menu:after {
+    /*float: right;*/
+    content: '\2807';
+    color: black;
+    font-size: 2rem;
+    position: relative;
+    display: inline-block;
+  }

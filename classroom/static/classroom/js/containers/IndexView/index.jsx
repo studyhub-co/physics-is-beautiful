@@ -38,7 +38,7 @@ class IndexView extends React.Component {
     this.nextStepGoogleImportClick = this.nextStepGoogleImportClick.bind(this)
     this.prevStepGoogleImportClick = this.prevStepGoogleImportClick.bind(this)
     this.selectedCurriculumGoogleImportChanged = this.selectedCurriculumGoogleImportChanged.bind(this)
-    this.state = { showSelectGooleClassroom: false,
+    this.state = { showSelectGoogleClassroom: false,
       googleClassroomsSelected: [],
       googleCurriculumSelected: null,
       googleClassroomsImportStep: 1
@@ -108,7 +108,7 @@ class IndexView extends React.Component {
   }
 
   handleImportGoogleClassroom () {
-    this.setState({'showSelectGooleClassroom': !this.state.showSelectGooleClassroom})
+    this.setState({'showSelectGoogleClassroom': !this.state.showSelectGoogleClassroom})
   }
 
   // ================ Google end
@@ -183,9 +183,9 @@ class IndexView extends React.Component {
                         </span>
                       </button>
                       {/* Google Modal start */}
-                      { this.state.showSelectGooleClassroom
+                      { this.state.showSelectGoogleClassroom
                         ? <Modal
-                          show={this.state.showSelectGooleClassroom}
+                          show={this.state.showSelectGoogleClassroom}
                           onHide={this.handleImportGoogleClassroom}
                           container={this} >
                           <Modal.Header closeButton>
