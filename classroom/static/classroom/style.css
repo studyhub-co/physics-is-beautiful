@@ -68,15 +68,15 @@
 }
 
 
-.classroom{
+.classroom {
     font-family: Museosansrounded;
     font-size: 16px;
 }
 
-/* common */
+/* common (seems we need to use this for all over the project) TODO */
 
 .seletected-fade-out {
-   animation: fade 2s 6s forwards;
+   animation: fade 2s 6s forwards; // TODO not work with FF
    background-color: #dddddd !important;
 }
 
@@ -298,7 +298,7 @@
     height: 25rem;
 }
 
-.classroom .create-classroom-button{
+.classroom .create-classroom-button {
     border-radius: 15px;
     text-align: center;
     vertical-align: middle;

@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Sheet } from './sheet'
-import {BackButton} from './../components/back_button'
-import {CurriculumContainer} from './../containers/curriculum'
-import {CurriculumThumbnail} from './../components/curriculum_thumbnail'
-import {AddCurriculumButton} from './../components/add_curriculum_button'
-import {addCurriculum, loadCurricula, loadCurriculumIfNeeded} from './../actions'
+import { BackButton} from './../components/back_button'
+import { CurriculumContainer } from './../containers/curriculum'
+import { CurriculumThumbnail } from './../components/curriculum_thumbnail'
+import { AddCurriculumButton } from './../components/add_curriculum_button'
+import { addCurriculum, loadCurricula, loadCurriculumIfNeeded } from './../actions'
+import { Grid, Row } from 'react-bootstrap'
 import { history } from './../history'
 
 class Curricula extends React.Component {
@@ -24,11 +25,11 @@ class Curricula extends React.Component {
     this.setState({prototypeChoice : e.target.value})
   }
 
-  handleAddClick(){
+  handleAddClick () {
     this.props.onAddClick(this.state.prototypeChoice)
   }
 
-  render() {
+  render () {
     const curricula = [];
     for (var uuid in this.props.curricula) {
       curricula.push(
@@ -42,7 +43,11 @@ class Curricula extends React.Component {
     const prototypeChoices = []
     for (var i in this.props.allCurricula) {
       prototypeChoices.push(
-        <option key={this.props.allCurricula[i].uuid} value={this.props.allCurricula[i].uuid}>{this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}</option>
+        <option
+          key={this.props.allCurricula[i].uuid}
+          value={this.props.allCurricula[i].uuid}>
+          {this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}
+        </option>
       )
     }
 
@@ -56,7 +61,12 @@ class Curricula extends React.Component {
         {/*</select>*/}
         {/*<hr/>*/}
         <div className='row'>
-          {curricula}<AddCurriculumButton onClick={this.handleAddClick} />
+          <Grid fluid>
+            <Row>
+              {curricula}
+              <AddCurriculumButton onClick={this.handleAddClick} />
+            </Row>
+          </Grid>
         </div>
       </div>
     )
@@ -75,8 +85,9 @@ let CurriculaApp = connect(
     return {
       onAddClick: prototype => dispatch(addCurriculum(prototype)),
       onMounted: () => dispatch(loadCurricula()),
-      onCurriculumClick: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))}
-  } // onCurriculumClick : (uuid) => {history.push('/curricula/' + uuid + '/');}
+      onCurriculumClick: (uuid) => { history.push('/curricula/' + uuid + '/') }}
+    // onCurriculumClick: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))}
+  }
 )(Curricula)
 
 CurriculaApp = connect()(CurriculaApp)
