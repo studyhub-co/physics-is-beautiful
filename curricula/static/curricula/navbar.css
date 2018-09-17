@@ -50,7 +50,7 @@
 .navbar.navbar-default a {
     color:white;
     font-size:25px;
-    font-family: Museosansrounded;
+    font-family: Museosansrounded, sans-serif;
 }
 
 .nav.navbar-nav.navbar-right a {
@@ -61,7 +61,7 @@
 .nav.navbar-nav.navbar-right p {
     color:white;
     font-size:15px;
-    font-family: Museosansrounded;
+    font-family: Museosansrounded, sans-serif;
 }
 .nav.navbar-nav.navbar-right a:hover{
     background: #1493d1;

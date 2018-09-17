@@ -13,7 +13,7 @@
     overflow: hidden;
     border: 1px solid #8993a1;
     font-size: 1.25rem;
-    font-family: Museosansrounded;
+    font-family: 'Museosansrounded', sans-serif;
     font-weight: 400;
     text-align: center;
     border-radius: 10rem;
@@ -69,7 +69,7 @@
 
 
 .classroom {
-    font-family: Museosansrounded;
+    font-family: 'Museosansrounded', sans-serif;
     font-size: 16px;
 }
 
@@ -241,7 +241,7 @@
 
 .lesson-card div:nth-of-type(2) {
     padding: .8rem;
-    font-family: 'Museosansrounded';
+    font-family: 'Museosansrounded', sans-serif;
     font-size: 1.4rem;
     height: 4rem;
     font-weight: 500;
