@@ -8,7 +8,7 @@ html, body {
 
 body {
   background: #f6f6f6;
-  font-family: $font-family-base;
+  font-family: $font-family-base, sans-serif;
 }
 
 #wrap {
@@ -330,7 +330,7 @@ h6, .text-muted{line-height: 0;}
 
 .djeddit-score-large > div {
   padding: 3px;
-  font-family: Museosansrounded;
+  font-family: Museosansrounded, sans-serif;
 }
 
 .djeddit-created-by a , .post-container a {
@@ -368,7 +368,7 @@ h6, .text-muted{line-height: 0;}
 
 .discussion-toolbar .tooltip-inner {
   width: 20em;
-  font-family: $font-family-base;
+  font-family: $font-family-base, sans-serif;
 }
 
 .djeddit-callout {

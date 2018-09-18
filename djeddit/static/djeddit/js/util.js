@@ -29,3 +29,5 @@ window.util = {
 $(document).ready(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+window.history.pushState(null, null)
