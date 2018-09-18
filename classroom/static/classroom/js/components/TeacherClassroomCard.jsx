@@ -6,10 +6,10 @@ import { Image } from 'react-bootstrap'
 export class TeacherClassroomCard extends React.Component {
   render () {
     var className = 'classroom-card'
-    var studentsProfileUrlMask = this.props.baseUrl + '/' + this.props.classroom.uuid + '/teacher/students/'
+    var studentsProfileUrlMask = this.props.baseUrl + '/' + this.props.classroom.uuid + '/students/'
     return (
       <div className={className}>
-        <div onClick={() => { this.props.onTitleClick(this.props.baseUrl + '/' + this.props.classroom.uuid + '/teacher/') }}>
+        <div onClick={() => { this.props.onTitleClick(this.props.baseUrl + '/' + this.props.classroom.uuid + '/') }}>
           {this.props.classroom.name}</div>
         <div>{this.props.classroom.curriculum.name}</div>
         <div>{this.props.classroom.less_students

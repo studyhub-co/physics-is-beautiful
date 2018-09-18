@@ -4,7 +4,7 @@ import { BASE_URL } from '../utils/config'
 
 export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = false) {
   if (!fromChildren) {
-    history.push(BASE_URL)
+    history.push(BASE_URL + selectedTab + '/')
   }
   return { type: CHANGE_SELECTED_TAB,
     tab: selectedTab,
@@ -16,15 +16,15 @@ export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace, ma
 
   if (selectedTab === 'students') {
     if (match &&
-      match.path !== '/classroom/:uuid/teacher/students/' &&
-      match.path !== '/classroom/:uuid/teacher/students/:username') {
-      history.push('/classroom/' + match.params['uuid'] + '/teacher/students/')
+      match.path !== '/classroom/teacher/:uuid/students/' &&
+      match.path !== '/classroom/teacher/:uuid/students/:username') {
+      history.push('/classroom/teacher/' + match.params['uuid'] + '/students/')
     }
   } else if (match &&
      !match.params.hasOwnProperty('assigmentUuid') &&
      !match.params.hasOwnProperty('username')
   ) { // main teacher page
-    history.push('/classroom/' + match.params['uuid'] + '/teacher/')
+    history.push('/classroom/teacher/' + match.params['uuid'] + '/')
   }
 
   // if (match &&

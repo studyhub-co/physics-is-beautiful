@@ -70,11 +70,11 @@ export function classroomFetchStudentsClassroomList (classroomUuid) {
 
 export function removeFromClass (classroomUuid, userName) {
   return (dispatch, state) => {
-    return getAxios().delete(API_PREFIX + classroomUuid + '/students/' + userName)
+    return getAxios().delete(API_PREFIX + 'teacher/' + classroomUuid + '/students/' + userName)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(classroomFetchStudentsClassroomList(classroomUuid))
-        dispatch(push(BASE_URL + classroomUuid + '/teacher'))
+        dispatch(push(BASE_URL + 'teacher/' + classroomUuid + '/'))
         // todo check tabs
       })
   }

@@ -86,7 +86,7 @@ class TeacherClassroomView extends React.Component {
   }
 
   handleViewAssignment (assignment) {
-    this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/assignments/' + assignment.uuid))
+    this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/assignments/' + assignment.uuid))
   }
 
   handleTitleChange (name) {
@@ -107,7 +107,7 @@ class TeacherClassroomView extends React.Component {
   }
 
   render () {
-    var assignmentUrl = BASE_URL + ':uuid/teacher/assignments/:assigmentUuid'
+    var assignmentUrl = BASE_URL + 'teacher/:uuid/assignments/:assigmentUuid'
     var studentsListUrl = this.props.match.path + 'students/'
 
     var isExactUrl = this.props.match.isExact // exact url for teacher view
@@ -129,7 +129,7 @@ class TeacherClassroomView extends React.Component {
           ? <Col sm={12} md={12} style={{padding: 0}}>
             <Row style={{padding: 0}}>
               <Col sm={12} md={12} style={{textAlign: 'left', padding: 0}} >
-                <a className={'back-button'} onClick={() => { history.push(BASE_URL)}} >
+                <a className={'back-button'} onClick={() => { history.push(BASE_URL + 'teacher/') }} >
                   <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                   All Classrooms
                 </a>
@@ -228,12 +228,12 @@ class TeacherClassroomView extends React.Component {
                         Or invite students with link:
                       </div>
                       <InputGroup>
-                        <FormControl type='text' readOnly value={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'} />
+                        <FormControl type='text' readOnly value={window.location.origin + BASE_URL + 'student/join/' + this.props.classroomTeacher.code + '/'} />
                         <span className='input-group-btn'>
                           <Clipboard
                             className={'btn btn-default'}
                             component='button'
-                            data-clipboard-text={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'}>
+                            data-clipboard-text={window.location.origin + BASE_URL + 'student/join/' + this.props.classroomTeacher.code + '/'}>
                             <OverlayTrigger
                               delayShow={300}
                               trigger='click'
@@ -260,7 +260,7 @@ class TeacherClassroomView extends React.Component {
                     <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
                     <div
                       className={'gray-text title pointer'}
-                      onClick={() => { this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/edit/')) }}>
+                      onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/edit/')) }}>
                       <u>Change curriculum</u>
                     </div>
                   </div>

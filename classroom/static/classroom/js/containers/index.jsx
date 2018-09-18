@@ -1,4 +1,6 @@
 import IndexView from './IndexView/index'
+import StudentIndexView from './IndexView/studentIndex'
+import TeacherIndexView from './IndexView/teacherIndex'
 import CreateClassroomView from './ClassroomViews/create'
 import JoinClassroomView from './ClassroomViews/join'
 import StudentClassroomView from './ClassroomViews/student'
@@ -8,6 +10,6 @@ import AssignmentEdit from './TeacherViews/assignmentEdit'
 import StudentClassroomProfileView from './StudentProfileView/StudentClassroomProfileView'
 import TeacherClassroomStudentsView from './TeacherViews/classroomStudents'
 export {
-  IndexView, CreateClassroomView, JoinClassroomView, StudentClassroomView, TeacherClassroomView,
-  AssignmentView, AssignmentEdit, StudentClassroomProfileView, TeacherClassroomStudentsView
+  IndexView, StudentIndexView, TeacherIndexView, CreateClassroomView, JoinClassroomView, StudentClassroomView,
+  TeacherClassroomView, AssignmentView, AssignmentEdit, StudentClassroomProfileView, TeacherClassroomStudentsView
 }

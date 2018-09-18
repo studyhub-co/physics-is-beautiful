@@ -73,7 +73,7 @@ export function classroomCreateClassroom (classroomForm, redirectToClassroom = f
         }
         //  move to edit page
         if (redirectToClassroom) {
-          dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
+          dispatch(push(BASE_URL + 'teacher/' + response.data.uuid + '/'))
         }
         if (typeof callback === 'function') {
           callback(response.data)
@@ -104,7 +104,7 @@ export function classroomPartialUpdateTeacherClassroom (classroomJson, redirectT
       .then((response) => {
         dispatch(classroomPartialUpdateSuccess(response.data))
         if (redirectToTeacher) {
-          dispatch(push(BASE_URL + response.data.uuid + '/teacher/'))
+          dispatch(push(BASE_URL + 'teacher/' + response.data.uuid + '/'))
         }
         // update classroomslist
         dispatch(classroomFetchTeacherClassroomsList())
@@ -119,7 +119,7 @@ export function classroomDeleteTeacherClassroom (classroomUuid) {
       .then((response) => {
         dispatch(classroomPartialUpdateSuccess(undefined))
         dispatch(classroomFetchTeacherClassroomsList())
-        dispatch(push(BASE_URL))
+        dispatch(push(BASE_URL + 'teacher/'))
       })
   }
 }
@@ -137,6 +137,7 @@ export function joinClassroomSuccess (classroomStudent) {
 
 export function classroomJoinClassroom (classroomCode) {
   return (dispatch, state) => {
+
     return getAxios().post(API_PREFIX + 'join/', {code: classroomCode})
       .then((response) => {
         dispatch(joinClassroomSuccess(response.data))
@@ -145,7 +146,7 @@ export function classroomJoinClassroom (classroomCode) {
         dispatch(classroomFetchStudentClassroomsList())
 
         // move to classroom page
-        dispatch(push(BASE_URL + response.data['uuid'] + '/student/'))
+        dispatch(push(BASE_URL + 'student/' + response.data['uuid'] + '/'))
       })
       .catch(error => {
         dispatch(joinClassroomSuccess(null))

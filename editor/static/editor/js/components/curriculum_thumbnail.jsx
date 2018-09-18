@@ -37,7 +37,6 @@ class CurriculumMenu extends React.Component {
   }
 
   handleChange (e) {
-    console.log(e);
     this.setState({ value: e.target.value })
   }
 

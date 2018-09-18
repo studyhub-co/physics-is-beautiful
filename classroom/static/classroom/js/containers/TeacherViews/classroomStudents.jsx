@@ -76,8 +76,9 @@ class TeacherClassroomStudentsView extends React.Component {
               student={student}
               onStudentClick={() =>
                 this.props.dispatch(push(BASE_URL +
+                'teacher/' +
                 this.props.classroomTeacher.uuid +
-                '/teacher/students/' + student.username))}
+                '/students/' + student.username))}
               key={i} />
           }, this) : null}
           <div style={{clear: 'both'}} />
