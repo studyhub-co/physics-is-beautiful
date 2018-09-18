@@ -48,7 +48,7 @@ export class AssignmentView extends React.Component {
         this.props.match.params['uuid'],
         this.props.match.params['assigmentUuid'],
         true,
-        () => { this.props.dispatch(push(BASE_URL + this.props.match.params['uuid'] + '/teacher/')) }
+        () => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.match.params['uuid'])) }
       )
     }
   }
@@ -84,7 +84,7 @@ export class AssignmentView extends React.Component {
         <Grid fluid>
           <Row id='all-assignments'>
             <Col md={12} style={{padding: 0}}>
-              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['uuid'] + '/teacher/') }} >
+              <a className={'back-button'} onClick={() => { history.push(BASE_URL + 'teacher/' + this.props.match.params['uuid'] + '/') }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All assignments
               </a>
@@ -188,8 +188,9 @@ export class AssignmentView extends React.Component {
                     student={student}
                     onStudentClick={() =>
                       this.props.dispatch(push(BASE_URL +
+                      'teacher/' +
                       this.props.classroomTeacher.uuid +
-                      '/teacher/students/' + student.username))}
+                      '/students/' + student.username))}
                     key={i} />
                 }, this) : null}
             </Col>

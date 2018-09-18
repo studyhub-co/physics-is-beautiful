@@ -41,7 +41,7 @@ class StudentClassroomProfileView extends React.Component {
   }
 
   onAssignmentTitleClick (assignment) {
-    this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/assignments/' + assignment.uuid))
+    this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/assignments/' + assignment.uuid))
   }
 
   render () {
@@ -56,7 +56,7 @@ class StudentClassroomProfileView extends React.Component {
               style={{textAlign: 'left', paddingTop: '1rem'}} >
               <a
                 className={'back-button'}
-                onClick={() => { this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/students/')) }} >
+                onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/students/')) }} >
                 <span
                   className='glyphicon glyphicon-menu-left'
                   style={{fontSize: 16}} />
