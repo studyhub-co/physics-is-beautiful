@@ -89,6 +89,44 @@ export function googleFetchClassroomList () {
   }
 }
 
+function processNextPage (pageToken, googleCourseID, googleCourceStudentsList, whenAllpageProcessedCallback) {
+  var batch = gapi.client.newBatch()
+
+  var searchRequest = function () {
+    return gapi.client.classroom.courses.students.list({
+      'courseId': googleCourseID,
+      'pageSize': 30,
+      'pageToken': pageToken
+    })
+  }
+
+  var request = searchRequest()
+  batch.add(request)
+
+  batch.then(function (response) {
+    for (var key in response.result) { // responses (courses)
+      if ('students' in response.result[key].result) {
+        for (var j = 0; j < response.result[key].result.students.length; j++) { // students
+          var student = response.result[key].result.students[j]
+          googleCourceStudentsList.push(
+            {
+              'email': student['profile']['emailAddress'],
+              'first_name': student['profile']['name']['givenName'],
+              'last_name': student['profile']['name']['familyName']
+            }
+          )
+        }
+      }
+      if ('nextPageToken' in response.result[key].result) {
+        processNextPage(response.result[key].result['nextPageToken'], googleCourseID, googleCourceStudentsList, whenAllpageProcessedCallback)
+      } else {
+        // stop paginations and save students
+        whenAllpageProcessedCallback(googleCourceStudentsList)
+      }
+    }
+  })
+}
+
 function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
   /***
    * each classroom in googleClassrooms must contain pib_classroom_uuid key
@@ -100,7 +138,7 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
       var searchRequest = function () {
         return gapi.client.classroom.courses.students.list({
           'courseId': googleClassrooms[i].id,
-          'pageSize': 0
+          'pageSize': 30
         })
       }
       var request = searchRequest()
@@ -108,21 +146,22 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
     }
     batch.then(function (response) {
       for (var key in response.result) { // responses (courses)
+        var googleCourseID = null
+
         if ('students' in response.result[key].result) {
-          var googleCourseID = null
           var pibClassroomID = null
           // var classroomId = classrooms['pib_classroom_uuid']
           var googleCourceStudentsList = []
 
-          if (response.result[key].result.students.length > 0) {
-            googleCourseID = response.result[key].result.students[0]['courseId']
-            // find pib classroom uuid with google classroom uuid
-            for (var i = 0; i < googleClassrooms.length; i++) {
-              if (googleClassrooms[i]['id'] === googleCourseID) {
-                pibClassroomID = googleClassrooms[i]['pib_classroom_uuid']
-              }
+          // if (response.result[key].result.students.length > 0) { // not need for remove students
+          googleCourseID = response.result[key].result.students[0]['courseId']
+          // find pib classroom uuid with google classroom uuid
+          for (var i = 0; i < googleClassrooms.length; i++) {
+            if (googleClassrooms[i]['id'] === googleCourseID) {
+              pibClassroomID = googleClassrooms[i]['pib_classroom_uuid']
             }
           }
+          // }
           // create googleCourceStudentsList with pib classroom id
           for (var j = 0; j < response.result[key].result.students.length; j++) { // students
             var student = response.result[key].result.students[j]
@@ -135,10 +174,22 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
             )
           }
         }
-        if (pibClassroomID && googleCourceStudentsList.length > 0) {
-          dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList, 'google', refreshClassroomsStudentsList))
-        } else {
-          dispatch(classroomFetchTeacherClassroomsList())
+
+        // if have next page then create a new query
+        if ('nextPageToken' in response.result[key].result) {
+          processNextPage(response.result[key].result['nextPageToken'],
+            googleCourseID,
+            googleCourceStudentsList,
+            (allpagesGoogleCourceStudentsList) => {
+              dispatch(bulkStudentsUpdate(pibClassroomID, allpagesGoogleCourceStudentsList, 'google', refreshClassroomsStudentsList))
+            })
+        } else { // we have only one students page
+          // if (pibClassroomID && googleCourceStudentsList.length > 0) {
+          if (pibClassroomID) {
+            dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList, 'google', refreshClassroomsStudentsList))
+          } else {
+            dispatch(classroomFetchTeacherClassroomsList())
+          }
         }
       }
     })
