@@ -45,7 +45,7 @@ class CurriculaDashboard extends React.Component {
   }
 }
 
-const mapStateToProps = function(store) {
+const mapStateToProps = function (store) {
   return {
     tab: store.curriculaDashboard.tab
   }
