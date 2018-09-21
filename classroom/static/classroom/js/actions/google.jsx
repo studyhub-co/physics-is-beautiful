@@ -89,7 +89,7 @@ export function googleFetchClassroomList () {
   }
 }
 
-function processNextPage (pageToken, googleCourseID, googleCourceStudentsList, whenAllpageProcessedCallback) {
+function processNextPage (pageToken, googleCourseID, googleCourseStudentsList, whenAllPagesProcessedCallback) {
   var batch = gapi.client.newBatch()
 
   var searchRequest = function () {
@@ -108,7 +108,7 @@ function processNextPage (pageToken, googleCourseID, googleCourceStudentsList, w
       if ('students' in response.result[key].result) {
         for (var j = 0; j < response.result[key].result.students.length; j++) { // students
           var student = response.result[key].result.students[j]
-          googleCourceStudentsList.push(
+          googleCourseStudentsList.push(
             {
               'email': student['profile']['emailAddress'],
               'first_name': student['profile']['name']['givenName'],
@@ -118,10 +118,10 @@ function processNextPage (pageToken, googleCourseID, googleCourceStudentsList, w
         }
       }
       if ('nextPageToken' in response.result[key].result) {
-        processNextPage(response.result[key].result['nextPageToken'], googleCourseID, googleCourceStudentsList, whenAllpageProcessedCallback)
+        processNextPage(response.result[key].result['nextPageToken'], googleCourseID, googleCourseStudentsList, whenAllPagesProcessedCallback)
       } else {
         // stop paginations and save students
-        whenAllpageProcessedCallback(googleCourceStudentsList)
+        whenAllPagesProcessedCallback(googleCourseStudentsList)
       }
     }
   })
@@ -151,7 +151,7 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
         if ('students' in response.result[key].result) {
           var pibClassroomID = null
           // var classroomId = classrooms['pib_classroom_uuid']
-          var googleCourceStudentsList = []
+          var googleCourseStudentsList = []
 
           // if (response.result[key].result.students.length > 0) { // not need for remove students
           googleCourseID = response.result[key].result.students[0]['courseId']
@@ -162,10 +162,10 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
             }
           }
           // }
-          // create googleCourceStudentsList with pib classroom id
+          // create googleCourseStudentsList with pib classroom id
           for (var j = 0; j < response.result[key].result.students.length; j++) { // students
             var student = response.result[key].result.students[j]
-            googleCourceStudentsList.push(
+            googleCourseStudentsList.push(
               {
                 'email': student['profile']['emailAddress'],
                 'first_name': student['profile']['name']['givenName'],
@@ -179,14 +179,14 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
         if ('nextPageToken' in response.result[key].result) {
           processNextPage(response.result[key].result['nextPageToken'],
             googleCourseID,
-            googleCourceStudentsList,
-            (allpagesGoogleCourceStudentsList) => {
-              dispatch(bulkStudentsUpdate(pibClassroomID, allpagesGoogleCourceStudentsList, 'google', refreshClassroomsStudentsList))
+            googleCourseStudentsList,
+            (allpagesgoogleCourseStudentsList) => {
+              dispatch(bulkStudentsUpdate(pibClassroomID, allpagesgoogleCourseStudentsList, 'google', refreshClassroomsStudentsList))
             })
         } else { // we have only one students page
-          // if (pibClassroomID && googleCourceStudentsList.length > 0) {
+          // if (pibClassroomID && googleCourseStudentsList.length > 0) {
           if (pibClassroomID) {
-            dispatch(bulkStudentsUpdate(pibClassroomID, googleCourceStudentsList, 'google', refreshClassroomsStudentsList))
+            dispatch(bulkStudentsUpdate(pibClassroomID, googleCourseStudentsList, 'google', refreshClassroomsStudentsList))
           } else {
             dispatch(classroomFetchTeacherClassroomsList())
           }
