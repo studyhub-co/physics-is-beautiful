@@ -134,6 +134,9 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
   return (dispatch, state) => {
     var batch = gapi.client.newBatch()
 
+    // save natchRequestKey/google_classroom_id map for use in response
+    var requestsMap = []
+
     for (var i = 0; i < googleClassrooms.length; i++) {
       var searchRequest = function () {
         return gapi.client.classroom.courses.students.list({
@@ -142,26 +145,23 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
         })
       }
       var request = searchRequest()
-      batch.add(request)
+      requestsMap[batch.add(request)] = googleClassrooms[i].id
     }
+
     batch.then(function (response) {
       for (var key in response.result) { // responses (courses)
-        var googleCourseID = null
+        var googleCourseID = requestsMap[key]
+        var pibClassroomID = null
+
+        for (var i = 0; i < googleClassrooms.length; i++) {
+          if (googleClassrooms[i]['id'] === googleCourseID) {
+            pibClassroomID = googleClassrooms[i]['pib_classroom_uuid']
+          }
+        }
 
         if ('students' in response.result[key].result) {
-          var pibClassroomID = null
-          // var classroomId = classrooms['pib_classroom_uuid']
           var googleCourseStudentsList = []
 
-          // if (response.result[key].result.students.length > 0) { // not need for remove students
-          googleCourseID = response.result[key].result.students[0]['courseId']
-          // find pib classroom uuid with google classroom uuid
-          for (var i = 0; i < googleClassrooms.length; i++) {
-            if (googleClassrooms[i]['id'] === googleCourseID) {
-              pibClassroomID = googleClassrooms[i]['pib_classroom_uuid']
-            }
-          }
-          // }
           // create googleCourseStudentsList with pib classroom id
           for (var j = 0; j < response.result[key].result.students.length; j++) { // students
             var student = response.result[key].result.students[j]
@@ -183,8 +183,7 @@ function listCoursesStudents (googleClassrooms, refreshClassroomsStudentsList) {
             (allpagesgoogleCourseStudentsList) => {
               dispatch(bulkStudentsUpdate(pibClassroomID, allpagesgoogleCourseStudentsList, 'google', refreshClassroomsStudentsList))
             })
-        } else { // we have only one students page
-          // if (pibClassroomID && googleCourseStudentsList.length > 0) {
+        } else {
           if (pibClassroomID) {
             dispatch(bulkStudentsUpdate(pibClassroomID, googleCourseStudentsList, 'google', refreshClassroomsStudentsList))
           } else {

@@ -119,14 +119,15 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         except Classroom.DoesNotExist:
             raise NotFound()
 
+        # if 'students' in request.data:
+        # sync students
+        # Create students if not exists
+        from pib_auth.models import User
+
+        to_add_users_in_classroom = []
+        to_remove_profiles_from_classroom__ids = [profile.id for profile in classroom.students.all()]
+
         if 'students' in request.data:
-            # sync students
-            # Create students if not exists
-            from pib_auth.models import User
-
-            to_add_users_in_classroom = []
-            to_remove_profiles_from_classroom__ids = [profile.id for profile in classroom.students.all()]
-
             for student in request.data['students']:
                 user = None
                 try:
@@ -151,32 +152,30 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                     if user.profile not in classroom.students.all():  # FIXME test for load / need to use task quene
                         to_add_users_in_classroom.append(user)
 
-            # Add students to classroom
-            if len(to_add_users_in_classroom) > 0:
-                student_classroom_s = (ClassroomStudent(student=user.profile, classroom=classroom)
-                                       for user in to_add_users_in_classroom)
-                assingments_progressess = []
-                for user in to_add_users_in_classroom:  # FIXME need to use task quene
-                    for assignment in classroom.assignments.all():
-                        assingments_progressess.append(AssignmentProgress(student=user.profile, assignment=assignment))
+        # Add students to classroom
+        if len(to_add_users_in_classroom) > 0:
+            student_classroom_s = (ClassroomStudent(student=user.profile, classroom=classroom)
+                                   for user in to_add_users_in_classroom)
+            assingments_progressess = []
+            for user in to_add_users_in_classroom:  # FIXME need to use task quene
+                for assignment in classroom.assignments.all():
+                    assingments_progressess.append(AssignmentProgress(student=user.profile, assignment=assignment))
 
-                with transaction.atomic():
-                    ClassroomStudent.objects.bulk_create(student_classroom_s)
-                    AssignmentProgress.objects.bulk_create(assingments_progressess)
+                AssignmentProgress.objects.recalculate_status_by_classroom(classroom, user.profile)
 
-            # Remove students from classrrom
-            if len(to_remove_profiles_from_classroom__ids) > 0:
-                with transaction.atomic():
-                    ClassroomStudent.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
-                                                    classroom=classroom).delete()
-                    AssignmentProgress.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
-                                                      assignment__classroom=classroom).delete()
+            with transaction.atomic():
+                ClassroomStudent.objects.bulk_create(student_classroom_s)
+                AssignmentProgress.objects.bulk_create(assingments_progressess)
 
-            AssignmentProgress.objects.recalculate_status_by_classroom(classroom, user.profile)
+        # Remove students from classrrom
+        if len(to_remove_profiles_from_classroom__ids) > 0:
+            with transaction.atomic():
+                ClassroomStudent.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                                                classroom=classroom).delete()
+                AssignmentProgress.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                                                  assignment__classroom=classroom).delete()
 
-            return Response(status=status.HTTP_201_CREATED)
-
-        raise NotFound()
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ClassroomLessonSerializer(LessonSerializer):
