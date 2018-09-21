@@ -45,19 +45,32 @@ class CurriculumMenu extends React.Component {
     const { value } = this.state
 
     return (
-      <div className='dropdown-menu' style={{ padding: '' }}>
-        <ul className='list-unstyled'>
-          {React.Children.toArray(children).filter(
-            child => !value.trim() || child.props.children.indexOf(value) !== -1
-          )}
-        </ul>
-      </div>
+      <ul className='dropdown-menu'>
+        {React.Children.toArray(children).filter(
+          child => !value.trim() || child.props.children.indexOf(value) !== -1
+        )}
+      </ul>
     )
   }
 }
 
 export class CurriculumThumbnail extends React.Component {
-  handleDropDownMenu () {
+  constructor (props, context) {
+    super(props, context)
+    this.onDropDownMenuItemSelect = this.onDropDownMenuItemSelect.bind(this)
+    this.onEditContentSelect = this.onEditContentSelect.bind(this)
+    this.onTitleClick = this.onTitleClick.bind(this)
+  }
+
+  onEditContentSelect (e) {
+    this.props.onClick()
+  }
+
+  onTitleClick () {
+    window.open('/curriculum/' + this.props.uuid + '/', '_blank')
+  }
+
+  onDropDownMenuItemSelect (e) {
 
   }
 
@@ -69,24 +82,24 @@ export class CurriculumThumbnail extends React.Component {
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
         {/*<div className='col-md-1 module-accessible-block' onClick={this.props.onClick} >*/}
-        <div onClick={this.props.onClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+        <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
           <Thumbnail image={this.props.image} />
         </div>
         <div>
           <Dropdown
-            style={{float: 'right'}} id='dropdown-custom-menu'
+            style={{float: 'right'}}
+            id='dropdown-custom-menu'
             rootCloseEvent={'click'}>
-            <CurriculumMenuToggle bsRole='toggle'></CurriculumMenuToggle>
-            {/*<Dropdown.Toggle></Dropdown.Toggle>*/}
+            <CurriculumMenuToggle bsRole='toggle' />
             <CurriculumMenu bsRole='menu'>
-              <MenuItem eventKey='1'>Edit content</MenuItem>
-              <MenuItem eventKey='2'>Edit profile and settings</MenuItem>
-              <MenuItem eventKey='3'>Fork</MenuItem>
-              <MenuItem eventKey='4'>Copy shareable link</MenuItem>
-              <MenuItem eventKey='5'>Delete</MenuItem>
+              <MenuItem onSelect={this.onEditContentSelect} eventKey='1'><Glyphicon glyph='edit' /> Edit content</MenuItem>
+              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
+              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
+              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
+              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' />Delete</MenuItem>
             </CurriculumMenu>
           </Dropdown>
-          <div onClick={this.props.onClick} className={'blue-title'}>
+          <div onClick={this.onTitleClick} className={'blue-title'}>
             {this.props.name}
           </div>
           <div style={{fontSize: '1.1rem'}}>

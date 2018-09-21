@@ -192,7 +192,7 @@
     height: 20rem;
 }
 
-.editor .curriculum-card div span {
+.editor .curriculum-card div > span {
     width: 100%;
     display: block;
     height: 20rem;

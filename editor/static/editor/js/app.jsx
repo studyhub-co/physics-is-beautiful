@@ -17,7 +17,7 @@ import { history } from './history';
 import {ModuleContainer} from './containers/module'
 import {QuestionContainer} from './containers/question'
 import {CurriculumContainer} from './containers/curriculum'
-import {CurriculumThumbnail} from './components/curriculum_thumbnail'
+
 import {LessonContainer} from './containers/lesson'
 import {BackButton} from './components/back_button'
 import {QuestionThumbnailContainer} from './containers/question_thumbnail'
