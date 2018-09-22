@@ -67,14 +67,6 @@
    justify-content: center;
 }
 
-
-.classroom {
-    font-family: 'Museosansrounded', sans-serif;
-    font-size: 16px;
-}
-
-/* common (seems we need to use this for all over the project) TODO */
-
 .seletected-fade-out {
    animation: fade 2s 6s forwards; // TODO not work with FF
    background-color: #dddddd !important;
@@ -83,6 +75,17 @@
 @keyframes fade {
     from {background-color:#dddddd;}
     to {background-color:rgba(242, 245, 169, 0);}
+}
+
+/* reusable  end */
+
+.classroom {
+    font-family: 'Museosansrounded', sans-serif;
+    font-size: 16px;
+}
+
+.classrroom button:focus {
+    outline: 0;
 }
 
 .classroom .blue-text {
@@ -194,9 +197,6 @@
     border-bottom: solid #d8d8d8;
 }
 
-
-/*.tabs-1 .tabContent {}*/
-
 .classroom .pop-up-window {
     border-radius: 15px;
     padding: 10px 10px;
@@ -275,7 +275,6 @@
 
 }
 
-
 /* classroom card*/
 
 .classroom .classroom-card {
@@ -325,7 +324,6 @@
     box-shadow: 0 0 15px #d8d8d8;
     background: #fbfbfb;
 }
-
 
 .classroom .join-another-classroom {
     border-radius: 15px;
@@ -386,6 +384,7 @@
     height: 30px;
     line-height: 30px;
 }
+
 /* classroom card*/
 
 .classroom .curriculum-card {
@@ -449,7 +448,6 @@
     vertical-align: top;
     min-height: 3rem;
 }
-
 
 
 .classroom .disabled-button {
