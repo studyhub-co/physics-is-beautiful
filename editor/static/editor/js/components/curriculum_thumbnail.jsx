@@ -18,41 +18,44 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
+    {/*<div className='dotted-menu' onClick={this.handleClick}>*/}
+        {/*{this.props.children}*/}
+      {/*</div>*/}
     return (
-      <div className='dotted-menu' onClick={this.handleClick}>
+      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick}>
         {this.props.children}
-      </div>
+      </Glyphicon>
     )
   }
 }
 
-class CurriculumMenu extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleChange = this.handleChange.bind(this)
-
-    this.state = {
-      value: ''
-    }
-  }
-
-  handleChange (e) {
-    this.setState({ value: e.target.value })
-  }
-
-  render () {
-    const { children } = this.props
-    const { value } = this.state
-
-    return (
-      <ul className='dropdown-menu'>
-        {React.Children.toArray(children).filter(
-          child => !value.trim() || child.props.children.indexOf(value) !== -1
-        )}
-      </ul>
-    )
-  }
-}
+// class CurriculumMenu extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleChange = this.handleChange.bind(this)
+//
+//     this.state = {
+//       value: ''
+//     }
+//   }
+//
+//   handleChange (e) {
+//     this.setState({ value: e.target.value })
+//   }
+//
+//   render () {
+//     const { children } = this.props
+//     const { value } = this.state
+//
+//     return (
+//       <ul className='dropdown-menu'>
+//         {React.Children.toArray(children).filter(
+//           child => !value.trim() || child.props.children.indexOf(value) !== -1
+//         )}
+//       </ul>
+//     )
+//   }
+// }
 
 export class CurriculumThumbnail extends React.Component {
   constructor (props, context) {
@@ -88,16 +91,15 @@ export class CurriculumThumbnail extends React.Component {
         <div>
           <Dropdown
             style={{float: 'right'}}
-            id='dropdown-custom-menu'
-            rootCloseEvent={'click'}>
+            id='dropdown-custom-menu'>
             <CurriculumMenuToggle bsRole='toggle' />
-            <CurriculumMenu bsRole='menu'>
+            <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
               <MenuItem onSelect={this.onEditContentSelect} eventKey='1'><Glyphicon glyph='edit' /> Edit content</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' />Delete</MenuItem>
-            </CurriculumMenu>
+            </Dropdown.Menu>
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-title'}>
             {this.props.name}

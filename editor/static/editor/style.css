@@ -192,7 +192,7 @@
     height: 20rem;
 }
 
-.editor .curriculum-card div > span {
+.editor .curriculum-card > div > span {
     width: 100%;
     display: block;
     height: 20rem;
@@ -235,11 +235,11 @@
     height: 30rem;
 }
 
-.dotted-menu:after {
-    /*float: right;*/
-    content: '\2807';
-    color: black;
-    font-size: 2rem;
-    position: relative;
-    display: inline-block;
-  }
+/*.dotted-menu:after {*/
+    /*!*float: right;*!*/
+    /*content: '\2807';*/
+    /*color: black;*/
+    /*font-size: 2rem;*/
+    /*position: relative;*/
+    /*display: inline-block;*/
+  /*}*/

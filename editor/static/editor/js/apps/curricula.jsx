@@ -21,7 +21,7 @@ class Curricula extends React.Component {
   }
 
   handlePrototypeChoiceChange (e) {
-    this.setState({prototypeChoice : e.target.value})
+    this.setState({prototypeChoice: e.target.value})
   }
 
   handleAddClick () {
@@ -29,7 +29,7 @@ class Curricula extends React.Component {
   }
 
   render () {
-    const curricula = [];
+    const curricula = []
     for (var uuid in this.props.curricula) {
       curricula.push(
         <CurriculumThumbnail
