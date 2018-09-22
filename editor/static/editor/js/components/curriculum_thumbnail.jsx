@@ -1,10 +1,14 @@
 import React from 'react'
-
-import Moment from 'react-moment';
+import PropTypes from 'prop-types'
+import Moment from 'react-moment'
 
 import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
-import {Thumbnail} from './thumbnail'
+import { addCurriculum } from './../actions'
+
+import { Thumbnail } from './thumbnail'
+
+import { store } from '../app'
 
 class CurriculumMenuToggle extends React.Component {
   constructor (props, context) {
@@ -61,6 +65,7 @@ export class CurriculumThumbnail extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onDropDownMenuItemSelect = this.onDropDownMenuItemSelect.bind(this)
+    this.onForkSelect = this.onForkSelect.bind(this)
     this.onEditContentSelect = this.onEditContentSelect.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
   }
@@ -75,6 +80,10 @@ export class CurriculumThumbnail extends React.Component {
 
   onDropDownMenuItemSelect (e) {
 
+  }
+
+  onForkSelect (e) {
+    store.dispatch(addCurriculum(this.props.uuid))
   }
 
   render () {
@@ -96,7 +105,7 @@ export class CurriculumThumbnail extends React.Component {
             <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
               <MenuItem onSelect={this.onEditContentSelect} eventKey='1'><Glyphicon glyph='edit' /> Edit content</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
-              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
+              <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' />Delete</MenuItem>
             </Dropdown.Menu>
@@ -121,4 +130,8 @@ export class CurriculumThumbnail extends React.Component {
       </Col>
     )
   }
+}
+
+CurriculumThumbnail.propTypes = {
+  uuid: PropTypes.string.isRequired
 }
