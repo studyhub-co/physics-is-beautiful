@@ -66,6 +66,7 @@ export class CurriculumThumbnail extends React.Component {
     super(props, context)
     this.onDropDownMenuItemSelect = this.onDropDownMenuItemSelect.bind(this)
     this.onForkSelect = this.onForkSelect.bind(this)
+    this.onEditCurriculumSelect = this.onEditCurriculumSelect.bind(this)
     this.onEditContentSelect = this.onEditContentSelect.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
   }
@@ -80,6 +81,10 @@ export class CurriculumThumbnail extends React.Component {
 
   onDropDownMenuItemSelect (e) {
 
+  }
+
+  onEditCurriculumSelect (e) {
+    // TODO navigate to edit Curriculum URL?
   }
 
   onForkSelect (e) {
@@ -104,10 +109,10 @@ export class CurriculumThumbnail extends React.Component {
             <CurriculumMenuToggle bsRole='toggle' />
             <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
               <MenuItem onSelect={this.onEditContentSelect} eventKey='1'><Glyphicon glyph='edit' /> Edit content</MenuItem>
-              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
+              <MenuItem onSelect={this.onEditCurriculumSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
               <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' />Delete</MenuItem>
+              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-title'}>

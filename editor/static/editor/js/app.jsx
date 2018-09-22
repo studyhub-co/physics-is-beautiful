@@ -286,6 +286,4 @@ export const store = createStore(editor,
 //   applyMiddleware(thunkMiddleware, routerMiddleware(history)),
 //   ) // add  loggerMiddleware for logging
 
-
 ReactDOM.render(<Provider store={store}><EditorRouter/></Provider>, document.getElementById('react-app'));
-
