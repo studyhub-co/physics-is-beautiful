@@ -23,9 +23,12 @@ import {BackButton} from './components/back_button'
 import {QuestionThumbnailContainer} from './containers/question_thumbnail'
 
 import {editor} from './reducers'
-import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded, loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion} from './actions'
+import {
+  addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded,
+  loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion
+} from './actions'
 
-import {DockableDropTarget, DragItemTypes} from './dnd';
+import {DockableDropTarget, DragItemTypes} from './dnd'
 
 import { Sheet } from './apps/sheet'
 
@@ -273,17 +276,15 @@ const loggerMiddleware = createLogger()
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(editor,
+export const store = createStore(editor,
   composeEnhancers(
     applyMiddleware(thunkMiddleware, routerMiddleware(history))
   ),
 ) // add  loggerMiddleware for logging
 
-
 // const store = createStore(editor,
 //   applyMiddleware(thunkMiddleware, routerMiddleware(history)),
 //   ) // add  loggerMiddleware for logging
-
 
 
 ReactDOM.render(<Provider store={store}><EditorRouter/></Provider>, document.getElementById('react-app'));
