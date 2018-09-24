@@ -84,7 +84,7 @@ export class CurriculumThumbnail extends React.Component {
   }
 
   onEditCurriculumSelect (e) {
-    // TODO navigate to edit Curriculum URL?
+    this.props.onEditCurriculumProfileClick()
   }
 
   onForkSelect (e) {

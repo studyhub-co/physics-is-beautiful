@@ -4,96 +4,48 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Route } from 'react-router'
-import { push } from 'connected-react-router'
 
-import history from '../../history'
+import { history }from '../../history'
 
 import Clipboard from 'react-clipboard.js'
 // import EditableLabel from '../../utils/editableLabel'
 
-import { Grid, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Image, Grid, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
 // import * as assignmentCreators from '../../actions/'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
+import { loadCurriculumIfNeeded } from '../../actions'
 
 class EditCurriculumProfileView extends React.Component {
-  // componentWillMount () {
-  //   // tabs
-  //   this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
-  //   // if (this.props.match) {
-  //   //   this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', this.props.match)
-  //   // }
-  //   if (this.props.teacherClassroomTab === 'students') {
-  //     this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
-  //   }
-  //   // data
-  //   this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
-  //   this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
-  //   this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
-  // }
-  //
-  // constructor (props) {
-  //   super(props)
-  //   this.handleTitleChange = this.handleTitleChange.bind(this)
-  //   this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
-  //   this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
-  //   this.hideCopiedToolTip = this.hideCopiedToolTip.bind(this)
-  //
-  //   this.state = {
-  //     showCreateAssigment: false,
-  //     showAssingment: false,
-  //     createNewAssigment: false
-  //   }
-  // }
-  //
-  // handleCreateAssigment () {
-  //   this.setState(
-  //     {
-  //       showCreateAssigment: !this.state.showCreateAssigment,
-  //       createNewAssigment: !this.state.showCreateAssigment
-  //     })
-  // }
-  //
-  // handleSettingsMenuClickAssignment (assignment, e) {
-  //   if (e === 'edit') {
-  //     this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], assignment.uuid, this.handleEditAssignmentModal)
-  //   } else if (e === 'delete') {
-  //     this.props.assignmentActions.assignmentDeleteAssignment(
-  //       this.props.match.params['uuid'], // may be: this.props.classroomTeacher.uuid, ? fixme
-  //       assignment.uuid,
-  //       true,
-  //       this.props.match.params['uuid']
-  //     )
-  //   }
-  // }
-  //
-  // handleEditAssignmentModal (assignment) {
-  //   this.setState({
-  //     showCreateAssigment: !this.state.showCreateAssigment
-  //   })
-  // }
-  //
-  // handleViewAssignment (assignment) {
-  //   this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/assignments/' + assignment.uuid))
-  // }
-  //
-  // handleTitleChange (name) {
-  //   var newClassroom = {}
-  //
-  //   if (!name) {
-  //     name = 'classroom'
-  //   }
-  //
-  //   newClassroom.name = name
-  //   newClassroom.uuid = this.props.classroomTeacher.uuid
-  //   this.props.classroomActions.classroomPartialUpdateTeacherClassroom(newClassroom)
-  // }
+  constructor (props) {
+    super(props)
+
+    this.handleSelectTab = this.handleSelectTab.bind(this)
+
+    this.state = {
+      selectedTab: 'profile'
+    }
+  }
+
+  componentWillMount () {
+    this.props.loadCurriculum(this.props.match.params.uuid)
+  }
+
   //
   // hideCopiedToolTip () {
   //   if (this.refs.overlay1) { this.refs.overlay1.hide() }
   //   if (this.refs.overlay2) { this.refs.overlay2.hide() }
   // }
+
+  handleSelectTab (tabname, tabspace) {
+    if (tabname === 'edit') {
+      history.push('/editor/curricula/' + this.props.match.params.uuid + '/')
+    }
+    if (tabname !== this.state.tabname) {
+      this.setState({selectedTab: tabname})
+    }
+  }
 
   render () {
     // var assignmentUrl = BASE_URL + 'teacher/:uuid/assignments/:assigmentUuid'
@@ -110,6 +62,8 @@ class EditCurriculumProfileView extends React.Component {
         Copied!
       </Tooltip>
     )
+
+    var selectedCurriculum = this.props.curricula[this.props.match.params.uuid]
 
     return (
       <div className={'pop-up-window'}>
@@ -128,10 +82,8 @@ class EditCurriculumProfileView extends React.Component {
         </Grid>
         <Tabs name='editCurriculumProfileTabs'
           className='tabs'
-          handleSelect={
-            (tabname, tabspace) => { }
-          }
-          selectedTab={this.state.teacherClassroomTab}
+          handleSelect={this.handleSelectTab}
+          selectedTab={this.state.selectedTab}
         >
           <div className='tab-links'>
             <TabLink to='profile'>Curriculum profile</TabLink>
@@ -140,7 +92,43 @@ class EditCurriculumProfileView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='profile'>
-              profile tab
+              <Grid fluid>
+                <Row style={{padding: 0}}>
+                  <Col sm={12} md={12}>
+                    <Image src={selectedCurriculum.image} responsive />
+                  </Col>
+                </Row>
+                <Row style={{padding: 0}}>
+                  <Col sm={2} md={2}>
+                    <Image src={selectedCurriculum.image} responsive circle />
+                  </Col>
+                  <Col sm={8} md={8}>
+                    <Row style={{padding: 0}}>
+                      <Col sm={12} md={12}>
+                        <h1>
+                          {selectedCurriculum.name}
+                        </h1>
+                      </Col>
+                    </Row>
+                    <Row style={{padding: 0}}>
+                      <Col sm={12} md={12}>
+                        <div>
+                          { selectedCurriculum.author.display_name }
+                          ∙ { selectedCurriculum.count_lessons } lessons
+                          ∙ { selectedCurriculum.count_lessons } learners
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row style={{padding: 0}}>
+                      <Col sm={12} md={12}>
+                        <div>
+                          Created 1 year ago  ∙ Last updated 3 months ago
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Grid>
             </TabContent>
             <TabContent for='settings'>
               settings tab
@@ -154,54 +142,16 @@ class EditCurriculumProfileView extends React.Component {
   }
 }
 
-// TeacherClassroomView.propTypes = {
-//   tabActions: PropTypes.shape({
-//     changeTeacherClassroomSelectedTab: PropTypes.func.isRequired,
-//     changeSelectedTab: PropTypes.func.isRequired
-//   }).isRequired,
-//   teacherClassroomTab: PropTypes.string,
-//   studentActions: PropTypes.shape({
-//     classroomFetchStudentsClassroomList: PropTypes.func.isRequired
-//   }).isRequired,
-//   classroomActions: PropTypes.shape({
-//     classroomFetchTeacherClassroom: PropTypes.func.isRequired,
-//     classroomPartialUpdateTeacherClassroom: PropTypes.func.isRequired,
-//     classroomDeleteTeacherClassroom: PropTypes.func.isRequired
-//   }).isRequired,
-//   assignmentActions: PropTypes.shape({
-//     assignmentFetchAssignmentList: PropTypes.func.isRequired,
-//     assignmentDeleteAssignment: PropTypes.func.isRequired,
-//     assignmentFetchAssignment: PropTypes.func.isRequired
-//   }).isRequired,
-//   classroomTeacher: PropTypes.object,
-//   assignmentsList: PropTypes.array,
-//   assignment: PropTypes.object
-//   // teacherClassroomStudentsList: PropTypes.array,
-//   // gapiInitState: PropTypes.bool,
-//   // googleActions: PropTypes.shape({
-//   //   googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
-//   // }).isRequired
-// }
-
 const mapStateToProps = (state) => {
   return {
-    // classroomTeacher: state.classroom.classroomTeacherClassroom,
-    // teacherClassroomTab: state.tab.teacherClassroomTab,
-    // assignmentsList: state.assignment.assignmentsList,
-    // assignment: state.assignment.assignment,
-    // teacherClassroomStudentsList: state.student.classroomStudentsList,
-    // gapiInitState: state.google.gapiInitState
+    curricula: state.curricula
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    // tabActions: bindActionCreators(tabsCreators, dispatch),
-    // classroomActions: bindActionCreators(classroomCreators, dispatch),
-    // assignmentActions: bindActionCreators(assignmentCreators, dispatch),
-    // studentActions: bindActionCreators(studentCreators, dispatch),
-    // googleActions: bindActionCreators(googleCreators, dispatch)
+    loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))
   }
 }
 

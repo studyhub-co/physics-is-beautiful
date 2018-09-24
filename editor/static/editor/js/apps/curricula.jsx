@@ -35,6 +35,7 @@ class Curricula extends React.Component {
         <CurriculumThumbnail
           key={uuid}
           {...this.props.curricula[uuid]}
+          onEditCurriculumProfileClick={this.props.onEditCurriculumProfileClick.bind(null, uuid)}
           onClick={this.props.onCurriculumClick.bind(null, uuid)} />
       )
     }

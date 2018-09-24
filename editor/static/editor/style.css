@@ -243,3 +243,11 @@
     /*position: relative;*/
     /*display: inline-block;*/
   /*}*/
+
+.editor .pop-up-window {
+    border-radius: 15px;
+    padding: 10px 10px;
+    margin: 1rem 0px 1rem 0px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+}
