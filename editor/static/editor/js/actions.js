@@ -2,6 +2,7 @@ import { history } from './history';
 
 import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} from './utils';
 
+const API_PREFIX = '/api/v1/editor/'
 
 export const ActionTypes = Object.freeze({
     CHANGE_SELECTED_TAB: 'CHANGE_SELECTED_TAB',
@@ -62,13 +63,13 @@ export function addCurriculum(prototype) {
 	//	dispatch(requestAddCurriculum());
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/curricula/',
+	    url: API_PREFIX + 'curricula/',
 	    method : 'POST',
 	    data : {name : 'New curriculum',
 		    prototype : prototype},
 	    success: function(data, status, jqXHR) {		
 		dispatch(curriculumLoaded(data));
-		history.push('/curricula/'+data.uuid+'/');
+		history.push('/editor/curricula/'+data.uuid+'/');
 	    }
 	});
     }
@@ -110,7 +111,7 @@ export function loadMyCurricula() {
     return function(dispatch) {
       $.ajax({
         async: true,
-        url: '/editor/api/curricula/',
+        url: API_PREFIX + 'curricula/',
         context: this,
         success: function (data, status, jqXHR) {
           dispatch((data) => {
@@ -127,7 +128,7 @@ export function loadCurricula() {
     return function(dispatch) {
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/curricula/',
+	    url: API_PREFIX + 'curricula/',
 	    context: this,
 	    success: function(data, status, jqXHR) {
 		dispatch(curriculaLoaded(data))
@@ -135,7 +136,7 @@ export function loadCurricula() {
 	});
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/curricula/all/',
+	    url: API_PREFIX + 'curricula/all/',
 	    context: this,
 	    success: function(data, status, jqXHR) {
 		dispatch(allCurriculaLoaded(data))
@@ -157,7 +158,7 @@ export function curriculumLoaded(data) {
 
 export function renameCurriculum(uuid, newName) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/curricula/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'curricula/'+uuid+'/',
 		type:'PATCH',
 		data:{name:newName},
 		success: function(data,status, jqXHR){
@@ -170,7 +171,7 @@ export function renameCurriculum(uuid, newName) {
 function loadCurriculum (uuid, dispatch) {
   $.ajax({
     async: true,
-    url: '/editor/api/curricula/' + uuid + '/',
+    url: API_PREFIX + 'curricula/' + uuid + '/',
     success: function (data, status, jqXHR) {
       dispatch(curriculumLoaded(data))
     }
@@ -189,7 +190,7 @@ export function changeCurriculumImage(uuid, image) {
     return dispatch => {
 	var formData = new FormData();
 	formData.append('image', image);
-	$.ajax({url:'/editor/api/curricula/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'curricula/'+uuid+'/',
 		type:'PATCH',
 		processData: false,
 		contentType: false,
@@ -207,7 +208,7 @@ export function deleteCurriculum(uuid) {
 		  uuid : uuid});
 	$.ajax({
             async : true,
-            url : '/editor/api/curricula/'+uuid+'/',
+            url : API_PREFIX + 'curricula/'+uuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
 		history.push('/');
@@ -230,7 +231,7 @@ export function addUnit(curriculumUuid) {
     return dispatch => {
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/units/',
+	    url: API_PREFIX + 'units/',
 	    method : 'POST',
 	    data : {name : 'New unit', curriculum:curriculumUuid},
 	    success: function(data, status, jqXHR) {
@@ -247,7 +248,7 @@ export function deleteUnit(unitUuid) {
 		  uuid : unitUuid});
 	$.ajax({
             async : true,
-            url : '/editor/api/units/'+unitUuid+'/',
+            url : API_PREFIX + 'units/'+unitUuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
 		// dispatch(unitDeleted(unitUuid))
@@ -259,7 +260,7 @@ export function deleteUnit(unitUuid) {
 
 export function renameUnit(uuid, newName) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/units/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'units/'+uuid+'/',
 		type:'PATCH',
 		data:{name:newName},
 		success: function(data,status, jqXHR){
@@ -280,7 +281,7 @@ export function changeUnitImage(uuid, image) {
     return dispatch => {
 	var formData = new FormData();
 	formData.append('image', image);
-	$.ajax({url:'/editor/api/units/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'units/'+uuid+'/',
 		type:'PATCH',
 		processData: false,
 		contentType: false,
@@ -305,7 +306,7 @@ export function moveUnit(uuid, beforeUuid) {
 	}
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/units/'+uuid+'/',
+	    url: API_PREFIX + 'units/'+uuid+'/',
 	    method : 'PATCH',
 	    data : {position : newPosition},
 	    success: function(data, status, jqXHR) {
@@ -327,12 +328,12 @@ export function addModule(unitUuid) {
     return dispatch => {
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/modules/',
+	    url: API_PREFIX + 'modules/',
 	    method : 'POST',
 	    data : {name : 'New module', unit : unitUuid},
 	    success: function(data, status, jqXHR) {
 		dispatch(moduleAdded(data));
-		history.push('/modules/'+data.uuid+'/');
+		history.push('/editor/modules/'+data.uuid+'/');
 	    }
 	});   
     }  
@@ -347,7 +348,7 @@ export function moduleLoaded(data){
 
 export function renameModule(uuid, newName) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/modules/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'modules/'+uuid+'/',
 		type:'PATCH',
 		data:{name:newName},
 		success: function(data,status, jqXHR){
@@ -360,7 +361,7 @@ export function changeModuleImage(uuid, image) {
     return dispatch => {
 	var formData = new FormData();
 	formData.append('image', image);
-	$.ajax({url:'/editor/api/modules/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'modules/'+uuid+'/',
 		type:'PATCH',
 		processData: false,
 		contentType: false,
@@ -386,14 +387,14 @@ export function moveModule(uuid, toUnitUuid, beforeUuid) {
 	    newPosition = 1;
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/modules/'+uuid+'/',
+	    url: API_PREFIX + 'modules/'+uuid+'/',
 	    method : 'PATCH',
 	    data : {position : newPosition,
 		    unit : toUnitUuid},
 	    success: function(data, status, jqXHR) {
 		$.ajax({
 		    async: true,
-		    url: '/editor/api/units/'+toUnitUuid+'/',
+		    url: API_PREFIX + 'units/'+toUnitUuid+'/',
 		    method : 'GET',
 		    success: function(data, status, jqXHR) {
 			dispatch(unitLoaded(data));
@@ -402,7 +403,7 @@ export function moveModule(uuid, toUnitUuid, beforeUuid) {
 		if (toUnitUuid != fromUnit.uuid) {
 		    $.ajax({
 			async: true,
-			url: '/editor/api/units/'+fromUnit.uuid+'/',
+			url: API_PREFIX + 'units/'+fromUnit.uuid+'/',
 			method : 'GET',
 			success: function(data, status, jqXHR) {
 			    dispatch(unitLoaded(data));
@@ -424,10 +425,10 @@ export function deleteModule(moduleUuid) {
 		  uuid : moduleUuid});
 	$.ajax({
             async : true,
-            url : '/editor/api/modules/'+moduleUuid+'/',
+            url : API_PREFIX + 'modules/'+moduleUuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/curricula/'+curriculum+'/');
+		history.push('/editor/curricula/'+curriculum+'/');
 	    }
 	});	
     }
@@ -438,7 +439,7 @@ export function loadModuleIfNeeded(uuid) {
 	if (!(uuid in getState().modules) || !('lessons' in getState().modules[uuid])) {
 	    $.ajax({
 		async: true,
-		url: '/editor/api/modules/'+uuid +'/',
+		url: API_PREFIX + 'modules/'+uuid +'/',
 		success: function(data, status, jqXHR) {
 		    dispatch(moduleLoaded(data));
 		}
@@ -452,7 +453,7 @@ export function addLesson(moduleUuid) {
     return dispatch => {
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/lessons/',
+	    url: API_PREFIX + 'lessons/',
 	    method : 'POST',
 	    data : {name : 'New lesson', module : moduleUuid},
 	    success: function(data, status, jqXHR) {
@@ -462,7 +463,7 @@ export function addLesson(moduleUuid) {
 			  questions : questions,
 			  answers : extractAll(questions, 'answers')
 			 });
-		history.push('/lessons/'+data.uuid+'/');
+		history.push('/editor/lessons/'+data.uuid+'/');
 	    }
 	});   
     }  
@@ -486,7 +487,7 @@ export function loadLessonIfNeeded(uuid) {
 	if (!(uuid in getState().lessons) || !getState().lessons[uuid].questions) {
 	    $.ajax({
 		async: true,
-		url: '/editor/api/lessons/'+uuid +'/',
+		url: API_PREFIX + 'lessons/'+uuid +'/',
 		success: function(data, status, jqXHR) {
 		    dispatch(lessonLoaded(data));
 		    if (data.questions.length > 0)
@@ -502,7 +503,7 @@ export function loadLessonIfNeeded(uuid) {
 
 export function renameLesson(uuid, newName) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/lessons/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'lessons/'+uuid+'/',
 		type:'PATCH',
 		data:{name:newName},
 		success: function(data,status, jqXHR){
@@ -515,7 +516,7 @@ export function changeLessonImage(uuid, image) {
     return dispatch => {
 	var formData = new FormData();
 	formData.append('image', image);
-	$.ajax({url:'/editor/api/lessons/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'lessons/'+uuid+'/',
 		type:'PATCH',
 		processData: false,
 		contentType: false,
@@ -529,7 +530,7 @@ export function changeLessonImage(uuid, image) {
 
 export function changeLessonType(uuid, newType) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/lessons/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'lessons/'+uuid+'/',
 		type:'PATCH',
 		data:{lesson_type:newType},
 		success: function(data,status, jqXHR){
@@ -540,7 +541,7 @@ export function changeLessonType(uuid, newType) {
 }
 export function changeLessonGameType(uuid, newType) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/lessons/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'lessons/'+uuid+'/',
 		type:'PATCH',
 		data:{game_type:newType},
 		success: function(data,status, jqXHR){
@@ -564,14 +565,14 @@ export function moveLesson(uuid, toModuleUuid, beforeLessonUuid) {
 	    newPosition = 1;
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/lessons/'+uuid+'/',
+	    url: API_PREFIX + 'lessons/'+uuid+'/',
 	    method : 'PATCH',
 	    data : {position : newPosition,
 		    module : toModuleUuid},
 	    success: function(data, status, jqXHR) {
 		$.ajax({
 		    async: true,
-		    url: '/editor/api/modules/'+toModuleUuid+'/',
+		    url: API_PREFIX + 'modules/'+toModuleUuid+'/',
 		    method : 'GET',
 		    success: function(data, status, jqXHR) {
 			dispatch(moduleLoaded(data));
@@ -592,10 +593,10 @@ export function deleteLesson(lessonUuid) {
 		  uuid : lessonUuid});
 	$.ajax({
             async : true,
-            url : '/editor/api/lessons/'+lessonUuid+'/',
+            url : API_PREFIX + 'lessons/'+lessonUuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/modules/'+moduleUuid+'/');
+		history.push('/editor/modules/'+moduleUuid+'/');
 	    }
 	});	
     }
@@ -614,7 +615,7 @@ export function loadQuestionIfNeeded(uuid){
 	if (!(uuid in getState().questions)){
 	    $.ajax({
 		async: true,
-		url: '/editor/api/questions/'+uuid +'/',
+		url: API_PREFIX + 'questions/'+uuid +'/',
 		success: function(data, status, jqXHR) {
 		    dispatch(questionLoaded(data));
 		}});	    
@@ -624,7 +625,7 @@ export function loadQuestionIfNeeded(uuid){
 
 export function changeQuestionText(uuid, newText) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		data:{text:newText},
 		success: function(data,status, jqXHR){
@@ -649,7 +650,7 @@ export function changeQuestionType(uuid, newType) {
 	    data['answers'] = JSON.stringify(state.preservedAnswers[uuid][newType]);
 
 	dispatch(preserveAnswers(uuid))
-	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		data:data,
 		success: function(data,status, jqXHR){
@@ -662,7 +663,7 @@ export function changeQuestionImage(uuid, image) {
     return dispatch => {
 	var formData = new FormData();
 	formData.append('image', image);
-	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		processData: false,
 		contentType: false,
@@ -677,7 +678,7 @@ export function changeQuestionImage(uuid, image) {
 
 export function changeQuestionHint(uuid, newHint) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		data:{hint:newHint},
 		success: function(data,status, jqXHR){
@@ -702,7 +703,7 @@ export function addQuestion(lesson){
 	 $.ajax({
 	     async: true,
 	     method : 'POST',
-	     url: '/editor/api/questions/',
+	     url: API_PREFIX + 'questions/',
 	     data : {lesson : lesson,
 		     text : 'New question'},
 	     success: function(data, status, jqXHR) {
@@ -727,7 +728,7 @@ export function moveQuestion(uuid, beforeUuid) {
 	}
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/questions/'+uuid+'/',
+	    url: API_PREFIX + 'questions/'+uuid+'/',
 	    method : 'PATCH',
 	    data : {position : newPosition},
 	    success: function(data, status, jqXHR) {
@@ -757,7 +758,7 @@ export function deleteQuestion(uuid) {
 		 
 	$.ajax({
             async : true,
-            url : '/editor/api/questions/'+uuid+'/',
+            url : API_PREFIX + 'questions/'+uuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
 		dispatch({type : ActionTypes.DELETE_QUESTION,
@@ -778,7 +779,7 @@ export function answerLoaded(data){
 
 export function changeAnswerText(uuid, newText) {
     return function(dispatch) {
-	$.ajax({url:'/editor/api/answers/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+uuid+'/',
 		type:'PATCH',
 		data:{text:newText},
 		success: function(data,status, jqXHR){
@@ -793,7 +794,7 @@ export function changeAnswerImage(uuid, image) {
     return dispatch => {
 	var formData = new FormData();
 	formData.append('image', image);
-	$.ajax({url:'/editor/api/answers/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+uuid+'/',
 		type:'PATCH',
 		processData: false,
 		contentType: false,
@@ -814,7 +815,7 @@ export function addAnswer(questionUuid) {
     return dispatch => {
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/answers/',
+	    url: API_PREFIX + 'answers/',
 	    method : 'POST',
 	    data : {text : 'New answer', question : questionUuid},
 	    success: function(data, status, jqXHR) {
@@ -833,7 +834,7 @@ export function deleteAnswerChoice(answerUuid) {
 		  uuid : answerUuid})
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/answers/'+answerUuid+'/',
+	    url: API_PREFIX + 'answers/'+answerUuid+'/',
 	    method : 'DELETE',
 	    success: function(data, status, jqXHR) {
 		//
@@ -847,7 +848,7 @@ export function setAnswerIsCorrect(answer, is_correct, exclusive) {
     return dispatch => {
 	$.ajax({
 	    async: true,
-	    url: '/editor/api/answers/'+answer+'/',
+	    url: API_PREFIX + 'answers/'+answer+'/',
 	    method : 'PATCH',
 	    data : {is_correct:is_correct},
 	    success: function(data, status, jqXHR) {
@@ -865,7 +866,7 @@ export function setAnswerIsCorrect(answer, is_correct, exclusive) {
 
 export function changeAnswerRepresentation(answerUuid, newRepresentation) {
     return dispatch => {
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:{representation:newRepresentation},
 		success: function(data,status, jqXHR){
@@ -892,7 +893,7 @@ export function updateVectorAnswerComponents(answerUuid, x_component, y_componen
 	    update = {angle : null,
 		      x_component : x_component,
 		      y_component : y_component}
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:update,
 		success: function(data,status, jqXHR){
@@ -934,7 +935,7 @@ export function updateVectorCheckType(answerUuid, newType){
 		      magnitude:magnitude
 		     }
 	}
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:update,
 		success: function(data,status, jqXHR){
@@ -946,7 +947,7 @@ export function updateVectorCheckType(answerUuid, newType){
 
 export function updateUnitConversionType(answerUuid, newType){
     return dispatch => {
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:{'unit_conversion_type' : newType},
 		success: function(data,status, jqXHR){
@@ -961,7 +962,7 @@ export function updateUnitConversionQuestionValue(answerUuid, newValue){
 	    return;
 	var quantity, unit;
 	[quantity, unit] = splitQuantityUnit(newValue)
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:{'question_number' : quantity,
 		      'question_unit' : unit},
@@ -977,7 +978,7 @@ export function updateUnitConversionAnswerValue(answerUuid, newValue){
 	    return;
 	var quantity, unit;
 	[quantity, unit] = splitQuantityUnit(newValue)
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:{'answer_number' : quantity,
 		      'answer_unit' : unit},
@@ -996,7 +997,7 @@ export function updateUnitConversionStep(answerUuid, stepIndex, update){
 	}
 	var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step));
 	Object.assign(steps[stepIndex], update);
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:{'conversion_steps' : JSON.stringify(steps)},
 		success: function(data,status, jqXHR){
@@ -1010,7 +1011,7 @@ export function addConversionStep(answerUuid){
     return (dispatch, getState) => {
 	var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step));
 	steps.push({numerator : '', denominator : ''})
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:{'conversion_steps' : JSON.stringify(steps)},
 		success: function(data,status, jqXHR){
@@ -1022,7 +1023,7 @@ export function removeConversionStep(answerUuid){
     return (dispatch, getState) => {
 	var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step));
 	steps.pop()
-	$.ajax({url:'/editor/api/answers/'+answerUuid+'/',
+	$.ajax({url:API_PREFIX + 'answers/'+answerUuid+'/',
 		type:'PATCH',
 		data:{'conversion_steps' : JSON.stringify(steps)},
 		success: function(data,status, jqXHR){
@@ -1034,7 +1035,7 @@ export function removeConversionStep(answerUuid){
 
 export function clearQuestionVectors(uuid){
     return dispatch => {
-	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		data:{'vectors':'[]'},
 		success: function(data,status, jqXHR){
@@ -1049,7 +1050,7 @@ export function addQuestionVector(uuid, x_component, y_component){
 	var vectors = s.questions[uuid].vectors.slice();
 	vectors.push({x_component : x_component,		      
 		      y_component : y_component})
-	$.ajax({url:'/editor/api/questions/'+uuid+'/',
+	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		contentType:"application/json; charset=utf-8",
 		dataType:"json",

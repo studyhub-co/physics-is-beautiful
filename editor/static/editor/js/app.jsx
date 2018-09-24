@@ -9,10 +9,10 @@ import thunkMiddleware from 'redux-thunk'
 import { ConnectedRouter,  routerMiddleware } from 'react-router-redux'
 import { createLogger } from 'redux-logger'
 
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
-import { history } from './history';
+import { history } from './history'
 
 import {ModuleContainer} from './containers/module'
 import {QuestionContainer} from './containers/question'
@@ -249,24 +249,21 @@ LessonApp = connect(
     }
   })(LessonApp)
 
-
-
 class EditorRouter extends React.Component {
-
-  render() {
+  render () {
     return (
       <ConnectedRouter history={history}>
         <Switch>
-          <Route path='/curricula/:uuid' component={CurriculumApp} />
-          <Route path='/modules/:uuid' component={ModuleApp} />
-          <Route path='/lessons/:uuid' component={LessonApp} />
-          <Route path='/questions/:uuid' component={QuestionApp} />
+          <Route path='/editor/curricula/:uuid' component={CurriculumApp} />
+          <Route path='/editor/modules/:uuid' component={ModuleApp} />
+          <Route path='/editor/lessons/:uuid' component={LessonApp} />
+          <Route path='/editor/questions/:uuid' component={QuestionApp} />
           {/* <Route path='/' component={CurriculaApp} /> */}
           <Route path='/' component={CurriculaDashboardApp} />
         </Switch>
 
       </ConnectedRouter>
-    );
+    )
   }
 
 }
