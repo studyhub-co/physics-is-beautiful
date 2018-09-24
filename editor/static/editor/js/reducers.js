@@ -3,16 +3,6 @@ import { routerReducer, LOCATION_CHANGE } from 'react-router-redux'
 
 import {ActionTypes} from './actions'
 
-function curriculaDashboard(state={tab: null}, action){
-  switch (action.type) {
-    case ActionTypes.CHANGE_SELECTED_TAB:
-      return Object.assign({}, state,  {[action.namespace]: action.tab})
-    default:
-	    return state
-    }
-}
-
-
 function curricula(state={}, action){
   switch (action.type) {
     case ActionTypes.CURRICULA_LOADED:
@@ -223,17 +213,42 @@ function currentQuestion(state=null, action){
     
 }
 
-function allCurricula(state={}, action){
-    if (action.type == ActionTypes.ALL_CURRICULA_LOADED){
-	    return action.curricula
-    } else
-	    return state
+function allCurricula (state = {}, action){
+  if (action.type === ActionTypes.ALL_CURRICULA_LOADED){
+    return action.curricula
+  } else return state
 }
 
+function studioTabs (state = {tab: null}, action) {
+  switch (action.type) {
+    case ActionTypes.STUDIO_TAB_CHANGED:
+      return Object.assign({}, state, {[action.namespace]: action.tab})
+    default:
+      return state
+  }
+}
 
-const combined = combineReducers({curricula, units, modules, lessons, questions,
-  curriculaDashboard,
-  answers, currentQuestion, allCurricula, router: routerReducer});
+// function curriculaDashboard (state={tab: null}, action){
+//   switch (action.type) {
+//     case ActionTypes.CHANGE_SELECTED_TAB:
+//       return Object.assign({}, state,  {[action.namespace]: action.tab})
+//     default:
+//       return state
+//     }
+// }
+
+const combined = combineReducers({
+  curricula,
+  units,
+  modules,
+  lessons,
+  questions,
+  answers,
+  currentQuestion,
+  allCurricula,
+  studioTabs,
+  router: routerReducer
+})
 
 export function editor(state={}, action){
     var newState = combined(state, action)
@@ -245,5 +260,5 @@ export function editor(state={}, action){
 	newState.preservedAnswers[action.question] = qpa
     } else
 	newState.preservedAnswers = state.preservedAnswers || {}
-    return newState   
+    return newState
 }
