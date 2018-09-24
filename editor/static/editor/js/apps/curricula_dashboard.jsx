@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { changeSelectedTab } from './../actions'
+import { changeStudioSelectedTab } from './../actions'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { CurriculaApp } from './curricula'
-import { MyCurriculaApp } from './my_curricula'
+// import { MyCurriculaApp } from './my_curricula'
 
 import { Sheet } from './sheet'
 
@@ -47,7 +47,7 @@ class CurriculaDashboard extends React.Component {
 
 const mapStateToProps = function (store) {
   return {
-    tab: store.curriculaDashboard.tab
+    tab: store.studioTabs.tab
   }
 }
 
@@ -55,6 +55,6 @@ export let CurriculaDashboardApp = connect(
   mapStateToProps,
   dispatch => {
     return {
-      onTabChanged: (selectedTab, tabNamespace) => dispatch(changeSelectedTab(selectedTab, tabNamespace))
+      onTabChanged: (selectedTab, tabNamespace) => dispatch(changeStudioSelectedTab(selectedTab, tabNamespace))
     }
   })(CurriculaDashboard)

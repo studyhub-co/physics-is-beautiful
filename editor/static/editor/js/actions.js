@@ -1,64 +1,63 @@
-import { history } from './history';
+import { history } from './history'
 
-import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} from './utils';
+import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} from './utils'
 
 const API_PREFIX = '/api/v1/editor/'
 
 export const ActionTypes = Object.freeze({
-    CHANGE_SELECTED_TAB: 'CHANGE_SELECTED_TAB',
-    REQUEST_ADD_CURRICULUM : 'REQUEST_ADD_CURRICULUM',
-    CURRICULA_LOADED : 'CURRICULA_LOADED',
-    ALL_CURRICULA_LOADED : 'ALL_CURRICULA_LOADED',
-    LOAD_CURRICULA : 'LOAD_CURRICULA',
-    CURRICULUM_LOADED : 'CURRICULUM_LOADED',    
-    RENAME_CURRICULUM : 'RENAME_CURRICULUM',
-    CHANGE_CURRICULUM_IMAGE : 'CHANGE_CURRICULUM_IMAGE',
-    DELETE_CURRICULUM : 'DELETE_CURRICULUM',
-    UNIT_LOADED : 'UNIT_LOADED',
-    UNIT_ADDED : 'UNIT_ADDED',
-    DELETE_UNIT : 'DELETE_UNIT',
-    MODULE_ADDED : 'MODULE_ADDED',
-    MODULE_LOADED : 'MODULE_LOADED',
-    DELETE_MODULE : 'DELETE_MODULE',
-    LESSON_LOADED : 'LESSON_LOADED',
-    LESSON_AVAILABLE : 'LESSON_AVAILABLE',
-    LESSON_ADDED : 'LESSON_ADDED',
-    DELETE_LESSON : 'DELETE_LESSON',
-    QUESTION_LOADED : 'QUESTION_LOADED',
-    QUESTION_ADDED : 'QUESTION_ADDED',
-    QUESTION_MOVED : 'QUESTION_MOVED',
-    PRESERVE_ANSWERS : 'PRESERVE_ANSWERS',
-    GOTO_QUESTION : 'GOTO_QUESTION',
-    DELETE_QUESTION : 'DELETE_QUESTION',
-    ANSWER_LOADED : 'ANSWER_LOADED',
-    ANSWER_ADDED : 'ANSWER_ADDED',
-    DELETE_ANSWER : 'DELETE_ANSWER',
-    SET_ANSWER_EXCLUSIVELY_CORRECT : 'SET_ANSWER_EXCLUSIVELY_CORRECT',
-    SET_ANSWER_IS_CORRECT : 'SET_ANSWER_IS_CORRECT',
-});
+  REQUEST_ADD_CURRICULUM: 'REQUEST_ADD_CURRICULUM',
+  CURRICULA_LOADED: 'CURRICULA_LOADED',
+  ALL_CURRICULA_LOADED: 'ALL_CURRICULA_LOADED',
+  LOAD_CURRICULA: 'LOAD_CURRICULA',
+  CURRICULUM_LOADED: 'CURRICULUM_LOADED',
+  RENAME_CURRICULUM: 'RENAME_CURRICULUM',
+  CHANGE_CURRICULUM_IMAGE: 'CHANGE_CURRICULUM_IMAGE',
+  DELETE_CURRICULUM: 'DELETE_CURRICULUM',
+  UNIT_LOADED: 'UNIT_LOADED',
+  UNIT_ADDED: 'UNIT_ADDED',
+  DELETE_UNIT: 'DELETE_UNIT',
+  MODULE_ADDED: 'MODULE_ADDED',
+  MODULE_LOADED: 'MODULE_LOADED',
+  DELETE_MODULE: 'DELETE_MODULE',
+  LESSON_LOADED: 'LESSON_LOADED',
+  LESSON_AVAILABLE: 'LESSON_AVAILABLE',
+  LESSON_ADDED: 'LESSON_ADDED',
+  DELETE_LESSON: 'DELETE_LESSON',
+  QUESTION_LOADED: 'QUESTION_LOADED',
+  QUESTION_ADDED: 'QUESTION_ADDED',
+  QUESTION_MOVED: 'QUESTION_MOVED',
+  PRESERVE_ANSWERS: 'PRESERVE_ANSWERS',
+  GOTO_QUESTION: 'GOTO_QUESTION',
+  DELETE_QUESTION: 'DELETE_QUESTION',
+  ANSWER_LOADED: 'ANSWER_LOADED',
+  ANSWER_ADDED: 'ANSWER_ADDED',
+  DELETE_ANSWER: 'DELETE_ANSWER',
+  SET_ANSWER_EXCLUSIVELY_CORRECT: 'SET_ANSWER_EXCLUSIVELY_CORRECT',
+  SET_ANSWER_IS_CORRECT: 'SET_ANSWER_IS_CORRECT',
+  STUDIO_TAB_CHANGED: 'STUDIO_TAB_CHANGED'
+})
 
 /*
   export function requestAddCurriculum() {
   return { type : REQUEST_ADD_CURRICULUM }
   } */
 
-export function curriculumAdded(curriculum) {
-    return { type : ActionTypes.CURRICULUM_ADDED,
-	     curriculum: curriculum}
+export function curriculumAdded (curriculum) {
+  return { type: ActionTypes.CURRICULUM_ADDED, curriculum: curriculum }
 }
 
-
-export function changeSelectedTab(selectedTab, tabNamespace) {
-     return {
-        type: ActionTypes.CHANGE_SELECTED_TAB,
-        tab: selectedTab,
-        namespace: tabNamespace
-    };
+export function changeStudioSelectedTab (selectedTab, tabNamespace) {
+  if (selectedTab !== 'studio') {
+    history.push('/' + selectedTab + '/')
+  } else { history.push('/') }
+  return {
+    type: ActionTypes.STUDIO_TAB_CHANGED,
+    tab: selectedTab,
+    namespace: tabNamespace
+  }
 }
 
-
-
-export function addCurriculum(prototype) {
+export function addCurriculum (prototype) {
     return function(dispatch) {
 	//	dispatch(requestAddCurriculum());
 	$.ajax({
