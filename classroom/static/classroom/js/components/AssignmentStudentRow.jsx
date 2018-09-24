@@ -151,7 +151,7 @@ class AssignmentStudentRow extends React.Component {
                     </div>
                     <div>
                       {lesson.name}{lesson.status === 'completed'
-                        ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '1rem'}}/>
+                        ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '0.3rem'}} />
                         : null}
                     </div>
                   </span>
