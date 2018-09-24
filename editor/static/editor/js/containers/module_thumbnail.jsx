@@ -16,7 +16,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     name : mod.name,
     image : mod.image,
-    onClick : () => { history.push('/modules/'+ownProps.uuid+'/') },
+    onClick : () => { history.push('/editor/modules/'+ownProps.uuid+'/') },
   }
 }
 

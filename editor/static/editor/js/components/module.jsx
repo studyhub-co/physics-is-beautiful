@@ -32,7 +32,7 @@ export class Module extends React.Component {
     }
     return (
       <div className="module">        
-        <BackButton link={'/curricula/' + this.props.curriculum + '/'}/>
+        <BackButton link={'/editor/curricula/' + this.props.curriculum + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
           <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New module"/>
