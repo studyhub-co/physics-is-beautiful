@@ -67,6 +67,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         except Classroom.DoesNotExist:
             raise NotFound()
 
+        # TODO limit max number of students in a classroom (999)
         # check that user not if classrom
         if ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).count() == 0:
             # add current user to classroom as student
@@ -151,6 +152,8 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
                     if user.profile not in classroom.students.all():  # FIXME test for load / need to use task quene
                         to_add_users_in_classroom.append(user)
+
+        # TODO limit max number of students in a classroom (999)
 
         # Add students to classroom
         if len(to_add_users_in_classroom) > 0:

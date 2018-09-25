@@ -25,4 +25,3 @@ export class EditableThumbnail extends React.Component {
     )
   }
 }
-
