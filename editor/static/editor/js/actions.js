@@ -47,9 +47,6 @@ export function curriculumAdded (curriculum) {
 }
 
 export function changeStudioSelectedTab (selectedTab, tabNamespace) {
-  if (selectedTab !== 'studio') {
-    history.push('/' + selectedTab + '/')
-  } else { history.push('/') }
   return {
     type: ActionTypes.STUDIO_TAB_CHANGED,
     tab: selectedTab,

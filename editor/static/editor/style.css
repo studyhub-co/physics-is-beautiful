@@ -184,7 +184,7 @@
 .tabs-1 .tabContent {}
 
 
-/* features 2008 changes */
+/* common (copy-paste from classroom */
 
 .editor .curriculum-card div img {
     width: 100%;
@@ -200,10 +200,17 @@
 }
 
 
-/* common (copy-paste from classroom */
+.editor .editor-common-button {
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 1rem 4rem 1rem 4rem;
+    margin: 1rem 0 1rem 0;
+}
 
 .editor .blue-title {
-    font-size: 2rem;
+    font-size: 3rem;
     color: rgb(8, 209, 255);
 }
 
@@ -215,7 +222,7 @@
 .editor .curriculum-card {
     /* todo move elements with this class to basic card */
     border-radius: 15px;
-    background-color: white;
+    background-color: #efefef;
     box-shadow: 0 0 10px #d8d8d8;
     border-width: 2px;
     border-style: solid;
@@ -235,19 +242,32 @@
     height: 30rem;
 }
 
-/*.dotted-menu:after {*/
-    /*!*float: right;*!*/
-    /*content: '\2807';*/
-    /*color: black;*/
-    /*font-size: 2rem;*/
-    /*position: relative;*/
-    /*display: inline-block;*/
-  /*}*/
-
 .editor .pop-up-window {
     border-radius: 15px;
     padding: 10px 10px;
     margin: 1rem 0px 1rem 0px;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
+}
+
+.editor .base-circle-edit {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    text-align: center;
+    vertical-align: middle;
+    color: rgb(8, 209, 255);
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.editor .right-circle-edit {
+   right: 1rem;
+}
+
+.editor .bottom-circle-edit {
+   bottom: 1rem;
 }

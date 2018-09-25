@@ -17,6 +17,7 @@ class CurriculaDashboard extends React.Component {
   constructor (props) {
     super(props)
     this.onEditCurriculumProfileClick = this.onEditCurriculumProfileClick.bind(this)
+    this.handleTabUserChange = this.handleTabUserChange.bind(this)
 
     this.state = {
       showEditCurriculumProfile: false,
@@ -28,6 +29,11 @@ class CurriculaDashboard extends React.Component {
     if (this.props.match.path === '/' && this.props.match.isExact) {
       this.props.changeTab('studio', 'tab')
     }
+    // studio sub tabs
+    if (this.props.location.pathname.lastIndexOf('/profile/', 0) === 0) {
+      this.props.changeTab('studio', 'tab')
+      this.setState({showEditCurriculumProfile: true})
+    }
   }
 
   componentWillReceiveProps (props) {
@@ -36,6 +42,14 @@ class CurriculaDashboard extends React.Component {
         showEditCurriculumProfile: false
       })
     }
+  }
+
+  handleTabUserChange (tabname, tabspace) {
+    if (tabname !== 'studio') {
+      history.push('/' + tabname + '/')
+    } else { history.push('/') }
+
+    this.props.changeTab(tabname, tabspace)
   }
 
   onEditCurriculumProfileClick (uuid) {
@@ -51,7 +65,7 @@ class CurriculaDashboard extends React.Component {
       <Tabs
         name='tab'
         className='tabs'
-        handleSelect={this.props.changeTab}
+        handleSelect={this.handleTabUserChange}
         selectedTab={this.props.tab}
       >
         <div className='tab-links'>
@@ -65,7 +79,7 @@ class CurriculaDashboard extends React.Component {
           </TabContent>
           <TabContent for='studio'>
             {this.state.showEditCurriculumProfile
-              ? <Route path='/profile/:uuid' component={EditCurriculumProfileView} />
+              ? <Route path='/profile/:uuid/' component={EditCurriculumProfileView} />
               : <div>
                 <div className={'lightgrey-round-background'}>Create a new curriculum from scratch below.
                   Or, to add content from other curricula or to fork a curriculum visit

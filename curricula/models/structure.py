@@ -35,6 +35,7 @@ class Curriculum(BaseModel):
     name = models.CharField(max_length=200, db_index=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
+    # cover_photo = models.ImageField(blank=True)
     description = models.TextField(blank=True, null=True)
 
     author = models.ForeignKey(User)

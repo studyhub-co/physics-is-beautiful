@@ -26,40 +26,12 @@ class CurriculumMenuToggle extends React.Component {
         {/*{this.props.children}*/}
       {/*</div>*/}
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick}>
+      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
       </Glyphicon>
     )
   }
 }
-
-// class CurriculumMenu extends React.Component {
-//   constructor (props, context) {
-//     super(props, context)
-//     this.handleChange = this.handleChange.bind(this)
-//
-//     this.state = {
-//       value: ''
-//     }
-//   }
-//
-//   handleChange (e) {
-//     this.setState({ value: e.target.value })
-//   }
-//
-//   render () {
-//     const { children } = this.props
-//     const { value } = this.state
-//
-//     return (
-//       <ul className='dropdown-menu'>
-//         {React.Children.toArray(children).filter(
-//           child => !value.trim() || child.props.children.indexOf(value) !== -1
-//         )}
-//       </ul>
-//     )
-//   }
-// }
 
 export class CurriculumThumbnail extends React.Component {
   constructor (props, context) {
@@ -98,7 +70,6 @@ export class CurriculumThumbnail extends React.Component {
         md={2}
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
-        {/*<div className='col-md-1 module-accessible-block' onClick={this.props.onClick} >*/}
         <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
           <Thumbnail image={this.props.image} />
         </div>
@@ -115,15 +86,15 @@ export class CurriculumThumbnail extends React.Component {
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
-          <div onClick={this.onTitleClick} className={'blue-title'}>
+          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.name}
           </div>
-          <div style={{fontSize: '1.1rem'}}>
+          <div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             <a href={this.props.author.get_absolute_url} target={'_blank'}>
               {this.props.author.display_name}
             </a> ∙ {this.props.count_lessons } lessons ∙ 2k learners
           </div>
-          <div style={{fontSize: '1.1rem', color: 'gray'}}>
+          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.created_on}
             </Moment> ∙ Last updated <Moment fromNow>
@@ -131,7 +102,6 @@ export class CurriculumThumbnail extends React.Component {
             </Moment>
           </div>
         </div>
-        {/*</div>*/}
       </Col>
     )
   }

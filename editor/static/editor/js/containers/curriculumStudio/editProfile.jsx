@@ -1,27 +1,52 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { Route } from 'react-router'
+import Moment from 'react-moment'
 
+import { connect } from 'react-redux'
 import { history }from '../../history'
 
 import Clipboard from 'react-clipboard.js'
 // import EditableLabel from '../../utils/editableLabel'
 
-import { Image, Grid, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Image, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
 // import * as assignmentCreators from '../../actions/'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { loadCurriculumIfNeeded } from '../../actions'
+import { changeCurriculumImage, loadCurriculumIfNeeded } from '../../actions'
+
+class PencilImageUpload extends React.Component {
+  constructor (props) {
+    super(props)
+    this.handleChange = this.handleChange.bind(this)
+  }
+  handleChange (e) {
+    this.props.onFileSelect(e.target.files[0])
+  }
+
+  render () {
+    return <div className={'selectable-image'} style={{height: '100%'}}>
+      <Glyphicon
+        glyph={'pencil'}
+        // onClick={this.imageUpload}
+        style={{fontSize: '2rem', top: '1rem'}} />
+      <input
+        type='file' name='image' accept='image/*'
+        onChange={this.handleChange}
+        style={{fontSize: '0px'}} />
+    </div>
+  }
+}
 
 class EditCurriculumProfileView extends React.Component {
   constructor (props) {
     super(props)
 
     this.handleSelectTab = this.handleSelectTab.bind(this)
+    this.startCurriculum = this.startCurriculum.bind(this)
+    this.imageUpload = this.imageUpload.bind(this)
+    this.coverPhotoUpload = this.coverPhotoUpload.bind(this)
 
     this.state = {
       selectedTab: 'profile'
@@ -32,7 +57,6 @@ class EditCurriculumProfileView extends React.Component {
     this.props.loadCurriculum(this.props.match.params.uuid)
   }
 
-  //
   // hideCopiedToolTip () {
   //   if (this.refs.overlay1) { this.refs.overlay1.hide() }
   //   if (this.refs.overlay2) { this.refs.overlay2.hide() }
@@ -45,6 +69,20 @@ class EditCurriculumProfileView extends React.Component {
     if (tabname !== this.state.tabname) {
       this.setState({selectedTab: tabname})
     }
+  }
+
+  startCurriculum () {
+    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
+  }
+
+  imageUpload (image) {
+    if (image) {
+      this.props.changeCurriculumImage(this.props.match.params.uuid, image)
+    }
+  }
+
+  coverPhotoUpload () {
+    // TODO select and crop cover photo
   }
 
   render () {
@@ -65,21 +103,10 @@ class EditCurriculumProfileView extends React.Component {
 
     var selectedCurriculum = this.props.curricula[this.props.match.params.uuid]
 
+    if (!selectedCurriculum) return null
+
     return (
       <div className={'pop-up-window'}>
-        <Grid fluid> { this.props.classroomTeacher
-          ? <Col sm={12} md={12} style={{padding: 0}}>
-            <Row style={{padding: 0}}>
-              <Col sm={12} md={12} style={{textAlign: 'left', padding: 0}} >
-                <a className={'back-button'} onClick={() => { history.push('/') }} >
-                  <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
-                  My Curricula
-                </a>
-              </Col>
-            </Row>
-          </Col>
-          : null }
-        </Grid>
         <Tabs name='editCurriculumProfileTabs'
           className='tabs'
           handleSelect={this.handleSelectTab}
@@ -94,25 +121,56 @@ class EditCurriculumProfileView extends React.Component {
             <TabContent for='profile'>
               <Grid fluid>
                 <Row style={{padding: 0}}>
-                  <Col sm={12} md={12}>
-                    <Image src={selectedCurriculum.image} responsive />
+                  <Col sm={12} md={12} style={{padding: 0}}>
+                    <div
+                      style={{maxHeight: '315px', overflowY: 'hidden'}}
+                      title={'Change cover photo'}
+                    >
+                      <Image
+                        src={selectedCurriculum.image}
+                        responsive
+                      />
+                      <div className={'base-circle-edit bottom-circle-edit right-circle-edit'}>
+                        <PencilImageUpload onFileSelect={this.coverPhotoUpload} />
+                      </div>
+                    </div>
                   </Col>
                 </Row>
+                <br />
                 <Row style={{padding: 0}}>
-                  <Col sm={2} md={2}>
-                    <Image src={selectedCurriculum.image} responsive circle />
+                  <Col sm={2} md={2} style={{padding: 0}}>
+                    <div style={{minHeight: '10rem'}}>
+                      { selectedCurriculum.image ? <Image
+                        src={selectedCurriculum.image}
+                        responsive
+                      /> : null }
+                    </div>
+                    <div
+                      className={'base-circle-edit bottom-circle-edit right-circle-edit'}
+                      title={'Change image'}
+                    >
+                      <PencilImageUpload onFileSelect={this.imageUpload} />
+                    </div>
                   </Col>
-                  <Col sm={8} md={8}>
+                  <Col sm={7} md={7}>
                     <Row style={{padding: 0}}>
                       <Col sm={12} md={12}>
-                        <h1>
+                        <div className={'blue-title'}>
                           {selectedCurriculum.name}
-                        </h1>
+                          <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                            <span className={'base-circle-edit'}>
+                              <Glyphicon
+                                glyph={'pencil'}
+                                onClick={this.imageUpload}
+                                style={{fontSize: '2rem'}} />
+                            </span>
+                          </span>
+                        </div>
                       </Col>
                     </Row>
                     <Row style={{padding: 0}}>
                       <Col sm={12} md={12}>
-                        <div>
+                        <div style={{fontSize: '2rem'}}>
                           { selectedCurriculum.author.display_name }
                           ∙ { selectedCurriculum.count_lessons } lessons
                           ∙ { selectedCurriculum.count_lessons } learners
@@ -121,11 +179,15 @@ class EditCurriculumProfileView extends React.Component {
                     </Row>
                     <Row style={{padding: 0}}>
                       <Col sm={12} md={12}>
-                        <div>
-                          Created 1 year ago  ∙ Last updated 3 months ago
+                        <div style={{color: 'gray'}}>
+                          Created <Moment fromNow>{selectedCurriculum.created_on}</Moment>
+                          ∙ Last updated <Moment fromNow>{selectedCurriculum.updated_on}</Moment>
                         </div>
                       </Col>
                     </Row>
+                  </Col>
+                  <Col sm={3} md={3}>
+                    <button className={'editor-common-button'} onClick={this.startCurriculum}>Start Curriculum</button>
                   </Col>
                 </Row>
               </Grid>
@@ -142,6 +204,14 @@ class EditCurriculumProfileView extends React.Component {
   }
 }
 
+EditCurriculumProfileView.propTypes = {
+  // actions
+  loadCurriculum: PropTypes.func.isRequired,
+  changeCurriculumImage: PropTypes.func.isRequired,
+  // data
+  curricula: PropTypes.object
+}
+
 const mapStateToProps = (state) => {
   return {
     curricula: state.curricula
@@ -151,7 +221,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))
+    loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid)),
+    changeCurriculumImage: (uuid, image) => dispatch(changeCurriculumImage(uuid, image))
   }
 }
 
