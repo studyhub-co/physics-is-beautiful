@@ -37,7 +37,7 @@
                         {% if list_topic == topic %}
                         <li class="disabled"><a>{{ list_topic }}</a></li>
                         {% else %}
-                        <li><a href="{{ list_topic.url }}">{{ list_topic }}</a></li>
+                        <li><a href="{% url 'topicPage' list_topic.urlTitle %}">{{ list_topic }}</a></li>
                         {% endif %}
                     {% endfor %}
                     <li class="divider"></li> 
@@ -68,7 +68,9 @@
     <script type="text/javascript">
     window.TOPIC_URLS = {
 				'deleteTopic' : '{% url 'deleteTopic' topic.urlTitle %}'
-			};
+            };
+            
+    window.updateCanGoBack(false);
     </script>
     {% endif %}
 {% endblock %}
