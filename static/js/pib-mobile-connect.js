@@ -12,7 +12,13 @@ window.addEventListener('message', function (event) {
   // please verify that event.origin == http://localhost:8080
 
   if (event.data === 'goBack') {
-    window.history.back()
+    // if not in discussion, use default canGoBack
+    // TODO implement a better way of checking this.
+    if ('BASE_URL' in window) {
+      window.location = document.referrer
+    } else {
+      window.history.back()
+    }
   }
 })
 
@@ -64,16 +70,25 @@ $.get('/api/v1/profiles/me', function (data) {
   }, window.appOrigin)
 })
 
-window.parent.postMessage({
-  'message': 'canGoBack',
-  'data': !(document.referrer.startsWith('http://localhost:8080')) && document.referrer.indexOf('accounts') === -1 // could be appOrigin with ending slash
-}, '*')
-
 window.mobilizedUrl = function (url) {
-  if (url.indexOf('pib_mobile') === -1) {
+  if (window.IS_MOBILE_APP && url.indexOf('pib_mobile') === -1) {
     return UpdateQueryString('pib_mobile', 'true', url)
   } else {
     return url
+  }
+}
+
+window.updateCanGoBack = (canGoBack) => {
+  if (canGoBack == null) {
+    window.parent.postMessage({
+      'message': 'canGoBack',
+      'data': !(document.referrer.startsWith('http://localhost:8080')) && document.referrer.indexOf('accounts') === -1 // could be appOrigin with ending slash
+    }, '*')
+  } else if (window.IS_MOBILE_APP) {
+    window.parent.postMessage({
+      'message': 'canGoBack',
+      'data': canGoBack
+    }, '*')
   }
 }
 
