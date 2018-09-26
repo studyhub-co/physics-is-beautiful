@@ -14,7 +14,7 @@
                 Topics <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu">
                     {% for list_topic in topics %}
-                        <li><a href="{{ list_topic.url }}" data-toggle="tooltip" data-placement="right" title="{{ list_topic.description }}">{{ list_topic }}</a></li>
+                        <li><a href="{% url 'topicPage' list_topic.urlTitle %}" data-toggle="tooltip" data-placement="right" title="{{ list_topic.description }}">{{ list_topic }}</a></li>
                     {% endfor %}
                     <li class="divider"></li> 
                     <li class="disabled"><a>Topic List</a></li>
@@ -46,4 +46,7 @@
 {% endblock %}
 {% block scripts %}
     <script src="{% static 'djeddit/js/util.js' %}"></script>
+    <script type="text/javascript">
+        window.updateCanGoBack(false);
+    </script>
 {% endblock %}
