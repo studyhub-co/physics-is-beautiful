@@ -7,14 +7,13 @@ import { connect } from 'react-redux'
 import { history }from '../../history'
 
 import Clipboard from 'react-clipboard.js'
-// import EditableLabel from '../../utils/editableLabel'
 
 import { Image, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
-
-// import * as assignmentCreators from '../../actions/'
-
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { changeCurriculumImage, loadCurriculumIfNeeded } from '../../actions'
+
+import { changeCurriculumImage, loadCurriculumIfNeeded, renameCurriculum } from '../../actions'
+
+import { EditableExternalEventLabel } from '../../components/label'
 
 class PencilImageUpload extends React.Component {
   constructor (props) {
@@ -47,6 +46,8 @@ class EditCurriculumProfileView extends React.Component {
     this.startCurriculum = this.startCurriculum.bind(this)
     this.imageUpload = this.imageUpload.bind(this)
     this.coverPhotoUpload = this.coverPhotoUpload.bind(this)
+    this.editNameClick = this.editNameClick.bind(this)
+    this.onNameChanged = this.onNameChanged.bind(this)
 
     this.state = {
       selectedTab: 'profile'
@@ -79,6 +80,15 @@ class EditCurriculumProfileView extends React.Component {
     if (image) {
       this.props.changeCurriculumImage(this.props.match.params.uuid, image)
     }
+  }
+
+  editNameClick () {
+    this.setState({nameEditMode: true})
+  }
+
+  onNameChanged (name) {
+    this.props.onNameChange(this.props.match.params.uuid, name)
+    this.setState({nameEditMode: false})
   }
 
   coverPhotoUpload () {
@@ -156,12 +166,17 @@ class EditCurriculumProfileView extends React.Component {
                     <Row style={{padding: 0}}>
                       <Col sm={12} md={12}>
                         <div className={'blue-title'}>
-                          {selectedCurriculum.name}
+                          {/*{selectedCurriculum.name}*/}
+                          <EditableExternalEventLabel
+                            value={selectedCurriculum.name}
+                            onChange={this.onNameChanged}
+                            editMode={this.state.nameEditMode}
+                          />
                           <span style={{position: 'relative', paddingLeft: '1rem'}}>
                             <span className={'base-circle-edit'}>
                               <Glyphicon
                                 glyph={'pencil'}
-                                onClick={this.imageUpload}
+                                onClick={this.editNameClick}
                                 style={{fontSize: '2rem'}} />
                             </span>
                           </span>
@@ -222,7 +237,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid)),
-    changeCurriculumImage: (uuid, image) => dispatch(changeCurriculumImage(uuid, image))
+    changeCurriculumImage: (uuid, image) => dispatch(changeCurriculumImage(uuid, image)),
+    onNameChange: (uuid, name) => dispatch(renameCurriculum(uuid, name))
   }
 }
 
