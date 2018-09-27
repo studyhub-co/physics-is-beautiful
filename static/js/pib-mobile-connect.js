@@ -15,7 +15,11 @@ window.addEventListener('message', function (event) {
     // if not in discussion, use default canGoBack
     // TODO implement a better way of checking this.
     if ('BASE_URL' in window) {
-      window.location = document.referrer
+      let sessionHistory = JSON.parse(window.sessionStorage.getItem('history'))
+      let lastUrl = sessionHistory[sessionHistory.length - 1]
+
+      window.sessionStorage.setItem('history', JSON.stringify(sessionHistory.splice(0, sessionHistory.length - 1)))
+      window.location = lastUrl
     } else {
       window.history.back()
     }
