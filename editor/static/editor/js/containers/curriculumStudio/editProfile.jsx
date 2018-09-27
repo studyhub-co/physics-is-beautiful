@@ -1,19 +1,71 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-
 import Moment from 'react-moment'
-
+import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
-import { history }from '../../history'
-
+import PropTypes from 'prop-types'
 import Clipboard from 'react-clipboard.js'
-
-import { Image, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { history }from '../../history'
+import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { changeCurriculumImage, loadCurriculumIfNeeded, renameCurriculum } from '../../actions'
+import { changeCurriculumCoverPhoto, changeCurriculumImage, loadCurriculumIfNeeded, renameCurriculum } from '../../actions'
 
 import { EditableExternalEventLabel } from '../../components/label'
+
+function makeblob (dataURL, filename) {
+  var BASE64_MARKER = ';base64,'
+  var parts
+  var contentType
+  var raw
+  if (dataURL.indexOf(BASE64_MARKER) === -1) {
+    parts = dataURL.split(',')
+    contentType = parts[0].split(':')[1]
+    raw = decodeURIComponent(parts[1])
+    return new Blob([raw], { type: contentType })
+  }
+  parts = dataURL.split(BASE64_MARKER)
+  contentType = parts[0].split(':')[1]
+  raw = window.atob(parts[1])
+  var rawLength = raw.length
+
+  var uInt8Array = new Uint8Array(rawLength)
+
+  for (var i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i)
+  }
+  var blobdata = new Blob([uInt8Array], { type: contentType })
+
+  blobdata.filename = filename
+
+  return  blobdata
+}
+
+/**
+ * @param {File} image - Image File Object
+ * @param {Object} pixelCrop - pixelCrop Object provided by react-image-crop
+ */
+function getCroppedImg (image, pixelCrop) {
+  const canvas = document.createElement('canvas')
+  canvas.width = pixelCrop.width
+  canvas.height = pixelCrop.height
+  const ctx = canvas.getContext('2d')
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  )
+
+  // As Base64 string
+  const base64Image = canvas.toDataURL('image/jpeg');
+  return base64Image
+}
 
 class PencilImageUpload extends React.Component {
   constructor (props) {
@@ -45,12 +97,22 @@ class EditCurriculumProfileView extends React.Component {
     this.handleSelectTab = this.handleSelectTab.bind(this)
     this.startCurriculum = this.startCurriculum.bind(this)
     this.imageUpload = this.imageUpload.bind(this)
-    this.coverPhotoUpload = this.coverPhotoUpload.bind(this)
+    this.coverPhotoSelected = this.coverPhotoSelected.bind(this)
     this.editNameClick = this.editNameClick.bind(this)
     this.onNameChanged = this.onNameChanged.bind(this)
+    this.onCropChange = this.onCropChange.bind(this)
+    this.onCropComplete = this.onCropComplete.bind(this)
+    this.saveCroppedPhoto = this.saveCroppedPhoto.bind(this)
 
     this.state = {
-      selectedTab: 'profile'
+      selectedTab: 'profile',
+      croppingCoverPhotoMode: false,
+      imgToCrop: false,
+      imgToCropBlob: null,
+      cropInfo: null,
+      crop: {
+        aspect: 2.7 / 1
+      }
     }
   }
 
@@ -86,13 +148,53 @@ class EditCurriculumProfileView extends React.Component {
     this.setState({nameEditMode: true})
   }
 
+  onCropChange (crop) {
+    this.setState({ crop })
+  }
+
   onNameChanged (name) {
     this.props.onNameChange(this.props.match.params.uuid, name)
     this.setState({nameEditMode: false})
   }
 
-  coverPhotoUpload () {
-    // TODO select and crop cover photo
+  coverPhotoSelected (image) {
+    // TODO set up default crop
+    if (image) {
+      this.setState({
+        imgToCropBlob: URL.createObjectURL(image),
+        imgToCrop: image,
+        croppingCoverPhotoMode: true
+      })
+    }
+  }
+
+  saveCroppedPhoto () {
+    if (this.state.cropInfo) {
+
+      var img = new Image()
+      img.src = this.state.imgToCropBlob
+
+      this.props.changeCurriculumCoverPhoto(
+        this.props.match.params.uuid,
+        (makeblob(
+          getCroppedImg(img, this.state.cropInfo),
+          this.state.imgToCrop.name
+        ))
+      )
+      this.setState({croppingCoverPhotoMode: false})
+    }
+  }
+
+  onCropComplete (crop, pixelCrop) {
+    if (crop.width !== 0) {
+      this.setState({
+        'cropInfo': pixelCrop
+      })
+    } else {
+      this.setState({
+        'cropInfo': null
+      })
+    }
   }
 
   render () {
@@ -104,7 +206,6 @@ class EditCurriculumProfileView extends React.Component {
     // if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
     //   studentsS = 's'
     // }
-
     var copiedTooltip = (
       <Tooltip id='copiedTooltip'>
         Copied!
@@ -131,17 +232,40 @@ class EditCurriculumProfileView extends React.Component {
             <TabContent for='profile'>
               <Grid fluid>
                 <Row style={{padding: 0}}>
-                  <Col sm={12} md={12} style={{padding: 0}}>
+                  <Col sm={12} md={12} style={{padding: 0, paddingTop: '37%', width: '100%',
+                    overflow: 'hidden', position: 'relative'}}>
                     <div
-                      style={{maxHeight: '315px', overflowY: 'hidden'}}
-                      title={'Change cover photo'}
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        bottom: '0',
+                        right: '0'}}
                     >
-                      <Image
-                        src={selectedCurriculum.image}
-                        responsive
-                      />
-                      <div className={'base-circle-edit bottom-circle-edit right-circle-edit'}>
-                        <PencilImageUpload onFileSelect={this.coverPhotoUpload} />
+                      <div style={{position: 'relative'}}>
+                        {this.state.croppingCoverPhotoMode
+                          ? <div>
+                            <ReactCrop
+                              src={this.state.imgToCropBlob}
+                              crop={this.state.crop}
+                              onImageLoaded={this.onImageLoaded}
+                              onComplete={this.onCropComplete}
+                              onChange={this.onCropChange} />
+                            { this.state.cropInfo
+                              ? <button
+                                className={'editor-common-button'}
+                                style={{position: 'absolute', top: '85%', left: '2rem'}}
+                                onClick={this.saveCroppedPhoto}>Save photo</button>
+                              : null }
+                          </div>
+                          : <ImageBs
+                            src={selectedCurriculum.cover_photo}
+                            responsive />
+                        }
+                        {/* TODO add default background */}
+                        <div title={'Change cover photo'} className={'base-circle-edit bottom-circle-edit right-circle-edit'}>
+                          <PencilImageUpload onFileSelect={this.coverPhotoSelected} />
+                        </div>
                       </div>
                     </div>
                   </Col>
@@ -150,7 +274,7 @@ class EditCurriculumProfileView extends React.Component {
                 <Row style={{padding: 0}}>
                   <Col sm={2} md={2} style={{padding: 0}}>
                     <div style={{minHeight: '10rem'}}>
-                      { selectedCurriculum.image ? <Image
+                      { selectedCurriculum.image ? <ImageBs
                         src={selectedCurriculum.image}
                         responsive
                       /> : null }
@@ -158,8 +282,7 @@ class EditCurriculumProfileView extends React.Component {
                     <div
                       className={'base-circle-edit bottom-circle-edit right-circle-edit'}
                       title={'Change image'}
-                    >
-                      <PencilImageUpload onFileSelect={this.imageUpload} />
+                    ><PencilImageUpload onFileSelect={this.imageUpload} />
                     </div>
                   </Col>
                   <Col sm={7} md={7}>
@@ -223,6 +346,7 @@ EditCurriculumProfileView.propTypes = {
   // actions
   loadCurriculum: PropTypes.func.isRequired,
   changeCurriculumImage: PropTypes.func.isRequired,
+  changeCurriculumCoverPhoto: PropTypes.func.isRequired,
   // data
   curricula: PropTypes.object
 }
@@ -238,7 +362,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid)),
     changeCurriculumImage: (uuid, image) => dispatch(changeCurriculumImage(uuid, image)),
-    onNameChange: (uuid, name) => dispatch(renameCurriculum(uuid, name))
+    onNameChange: (uuid, name) => dispatch(renameCurriculum(uuid, name)),
+    changeCurriculumCoverPhoto: (uuid, image) => dispatch(changeCurriculumCoverPhoto(uuid, image))
   }
 }
 
