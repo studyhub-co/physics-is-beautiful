@@ -198,6 +198,22 @@ export function changeCurriculumImage(uuid, image) {
     }
 }
 
+export function changeCurriculumCoverPhoto (uuid, image) {
+  return dispatch => {
+    var formData = new FormData()
+    formData.append('cover_photo', image, image.filename)
+    $.ajax({url: API_PREFIX + 'curricula/' + uuid + '/',
+      type: 'PATCH',
+      processData: false,
+      contentType: false,
+      data: formData,
+      success: function (data) {
+        dispatch(curriculumLoaded(data))
+      }
+    })
+  }
+}
+
 export function deleteCurriculum(uuid) {
     return dispatch => {
 	dispatch({type : ActionTypes.DELETE_CURRICULUM,

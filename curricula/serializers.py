@@ -290,7 +290,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
 
     class Meta:
         model = Curriculum
-        fields = ['uuid', 'name', 'author', 'description', 'image']
+        fields = ['uuid', 'name', 'author', 'description', 'image', 'cover_photo']
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),
         }
@@ -299,7 +299,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
 class SimpleCurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Curriculum
-        fields = ['uuid', 'name', 'description', 'image']
+        fields = ['uuid', 'name', 'description', 'image', 'cover_photo']
 
 
 

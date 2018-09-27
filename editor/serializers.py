@@ -36,7 +36,7 @@ class SimpleModuleSerializer(BaseSerializer):
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'url']
         read_only_fields = ('uuid', 'curriculum')
         extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
+            'url' : {'lookup_field': 'uuid'}
         }
 
 
@@ -55,8 +55,8 @@ class AnswerContentField(serializers.Field):
     def to_representation(self, obj):
         if isinstance(obj, ImageWText):
             img_field = serializers.ImageField()
-            return {'image' : img_field.to_representation(obj.image),
-                    'text' : obj.text}
+            return {'image': img_field.to_representation(obj.image),
+                    'text': obj.text}
         return 'UNKNOWN'
 
 
@@ -346,7 +346,8 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons']
+        fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons',
+                  'cover_photo']
         read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),
