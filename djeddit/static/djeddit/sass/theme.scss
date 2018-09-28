@@ -337,6 +337,10 @@ h6, .text-muted{line-height: 0;}
   color: inherit;
 }
 
+.list-group-item {
+  cursor: pointer;
+}
+
 .list-group-item h4 {
   font-weight: bold;
   color: $title-color;
