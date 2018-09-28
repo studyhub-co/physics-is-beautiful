@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load djeddit_tags %}
-<li class="list-group-item">
+<li class="list-group-item" onclick="window.location=window.util.mobileUrl('{% url 'topicPage' topic.urlTitle %}')">
     <div class="row">
         <div class="col-sm-1 hidden-xs col-icon hover-point djeddit-topic-container" onclick="window.location=window.util.mobileUrl('{% url 'topicPage' topic.urlTitle %}')">
             <i class="far fa-comments fa-2x"></i>
