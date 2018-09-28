@@ -1,5 +1,7 @@
+@import "ReactCrop.css";
+
 .editor{
-    font-family: Museosansrounded;
+    font-family: 'Museosansrounded', sans-serif;
 }
 
 .editor	.col-md-1 {
@@ -7,7 +9,7 @@
 	}
 
 
-.editor .col-md-1 {
+.editor .col-md-1 { /* not so good practice */
     border-radius: 5px;
     border-style: solid;
     border-width: 2px;
@@ -183,3 +185,91 @@
 
 .tabs-1 .tabContent {}
 
+
+/* common (copy-paste from classroom */
+
+.editor .curriculum-card div img {
+    width: 100%;
+    display: block;
+    height: 20rem;
+}
+
+.editor .curriculum-card > div > span {
+    width: 100%;
+    display: block;
+    height: 20rem;
+    font-size: 20rem;
+}
+
+
+.editor .editor-common-button {
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 1rem 4rem 1rem 4rem;
+    margin: 1rem 0 1rem 0;
+}
+
+.editor .blue-title {
+    font-size: 3rem;
+    color: rgb(8, 209, 255);
+}
+
+.editor .blue-text {
+    color: rgb(8, 209, 255)
+}
+
+/*.classroom .classroom-card {*/
+.editor .curriculum-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: #efefef;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    /*padding-top: 1rem;*/
+    margin-top: 1rem;
+
+    vertical-align: top;
+
+    /* new values */
+    padding: 0;
+    width: 25rem;
+    height: 30rem;
+}
+
+.editor .pop-up-window {
+    border-radius: 15px;
+    padding: 10px 10px;
+    margin: 1rem 0px 1rem 0px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+}
+
+.editor .base-circle-edit {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    text-align: center;
+    vertical-align: middle;
+    color: rgb(8, 209, 255);
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.editor .right-circle-edit {
+   right: 1rem;
+}
+
+.editor .bottom-circle-edit {
+   bottom: 1rem;
+}

@@ -15,23 +15,30 @@ import Clipboard from 'react-clipboard.js'
 import EditableLabel from '../../utils/editableLabel'
 
 import { CurriculumRow } from '../../components/CurriculumRow'
-import { TeacherStudentCard } from '../../components/TeacherStudentCard'
 import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
 
-import { Grid, Row, Col, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Grid, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
 import * as assignmentCreators from '../../actions/assignment'
 import * as classroomCreators from '../../actions/classroom'
 import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
+import * as googleCreators from '../../actions/google'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { AssignmentTeacherView, EditAssignmentView, StudentClassroomProfileView } from '../index'
+import { AssignmentView, AssignmentEdit, TeacherClassroomStudentsView } from '../index'
 
 class TeacherClassroomView extends React.Component {
   componentWillMount () {
+    // tabs
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
-    this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', true)
+    // if (this.props.match) {
+    //   this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', this.props.match)
+    // }
+    if (this.props.teacherClassroomTab === 'students') {
+      this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
+    }
+    // data
     this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
     this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
     this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
@@ -42,6 +49,7 @@ class TeacherClassroomView extends React.Component {
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
     this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
+    this.hideCopiedToolTip = this.hideCopiedToolTip.bind(this)
 
     this.state = {
       showCreateAssigment: false,
@@ -78,7 +86,7 @@ class TeacherClassroomView extends React.Component {
   }
 
   handleViewAssignment (assignment) {
-    this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/assignments/' + assignment.uuid))
+    this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/assignments/' + assignment.uuid))
   }
 
   handleTitleChange (name) {
@@ -93,9 +101,15 @@ class TeacherClassroomView extends React.Component {
     this.props.classroomActions.classroomPartialUpdateTeacherClassroom(newClassroom)
   }
 
+  hideCopiedToolTip () {
+    if (this.refs.overlay1) { this.refs.overlay1.hide() }
+    if (this.refs.overlay2) { this.refs.overlay2.hide() }
+  }
+
   render () {
-    var assignmentUrl = BASE_URL + ':uuid/teacher/assignments/:assigmentUuid'
-    var studentProfileUrl = BASE_URL + ':uuid/teacher/students/:username'
+    var assignmentUrl = BASE_URL + 'teacher/:uuid/assignments/:assigmentUuid'
+    var studentsListUrl = this.props.match.path + 'students/'
+
     var isExactUrl = this.props.match.isExact // exact url for teacher view
 
     var studentsS = ''
@@ -103,27 +117,26 @@ class TeacherClassroomView extends React.Component {
       studentsS = 's'
     }
 
+    var copiedTooltip = (
+      <Tooltip id='copiedTooltip'>
+        Copied!
+      </Tooltip>
+    )
+
     return (
       <div className={'pop-up-window'}>
         <Grid fluid> { this.props.classroomTeacher
           ? <Col sm={12} md={12} style={{padding: 0}}>
             <Row style={{padding: 0}}>
-              <Col
-                sm={12}
-                md={12}
-                style={{textAlign: 'left', padding: 0}} >
-                <a
-                  className={'back-button'}
-                  onClick={() => { history.push(BASE_URL)}} >
-                  <span
-                    className='glyphicon glyphicon-menu-left'
-                    style={{fontSize: 16}} />
+              <Col sm={12} md={12} style={{textAlign: 'left', padding: 0}} >
+                <a className={'back-button'} onClick={() => { history.push(BASE_URL + 'teacher/') }} >
+                  <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                   All Classrooms
                 </a>
               </Col>
             </Row>
             <Row>
-              <Col sm={12} md={12} style={{textAlign: 'center'}}>
+              <Col sm={12} md={12} style={{textAlign: 'center', width: '100%'}}>
                 <span className={'blue-title'}>
                   <span className={'editable-label'}>
                     <EditableLabel
@@ -141,7 +154,9 @@ class TeacherClassroomView extends React.Component {
         </Grid>
         <Tabs name='teacherClassroomTab'
           className='tabs'
-          handleSelect={(tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }}
+          handleSelect={
+            (tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }
+          }
           selectedTab={this.props.teacherClassroomTab}
         >
           <div className='tab-links'>
@@ -153,7 +168,8 @@ class TeacherClassroomView extends React.Component {
             <TabContent for='settings'>
               { this.props.classroomTeacher
                 ? <div>
-                  <div className={'pop-up-window text-align-center'}>
+                  { this.props.classroomTeacher.external_classroom ? <div className={'pop-up-window text-align-center'}>
+                    {/* FIXME if we will be used other classrooms than google we must finalize this code */}
                     <div
                       className={'gray-text title'}
                       style={
@@ -161,33 +177,76 @@ class TeacherClassroomView extends React.Component {
                           color: '#676767',
                           marginBottom: '1rem'
                         }}>
-                      Classroom Code
+                      Google Classroom Code
                     </div>
-                    <div className={'gray-text title'}>Share classroom code</div>
+                    <div className={'gray-text title'}>Share google classroom code</div>
+                    <div className={'gray-text'}>Join url: <a target={'blank'} href='https://classroom.google.com/h'>https://classroom.google.com/h</a></div>
                     <div>
-                      <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
+                      <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.external_classroom.code}</span>&nbsp;
                       <span className={'gray-text pointer'}>
-                        <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.code}>
-                          copy
-                        </Clipboard>
+                        <OverlayTrigger
+                          delayShow={300}
+                          ref='overlay1'
+                          trigger='click'
+                          placement='top'
+                          overlay={copiedTooltip}>
+                          <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.external_classroom.code}>
+                            <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>copy</span>
+                          </Clipboard>
+                        </OverlayTrigger>
                       </span>
                     </div>
-                    <br />
-                    <div className={'gray-text title'}>
-                      Or invite students with link:
-                    </div>
-                    <InputGroup>
-                      <FormControl type='text' readOnly value={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'} />
-                      <span className='input-group-btn'>
-                        <Clipboard
-                          className={'btn btn-default'}
-                          component='button'
-                          data-clipboard-text={window.location.origin + BASE_URL + 'join/' + this.props.classroomTeacher.code + '/'}>
-                          Copy
-                        </Clipboard>
-                      </span>
-                    </InputGroup>
                   </div>
+                    : <div className={'pop-up-window text-align-center'}>
+                      <div
+                        className={'gray-text title'}
+                        style={
+                          {fontSize: '2rem',
+                            color: '#676767',
+                            marginBottom: '1rem'
+                          }}>
+                        Classroom Code
+                      </div>
+                      <div className={'gray-text title'}>Share classroom code</div>
+                      <div>
+                        <span className={'blue-title'} style={{ letterSpacing: '0.5rem' }}>{this.props.classroomTeacher.code}</span>&nbsp;
+                        <span className={'gray-text pointer'}>
+                          <OverlayTrigger
+                            delayShow={300}
+                            ref='overlay1'
+                            trigger='click'
+                            placement='top'
+                            overlay={copiedTooltip}>
+                            <Clipboard component='i' data-clipboard-text={this.props.classroomTeacher.code}>
+                              <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>copy</span>
+                            </Clipboard>
+                          </OverlayTrigger>
+                        </span>
+                      </div>
+                      <br />
+                      <div className={'gray-text title'}>
+                        Or invite students with link:
+                      </div>
+                      <InputGroup>
+                        <FormControl type='text' readOnly value={window.location.origin + BASE_URL + 'student/join/' + this.props.classroomTeacher.code + '/'} />
+                        <span className='input-group-btn'>
+                          <Clipboard
+                            className={'btn btn-default'}
+                            component='button'
+                            data-clipboard-text={window.location.origin + BASE_URL + 'student/join/' + this.props.classroomTeacher.code + '/'}>
+                            <OverlayTrigger
+                              delayShow={300}
+                              trigger='click'
+                              placement='top'
+                              ref='overlay2'
+                              overlay={copiedTooltip}>
+                              <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>Copy</span>
+                            </OverlayTrigger>
+                          </Clipboard>
+                        </span>
+                      </InputGroup>
+                    </div>
+                  }
                   <div className={'pop-up-window text-align-center'}>
                     <div
                       className={'gray-text title'}
@@ -201,7 +260,7 @@ class TeacherClassroomView extends React.Component {
                     <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
                     <div
                       className={'gray-text title pointer'}
-                      onClick={() => { this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/edit/')) }}>
+                      onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/edit/')) }}>
                       <u>Change curriculum</u>
                     </div>
                   </div>
@@ -213,28 +272,10 @@ class TeacherClassroomView extends React.Component {
                 : null }
             </TabContent>
             <TabContent for='students'>
-              <Route path={studentProfileUrl} component={StudentClassroomProfileView} />
-              { isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students > 0
-                ? <span>
-                  { this.props.teacherClassroomStudentsList ? this.props.teacherClassroomStudentsList.map(function (student, i) {
-                    return <TeacherStudentCard
-                      student={student}
-                      onStudentClick={() =>
-                        this.props.dispatch(push(BASE_URL +
-                        this.props.classroomTeacher.uuid +
-                        '/teacher/students/' + student.username))}
-                      key={i} />
-                  }, this) : null}
-                  <div style={{clear: 'both'}} />
-                </span>
-                : null }
-              { !isExactUrl && this.props.classroomTeacher && this.props.classroomTeacher.count_students === 0
-                ? <div className={'gray-background-info-panel'}>No students have joined your classroom yet. <br /><br />
-                Share the <u>classroom code</u> with your students so they can join your classroom.</div>
-                : null}
+              <Route path={studentsListUrl} component={TeacherClassroomStudentsView} />
             </TabContent>
             <TabContent for='assignments'>
-              <Route path={assignmentUrl} component={AssignmentTeacherView} />
+              <Route path={assignmentUrl} component={AssignmentView} />
               {isExactUrl
                 ? <span className={'title'}>Class Assignments&nbsp;</span>
                 : null}
@@ -271,7 +312,7 @@ class TeacherClassroomView extends React.Component {
                       key={i} />
                   }, this)}
                 </Grid> : null }
-              { isExactUrl ? <div className={'create-classroom-button'} onClick={this.handleCreateAssigment}>
+              { isExactUrl ? <div className={'join-another-classroom'} onClick={this.handleCreateAssigment}>
                 + Create an assignment
               </div> : null }
               { this.state.showCreateAssigment
@@ -283,7 +324,7 @@ class TeacherClassroomView extends React.Component {
                     <Modal.Title>{this.state.createNewAssigment ? 'Create' : 'Edit'}  an assignment</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <EditAssignmentView createNew={this.state.createNewAssigment} assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
+                    <AssignmentEdit createNew={this.state.createNewAssigment} assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
                   </Modal.Body>
                   <Modal.Footer>
                     <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
@@ -299,7 +340,8 @@ class TeacherClassroomView extends React.Component {
 
 TeacherClassroomView.propTypes = {
   tabActions: PropTypes.shape({
-    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired
+    changeTeacherClassroomSelectedTab: PropTypes.func.isRequired,
+    changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   teacherClassroomTab: PropTypes.string,
   studentActions: PropTypes.shape({
@@ -317,8 +359,12 @@ TeacherClassroomView.propTypes = {
   }).isRequired,
   classroomTeacher: PropTypes.object,
   assignmentsList: PropTypes.array,
-  assignment: PropTypes.object,
-  teacherClassroomStudentsList: PropTypes.array
+  assignment: PropTypes.object
+  // teacherClassroomStudentsList: PropTypes.array,
+  // gapiInitState: PropTypes.bool,
+  // googleActions: PropTypes.shape({
+  //   googleFetchAndSaveClassroomsStudents: PropTypes.func.isRequired
+  // }).isRequired
 }
 
 const mapStateToProps = (state) => {
@@ -327,7 +373,8 @@ const mapStateToProps = (state) => {
     teacherClassroomTab: state.tab.teacherClassroomTab,
     assignmentsList: state.assignment.assignmentsList,
     assignment: state.assignment.assignment,
-    teacherClassroomStudentsList: state.student.classroomStudentsList
+    teacherClassroomStudentsList: state.student.classroomStudentsList,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
@@ -337,7 +384,8 @@ const mapDispatchToProps = (dispatch) => {
     tabActions: bindActionCreators(tabsCreators, dispatch),
     classroomActions: bindActionCreators(classroomCreators, dispatch),
     assignmentActions: bindActionCreators(assignmentCreators, dispatch),
-    studentActions: bindActionCreators(studentCreators, dispatch)
+    studentActions: bindActionCreators(studentCreators, dispatch),
+    googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 

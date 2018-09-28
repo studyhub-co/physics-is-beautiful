@@ -9,23 +9,26 @@ import thunkMiddleware from 'redux-thunk'
 import { ConnectedRouter,  routerMiddleware } from 'react-router-redux'
 import { createLogger } from 'redux-logger'
 
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
-import { history } from './history';
+import { history } from './history'
 
 import {ModuleContainer} from './containers/module'
 import {QuestionContainer} from './containers/question'
 import {CurriculumContainer} from './containers/curriculum'
-import {CurriculumThumbnail} from './components/curriculum_thumbnail'
+
 import {LessonContainer} from './containers/lesson'
 import {BackButton} from './components/back_button'
 import {QuestionThumbnailContainer} from './containers/question_thumbnail'
 
 import {editor} from './reducers'
-import {addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded, loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion} from './actions'
+import {
+  addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded,
+  loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion
+} from './actions'
 
-import {DockableDropTarget, DragItemTypes} from './dnd';
+import {DockableDropTarget, DragItemTypes} from './dnd'
 
 import { Sheet } from './apps/sheet'
 
@@ -246,24 +249,21 @@ LessonApp = connect(
     }
   })(LessonApp)
 
-
-
 class EditorRouter extends React.Component {
-
-  render() {
+  render () {
     return (
       <ConnectedRouter history={history}>
         <Switch>
-          <Route path='/curricula/:uuid' component={CurriculumApp} />
-          <Route path='/modules/:uuid' component={ModuleApp} />
-          <Route path='/lessons/:uuid' component={LessonApp} />
-          <Route path='/questions/:uuid' component={QuestionApp} />
+          <Route path='/editor/curricula/:uuid' component={CurriculumApp} />
+          <Route path='/editor/modules/:uuid' component={ModuleApp} />
+          <Route path='/editor/lessons/:uuid' component={LessonApp} />
+          <Route path='/editor/questions/:uuid' component={QuestionApp} />
           {/* <Route path='/' component={CurriculaApp} /> */}
           <Route path='/' component={CurriculaDashboardApp} />
         </Switch>
 
       </ConnectedRouter>
-    );
+    )
   }
 
 }
@@ -273,18 +273,14 @@ const loggerMiddleware = createLogger()
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(editor,
+export const store = createStore(editor,
   composeEnhancers(
     applyMiddleware(thunkMiddleware, routerMiddleware(history))
   ),
 ) // add  loggerMiddleware for logging
 
-
 // const store = createStore(editor,
 //   applyMiddleware(thunkMiddleware, routerMiddleware(history)),
 //   ) // add  loggerMiddleware for logging
 
-
-
 ReactDOM.render(<Provider store={store}><EditorRouter/></Provider>, document.getElementById('react-app'));
-

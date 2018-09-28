@@ -44,13 +44,20 @@ export class MathematicalExpressionAnswer extends React.Component {
         }
       }
     })
-    this.answer.focus()
+    window.IS_MOBILE_APP ? this.answer.blur() : this.answer.focus()
   }
 
   insertLatex (val) {
     if (this.props.answer) { return }
-    this.answer.write(val)
-    this.answer.focus()
+    if (val === '⌫') {
+      this.answer.keystroke('Backspace')
+    } else {
+      this.answer.write(val)
+    }
+
+    if (!window.IS_MOBILE_APP) {
+      this.answer.focus()
+    }
   }
 
   reset () {
@@ -63,7 +70,7 @@ export class MathematicalExpressionAnswer extends React.Component {
 
   componentDidUpdate () {
     // mathquill focus is lost after render
-    if (this.props.answer == null) {
+    if (this.props.answer == null && !window.IS_MOBILE_APP) {
       this.answer.focus()
     } else {
       this.answer.blur()
@@ -97,6 +104,11 @@ export class MathematicalExpressionAnswer extends React.Component {
 
     if (this.props.vectorComponentButtons) {
       var buttonsLst = ['\\hat{x}', '\\hat{y}', '1', '2', '3', '4', '+', '-']
+
+      if (window.IS_MOBILE_APP) {
+        buttonsLst.push('⌫')
+      }
+
       for (var i = 0; i < buttonsLst.length; i++) {
         var button = (
           <a

@@ -1,20 +1,33 @@
+/* Seems no need anymore (used for google button)*/
+/*@font-face {*/
+    /*font-family: 'GTPressuraMono';*/
+    /*src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');*/
+    /*font-style: normal;*/
+/*}*/
+
+/*@font-face {*/
+    /*font-family: 'GTPressuraMono';*/
+    /*src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');*/
+    /*font-style: bold;*/
+/*}*/
+
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-300-webfont.woff2') format('woff2');
+    src: url('typeface/museosansrounded/museosansrounded-300-webfont.woff2') format('woff2');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-500-webfont.woff2') format('woff2');
+    src: url('typeface/museosansrounded/museosansrounded-500-webfont.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-700-webfont.woff2') format('woff2');
+    src: url('typeface/museosansrounded/museosansrounded-700-webfont.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
 }
@@ -114,7 +127,7 @@ html, body {
     bottom:0;
     left:0;
     right:0;
-    background-color: #dbdbdb;
+    /* background-color: #dbdbdb; */
     margin-top:5px;
     position:fixed;
     width: 100%;
@@ -402,11 +415,12 @@ img.grayed-out-img {
 
 #correctMessage{
     display: inline-block;
-    max-width:300px;
+    /* max-width:300px; */
     padding-right: 21px;
     text-align: center;
     font-size:18;
     font-family: Museosansrounded;
+    padding-left: 10px;
 }
 
 #modalContainer{
@@ -662,7 +676,8 @@ img.grayed-out-img {
 }
 
 /* fix alignment of adjacent elements */
-.section-sheet .row {
+/* FIXME not so good practice to change bootstrap row class */
+.curriculum .section-sheet .row {
     display: flex;
     flex-wrap: wrap;
 }

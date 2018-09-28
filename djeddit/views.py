@@ -8,8 +8,6 @@ from django.shortcuts import render, redirect
 # from django.contrib.auth.models import User
 
 from django.contrib.auth import get_user_model
-User = get_user_model()
-
 
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
@@ -27,34 +25,53 @@ from djeddit.templatetags.djeddit_tags import postScore
 from djeddit.utils.utility_funcs import is_authenticated
 
 
+User = get_user_model()
+
+
 @login_required
 def createThread(request, topic_title=None):
-    if topic_title:
+    if request.method == 'POST':
+        if topic_title == 'None':
+            topic_id = request.POST['thread-topic']
+            topic_title = Topic.objects.get(pk=topic_id)
         try:
-            if request.method == 'POST':
-                topic = Topic.getTopic(topic_title)
-                threadForm = ThreadForm(request.POST, prefix='thread')
-                postForm = PostForm(request.POST, prefix='post')
-                if threadForm.is_valid() and postForm.is_valid():
-                    thread = threadForm.save(commit=False)
-                    post = postForm.save(commit=False)
-                    thread.op = post
-                    thread.topic = topic
-                    post.setMeta(request)
-                    post.save()
-                    thread.save()
-                    if is_authenticated(request):
-                        post.created_by = request.user
-                    post.save()
-                    return HttpResponseRedirect(thread.relativeUrl)
-            else:
-                threadForm = ThreadForm(prefix='thread')
-                postForm = PostForm(prefix='post')
-            context = dict(threadForm=threadForm, postForm=postForm)
-            return render(request, 'djeddit/create_thread.html', context)
+            topic = Topic.getTopic(topic_title)
+            threadForm = ThreadForm(request.POST, prefix='thread')
+            postForm = PostForm(request.POST, prefix='post')
+            if threadForm.is_valid() and postForm.is_valid():
+                thread = threadForm.save(commit=False)
+                post = postForm.save(commit=False)
+                thread.op = post
+                thread.topic = topic
+                post.setMeta(request)
+                post.save()
+                thread.save()
+                if is_authenticated(request):
+                    post.created_by = request.user
+                post.save()
+                url = thread.relativeUrl
+                if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+                    url += '?pib_mobile=true'
+                return HttpResponseRedirect(url)
         except Topic.DoesNotExist:
             pass
-    return redirect('topics')
+    # Else it's a GET request
+    else:
+        if topic_title:
+            topic = Topic.getTopic(topic_title)
+            threadForm = ThreadForm(prefix='thread', initial={'topic': topic.id})
+        else:
+            threadForm = ThreadForm(prefix='thread')
+        postForm = PostForm(prefix='post')
+        context = dict(threadForm=threadForm, postForm=postForm, topic=topic_title)
+        return render(request, 'djeddit/create_thread.html', context)
+
+    # else:
+    #     threadForm = ThreadForm(prefix='thread')
+    #     postForm = PostForm(prefix='post')
+    #     context = dict(threadForm=threadForm, postForm=postForm, topic=None)
+    #     return render(request, 'djeddit/create_thread.html', context)
+    # return redirect('topics')
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -75,7 +92,11 @@ def lockThread(request, thread_id):
         raise Http404
     thread.locked = not thread.locked
     thread.save()
-    return HttpResponseRedirect(thread.relativeUrl)
+    url = thread.relativeUrl
+
+    if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+        url += '?pib_mobile=true'
+    return HttpResponseRedirect(url)
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -86,7 +107,11 @@ def stickyThread(request, thread_id):
         raise Http404
     thread.is_stickied = not thread.is_stickied
     thread.save()
-    return HttpResponseRedirect(thread.relativeUrl)
+    url = thread.relativeUrl
+
+    if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+        url += '?pib_mobile=true'
+    return HttpResponseRedirect(url)
 
 
 def topicsPage(request):
@@ -105,6 +130,7 @@ def topicsPage(request):
 
 
 def topicPage(request, topic_title):
+    topics = Topic.objects.all()
     try:
         topic = Topic.getTopic(topic_title)
     except Topic.DoesNotExist:
@@ -125,8 +151,15 @@ def topicPage(request, topic_title):
         showForm = False
     threads = Thread.objects.filter(topic=topic).order_by('-is_stickied', '-op__created_on')
     context = dict(topic=topic, threads=threads, showCreatedBy=True, showTopic=False,
-                   topicForm=form, showForm=showForm)
+                   topicForm=form, showForm=showForm, topics=topics)
     return render(request, 'djeddit/topic.html', context)
+
+
+def discussionPage(request):
+    topics = Topic.objects.all()
+    threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
+    context = dict(threads=threads, topics=topics)
+    return render(request, 'djeddit/discussion.html', context)
 
 
 def threadPage(request, topic_title='', thread_id='', slug=''):
@@ -136,7 +169,10 @@ def threadPage(request, topic_title='', thread_id='', slug=''):
             thread = Thread.objects.get(id=thread_id)
             if thread.topic == topic:
                 if not slug or slug != thread.slug or topic.urlTitle != topic_title:
-                    return HttpResponseRedirect(thread.relativeUrl)
+                        url = thread.relativeUrl
+                        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+                            url += '?pib_mobile=true'
+                        return HttpResponseRedirect(url)
                 if thread.op.content:
                     description = thread.op.content[:160]
                 else:
@@ -175,7 +211,12 @@ def replyPost(request, post_uid=''):
                 post.created_by = request.user
             post.save()
             repliedPost.children.add(post)
-        return HttpResponseRedirect(thread.relativeUrl)
+
+        url = thread.relativeUrl
+
+        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+            url += '?pib_mobile=true'
+        return HttpResponseRedirect(url)
     else:
         postForm = PostForm()
         postForm.fields['content'].label = ''
@@ -198,7 +239,11 @@ def editPost(request, post_uid=''):
             postForm.save()
         if threadForm.is_valid():
             threadForm.save()
-        return HttpResponseRedirect(thread.relativeUrl)
+        url = thread.relativeUrl
+
+        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+            url += '?pib_mobile=true'
+        return HttpResponseRedirect(url)
     else:
         postForm = PostForm(instance=post, prefix='post')
         if request.user.is_superuser and thread.op == post:
@@ -218,36 +263,33 @@ def votePost(request):
         post = Post.objects.get(uid=post_uid)
     except (KeyError, ValueError, Post.DoesNotExist):
         return HttpResponseBadRequest()
-    if post.created_by != request.user or request.user.is_superuser:
-        try:
-            userPostVote = UserPostVote.objects.get(user=request.user, post=post)
-            oldval = userPostVote.val
-            userPostVote.val = max(min(int(vote_val), 1), -1)
-            userPostVote.save()
-            voteDelta = userPostVote.val - oldval
-        except UserPostVote.DoesNotExist:
-            userPostVote = UserPostVote.objects.create(user=request.user, post=post, val=max(min(int(vote_val), 1), -1))
-            voteDelta = userPostVote.val
-        if voteDelta:
-            if voteDelta > 0:
-                if userPostVote.val:
-                    post.upvotes += 1
-                    if voteDelta == 2:
-                        post.downvotes -= 1
-                else:
+    try:
+        userPostVote = UserPostVote.objects.get(user=request.user, post=post)
+        oldval = userPostVote.val
+        userPostVote.val = max(min(int(vote_val), 1), -1)
+        userPostVote.save()
+        voteDelta = userPostVote.val - oldval
+    except UserPostVote.DoesNotExist:
+        userPostVote = UserPostVote.objects.create(user=request.user, post=post, val=max(min(int(vote_val), 1), -1))
+        voteDelta = userPostVote.val
+    if voteDelta:
+        if voteDelta > 0:
+            if userPostVote.val:
+                post.upvotes += 1
+                if voteDelta == 2:
                     post.downvotes -= 1
             else:
-                if userPostVote.val:
-                    post.downvotes += 1
-                    if voteDelta == -2:
-                        post.upvotes -= 1
-                else:
+                post.downvotes -= 1
+        else:
+            if userPostVote.val:
+                post.downvotes += 1
+                if voteDelta == -2:
                     post.upvotes -= 1
-            post.save()
-        scoreStr = postScore(post.score)
-        return JsonResponse(dict(scoreStr=scoreStr, score=post.score))
-    else:
-        return HttpResponseForbidden()
+            else:
+                post.upvotes -= 1
+        post.save()
+    scoreStr = postScore(post.score)
+    return JsonResponse(dict(scoreStr=scoreStr, score=post.score))
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -263,7 +305,11 @@ def deletePost(request, post_uid):
     if op.uid == post_uid:
         return redirect('topicPage', thread.topic.urlTitle)
     else:
-        return HttpResponseRedirect(thread.relativeUrl)
+        url = thread.relativeUrl
+
+        if ('HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER')):
+            url += '?pib_mobile=true'
+        return HttpResponseRedirect(url)
 
 
 def loadAdditionalReplies(request):

@@ -3,6 +3,7 @@
 {% load render_bundle from webpack_loader %}
 {% load static %}
 {% load auth_tags %}
+{% load urls_tags %}
 
 <head>
     <title>Physics is Beautiful</title>
@@ -82,13 +83,13 @@
             {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav nav-pills">
-                    <li class="nav-item"><a href="/curriculum/">Home</a></li>
-                    <li class="nav-item"><a href="{% url 'topics' %}">Discussion</a></li>
-                    <li class="nav-item"><a href="{% url 'editor' %}">Curriculum</a></li>
-                    <li class="nav-item"><a href="{% url 'classroom' %}">Classroom</a></li>
+                    <li class="nav-item{% current_url_starts_with 'curricula:curriculum' %}"><a href="{% url 'curricula:curriculum' %}">Home</a></li>
+                    <li class="nav-item{% current_url_starts_with 'discussion' %}"><a href="{% url 'discussion' %}">Discussion</a></li>
+                    <li class="nav-item{% current_url_starts_with 'editor' %}"><a href="{% url 'editor' %}">Curriculum</a></li>
+                    <li class="nav-item{% current_url_starts_with 'classroom' %}"><a href="{% url 'classroom' %}">Classroom</a></li>
                     {% if user.is_authenticated %}
                     {% endif %}
-                    <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Resources</a></li>
+                    <li class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}"><a href="{% url 'blog:bloghomepage' %}">Resources</a></li>
                 </ul>
                 <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">
                     {% render_bundle 'profile' %}

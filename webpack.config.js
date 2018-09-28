@@ -3,9 +3,6 @@ var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
 
 module.exports = function (env) {
-
-  // console.log(env);
-
   return {
     context: __dirname,
 
@@ -18,8 +15,8 @@ module.exports = function (env) {
 
     output: {
       path: path.resolve('./static/bundles/'),
-      filename: "[name]-[hash].js",
-      // publicPath: '/' // https://github.com/webpack/webpack-dev-middleware/issues/205#issuecomment-315847782
+      filename: '[name]-[hash].js',
+      // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
     },
 
     plugins: [
@@ -40,10 +37,16 @@ module.exports = function (env) {
           query: {
             presets: ['es2015', 'react']
           }
+        },
+        {
+          test: /\.jpe?g$|\.gif$|\.png$/,
+          options: {
+            name: '[name].[ext]?[hash]'
+          },
+          loader: 'file-loader'
         }
-      ],
+      ]
     },
-
     resolve: {
       modules: ['static/js/common', 'node_modules', 'bower_components'],
       extensions: ['.js', '.jsx']

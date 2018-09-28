@@ -1,18 +1,10 @@
 import uuid
 
-from urllib.parse import urljoin
+from django.utils import timezone
 
-from datetime import datetime
-
-# from django.contrib.auth import get_user_model
 from django.db import models
+
 from django.db.models.signals import pre_save, post_save
-
-from django.conf import settings
-from django.urls import reverse
-
-from django.template import loader
-
 from django.dispatch import receiver
 
 from django.contrib.sites.models import Site
@@ -22,21 +14,15 @@ from shortuuidfield import ShortUUIDField
 from curricula.models import Curriculum, Lesson
 from profiles.models import Profile
 
-from django.core.mail import EmailMessage
-
 from django.db import transaction
 
 
+# TODO move to utils
 def on_transaction_commit(func):
     def inner(*args, **kwargs):
         transaction.on_commit(lambda: func(*args, **kwargs))
 
     return inner
-
-# ASSIGNMENT_TYPE = (
-#     ('TI', 'Time'),
-#     ('XP', 'Experience'),
-# )
 
 
 class Classroom(models.Model):
@@ -45,19 +31,33 @@ class Classroom(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
+
     teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
-    # TODO we need erase student AssignmentProgress when student is left classroom
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
     curriculum = models.ForeignKey(Curriculum)
     code = models.CharField(unique=True, max_length=6)
 
-    def less_students(self):
-        # TODO no so good for lists queries
-        return self.students.order_by("-id")[:10]
-
     def __str__(self):
         return '{}'.format(self.name)
+
+
+class ExternalClassroom(models.Model):
+    GOOGLE_CLASSRROM = 'GC'
+    EXTERNAL_PROVIDER_CHOICES = (
+        (GOOGLE_CLASSRROM, 'google classrrrom'),
+    )
+
+    external_id = models.CharField(max_length=400)
+    name = models.CharField(max_length=400)
+    teacher_id = models.CharField(max_length=400)
+    code = models.CharField(max_length=400)
+    provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
+    classroom = models.OneToOneField(Classroom, related_name='external_classroom', blank=True, null=True)
+    alternate_link = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        unique_together = ("external_id", "provider")
 
 
 class ClassroomStudent(models.Model):
@@ -89,7 +89,8 @@ class Assignment(models.Model):
     lessons = models.ManyToManyField(Lesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True)
+    updated_on = models.DateTimeField(auto_now=True)  # assigned On date
+    send_email = models.BooleanField(default=True)
     start_on = models.DateTimeField()
     due_on = models.DateTimeField()
     name = models.CharField(max_length=200)
@@ -99,72 +100,104 @@ class Assignment(models.Model):
     class Meta:
         ordering = ['-start_on']
 
+
 # TODO move signals to signals.py
-
-
-@receiver(pre_save, sender=Assignment)
+@receiver(post_save, sender=Assignment)
+# @on_transaction_commit
 def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
     first_lesson = instance.lessons.first()
-    if instance.lessons.first():
+    if first_lesson:
         if first_lesson.image:
-            instance.denormalized_image = first_lesson.image.name
+            sender.objects.filter(pk=instance.pk).update(denormalized_image=first_lesson.image.name)
 
 
-@receiver(post_save, sender=Assignment)
-@on_transaction_commit
-def send_emails(sender, instance, *args, **kwargs):
+class AssignmentProgressManager(models.Manager):
 
-    # TODO if we will have a large number of students we need to think about sending email asynchronously
+    def __process__assignment_progress_list(self, assignment_progress_list):
+        for assignment_progress in assignment_progress_list:
+            student_completed_lessons = Lesson.objects.filter(
+                progress__profile=assignment_progress.student,
+                progress__status=30)
+            need_complete_lessons = assignment_progress.assignment.lessons.all()
 
-    # send email to students in classroom
-    d1 = datetime.now()
-    d0 = instance.due_on.replace(tzinfo=None)
-    delta = d0 - d1
+            if need_complete_lessons.exclude(id__in=student_completed_lessons).count() == 0:
+                # student already passed all lessons
+                if timezone.now() < assignment_progress.assignment.due_on.replace():
+                    assignment_progress.completed_on = timezone.now()
+                else:
+                    assignment_progress.delayed_on = timezone.now()
+            else:
+                # reset completed if find uncompleted lessons
+                assignment_progress.completed_on = None
+                assignment_progress.delayed_on = None
 
-    current_site = Site.objects.get_current()
+            # save all lessons completed in Curriculum into classroom progress
+            assignment_progress.completed_lessons = student_completed_lessons.filter(
+                id__in=assignment_progress.assignment.lessons.all())
 
-    lesson = instance.lessons.first()
+            assignment_progress.save()
 
-    lesson_url = reverse('curricula:lesson', args=[lesson.uuid])
+    def recalculate_status_by_assignemnt(self, assignment):
+        assignment_progress_list = AssignmentProgress.objects.filter(assignment=assignment)
 
-    url = urljoin('http://{}/'.format(current_site.domain), lesson_url)
+        self.__process__assignment_progress_list(assignment_progress_list)
 
-    # TODO we need to send letter if assignment is:
-    # 1. created
-    # 2. new lessons have been added
-    # 3. dates have been changed
+    def recalculate_status_by_classroom(self, classroom, user):
+        assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=classroom.assignments.all(),
+                                                                     student=user)
 
-    for student in instance.classroom.students.all():
-        html_message = loader.render_to_string(
-            'classroom/notification_email.html',
-            {
-                'user_full_name': student.user.full_name,
-                'assignment': instance,
-                'days': delta.days,
-                'url': url
-            }
-        )
+        self.__process__assignment_progress_list(assignment_progress_list)
 
-        email = EmailMessage(
-            'You have a new assignment on Physics is Beautiful!',
-            html_message,
-            settings.DEFAULT_FROM_EMAIL,
-            [student.user.email, ]
-        )
+    def recalculate_status_by_lesson(self, lesson, user):
+        # from classroom.models import Assignment, AssignmentProgress
+        assignments = Assignment.objects.filter(lessons__id=lesson.id)
+        assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
+                                                                     student__user=user,
+                                                                     completed_on__isnull=True)
 
-        email.send()
+        self.__process__assignment_progress_list(assignment_progress_list)
+
+        # for assignment_progress in assignment_progress_list:
+        #     # user can have several assignments (from different classroom e.g.) to one lesson
+        #     try:
+        #         assignment_progress.completed_lessons.add(lesson)
+        #
+        #         # do not support by mysql db
+        #         # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
+        #         #        .count() == 0:
+        #         completed_lessons_ids = []
+        #         [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
+        #         difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
+        #         if difference.count() == 0:
+        #             if timezone.now() < assignment_progress.assignment.due_on.replace():
+        #                 assignment_progress.completed_on = timezone.now()
+        #             else:
+        #                 assignment_progress.delayed_on = timezone.now()
+        #
+        #         assignment_progress.save()  # update updated_on date
+        #
+        #     except AssignmentProgress.DoesNotExist:
+        #         pass
 
 
 class AssignmentProgress(models.Model):
     assignment = models.ForeignKey(Assignment, related_name='assignment_progress')
     uuid = ShortUUIDField(unique=True)
-    completed_lessons = models.ManyToManyField(Lesson)
+    completed_lessons = models.ManyToManyField(Lesson, related_name='assignment_progress_completed_lessons')
     updated_on = models.DateTimeField(auto_now=True)
-    start_on = models.DateTimeField(auto_now_add=True)
+    # assigned_on = assignment.start_on
+    start_on = models.DateTimeField(blank=True, null=True)  # 1st lesson has been requested by student
     completed_on = models.DateTimeField(blank=True, null=True)
     delayed_on = models.DateTimeField(blank=True, null=True)  # Assignment completed but after due_on datetime
     student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')
 
+    objects = AssignmentProgressManager()
+
     class Meta:
         ordering = ['-start_on']
         unique_together = (("assignment", "student"), )  # one progress per user and  assignment
+
+
+# class OAuthUserToken(models.Model):
+#     token = models.CharField(max_length=200)
+#     refresh_token = models.CharField(max_length=200)

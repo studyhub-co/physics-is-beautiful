@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'homepage.apps.HomepageConfig',
     'curricula.apps.CurriculaConfig',
+    # lib
+    'piblib',
     # blog
     'blog',
     'admin_reorder',
@@ -71,7 +73,9 @@ INSTALLED_APPS = [
     'mptt',
     'djeddit',
     'meta',
-    'classroom'
+    'classroom',
+    'pagedown',
+    'markdown_deux'
 ]
 
 MIDDLEWARE = [
@@ -206,7 +210,7 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = False
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialAccountAdapter'
 
-LOGIN_REDIRECT_URL = 'curricula:curriculum'
+LOGIN_REDIRECT_URL = 'pib_auth:login-next'
 
 
 MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT')

@@ -12,7 +12,9 @@ from expander import ExpanderSerializerMixin
 from curricula.models import Curriculum, Unit, Module, Lesson, Game, Question, Answer
 from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion
 
-from curricula.serializers import BaseSerializer
+from curricula.serializers import BaseSerializer, UserSerializer
+
+# from profiles.serializers import PublicProfileSerializer
 
 
 class DictSerializer(serializers.ListSerializer):
@@ -34,7 +36,7 @@ class SimpleModuleSerializer(BaseSerializer):
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'url']
         read_only_fields = ('uuid', 'curriculum')
         extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
+            'url' : {'lookup_field': 'uuid'}
         }
 
 
@@ -53,8 +55,8 @@ class AnswerContentField(serializers.Field):
     def to_representation(self, obj):
         if isinstance(obj, ImageWText):
             img_field = serializers.ImageField()
-            return {'image' : img_field.to_representation(obj.image),
-                    'text' : obj.text}
+            return {'image': img_field.to_representation(obj.image),
+                    'text': obj.text}
         return 'UNKNOWN'
 
 
@@ -143,9 +145,9 @@ class AnswerSerializer(BaseSerializer):
 
 class VectorListSerializer(serializers.ListSerializer):
     def get_value(self, dictionary):
-        if not self.field_name in dictionary:
+        if self.field_name not in dictionary:
             return empty
-        else :
+        else:
             return super().get_value(dictionary)
 
                   
@@ -288,7 +290,7 @@ class ModuleSerializer(BaseSerializer):
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons'] #, 'curriculum']
         read_only_fields = ('uuid', )
         extra_kwargs = {
-            'url': {'lookup_field' : 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }
 
 
@@ -322,12 +324,14 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
             'modules': (ModuleSerializer, (), {'many': True}),
         }
         extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
+            'url': {'lookup_field' : 'uuid'}
         }
 
 
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
+    author = UserSerializer(read_only=True)
+    count_lessons = serializers.IntegerField(read_only=True)
 
     def validate_name(self, value):
         if value and value.lower() == Curriculum.Name.DEFAULT.lower():
@@ -342,8 +346,9 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'url', 'units']
-        read_only_fields = ('uuid', 'units')
+        fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons',
+                  'cover_photo']
+        read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),
         }

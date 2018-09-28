@@ -4,7 +4,7 @@
     <div class="row vertical-align">
         {% with reply.thread as thread %}
             <div class="col-sm-1 hidden-xs col-icon hover-point"
-                 onclick="window.location='{% postUrl reply %}'">
+                 onclick="window.location=window.util.mobileUrl('{% postUrl reply %}')">
                 <span class="fa-stack fa-lg">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-reply fa-stack-1x fa-inverse"></i>
@@ -22,7 +22,7 @@
             </div>
             <div class="col-sm-1 hidden-xs">
                 <div class="count-box"
-                     onclick="window.location='{% postUrl reply %}'">
+                     onclick="window.location=window.util.mobileUrl('{% postUrl reply %}')">
                     <div class="count-box-score text-muted">{{ reply.score }}</div>
                     <div class="count-box-context text-muted">Points</div>
                 </div>

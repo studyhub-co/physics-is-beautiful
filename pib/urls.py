@@ -22,16 +22,22 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^', include('homepage.urls')),
-    url(r'^api/v1/', include('pib.urls_api', namespace='api')),
-    url(r'^curriculum/', include('curricula.urls')),
-    url(r'^editor/', include('editor.urls')),
+
+    # namespase is a fix for api/v1/editor/curricula url (drf router)
+    url(r'^curriculum/', include('curricula.urls', namespace='curricula')),
+    # url(r'^editor/', include('editor.urls')),
+    url(r'^studio/', include('editor.urls')),
     url(r'^classroom/', include('classroom.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^accounts/', include('pib_auth.urls')),
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
     url(r'^discussion/', include('djeddit.urls')),
+    # due https://github.com/encode/django-rest-framework/issues/2760 namespace do not work
+    # url(r'^api/v1/', include('pib.urls_api', namespace='api')),
+    url(r'^api/v1/', include('pib.urls_api')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

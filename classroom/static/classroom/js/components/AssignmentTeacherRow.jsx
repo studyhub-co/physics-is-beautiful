@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem} from 'react-bootstrap'
+import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
 export class AssignmentTeacherRow extends React.Component {
   handleSettingsClick (e) {
@@ -22,9 +22,10 @@ export class AssignmentTeacherRow extends React.Component {
           <div className={'gray-text small-text'}>
             {this.props.assignment && this.props.assignment.image
               ? <Image
+                style={{maxHeight: '4rem'}}
                 responsive
                 src={this.props.assignment.image}
-                circle />
+                rounded />
               : null}
           </div>
         </Col>
@@ -36,14 +37,16 @@ export class AssignmentTeacherRow extends React.Component {
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
           <div className={'gray-text small-text'}>
-            {new Date(this.props.assignment.start_on).toLocaleDateString()}&nbsp;
-            {new Date(this.props.assignment.start_on).toLocaleTimeString()}
+            {new Date(this.props.assignment.start_on).toLocaleDateString()}
+            <br />
+            {new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           </div>
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
           <span className={'gray-text small-text'}>
             {new Date(this.props.assignment.due_on).toLocaleDateString()}&nbsp;
-            {new Date(this.props.assignment.due_on).toLocaleTimeString()}
+            <br />
+            {new Date(this.props.assignment.due_on).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           </span>
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>

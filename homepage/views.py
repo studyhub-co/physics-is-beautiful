@@ -9,3 +9,9 @@ def homepage(request):
 
 def About(request):
     return render(request, 'homepage/about.html')
+
+def Privacy(request):
+    return render(request, 'homepage/privacy.html')
+
+def Terms(request):
+    return render(request, 'homepage/terms.html')

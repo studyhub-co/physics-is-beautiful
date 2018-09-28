@@ -1,20 +1,20 @@
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-300-webfont.woff2') format('woff2');
+    src: url('../../../static/fonts/museosansrounded-300-webfont.woff2') format('woff2');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-500-webfont.woff2') format('woff2');
+    src: url('../../../static/fonts/museosansrounded-500-webfont.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Museosansrounded';
-    src: url('fonts/museosansrounded-700-webfont.woff2') format('woff2');
+    src: url('../../../static/fonts/museosansrounded-700-webfont.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
 }
@@ -50,7 +50,7 @@
 .navbar.navbar-default a {
     color:white;
     font-size:25px;
-    font-family: Museosansrounded;
+    font-family: Museosansrounded, sans-serif;
 }
 
 .nav.navbar-nav.navbar-right a {
@@ -61,7 +61,7 @@
 .nav.navbar-nav.navbar-right p {
     color:white;
     font-size:15px;
-    font-family: Museosansrounded;
+    font-family: Museosansrounded, sans-serif;
 }
 .nav.navbar-nav.navbar-right a:hover{
     background: #1493d1;
@@ -87,6 +87,10 @@
     font-family: 'museo';
 }
 .nav.navbar-nav.nav-pills a:hover{
+    background: #1493d1;
+    color: white;
+}
+.nav.navbar-nav.nav-pills .active a{
     background: #1493d1;
     color: white;
 }

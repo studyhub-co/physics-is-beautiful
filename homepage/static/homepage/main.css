@@ -13,9 +13,10 @@ html {
     min-height: 100%;
 }
 
-body {
-
+a.socialaccount_provider.facebook {
+    text-decoration: none !important;
 }
+
 #front-page {
     background: url('images/Prague.jpg');
     background-size: cover;

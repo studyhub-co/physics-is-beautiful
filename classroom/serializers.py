@@ -4,13 +4,25 @@ from django.core.files.storage import get_storage_class
 
 from rest_framework import serializers
 
-from .models import Classroom, Assignment
+from .models import Classroom, Assignment, ExternalClassroom
 
 from curricula.models import Curriculum, Lesson
 from profiles.models import Profile
 
 from profiles.serializers import PublicProfileSerializer
 from curricula.serializers import SimpleCurriculumSerializer, CurriculumSerializer, LessonSerializer
+
+from urllib.parse import urljoin
+
+from django.utils import timezone
+from django.conf import settings
+from django.urls import reverse
+
+from django.template import loader
+
+from django.core.mail import EmailMessage
+
+from django.contrib.sites.models import Site
 
 
 class StudentProfileSerializer(PublicProfileSerializer):
@@ -27,23 +39,81 @@ class StudentProfileSerializer(PublicProfileSerializer):
         fields = PublicProfileSerializer.Meta.fields + ['counts']
 
 
+class StudentAssignmentSerializer(PublicProfileSerializer):
+    completed_on = serializers.SerializerMethodField()
+    delayed_on = serializers.SerializerMethodField()
+    start_on = serializers.SerializerMethodField()
+
+    def get_completed_on(self, obj):
+        return obj.as_students_current_assignment_progress[0].completed_on\
+            if hasattr(obj, 'as_students_current_assignment_progress') else None
+
+    def get_delayed_on(self, obj):
+        return obj.as_students_current_assignment_progress[0].delayed_on\
+            if hasattr(obj, 'as_students_current_assignment_progress') else None
+
+    def get_start_on(self, obj):
+        return obj.as_students_current_assignment_progress[0].start_on\
+            if hasattr(obj, 'as_students_current_assignment_progress') else None
+
+    class Meta:
+        model = PublicProfileSerializer.Meta.model
+        fields = PublicProfileSerializer.Meta.fields + ['completed_on', 'delayed_on', 'start_on']
+
+
+class ExternalClassroomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExternalClassroom
+        fields = ['external_id', 'name', 'teacher_id', 'code', 'provider', 'alternate_link']
+
+
 class ClassroomBaseSerializer(serializers.ModelSerializer):
     count_students = serializers.IntegerField(read_only=True)
     teacher = PublicProfileSerializer(read_only=True)
-    # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum = CurriculumSerializer(read_only=True)
+    # curriculum = SimpleCurriculumSerializer(read_only=True)
     curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
                                                    slug_field='uuid', write_only=True)
+
+    external_classroom = ExternalClassroomSerializer(many=False, required=False)
+
+    def create(self, validated_data):
+        external_classroom = None
+        if 'external_classroom' in validated_data:
+            external_classroom = validated_data.pop('external_classroom')
+
+        to_return = super(ClassroomBaseSerializer, self).create(validated_data)
+
+        if external_classroom:
+            # save external data
+            kwargs = external_classroom
+            # if 'provider' in external_classroom:
+            #     kwargs['provider'] = external_classroom.pop('provider')
+            # external_id=external_classroom['external_id'],
+            #                                              name=external_classroom['name'],
+            #                                              teacher_id=external_classroom['teacher_id'],
+            #                                              code=external_classroom['code'],
+            try:
+                ExternalClassroom.objects.create(classroom=to_return,
+                                             **kwargs)
+            except:  # TODO raise error message
+                pass
+        return to_return
 
     class Meta:
         model = Classroom
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'count_students',
-                  'teacher', 'curriculum_uuid']
+                  'teacher', 'curriculum_uuid', 'external_classroom']
         read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
 
 
 class ClassroomListSerializer(ClassroomBaseSerializer):
-    less_students = PublicProfileSerializer(many=True, read_only=True)
+    less_students = serializers.SerializerMethodField(read_only=True)
+
+    def get_less_students(self, container):
+        students = container.students.all()[:12]
+        serializer = PublicProfileSerializer(instance=students, many=True)
+        return serializer.data
 
     class Meta(ClassroomBaseSerializer.Meta):
         fields = ClassroomBaseSerializer.Meta.fields + ['less_students']
@@ -51,11 +121,6 @@ class ClassroomListSerializer(ClassroomBaseSerializer):
 
 class ClassroomSerializer(ClassroomBaseSerializer):
     pass
-    # students = PublicProfileSerializer(read_only=True, many=True)
-    # students = StudentProfileSerializer(read_only=True, many=True)
-
-    # class Meta(ClassroomBaseSerializer.Meta):
-    # fields = ClassroomBaseSerializer.Meta.fields + ['students']
 
 
 class AssignmentListSerializer(serializers.ModelSerializer):
@@ -81,11 +146,55 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(read_only=True)
 
+    def send_emails(sender, instance, *args, **kwargs):
+
+        # TODO if we will have a large number of students we need to think about sending email asynchronously
+
+        # send email to students in classroom
+        d1 = timezone.now()
+        d0 = instance.due_on.replace()
+        delta = d0 - d1
+
+        current_site = Site.objects.get_current()
+
+        lesson = instance.lessons.first()
+
+        lesson_url = reverse('curricula:lesson', args=[lesson.uuid])
+
+        url = urljoin('http://{}/'.format(current_site.domain), lesson_url)
+
+        # TODO we need to send letter if assignment is:
+        # 1. created
+        # 2. new lessons have been added
+        # 3. dates have been changed
+
+        for student in instance.classroom.students.all():
+            html_message = loader.render_to_string(
+                'classroom/notification_email.html',
+                {
+                    'user_full_name': student.user.full_name,
+                    'assignment': instance,
+                    'days': delta.days,
+                    'url': url
+                }
+            )
+
+            email = EmailMessage(
+                'You have a new assignment on Physics is Beautiful!',
+                html_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [student.user.email, ]
+            )
+            email.content_subtype = "html"
+
+            # Suppress email until it's fixed.
+            email.send()
+
     def get_image(self, obj):
         if obj.denormalized_image:
             storage = get_storage_class()()
-            if storage.exists(obj.denormalized_image):
-                return storage.url(obj.denormalized_image)
+            # if storage.exists(obj.denormalized_image): # do not work with s3
+            return storage.url(obj.denormalized_image)
 
         return None
 
@@ -106,7 +215,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     # assigned_on to user
     def get_assigned_on(self, obj):
         if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
-            return obj.assignment_student_progress[0].updated_on
+            return obj.assignment_student_progress[0].start_on  # start date of assignment
         else:
             return None
 
@@ -159,7 +268,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
                   'count_lessons', 'completed_on', 'delayed_on', 'assigned_on',
                   'count_students_completed_assingment', 'count_students_missed_assingment',
                   'count_students_delayed_assingment',
-                  'count_completed_lessons', 'image']
+                  'count_completed_lessons', 'image', 'send_email']
         read_only_fields = ('uuid', 'created_on', 'updated_on')
 
 

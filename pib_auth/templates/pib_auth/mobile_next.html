@@ -1,0 +1,12 @@
+{% load static %}
+
+<!DOCTYPE html>
+<body>
+    {# The app loads this page when user is done with Google/Facebook login #}
+    <p>You have logged in successfully. Please click "X" to return to the app.</p>
+    <script type="text/javascript">
+        window.IS_MOBILE_APP = true;
+    </script>
+    <script src="{% static 'blog/jquery/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/pib-mobile-connect.js' %}"></script>
+</body>

@@ -4,7 +4,7 @@ import { BASE_URL } from '../utils/config'
 
 export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = false) {
   if (!fromChildren) {
-    history.push(BASE_URL)
+    history.push(BASE_URL + selectedTab + '/')
   }
   return { type: CHANGE_SELECTED_TAB,
     tab: selectedTab,
@@ -12,14 +12,33 @@ export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = fal
 }
 
 export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace, match) {
-  if (match &&
-    match.isExact === false &&
-    !match.params.hasOwnProperty('assigmentUuid') &&
-    !match.params.hasOwnProperty('username')) {
-    history.push(match.url) // rewrite url to teacher tab url. fixme: seems it's need a better solution
+  // TODO refactor this
+
+  if (selectedTab === 'students') {
+    if (match &&
+      match.path !== '/classroom/teacher/:uuid/students/' &&
+      match.path !== '/classroom/teacher/:uuid/students/:username') {
+      history.push('/classroom/teacher/' + match.params['uuid'] + '/students/')
+    }
+  } else if (match &&
+     !match.params.hasOwnProperty('assigmentUuid') &&
+     !match.params.hasOwnProperty('username')
+  ) { // main teacher page
+    history.push('/classroom/teacher/' + match.params['uuid'] + '/')
   }
+
+  // if (match &&
+  //     match.isExact === false &&
+  //     !match.params.hasOwnProperty('assigmentUuid') &&
+  //     !match.params.hasOwnProperty('username') &&
+  //     match.path !== '/classroom/:uuid/teacher/students/' &&
+  //     match.path !== '/classroom/:uuid/teacher/' &&
+  // {
+  //   history.push('/classroom/' + match.params['uuid'] + '/teacher/') // rewrite url to teacher tab url. fixme: seems it's need a better solution
+  // }
 
   return { type: CHANGE_SELECTED_TAB_TEACHER_CLASSROOM,
     teacherClassroomTab: selectedTab,
-    namespace: tabNamespace }
+    namespace: tabNamespace
+  }
 }

@@ -23,7 +23,7 @@ class StudentClassroomProfileView extends React.Component {
 
   componentWillMount () {
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
-    this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', true)
+    this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
     this.props.studentActions.classroomFetchStudentClassroomProfile(
       this.props.match.params['uuid'],
       this.props.match.params['username']
@@ -41,8 +41,7 @@ class StudentClassroomProfileView extends React.Component {
   }
 
   onAssignmentTitleClick (assignment) {
-    // redirect to first uncompleted lesson
-    this.props.dispatch(push(BASE_URL + this.props.classroomTeacher.uuid + '/teacher/assignments/' + assignment.uuid))
+    this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/assignments/' + assignment.uuid))
   }
 
   render () {
@@ -57,36 +56,33 @@ class StudentClassroomProfileView extends React.Component {
               style={{textAlign: 'left', paddingTop: '1rem'}} >
               <a
                 className={'back-button'}
-                onClick={() => { history.goBack()}} >
+                onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/students/')) }} >
                 <span
                   className='glyphicon glyphicon-menu-left'
                   style={{fontSize: 16}} />
                 All students
               </a>
             </Col>
-            {/*<Col sm={6} md={6}>*/}
-              {/*<a className={'pointer'} onClick={() => { history.goBack() }}>{'< All students'}</a>*/}
-            {/*</Col>*/}
             <Col sm={6} md={6} className={'text-right'}>
-              <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
+              {this.props.classroomTeacher && !this.props.classroomTeacher.external_classroom ? <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
                 <Dropdown.Toggle className={'classroom-common-button'}>
                   <Glyphicon glyph='cog' />&nbsp;
                 Manage student
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem eventKey='remove'>Remove from class</MenuItem>
-                  {/*<MenuItem eventKey='send'>Send reminder</MenuItem>*/}
-                  {/*<MenuItem eventKey='edit'>Move student</MenuItem>*/}
+                  {/* <MenuItem eventKey='send'>Send reminder</MenuItem> */}
+                  {/* <MenuItem eventKey='edit'>Move student</MenuItem> */}
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> : null}
             </Col>
           </Row>
           <Row className={className}>
             <Col sm={1} md={1}>
-              {this.props.studentClassroomProfile && this.props.studentClassroomProfile.gravatar_url
+              {this.props.studentClassroomProfile && this.props.studentClassroomProfile.avatar_url
                 ? <Image
                   responsive
-                  src={this.props.studentClassroomProfile.gravatar_url}
+                  src={this.props.studentClassroomProfile.avatar_url}
                   circle />
                 : null}
             </Col>

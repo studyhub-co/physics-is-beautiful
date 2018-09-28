@@ -2,6 +2,8 @@ from crispy_forms.layout import Submit
 from crispy_forms.helper import FormHelper
 from django import forms
 
+from pagedown.widgets import PagedownWidget
+
 from .models import Topic, Thread, Post
 
 
@@ -19,10 +21,12 @@ class TopicForm(forms.ModelForm):
 class ThreadForm(forms.ModelForm):
     class Meta:
         model = Thread
-        fields = ['title', 'url']
+        fields = ['topic', 'title']
 
 
 class PostForm(forms.ModelForm):
+    content = forms.CharField(widget=PagedownWidget())
+   
     class Meta:
         model = Post
         fields = ['content']
