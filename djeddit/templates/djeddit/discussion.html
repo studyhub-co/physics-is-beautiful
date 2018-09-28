@@ -40,5 +40,6 @@
     <script type="text/javascript" src="{% static 'djeddit/js/topic.js' %}"></script>
     <script type="text/javascript">
         window.updateCanGoBack(false);
+        window.sessionStorage.setItem('history', JSON.stringify([window.location.href]))
     </script>
 {% endblock %}
