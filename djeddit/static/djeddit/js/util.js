@@ -28,4 +28,13 @@ window.util = {
 
 $(document).ready(function () {
   $('[data-toggle="tooltip"]').tooltip()
+  if (window.sessionStorage.getItem('history') == null) {
+    window.sessionStorage.setItem('history', JSON.stringify([window.location.href]))
+  } else {
+    let sessionHistory = JSON.parse(window.sessionStorage.getItem('history'))
+    sessionHistory.push(window.location.href)
+    window.sessionStorage.setItem('history', JSON.stringify(sessionHistory))
+  }
+
+  console.log(window.sessionStorage.getItem('history'))
 })
