@@ -4,6 +4,8 @@ import Moment from 'react-moment'
 
 import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
+import copy from 'copy-to-clipboard'
+
 import { addCurriculum } from './../actions'
 
 import { Thumbnail } from './thumbnail'
@@ -40,6 +42,7 @@ export class CurriculumThumbnail extends React.Component {
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onEditCurriculumSelect = this.onEditCurriculumSelect.bind(this)
     this.onEditContentSelect = this.onEditContentSelect.bind(this)
+    this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
   }
 
@@ -53,6 +56,10 @@ export class CurriculumThumbnail extends React.Component {
 
   onDropDownMenuItemSelect (e) {
 
+  }
+
+  onCopyShareableLink (e) {
+    copy(window.location.origin + '/curriculum/' + this.props.uuid + '/')
   }
 
   onEditCurriculumSelect (e) {
@@ -82,7 +89,7 @@ export class CurriculumThumbnail extends React.Component {
               <MenuItem onSelect={this.onEditContentSelect} eventKey='1'><Glyphicon glyph='edit' /> Edit content</MenuItem>
               <MenuItem onSelect={this.onEditCurriculumSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
               <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
-              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
+              <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
               <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
