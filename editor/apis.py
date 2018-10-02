@@ -27,8 +27,9 @@ class CurriculumViewSet(ModelViewSet):
         return Curriculum.objects.filter(Q(author=self.request.user)
                                          | Q(collaborators=self.request.user)
                                          | Q(classroom__students__user=self.request.user)).\
-               select_related('author').annotate(count_lessons=Count('units__modules__lessons', distinct=True))
-    
+               select_related('author').\
+               annotate(count_lessons=Count('units__modules__lessons', distinct=True))
+
     def perform_create(self, serializer):
         new_curriculum = serializer.save(author=self.request.user)
 

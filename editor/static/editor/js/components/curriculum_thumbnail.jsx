@@ -92,7 +92,7 @@ export class CurriculumThumbnail extends React.Component {
           <div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             <a href={this.props.author.get_absolute_url} target={'_blank'}>
               {this.props.author.display_name}
-            </a> ∙ {this.props.count_lessons } lessons ∙ 2k learners
+            </a> ∙ {this.props.count_lessons } lessons ∙ { this.props.number_of_learners } learners
           </div>
           <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>

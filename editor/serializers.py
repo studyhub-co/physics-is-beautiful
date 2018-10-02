@@ -333,6 +333,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
     count_lessons = serializers.IntegerField(read_only=True)
+    number_of_learners = serializers.IntegerField(read_only=True, source='number_of_learners_denormalized')
 
     def validate_name(self, value):
         if value and value.lower() == Curriculum.Name.DEFAULT.lower():
@@ -355,7 +356,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         model = Curriculum
         list_serializer_class = DictSerializer
         fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons',
-                  'cover_photo']
+                  'cover_photo', 'number_of_learners']
         read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),

@@ -231,7 +231,7 @@ class CurriculaViewSet(ModelViewSet):
         filter_by = self.request.query_params.get('filter', None)
         if filter_by and self.request.user.is_authenticated():
             if filter_by == 'my':
-                # todo do wee need to get curricula of user classrooms?
+                # todo do we need to get curricula of user classrooms?
                 queryset = queryset.filter(author=self.request.user)
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
