@@ -3,7 +3,7 @@ import Moment from 'react-moment'
 import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Clipboard from 'react-clipboard.js'
+
 import { history }from '../../history'
 import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
@@ -17,6 +17,7 @@ import {
 } from '../../actions'
 
 import { EditableExternalEventLabel } from '../../components/label'
+import EditCurriculumSettingsView from './editSettings'
 
 function makeblob (dataURL, filename) {
   var BASE64_MARKER = ';base64,'
@@ -73,7 +74,7 @@ function getCroppedImg (image, pixelCrop) {
   return base64Image
 }
 
-class PencilImageUpload extends React.Component {
+class PencilImageUpload extends React.Component { // TODO move to utils
   constructor (props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
@@ -94,6 +95,10 @@ class PencilImageUpload extends React.Component {
         style={{fontSize: '0px'}} />
     </div>
   }
+}
+
+PencilImageUpload.propTypes = {
+  onFileSelect: PropTypes.func.isRequired,
 }
 
 class EditCurriculumProfileView extends React.Component {
@@ -232,11 +237,11 @@ class EditCurriculumProfileView extends React.Component {
     // if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
     //   studentsS = 's'
     // }
-    var copiedTooltip = (
-      <Tooltip id='copiedTooltip'>
-        Copied!
-      </Tooltip>
-    )
+    // var copiedTooltip = (
+    //   <Tooltip id='copiedTooltip'>
+    //     Copied!
+    //   </Tooltip>
+    // )
 
     var selectedCurriculum = this.props.curricula[this.props.match.params.uuid]
 
@@ -256,6 +261,7 @@ class EditCurriculumProfileView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='profile'>
+              {/* Todo move the tab content to a new component */}
               <Grid fluid>
                 <Row style={{padding: 0}}>
                   <Col sm={12} md={12}
@@ -380,11 +386,9 @@ class EditCurriculumProfileView extends React.Component {
               </Grid>
             </TabContent>
             <TabContent for='settings'>
-              settings tab
+              <EditCurriculumSettingsView />
             </TabContent>
-            <TabContent for='edit'>
-              edit tab
-            </TabContent>
+            <TabContent for='edit' />
           </div>
         </Tabs>
       </div>)
