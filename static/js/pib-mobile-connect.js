@@ -1,8 +1,8 @@
 // This file specifies any needed connections between the pib_mobile app and the website.
 
-// window.appOrigin = 'http://0.0.0.0:8000'
+window.appOrigin = 'http://localhost:8080'
 // debugging:
-window.appOrigin = '*'
+// window.appOrigin = '*'
 
 // Return to previous page upon receiving "goBack" message
 window.addEventListener('message', function (event) {
