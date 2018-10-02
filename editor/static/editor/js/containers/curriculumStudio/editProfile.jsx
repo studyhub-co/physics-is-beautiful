@@ -8,7 +8,13 @@ import { history }from '../../history'
 import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { changeCurriculumCoverPhoto, changeCurriculumImage, loadCurriculumIfNeeded, renameCurriculum } from '../../actions'
+import {
+  changeCurriculumCoverPhoto,
+  changeCurriculumImage,
+  loadCurriculumIfNeeded,
+  renameCurriculum,
+  saveCurriculumDescription
+} from '../../actions'
 
 import { EditableExternalEventLabel } from '../../components/label'
 
@@ -99,7 +105,9 @@ class EditCurriculumProfileView extends React.Component {
     this.imageUpload = this.imageUpload.bind(this)
     this.coverPhotoSelected = this.coverPhotoSelected.bind(this)
     this.editNameClick = this.editNameClick.bind(this)
+    this.editDescriptionClick = this.editDescriptionClick.bind(this)
     this.onNameChanged = this.onNameChanged.bind(this)
+    this.onDescriptionChanged = this.onDescriptionChanged.bind(this)
     this.onCropChange = this.onCropChange.bind(this)
     this.onCropComplete = this.onCropComplete.bind(this)
     this.saveCroppedPhoto = this.saveCroppedPhoto.bind(this)
@@ -141,23 +149,39 @@ class EditCurriculumProfileView extends React.Component {
     window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
   }
 
+  // ==== description
+
+  editDescriptionClick () {
+    this.setState({descriptionEditMode: true})
+  }
+
+  onDescriptionChanged (text) {
+    this.props.onDescriptionChange(this.props.match.params.uuid, text)
+    this.setState({descriptionEditMode: false})
+  }
+
+  // ==== Name
+  editNameClick () {
+    this.setState({nameEditMode: true})
+  }
+
+  onNameChanged (name) {
+    this.props.onNameChange(this.props.match.params.uuid, name)
+    this.setState({nameEditMode: false})
+  }
+
+  //  ==== Image
+
   imageUpload (image) {
     if (image) {
       this.props.changeCurriculumImage(this.props.match.params.uuid, image)
     }
   }
 
-  editNameClick () {
-    this.setState({nameEditMode: true})
-  }
+  //  ==== Cover photo
 
   onCropChange (crop) {
     this.setState({ crop })
-  }
-
-  onNameChanged (name) {
-    this.props.onNameChange(this.props.match.params.uuid, name)
-    this.setState({nameEditMode: false})
   }
 
   coverPhotoSelected (image) {
@@ -322,7 +346,7 @@ class EditCurriculumProfileView extends React.Component {
                         </div>
                       </Col>
                     </Row>
-                    <Row style={{padding: 0}}>
+                    <Row>
                       <Col sm={12} md={12}>
                         <div style={{color: 'gray'}}>
                           Created <Moment fromNow>{selectedCurriculum.created_on}</Moment>
@@ -333,6 +357,24 @@ class EditCurriculumProfileView extends React.Component {
                   </Col>
                   <Col sm={3} md={3}>
                     <button className={'editor-common-button'} onClick={this.startCurriculum}>Start Curriculum</button>
+                  </Col>
+                </Row>
+                <Row style={{padding: '2rem'}}>
+                  <Col sm={12} md={12}>
+                    <EditableExternalEventLabel
+                      textArea={Boolean(true)}
+                      value={selectedCurriculum.description}
+                      onChange={this.onDescriptionChanged}
+                      editMode={this.state.descriptionEditMode}
+                    />
+                    <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                      <span className={'base-circle-edit'}>
+                        <Glyphicon
+                          glyph={'pencil'}
+                          onClick={this.editDescriptionClick}
+                          style={{fontSize: '2rem', lineHeight: '2'}} />
+                      </span>
+                    </span>
                   </Col>
                 </Row>
               </Grid>
@@ -370,6 +412,7 @@ const mapDispatchToProps = (dispatch) => {
     loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid)),
     changeCurriculumImage: (uuid, image) => dispatch(changeCurriculumImage(uuid, image)),
     onNameChange: (uuid, name) => dispatch(renameCurriculum(uuid, name)),
+    onDescriptionChange: (uuid, text) => dispatch(saveCurriculumDescription(uuid, text)),
     changeCurriculumCoverPhoto: (uuid, image) => dispatch(changeCurriculumCoverPhoto(uuid, image))
   }
 }
