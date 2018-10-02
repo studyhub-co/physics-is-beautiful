@@ -159,7 +159,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
         lesson = instance.lessons.first()
 
-        lesson_url = reverse('curricula:lesson', args=[lesson.uuid])
+        lesson_url = reverse('main_curricula:lesson', args=[lesson.uuid])
 
         url = urljoin('http://{}/'.format(current_site.domain), lesson_url)
 

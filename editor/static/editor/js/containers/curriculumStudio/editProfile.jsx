@@ -111,7 +111,10 @@ class EditCurriculumProfileView extends React.Component {
       imgToCropBlob: null,
       cropInfo: null,
       crop: {
-        aspect: 2.7 / 1
+        aspect: 2.7 / 1,
+        x: 10,
+        y: 10,
+        width: 80
       }
     }
   }
@@ -158,7 +161,6 @@ class EditCurriculumProfileView extends React.Component {
   }
 
   coverPhotoSelected (image) {
-    // TODO set up default crop
     if (image) {
       this.setState({
         imgToCropBlob: URL.createObjectURL(image),

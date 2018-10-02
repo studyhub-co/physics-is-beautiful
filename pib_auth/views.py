@@ -12,7 +12,7 @@ def login_next(request):
     if 'HTTP_REFERER' in request.META and 'pib_mobile' in request.META.get('HTTP_REFERER'):
         return HttpResponseRedirect(reverse('pib_auth:blank'))
 
-    return HttpResponseRedirect(reverse('curricula:curriculum'))
+    return HttpResponseRedirect(reverse('main_curricula:curriculum'))
 
 
 def blank(request):
