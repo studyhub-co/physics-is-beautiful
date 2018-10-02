@@ -15,6 +15,7 @@ from curricula.models import Vector, ImageWText, MathematicalExpression, UnitCon
 from curricula.serializers import BaseSerializer, UserSerializer
 
 # from profiles.serializers import PublicProfileSerializer
+from django.core.files.images import get_image_dimensions
 
 
 class DictSerializer(serializers.ListSerializer):
@@ -336,6 +337,13 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     def validate_name(self, value):
         if value and value.lower() == Curriculum.Name.DEFAULT.lower():
             raise serializers.ValidationError("Invalid name: %s"%value)
+        return value
+
+    def validate_cover_photo(self, value):
+        w, h = get_image_dimensions(value)
+        if value:
+            if round(w / h, 1) != 2.7:
+                raise serializers.ValidationError("Invalid aspect ratio (2.7 : 1)")
         return value
 
     def update(self, instance, validated_data):
