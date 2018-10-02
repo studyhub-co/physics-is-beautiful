@@ -83,7 +83,7 @@
             {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav nav-pills">
-                    <li class="nav-item{% current_url_starts_with 'curricula:curriculum' %}"><a href="{% url 'curricula:curriculum' %}">Home</a></li>
+                    <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"><a href="{% url 'main_curricula:curriculum' %}">Home</a></li>
                     <li class="nav-item{% current_url_starts_with 'discussion' %}"><a href="{% url 'discussion' %}">Discussion</a></li>
                     <li class="nav-item{% current_url_starts_with 'editor' %}"><a href="{% url 'editor' %}">Curriculum</a></li>
                     <li class="nav-item{% current_url_starts_with 'classroom' %}"><a href="{% url 'classroom' %}">Classroom</a></li>

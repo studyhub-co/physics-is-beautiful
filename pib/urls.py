@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^', include('homepage.urls')),
 
     # namespase is a fix for api/v1/editor/curricula url (drf router)
-    url(r'^curriculum/', include('curricula.urls', namespace='curricula')),
+    url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
     # url(r'^editor/', include('editor.urls')),
     url(r'^studio/', include('editor.urls')),
     url(r'^classroom/', include('classroom.urls')),
