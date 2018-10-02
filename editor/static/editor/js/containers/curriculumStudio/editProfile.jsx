@@ -234,8 +234,14 @@ class EditCurriculumProfileView extends React.Component {
             <TabContent for='profile'>
               <Grid fluid>
                 <Row style={{padding: 0}}>
-                  <Col sm={12} md={12} style={{padding: 0, paddingTop: '37%', width: '100%',
-                    overflow: 'hidden', position: 'relative'}}>
+                  <Col sm={12} md={12}
+                    style={{
+                      padding: 0,
+                      paddingTop: '37%',
+                      width: '100%',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      backgroundColor: '#12adf4'}} >
                     <div
                       style={{
                         position: 'absolute',
@@ -244,7 +250,7 @@ class EditCurriculumProfileView extends React.Component {
                         bottom: '0',
                         right: '0'}}
                     >
-                      <div style={{position: 'relative'}}>
+                      <div style={{position: selectedCurriculum.cover_photo ? 'relative' : ''}}>
                         {this.state.croppingCoverPhotoMode
                           ? <div>
                             <ReactCrop
@@ -260,9 +266,10 @@ class EditCurriculumProfileView extends React.Component {
                                 onClick={this.saveCroppedPhoto}>Save photo</button>
                               : null }
                           </div>
-                          : <ImageBs
-                            src={selectedCurriculum.cover_photo}
-                            responsive />
+                          : <div>{ selectedCurriculum.cover_photo
+                            ? <ImageBs src={selectedCurriculum.cover_photo} responsive />
+                            : <div style={{ height: '100%', width: '100%' }} /> }
+                          </div>
                         }
                         {/* TODO add default background */}
                         <div title={'Change cover photo'} className={'base-circle-edit bottom-circle-edit right-circle-edit'}>
