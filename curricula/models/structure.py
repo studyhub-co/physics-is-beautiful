@@ -37,9 +37,18 @@ class Curriculum(BaseModel):
     image = models.ImageField(blank=True)
     cover_photo = models.ImageField(blank=True)
     description = models.TextField(blank=True, null=True)
+    number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
     author = models.ForeignKey(User)
     collaborators = models.ManyToManyField(User, related_name='coauthored_curricula')
+
+    def count_number_of_learners(self, LessonProgressClass):
+        lps_count = LessonProgressClass.objects.filter(status=30, # LessonProgress.Status.COMPLETE
+                                                        lesson__module__unit__curriculum=self). \
+            values('profile').distinct().count()
+
+        self.number_of_learners_denormalized = lps_count
+        self.save(update_fields=['number_of_learners_denormalized'])
 
     def clone(self, to_curriculum):
         for unit in self.units.all():
@@ -88,7 +97,6 @@ class Module(BaseModel):
         parent_field = 'unit'
         children_field = 'lessons'
 
-        
     uuid = ShortUUIDField()
     unit = models.ForeignKey(Unit, related_name='modules', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -180,8 +188,7 @@ class Lesson(BaseModel):
             game.lesson = copy
             game.save()
         return copy
-        
-            
+
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
 

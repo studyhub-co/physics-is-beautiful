@@ -271,7 +271,6 @@ class EditCurriculumProfileView extends React.Component {
                             : <div style={{ height: '100%', width: '100%' }} /> }
                           </div>
                         }
-                        {/* TODO add default background */}
                         <div title={'Change cover photo'} className={'base-circle-edit bottom-circle-edit right-circle-edit'}>
                           <PencilImageUpload onFileSelect={this.coverPhotoSelected} />
                         </div>
@@ -298,7 +297,6 @@ class EditCurriculumProfileView extends React.Component {
                     <Row style={{padding: 0}}>
                       <Col sm={12} md={12}>
                         <div className={'blue-title'}>
-                          {/*{selectedCurriculum.name}*/}
                           <EditableExternalEventLabel
                             value={selectedCurriculum.name}
                             onChange={this.onNameChanged}
@@ -320,7 +318,7 @@ class EditCurriculumProfileView extends React.Component {
                         <div style={{fontSize: '2rem'}}>
                           { selectedCurriculum.author.display_name }
                           ∙ { selectedCurriculum.count_lessons } lessons
-                          ∙ { selectedCurriculum.count_lessons } learners
+                          ∙ { selectedCurriculum.number_of_learners } learners
                         </div>
                       </Col>
                     </Row>
