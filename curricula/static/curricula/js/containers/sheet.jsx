@@ -34,7 +34,7 @@ class LessonComplete extends React.Component {
 class LessonCompleteSheet extends React.Component {
   render () {
     return (
-      <div className='container problem-sheet'>
+      <div className='container problem-sheet' style={window.IS_MOBILE_APP ? {top: '2rem'} : {top: '0px'}}>
         <LessonComplete lesson={this.props.question.lesson} />
         {/* <div></div> */}
       </div>
@@ -89,7 +89,7 @@ class QuestionSheet extends React.Component {
 
   render () {
     return (
-      <div className='container problem-sheet'>
+      <div className='container problem-sheet' style={window.IS_MOBILE_APP ? {top: '2rem'} : {top: '0px'}}>
         <Prompt message='Changes you made may not be saved.' />
         <Question
           question={this.props.question}
