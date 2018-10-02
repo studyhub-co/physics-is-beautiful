@@ -164,6 +164,17 @@ export function renameCurriculum(uuid, newName) {
     }
 }
 
+export function saveCurriculumDescription (uuid, newText) {
+  return function (dispatch) {
+    $.ajax({url: API_PREFIX + 'curricula/' + uuid + '/',
+      type: 'PATCH',
+      data: {description: newText},
+      success: function (data, status, jqXHR) {
+        dispatch(curriculumLoaded(data))
+      }})
+  }
+}
+
 function loadCurriculum (uuid, dispatch) {
   $.ajax({
     async: true,
@@ -249,7 +260,7 @@ export function addUnit(curriculumUuid) {
 	    success: function(data, status, jqXHR) {
 		dispatch(unitAdded(curriculumUuid, data));
 	    }
-	});   
+	});
     }  
 }
 
