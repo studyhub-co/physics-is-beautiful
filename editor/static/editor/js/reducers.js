@@ -219,6 +219,17 @@ function allCurricula (state = {}, action){
   } else return state
 }
 
+function users (state = {}, action) {
+  switch (action.type) {
+    case ActionTypes.FOUND_USERS_LOADED:
+      return Object.assign({}, state, {foundUsers: action.foundUsers})
+    case ActionTypes.FOUND_USERS_REQUEST:
+      return Object.assign({}, state, {findUserRequest: action.findUserRequest})
+    default:
+      return state
+  }
+}
+
 function studioTabs (state = {tab: null}, action) {
   switch (action.type) {
     case ActionTypes.STUDIO_TAB_CHANGED:
@@ -247,6 +258,7 @@ const combined = combineReducers({
   currentQuestion,
   allCurricula,
   studioTabs,
+  users,
   router: routerReducer
 })
 

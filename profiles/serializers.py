@@ -34,11 +34,12 @@ class ProfileSerializer(BaseSerializer):
     last_name = serializers.CharField(source='user.last_name')
     display_name = serializers.CharField(source='user.display_name')
     avatar_url = serializers.CharField(source='get_avatar_url')
+    id = serializers.IntegerField(source='user.id')  # (sic!) user_id != profile_id
     # selected_avatar = serializers.CharField(source='get_selected_avatar_display')
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name',
+        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'id',
                   'gravatar_url', 'avatar_url', 'google_avatar_url', 'selected_avatar', 'user_avatar']
 
     def to_representation(self, obj):
