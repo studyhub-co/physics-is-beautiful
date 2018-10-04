@@ -3,10 +3,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Grid, Row, Col, FormGroup, FormControl, DropdownButton, InputGroup, MenuItem } from 'react-bootstrap'
+
+import { MultiSelect } from 'react-selectize'
+
 import { loadCurriculumIfNeeded } from '../../actions'
 
-class SettingsString extends React.Component {
+import UserRightsRow from './userRightsRow'
+
+class SettingRow extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -63,7 +68,7 @@ class SettingsString extends React.Component {
   }
 }
 
-SettingsString.propTypes = {
+SettingRow.propTypes = {
   text: PropTypes.string,
   uuid: PropTypes.string.isRequired
 }
@@ -79,9 +84,31 @@ class EditCurriculumSettingsView extends React.Component {
             </div>
           </Col>
         </Row>
-        <SettingsString uuid={'units'} text={'All units unlocked (“off” means lessons unlock sequentially)'} />
-        <SettingsString uuid={'modules'} text={'All modules unlocked (“off” means lessons unlock sequentially)'} />
-        <SettingsString uuid={'lessons'} text={'All lessons unlocked (“off” means lessons unlock sequentially)'} />
+        <SettingRow uuid={'units'} text={'All units unlocked (“off” means lessons unlock sequentially)'} />
+        <SettingRow uuid={'modules'} text={'All modules unlocked (“off” means lessons unlock sequentially)'} />
+        <SettingRow uuid={'lessons'} text={'All lessons unlocked (“off” means lessons unlock sequentially)'} />
+        <br />
+        <Row>
+          <Col sm={12} md={12}>
+            <div className={'blue-title'}>
+              Viewing
+            </div>
+          </Col>
+        </Row>
+        <SettingRow uuid={'publically'} text={'Publically viewable (“off” means curriculum does not appear in  “Browse Curricula” )'} />
+        <br />
+        <Row>
+          <Col sm={12} md={12}>
+            <div className={'blue-title'}>
+              Editing
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={12}>
+            <UserRightsRow />
+          </Col>
+        </Row>
       </Grid>
     )
   }

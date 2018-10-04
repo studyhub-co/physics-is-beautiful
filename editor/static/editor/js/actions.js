@@ -3,6 +3,7 @@ import { history } from './history'
 import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} from './utils'
 
 const API_PREFIX = '/api/v1/editor/'
+const API_PROFILE_PREFIX = '/api/v1/profiles/'
 
 export const ActionTypes = Object.freeze({
   REQUEST_ADD_CURRICULUM: 'REQUEST_ADD_CURRICULUM',
@@ -34,7 +35,9 @@ export const ActionTypes = Object.freeze({
   DELETE_ANSWER: 'DELETE_ANSWER',
   SET_ANSWER_EXCLUSIVELY_CORRECT: 'SET_ANSWER_EXCLUSIVELY_CORRECT',
   SET_ANSWER_IS_CORRECT: 'SET_ANSWER_IS_CORRECT',
-  STUDIO_TAB_CHANGED: 'STUDIO_TAB_CHANGED'
+  STUDIO_TAB_CHANGED: 'STUDIO_TAB_CHANGED',
+  FOUND_USERS_LOADED: 'FOUND_USERS_LOADED',
+  FOUND_USERS_REQUEST: 'FOUND_USERS_REQUEST'
 })
 
 /*
@@ -1058,7 +1061,7 @@ export function removeConversionStep(answerUuid){
 
 export function clearQuestionVectors(uuid){
     return dispatch => {
-	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
+	$.ajax({url: API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		data:{'vectors':'[]'},
 		success: function(data,status, jqXHR){
@@ -1084,3 +1087,63 @@ export function addQuestionVector(uuid, x_component, y_component){
     }    
     
 }
+
+export function foundUsersLoaded (data) {
+  return {
+    type: ActionTypes.FOUND_USERS_LOADED,
+    foundUsers: data
+  }
+}
+
+export function findUserRequest (data) {
+  return {
+    type: ActionTypes.FOUND_USERS_REQUEST,
+    findUserRequest: data
+  }
+}
+
+export function findUsers (searchString) {
+  return (dispatch, getState) => {
+    dispatch(findUserRequest(true))
+    $.ajax({
+      url: API_PROFILE_PREFIX + 'find?q=' + searchString,
+      type: 'GET',
+      success: function (data, status, jqXHR) {
+        dispatch(foundUsersLoaded(data))
+        dispatch(findUserRequest(false))
+      }
+    })
+  }
+}
+
+// export function curricilumStaffListLoaded (data) {
+//   return {
+//     type: ActionTypes.CURRICULUM_STUFF_LIST_LOADED,
+//     curricilumStaffList: data
+//   }
+// }
+//
+// export function loadCurricilumStaffList (searchString) {
+//  return (dispatch, getState) => {
+//     $.ajax({
+//       url: API_PROFILE_PREFIX + '',
+//       type: 'GET',
+//       success: function (data, status, jqXHR) {
+//         dispatch(loadCurricilumStaffList(data))
+//       }
+//     })
+//   }
+// }
+//
+// export function addCollaborators (collaborators) {
+//   return (dispatch, getState) => {
+//     $.ajax({
+//       url: API_PROFILE_PREFIX + '',
+//       data: collaborators,
+//       type: 'POST',
+//       success: function (data, status, jqXHR) {
+//         dispatch(loadCurricilumStaffList(data))
+//       }
+//     })
+//   }
+// }
