@@ -3,13 +3,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
-import { Grid, Row, Col, FormGroup, FormControl, DropdownButton, InputGroup, MenuItem } from 'react-bootstrap'
+import { Grid, Row, Col } from 'react-bootstrap'
 
-import { MultiSelect } from 'react-selectize'
-
-import { loadCurriculumIfNeeded } from '../../actions'
+// import { loadCurriculumIfNeeded } from '../../actions'
 
 import UserRightsRow from './userRightsRow'
+import StaffUserRow from './staffUserRow'
 
 class SettingRow extends React.Component {
   constructor (props) {
@@ -106,7 +105,22 @@ class EditCurriculumSettingsView extends React.Component {
         </Row>
         <Row>
           <Col sm={12} md={12}>
-            <UserRightsRow />
+            <UserRightsRow curriculum={this.props.curriculum} />
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={12}>
+            <div className={'blue-title'}>
+              Who has access
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={12}>
+            <StaffUserRow post={'owner'} staff={this.props.curriculum.author} />
+            { this.props.curriculum.collaborators.map(function (collaborator, i) {
+              return <StaffUserRow post={'collaborator'} staff={collaborator} key={i} />
+            })}
           </Col>
         </Row>
       </Grid>
@@ -116,21 +130,19 @@ class EditCurriculumSettingsView extends React.Component {
 
 EditCurriculumSettingsView.propTypes = {
   // actions
-  loadCurriculum: PropTypes.func.isRequired,
   // data
-  curricula: PropTypes.object
+  curriculum: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    curricula: state.curricula
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))
+    // loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))
   }
 }
 

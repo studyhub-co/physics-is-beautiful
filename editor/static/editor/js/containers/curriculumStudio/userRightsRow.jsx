@@ -7,7 +7,7 @@ import { FormGroup, DropdownButton, InputGroup, MenuItem } from 'react-bootstrap
 
 import { MultiSelect } from 'react-selectize'
 
-import { findUsers } from '../../actions'
+import { findUsers, updateCurriculum } from '../../actions'
 
 class UserRightsRow extends React.Component {
   constructor (props) {
@@ -20,8 +20,26 @@ class UserRightsRow extends React.Component {
   }
 
   onAddCollaboratorsClick () {
-    if (this.state.selectedUsers) {
+    if (this.state.selectedUsers.length > 0) {
       // this.props.addCollaborators(this.state.selectedUsers)
+      var curriculum = {uuid: this.props.curriculum.uuid}
+      var collaboratorsIds = []
+
+      for (var i = 0; i < this.state.selectedUsers.length; i++) {
+        collaboratorsIds.push(this.state.selectedUsers[i]['id'])
+      }
+      // append existing collaborators
+      for (i = 0; i < this.props.curriculum.collaborators.length; i++) {
+        var id = this.props.curriculum.collaborators[i]['id']
+        if (collaboratorsIds.indexOf(id) === -1) {
+          collaboratorsIds.push(id)
+        }
+      }
+
+      curriculum['collaborators_ids'] = collaboratorsIds
+
+      this.props.updateCurriculum(curriculum)
+      this.setState({selectedUsers: []})
     }
   }
 
@@ -131,15 +149,17 @@ class UserRightsRow extends React.Component {
 UserRightsRow.propTypes = {
   // actions
   findUsers: PropTypes.func.isRequired,
+  updateCurriculum: PropTypes.func.isRequired,
   // data
   foundUsers: PropTypes.object,
-  findUserRequest: PropTypes.bool
+  findUserRequest: PropTypes.bool,
+  curriculum: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
     foundUsers: state.users.foundUsers,
-    findUserRequest: state.users.findUserRequest
+    findUserRequest: state.users.findUserRequest,
   }
 }
 
@@ -147,7 +167,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     findUsers: (searchString) => dispatch(findUsers(searchString)),
-    // addCollaborators: (collaborators) => dispatch(findUsers(collaborators))
+    updateCurriculum: (searchString) => dispatch(updateCurriculum(searchString))
   }
 }
 

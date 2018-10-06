@@ -188,6 +188,19 @@ function loadCurriculum (uuid, dispatch) {
   })
 }
 
+export function updateCurriculum (curriculum) {
+  return function (dispatch) {
+    $.ajax({url: API_PREFIX + 'curricula/' + curriculum.uuid + '/',
+      dataType: 'json', // due https://github.com/encode/django-rest-framework/issues/5807
+      contentType: 'application/json',
+      type: 'PATCH',
+      data: JSON.stringify(curriculum),
+      success: function (data, status, jqXHR) {
+        dispatch(curriculumLoaded(data))
+      }})
+  }
+}
+
 export function loadCurriculumIfNeeded (uuid) {
   return (dispatch, getState) => {
     if (!(uuid in getState().curricula)) {

@@ -14,8 +14,10 @@ from curricula.models import Vector, ImageWText, MathematicalExpression, UnitCon
 
 from curricula.serializers import BaseSerializer, UserSerializer
 
-# from profiles.serializers import PublicProfileSerializer
+from profiles.serializers import PublicProfileSerializer
 from django.core.files.images import get_image_dimensions
+
+from profiles.models import Profile
 
 
 class DictSerializer(serializers.ListSerializer):
@@ -325,13 +327,16 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
             'modules': (ModuleSerializer, (), {'many': True}),
         }
         extra_kwargs = {
-            'url': {'lookup_field' : 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }
 
 
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
+    collaborators = PublicProfileSerializer(many=True, read_only=True)
+    collaborators_ids = serializers.SlugRelatedField(queryset=Profile.objects.all(), source='collaborators',
+                                                     slug_field='id', many=True, write_only=True)
     count_lessons = serializers.IntegerField(read_only=True)
     number_of_learners = serializers.IntegerField(read_only=True, source='number_of_learners_denormalized')
 
@@ -348,6 +353,13 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         return value
 
     def update(self, instance, validated_data):
+
+        # TODO Do we need to save collaborators while create curriculum?
+        try:
+            instance.collaborators = validated_data.pop('collaborators')
+        except KeyError:
+            pass
+
         if 'name' in validated_data and self.instance.name == Curriculum.Name.DEFAULT:
             del validated_data['name']
         return super().update(instance, validated_data)
@@ -356,7 +368,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         model = Curriculum
         list_serializer_class = DictSerializer
         fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons',
-                  'cover_photo', 'number_of_learners', 'description']
+                  'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids']
         read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),

@@ -3,6 +3,7 @@ from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
 
 from pib_auth.models import User
+from profiles.models import Profile
 
 from . import BaseModel, get_earliest_gap
 
@@ -40,10 +41,10 @@ class Curriculum(BaseModel):
     number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
     author = models.ForeignKey(User)
-    collaborators = models.ManyToManyField(User, related_name='coauthored_curricula')
+    collaborators = models.ManyToManyField(Profile, related_name='coauthored_curricula')
 
     def count_number_of_learners(self, LessonProgressClass):
-        lps_count = LessonProgressClass.objects.filter(status=30, # LessonProgress.Status.COMPLETE
+        lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
                                                         lesson__module__unit__curriculum=self). \
             values('profile').distinct().count()
 

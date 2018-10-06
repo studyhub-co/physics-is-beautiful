@@ -34,7 +34,7 @@ def find_user(request):
         qs = Profile.objects.filter(user__id=query_string.replace('user', ''))
     else:
         # qs = Profile.objects.filter(user__display_name__icontains=query_string)
-        qs = Profile.objects.filter(user__display_name__startswith=query_string)
+        qs = Profile.objects.filter(user__display_name__istartswith=query_string)
 
     paginator = PageNumberPagination()
     paginator.page_size = 50
