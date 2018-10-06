@@ -7,9 +7,9 @@ from django.db.models import Q
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
 from .services import get_progress_service, LessonLocked, LessonProgress
@@ -18,40 +18,15 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
     CurriculumSerializer, LessonProgressSerializer
 
+from profiles.serializers import PublicProfileSerializer
+from pib_auth.models import User
+
 
 def check_classroom_progress(service, user):
-    # TODO check start and due to date
     if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
         from classroom.models import AssignmentProgress
 
         AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
-
-        # from classroom.models import Assignment, AssignmentProgress
-        # assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
-        # assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
-        #                                                              student__user=user,
-        #                                                              completed_on__isnull=True)
-        # for assignment_progress in assignment_progress_list:
-        #     # user can have several assignments (from different classroom e.g.) to one lesson
-        #     try:
-        #         assignment_progress.completed_lessons.add(service.current_lesson)
-        #
-        #         # do not support by mysql db
-        #         # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
-        #         #        .count() == 0:
-        #         completed_lessons_ids = []
-        #         [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
-        #         difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
-        #         if difference.count() == 0:
-        #             if timezone.now() < assignment_progress.assignment.due_on.replace():
-        #                 assignment_progress.completed_on = datetime.datetime.now()
-        #             else:
-        #                 assignment_progress.delayed_on = datetime.datetime.now()
-        #
-        #         assignment_progress.save()  # update updated_on date
-        #
-        #     except AssignmentProgress.DoesNotExist:
-        #         pass
 
 
 class QuestionViewSet(ModelViewSet):
@@ -225,6 +200,18 @@ class CurriculaViewSet(ModelViewSet):
     serializer_class = CurriculumSerializer
     queryset = Curriculum.objects.all()
     lookup_field = 'uuid'
+
+    # @action(methods=['get'], detail=True, permission_classes=[IsAuthenticated, ])
+    # def collaborators(self, request, curricula_uuid):
+    #     try:
+    #         curriculum = self.queryset.get(uuid=curricula_uuid)
+    #     except Curriculum.DoesNotExist:
+    #         raise NotFound('Can\'t find the curriculum')
+    #
+    #     collaborators = User.objects.filter(profile__in=curriculum.collaborators)
+    #
+    #     serializer = PublicProfileSerializer(collaborators, many=True)
+    #     return Response(serializer.data)
 
     def get_queryset(self):
         queryset = self.queryset

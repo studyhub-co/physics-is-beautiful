@@ -386,7 +386,7 @@ class EditCurriculumProfileView extends React.Component {
               </Grid>
             </TabContent>
             <TabContent for='settings'>
-              <EditCurriculumSettingsView />
+              <EditCurriculumSettingsView curriculum={selectedCurriculum} />
             </TabContent>
             <TabContent for='edit' />
           </div>

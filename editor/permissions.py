@@ -17,7 +17,7 @@ class IsOwnerOrCollaboratorBase(permissions.BasePermission):
         o = obj
         for f in path if path is not None else self._root_path:
             o = getattr(o, f)
-        return getattr(o, self.owner_field) == user or getattr(o, self.collaborators_field).filter(id=user.id).exists()
+        return getattr(o, self.owner_field) == user or getattr(o, self.collaborators_field).filter(user__id=user.id).exists()
         
     def has_permission(self, request, view):
         if self.parent_model and request.method in ('POST', 'PUT', 'PATCH') and self._root_path[0] in request.data:

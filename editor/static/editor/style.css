@@ -274,3 +274,13 @@
 .editor .bottom-circle-edit {
    bottom: 1rem;
 }
+
+.editor .staff-user-row {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    margin: 1rem 0 1rem 0;
+    padding: 2rem;
+    vertical-align: top;
+    min-height: 7rem;
+}
