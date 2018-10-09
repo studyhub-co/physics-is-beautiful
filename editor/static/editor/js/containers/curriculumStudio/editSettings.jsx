@@ -9,12 +9,20 @@ import { Grid, Row, Col } from 'react-bootstrap'
 
 import UserRightsRow from './userRightsRow'
 import StaffUserRow from './staffUserRow'
+import { updateCurriculum } from '../../actions'
 
 class SettingRow extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      [props.uuid + 'checked']: 'off'
+
+    if (this.props.value) {
+      this.state = {
+        [props.uuid + 'checked']: 'on'
+      }
+    } else {
+      this.state = {
+        [props.uuid + 'checked']: 'off'
+      }
     }
     this.handleSettingsChange = this.handleSettingsChange.bind(this)
   }
@@ -25,11 +33,12 @@ class SettingRow extends React.Component {
       checked = 'off'
     }
     this.setState({[uuid + 'checked']: checked})
+    if ('onChange' in this.props) {
+      this.props.onChange(checked)
+    }
   }
 
   render () {
-    // var style = {marginRight: '10px', width: '10px', display: 'inline-block'}
-
     var style = {}
 
     return (
@@ -69,10 +78,18 @@ class SettingRow extends React.Component {
 
 SettingRow.propTypes = {
   text: PropTypes.string,
-  uuid: PropTypes.string.isRequired
+  uuid: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  value: PropTypes.bool
 }
 
 class EditCurriculumSettingsView extends React.Component {
+  settingChanged (name, value) {
+    var curriculum = {uuid: this.props.curriculum.uuid}
+    curriculum[name] = value
+    this.props.updateCurriculum(curriculum)
+  }
+
   render () {
     return (
       <Grid fluid>
@@ -83,9 +100,21 @@ class EditCurriculumSettingsView extends React.Component {
             </div>
           </Col>
         </Row>
-        <SettingRow uuid={'units'} text={'All units unlocked (“off” means lessons unlock sequentially)'} />
-        <SettingRow uuid={'modules'} text={'All modules unlocked (“off” means lessons unlock sequentially)'} />
-        <SettingRow uuid={'lessons'} text={'All lessons unlocked (“off” means lessons unlock sequentially)'} />
+        <SettingRow
+          value={this.props.curriculum.setting_units_unlocked}
+          onChange={(value) => { this.settingChanged('setting_units_unlocked', value) }}
+          uuid={'units'}
+          text={'All units unlocked (“off” means lessons unlock sequentially)'} />
+        <SettingRow
+          value={this.props.curriculum.setting_modules_unlocked}
+          onChange={(value) => { this.settingChanged('setting_modules_unlocked', value) }}
+          uuid={'modules'}
+          text={'All modules unlocked (“off” means lessons unlock sequentially)'} />
+        <SettingRow
+          value={this.props.curriculum.setting_lessons_unlocked}
+          onChange={(value) => { this.settingChanged('setting_lessons_unlocked', value) }}
+          uuid={'lessons'}
+          text={'All lessons unlocked (“off” means lessons unlock sequentially)'} />
         <br />
         <Row>
           <Col sm={12} md={12}>
@@ -94,7 +123,11 @@ class EditCurriculumSettingsView extends React.Component {
             </div>
           </Col>
         </Row>
-        <SettingRow uuid={'publically'} text={'Publically viewable (“off” means curriculum does not appear in  “Browse Curricula” )'} />
+        <SettingRow
+          value={this.props.curriculum.setting_publically}
+          onChange={(value) => { this.settingChanged('setting_publically', value) }}
+          uuid={'publically'}
+          text={'Publically viewable (“off” means curriculum does not appear in  “Browse Curricula” )'} />
         <br />
         <Row>
           <Col sm={12} md={12}>
@@ -130,8 +163,9 @@ class EditCurriculumSettingsView extends React.Component {
 
 EditCurriculumSettingsView.propTypes = {
   // actions
+  updateCurriculum: PropTypes.func.isRequired,
   // data
-  curriculum: PropTypes.object
+  curriculum: PropTypes.object.isRequired // not reducer data
 }
 
 const mapStateToProps = (state) => {
@@ -142,7 +176,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    // loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))
+    updateCurriculum: (searchString) => dispatch(updateCurriculum(searchString))
   }
 }
 
