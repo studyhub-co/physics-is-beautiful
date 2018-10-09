@@ -153,7 +153,7 @@ UserRightsRow.propTypes = {
   // data
   foundUsers: PropTypes.object,
   findUserRequest: PropTypes.bool,
-  curriculum: PropTypes.object
+  curriculum: PropTypes.object.isRequired // not reducer data
 }
 
 const mapStateToProps = (state) => {

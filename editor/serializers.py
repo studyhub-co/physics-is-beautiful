@@ -368,7 +368,10 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         model = Curriculum
         list_serializer_class = DictSerializer
         fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons',
-                  'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids']
+                  'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids',
+                  'setting_units_unlocked', 'setting_modules_unlocked', 'setting_lessons_unlocked',
+                  'setting_publically'
+                  ]
         read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),

@@ -43,6 +43,12 @@ class Curriculum(BaseModel):
     author = models.ForeignKey(User)
     collaborators = models.ManyToManyField(Profile, related_name='coauthored_curricula')
 
+    # settings
+    setting_units_unlocked = models.BooleanField(default=False, blank=True)
+    setting_modules_unlocked = models.BooleanField(default=False, blank=True)
+    setting_lessons_unlocked = models.BooleanField(default=False, blank=True)
+    setting_publically = models.BooleanField(default=False, blank=True)
+
     def count_number_of_learners(self, LessonProgressClass):
         lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
                                                         lesson__module__unit__curriculum=self). \
