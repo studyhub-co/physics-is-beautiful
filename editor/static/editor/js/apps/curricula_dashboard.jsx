@@ -1,22 +1,25 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { changeStudioSelectedTab } from './../actions'
-import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { CurriculaApp } from './curricula'
-// import { MyCurriculaApp } from './my_curricula'
+import PropTypes from 'prop-types'
 
+import { connect } from 'react-redux'
 import { history } from './../history'
 
 import {Route} from 'react-router-dom'
 
+import { changeStudioSelectedTab, deleteCurriculum } from './../actions'
+import { Sheet } from './sheet'
+
+import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
+import { CurriculaApp } from './curricula'
+
 import EditCurriculumProfileView from '../containers/curriculumStudio/editProfile'
 
-import { Sheet } from './sheet'
 
 class CurriculaDashboard extends React.Component {
   constructor (props) {
     super(props)
     this.onEditCurriculumProfileClick = this.onEditCurriculumProfileClick.bind(this)
+    this.onDeleteCurriculumClick = this.onDeleteCurriculumClick.bind(this)
     this.handleTabUserChange = this.handleTabUserChange.bind(this)
 
     this.state = {
@@ -60,6 +63,13 @@ class CurriculaDashboard extends React.Component {
     history.push('/profile/' + uuid + '/')
   }
 
+  onDeleteCurriculumClick (uuid) {
+    if (confirm('Are you sure you want to delete this curriculum?')) {
+      this.props.deleteCurriculum(uuid)
+      history.push('/studio')
+    }
+  }
+
   render () {
     return (<Sheet>
       <Tabs
@@ -86,7 +96,10 @@ class CurriculaDashboard extends React.Component {
                   the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse curricula</a> tab.
                   Tutorial and additional help here
                 </div>
-                <CurriculaApp onEditCurriculumProfileClick={this.onEditCurriculumProfileClick} />
+                <CurriculaApp
+                  onEditCurriculumProfileClick={this.onEditCurriculumProfileClick}
+                  onDeleteCurriculumClick={this.onDeleteCurriculumClick}
+                />
               </div>
             }
           </TabContent>
@@ -95,6 +108,12 @@ class CurriculaDashboard extends React.Component {
     </Sheet>
     )
   }
+}
+
+CurriculaDashboard.propTypes = {
+  tab: PropTypes.string,
+  changeTab: PropTypes.func.isRequired,
+  deleteCurriculum: PropTypes.func.isRequired
 }
 
 const mapStateToProps = function (store) {
@@ -107,6 +126,7 @@ export let CurriculaDashboardApp = connect(
   mapStateToProps,
   dispatch => {
     return {
-      changeTab: (selectedTab, tabNamespace) => dispatch(changeStudioSelectedTab(selectedTab, tabNamespace))
+      changeTab: (selectedTab, tabNamespace) => dispatch(changeStudioSelectedTab(selectedTab, tabNamespace)),
+      deleteCurriculum: (uuid) => dispatch(deleteCurriculum(uuid))
     }
   })(CurriculaDashboard)

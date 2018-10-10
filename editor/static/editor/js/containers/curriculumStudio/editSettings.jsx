@@ -3,13 +3,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Grid, Row, Col, Modal, Button } from 'react-bootstrap'
 
 // import { loadCurriculumIfNeeded } from '../../actions'
 
 import UserRightsRow from './userRightsRow'
 import StaffUserRow from './staffUserRow'
-import { updateCurriculum } from '../../actions'
+import { updateCurriculum, deleteCurriculum } from '../../actions'
+import { history } from '../../history'
 
 class SettingRow extends React.Component {
   constructor (props) {
@@ -17,7 +18,7 @@ class SettingRow extends React.Component {
 
     if (this.props.value) {
       this.state = {
-        [props.uuid + 'checked']: 'on'
+        [props.uuid + 'checked']: 'on',
       }
     } else {
       this.state = {
@@ -84,6 +85,13 @@ SettingRow.propTypes = {
 }
 
 class EditCurriculumSettingsView extends React.Component {
+  constructor (props) {
+    super(props)
+    this.handleDeleteCurriculumModal = this.handleDeleteCurriculumModal.bind(this)
+    this.deleteCurriculum = this.deleteCurriculum.bind(this)
+    this.state = { showDeletCurriculumModal: false }
+  }
+
   settingChanged (name, value) {
     var curriculum = {uuid: this.props.curriculum.uuid}
     curriculum[name] = value
@@ -100,6 +108,14 @@ class EditCurriculumSettingsView extends React.Component {
     }
     var curriculum = {uuid: this.props.curriculum.uuid, collaborators_ids: collaboratorsIds}
     this.props.updateCurriculum(curriculum)
+  }
+
+  handleDeleteCurriculumModal () {
+    this.setState({ showDeletCurriculumModal: !this.state.showDeletCurriculumModal })
+  }
+
+  deleteCurriculum () {
+    this.props.deleteCurriculum({uuid: this.props.curriculum.uuid})
   }
 
   render () {
@@ -172,6 +188,36 @@ class EditCurriculumSettingsView extends React.Component {
             }, this)}
           </Col>
         </Row>
+        <Row>
+          <Col sm={12} md={12}>
+            <div className={'blue-title'}>
+              Danger Zone
+            </div>
+          </Col>
+        </Row>
+        <Modal container={this} show={this.state.showDeletCurriculumModal} onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm delete</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to delete this curriculum?
+          </Modal.Body>
+          <Modal.Footer>
+            <button className={'editor-common-button'} onClick={this.deleteCurriculum}>Delete</button>
+            &nbsp;
+            <Button onClick={this.handleDeleteCurriculumModal}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+        <Row>
+          <Col sm={12} md={12}>
+            <a
+              style={{color: 'red', textDecoration: 'underline', cursor: 'pointer', lineHeight: '6rem'}}
+              onClick={this.handleDeleteCurriculumModal}
+            >
+              Delete this curriculum
+            </a>
+          </Col>
+        </Row>
       </Grid>
     )
   }
@@ -180,6 +226,7 @@ class EditCurriculumSettingsView extends React.Component {
 EditCurriculumSettingsView.propTypes = {
   // actions
   updateCurriculum: PropTypes.func.isRequired,
+  deleteCurriculum: PropTypes.func.isRequired,
   // data
   curriculum: PropTypes.object.isRequired // not reducer data
 }
@@ -192,7 +239,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    updateCurriculum: (searchString) => dispatch(updateCurriculum(searchString))
+    updateCurriculum: (curriculum) => dispatch(updateCurriculum(curriculum)),
+    deleteCurriculum: (curriculum) => { dispatch(deleteCurriculum(curriculum.uuid)); history.push('/studio/') }
   }
 }
 

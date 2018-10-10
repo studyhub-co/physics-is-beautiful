@@ -38,9 +38,9 @@ class CurriculumMenuToggle extends React.Component {
 export class CurriculumThumbnail extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.onDropDownMenuItemSelect = this.onDropDownMenuItemSelect.bind(this)
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onEditCurriculumSelect = this.onEditCurriculumSelect.bind(this)
+    this.onDeleteCurriculum = this.onDeleteCurriculum.bind(this)
     this.onEditContentSelect = this.onEditContentSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
@@ -54,16 +54,16 @@ export class CurriculumThumbnail extends React.Component {
     window.open('/curriculum/' + this.props.uuid + '/', '_blank')
   }
 
-  onDropDownMenuItemSelect (e) {
-
-  }
-
   onCopyShareableLink (e) {
     copy(window.location.origin + '/curriculum/' + this.props.uuid + '/')
   }
 
   onEditCurriculumSelect (e) {
     this.props.onEditCurriculumProfileClick()
+  }
+
+  onDeleteCurriculum (e) {
+    this.props.onDeleteCurriculumClick(this.props.uuid)
   }
 
   onForkSelect (e) {
@@ -90,7 +90,7 @@ export class CurriculumThumbnail extends React.Component {
               <MenuItem onSelect={this.onEditCurriculumSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
               <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
               <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-              <MenuItem onSelect={this.onDropDownMenuItemSelect} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>
+              <MenuItem onSelect={this.onDeleteCurriculum} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>
             </Dropdown.Menu>
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
@@ -115,5 +115,7 @@ export class CurriculumThumbnail extends React.Component {
 }
 
 CurriculumThumbnail.propTypes = {
-  uuid: PropTypes.string.isRequired
+  uuid: PropTypes.string.isRequired,
+  onEditCurriculumProfileClick: PropTypes.func.isRequired,
+  onDeleteCurriculumClick: PropTypes.func.isRequired
 }
