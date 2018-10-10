@@ -36,6 +36,7 @@ class Curricula extends React.Component {
           key={uuid}
           {...this.props.curricula[uuid]}
           onEditCurriculumProfileClick={this.props.onEditCurriculumProfileClick.bind(null, uuid)}
+          onDeleteCurriculumClick={this.props.onDeleteCurriculumClick.bind(null, uuid)}
           onClick={this.props.onCurriculumClick.bind(null, uuid)} />
       )
     }
