@@ -1,27 +1,14 @@
 import React from 'react'
 
-import { connect } from 'react-redux'
-
-import { Row, Col, Image } from 'react-bootstrap'
+import { Row, Col, Image, FormGroup, InputGroup, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
 
 import PropTypes from 'prop-types'
 
-// import { findUsers } from '../../actions'
-
-class StaffUserRow extends React.Component {
-  // constructor (props) {
-  //   super(props)
-  //   this.state = {
-  //     searchString: '',
-  //     selectedUsers: []
-  //   }
-  //   this.onAddCollaboratorsClick = this.onAddCollaboratorsClick.bind(this)
-  // }
+export default class StaffUserRow extends React.Component {
 
   render () {
     return (
       <Row className={'staff-user-row'}>
-
         <Col sm={2} md={2}>
           { this.props.staff.avatar_url
             ? <Image
@@ -34,10 +21,21 @@ class StaffUserRow extends React.Component {
           {this.props.staff.display_name}
         </Col>
         <Col sm={2} md={2}>
-          {this.props.post}
+          <span style={{textTransform: 'capitalize '}}>{this.props.post}</span>
         </Col>
         <Col sm={2} md={2}>
-          drop down
+          { this.props.post !== 'owner'
+            ? <FormGroup>
+              <InputGroup>
+                <DropdownButton
+                  componentClass={InputGroup.Button}
+                  id='input-dropdown-addon'
+                  title={<Glyphicon glyph='edit' />}
+                >
+                  <MenuItem key='e' onSelect={this.props.onRemoveFromCollaboratorsClick}>Remove from collaborators</MenuItem>
+                </DropdownButton>
+              </InputGroup>
+            </FormGroup> : null }
         </Col>
       </Row>
     )
@@ -45,23 +43,7 @@ class StaffUserRow extends React.Component {
 }
 
 StaffUserRow.propTypes = {
-  // actions
-  // removeCollaborator: PropTypes.func.isRequired,
-  // data
-  user: PropTypes.object
+  staff: PropTypes.object.isRequired,
+  onRemoveFromCollaboratorsClick: PropTypes.func,
+  post: PropTypes.string.isRequired
 }
-
-const mapStateToProps = (state) => {
-  return {
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dispatch,
-    // removeCollaborator: (collaborators) => dispatch(findUsers(collaborators))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(StaffUserRow)
-export { StaffUserRow as StaffUserRowNotConnected }

@@ -90,6 +90,18 @@ class EditCurriculumSettingsView extends React.Component {
     this.props.updateCurriculum(curriculum)
   }
 
+  onRemoveFromCollaboratorsClick (collaborator) {
+    var collaborators = this.props.curriculum.collaborators
+    var collaboratorsIds = []
+    for (var i = 0; i < collaborators.length; i++) {
+      if (collaborators[i].id !== collaborator.id) {
+        collaboratorsIds.push(collaborators[i].id)
+      }
+    }
+    var curriculum = {uuid: this.props.curriculum.uuid, collaborators_ids: collaboratorsIds}
+    this.props.updateCurriculum(curriculum)
+  }
+
   render () {
     return (
       <Grid fluid>
@@ -152,8 +164,12 @@ class EditCurriculumSettingsView extends React.Component {
           <Col sm={12} md={12}>
             <StaffUserRow post={'owner'} staff={this.props.curriculum.author} />
             { this.props.curriculum.collaborators.map(function (collaborator, i) {
-              return <StaffUserRow post={'collaborator'} staff={collaborator} key={i} />
-            })}
+              return <StaffUserRow
+                post={'collaborator'}
+                staff={collaborator}
+                key={i}
+                onRemoveFromCollaboratorsClick={() => { this.onRemoveFromCollaboratorsClick(collaborator) }} />
+            }, this)}
           </Col>
         </Row>
       </Grid>
