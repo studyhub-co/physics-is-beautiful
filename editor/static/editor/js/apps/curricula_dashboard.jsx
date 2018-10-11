@@ -35,8 +35,7 @@ class CurriculaDashboard extends React.Component {
     if (this.props.match.path === '/studio/' && this.props.match.isExact) {
       this.props.changeTab('studio', 'tab')
     }
-    // studio sub tabs
-    if (this.props.location.pathname.lastIndexOf('/profile/', 0) === 0) {
+    if (this.props.location.pathname.lastIndexOf('/studio/profile/', 0) === 0) {
       this.props.changeTab('studio', 'tab')
       this.setState({showEditCurriculumProfile: true})
     }
