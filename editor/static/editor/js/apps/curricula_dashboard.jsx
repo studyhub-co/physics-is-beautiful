@@ -13,7 +13,7 @@ import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { CurriculaApp } from './curricula'
 
 import EditCurriculumProfileView from '../containers/curriculumStudio/editProfile'
-
+import BrowseCurriculaView from '../containers/browseCurricula/index'
 
 class CurriculaDashboard extends React.Component {
   constructor (props) {
@@ -29,7 +29,10 @@ class CurriculaDashboard extends React.Component {
   }
 
   componentWillMount () {
-    if (this.props.match.path === '/' && this.props.match.isExact) {
+    if (this.props.match.path === '/browse/' && this.props.match.isExact) {
+      this.props.changeTab('browse', 'tab')
+    }
+    if (this.props.match.path === '/studio/' && this.props.match.isExact) {
       this.props.changeTab('studio', 'tab')
     }
     // studio sub tabs
@@ -50,7 +53,7 @@ class CurriculaDashboard extends React.Component {
   handleTabUserChange (tabname, tabspace) {
     if (tabname !== 'studio') {
       history.push('/' + tabname + '/')
-    } else { history.push('/') }
+    } else { history.push('/studio/') }
 
     this.props.changeTab(tabname, tabspace)
   }
@@ -60,13 +63,13 @@ class CurriculaDashboard extends React.Component {
       toEditCurriculumUuid: uuid,
       showEditCurriculumProfile: !this.state.showEditCurriculumProfile
     })
-    history.push('/profile/' + uuid + '/')
+    history.push('/studio/profile/' + uuid + '/')
   }
 
   onDeleteCurriculumClick (uuid) {
-    if (confirm('Are you sure you want to delete this curriculum?')) {
+    if (confirm('Are you sure you want to delete this curriculum?')) { // TODO we can use Modal from react bootstrap if needed
       this.props.deleteCurriculum(uuid)
-      history.push('/studio')
+      history.push('/studio/')
     }
   }
 
@@ -85,11 +88,11 @@ class CurriculaDashboard extends React.Component {
 
         <div className='content'>
           <TabContent for='browse'>
-              TODO: Browse app
+            <BrowseCurriculaView />
           </TabContent>
           <TabContent for='studio'>
             {this.state.showEditCurriculumProfile
-              ? <Route path='/profile/:uuid/' component={EditCurriculumProfileView} />
+              ? <Route path='/studio/profile/:uuid/' component={EditCurriculumProfileView} />
               : <div>
                 <div className={'lightgrey-round-background'}>Create a new curriculum from scratch below.
                   Or, to add content from other curricula or to fork a curriculum visit

@@ -143,7 +143,7 @@ class EditCurriculumProfileView extends React.Component {
 
   handleSelectTab (tabname, tabspace) {
     if (tabname === 'edit') {
-      history.push('/editor/curricula/' + this.props.match.params.uuid + '/')
+      history.push('/studio/editor/curricula/' + this.props.match.params.uuid + '/')
     }
     if (tabname !== this.state.tabname) {
       this.setState({selectedTab: tabname})

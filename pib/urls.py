@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
     # url(r'^editor/', include('editor.urls')),
     url(r'^studio/', include('editor.urls')),
+    url(r'^browse/', include('editor.urls')),
     url(r'^classroom/', include('classroom.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
