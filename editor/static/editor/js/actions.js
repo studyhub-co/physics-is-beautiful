@@ -68,7 +68,7 @@ export function addCurriculum (prototype) {
 		    prototype : prototype},
 	    success: function(data, status, jqXHR) {		
 		dispatch(curriculumLoaded(data));
-		history.push('/editor/curricula/'+data.uuid+'/');
+		history.push('/studio/editor/curricula/'+data.uuid+'/');
 	    }
 	});
     }
@@ -250,7 +250,7 @@ export function deleteCurriculum(uuid) {
             url : API_PREFIX + 'curricula/'+uuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/');
+		history.push('/studio/');
 		//TODO: reload all curricula
             }
 	});
@@ -372,7 +372,7 @@ export function addModule(unitUuid) {
 	    data : {name : 'New module', unit : unitUuid},
 	    success: function(data, status, jqXHR) {
 		dispatch(moduleAdded(data));
-		history.push('/editor/modules/'+data.uuid+'/');
+		history.push('/studio/editor/modules/'+data.uuid+'/');
 	    }
 	});   
     }  
@@ -467,7 +467,7 @@ export function deleteModule(moduleUuid) {
             url : API_PREFIX + 'modules/'+moduleUuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/editor/curricula/'+curriculum+'/');
+		history.push('/studio/editor/curricula/'+curriculum+'/');
 	    }
 	});	
     }
@@ -502,7 +502,7 @@ export function addLesson(moduleUuid) {
 			  questions : questions,
 			  answers : extractAll(questions, 'answers')
 			 });
-		history.push('/editor/lessons/'+data.uuid+'/');
+		history.push('/studio/editor/lessons/'+data.uuid+'/');
 	    }
 	});   
     }  
@@ -635,7 +635,7 @@ export function deleteLesson(lessonUuid) {
             url : API_PREFIX + 'lessons/'+lessonUuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/editor/modules/'+moduleUuid+'/');
+		history.push('/studio/editor/modules/'+moduleUuid+'/');
 	    }
 	});	
     }

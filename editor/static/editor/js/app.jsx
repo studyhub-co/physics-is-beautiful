@@ -24,7 +24,7 @@ import {QuestionThumbnailContainer} from './containers/question_thumbnail'
 
 import {editor} from './reducers'
 import {
-  addCurriculum, loadCurricula, loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded,
+  loadCurriculumIfNeeded, loadModuleIfNeeded, loadLessonIfNeeded,
   loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion
 } from './actions'
 
@@ -110,7 +110,7 @@ import { CurriculaDashboardApp } from './apps/curricula_dashboard'
 //     return {
 //       onAddClick : prototype => dispatch(addCurriculum(prototype)),
 //       onMounted : () => dispatch(loadCurricula()),
-//       onCurriculumClick : (uuid) => {history.push('/curricula/'+uuid+'/');}
+//       onCurriculumClick : (uuid) => {history.push('/studio/curricula/'+uuid+'/');}
 //     }
 //   })(Curricula);
 
@@ -121,11 +121,11 @@ class CurriculumApp extends React.Component {
   componentDidMount() {
     this.props.dispatch(loadCurriculumIfNeeded(this.props.match.params.uuid));
   }
-  render() {
+  render () {
     return (<Sheet>
-            <BackButton link="/"/>
-            <CurriculumContainer uuid={this.props.match.params.uuid}/>
-            </Sheet>)
+      <BackButton link='/studio/'/>
+      <CurriculumContainer uuid={this.props.match.params.uuid}/>
+    </Sheet>)
   }
 }
 
@@ -254,12 +254,13 @@ class EditorRouter extends React.Component {
     return (
       <ConnectedRouter history={history}>
         <Switch>
-          <Route path='/editor/curricula/:uuid' component={CurriculumApp} />
-          <Route path='/editor/modules/:uuid' component={ModuleApp} />
-          <Route path='/editor/lessons/:uuid' component={LessonApp} />
-          <Route path='/editor/questions/:uuid' component={QuestionApp} />
-          {/* <Route path='/' component={CurriculaApp} /> */}
-          <Route path='/' component={CurriculaDashboardApp} />
+          <Route path='/studio/editor/curricula/:uuid' component={CurriculumApp} />
+          <Route path='/studio/editor/modules/:uuid' component={ModuleApp} />
+          <Route path='/studio/editor/lessons/:uuid' component={LessonApp} />
+          <Route path='/studio/editor/questions/:uuid' component={QuestionApp} />
+          {/* <Route path='/studio/' component={CurriculaApp} /> */}
+          <Route path='/studio/' component={CurriculaDashboardApp} />
+          <Route path='/browse/' component={CurriculaDashboardApp} />
         </Switch>
 
       </ConnectedRouter>

@@ -86,7 +86,7 @@ let CurriculaApp = connect(
     return {
       onAddClick: prototype => dispatch(addCurriculum(prototype)),
       onMounted: () => dispatch(loadCurricula()),
-      onCurriculumClick: (uuid) => { history.push('/editor/curricula/' + uuid + '/') }}
+      onCurriculumClick: (uuid) => { history.push('/studio/editor/curricula/' + uuid + '/') }}
     // onCurriculumClick: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))}
   }
 )(Curricula)

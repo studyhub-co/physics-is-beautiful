@@ -22,7 +22,7 @@ export class Lesson extends React.Component {
     }
     return (
       <div className="lesson">        
-        <BackButton link={'/editor/modules/' + this.props.module + '/'}/>
+        <BackButton link={'/studio/editor/modules/' + this.props.module + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
           <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New lesson"/>

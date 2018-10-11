@@ -240,7 +240,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     updateCurriculum: (curriculum) => dispatch(updateCurriculum(curriculum)),
-    deleteCurriculum: (curriculum) => { dispatch(deleteCurriculum(curriculum.uuid)); history.push('/studio/') }
+    deleteCurriculum: (curriculum) => { dispatch(deleteCurriculum(curriculum.uuid)); history.push('/studio/studio/') }
   }
 }
 
