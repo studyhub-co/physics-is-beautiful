@@ -18,6 +18,7 @@ import {
 
 import { EditableExternalEventLabel } from '../../components/label'
 import EditCurriculumSettingsView from './editSettings'
+import { BASE_URL } from '../../../../../../classroom/static/classroom/js/utils/config'
 
 function makeblob (dataURL, filename) {
   var BASE64_MARKER = ';base64,'
@@ -70,7 +71,7 @@ function getCroppedImg (image, pixelCrop) {
   )
 
   // As Base64 string
-  const base64Image = canvas.toDataURL('image/jpeg');
+  const base64Image = canvas.toDataURL('image/jpeg')
   return base64Image
 }
 
@@ -249,6 +250,10 @@ class EditCurriculumProfileView extends React.Component {
 
     return (
       <div className={'pop-up-window'}>
+        <a className={'back-button'} onClick={() => { history.push('/studio/') }} >
+          <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+            My Curricula
+        </a>
         <Tabs name='editCurriculumProfileTabs'
           className='tabs'
           handleSelect={this.handleSelectTab}
