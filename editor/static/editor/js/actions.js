@@ -101,9 +101,11 @@ function extractAll(object, prop){
     return ret
 }
 
-export function allCurriculaLoaded(data) {
-    return {type : ActionTypes.ALL_CURRICULA_LOADED,
-	    curricula : data}
+export function allCurriculaLoaded (data) {
+  return {
+    type: ActionTypes.ALL_CURRICULA_LOADED,
+    curricula: data
+  }
 }
 
 export function loadMyCurricula() {
@@ -114,8 +116,8 @@ export function loadMyCurricula() {
         context: this,
         success: function (data, status, jqXHR) {
           dispatch((data) => {
-            return { type : ActionTypes.CURRICULA_LOADED,
-                     curricula : data,
+            return { type: ActionTypes.CURRICULA_LOADED,
+                     curricula: data,
             }
           })
         }

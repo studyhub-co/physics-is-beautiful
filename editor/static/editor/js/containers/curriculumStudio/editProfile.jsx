@@ -133,7 +133,7 @@ class EditCurriculumProfileView extends React.Component {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.props.loadCurriculum(this.props.match.params.uuid)
   }
 

@@ -10,7 +10,7 @@ import { changeStudioSelectedTab, deleteCurriculum } from './../actions'
 import { Sheet } from './sheet'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { CurriculaApp } from './curricula'
+import { CurriculaView } from '../containers/curriculumStudio/curricula'
 
 import EditCurriculumProfileView from '../containers/curriculumStudio/editProfile'
 import BrowseCurriculaView from '../containers/browseCurricula/index'
@@ -98,7 +98,7 @@ class CurriculaDashboard extends React.Component {
                   the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse curricula</a> tab.
                   Tutorial and additional help here
                 </div>
-                <CurriculaApp
+                <CurriculaView
                   onEditCurriculumProfileClick={this.onEditCurriculumProfileClick}
                   onDeleteCurriculumClick={this.onDeleteCurriculumClick}
                 />

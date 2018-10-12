@@ -1,13 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import {
-} from '../../actions'
-import { Image as ImageBs, FormGroup, Grid, Row, Col, Button, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+/*import ReactDOMServer from 'react-dom/server'*/
+
+import { Image as ImageBs, FormGroup, Grid, Row, Col, Button, Glyphicon, InputGroup, FormControl, Modal } from 'react-bootstrap'
+
+import Swiper from 'react-id-swiper' // TODO fix disabled navigation buttons
+// import Swiper from 'swiper/dist/js/swiper.esm.bundle'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import { SimpleSelect } from 'react-selectize'
+
+import { CurriculumThumbnailPublic } from './../../components/curriculum_thumbnail_public'
+
+import { loadCurricula } from './../../actions'
 
 class BrowseCurriculaView extends React.Component {
   constructor (props) {
@@ -18,7 +25,62 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
+  componentDidMount () {
+    if (!this.props.curricula) {
+      this.props.loadCurricula()
+    }
+  }
+
   render () {
+    var self = this.props
+
+    // const swiper = new Swiper('.swiper-container', {
+    const swiperParams = {
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      // preventClicks: false,
+      spaceBetween: 0,
+      slidesPerView: 5,
+      rebuildOnUpdate: true
+      // virtual: {
+      //   slides: (function () {
+      //     var slides = []
+      //     // if (Array.isArray(self.curricula)) {
+      //     if (self.curricula) {
+      //       // for (var i = 0; i < self.curricula.length; i++) {
+      //       for (var uuid in self.curricula) {
+      //         // slides.push('') // fake slide to enable navigation
+      //         // slides.push(ReactDOMServer.renderToString(
+      //         slides.push(
+      //           <CurriculumThumbnailPublic
+      //             key={uuid}
+      //             {...self.curricula[uuid]}
+      //           />
+      //         )
+      //       }
+      //     }
+      //     return slides
+      //   }())
+      // }
+    }
+    // )
+
+    var slides = []
+
+    if (self.curricula) {
+      // for (var i = 0; i < self.curricula.length; i++) {
+      for (var uuid in self.curricula) {
+        slides.push(
+          <CurriculumThumbnailPublic
+            key={uuid}
+            {...self.curricula[uuid]}
+          />
+        )
+      }
+    }
+
     return (
       <div>
         <Grid fluid>
@@ -66,12 +128,50 @@ class BrowseCurriculaView extends React.Component {
                 <TabContent for='Сurricula'>
                   <Row>
                     <Col sm={12} md={12}>
-                      <div className={'blue-title'}>
+                      <div className={'blue-title'} style={{lineHeight: '7rem'}}>
                             Curriculum dashboard
                       </div>
                     </Col>
                   </Row>
-                  {/*<CurriculumCarousel />*/}
+                  <Row>
+                    <Col sm={12} md={12}>
+                      <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                            Popular
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm={12} md={12}>
+                      {/*<div className='swiper-container'>*/}
+                        {/*<div className='swiper-wrapper'>*/}
+                          {/*/!* It is important to set 'left' style prop on every slide *!/*/}
+                          {/*{slides.map((slide, index) => (*/}
+                            {/*<div className='swiper-slide'*/}
+                              {/*key={index}*/}
+                              {/*style={{left: '10px'}}*/}
+                            {/*>{slide}</div>*/}
+                          {/*))}*/}
+                        {/*</div>*/}
+                      {/*</div>*/}
+                      <Swiper {...swiperParams} >
+                        {slides}
+                      </Swiper>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm={12} md={12}>
+                      <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                            New
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm={12} md={12}>
+                      <Swiper {...swiperParams} >
+                        {slides}
+                      </Swiper>
+                    </Col>
+                  </Row>
                 </TabContent>
               </div>
             </Tabs>
@@ -84,23 +184,23 @@ class BrowseCurriculaView extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    curricula: state.curricula
+    curricula: state.allCurricula
   }
 }
 
 BrowseCurriculaView.propTypes = {
   // actions
-  // loadCurriculum: PropTypes.func.isRequired,
+  loadCurricula: PropTypes.func.isRequired,
   // changeCurriculumImage: PropTypes.func.isRequired,
   // changeCurriculumCoverPhoto: PropTypes.func.isRequired,
   // data
-  curricula: PropTypes.object
+  // curricula: PropTypes.object
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    // loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid)),
+    loadCurricula: () => dispatch(loadCurricula()),
   }
 }
 
