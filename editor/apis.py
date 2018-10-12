@@ -12,10 +12,12 @@ from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollabora
 
 
 class AllCurriculaView(ListAPIView):
-    serializer_class = MiniCurriculumSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    # serializer_class = MiniCurriculumSerializer
+    serializer_class = CurriculumSerializer
 
     def get_queryset(self):
-        return Curriculum.objects.all()
+        return Curriculum.objects.filter(setting_publically=True)
 
 
 class CurriculumViewSet(ModelViewSet):
@@ -36,7 +38,7 @@ class CurriculumViewSet(ModelViewSet):
         if 'prototype' in self.request.data and self.request.data['prototype']:
             prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
             prototype.clone(new_curriculum)
-    
+
     
 class UnitViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsUnitOwnerOrCollaborator)

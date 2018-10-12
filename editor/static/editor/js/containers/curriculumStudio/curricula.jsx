@@ -1,17 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Sheet } from './sheet'
-import { BackButton } from './../components/back_button'
-import { CurriculumThumbnail } from './../components/curriculum_thumbnail'
-import { AddCurriculumButton } from './../components/add_curriculum_button'
-import { addCurriculum, loadCurricula, loadCurriculumIfNeeded } from './../actions'
+import { history } from './../../history'
+
 import { Grid, Row } from 'react-bootstrap'
-import { history } from './../history'
+
+import { CurriculumThumbnail } from './../../components/curriculum_thumbnail'
+import { AddCurriculumButton } from './../../components/add_curriculum_button'
+import { addCurriculum, loadCurricula } from './../../actions'
 
 class Curricula extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {prototypeChoice : null}
+    this.state = {prototypeChoice: null}
     this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(this)
     this.handleAddClick = this.handleAddClick.bind(this)
   }
@@ -74,7 +74,7 @@ class Curricula extends React.Component {
   }
 }
 
-let CurriculaApp = connect(
+let CurriculaView = connect(
   state => {
     return {
       curriculum: state.curriculum,
@@ -91,5 +91,5 @@ let CurriculaApp = connect(
   }
 )(Curricula)
 
-CurriculaApp = connect()(CurriculaApp)
-export {CurriculaApp}
+CurriculaView = connect()(CurriculaView)
+export {CurriculaView}
