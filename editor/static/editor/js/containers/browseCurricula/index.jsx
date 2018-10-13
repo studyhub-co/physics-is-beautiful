@@ -71,14 +71,15 @@ class BrowseCurriculaView extends React.Component {
           if (self.state.popularSlides && self.state.popularSlides.length > 0) {
             slides = self.state.popularSlides
           }
-          for (var uuid in props.curricula.results) {
+          for (var index in props.curricula.results) {
             slides.push(
               <CurriculumThumbnailPublic
-                key={uuid}
-                {...props.curricula.results[uuid]}
+                key={props.curricula.results[index].uuid}
+                {...props.curricula.results[index]}
               />
             )
           }
+
           return slides
         }())
       })
