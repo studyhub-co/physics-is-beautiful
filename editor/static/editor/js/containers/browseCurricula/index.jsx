@@ -1,12 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-/*import ReactDOMServer from 'react-dom/server'*/
 
 import { Image as ImageBs, FormGroup, Grid, Row, Col, Button, Glyphicon, InputGroup, FormControl, Modal } from 'react-bootstrap'
 
-import Swiper from 'react-id-swiper' // TODO fix disabled navigation buttons
-// import Swiper from 'swiper/dist/js/swiper.esm.bundle'
+import Swiper from 'react-id-swiper'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
@@ -21,7 +19,8 @@ class BrowseCurriculaView extends React.Component {
     super(props)
     this.state = {
       searchString: '',
-      selectedOption: []
+      selectedOption: [],
+      slides: []
     }
   }
 
@@ -31,10 +30,27 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
-  render () {
-    var self = this.props
+  componentWillReceiveProps (props) {
+    this.setState({
+      slides: (function () {
+        var slides = []
+        if (props.curricula) {
+          for (var uuid in props.curricula) {
+            slides.push(
+              <CurriculumThumbnailPublic
+                key={uuid}
+                {...props.curricula[uuid]}
+              />
+            )
+          }
+        }
+        return slides
+      }())
+    })
+  }
 
-    // const swiper = new Swiper('.swiper-container', {
+  render () {
+    var self = this
     const swiperParams = {
       navigation: {
         nextEl: '.swiper-button-next',
@@ -43,41 +59,12 @@ class BrowseCurriculaView extends React.Component {
       // preventClicks: false,
       spaceBetween: 0,
       slidesPerView: 5,
-      rebuildOnUpdate: true
-      // virtual: {
-      //   slides: (function () {
-      //     var slides = []
-      //     // if (Array.isArray(self.curricula)) {
-      //     if (self.curricula) {
-      //       // for (var i = 0; i < self.curricula.length; i++) {
-      //       for (var uuid in self.curricula) {
-      //         // slides.push('') // fake slide to enable navigation
-      //         // slides.push(ReactDOMServer.renderToString(
-      //         slides.push(
-      //           <CurriculumThumbnailPublic
-      //             key={uuid}
-      //             {...self.curricula[uuid]}
-      //           />
-      //         )
-      //       }
-      //     }
-      //     return slides
-      //   }())
-      // }
-    }
-    // )
-
-    var slides = []
-
-    if (self.curricula) {
-      // for (var i = 0; i < self.curricula.length; i++) {
-      for (var uuid in self.curricula) {
-        slides.push(
-          <CurriculumThumbnailPublic
-            key={uuid}
-            {...self.curricula[uuid]}
-          />
-        )
+      rebuildOnUpdate: true,
+      virtual: {
+        slides: self.state.slides,
+        renderExternal: function (data) {
+          // empty function is need to disable internal rendering, more info http://idangero.us/swiper/api/#navigation
+        }
       }
     }
 
@@ -142,19 +129,8 @@ class BrowseCurriculaView extends React.Component {
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
-                      {/*<div className='swiper-container'>*/}
-                        {/*<div className='swiper-wrapper'>*/}
-                          {/*/!* It is important to set 'left' style prop on every slide *!/*/}
-                          {/*{slides.map((slide, index) => (*/}
-                            {/*<div className='swiper-slide'*/}
-                              {/*key={index}*/}
-                              {/*style={{left: '10px'}}*/}
-                            {/*>{slide}</div>*/}
-                          {/*))}*/}
-                        {/*</div>*/}
-                      {/*</div>*/}
                       <Swiper {...swiperParams} >
-                        {slides}
+                        {this.state.slides}
                       </Swiper>
                     </Col>
                   </Row>
@@ -168,7 +144,7 @@ class BrowseCurriculaView extends React.Component {
                   <Row>
                     <Col sm={12} md={12}>
                       <Swiper {...swiperParams} >
-                        {slides}
+                        {this.state.slides}
                       </Swiper>
                     </Col>
                   </Row>
