@@ -39,21 +39,27 @@ class SimpleModuleSerializer(BaseSerializer):
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'url']
         read_only_fields = ('uuid', 'curriculum')
         extra_kwargs = {
-            'url' : {'lookup_field': 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }
 
 
 class MiniCurriculumSerializer(BaseSerializer):
-    author = serializers.SerializerMethodField()
+    # author = serializers.SerializerMethodField()
+    author = UserSerializer(read_only=True)
+    number_of_learners = serializers.IntegerField(read_only=True, source='number_of_learners_denormalized')
+    count_lessons = serializers.IntegerField(read_only=True)
 
-    def get_author(self, obj):
-        return obj.author.display_name
+    # def get_author(self, obj):
+    #     return obj.author.display_name
     
     class Meta:
         model = Curriculum
-        fields = ['uuid', 'name', 'author']
+        fields = ['uuid', 'name', 'image', 'number_of_learners', 'url', 'author', 'count_lessons', 'created_on',
+                  'updated_on']
+        extra_kwargs = {
+            'url': {'lookup_field': 'uuid'}
+        }
         
-
 class AnswerContentField(serializers.Field):
     def to_representation(self, obj):
         if isinstance(obj, ImageWText):

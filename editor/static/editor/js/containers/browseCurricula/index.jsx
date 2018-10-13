@@ -12,7 +12,7 @@ import { SimpleSelect } from 'react-selectize'
 
 import { CurriculumThumbnailPublic } from './../../components/curriculum_thumbnail_public'
 
-import { loadCurricula } from './../../actions'
+import { loadCurricula, loadAllCurricula } from './../../actions'
 
 class BrowseCurriculaView extends React.Component {
   constructor (props) {
@@ -20,7 +20,8 @@ class BrowseCurriculaView extends React.Component {
     this.state = {
       searchString: '',
       selectedOption: [],
-      slides: []
+      popularSlides: [],
+      popularNextPageUrl: null
     }
   }
 
@@ -30,44 +31,61 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
-  componentWillReceiveProps (props) {
-    this.setState({
-      slides: (function () {
-        var slides = []
-        if (props.curricula) {
-          for (var uuid in props.curricula) {
-            slides.push(
-              <CurriculumThumbnailPublic
-                key={uuid}
-                {...props.curricula[uuid]}
-              />
-            )
-          }
-        }
-        return slides
-      }())
-    })
-  }
-
-  render () {
+  getParams () {
     var self = this
-    const swiperParams = {
+
+    var swiperParams = {
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev'
       },
       // preventClicks: false,
       spaceBetween: 0,
-      slidesPerView: 5,
+      slidesPerView: 5, // should be more than API paginator page size!
       rebuildOnUpdate: true,
       virtual: {
-        slides: self.state.slides,
+        slides: self.state.popularSlides,
         renderExternal: function (data) {
-          // empty function is need to disable internal rendering, more info http://idangero.us/swiper/api/#navigation
+          // empty function needs to disable internal rendering, more info http://idangero.us/swiper/api/#virtual
+        }
+      },
+      on: {
+        reachEnd: function () {
+          // load next page
+          if (self.state.popularNextPageUrl) {
+            self.props.loadAllCurricula(self.state.popularNextPageUrl)
+          }
         }
       }
     }
+    return swiperParams
+  }
 
+  componentWillReceiveProps (props) {
+    var self = this
+    if (props.curricula) {
+      this.setState({
+        popularNextPageUrl: props.curricula.next,
+        popularSlides: (function () {
+          var slides = []
+          if (self.state.popularSlides && self.state.popularSlides.length > 0) {
+            slides = self.state.popularSlides
+          }
+          for (var uuid in props.curricula.results) {
+            slides.push(
+              <CurriculumThumbnailPublic
+                key={uuid}
+                {...props.curricula.results[uuid]}
+              />
+            )
+          }
+          return slides
+        }())
+      })
+    }
+  }
+
+  render () {
     return (
       <div>
         <Grid fluid>
@@ -129,23 +147,23 @@ class BrowseCurriculaView extends React.Component {
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
-                      <Swiper {...swiperParams} >
-                        {this.state.slides}
+                      <Swiper {...this.getParams()} >
+                        {this.state.popularSlides}
                       </Swiper>
                     </Col>
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
                       <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                            New
+                            {/*New*/}
                       </div>
                     </Col>
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
-                      <Swiper {...swiperParams} >
-                        {this.state.slides}
-                      </Swiper>
+                      {/*<Swiper {...this.getParams()} >*/}
+                        {/*{this.state.popularSlides}*/}
+                      {/*</Swiper>*/}
                     </Col>
                   </Row>
                 </TabContent>
@@ -167,16 +185,16 @@ const mapStateToProps = (state) => {
 BrowseCurriculaView.propTypes = {
   // actions
   loadCurricula: PropTypes.func.isRequired,
-  // changeCurriculumImage: PropTypes.func.isRequired,
-  // changeCurriculumCoverPhoto: PropTypes.func.isRequired,
+  loadAllCurricula: PropTypes.func.isRequired,
   // data
-  // curricula: PropTypes.object
+  curricula: PropTypes.object
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     loadCurricula: () => dispatch(loadCurricula()),
+    loadAllCurricula: (url) => dispatch(loadAllCurricula(url))
   }
 }
 

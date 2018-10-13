@@ -125,27 +125,30 @@ export function loadMyCurricula() {
     }
 }
 
-export function loadCurricula() {
-    return function(dispatch) {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'curricula/',
-	    context: this,
-	    success: function(data, status, jqXHR) {
-		dispatch(curriculaLoaded(data))
-	    }	
-	});
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'curricula/all/',
-	    context: this,
-	    success: function(data, status, jqXHR) {
-		dispatch(allCurriculaLoaded(data))
-	    }	
-	});
-	
-    }
-    
+export function loadAllCurricula (url) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url || API_PREFIX + 'curricula/all/',
+      context: this,
+      success: function (data, status, jqXHR) {
+          dispatch(allCurriculaLoaded(data))
+      }
+    })
+  }
+}
+
+export function loadCurricula () {
+  return function (dispatch) {
+    dispatch(loadAllCurricula())
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/',
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(curriculaLoaded(data))
+      }})
+  }
 }
 
 export function curriculumLoaded(data) {

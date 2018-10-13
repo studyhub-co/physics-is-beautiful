@@ -78,44 +78,44 @@ export class CurriculumThumbnailPublic extends React.Component {
 
   render () {
     return (
-        <Col
-          sm={2}
-          md={2}
-          className={'curriculum-card'}
-          style={{'cursor': 'pointer'}}>
-          <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
-            <Thumbnail image={this.props.image} />
+      <Col
+        sm={2}
+        md={2}
+        className={'curriculum-card'}
+        style={{'cursor': 'pointer'}}>
+        <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+          <Thumbnail image={this.props.image} />
+        </div>
+        <div>
+          <Dropdown
+            style={{float: 'right'}}
+            id='dropdown-custom-menu'>
+            <CurriculumMenuToggle bsRole='toggle' />
+            <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
+              <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
+              {/*<MenuItem onSelect={this.onEditCurriculumSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>*/}
+              {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>*/}
+              {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
+              {/*<MenuItem onSelect={this.onDeleteCurriculum} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>*/}
+            </Dropdown.Menu>
+          </Dropdown>
+          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
+            {this.props.name}
           </div>
-          <div>
-            <Dropdown
-              style={{float: 'right'}}
-              id='dropdown-custom-menu'>
-              <CurriculumMenuToggle bsRole='toggle' />
-              <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-                <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
-                {/*<MenuItem onSelect={this.onEditCurriculumSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>*/}
-                {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>*/}
-                {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
-                {/*<MenuItem onSelect={this.onDeleteCurriculum} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>*/}
-              </Dropdown.Menu>
-            </Dropdown>
-            <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
-              {this.props.name}
-            </div>
-            <div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-              <a href={this.props.author.get_absolute_url} target={'_blank'}>
-                {this.props.author.display_name}
-              </a> ∙ {this.props.count_lessons } lessons ∙ { this.props.number_of_learners } learners
-            </div>
-            <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-              Created <Moment fromNow>
-                {this.props.created_on}
-              </Moment> ∙ Last updated <Moment fromNow>
-                {this.props.updated_on}
-              </Moment>
-            </div>
+          <div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+            <a href={this.props.author.get_absolute_url} target={'_blank'}>
+              {this.props.author.display_name}
+            </a> ∙ {this.props.count_lessons } lessons ∙ { this.props.number_of_learners } learners
           </div>
-        </Col>
+          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+            Created <Moment fromNow>
+              {this.props.created_on}
+            </Moment> ∙ Last updated <Moment fromNow>
+              {this.props.updated_on}
+            </Moment>
+          </div>
+        </div>
+      </Col>
     )
   }
 }
