@@ -1,23 +1,40 @@
 from django.db.models import Q, Count
 
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import ListAPIView
-from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import permissions, mixins
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
+
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
 
-from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, UnitSerializer, ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
+from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, UnitSerializer, \
+    ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
 
-from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
+from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
+    IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
 
 
-class AllCurriculaView(ListAPIView):
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+
+
+class AllCurriculaView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    # serializer_class = MiniCurriculumSerializer
-    serializer_class = CurriculumSerializer
+    serializer_class = MiniCurriculumSerializer
+    # serializer_class = CurriculumSerializer
+    pagination_class = StandardResultsSetPagination
+
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend)  # ordering and search support
+    ordering_fields = ('number_of_learners_denormalized', 'published_on')
+    ordering = ('-number_of_learners_denormalized',)
 
     def get_queryset(self):
-        return Curriculum.objects.filter(setting_publically=True)
+        return Curriculum.objects.filter(setting_publically=True).select_related('author').\
+            annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
 
 class CurriculumViewSet(ModelViewSet):

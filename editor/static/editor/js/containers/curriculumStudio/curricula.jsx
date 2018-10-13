@@ -42,12 +42,12 @@ class Curricula extends React.Component {
     }
 
     const prototypeChoices = []
-    for (var i in this.props.allCurricula) {
+    for (var i in this.props.allCurricula.results) {
       prototypeChoices.push(
         <option
-          key={this.props.allCurricula[i].uuid}
-          value={this.props.allCurricula[i].uuid}>
-          {this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}
+          key={this.props.allCurricula.results[i].uuid}
+          value={this.props.allCurricula.results[i].uuid}>
+          {this.props.allCurricula.results[i].name + ' by ' + this.props.allCurricula.results[i].author.display_name}
         </option>
       )
     }

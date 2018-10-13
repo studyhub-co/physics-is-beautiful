@@ -210,11 +210,10 @@ function currentQuestion(state=null, action){
    default:
        return state
    }
-    
 }
 
-function allCurricula (state = {}, action){
-  if (action.type === ActionTypes.ALL_CURRICULA_LOADED){
+function allCurricula (state = {}, action) {
+  if (action.type === ActionTypes.ALL_CURRICULA_LOADED) {
     return action.curricula
   } else return state
 }
