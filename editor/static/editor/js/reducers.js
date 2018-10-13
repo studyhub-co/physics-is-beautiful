@@ -218,6 +218,12 @@ function allCurricula (state = {}, action) {
   } else return state
 }
 
+function recentCurricula (state = {}, action) {
+  if (action.type === ActionTypes.RECENT_CURRICULA_LOADED) {
+    return action.curricula
+  } else return state
+}
+
 function users (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FOUND_USERS_LOADED:
@@ -256,6 +262,7 @@ const combined = combineReducers({
   answers,
   currentQuestion,
   allCurricula,
+  recentCurricula,
   studioTabs,
   users,
   router: routerReducer
