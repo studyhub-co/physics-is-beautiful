@@ -22,13 +22,23 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
 
 
+class RecentlyFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        params = request.query_params.get('filter')
+        if params:
+            if params == 'recent':
+                # TODO filter for recently Curricula for current user
+                queryset = queryset
+        return queryset
+
+
 class AllCurriculaView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MiniCurriculumSerializer
     # serializer_class = CurriculumSerializer
     pagination_class = StandardResultsSetPagination
 
-    filter_backends = (filters.OrderingFilter, DjangoFilterBackend)  # ordering and search support
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend, RecentlyFilterBackend)  # ordering and search support
     ordering_fields = ('number_of_learners_denormalized', 'published_on')
     ordering = ('-number_of_learners_denormalized',)
 

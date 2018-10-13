@@ -9,6 +9,7 @@ export const ActionTypes = Object.freeze({
   REQUEST_ADD_CURRICULUM: 'REQUEST_ADD_CURRICULUM',
   CURRICULA_LOADED: 'CURRICULA_LOADED',
   ALL_CURRICULA_LOADED: 'ALL_CURRICULA_LOADED',
+  RECENT_CURRICULA_LOADED: 'RECENT_CURRICULA_LOADED',
   LOAD_CURRICULA: 'LOAD_CURRICULA',
   CURRICULUM_LOADED: 'CURRICULUM_LOADED',
   RENAME_CURRICULUM: 'RENAME_CURRICULUM',
@@ -101,9 +102,13 @@ function extractAll(object, prop){
     return ret
 }
 
-export function allCurriculaLoaded (data) {
+export function allCurriculaLoaded (data, filter) {
+  var type = ActionTypes.ALL_CURRICULA_LOADED
+  if (filter === 'recent') {
+    type = ActionTypes.RECENT_CURRICULA_LOADED
+  }
   return {
-    type: ActionTypes.ALL_CURRICULA_LOADED,
+    type: type,
     curricula: data
   }
 }
@@ -125,16 +130,32 @@ export function loadMyCurricula() {
     }
 }
 
-export function loadAllCurricula (url) {
+export function loadAllCurricula (url, filter) {
+  return function (dispatch) {
+    var GETParams = ''
+    if (filter) {
+      GETParams = '?filter=' + filter
+    }
+    $.ajax({
+      async: true,
+      url: url || API_PREFIX + 'curricula/all/' + GETParams,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(allCurriculaLoaded(data, filter))
+      }
+    })
+  }
+}
+
+export function loadRecentCurricula () {
   return function (dispatch) {
     $.ajax({
       async: true,
-      url: url || API_PREFIX + 'curricula/all/',
+      url: API_PREFIX + 'curricula/',
       context: this,
       success: function (data, status, jqXHR) {
-          dispatch(allCurriculaLoaded(data))
-      }
-    })
+        dispatch(curriculaLoaded(data))
+      }})
   }
 }
 

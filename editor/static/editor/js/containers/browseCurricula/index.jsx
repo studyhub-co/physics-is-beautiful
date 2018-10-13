@@ -12,7 +12,7 @@ import { SimpleSelect } from 'react-selectize'
 
 import { CurriculumThumbnailPublic } from './../../components/curriculum_thumbnail_public'
 
-import { loadCurricula, loadAllCurricula } from './../../actions'
+import { loadMyCurricula, loadAllCurricula } from './../../actions'
 
 class BrowseCurriculaView extends React.Component {
   constructor (props) {
@@ -21,7 +21,11 @@ class BrowseCurriculaView extends React.Component {
       searchString: '',
       selectedOption: [],
       popularSlides: [],
-      popularNextPageUrl: null
+      popularNextPageUrl: null,
+      recentSlides: [],
+      recentSlidesNextPageUrl: null,
+      newSlides: [],
+      newSlidesNextPageUrl: null
     }
   }
 
@@ -29,9 +33,12 @@ class BrowseCurriculaView extends React.Component {
     if (!this.props.curricula) {
       this.props.loadCurricula()
     }
+    if (!this.props.recentCurricula) {
+      this.props.loadRecentCurricula()
+    }
   }
 
-  getParams () {
+  getParams (slidesListName) {
     var self = this
 
     var swiperParams = {
@@ -44,7 +51,7 @@ class BrowseCurriculaView extends React.Component {
       slidesPerView: 5, // should be more than API paginator page size!
       rebuildOnUpdate: true,
       virtual: {
-        slides: self.state.popularSlides,
+        slides: self.state[slidesListName],
         renderExternal: function (data) {
           // empty function needs to disable internal rendering, more info http://idangero.us/swiper/api/#virtual
         }
@@ -52,7 +59,7 @@ class BrowseCurriculaView extends React.Component {
       on: {
         reachEnd: function () {
           // load next page
-          if (self.state.popularNextPageUrl) {
+          if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
             self.props.loadAllCurricula(self.state.popularNextPageUrl)
           }
         }
@@ -61,27 +68,28 @@ class BrowseCurriculaView extends React.Component {
     return swiperParams
   }
 
+  populateSlides (slidesListName, props) {
+    var slides = []
+    if (this.state[slidesListName] && this.state[slidesListName].length > 0) {
+      slides = this.state[slidesListName]
+    }
+    for (var index in props.curricula.results) {
+      slides.push(
+        <CurriculumThumbnailPublic
+          key={props.curricula.results[index].uuid}
+          {...props.curricula.results[index]}
+        />
+      )
+    }
+    return slides
+  }
+
   componentWillReceiveProps (props) {
-    var self = this
     if (props.curricula) {
       this.setState({
         popularNextPageUrl: props.curricula.next,
-        popularSlides: (function () {
-          var slides = []
-          if (self.state.popularSlides && self.state.popularSlides.length > 0) {
-            slides = self.state.popularSlides
-          }
-          for (var index in props.curricula.results) {
-            slides.push(
-              <CurriculumThumbnailPublic
-                key={props.curricula.results[index].uuid}
-                {...props.curricula.results[index]}
-              />
-            )
-          }
-
-          return slides
-        }())
+        popularSlides: this.populateSlides('popularSlides', props),
+        recentSlides: this.populateSlides('recentSlides', props)
       })
     }
   }
@@ -142,21 +150,35 @@ class BrowseCurriculaView extends React.Component {
                   <Row>
                     <Col sm={12} md={12}>
                       <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                            Popular
+                            My recently viewed
                       </div>
                     </Col>
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
-                      <Swiper {...this.getParams()} >
-                        {this.state.popularSlides}
+                      <Swiper {...this.getParams('recentSlides')} >
+                        {this.state['recentSlides']}
                       </Swiper>
                     </Col>
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
                       <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                            {/*New*/}
+                            Popular
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm={12} md={12}>
+                      <Swiper {...this.getParams('popularSlides')} >
+                        {this.state['popularSlides']}
+                      </Swiper>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm={12} md={12}>
+                      <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                          {/*New*/}
                       </div>
                     </Col>
                   </Row>
@@ -185,7 +207,7 @@ const mapStateToProps = (state) => {
 
 BrowseCurriculaView.propTypes = {
   // actions
-  loadCurricula: PropTypes.func.isRequired,
+  loadRecentCurricula: PropTypes.func.isRequired,
   loadAllCurricula: PropTypes.func.isRequired,
   // data
   curricula: PropTypes.object
@@ -194,7 +216,7 @@ BrowseCurriculaView.propTypes = {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadCurricula: () => dispatch(loadCurricula()),
+    loadRecentCurricula: (url) => dispatch(loadAllCurricula(url, 'recent')),
     loadAllCurricula: (url) => dispatch(loadAllCurricula(url))
   }
 }
