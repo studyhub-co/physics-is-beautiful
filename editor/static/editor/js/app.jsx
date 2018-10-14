@@ -119,7 +119,7 @@ class CurriculumApp extends React.Component {
     super(props);
   }
   componentDidMount() {
-    this.props.dispatch(loadCurriculumIfNeeded(this.props.match.params.uuid));
+    // this.props.dispatch(loadCurriculumIfNeeded(this.props.match.params.uuid));
   }
   render () {
     return (<Sheet>

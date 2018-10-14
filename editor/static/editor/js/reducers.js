@@ -221,6 +221,10 @@ function allCurricula (state = {}, action) {
 function filteredCurricula (state = {}, action) {
   if (action.type === ActionTypes.RECENT_CURRICULA_LOADED) {
     return Object.assign({}, state, {recentCurricula: action.curricula})
+  } else if (action.type === ActionTypes.NEW_CURRICULA_LOADED) {
+    return Object.assign({}, state, {newCurricula: action.curricula})
+  } else if (action.type === ActionTypes.POPULAR_CURRICULA_LOADED) {
+    return Object.assign({}, state, {popularCurricula: action.curricula})
   } else return state
 }
 
@@ -244,15 +248,6 @@ function studioTabs (state = {tab: null}, action) {
   }
 }
 
-// function curriculaDashboard (state={tab: null}, action){
-//   switch (action.type) {
-//     case ActionTypes.CHANGE_SELECTED_TAB:
-//       return Object.assign({}, state,  {[action.namespace]: action.tab})
-//     default:
-//       return state
-//     }
-// }
-
 const combined = combineReducers({
   curricula,
   units,
@@ -263,7 +258,6 @@ const combined = combineReducers({
   currentQuestion,
   filteredCurricula,
   allCurricula,
-  filteredCurricula,
   studioTabs,
   users,
   router: routerReducer

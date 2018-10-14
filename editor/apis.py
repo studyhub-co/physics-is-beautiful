@@ -1,4 +1,4 @@
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Max, F
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, mixins
@@ -22,9 +22,6 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
 
 
-from django.db.models import Max, F
-
-
 class RecentlyFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         params = request.query_params.get('filter')
@@ -33,10 +30,11 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
                 # filter for recently Curricula for current user
                 queryset = queryset. \
                     annotate(updated_on_lastest=Max('units__modules__lessons__progress__updated_on')).\
-                    filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')).\
+                    filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')). \
                     filter(units__modules__lessons__progress__profile__user=request.user).\
-                    order_by('-units__modules__lessons__progress__updated_on').\
-                    defer('units__modules__lessons__progress').distinct()
+                    order_by('-units__modules__lessons__progress__updated_on'). \
+                    defer('units__modules__lessons__progress'). \
+                    distinct()
         return queryset
 
 
@@ -47,8 +45,9 @@ class AllCurriculaView(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     filter_backends = (filters.OrderingFilter, DjangoFilterBackend, RecentlyFilterBackend)  # ordering and search support
-    ordering_fields = ('number_of_learners_denormalized', 'published_on')
-    ordering = ('-number_of_learners_denormalized',)
+    ordering_fields = ('number_of_learners_denormalized', 'published_on', 'created_on',
+                       'units__modules__lessons__progress__updated_on')
+    # ordering = ('-number_of_learners_denormalized',)
 
     def get_queryset(self):
         return Curriculum.objects.filter(setting_publically=True).select_related('author').\
