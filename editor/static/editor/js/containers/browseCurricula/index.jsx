@@ -30,17 +30,19 @@ class BrowseCurriculaView extends React.Component {
   }
 
   componentDidMount () {
-    if (!this.props.curricula) {
-      this.props.loadCurricula()
+    if (!this.props.popularCurricula) {
+      this.props.loadPopularCurricula()
     }
     if (!this.props.recentCurricula) {
       this.props.loadRecentCurricula()
+    }
+    if (!this.props.newCurricula) {
+      this.props.loadNewCurricula()
     }
   }
 
   getParams (slidesListName) {
     var self = this
-
     var swiperParams = {
       navigation: {
         nextEl: '.swiper-button-next',
@@ -60,7 +62,13 @@ class BrowseCurriculaView extends React.Component {
         reachEnd: function () {
           // load next page
           if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
-            self.props.loadAllCurricula(self.state.popularNextPageUrl)
+            self.props.loadPopularCurricula(self.state.popularNextPageUrl)
+          }
+          if (self.state.recentSlidesNextPageUrl && slidesListName === 'recentSlides') {
+            self.props.loadRecentCurricula(self.state.recentSlidesNextPageUrl)
+          }
+          if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
+            self.props.loadNewCurricula(self.state.newNextPageUrl)
           }
         }
       }
@@ -70,14 +78,19 @@ class BrowseCurriculaView extends React.Component {
 
   populateSlides (slidesListName, props) {
     var slides = []
-    var curricula = props.curricula
+    var curricula = props.popularCurricula
+
     if (slidesListName === 'recentSlides') {
       curricula = props.recentCurricula
+    }
+    if (slidesListName === 'newSlides') {
+      curricula = props.newCurricula
     }
     if (!curricula) return []
     if (this.state[slidesListName] && this.state[slidesListName].length > 0) {
       slides = this.state[slidesListName]
     }
+
     for (var index in curricula.results) {
       slides.push(
         <CurriculumThumbnailPublic
@@ -90,9 +103,9 @@ class BrowseCurriculaView extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.curricula && props.curricula !== this.props.curricula) {
+    if (props.popularCurricula && props.popularCurricula !== this.props.popularCurricula) {
       this.setState({
-        popularNextPageUrl: props.curricula.next,
+        popularNextPageUrl: props.popularCurricula.next,
         popularSlides: this.populateSlides('popularSlides', props)
       })
     }
@@ -100,6 +113,12 @@ class BrowseCurriculaView extends React.Component {
       this.setState({
         recentNextPageUrl: props.recentCurricula.next,
         recentSlides: this.populateSlides('recentSlides', props)
+      })
+    }
+    if (props.newCurricula && props.newCurricula !== this.props.newCurricula) {
+      this.setState({
+        newsNextPageUrl: props.newCurricula.next,
+        newSlides: this.populateSlides('newSlides', props)
       })
     }
   }
@@ -188,15 +207,15 @@ class BrowseCurriculaView extends React.Component {
                   <Row>
                     <Col sm={12} md={12}>
                       <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                          {/*New*/}
+                          New
                       </div>
                     </Col>
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
-                      {/*<Swiper {...this.getParams()} >*/}
-                        {/*{this.state.popularSlides}*/}
-                      {/*</Swiper>*/}
+                      <Swiper {...this.getParams('newSlides')} >
+                        {this.state['newSlides']}
+                      </Swiper>
                     </Col>
                   </Row>
                 </TabContent>
@@ -211,25 +230,29 @@ class BrowseCurriculaView extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    curricula: state.allCurricula,
-    recentCurricula: state.filteredCurricula.recentCurricula
+    popularCurricula: state.filteredCurricula.popularCurricula,
+    recentCurricula: state.filteredCurricula.recentCurricula,
+    newCurricula: state.filteredCurricula.newCurricula
   }
 }
 
 BrowseCurriculaView.propTypes = {
   // actions
   loadRecentCurricula: PropTypes.func.isRequired,
-  loadAllCurricula: PropTypes.func.isRequired,
+  loadPopularCurricula: PropTypes.func.isRequired,
+  loadNewCurricula: PropTypes.func.isRequired,
   // data
-  curricula: PropTypes.object,
-  recentCurricula: PropTypes.object
+  popularCurricula: PropTypes.object,
+  recentCurricula: PropTypes.object,
+  newCurricula: PropTypes.object
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     loadRecentCurricula: (url) => dispatch(loadAllCurricula(url, 'recent')),
-    loadAllCurricula: (url) => dispatch(loadAllCurricula(url))
+    loadNewCurricula: (url) => dispatch(loadAllCurricula(url, null, '-created_on')),
+    loadPopularCurricula: (url) => dispatch(loadAllCurricula(url, null, '-number_of_learners_denormalized')) // popular
   }
 }
 

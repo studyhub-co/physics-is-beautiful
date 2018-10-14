@@ -10,6 +10,8 @@ export const ActionTypes = Object.freeze({
   CURRICULA_LOADED: 'CURRICULA_LOADED',
   ALL_CURRICULA_LOADED: 'ALL_CURRICULA_LOADED',
   RECENT_CURRICULA_LOADED: 'RECENT_CURRICULA_LOADED',
+  POPULAR_CURRICULA_LOADED: 'POPULAR_CURRICULA_LOADED',
+  NEW_CURRICULA_LOADED: 'NEW_CURRICULA_LOADED',
   LOAD_CURRICULA: 'LOAD_CURRICULA',
   CURRICULUM_LOADED: 'CURRICULUM_LOADED',
   RENAME_CURRICULUM: 'RENAME_CURRICULUM',
@@ -102,10 +104,16 @@ function extractAll(object, prop){
     return ret
 }
 
-export function allCurriculaLoaded (data, filter) {
+export function allCurriculaLoaded (data, filter, ordering) {
   var type = ActionTypes.ALL_CURRICULA_LOADED
   if (filter === 'recent') {
     type = ActionTypes.RECENT_CURRICULA_LOADED
+  }
+  if (ordering === '-created_on') {
+    type = ActionTypes.NEW_CURRICULA_LOADED
+  }
+  if (ordering === '-number_of_learners_denormalized') {
+    type = ActionTypes.POPULAR_CURRICULA_LOADED
   }
   return {
     type: type,
@@ -130,18 +138,27 @@ export function loadMyCurricula() {
     }
 }
 
-export function loadAllCurricula (url, filter) {
+export function loadAllCurricula (url, filter, ordering) {
   return function (dispatch) {
-    var GETParams = ''
+    var GETParams = {}
     if (filter) {
-      GETParams = '?filter=' + filter
+      GETParams['filter'] = filter
+    }
+    if (ordering) {
+      GETParams['ordering'] = ordering
+    }
+
+    var paramsString = ''
+
+    if (Object.keys(GETParams).length !== 0) {
+      paramsString = '?' + Object.entries(GETParams).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&')
     }
     $.ajax({
       async: true,
-      url: url || API_PREFIX + 'curricula/all/' + GETParams,
+      url: url || API_PREFIX + 'curricula/all/' + paramsString,
       context: this,
       success: function (data, status, jqXHR) {
-        dispatch(allCurriculaLoaded(data, filter))
+        dispatch(allCurriculaLoaded(data, filter, ordering))
       }
     })
   }
