@@ -12,7 +12,7 @@ import { SimpleSelect } from 'react-selectize'
 
 import { CurriculumThumbnailPublic } from './../../components/curriculum_thumbnail_public'
 
-import { loadMyCurricula, loadAllCurricula } from './../../actions'
+import { loadAllCurricula } from './../../actions'
 
 class BrowseCurriculaView extends React.Component {
   constructor (props) {
@@ -23,10 +23,16 @@ class BrowseCurriculaView extends React.Component {
       popularSlides: [],
       popularNextPageUrl: null,
       recentSlides: [],
-      recentSlidesNextPageUrl: null,
+      recentNextPageUrl: null,
       newSlides: [],
-      newSlidesNextPageUrl: null
+      newNextPageUrl: null,
+      newSwiper: null
     }
+    this.swiperNewRef = this.swiperNewRef.bind(this)
+  }
+
+  swiperNewRef (ref) {
+    this.setState({ newSwiper: ref.swiper })
   }
 
   componentDidMount () {
@@ -43,6 +49,13 @@ class BrowseCurriculaView extends React.Component {
 
   getParams (slidesListName) {
     var self = this
+
+    // var activeSlideKey = null
+
+    // if (slidesListName + 'activeSlideKey' in this.state) {
+    //   activeSlideKey = this.state[slidesListName + 'activeSlideKey']
+    // }
+
     var swiperParams = {
       navigation: {
         nextEl: '.swiper-button-next',
@@ -52,6 +65,8 @@ class BrowseCurriculaView extends React.Component {
       spaceBetween: 0,
       slidesPerView: 5, // should be more than API paginator page size!
       rebuildOnUpdate: true,
+      shouldSwiperUpdate: true,
+      // activeSlideKey: activeSlideKey,
       virtual: {
         slides: self.state[slidesListName],
         renderExternal: function (data) {
@@ -61,15 +76,25 @@ class BrowseCurriculaView extends React.Component {
       on: {
         reachEnd: function () {
           // load next page
+          // var activeState = {}
           if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+            // activeState[slidesListName + 'activeSlideKey'] =
+            //   self.props.popularCurricula.results[self.props.popularCurricula.results.length - 1].uuid
             self.props.loadPopularCurricula(self.state.popularNextPageUrl)
           }
-          if (self.state.recentSlidesNextPageUrl && slidesListName === 'recentSlides') {
-            self.props.loadRecentCurricula(self.state.recentSlidesNextPageUrl)
+          if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+            // activeState[slidesListName + 'activeSlideKey'] =
+            //   self.props.recentCurricula.results[self.props.recentCurricula.results.length - 1].uuid
+            self.props.loadRecentCurricula(self.state.recentNextPageUrl)
           }
           if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
+            // activeState[slidesListName + 'activeSlideKey'] = self.state.newSwiper.activeIndex
             self.props.loadNewCurricula(self.state.newNextPageUrl)
           }
+          // if (Object.keys(activeState).length !== 0) {
+          //   // console.log(activeState);
+          //   self.setState(activeState)
+          // }
         }
       }
     }
@@ -117,13 +142,41 @@ class BrowseCurriculaView extends React.Component {
     }
     if (props.newCurricula && props.newCurricula !== this.props.newCurricula) {
       this.setState({
-        newsNextPageUrl: props.newCurricula.next,
+        newNextPageUrl: props.newCurricula.next,
         newSlides: this.populateSlides('newSlides', props)
       })
     }
   }
 
   render () {
+    var self = this
+
+    var onSearchChange = function (searchString_) {
+      const searchString = searchString_.replace(/\W/g, '')
+      self.setState({searchString: searchString})
+
+      if (searchString.length > 0) {
+        if (!self.props.findCurriculaRequest) {
+          // self.props.findCurriculaRequest(searchString)
+        }
+      }
+    }
+
+    var renderNoResultsFound = function (value, search) {
+      return <div className='no-results-found' style={{fontSize: 13}}>
+        {self.state.searchString.length === 0
+          ? 'Start type username or display name' : 'No results found'}
+      </div>
+    }
+
+    var renderOption = function (item) {
+      return <div className='simple-option' style={{fontSize: 12}}>
+        <div>
+          <span style={{fontWeight: 'bold'}}>{item.display_name}</span>
+        </div>
+      </div>
+    }
+
     return (
       <div>
         <Grid fluid>
@@ -134,6 +187,9 @@ class BrowseCurriculaView extends React.Component {
                   <SimpleSelect
                     placeholder='Search'
                     search={this.state.searchString}
+                    onSearchChange={onSearchChange}
+                    renderOption={renderOption}
+                    renderNoResultsFound={renderNoResultsFound}
                   />
                   {/*options={foundUsers}*/}
                   {/*values={this.state.selectedUsers}*/}
@@ -213,7 +269,7 @@ class BrowseCurriculaView extends React.Component {
                   </Row>
                   <Row>
                     <Col sm={12} md={12}>
-                      <Swiper {...this.getParams('newSlides')} >
+                      <Swiper ref={this.swiperNewRef} {...this.getParams('newSlides')} >
                         {this.state['newSlides']}
                       </Swiper>
                     </Col>
