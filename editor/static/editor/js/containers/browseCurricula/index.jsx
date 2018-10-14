@@ -70,14 +70,19 @@ class BrowseCurriculaView extends React.Component {
 
   populateSlides (slidesListName, props) {
     var slides = []
+    var curricula = props.curricula
+    if (slidesListName === 'recentSlides') {
+      curricula = props.recentCurricula
+    }
+    if (!curricula) return []
     if (this.state[slidesListName] && this.state[slidesListName].length > 0) {
       slides = this.state[slidesListName]
     }
-    for (var index in props.curricula.results) {
+    for (var index in curricula.results) {
       slides.push(
         <CurriculumThumbnailPublic
-          key={props.curricula.results[index].uuid}
-          {...props.curricula.results[index]}
+          key={curricula.results[index].uuid}
+          {...curricula.results[index]}
         />
       )
     }
@@ -85,10 +90,15 @@ class BrowseCurriculaView extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.curricula) {
+    if (props.curricula && props.curricula !== this.props.curricula) {
       this.setState({
         popularNextPageUrl: props.curricula.next,
-        popularSlides: this.populateSlides('popularSlides', props),
+        popularSlides: this.populateSlides('popularSlides', props)
+      })
+    }
+    if (props.recentCurricula && props.recentCurricula !== this.props.recentCurricula) {
+      this.setState({
+        recentNextPageUrl: props.recentCurricula.next,
         recentSlides: this.populateSlides('recentSlides', props)
       })
     }
@@ -201,7 +211,8 @@ class BrowseCurriculaView extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    curricula: state.allCurricula
+    curricula: state.allCurricula,
+    recentCurricula: state.filteredCurricula.recentCurricula
   }
 }
 
@@ -210,7 +221,8 @@ BrowseCurriculaView.propTypes = {
   loadRecentCurricula: PropTypes.func.isRequired,
   loadAllCurricula: PropTypes.func.isRequired,
   // data
-  curricula: PropTypes.object
+  curricula: PropTypes.object,
+  recentCurricula: PropTypes.object
 }
 
 const mapDispatchToProps = (dispatch) => {
