@@ -218,9 +218,9 @@ function allCurricula (state = {}, action) {
   } else return state
 }
 
-function recentCurricula (state = {}, action) {
+function filteredCurricula (state = {}, action) {
   if (action.type === ActionTypes.RECENT_CURRICULA_LOADED) {
-    return action.curricula
+    return Object.assign({}, state, {recentCurricula: action.curricula})
   } else return state
 }
 
@@ -261,8 +261,9 @@ const combined = combineReducers({
   questions,
   answers,
   currentQuestion,
+  filteredCurricula,
   allCurricula,
-  recentCurricula,
+  filteredCurricula,
   studioTabs,
   users,
   router: routerReducer

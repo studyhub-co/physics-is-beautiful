@@ -22,13 +22,21 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
 
 
+from django.db.models import Max, F
+
+
 class RecentlyFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         params = request.query_params.get('filter')
         if params:
             if params == 'recent':
-                # TODO filter for recently Curricula for current user
-                queryset = queryset
+                # filter for recently Curricula for current user
+                queryset = queryset. \
+                    annotate(updated_on_lastest=Max('units__modules__lessons__progress__updated_on')).\
+                    filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')).\
+                    filter(units__modules__lessons__progress__profile__user=request.user).\
+                    order_by('-units__modules__lessons__progress__updated_on').\
+                    defer('units__modules__lessons__progress').distinct()
         return queryset
 
 
