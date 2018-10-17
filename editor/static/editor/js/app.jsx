@@ -21,6 +21,7 @@ import {CurriculumContainer} from './containers/curriculum'
 import {LessonContainer} from './containers/lesson'
 import {BackButton} from './components/back_button'
 import {QuestionThumbnailContainer} from './containers/question_thumbnail'
+import CurriculumProfileView from './containers/browseCurricula/curriculumProfile'
 
 import {editor} from './reducers'
 import {
@@ -258,6 +259,7 @@ class EditorRouter extends React.Component {
           <Route path='/studio/editor/modules/:uuid' component={ModuleApp} />
           <Route path='/studio/editor/lessons/:uuid' component={LessonApp} />
           <Route path='/studio/editor/questions/:uuid' component={QuestionApp} />
+          <Route path='/curriculum/profile/:uuid' component={CurriculumProfileView} />
           {/* <Route path='/studio/' component={CurriculaApp} /> */}
           <Route path='/studio/' component={CurriculaDashboardApp} />
           <Route path='/browse/' component={CurriculaDashboardApp} />

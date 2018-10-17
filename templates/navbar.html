@@ -85,7 +85,7 @@
                 <ul class="nav navbar-nav nav-pills">
                     <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"><a href="{% url 'main_curricula:curriculum' %}">Home</a></li>
                     <li class="nav-item{% current_url_starts_with 'discussion' %}"><a href="{% url 'discussion' %}">Discussion</a></li>
-                    <li class="nav-item{% current_url_starts_with 'editor' %}"><a href="{% url 'editor' %}">Curriculum</a></li>
+                    <li class="nav-item{% current_url_starts_with 'editor' 'studio' %}"><a href="{% url 'editor' %}">Curriculum</a></li>
                     <li class="nav-item{% current_url_starts_with 'classroom' %}"><a href="{% url 'classroom' %}">Classroom</a></li>
                     {% if user.is_authenticated %}
                     {% endif %}
