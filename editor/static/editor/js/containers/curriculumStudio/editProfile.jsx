@@ -18,7 +18,7 @@ import {
 
 import { EditableExternalEventLabel } from '../../components/label'
 import EditCurriculumSettingsView from './editSettings'
-import { BASE_URL } from '../../../../../../classroom/static/classroom/js/utils/config'
+// import { BASE_URL } from '../../../../../../classroom/static/classroom/js/utils/config'
 
 function makeblob (dataURL, filename) {
   var BASE64_MARKER = ';base64,'

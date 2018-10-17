@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^', include('homepage.urls')),
 
+    url(r'^curriculum/profile/', include('editor.urls')),  # must be upper curriculum/ !
     # namespase is a fix for api/v1/editor/curricula url (drf router)
     url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
     # url(r'^editor/', include('editor.urls')),

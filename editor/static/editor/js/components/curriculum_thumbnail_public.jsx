@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 
+import { history } from '../history'
+
 import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
 import copy from 'copy-to-clipboard'
@@ -24,9 +26,6 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
-    {/*<div className='dotted-menu' onClick={this.handleClick}>*/}
-        {/*{this.props.children}*/}
-      {/*</div>*/}
     return (
       <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
@@ -38,21 +37,17 @@ class CurriculumMenuToggle extends React.Component {
 export class CurriculumThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // this.onForkSelect = this.onForkSelect.bind(this)
-    // this.onEditCurriculumSelect = this.onEditCurriculumSelect.bind(this)
-    // this.onDeleteCurriculum = this.onDeleteCurriculum.bind(this)
-    // this.onEditContentSelect = this.onEditContentSelect.bind(this)
-    // this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
     this.onLearnSelect = this.onLearnSelect.bind(this)
+    this.onViewProfileSelect = this.onViewProfileSelect.bind(this)
   }
-  //
-  // onEditContentSelect (e) {
-  //   this.props.onClick()
-  // }
 
   onLearnSelect () {
     window.open('/curriculum/' + this.props.uuid + '/', '_blank')
+  }
+
+  onViewProfileSelect () {
+    history.push('/curriculum/profile/' + this.props.uuid + '/')
   }
 
   //
@@ -93,7 +88,7 @@ export class CurriculumThumbnailPublic extends React.Component {
             <CurriculumMenuToggle bsRole='toggle' />
             <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
               <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
-              {/*<MenuItem onSelect={this.onEditCurriculumSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>*/}
+              <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
               {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>*/}
               {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
               {/*<MenuItem onSelect={this.onDeleteCurriculum} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>*/}

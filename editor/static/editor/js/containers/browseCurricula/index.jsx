@@ -9,7 +9,7 @@ import Swiper from 'react-id-swiper'
 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { SimpleSelect } from 'react-selectize'
+// import { SimpleSelect } from 'react-selectize'
 
 import { CurriculumThumbnailPublic } from './../../components/curriculum_thumbnail_public'
 
@@ -35,6 +35,7 @@ class BrowseCurriculaView extends React.Component {
     }
     this.handleSearchString = this.handleSearchString.bind(this)
     this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
+    this.searchButtonClick = this.searchButtonClick.bind(this)
   }
 
   componentDidMount () {
@@ -148,14 +149,14 @@ class BrowseCurriculaView extends React.Component {
       this.setState({
         popularNextPageUrl: props.popularCurricula.next,
         popularSlides: slides
-      }, this.updateSliderNavigation('popularSlides'))
+      })
     }
     if (props.recentCurricula && props.recentCurricula !== this.props.recentCurricula) {
       slides = this.populateSlides('recentSlides', props)
       this.setState({
         recentNextPageUrl: props.recentCurricula.next,
         recentSlides: slides
-      }, this.updateSliderNavigation('recentSlides'))
+      })
     }
     if (props.newCurricula && props.newCurricula !== this.props.newCurricula) {
       this.setState({
@@ -165,8 +166,15 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
-  handleSearchString (searchString) {
-    this.setState({searchString: searchString})
+  handleSearchString (e) {
+    this.setState({searchString: e.target.value})
+  }
+
+  searchButtonClick (e) {
+    var searchString = this.state.searchString
+    if (searchString) {
+      // TODO add API call
+    }
   }
 
   render () {
@@ -184,7 +192,9 @@ class BrowseCurriculaView extends React.Component {
                     onChange={this.handleSearchString}
                   />
                   <InputGroup.Button>
-                    <Button><Glyphicon glyph='search' /></Button>
+                    <Button
+                      onClick={this.searchButtonClick}
+                    ><Glyphicon glyph='search' /></Button>
                   </InputGroup.Button>
                 </InputGroup>
               </FormGroup>
