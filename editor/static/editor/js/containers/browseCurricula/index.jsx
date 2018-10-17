@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Image as ImageBs, FormGroup, Grid, Row, Col, Button, Glyphicon, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Image as ImageBs, FormGroup, Grid, Row, Col, Button, Glyphicon, InputGroup, FormControl } from 'react-bootstrap'
 
 import Swiper from 'react-id-swiper'
 // import Swiper from 'swiper/dist/js/swiper.esm.bundle'
@@ -33,6 +33,8 @@ class BrowseCurriculaView extends React.Component {
         newSlides: []
       }
     }
+    this.handleSearchString = this.handleSearchString.bind(this)
+    this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
   }
 
   componentDidMount () {
@@ -70,7 +72,7 @@ class BrowseCurriculaView extends React.Component {
       },
       // preventClicks: false,
       spaceBetween: 0,
-      slidesPerView: 5, // should be more than API paginator page size!
+      slidesPerView: 5, // must be more than API paginator page size!
       // activeSlideKey: activeSlideKey,
       // rebuildOnUpdate: true, // if we will update or rebuild we will lose navigation position
       // shouldSwiperUpdate: true,
@@ -78,7 +80,7 @@ class BrowseCurriculaView extends React.Component {
         slides: self.state[slidesListName],
         renderExternal: function (data) {
           // empty function needs to disable internal rendering, more info http://idangero.us/swiper/api/#virtual
-          if (swiper) swiper.navigation.update() // hack for update navigation buttons
+          // if (swiper) { swiper.navigation.update() } // hack for update navigation buttons
         }
       },
       on: {
@@ -125,20 +127,35 @@ class BrowseCurriculaView extends React.Component {
     return slides
   }
 
+  updateSliderNavigation (slidesListName) {
+    var swiper = this[slidesListName + 'Swiper']
+    if (swiper) {
+      swiper.navigation.update()
+    } // hack for update navigation buttons
+  }
+
+  componentDidUpdate () {
+    this.updateSliderNavigation('newSlides')
+    this.updateSliderNavigation('popularSlides')
+    this.updateSliderNavigation('recentSlides')
+  }
+
   componentWillReceiveProps (props) {
     var slides
+    // TODO refactor this
     if (props.popularCurricula && props.popularCurricula !== this.props.popularCurricula) {
       slides = this.populateSlides('popularSlides', props)
       this.setState({
         popularNextPageUrl: props.popularCurricula.next,
         popularSlides: slides
-      })
+      }, this.updateSliderNavigation('popularSlides'))
     }
     if (props.recentCurricula && props.recentCurricula !== this.props.recentCurricula) {
       slides = this.populateSlides('recentSlides', props)
       this.setState({
         recentNextPageUrl: props.recentCurricula.next,
-        recentSlides: slides})
+        recentSlides: slides
+      }, this.updateSliderNavigation('recentSlides'))
     }
     if (props.newCurricula && props.newCurricula !== this.props.newCurricula) {
       this.setState({
@@ -148,35 +165,11 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
+  handleSearchString (searchString) {
+    this.setState({searchString: searchString})
+  }
+
   render () {
-    var self = this
-
-    var onSearchChange = function (searchString_) {
-      const searchString = searchString_.replace(/\W/g, '')
-      self.setState({searchString: searchString})
-
-      if (searchString.length > 0) {
-        if (!self.props.findCurriculaRequest) {
-          // self.props.findCurriculaRequest(searchString)
-        }
-      }
-    }
-
-    var renderNoResultsFound = function (value, search) {
-      return <div className='no-results-found' style={{fontSize: 13}}>
-        {self.state.searchString.length === 0
-          ? 'Start type username or display name' : 'No results found'}
-      </div>
-    }
-
-    var renderOption = function (item) {
-      return <div className='simple-option' style={{fontSize: 12}}>
-        <div>
-          <span style={{fontWeight: 'bold'}}>{item.display_name}</span>
-        </div>
-      </div>
-    }
-
     return (
       <div>
         <Grid fluid>
@@ -184,22 +177,12 @@ class BrowseCurriculaView extends React.Component {
             <Col sm={10} md={10}>
               <FormGroup>
                 <InputGroup>
-                  <SimpleSelect
+                  <FormControl
+                    type='text'
+                    value={this.state.searchString}
                     placeholder='Search'
-                    search={this.state.searchString}
-                    onSearchChange={onSearchChange}
-                    renderOption={renderOption}
-                    renderNoResultsFound={renderNoResultsFound}
+                    onChange={this.handleSearchString}
                   />
-                  {/*options={foundUsers}*/}
-                  {/*values={this.state.selectedUsers}*/}
-                  {/*onValuesChange={onValuesChange}*/}
-                  {/*onSearchChange={onSearchChange}*/}
-                  {/*uid={uid}*/}
-                  {/*renderOption={renderOption}*/}
-                  {/*renderNoResultsFound={renderNoResultsFound}*/}
-                  {/*renderValue={renderValue}*/}
-                  {/*filterOptions={filterOptions}*/}
                   <InputGroup.Button>
                     <Button><Glyphicon glyph='search' /></Button>
                   </InputGroup.Button>
