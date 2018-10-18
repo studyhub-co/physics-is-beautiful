@@ -39,15 +39,9 @@ class BrowseCurriculaView extends React.Component {
   }
 
   componentDidMount () {
-    if (!this.props.popularCurricula) {
-      this.props.loadPopularCurricula()
-    }
-    if (!this.props.recentCurricula) {
-      this.props.loadRecentCurricula()
-    }
-    if (!this.props.newCurricula) {
-      this.props.loadNewCurricula()
-    }
+    this.props.loadPopularCurricula()
+    this.props.loadRecentCurricula()
+    this.props.loadNewCurricula()
   }
 
   getParams (slidesListName) {

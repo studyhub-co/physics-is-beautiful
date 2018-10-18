@@ -8,8 +8,6 @@ import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
 import copy from 'copy-to-clipboard'
 
-import { addCurriculum } from './../actions'
-
 import { Thumbnail } from './thumbnail'
 
 import { store } from '../app'

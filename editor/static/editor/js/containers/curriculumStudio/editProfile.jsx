@@ -99,7 +99,7 @@ class PencilImageUpload extends React.Component { // TODO move to utils
 }
 
 PencilImageUpload.propTypes = {
-  onFileSelect: PropTypes.func.isRequired,
+  onFileSelect: PropTypes.func.isRequired
 }
 
 class EditCurriculumProfileView extends React.Component {
@@ -202,7 +202,6 @@ class EditCurriculumProfileView extends React.Component {
 
   saveCroppedPhoto () {
     if (this.state.cropInfo) {
-
       var img = new Image()
       img.src = this.state.imgToCropBlob
 
@@ -405,6 +404,7 @@ EditCurriculumProfileView.propTypes = {
   loadCurriculum: PropTypes.func.isRequired,
   changeCurriculumImage: PropTypes.func.isRequired,
   changeCurriculumCoverPhoto: PropTypes.func.isRequired,
+  onDescriptionChange: PropTypes.func.isRequired,
   // data
   curricula: PropTypes.object
 }
