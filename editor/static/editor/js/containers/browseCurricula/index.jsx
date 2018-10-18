@@ -15,6 +15,8 @@ import { CurriculumThumbnailPublic } from './../../components/curriculum_thumbna
 
 import { loadAllCurricula } from './../../actions'
 
+const slidesNames = ['newSlides', 'popularSlides', 'recentSlides']
+
 class BrowseCurriculaView extends React.Component {
   constructor (props) {
     super(props)
@@ -42,6 +44,10 @@ class BrowseCurriculaView extends React.Component {
     this.props.loadPopularCurricula()
     this.props.loadRecentCurricula()
     this.props.loadNewCurricula()
+  }
+
+  componentDidUpdate () {
+    this.updateSlidersNavigation()
   }
 
   getParams (slidesListName) {
@@ -129,34 +135,31 @@ class BrowseCurriculaView extends React.Component {
     } // hack for update navigation buttons
   }
 
-  componentDidUpdate () {
-    this.updateSliderNavigation('newSlides')
-    this.updateSliderNavigation('popularSlides')
-    this.updateSliderNavigation('recentSlides')
+  updateSlidersNavigation () {
+    for (var i = 0, len = slidesNames.length; i < len; i++) {
+      this.updateSliderNavigation(slidesNames[i])
+    }
+  }
+
+  getPrefixFromSlidesName (slidesName) {
+    return slidesName.replace('Slides', '')
   }
 
   componentWillReceiveProps (props) {
-    var slides
-    // TODO refactor this
-    if (props.popularCurricula && props.popularCurricula !== this.props.popularCurricula) {
-      slides = this.populateSlides('popularSlides', props)
-      this.setState({
-        popularNextPageUrl: props.popularCurricula.next,
-        popularSlides: slides
-      })
+    if (this.props.tab !== props.tab) {
+      this.updateSlidersNavigation()
     }
-    if (props.recentCurricula && props.recentCurricula !== this.props.recentCurricula) {
-      slides = this.populateSlides('recentSlides', props)
-      this.setState({
-        recentNextPageUrl: props.recentCurricula.next,
-        recentSlides: slides
-      })
-    }
-    if (props.newCurricula && props.newCurricula !== this.props.newCurricula) {
-      this.setState({
-        newNextPageUrl: props.newCurricula.next,
-        newSlides: this.populateSlides('newSlides', props)
-      })
+
+    for (var i = 0, len = slidesNames.length; i < len; i++) {
+      var prefix = this.getPrefixFromSlidesName(slidesNames[i])
+
+      if (props[prefix + 'Curricula'] && props[prefix + 'Curricula'] !== this.props[prefix + 'Curricula']) {
+        var slides = this.populateSlides(slidesNames[i], props)
+        var newState = {}
+        newState[prefix + 'NextPageUrl'] = props.popularCurricula.next
+        newState[slidesNames[i]] = slides
+        this.setState(newState)
+      }
     }
   }
 
@@ -280,7 +283,8 @@ const mapStateToProps = (state) => {
   return {
     popularCurricula: state.filteredCurricula.popularCurricula,
     recentCurricula: state.filteredCurricula.recentCurricula,
-    newCurricula: state.filteredCurricula.newCurricula
+    newCurricula: state.filteredCurricula.newCurricula,
+    tab: state.studioTabs.tab
   }
 }
 
@@ -292,7 +296,8 @@ BrowseCurriculaView.propTypes = {
   // data
   popularCurricula: PropTypes.object,
   recentCurricula: PropTypes.object,
-  newCurricula: PropTypes.object
+  newCurricula: PropTypes.object,
+  tab: PropTypes.string
 }
 
 const mapDispatchToProps = (dispatch) => {

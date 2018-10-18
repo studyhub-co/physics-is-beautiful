@@ -13,6 +13,7 @@ export const ActionTypes = Object.freeze({
   POPULAR_CURRICULA_LOADED: 'POPULAR_CURRICULA_LOADED',
   NEW_CURRICULA_LOADED: 'NEW_CURRICULA_LOADED',
   LOAD_CURRICULA: 'LOAD_CURRICULA',
+  PUBLIC_CURRICULUM_LOADED: 'PUBLIC_CURRICULUM_LOADED',
   CURRICULUM_LOADED: 'CURRICULUM_LOADED',
   RENAME_CURRICULUM: 'RENAME_CURRICULUM',
   CHANGE_CURRICULUM_IMAGE: 'CHANGE_CURRICULUM_IMAGE',
@@ -218,6 +219,25 @@ export function saveCurriculumDescription (uuid, newText) {
       success: function (data, status, jqXHR) {
         dispatch(curriculumLoaded(data))
       }})
+  }
+}
+
+export function publicCurriculumLoaded (data) {
+  return {
+    type: ActionTypes.PUBLIC_CURRICULUM_LOADED,
+    publicCurriculum: data
+  }
+}
+
+export function loadPublicCurriculum (uuid) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/all/' + uuid + '/',
+      success: function (data, status, jqXHR) {
+        dispatch(publicCurriculumLoaded(data))
+      }
+    })
   }
 }
 
