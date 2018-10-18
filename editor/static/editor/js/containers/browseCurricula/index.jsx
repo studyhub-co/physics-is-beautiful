@@ -132,6 +132,7 @@ class BrowseCurriculaView extends React.Component {
     var swiper = this[slidesListName + 'Swiper']
     if (swiper) {
       swiper.navigation.update()
+      swiper.update()
     } // hack for update navigation buttons
   }
 
@@ -156,7 +157,7 @@ class BrowseCurriculaView extends React.Component {
       if (props[prefix + 'Curricula'] && props[prefix + 'Curricula'] !== this.props[prefix + 'Curricula']) {
         var slides = this.populateSlides(slidesNames[i], props)
         var newState = {}
-        newState[prefix + 'NextPageUrl'] = props.popularCurricula.next
+        newState[prefix + 'NextPageUrl'] = props[prefix + 'Curricula'].next
         newState[slidesNames[i]] = slides
         this.setState(newState)
       }
@@ -175,6 +176,7 @@ class BrowseCurriculaView extends React.Component {
   }
 
   render () {
+    this.updateSlidersNavigation()
     return (
       <div>
         <Grid fluid>

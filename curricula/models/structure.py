@@ -37,7 +37,7 @@ class Curriculum(BaseModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     cover_photo = models.ImageField(blank=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, default='')
     number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
     author = models.ForeignKey(User)
@@ -51,7 +51,7 @@ class Curriculum(BaseModel):
 
     def count_number_of_learners(self, LessonProgressClass):
         lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
-                                                        lesson__module__unit__curriculum=self). \
+                                                       lesson__module__unit__curriculum=self). \
             values('profile').distinct().count()
 
         self.number_of_learners_denormalized = lps_count
