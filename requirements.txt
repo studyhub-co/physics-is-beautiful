@@ -43,5 +43,5 @@ django-meta
 django-gravatar2==1.4.2
 # django-pagedown==1.0.6
 django-markdown-deux==1.0.5
-#google-api-python-client==1.7.4
-#oauthlib==2.1.0
+django-haystack==2.8.1
+Whoosh==2.7.4
