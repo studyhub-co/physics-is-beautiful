@@ -13,7 +13,7 @@ router.register(r'answers', apis.AnswerViewSet, base_name='answer')
 
 urlpatterns = [
     url(r'curricula/all/$', apis.AllCurriculaView.as_view()),
-    url(r'curricula/all/(?P<uuid>[^/.]+)/$', apis.RetrieveCurriculaView.as_view()),
+    url(r'curricula/all/(?P<uuid>[^/.]+)/$', apis.RetrieveCurriculumView.as_view()),
     # url(r'', include(router.urls)),
 ]
 
