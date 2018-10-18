@@ -243,6 +243,6 @@ WEBPACK_LOADER = {
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join('whoosh_index'),
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
     },
 }
