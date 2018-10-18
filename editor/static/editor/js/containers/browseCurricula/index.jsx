@@ -132,7 +132,6 @@ class BrowseCurriculaView extends React.Component {
     var swiper = this[slidesListName + 'Swiper']
     if (swiper) {
       swiper.navigation.update()
-      swiper.update()
     } // hack for update navigation buttons
   }
 
@@ -176,7 +175,6 @@ class BrowseCurriculaView extends React.Component {
   }
 
   render () {
-    this.updateSlidersNavigation()
     return (
       <div>
         <Grid fluid>

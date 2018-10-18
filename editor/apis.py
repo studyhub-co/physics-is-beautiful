@@ -49,17 +49,24 @@ class AllCurriculaView(generics.ListAPIView,):
     # ordering = ('-number_of_learners_denormalized',)
 
     def get_queryset(self):
-        return Curriculum.objects.filter(setting_publically=True).select_related('author').\
+        return Curriculum.objects\
+            .filter(Q(setting_publically=True)
+                    | Q(author=self.request.user)
+                    | Q(collaborators=self.request.user.profile)
+                    )\
+            .select_related('author').\
             annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
 
-class RetrieveCurriculaView(generics.RetrieveAPIView):
+class RetrieveCurriculumView(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MiniCurriculumSerializer
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Curriculum.objects.filter(setting_publically=True).select_related('author').\
+        return Curriculum.objects.filter(Q(setting_publically=True)
+                                         | Q(author=self.request.user)
+                                         | Q(collaborators=self.request.user.profile)).select_related('author').\
             annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
 
