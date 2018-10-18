@@ -30,9 +30,9 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
                 # filter for recently Curricula for current user
                 queryset = queryset. \
                     filter(units__modules__lessons__progress__profile__user=request.user). \
-                    annotate(updated_on_lastest=Max('units__modules__lessons__progress__updated_on')).\
-                    filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')).\
-                    order_by('-units__modules__lessons__progress__updated_on').distinct()
+                    annotate(updated_on_lastest=Max('units__modules__lessons__progress__updated_on')). \
+                    filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')). \
+                    order_by('-updated_on_lastest').distinct()
             # defer('units__modules__lessons__progress'). \
         return queryset
 
