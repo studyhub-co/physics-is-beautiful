@@ -37,7 +37,7 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
-class AllCurriculaView(generics.ListAPIView):
+class AllCurriculaView(generics.ListAPIView,):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = MiniCurriculumSerializer
     # serializer_class = CurriculumSerializer
@@ -47,6 +47,16 @@ class AllCurriculaView(generics.ListAPIView):
     ordering_fields = ('number_of_learners_denormalized', 'published_on', 'created_on',
                        'units__modules__lessons__progress__updated_on')
     # ordering = ('-number_of_learners_denormalized',)
+
+    def get_queryset(self):
+        return Curriculum.objects.filter(setting_publically=True).select_related('author').\
+            annotate(count_lessons=Count('units__modules__lessons', distinct=True))
+
+
+class RetrieveCurriculaView(generics.RetrieveAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = MiniCurriculumSerializer
+    lookup_field = 'uuid'
 
     def get_queryset(self):
         return Curriculum.objects.filter(setting_publically=True).select_related('author').\

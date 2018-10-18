@@ -5,38 +5,71 @@ import { connect } from 'react-redux'
 import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 import Moment from 'react-moment'
 
+import copy from 'copy-to-clipboard'
+
 import PropTypes from 'prop-types'
+
+import { store } from '../../app'
+
 import {
-  loadCurriculumIfNeeded
+  loadPublicCurriculum,
+  addCurriculum
 } from '../../actions'
+
 import { history } from '../../history'
 
 class CurriculumProfileView extends React.Component {
   constructor (props) {
     super(props)
     this.startCurriculum = this.startCurriculum.bind(this)
+    this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
+    this.onForkSelect = this.onForkSelect.bind(this)
   }
 
   componentDidMount () {
-    this.props.loadCurriculum(this.props.match.params.uuid)
+    this.props.loadPublicCurriculum(this.props.match.params.uuid)
   }
 
   startCurriculum () {
     window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
   }
 
+  onForkSelect (e) {
+    store.dispatch(addCurriculum(this.props.match.params.uuid))
+  }
+
+  onCopyShareableLink (e) {
+    copy(window.location.origin + '/curriculum/' + this.props.match.params.uuid + '/')
+  }
+
   render () {
-    var selectedCurriculum = this.props.curricula[this.props.match.params.uuid]
+    var selectedCurriculum = this.props.publicCurriculum
     if (!selectedCurriculum) return null
 
     return (
       <div className={'container section-sheet'}>
         <div className={'pop-up-window'}>
-          <a className={'back-button'} onClick={() => { history.push('/browse/') }} >
-            <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
-            Curricula
-          </a>
-          <div className={'selectable-image'} style={{height: '100%'}}>
+          <Grid fluid>
+            <Row style={{padding: 0}}>
+              <Col sm={6} md={6}>
+                <a className={'back-button'} onClick={() => { history.push('/browse/') }} >
+                  <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                  Curricula
+                </a>
+              </Col>
+              <Col sm={3} md={3}>
+                <a className={'back-button'} onClick={this.onForkSelect} >
+                  <Glyphicon glyph='export' /> Fork
+                </a>
+              </Col>
+              <Col sm={3} md={3}>
+                <a className={'back-button'} onClick={this.onCopyShareableLink} >
+                  <Glyphicon glyph='share-alt' /> Copy shareable link
+                </a>
+              </Col>
+            </Row>
+          </Grid>
+          <div style={{height: '100%'}}>
             { selectedCurriculum
               ? <Grid fluid>
                 <Row style={{padding: 0}}>
@@ -119,19 +152,20 @@ class CurriculumProfileView extends React.Component {
 }
 
 CurriculumProfileView.propTypes = {
-  loadCurriculum: PropTypes.func.isRequired
+  loadPublicCurriculum: PropTypes.func.isRequired,
+  publicCurriculum: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    curricula: state.curricula
+    publicCurriculum: state.curriculum.publicCurriculum
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))
+    loadPublicCurriculum: (uuid) => dispatch(loadPublicCurriculum(uuid))
   }
 }
 

@@ -228,6 +228,13 @@ function filteredCurricula (state = {}, action) {
   } else return state
 }
 
+function curriculum (state = {}, action) {
+  if (action.type === ActionTypes.PUBLIC_CURRICULUM_LOADED) {
+    return Object.assign({}, state, {publicCurriculum: action.publicCurriculum})
+  }
+  return state
+}
+
 function users (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FOUND_USERS_LOADED:
@@ -258,6 +265,7 @@ const combined = combineReducers({
   currentQuestion,
   filteredCurricula,
   allCurricula,
+  curriculum,
   studioTabs,
   users,
   router: routerReducer
