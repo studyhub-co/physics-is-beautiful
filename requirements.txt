@@ -45,3 +45,4 @@ django-gravatar2==1.4.2
 django-markdown-deux==1.0.5
 django-haystack==2.8.1
 Whoosh==2.7.4
+drf-haystack==1.8.4

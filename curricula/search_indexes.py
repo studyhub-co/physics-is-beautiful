@@ -4,8 +4,8 @@ from .models.question import Question
 
 
 class CurriculumIndex(indexes.SearchIndex, indexes.Indexable):
-    # text = indexes.CharField(document=True, use_template=True)
-    text = indexes.CharField(document=True)
+    text = indexes.CharField(document=True, use_template=True)
+    uuid = indexes.CharField(model_attr='uuid')
     name = indexes.CharField(model_attr='name')
     description = indexes.CharField(model_attr='description', null=True)
 

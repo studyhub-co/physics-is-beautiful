@@ -2,7 +2,7 @@ import datetime
 
 from django.utils import timezone
 
-from django.db.models import Q
+# from django.db.models import Q
 
 from rest_framework import serializers, status
 from rest_framework.response import Response
@@ -11,6 +11,9 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
+from drf_haystack.serializers import HaystackSerializer
+from drf_haystack.viewsets import HaystackViewSet
+
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
 from .services import get_progress_service, LessonLocked, LessonProgress
 
@@ -18,8 +21,10 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
     CurriculumSerializer, LessonProgressSerializer
 
-from profiles.serializers import PublicProfileSerializer
-from pib_auth.models import User
+from .search_indexes import CurriculumIndex
+
+# from profiles.serializers import PublicProfileSerializer
+# from pib_auth.models import User
 
 
 def check_classroom_progress(service, user):
@@ -193,6 +198,25 @@ class UnitViewSet(ModelViewSet):
     serializer_class = UnitSerializer
     queryset = Unit.objects.all()
     lookup_field = 'uuid'
+
+
+class CurriculumSearchSerializer(HaystackSerializer):
+
+    class Meta:
+        index_classes = [CurriculumIndex]
+
+        # The `fields` contains all the fields we want to include.
+        # NOTE: Make sure you don't confuse these with model attributes. These
+        # fields belong to the search index!
+        fields = [
+            "text", "name", "description", "uuid"
+        ]
+
+
+class CurriculaSearchViewSet(HaystackViewSet):
+    permission_classes = [IsAuthenticated]
+    index_models = [Curriculum]
+    serializer_class = CurriculumSearchSerializer
 
 
 class CurriculaViewSet(ModelViewSet):
