@@ -202,6 +202,25 @@ class UnitViewSet(ModelViewSet):
 
 class CurriculumSearchSerializer(HaystackSerializer):
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # WO hitting DB
+        request = self.context.get('request', None)
+        if 'image' in representation and representation['image']:
+            if request is not None:
+                representation['image'] = request.build_absolute_uri(representation['image'])
+        # With hitting DB
+        # representation['image'] = None
+        # if instance.object.image:
+        #     representation['image'] = instance.object.image.url
+
+        representation['author'] = {}
+        representation['author']['pk'] = instance.author_pk
+        representation['author']['get_absolute_url'] = instance.author_get_absolute_url
+        representation['author']['display_name'] = instance.author_display_name
+
+        return representation
+
     class Meta:
         index_classes = [CurriculumIndex]
 
@@ -209,7 +228,7 @@ class CurriculumSearchSerializer(HaystackSerializer):
         # NOTE: Make sure you don't confuse these with model attributes. These
         # fields belong to the search index!
         fields = [
-            "text", "name", "description", "uuid"
+            "text", "name", "description", "uuid", "image", "author"
         ]
 
 

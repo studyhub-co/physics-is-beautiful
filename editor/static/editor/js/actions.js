@@ -4,11 +4,13 @@ import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} f
 
 const API_PREFIX = '/api/v1/editor/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
+const API_CURRICULA_PREFIX = '/api/v1/curricula/'
 
 export const ActionTypes = Object.freeze({
   REQUEST_ADD_CURRICULUM: 'REQUEST_ADD_CURRICULUM',
   CURRICULA_LOADED: 'CURRICULA_LOADED',
   ALL_CURRICULA_LOADED: 'ALL_CURRICULA_LOADED',
+  SEARCH_CURRICULA_LOADED: 'SEARCH_CURRICULA_LOADED',
   RECENT_CURRICULA_LOADED: 'RECENT_CURRICULA_LOADED',
   POPULAR_CURRICULA_LOADED: 'POPULAR_CURRICULA_LOADED',
   NEW_CURRICULA_LOADED: 'NEW_CURRICULA_LOADED',
@@ -187,6 +189,27 @@ export function loadCurricula () {
       success: function (data, status, jqXHR) {
         dispatch(curriculaLoaded(data))
       }})
+  }
+}
+
+function curriculaSeacrhLoaded (data) {
+  var type = ActionTypes.SEARCH_CURRICULA_LOADED
+  return {
+    type: type,
+    curriculaSearchList: data
+  }
+}
+
+export function loadSeacrhCurricula (searchString) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_CURRICULA_PREFIX + 'curricula/search/?text=' + searchString,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(curriculaSeacrhLoaded(data))
+      }
+    })
   }
 }
 

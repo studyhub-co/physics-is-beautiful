@@ -225,8 +225,10 @@ class BrowseCurriculaView extends React.Component {
               <TabLink to='Questions'>Questions</TabLink>
               <div className='content'>
                 <TabContent for='Сurricula'>
-                  { this.state.searchEnabeled ? <CurriculaSearchView /> : null }
-                  <div style={{'display': displyDashboard }}>
+                  { this.state.searchEnabeled
+                    ? <CurriculaSearchView curriculaSearchString={this.state.searchString} /> : null
+                  }
+                  <div style={{ 'display': displyDashboard }}>
                     <Row>
                       <Col sm={12} md={12}>
                         <div className={'blue-title'} style={{lineHeight: '7rem'}}>
