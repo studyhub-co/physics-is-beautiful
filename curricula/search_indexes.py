@@ -8,6 +8,17 @@ class CurriculumIndex(indexes.SearchIndex, indexes.Indexable):
     uuid = indexes.CharField(model_attr='uuid')
     name = indexes.CharField(model_attr='name')
     description = indexes.CharField(model_attr='description', null=True)
+    image = indexes.CharField(model_attr='image')
+    author_pk = indexes.IntegerField(model_attr='author__pk')
+    author_display_name = indexes.CharField(model_attr='author__display_name')
+    author_get_absolute_url = indexes.CharField(model_attr='author__get_absolute_url')
+
+    def prepare_image(self, obj):
+        if obj.image:
+            # Need to check that url contain s3 domain
+            return obj.image.url
+        else:
+            return ''
 
     def get_model(self):
         return Curriculum

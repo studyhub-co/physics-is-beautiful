@@ -6,13 +6,15 @@ import {ActionTypes} from './actions'
 function curricula(state={}, action){
   switch (action.type) {
     case ActionTypes.CURRICULA_LOADED:
-	    return action.curricula
+      return action.curricula
     case ActionTypes.CURRICULUM_LOADED:
-	    return Object.assign({}, state, {[action.curriculum.uuid] : action.curriculum})
+      return Object.assign({}, state, {[action.curriculum.uuid] : action.curriculum})
+    case ActionTypes.SEARCH_CURRICULA_LOADED:
+      return Object.assign({}, state, {curriculaSearchList: action.curriculaSearchList})
     case ActionTypes.DELETE_CURRICULUM:
-	    var ret = Object.assign({}, state)
-	    delete ret[action.uuid]
-	    return ret
+      var ret = Object.assign({}, state)
+      delete ret[action.uuid]
+      return ret
     case ActionTypes.UNIT_ADDED:
       var ret = Object.assign({}, state)
       ret[action.curriculumUuid].units.push(action.unit.uuid)
@@ -22,8 +24,8 @@ function curricula(state={}, action){
       ret[action.curriculumUuid].units.splice(ret[action.curriculumUuid].units.indexOf(action.uuid), 1)
       return ret
     default:
-	    return state
-    }
+      return state
+  }
 }
 
 function units(state={}, action){
