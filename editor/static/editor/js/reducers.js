@@ -9,8 +9,6 @@ function curricula(state={}, action){
       return action.curricula
     case ActionTypes.CURRICULUM_LOADED:
       return Object.assign({}, state, {[action.curriculum.uuid] : action.curriculum})
-    case ActionTypes.SEARCH_CURRICULA_LOADED:
-      return Object.assign({}, state, {curriculaSearchList: action.curriculaSearchList})
     case ActionTypes.DELETE_CURRICULUM:
       var ret = Object.assign({}, state)
       delete ret[action.uuid]
@@ -25,6 +23,15 @@ function curricula(state={}, action){
       return ret
     default:
       return state
+  }
+}
+
+function search (state = {}, action) {
+  switch (action.type) {
+    case ActionTypes.SEARCH_CURRICULA_LOADED:
+      return Object.assign({}, state, {curricula: action.curriculaSearchList})
+    default:
+	    return state
   }
 }
 
@@ -258,6 +265,7 @@ function studioTabs (state = {tab: null}, action) {
 }
 
 const combined = combineReducers({
+  search,
   curricula,
   units,
   modules,

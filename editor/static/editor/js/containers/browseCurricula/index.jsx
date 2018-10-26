@@ -134,6 +134,8 @@ class BrowseCurriculaView extends React.Component {
     var swiper = this[slidesListName + 'Swiper']
     if (swiper) {
       swiper.navigation.update()
+      // TODO we need to check that is not pagination update
+      swiper.update()
     } // hack for update navigation buttons
   }
 
@@ -148,9 +150,9 @@ class BrowseCurriculaView extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (this.props.tab !== props.tab) {
-      this.updateSlidersNavigation()
-    }
+    // if (this.props.tab !== props.tab) {
+    this.updateSlidersNavigation()
+    // }
 
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
