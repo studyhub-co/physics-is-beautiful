@@ -116,7 +116,7 @@ export class CurriculumThumbnailPublic extends React.Component {
 CurriculumThumbnailPublic.propTypes = {
   uuid: PropTypes.string.isRequired,
   author: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired
   // onEditCurriculumProfileClick: PropTypes.func.isRequired,
   // onDeleteCurriculumClick: PropTypes.func.isRequired
 }

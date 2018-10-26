@@ -36,7 +36,7 @@ CurriculaSearchView.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    curriculaSearchList: state.curricula.curriculaSearchList
+    curriculaSearchList: state.search.curricula
   }
 }
 
