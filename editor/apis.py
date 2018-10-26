@@ -24,9 +24,8 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class RecentlyFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
-        params = request.query_params.get('filter')
-        if params:
-            if params == 'recent':
+        filter_param = request.query_params.get('filter')
+        if filter_param and filter_param == 'recent':
                 # filter for recently Curricula for current user
                 queryset = queryset. \
                     filter(units__modules__lessons__progress__profile__user=request.user). \
@@ -49,12 +48,8 @@ class AllCurriculaView(generics.ListAPIView,):
     # ordering = ('-number_of_learners_denormalized',)
 
     def get_queryset(self):
-        return Curriculum.objects\
-            .filter(Q(setting_publically=True)
-                    | Q(author=self.request.user)
-                    | Q(collaborators=self.request.user.profile)
-                    )\
-            .select_related('author').\
+        return Curriculum.objects.\
+            select_related('author').\
             annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
 
