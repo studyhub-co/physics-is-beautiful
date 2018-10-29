@@ -2,16 +2,25 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
+import { Grid, Row, Col } from 'react-bootstrap'
+
 import { connect } from 'react-redux'
 import { loadSeacrhCurricula } from '../../../actions'
 import { CurriculumThumbnailPublic } from './../../../components/curriculum_thumbnail_public'
 
+import { RingLoader } from 'react-spinners'
+
 class CurriculaSearchView extends React.Component {
-  // constructor (props) {
-  //   super(props)
-  // }
+  constructor (props) {
+    super(props)
+    this.doSearch = this.doSearch.bind(this)
+  }
 
   componentDidMount () {
+    this.props.loadSeacrhCurricula(this.props.curriculaSearchString)
+  }
+
+  doSearch () {
     this.props.loadSeacrhCurricula(this.props.curriculaSearchString)
   }
 
@@ -22,7 +31,19 @@ class CurriculaSearchView extends React.Component {
           key={curriculum.uuid}
           {...curriculum} />
       })
-      : <span>Please wait</span>}</div>)
+      : <Grid fluid>
+        <Row>
+          <Col sm={12} md={12}>
+            <div style={{height: '10rem', marginLeft: '50%'}}>
+              <RingLoader
+                color={'#1caff6'}
+                loading={Boolean(true)}
+              />
+            </div>
+          </Col>
+        </Row>
+      </Grid>}
+    </div>)
   }
 }
 
@@ -47,5 +68,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurriculaSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(CurriculaSearchView)
 export { CurriculaSearchView as CurriculaSearchViewNotConnected }

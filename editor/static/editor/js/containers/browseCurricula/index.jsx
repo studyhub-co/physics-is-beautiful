@@ -171,6 +171,7 @@ class BrowseCurriculaView extends React.Component {
     this.setState({searchString: e.target.value})
     if (!e.target.value) {
       this.setState({searchEnabeled: false})
+      this.searchView = null
     }
   }
 
@@ -178,12 +179,15 @@ class BrowseCurriculaView extends React.Component {
     var searchString = this.state.searchString
     if (searchString) {
       this.setState({searchEnabeled: true})
+      if (this.searchView) {
+        this.searchView.getWrappedInstance().doSearch()
+      }
     }
   }
 
   render () {
     var displyDashboard = 'block'
-    if (this.state.searchEnabeled){
+    if (this.state.searchEnabeled) {
       displyDashboard = 'none'
     }
 
@@ -228,7 +232,9 @@ class BrowseCurriculaView extends React.Component {
               <div className='content'>
                 <TabContent for='Сurricula'>
                   { this.state.searchEnabeled
-                    ? <CurriculaSearchView curriculaSearchString={this.state.searchString} /> : null
+                    ? <CurriculaSearchView
+                      ref={(node) => { if (node) this.searchView = node }}
+                      curriculaSearchString={this.state.searchString} /> : null
                   }
                   <div style={{ 'display': displyDashboard }}>
                     <Row>
