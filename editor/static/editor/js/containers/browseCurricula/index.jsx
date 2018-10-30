@@ -237,60 +237,33 @@ class BrowseCurriculaView extends React.Component {
                       curriculaSearchString={this.state.searchString} /> : null
                   }
                   <div style={{ 'display': displyDashboard }}>
-                    <Row>
-                      <Col sm={12} md={12}>
-                        <div className={'blue-title'} style={{lineHeight: '7rem'}}>
-                              Curriculum dashboard
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col sm={12} md={12}>
-                        <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                              My recently viewed
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col sm={12} md={12}>
-                        {/*<div className='swiper-container' id={'recent-swiper'}>*/}
-                          {/*<div className='swiper-wrapper'>*/}
-                            {/*{this.state.virtualData.recentSlides}*/}
-                          {/*</div>*/}
-                        {/*</div>*/}
-                        <Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>
-                          {this.state.recentSlides}
-                        </Swiper>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col sm={12} md={12}>
-                        <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                              Popular
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col sm={12} md={12}>
-                        <Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>
-                          {this.state.popularSlides}
-                        </Swiper>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col sm={12} md={12}>
-                        <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                            New
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col sm={12} md={12}>
-                        <Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>
-                          {this.state.newSlides}
-                        </Swiper>
-                      </Col>
-                    </Row>
+                    <Grid fluid>
+                      <Row>
+                        <Col sm={12} md={12}>
+                          <div className={'blue-title'} style={{lineHeight: '7rem'}}>
+                                Curriculum dashboard
+                          </div>
+                          <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                                My recently viewed
+                          </div>
+                          <Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>
+                            {this.state.recentSlides}
+                          </Swiper>
+                          <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                                Popular
+                          </div>
+                          <Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>
+                            {this.state.popularSlides}
+                          </Swiper>
+                          <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                              New
+                          </div>
+                          <Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>
+                            {this.state.newSlides}
+                          </Swiper>
+                        </Col>
+                      </Row>
+                    </Grid>
                   </div>
                 </TabContent>
               </div>
@@ -301,6 +274,63 @@ class BrowseCurriculaView extends React.Component {
     )
   }
 }
+
+{/*<Grid fluid>*/}
+                   {/*<Row>*/}
+                     {/*<Col sm={12} md={12}>*/}
+                       {/*<div className={'blue-title'} style={{lineHeight: '7rem'}}>*/}
+                             {/*Curriculum dashboard*/}
+                       {/*</div>*/}
+                     {/*</Col>*/}
+                   {/*</Row>*/}
+                   {/*<Row>*/}
+                     {/*<Col sm={12} md={12}>*/}
+                       {/*<div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>*/}
+                             {/*My recently viewed*/}
+                       {/*</div>*/}
+                     {/*</Col>*/}
+                   {/*</Row>*/}
+                   {/*<Row>*/}
+                     {/*<Col sm={12} md={12}>*/}
+                       {/*/!*<div className='swiper-container' id={'recent-swiper'}>*!/*/}
+                         {/*/!*<div className='swiper-wrapper'>*!/*/}
+                           {/*/!*{this.state.virtualData.recentSlides}*!/*/}
+                         {/*/!*</div>*!/*/}
+                       {/*/!*</div>*!/*/}
+                       {/*<Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>*/}
+                         {/*{this.state.recentSlides}*/}
+                       {/*</Swiper>*/}
+                     {/*</Col>*/}
+                   {/*</Row>*/}
+                   {/*<Row>*/}
+                     {/*<Col sm={12} md={12}>*/}
+                       {/*<div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>*/}
+                             {/*Popular*/}
+                       {/*</div>*/}
+                     {/*</Col>*/}
+                   {/*</Row>*/}
+                   {/*<Row>*/}
+                     {/*<Col sm={12} md={12}>*/}
+                       {/*<Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>*/}
+                         {/*{this.state.popularSlides}*/}
+                       {/*</Swiper>*/}
+                     {/*</Col>*/}
+                   {/*</Row>*/}
+                   {/*<Row>*/}
+                     {/*<Col sm={12} md={12}>*/}
+                       {/*<div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>*/}
+                           {/*New*/}
+                       {/*</div>*/}
+                     {/*</Col>*/}
+                   {/*</Row>*/}
+                   {/*<Row>*/}
+                     {/*<Col sm={12} md={12}>*/}
+                       {/*<Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>*/}
+                         {/*{this.state.newSlides}*/}
+                       {/*</Swiper>*/}
+                     {/*</Col>*/}
+                   {/*</Row>*/}
+                 {/*</Grid>*/}
 
 const mapStateToProps = (state) => {
   return {
