@@ -216,7 +216,6 @@
     font-size: 20rem;
 }
 
-
 .editor .editor-common-button {
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
@@ -256,7 +255,8 @@
     /* new values */
     padding: 0;
     width: 25rem;
-    height: 30rem;
+    /*height: 30rem;*/
+    height: 40rem;  /* temp fix for swiper overflow hidden, drop down menu does not visible at the full */
 }
 
 .editor .pop-up-window {

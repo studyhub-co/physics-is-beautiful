@@ -27,12 +27,12 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         filter_param = request.query_params.get('filter')
         if filter_param and filter_param == 'recent':
                 # filter for recently Curricula for current user
-                queryset = queryset. \
-                    filter(units__modules__lessons__progress__profile__user=request.user). \
-                    annotate(updated_on_lastest=Max('units__modules__lessons__progress__updated_on')). \
-                    filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')). \
-                    order_by('-updated_on_lastest').distinct()
-            # defer('units__modules__lessons__progress'). \
+                # queryset = queryset. \
+                #     filter(units__modules__lessons__progress__profile__user=request.user). \
+                #     annotate(updated_on_lastest=Max('units__modules__lessons__progress__updated_on')). \
+                #     filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')). \
+                #     order_by('-updated_on_lastest').distinct()
+                queryset = queryset.filter(curricula_user_dashboard__profile__user=request.user)
         return queryset
 
 
@@ -50,7 +50,7 @@ class AllCurriculaView(generics.ListAPIView,):
     def get_queryset(self):
         return Curriculum.objects.\
             select_related('author').\
-            annotate(count_lessons=Count('units__modules__lessons', distinct=True))
+            annotate(count_lessons=Count('units__modules__lessons', distinct=True)).distinct()
 
 
 class RetrieveCurriculumView(generics.RetrieveAPIView):

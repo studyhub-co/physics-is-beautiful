@@ -64,20 +64,38 @@ export function changeStudioSelectedTab (selectedTab, tabNamespace) {
 }
 
 export function addCurriculum (prototype) {
-    return function(dispatch) {
-	//	dispatch(requestAddCurriculum());
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'curricula/',
-	    method : 'POST',
-	    data : {name : 'New curriculum',
-		    prototype : prototype},
-	    success: function(data, status, jqXHR) {		
-		dispatch(curriculumLoaded(data));
-		history.push('/studio/editor/curricula/'+data.uuid+'/');
-	    }
-	});
-    }
+  return function (dispatch) {
+    //	dispatch(requestAddCurriculum());
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/',
+      method: 'POST',
+      data: {
+        name: 'New curriculum',
+        prototype: prototype
+      },
+      success: function (data, status, jqXHR) {
+        dispatch(curriculumLoaded(data))
+        history.push('/studio/editor/curricula/' + data.uuid + '/')
+      }
+    })
+  }
+}
+
+export function addCurriculumToDashboard (uuid) {
+  return function (dispatch) {
+    // TODO
+    // $.ajax({
+    //   async: true,
+    //   url: API_PREFIX + 'curricula/' + uuid + '/dashboard/add',
+    //   method: 'POST',
+    //   success: function (data, status, jqXHR) {
+    //     // reload recent list
+    //     // dispatch(curriculumLoaded(data))
+    //     // history.push('/studio/editor/curricula/' + data.uuid + '/')
+    //   }
+    // })
+  }
 }
 
 export function curriculaLoaded(data) {

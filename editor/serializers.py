@@ -59,7 +59,8 @@ class MiniCurriculumSerializer(BaseSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
-        
+
+
 class AnswerContentField(serializers.Field):
     def to_representation(self, obj):
         if isinstance(obj, ImageWText):
@@ -348,7 +349,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
 
     def validate_name(self, value):
         if value and value.lower() == Curriculum.Name.DEFAULT.lower():
-            raise serializers.ValidationError("Invalid name: %s"%value)
+            raise serializers.ValidationError("Invalid name: %s" % value)
         return value
 
     def validate_cover_photo(self, value):
@@ -359,7 +360,6 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         return value
 
     def update(self, instance, validated_data):
-
         # TODO Do we need to save collaborators while create curriculum?
         try:
             instance.collaborators = validated_data.pop('collaborators')
@@ -373,7 +373,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons',
+        fields = ['uuid', 'name', 'image', 'url', 'units', 'created_on', 'updated_on', 'count_lessons', 'author',
                   'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids',
                   'setting_units_unlocked', 'setting_modules_unlocked', 'setting_lessons_unlocked',
                   'setting_publically'

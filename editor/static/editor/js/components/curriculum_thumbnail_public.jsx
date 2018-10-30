@@ -1,6 +1,9 @@
 import React from 'react'
+// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
+
+import { addCurriculum, addCurriculumToDashboard } from './../actions'
 
 import { history } from '../history'
 
@@ -11,6 +14,9 @@ import copy from 'copy-to-clipboard'
 import { Thumbnail } from './thumbnail'
 
 import { store } from '../app'
+
+// import { Portal } from 'react-portal'
+// "react-portal": "^4.1.5",
 
 class CurriculumMenuToggle extends React.Component {
   constructor (props, context) {
@@ -32,12 +38,30 @@ class CurriculumMenuToggle extends React.Component {
   }
 }
 
+// not works now
+// class CustomCurriculumMenu extends React.Component {
+//   render () {
+//     const { children } = this.props
+//
+//     return (
+//       <Portal>
+//         <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
+//           {children}
+//         </Dropdown.Menu>
+//       </Portal>
+//     )
+//   }
+// }
+
 export class CurriculumThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onTitleClick = this.onTitleClick.bind(this)
     this.onLearnSelect = this.onLearnSelect.bind(this)
     this.onViewProfileSelect = this.onViewProfileSelect.bind(this)
+    this.onForkSelect = this.onForkSelect.bind(this)
+    this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
+    this.onAddToDashboardSelect = this.onAddToDashboardSelect.bind(this)
   }
 
   onLearnSelect () {
@@ -48,28 +72,36 @@ export class CurriculumThumbnailPublic extends React.Component {
     history.push('/curriculum/profile/' + this.props.uuid + '/')
   }
 
-  //
   onTitleClick () {
     window.open('/curriculum/' + this.props.uuid + '/', '_blank')
   }
-  //
-  // onCopyShareableLink (e) {
-  //   copy(window.location.origin + '/curriculum/' + this.props.uuid + '/')
-  // }
-  //
-  // onEditCurriculumSelect (e) {
-  //   this.props.onEditCurriculumProfileClick()
-  // }
-  //
-  // onDeleteCurriculum (e) {
-  //   this.props.onDeleteCurriculumClick(this.props.uuid)
-  // }
-  //
-  // onForkSelect (e) {
-  //   store.dispatch(addCurriculum(this.props.uuid))
-  // }
+
+  onCopyShareableLink (e) {
+    copy(window.location.origin + '/curriculum/' + this.props.uuid + '/')
+  }
+
+  onAddToDashboardSelect (e) {
+    store.dispatch(addCurriculumToDashboard(this.props.uuid))
+  }
+
+  onForkSelect (e) {
+    store.dispatch(addCurriculum(this.props.uuid))
+  }
 
   render () {
+    // TODO neeed react >= 16
+    // const Menu = () =>
+    //   ReactDOM.createPortal(
+    //     <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
+    //       <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
+    //       <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
+    //       <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
+    //       <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
+    //       <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
+    //     </Dropdown.Menu>,
+    //     document.getElementById('root')
+    //   )
+
     return (
       <Col
         sm={2}
@@ -84,13 +116,15 @@ export class CurriculumThumbnailPublic extends React.Component {
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
             <CurriculumMenuToggle bsRole='toggle' />
+            {/*<CustomCurriculumMenu bsRole='menu'>*/}
             <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
               <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
               <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
-              {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>*/}
-              {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
-              {/*<MenuItem onSelect={this.onDeleteCurriculum} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>*/}
+              <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
+              <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
+              <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
             </Dropdown.Menu>
+            {/*</CustomCurriculumMenu>*/}
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.name}

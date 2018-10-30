@@ -25,25 +25,24 @@ class CurriculaSearchView extends React.Component {
   }
 
   render () {
-    return (<div>{this.props.curriculaSearchList
+    return (<Grid fluid>{this.props.curriculaSearchList
       ? this.props.curriculaSearchList.map(function (curriculum, i) {
         return <CurriculumThumbnailPublic
           key={curriculum.uuid}
           {...curriculum} />
       })
-      : <Grid fluid>
-        <Row>
-          <Col sm={12} md={12}>
-            <div style={{height: '10rem', marginLeft: '50%'}}>
-              <RingLoader
-                color={'#1caff6'}
-                loading={Boolean(true)}
-              />
-            </div>
-          </Col>
-        </Row>
-      </Grid>}
-    </div>)
+      : <Row>
+        <Col sm={12} md={12}>
+          <div style={{height: '10rem', marginLeft: '50%'}}>
+            <RingLoader
+              color={'#1caff6'}
+              loading={Boolean(true)}
+            />
+          </div>
+        </Col>
+      </Row> }
+    </Grid>
+    )
   }
 }
 
