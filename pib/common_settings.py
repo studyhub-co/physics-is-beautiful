@@ -135,6 +135,7 @@ DATABASES = {
         'USER': os.getenv('DJANGO_DB_USER', 'dbadmin'),
         'HOST': os.getenv('DJANGO_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASS', ''),
 
         # 'OPTIONS': {
         #     # Minor hack to allow creation of Djeddit threads
