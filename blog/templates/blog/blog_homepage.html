@@ -22,6 +22,24 @@
 
         <div class="row" style="margin-bottom:20px;">
             <div class="col-md-9">
+                <a href = "{% url 'blog:mobile_app' %}">
+                    <h2 style="margin-top:0">Physics is Beautiful: Mobile App</h2>
+                </a>
+                Announcing the release of our mobile app. Available for Android and coming soon to iOS.
+                <br>
+                <a href="{% url 'blog:shankar' %}">READ MORE <span>»</span></a>
+
+                <div class="article-date">November 5th, 2018</div>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'blog:mobile_app' %}" class="thumbnail">
+                    <img src="{% static 'blog/images/mobile-app/icon-rounded.png' %}" alt="...">
+                </a>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-9">
                 <a href = "{% url 'blog:shankar' %}">
                     <h2 style="margin-top:0">Shankar Principles of Quantum Mechanics Solutions</h2>
                 </a>
