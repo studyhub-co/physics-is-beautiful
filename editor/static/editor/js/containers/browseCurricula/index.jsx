@@ -40,6 +40,8 @@ class BrowseCurriculaView extends React.Component {
     this.handleSearchString = this.handleSearchString.bind(this)
     this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
     this.searchButtonClick = this.searchButtonClick.bind(this)
+    this.populateSlides = this.populateSlides.bind(this)
+    this.onAddRemoveFromDashboardSildes = this.onAddRemoveFromDashboardSildes.bind(this)
   }
 
   componentDidMount () {
@@ -103,6 +105,45 @@ class BrowseCurriculaView extends React.Component {
     return swiperParams
   }
 
+  alreadyInSlides (slides, uuid) {
+    for (var i = 0; i < slides.length; i++) {
+      if (slides[i].props.curriculum.uuid === uuid) {
+        return true
+      }
+    }
+    return false
+  }
+
+  onAddRemoveFromDashboardSildes (action, curriculum) {
+    var newRecent = this.state['recentSlides']
+
+    // remove from recent
+    if (action === 'remove') {
+      for (var i = 0; i < newRecent.length; i++) {
+        if (newRecent[i].props.curriculum.uuid === curriculum.uuid) {
+          // remove from recent
+          newRecent.splice(i, 1)
+          this.setState({'recentSlides': newRecent})
+          return
+        }
+      }
+    }
+
+    // add to recent
+    if (action === 'add') {
+      if (!this.alreadyInSlides(newRecent, curriculum.uuid)) {
+        newRecent.push(<CurriculumThumbnailPublic
+          className='swiper-slide'
+          key={curriculum.uuid}
+          onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+          slidesListName={'recentSlides'}
+          curriculum={curriculum}
+        />)
+        this.setState({'recentSlides': newRecent})
+      }
+    }
+  }
+
   populateSlides (slidesListName, props) {
     var slides = []
     var curricula = props.popularCurricula
@@ -119,13 +160,17 @@ class BrowseCurriculaView extends React.Component {
     }
 
     for (var index in curricula.results) {
-      slides.push(
-        <CurriculumThumbnailPublic
-          className='swiper-slide'
-          key={curricula.results[index].uuid}
-          {...curricula.results[index]}
-        />
-      )
+      if (!this.alreadyInSlides(slides, curricula.results[index].uuid)) {
+        slides.push(
+          <CurriculumThumbnailPublic
+            className='swiper-slide'
+            key={curricula.results[index].uuid}
+            onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+            slidesListName={slidesListName}
+            curriculum={curricula.results[index]}
+          />/*{...curricula.results[index]}*/
+        )
+      }
     }
     return slides
   }

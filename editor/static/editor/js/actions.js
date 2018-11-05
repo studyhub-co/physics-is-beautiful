@@ -84,17 +84,29 @@ export function addCurriculum (prototype) {
 
 export function addCurriculumToDashboard (uuid) {
   return function (dispatch) {
-    // TODO
-    // $.ajax({
-    //   async: true,
-    //   url: API_PREFIX + 'curricula/' + uuid + '/dashboard/add',
-    //   method: 'POST',
-    //   success: function (data, status, jqXHR) {
-    //     // reload recent list
-    //     // dispatch(curriculumLoaded(data))
-    //     // history.push('/studio/editor/curricula/' + data.uuid + '/')
-    //   }
-    // })
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/' + uuid + '/add_to_dashboard/',
+      method: 'POST',
+      success: function (data, status, jqXHR) {
+        // reload recent list // can't do this due
+        // dispatch(loadAllCurricula(null, 'recent'))
+      }
+    })
+  }
+}
+
+export function removeCurriculumFromDashboard (uuid) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/' + uuid + '/remove_from_dashboard/',
+      method: 'POST',
+      success: function (data, status, jqXHR) {
+        // reload recent list
+        // dispatch(loadAllCurricula(null, 'recent'))
+      }
+    })
   }
 }
 
@@ -185,17 +197,17 @@ export function loadAllCurricula (url, filter, ordering) {
   }
 }
 
-export function loadRecentCurricula () {
-  return function (dispatch) {
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'curricula/',
-      context: this,
-      success: function (data, status, jqXHR) {
-        dispatch(curriculaLoaded(data))
-      }})
-  }
-}
+// export function loadRecentCurricula () {
+//   return function (dispatch) {
+//     $.ajax({
+//       async: true,
+//       url: API_PREFIX + 'curricula/',
+//       context: this,
+//       success: function (data, status, jqXHR) {
+//         dispatch(curriculaLoaded(data))
+//       }})
+//   }
+// }
 
 export function loadCurricula () {
   return function (dispatch) {

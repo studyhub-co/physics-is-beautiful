@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 
-import { addCurriculum, addCurriculumToDashboard } from './../actions'
+import { addCurriculum, addCurriculumToDashboard, removeCurriculumFromDashboard } from './../actions'
 
 import { history } from '../history'
 
@@ -62,30 +62,41 @@ export class CurriculumThumbnailPublic extends React.Component {
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onAddToDashboardSelect = this.onAddToDashboardSelect.bind(this)
+    this.onRemoveFromDashboardSelect = this.onRemoveFromDashboardSelect.bind(this)
   }
 
   onLearnSelect () {
-    window.open('/curriculum/' + this.props.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_blank')
   }
 
   onViewProfileSelect () {
-    history.push('/curriculum/profile/' + this.props.uuid + '/')
+    history.push('/curriculum/profile/' + this.props.curriculum.uuid + '/')
   }
 
   onTitleClick () {
-    window.open('/curriculum/' + this.props.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_blank')
   }
 
   onCopyShareableLink (e) {
-    copy(window.location.origin + '/curriculum/' + this.props.uuid + '/')
+    copy(window.location.origin + '/curriculum/' + this.props.curriculum.uuid + '/')
   }
 
   onAddToDashboardSelect (e) {
-    store.dispatch(addCurriculumToDashboard(this.props.uuid))
+    store.dispatch(addCurriculumToDashboard(this.props.curriculum.uuid))
+    if (this.props.slidesListName !== 'recentSlides') {
+      this.props.onAddRemoveFromDashboardSildes('add', this.props.curriculum)
+    }
+  }
+
+  onRemoveFromDashboardSelect (e) {
+    store.dispatch(removeCurriculumFromDashboard(this.props.curriculum.uuid))
+    if (this.props.slidesListName === 'recentSlides') {
+      this.props.onAddRemoveFromDashboardSildes('remove', this.props.curriculum)
+    }
   }
 
   onForkSelect (e) {
-    store.dispatch(addCurriculum(this.props.uuid))
+    store.dispatch(addCurriculum(this.props.curriculum.uuid))
   }
 
   render () {
@@ -109,7 +120,7 @@ export class CurriculumThumbnailPublic extends React.Component {
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
         <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
-          <Thumbnail image={this.props.image} />
+          <Thumbnail image={this.props.curriculum.image} />
         </div>
         <div>
           <Dropdown
@@ -122,23 +133,26 @@ export class CurriculumThumbnailPublic extends React.Component {
               <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
               <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
               <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-              <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
+              { this.props.slidesListName === 'recentSlides'
+                ? <MenuItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Remove from dashboard</MenuItem>
+                : <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
+              }
             </Dropdown.Menu>
             {/*</CustomCurriculumMenu>*/}
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
-            {this.props.name}
+            {this.props.curriculum.name}
           </div>
           <div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            <a href={this.props.author.get_absolute_url} target={'_blank'}>
-              {this.props.author.display_name}
-            </a> ∙ {this.props.count_lessons } lessons ∙ { this.props.number_of_learners } learners
+            <a href={this.props.curriculum.author.get_absolute_url} target={'_blank'}>
+              {this.props.curriculum.author.display_name}
+            </a> ∙ {this.props.curriculum.count_lessons } lessons ∙ { this.props.curriculum.number_of_learners } learners
           </div>
           <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
-              {this.props.created_on}
+              {this.props.curriculum.created_on}
             </Moment> ∙ Last updated <Moment fromNow>
-              {this.props.updated_on}
+              {this.props.curriculum.updated_on}
             </Moment>
           </div>
         </div>
@@ -148,9 +162,12 @@ export class CurriculumThumbnailPublic extends React.Component {
 }
 
 CurriculumThumbnailPublic.propTypes = {
-  uuid: PropTypes.string.isRequired,
-  author: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired
+  // uuid: PropTypes.string.isRequired,
+  // author: PropTypes.object.isRequired,
+  // name: PropTypes.string.isRequired,
+  curriculum: PropTypes.object.isRequired,
+  slidesListName: PropTypes.string,
+  onAddRemoveFromDashboardSildes: PropTypes.func
   // onEditCurriculumProfileClick: PropTypes.func.isRequired,
   // onDeleteCurriculumClick: PropTypes.func.isRequired
 }
