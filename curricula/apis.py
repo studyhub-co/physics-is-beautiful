@@ -4,7 +4,7 @@ from django.utils import timezone
 
 # from django.db.models import Q
 
-from rest_framework import serializers, status
+from rest_framework import serializers, status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes, action
@@ -205,18 +205,6 @@ class CurriculaViewSet(ModelViewSet):
     serializer_class = CurriculumSerializer
     queryset = Curriculum.objects.all()
     lookup_field = 'uuid'
-
-    # @action(methods=['get'], detail=True, permission_classes=[IsAuthenticated, ])
-    # def collaborators(self, request, curricula_uuid):
-    #     try:
-    #         curriculum = self.queryset.get(uuid=curricula_uuid)
-    #     except Curriculum.DoesNotExist:
-    #         raise NotFound('Can\'t find the curriculum')
-    #
-    #     collaborators = User.objects.filter(profile__in=curriculum.collaborators)
-    #
-    #     serializer = PublicProfileSerializer(collaborators, many=True)
-    #     return Response(serializer.data)
 
     def get_queryset(self):
         queryset = self.queryset

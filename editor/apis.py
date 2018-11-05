@@ -1,15 +1,17 @@
 from django.db.models import Q, Count, Max, F
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import permissions, mixins
-from rest_framework import generics
+from rest_framework import permissions, status, generics
+from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 from rest_framework import filters
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer
+from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, CurriculumUserDashboard
 
 from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, UnitSerializer, \
     ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
@@ -70,6 +72,30 @@ class CurriculumViewSet(ModelViewSet):
     serializer_class = CurriculumSerializer
     lookup_field = 'uuid'
 
+    @action(methods=['POST'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
+    def add_to_dashboard(self, request, uuid):
+        try:
+            curriculum = Curriculum.objects.get(uuid=uuid)
+        except Curriculum.DoesNotExist:
+            raise NotFound()
+        CurriculumUserDashboard.objects.get_or_create(
+            profile=request.user.profile,
+            curriculum=curriculum
+        )
+
+        return Response(status=status.HTTP_201_CREATED)
+
+    @action(methods=['POST'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
+    def remove_from_dashboard(self, request, uuid):
+        try:
+            curriculum_user_dashboard = CurriculumUserDashboard.objects.get(profile=request.user.profile, curriculum__uuid=uuid)
+        except CurriculumUserDashboard.DoesNotExist:
+            raise NotFound()
+
+        curriculum_user_dashboard.delete()
+
+        return Response(status=status.HTTP_201_CREATED)
+
     def get_queryset(self):
         return Curriculum.objects.filter(Q(author=self.request.user)
                                          | Q(collaborators=self.request.user.profile)
@@ -83,6 +109,9 @@ class CurriculumViewSet(ModelViewSet):
         if 'prototype' in self.request.data and self.request.data['prototype']:
             prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
             prototype.clone(new_curriculum)
+
+    class Meta:
+        ordering = ['-published_on']
 
     
 class UnitViewSet(ModelViewSet):
