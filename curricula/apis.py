@@ -8,11 +8,11 @@ from rest_framework import serializers, status, permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, NotAcceptable
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from drf_haystack.serializers import HaystackSerializer
-from drf_haystack.viewsets import HaystackViewSet
+# from drf_haystack.serializers import HaystackSerializer
+# from drf_haystack.viewsets import HaystackViewSet
 
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
 from .services import get_progress_service, LessonLocked, LessonProgress
@@ -21,7 +21,7 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
     CurriculumSerializer, LessonProgressSerializer
 
-from .search_indexes import CurriculumIndex
+# from .search_indexes import CurriculumIndex
 
 # from profiles.serializers import PublicProfileSerializer
 # from pib_auth.models import User
@@ -235,44 +235,69 @@ class CurriculaViewSet(ModelViewSet):
         return super(CurriculaViewSet, self).get_object()
 
 
+# Postgresql FTS Search
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+
+
+class CurriculaSearchViewSet(ModelViewSet):
+    serializer_class = CurriculumSerializer
+    queryset = Curriculum.objects.all()
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        qs = self.queryset
+
+        keywords = self.request.GET.get('query')
+        if not keywords:
+            raise NotAcceptable('Search query required')
+
+        query = SearchQuery(keywords)
+        vector = SearchVector('name', 'description')
+        qs = qs.annotate(search=vector).filter(search=query)
+        qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+
+
+        return qs
+
+
 # FTS Search
 
-class CurriculumSearchSerializer(HaystackSerializer):
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        # WO hitting DB
-        request = self.context.get('request', None)
-        if 'image' in representation and representation['image']:
-            if request is not None:
-                representation['image'] = request.build_absolute_uri(representation['image'])
-        # With hitting DB
-        # representation['image'] = None
-        # if instance.object.image:
-        #     representation['image'] = instance.object.image.url
-
-        representation['author'] = {}
-        representation['author']['pk'] = instance.author_pk
-        representation['author']['get_absolute_url'] = instance.author_get_absolute_url
-        representation['author']['display_name'] = instance.author_display_name
-
-        return representation
-
-    class Meta:
-        index_classes = [CurriculumIndex]
-
-        # The `fields` contains all the fields we want to include.
-        # NOTE: Make sure you don't confuse these with model attributes. These
-        # fields belong to the search index!
-        fields = [
-            "text", "name", "description", "uuid", "image", "author"
-        ]
-
-
-class CurriculaSearchViewSet(HaystackViewSet):
-    permission_classes = [IsAuthenticated]
-    index_models = [Curriculum]
-    serializer_class = CurriculumSearchSerializer
+# class CurriculumSearchSerializer(HaystackSerializer):
+#
+#     def to_representation(self, instance):
+#         representation = super().to_representation(instance)
+#         # WO hitting DB
+#         request = self.context.get('request', None)
+#         if 'image' in representation and representation['image']:
+#             if request is not None:
+#                 representation['image'] = request.build_absolute_uri(representation['image'])
+#         # With hitting DB
+#         # representation['image'] = None
+#         # if instance.object.image:
+#         #     representation['image'] = instance.object.image.url
+#
+#         representation['author'] = {}
+#         representation['author']['pk'] = instance.author_pk
+#         representation['author']['get_absolute_url'] = instance.author_get_absolute_url
+#         representation['author']['display_name'] = instance.author_display_name
+#
+#         return representation
+#
+#     class Meta:
+#         index_classes = [CurriculumIndex]
+#
+#         # The `fields` contains all the fields we want to include.
+#         # NOTE: Make sure you don't confuse these with model attributes. These
+#         # fields belong to the search index!
+#         fields = [
+#             "text", "name", "description", "uuid", "image", "author"
+#         ]
+#
+#
+# class CurriculaSearchViewSet(HaystackViewSet):
+#     permission_classes = [IsAuthenticated]
+#     index_models = [Curriculum]
+#     serializer_class = CurriculumSearchSerializer
 
 
 

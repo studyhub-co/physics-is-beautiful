@@ -4,7 +4,7 @@ import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { history }from '../../history'
+import { history } from '../../history'
 import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 

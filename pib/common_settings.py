@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # FTS
-    'haystack',
+    # 'haystack',
     # assets
     'django_s3_storage',
     # For allauth
@@ -241,11 +241,11 @@ WEBPACK_LOADER = {
     }
 }
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
-    },
-}
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+#         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+#     },
+# }
 
 # HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

@@ -42,6 +42,8 @@ class BrowseCurriculaView extends React.Component {
     this.searchButtonClick = this.searchButtonClick.bind(this)
     this.populateSlides = this.populateSlides.bind(this)
     this.onAddRemoveFromDashboardSildes = this.onAddRemoveFromDashboardSildes.bind(this)
+    this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
+    this.clearSearchButtonClick = this.clearSearchButtonClick.bind(this)
   }
 
   componentDidMount () {
@@ -212,12 +214,20 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
+  // TODO create new component for search
+
   handleSearchString (e) {
     this.setState({searchString: e.target.value})
     if (!e.target.value) {
       this.setState({searchEnabeled: false})
       this.searchView = null
     }
+  }
+
+  clearSearchButtonClick (e) {
+    this.setState({searchString: ''})
+    this.setState({searchEnabeled: false})
+    this.searchView = null
   }
 
   searchButtonClick (e) {
@@ -227,6 +237,12 @@ class BrowseCurriculaView extends React.Component {
       if (this.searchView) {
         this.searchView.getWrappedInstance().doSearch()
       }
+    }
+  }
+
+  handleSearchInputKeyUp (e) {
+    if (e.keyCode === 13) { // 'enter' key
+      this.searchButtonClick()
     }
   }
 
@@ -248,11 +264,15 @@ class BrowseCurriculaView extends React.Component {
                     value={this.state.searchString}
                     placeholder='Search'
                     onChange={this.handleSearchString}
+                    onKeyUp={this.handleSearchInputKeyUp}
                   />
                   <InputGroup.Button>
                     <Button
                       onClick={this.searchButtonClick}
                     ><Glyphicon glyph='search' /></Button>
+                    <Button
+                      onClick={this.clearSearchButtonClick}
+                    ><Glyphicon glyph='remove' /></Button>
                   </InputGroup.Button>
                 </InputGroup>
               </FormGroup>
