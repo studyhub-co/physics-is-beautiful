@@ -55,7 +55,7 @@ class MiniCurriculumSerializer(BaseSerializer):
     class Meta:
         model = Curriculum
         fields = ['uuid', 'name', 'image', 'number_of_learners', 'url', 'author', 'count_lessons', 'created_on',
-                  'updated_on']
+                  'updated_on', 'cover_photo', 'description']
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }

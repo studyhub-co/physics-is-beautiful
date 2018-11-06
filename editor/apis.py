@@ -94,7 +94,7 @@ class CurriculumViewSet(ModelViewSet):
 
         curriculum_user_dashboard.delete()
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_200_OK)
 
     def get_queryset(self):
         return Curriculum.objects.filter(Q(author=self.request.user)

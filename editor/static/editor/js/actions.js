@@ -89,8 +89,6 @@ export function addCurriculumToDashboard (uuid) {
       url: API_PREFIX + 'curricula/' + uuid + '/add_to_dashboard/',
       method: 'POST',
       success: function (data, status, jqXHR) {
-        // reload recent list // can't do this due
-        // dispatch(loadAllCurricula(null, 'recent'))
       }
     })
   }
@@ -103,8 +101,6 @@ export function removeCurriculumFromDashboard (uuid) {
       url: API_PREFIX + 'curricula/' + uuid + '/remove_from_dashboard/',
       method: 'POST',
       success: function (data, status, jqXHR) {
-        // reload recent list
-        // dispatch(loadAllCurricula(null, 'recent'))
       }
     })
   }
