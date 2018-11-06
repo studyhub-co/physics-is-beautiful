@@ -20,6 +20,10 @@ def college_scorecard(request):
 
 def shankar(request):
     return render(request, 'blog/shankar.html')
+
+
+def mobile_app(request):
+    return render(request, 'blog/mobile-app.html')
     
 
 def college_map(request):

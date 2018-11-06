@@ -1,0 +1,37 @@
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/wordpairs.css' %}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+{% endblock %}
+
+
+{% block body_content %}
+    <div class="container" style="margin-bottom:20px;">
+        <h1>Physics is Beautiful Mobile App</h1>
+
+        <a href="https://play.google.com/store/apps/details?id=com.physicsisbeautiful.app">
+            <img src="{% static 'blog/images/mobile-app/google-play.png' %}" />
+        </a>
+
+        <br /><br />
+        
+        <p>Learn physics topics including vectors, unit conversion, motion diagrams, position, velocity and acceleration graphs, 
+            Newton's Laws, free-body diagrams, tension, friction, gravitational force and more in our new mobile app.</p>
+
+        <p>Fun, interactive and gamified lessons that make learning physics easy. Deepen your understanding through our problem types specially designed for physics such as drawing vectors on a grid, or units being automatically cancelled in our unit conversion problem type.</p>
+        
+        <p>Teachers: Make a Classroom!
+        Teachers can create a classroom and share a code with their students to join, or use the Google Classroom integration to import a classroom of students all in the app. Teachers can create, customize and manage assignments of physics lessons for their students. Students can then complete assignments created 
+        by their teacher. Track the number of students who completed on time, late, or did not complete an assignment.</p>
+        
+        <p>Discuss!
+        Get answers to your physics questions by posting them in the discussion section and getting responses from our growing community of physicists.
+        </p>
+
+        Download the app for Android <a href="https://play.google.com/store/apps/details?id=com.physicsisbeautiful.app">here</a>.
+
+    </div>
+{% endblock %}
