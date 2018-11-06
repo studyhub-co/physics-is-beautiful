@@ -74,8 +74,8 @@ class BrowseCurriculaView extends React.Component {
 
     var swiperParams = {
       navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev'
+        nextEl: '.swiper-button-next.pib-swiper-button',
+        prevEl: '.swiper-button-prev.pib-swiper-button'
       },
       // preventClicks: false,
       spaceBetween: 0,
