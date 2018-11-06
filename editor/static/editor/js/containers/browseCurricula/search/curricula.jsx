@@ -29,7 +29,7 @@ class CurriculaSearchView extends React.Component {
       ? this.props.curriculaSearchList.map(function (curriculum, i) {
         return <CurriculumThumbnailPublic
           key={curriculum.uuid}
-          {...curriculum} />
+          curriculum={curriculum} />
       })
       : <Row>
         <Col sm={12} md={12}>
