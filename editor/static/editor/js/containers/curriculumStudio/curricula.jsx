@@ -4,7 +4,7 @@ import { history } from './../../history'
 
 import { Grid, Row } from 'react-bootstrap'
 
-import { CurriculumThumbnail } from './../../components/curriculum_thumbnail'
+import { CurriculumThumbnail } from './../../components/not_editor/curriculum_thumbnail'
 import { AddCurriculumButton } from './../../components/add_curriculum_button'
 import { addCurriculum, loadCurricula } from './../../actions'
 

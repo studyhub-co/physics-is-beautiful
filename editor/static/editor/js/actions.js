@@ -230,7 +230,7 @@ export function loadSeacrhCurricula (searchString) {
   return function (dispatch) {
     $.ajax({
       async: true,
-      url: API_CURRICULA_PREFIX + 'curricula/search/?query=' + searchString,
+      url: API_PREFIX + 'public/curricula/search/?query=' + searchString,
       context: this,
       success: function (data, status, jqXHR) {
         dispatch(curriculaSeacrhLoaded(data))

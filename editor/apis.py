@@ -50,7 +50,7 @@ class UnitViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Unit.objects.filter(Q(curriculum__author=self.request.user) |
-                                   Q(curriculum__collaborators=self.request.user))
+                                   Q(curriculum__collaborators=self.request.user.profile))
 
     
 class ModuleViewSet(ModelViewSet):
@@ -60,7 +60,7 @@ class ModuleViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
-                                     Q(unit__curriculum__collaborators=self.request.user))
+                                     Q(unit__curriculum__collaborators=self.request.user.profile))
 
     
 class LessonViewSet(ModelViewSet):
@@ -70,7 +70,7 @@ class LessonViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
-                                     Q(module__unit__curriculum__collaborators=self.request.user))
+                                     Q(module__unit__curriculum__collaborators=self.request.user.profile))
 
 
 class QuestionViewSet(ModelViewSet):
@@ -80,7 +80,7 @@ class QuestionViewSet(ModelViewSet):
     
     def get_queryset(self):
         return Question.objects.filter(Q(lesson__module__unit__curriculum__author=self.request.user) |
-                                       Q(lesson__module__unit__curriculum__collaborators=self.request.user))
+                                       Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile))
 
     
 class AnswerViewSet(ModelViewSet):
@@ -90,4 +90,4 @@ class AnswerViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Answer.objects.filter(Q(question__lesson__module__unit__curriculum__author=self.request.user) |
-                                     Q(question__lesson__module__unit__curriculum__collaborators=self.request.user))
+                                     Q(question__lesson__module__unit__curriculum__collaborators=self.request.user.profile))
