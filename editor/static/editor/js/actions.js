@@ -86,7 +86,7 @@ export function addCurriculumToDashboard (uuid) {
   return function (dispatch) {
     $.ajax({
       async: true,
-      url: API_PREFIX + 'curricula/' + uuid + '/add_to_dashboard/',
+      url: API_PREFIX + 'public/curricula/' + uuid + '/add_to_dashboard/',
       method: 'POST',
       success: function (data, status, jqXHR) {
       }
@@ -98,7 +98,7 @@ export function removeCurriculumFromDashboard (uuid) {
   return function (dispatch) {
     $.ajax({
       async: true,
-      url: API_PREFIX + 'curricula/' + uuid + '/remove_from_dashboard/',
+      url: API_PREFIX + 'public/curricula/' + uuid + '/remove_from_dashboard/',
       method: 'POST',
       success: function (data, status, jqXHR) {
       }
@@ -184,7 +184,7 @@ export function loadAllCurricula (url, filter, ordering) {
     }
     $.ajax({
       async: true,
-      url: url || API_PREFIX + 'curricula/all/' + paramsString,
+      url: url || API_PREFIX + 'public/curricula/' + paramsString,
       context: this,
       success: function (data, status, jqXHR) {
         dispatch(allCurriculaLoaded(data, filter, ordering))
@@ -282,7 +282,7 @@ export function loadPublicCurriculum (uuid) {
   return function (dispatch) {
     $.ajax({
       async: true,
-      url: API_PREFIX + 'curricula/all/' + uuid + '/',
+      url: API_PREFIX + 'public/curricula/' + uuid + '/',
       success: function (data, status, jqXHR) {
         dispatch(publicCurriculumLoaded(data))
       }

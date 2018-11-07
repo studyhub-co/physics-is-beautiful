@@ -20,81 +20,10 @@ from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollabora
     IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
-
-
-class RecentlyFilterBackend(filters.BaseFilterBackend):
-    def filter_queryset(self, request, queryset, view):
-        filter_param = request.query_params.get('filter')
-        if filter_param and filter_param == 'recent':
-                # filter for recently Curricula for current user
-                # queryset = queryset. \
-                #     filter(units__modules__lessons__progress__profile__user=request.user). \
-                #     annotate(updated_on_lastest=Max('units__modules__lessons__progress__updated_on')). \
-                #     filter(units__modules__lessons__progress__updated_on=F('updated_on_lastest')). \
-                #     order_by('-updated_on_lastest').distinct()
-                queryset = queryset.filter(curricula_user_dashboard__profile__user=request.user)
-        return queryset
-
-
-class AllCurriculaView(generics.ListAPIView,):
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = MiniCurriculumSerializer
-    # serializer_class = CurriculumSerializer
-    pagination_class = StandardResultsSetPagination
-
-    filter_backends = (filters.OrderingFilter, DjangoFilterBackend, RecentlyFilterBackend)  # ordering and search support
-    ordering_fields = ('number_of_learners_denormalized', 'published_on', 'created_on',
-                       'units__modules__lessons__progress__updated_on')
-    # ordering = ('-number_of_learners_denormalized',)
-
-    def get_queryset(self):
-        return Curriculum.objects.\
-            select_related('author').\
-            annotate(count_lessons=Count('units__modules__lessons', distinct=True)).distinct()
-
-
-class RetrieveCurriculumView(generics.RetrieveAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = MiniCurriculumSerializer
-    lookup_field = 'uuid'
-
-    def get_queryset(self):
-        return Curriculum.objects.filter(Q(setting_publically=True)
-                                         | Q(author=self.request.user)
-                                         | Q(collaborators=self.request.user.profile)).select_related('author').\
-            annotate(count_lessons=Count('units__modules__lessons', distinct=True))
-
-
 class CurriculumViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCollaboratorBase)    
     serializer_class = CurriculumSerializer
     lookup_field = 'uuid'
-
-    @action(methods=['POST'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
-    def add_to_dashboard(self, request, uuid):
-        try:
-            curriculum = Curriculum.objects.get(uuid=uuid)
-        except Curriculum.DoesNotExist:
-            raise NotFound()
-        CurriculumUserDashboard.objects.get_or_create(
-            profile=request.user.profile,
-            curriculum=curriculum
-        )
-
-        return Response(status=status.HTTP_201_CREATED)
-
-    @action(methods=['POST'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
-    def remove_from_dashboard(self, request, uuid):
-        try:
-            curriculum_user_dashboard = CurriculumUserDashboard.objects.get(profile=request.user.profile, curriculum__uuid=uuid)
-        except CurriculumUserDashboard.DoesNotExist:
-            raise NotFound()
-
-        curriculum_user_dashboard.delete()
-
-        return Response(status=status.HTTP_200_OK)
 
     def get_queryset(self):
         return Curriculum.objects.filter(Q(author=self.request.user)
