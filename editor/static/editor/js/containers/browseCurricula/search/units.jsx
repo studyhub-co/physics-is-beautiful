@@ -10,23 +10,23 @@ import { CurriculumThumbnailPublic } from './../../../components/not_editor/curr
 
 import { RingLoader } from 'react-spinners'
 
-class CurriculaSearchView extends React.Component {
+class UnitsSearchView extends React.Component {
   constructor (props) {
     super(props)
     this.doSearch = this.doSearch.bind(this)
   }
 
   componentDidMount () {
-    this.props.loadSeacrhCurricula(this.props.curriculaSearchString)
+    // this.props.loadSeacrhCurricula(this.props.curriculaSearchString)
   }
 
   doSearch () {
-    this.props.loadSeacrhCurricula(this.props.curriculaSearchString)
+    // this.props.loadSeacrhCurricula(this.props.curriculaSearchString)
   }
 
   render () {
-    return (<Grid fluid>{this.props.curriculaSearchList
-      ? this.props.curriculaSearchList.results.map(function (curriculum, i) {
+    return (<Grid fluid>{this.props.unitsSearchList
+      ? this.props.unitsSearchList.results.map(function (unit, i) {
         return <CurriculumThumbnailPublic
           key={curriculum.uuid}
           curriculum={curriculum} />
@@ -46,26 +46,28 @@ class CurriculaSearchView extends React.Component {
   }
 }
 
-CurriculaSearchView.propTypes = {
+UnitsSearchView.propTypes = {
   // actions
   loadSeacrhCurricula: PropTypes.func.isRequired,
   curriculaSearchString: PropTypes.string,
-  curriculaSearchList: PropTypes.object // if pagination
-  //curriculaSearchList: PropTypes.array
+  // curriculaSearchList: PropTypes.object # if pagination
+  curriculaSearchList: PropTypes.array
 }
 
 const mapStateToProps = (state) => {
   return {
-    curriculaSearchList: state.search.curricula
+    curriculaSearchList: state.search.curricula,
+    unitsSearchList: state.search.units
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadSeacrhCurricula: (curriculaSearchString) => dispatch(loadSeacrhCurricula(curriculaSearchString)),
+    loadSeacrhUnits: (unitSearchString) => dispatch(loadSearchUnits(unitSearchString)),
+    loadPublicUnits: () => dispatch(loadPublicUnits())
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(CurriculaSearchView)
-export { CurriculaSearchView as CurriculaSearchViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(UnitsSearchView)
+export { UnitsSearchView as UnitsSearchViewNotConnected }

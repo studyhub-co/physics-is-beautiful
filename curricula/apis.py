@@ -4,9 +4,9 @@ from django.utils import timezone
 
 # from django.db.models import Q
 
-from rest_framework import serializers, status, permissions
+from rest_framework import serializers, status, permissions, mixins
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.exceptions import NotFound, NotAcceptable
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -235,29 +235,30 @@ class CurriculaViewSet(ModelViewSet):
         return super(CurriculaViewSet, self).get_object()
 
 
-# Postgresql FTS Search
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-
-
-class CurriculaSearchViewSet(ModelViewSet):
-    serializer_class = CurriculumSerializer
-    queryset = Curriculum.objects.all()
-    lookup_field = 'uuid'
-
-    def get_queryset(self):
-        qs = self.queryset
-
-        keywords = self.request.GET.get('query')
-        if not keywords:
-            raise NotAcceptable('Search query required')
-
-        query = SearchQuery(keywords)
-        vector = SearchVector('name', 'description')
-        qs = qs.annotate(search=vector).filter(search=query)
-        qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
-
-
-        return qs
+# # Postgresql FTS Search
+# from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+#
+#
+# class CurriculaSearchViewSet(mixins.ListModelMixin,
+#                              GenericViewSet):
+#     permission_classes = (permissions.IsAuthenticated,)
+#     serializer_class = CurriculumSerializer
+#     queryset = Curriculum.objects.all()
+#     lookup_field = 'uuid'
+#
+#     def get_queryset(self):
+#         qs = self.queryset
+#
+#         keywords = self.request.GET.get('query')
+#         if not keywords:
+#             raise NotAcceptable('Search query required')
+#
+#         query = SearchQuery(keywords)
+#         vector = SearchVector('name', 'description')
+#         qs = qs.annotate(search=vector).filter(search=query)
+#         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+#
+#         return qs
 
 
 # FTS Search

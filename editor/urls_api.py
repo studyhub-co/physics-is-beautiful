@@ -13,13 +13,13 @@ router.register(r'answers', apis.AnswerViewSet, base_name='answer')
 
 public_router = routers.DefaultRouter()
 public_router.register(r'curricula', apis_public.CurriculumViewSet, base_name='public_curriculum')
+public_router.register(r'units', apis_public.UnitViewSet, base_name='public_unit')
+public_router.register(r'modules', apis_public.ModuleViewSet, base_name='public_module')
+public_router.register(r'lessons', apis_public.ModuleViewSet, base_name='public_lesson')
+public_router.register(r'questions', apis_public.ModuleViewSet, base_name='public_question')
 
 urlpatterns = [
     url(r'^public/', include(public_router.urls)),
-    # url(r'curricula/all/$', apis_public.PublicCurriculaListView.as_view()),
-    # url(r'curricula/all/(?P<uuid>[^/.]+)/', apis_public.RetrievePublicCurriculumView.as_view()),
-    # url(r'curricula/all/(?P<uuid>[^/.]+)/$', apis.RetrieveCurriculumView.as_view()),
-    # url(r'', include(router.urls)),
 ]
 
 urlpatterns += router.urls

@@ -6,11 +6,11 @@ import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
 import copy from 'copy-to-clipboard'
 
-import { addCurriculum } from './../actions'
+import { addCurriculum } from './../../actions'
 
-import { Thumbnail } from './thumbnail'
+import { Thumbnail } from './../thumbnail'
 
-import { store } from '../app'
+import { store } from '../../app'
 
 class CurriculumMenuToggle extends React.Component {
   constructor (props, context) {

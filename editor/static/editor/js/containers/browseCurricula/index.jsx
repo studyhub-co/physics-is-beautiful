@@ -11,7 +11,7 @@ import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 // import { SimpleSelect } from 'react-selectize'
 
-import { CurriculumThumbnailPublic } from './../../components/curriculum_thumbnail_public'
+import { CurriculumThumbnailPublic } from './../../components/not_editor/curriculum_thumbnail_public'
 import CurriculaSearchView from './search/curricula'
 
 import { loadAllCurricula } from './../../actions'

@@ -3,17 +3,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 
-import { addCurriculum, addCurriculumToDashboard, removeCurriculumFromDashboard } from './../actions'
+import { addCurriculum, addCurriculumToDashboard, removeCurriculumFromDashboard } from './../../actions'
 
-import { history } from '../history'
+import { history } from '../../history'
 
 import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 
 import copy from 'copy-to-clipboard'
 
-import { Thumbnail } from './thumbnail'
+import { Thumbnail } from './../thumbnail'
 
-import { store } from '../app'
+import { store } from '../../app'
 
 // import { Portal } from 'react-portal'
 // "react-portal": "^4.1.5",
