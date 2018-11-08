@@ -5,35 +5,35 @@ import PropTypes from 'prop-types'
 import { Grid, Row, Col } from 'react-bootstrap'
 
 import { connect } from 'react-redux'
-import { loadSearchUnits } from '../../../actions'
+import { loadSearchLessons } from '../../../actions'
 import { UnitThumbnailPublic } from './../../../components/not_editor/unit_thumbnail_public'
 
 import { RingLoader } from 'react-spinners'
 
-class UnitsSearchView extends React.Component {
+class LessonsSearchView extends React.Component {
   constructor (props) {
     super(props)
     this.doSearch = this.doSearch.bind(this)
   }
 
   componentWillReceiveProps (props) {
-    if (this.props.selectedTab !== props.selectedTab && props.selectedTab === 'Units') {
-      this.props.loadSearchUnits(this.props.searchString)
+    if (this.props.selectedTab !== props.selectedTab && props.selectedTab === 'Lessons') {
+      this.props.loadSearchLessons(this.props.searchString)
     }
   }
 
   doSearch () {
-    this.props.loadSearchUnits(this.props.searchString)
+    this.props.loadSearchLessons(this.props.searchString)
   }
 
   render () {
-    return (<Grid fluid>{this.props.unitsSearchList
-      ? <div> { this.props.unitsSearchList.results.map(function (unit, i) {
+    return (<Grid fluid>{this.props.lessonsSearchList
+      ? <div> { this.props.lessonsSearchList.results.map(function (unit, i) {
         return <UnitThumbnailPublic
           key={unit.uuid}
           unit={unit} />
       })}
-      { this.props.unitsSearchList.results.length === 0 ? <h4>
+      { this.props.lessonsSearchList.results.length === 0 ? <h4>
         Sorry, we couldn't find any results for this query.
       </h4> : null }
       </div>
@@ -52,27 +52,28 @@ class UnitsSearchView extends React.Component {
   }
 }
 
-UnitsSearchView.propTypes = {
+LessonsSearchView.propTypes = {
   // actions
-  loadSearchUnits: PropTypes.func.isRequired,
+  loadSearchLessons: PropTypes.func.isRequired,
   searchString: PropTypes.string,
-  unitsSearchList: PropTypes.object,
+  lessonsSearchList: PropTypes.object,
   selectedTab: PropTypes.string
 }
 
 const mapStateToProps = (state) => {
   return {
-    unitsSearchList: state.search.units
+    // curriculaSearchList: state.search.curricula,
+    lessonsSearchList: state.search.lessons
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadSearchUnits: (unitSearchString) => dispatch(loadSearchUnits(unitSearchString)),
-    loadPublicUnits: () => dispatch(loadSearchUnits())
+    loadSearchLessons: (searchString) => dispatch(loadSearchLessons(searchString)),
+    loadPublicLessons: () => dispatch(loadSearchLessons())
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(UnitsSearchView)
-export { UnitsSearchView as UnitsSearchViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(LessonsSearchView)
+export { LessonsSearchView as LessonsSearchViewNotConnected }

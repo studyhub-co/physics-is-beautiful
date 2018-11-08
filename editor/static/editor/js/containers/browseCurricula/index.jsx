@@ -14,6 +14,9 @@ import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { CurriculumThumbnailPublic } from './../../components/not_editor/curriculum_thumbnail_public'
 import CurriculaSearchView from './search/curricula'
 import UnitsSearchView from './search/units'
+import ModulesSearchView from './search/modules'
+import LessonsSearchView from './search/lessons'
+import QuestionsSearchView from './search/questions'
 
 import { loadAllCurricula } from './../../actions'
 import { history } from '../../history'
@@ -343,7 +346,28 @@ class BrowseCurriculaView extends React.Component {
                 </TabContent>
                 <TabContent for='Units'>
                   <UnitsSearchView
-                    ref={(node) => { if (node) this.searchView = node }}
+                    ref={(node) => { if (node) this.searchUnitsView = node }}
+                    searchString={this.state.searchString}
+                    selectedTab={this.state.selectedTab}
+                  />
+                </TabContent>
+                <TabContent for='Modules'>
+                  <ModulesSearchView
+                    ref={(node) => { if (node) this.searchModulesView = node }}
+                    searchString={this.state.searchString}
+                    selectedTab={this.state.selectedTab}
+                  />
+                </TabContent>
+                <TabContent for='Lessons'>
+                  <LessonsSearchView
+                    ref={(node) => { if (node) this.searchLessonsView = node }}
+                    searchString={this.state.searchString}
+                    selectedTab={this.state.selectedTab}
+                  />
+                </TabContent>
+                <TabContent for='Questions'>
+                  <QuestionsSearchView
+                    ref={(node) => { if (node) this.searchQuestionsView = node }}
                     searchString={this.state.searchString}
                     selectedTab={this.state.selectedTab}
                   />

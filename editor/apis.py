@@ -13,7 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, CurriculumUserDashboard
 
-from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, UnitSerializer, \
+from editor.serializers import CurriculumSerializer, UnitSerializer, \
     ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
 
 from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
