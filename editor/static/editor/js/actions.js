@@ -11,6 +11,7 @@ export const ActionTypes = Object.freeze({
   CURRICULA_LOADED: 'CURRICULA_LOADED',
   ALL_CURRICULA_LOADED: 'ALL_CURRICULA_LOADED',
   SEARCH_CURRICULA_LOADED: 'SEARCH_CURRICULA_LOADED',
+  SEARCH_UNITS_LOADED: 'SEARCH_UNITS_LOADED',
   RECENT_CURRICULA_LOADED: 'RECENT_CURRICULA_LOADED',
   POPULAR_CURRICULA_LOADED: 'POPULAR_CURRICULA_LOADED',
   NEW_CURRICULA_LOADED: 'NEW_CURRICULA_LOADED',
@@ -218,7 +219,7 @@ export function loadCurricula () {
   }
 }
 
-function curriculaSeacrhLoaded (data) {
+function curriculaSearchLoaded (data) {
   var type = ActionTypes.SEARCH_CURRICULA_LOADED
   return {
     type: type,
@@ -233,7 +234,34 @@ export function loadSeacrhCurricula (searchString) {
       url: API_PREFIX + 'public/curricula/search/?query=' + searchString,
       context: this,
       success: function (data, status, jqXHR) {
-        dispatch(curriculaSeacrhLoaded(data))
+        dispatch(curriculaSearchLoaded(data))
+      }
+    })
+  }
+}
+
+function unitsSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_UNITS_LOADED
+  return {
+    type: type,
+    untisSearchList: data
+  }
+}
+
+export function loadSearchUnits (searchString) {
+  var url = API_PREFIX + 'public/units/' // all units
+
+  if (searchString) {
+    url = API_PREFIX + 'public/units/search/?query=' + searchString
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(unitsSearchLoaded(data))
       }
     })
   }

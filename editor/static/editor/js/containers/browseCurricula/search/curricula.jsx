@@ -26,11 +26,16 @@ class CurriculaSearchView extends React.Component {
 
   render () {
     return (<Grid fluid>{this.props.curriculaSearchList
-      ? this.props.curriculaSearchList.results.map(function (curriculum, i) {
-        return <CurriculumThumbnailPublic
-          key={curriculum.uuid}
-          curriculum={curriculum} />
-      })
+      ? <div> {
+        this.props.curriculaSearchList.results.map(function (curriculum, i) {
+          return <CurriculumThumbnailPublic
+            key={curriculum.uuid}
+            curriculum={curriculum} />
+        })}
+        { this.props.curriculaSearchList.results.length === 0 ? <h4>
+          Sorry, we couldn't find any results for this query.
+        </h4> : null }
+      </div>
       : <Row>
         <Col sm={12} md={12}>
           <div style={{height: '10rem', marginLeft: '50%'}}>
