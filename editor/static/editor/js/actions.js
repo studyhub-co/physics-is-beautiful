@@ -12,8 +12,11 @@ export const ActionTypes = Object.freeze({
   ALL_CURRICULA_LOADED: 'ALL_CURRICULA_LOADED',
   SEARCH_CURRICULA_LOADED: 'SEARCH_CURRICULA_LOADED',
   SEARCH_UNITS_LOADED: 'SEARCH_UNITS_LOADED',
+  SEARCH_MODULES_LOADED: 'SEARCH_MODULES_LOADED',
+  SEARCH_LESSONS_LOADED: 'SEARCH_LESSONS_LOADED',
   RECENT_CURRICULA_LOADED: 'RECENT_CURRICULA_LOADED',
   POPULAR_CURRICULA_LOADED: 'POPULAR_CURRICULA_LOADED',
+  SEARCH_QUESTIONS_LOADED: 'SEARCH_QUESTIONS_LOADED',
   NEW_CURRICULA_LOADED: 'NEW_CURRICULA_LOADED',
   LOAD_CURRICULA: 'LOAD_CURRICULA',
   PUBLIC_CURRICULUM_LOADED: 'PUBLIC_CURRICULUM_LOADED',
@@ -266,6 +269,88 @@ export function loadSearchUnits (searchString) {
     })
   }
 }
+
+function modulesSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_MODULES_LOADED
+  return {
+    type: type,
+    modulesSearchList: data
+  }
+}
+
+export function loadSearchModules (searchString) {
+  var url = API_PREFIX + 'public/modules/' // all units
+
+  if (searchString) {
+    url = API_PREFIX + 'public/modules/search/?query=' + searchString
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(modulesSearchLoaded(data))
+      }
+    })
+  }
+}
+
+function lessonsSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_LESSONS_LOADED
+  return {
+    type: type,
+    lessonsSearchList: data
+  }
+}
+
+export function loadSearchLessons (searchString) {
+  var url = API_PREFIX + 'public/lessons/'
+
+  if (searchString) {
+    url = API_PREFIX + 'public/lessons/search/?query=' + searchString
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(lessonsSearchLoaded(data))
+      }
+    })
+  }
+}
+
+function questionsSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_QUESTIONS_LOADED
+  return {
+    type: type,
+    questionsSearchList: data
+  }
+}
+
+export function loadSearchQuestions (searchString) {
+  var url = API_PREFIX + 'public/questions/'
+
+  if (searchString) {
+    url = API_PREFIX + 'public/questions/search/?query=' + searchString
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(questionsSearchLoaded(data))
+      }
+    })
+  }
+}
+
 
 export function curriculumLoaded(data) {
     var units = extract(data, 'units');

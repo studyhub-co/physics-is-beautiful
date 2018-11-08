@@ -14,8 +14,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, CurriculumUserDashboard
 
-from editor.serializers import MiniCurriculumSerializer, CurriculumSerializer, UnitSerializer, \
-    ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
+from editor.serializers_public import PublicCurriculumSerializer, PublicUnitSerializer, PublicModuleSerializer, \
+    PublisLessonSerializer, PublicQuestionSerializer
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -40,7 +40,7 @@ class CurriculumViewSet(mixins.UpdateModelMixin,
                         mixins.ListModelMixin,
                         GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = MiniCurriculumSerializer
+    serializer_class = PublicCurriculumSerializer
     # serializer_class = CurriculumSerializer
     pagination_class = StandardResultsSetPagination
 
@@ -133,20 +133,21 @@ class CurriculumViewSet(mixins.UpdateModelMixin,
 #
 #         return qs
 
+# TODO order by "popular" all by number of learners
 
 class UnitViewSet(mixins.UpdateModelMixin,
                   mixins.ListModelMixin,
                   GenericViewSet):
     permission_classes = (permissions.IsAuthenticated, )
     queryset = Unit.objects.all()
-    serializer_class = UnitSerializer
+    serializer_class = PublicUnitSerializer
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         return self.queryset.filter(Q(curriculum__setting_publically=True) |
                                      (Q(curriculum__author=self.request.user) |
-                                      Q(curriculum__collaborators=self.request.user.profile)))
+                                      Q(curriculum__collaborators=self.request.user.profile))).distinct()
 
 
 class ModuleViewSet(mixins.UpdateModelMixin,
@@ -154,41 +155,43 @@ class ModuleViewSet(mixins.UpdateModelMixin,
                     GenericViewSet):
     permission_classes = (permissions.IsAuthenticated, )
     queryset = Module.objects.all()
-    serializer_class = ModuleSerializer
+    serializer_class = PublicModuleSerializer
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         return self.queryset.filter(Q(unit__curriculum__setting_publically=True) |
                                      (Q(unit__curriculum__author=self.request.user) |
-                                      Q(unit__curriculum__collaborators=self.request.user.profile)))
+                                      Q(unit__curriculum__collaborators=self.request.user.profile))).distinct()
 
 
 class LessonViewSet(mixins.UpdateModelMixin,
                     mixins.ListModelMixin,
                     GenericViewSet):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+    queryset = Lesson.objects.all()
+    serializer_class = PublisLessonSerializer
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         return self.queryset.filter(Q(module__unit__curriculum__setting_publically=True) |
                                      (Q(module__unit__curriculum__author=self.request.user) |
-                                      Q(module__unit__curriculum__collaborators=self.request.user.profile)))
+                                      Q(module__unit__curriculum__collaborators=self.request.user.profile))).distinct()
 
 
 class QuestionViewSet(mixins.UpdateModelMixin,
                       mixins.ListModelMixin,
                       GenericViewSet):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
+    queryset = Question.objects.all()
+    serializer_class = PublicQuestionSerializer
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
+
+    # search will be use text, hint text, answers texts
 
     def get_queryset(self):
         return self.queryset.filter(Q(lesson__module__unit__curriculum__setting_publically=True) |
                                      (Q(lesson__module__unit__curriculum__author=self.request.user) |
-                                      Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile)))
+                                      Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile))).distinct()

@@ -32,6 +32,12 @@ function search (state = {}, action) {
       return Object.assign({}, state, {curricula: action.curriculaSearchList})
     case ActionTypes.SEARCH_UNITS_LOADED:
       return Object.assign({}, state, {units: action.untisSearchList})
+    case ActionTypes.SEARCH_MODULES_LOADED:
+      return Object.assign({}, state, {modules: action.modulesSearchList})
+    case ActionTypes.SEARCH_LESSONS_LOADED:
+      return Object.assign({}, state, {lessons: action.lessonsSearchList})
+    case ActionTypes.SEARCH_QUESTIONS_LOADED:
+      return Object.assign({}, state, {questions: action.questionsSearchList})
     default:
       return state
   }
