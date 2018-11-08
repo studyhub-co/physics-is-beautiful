@@ -13,8 +13,10 @@ import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import { CurriculumThumbnailPublic } from './../../components/not_editor/curriculum_thumbnail_public'
 import CurriculaSearchView from './search/curricula'
+import UnitsSearchView from './search/units'
 
 import { loadAllCurricula } from './../../actions'
+import { history } from '../../history'
 
 const slidesNames = ['newSlides', 'popularSlides', 'recentSlides']
 
@@ -24,6 +26,7 @@ class BrowseCurriculaView extends React.Component {
     this.state = {
       searchString: '',
       searchEnabeled: false,
+      selectedTab: '',
       selectedOption: [],
       popularSlides: [],
       popularNextPageUrl: null,
@@ -37,6 +40,7 @@ class BrowseCurriculaView extends React.Component {
         newSlides: []
       }
     }
+    this.handleSelectTab = this.handleSelectTab.bind(this)
     this.handleSearchString = this.handleSearchString.bind(this)
     this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
     this.searchButtonClick = this.searchButtonClick.bind(this)
@@ -230,6 +234,12 @@ class BrowseCurriculaView extends React.Component {
     this.searchView = null
   }
 
+  handleSelectTab (tabname) {
+    if (tabname !== this.state.selectedTab) {
+      this.setState({selectedTab: tabname})
+    }
+  }
+
   searchButtonClick (e) {
     var searchString = this.state.searchString
     if (searchString) {
@@ -284,7 +294,7 @@ class BrowseCurriculaView extends React.Component {
         </Grid>
         <div className={'pop-up-window'}>
           <div className='tab-links'>
-            <Tabs name='editCurriculumProfileTabs'
+            <Tabs name='browseAppTabs'
               className='tabs'
               handleSelect={this.handleSelectTab}
               selectedTab={this.state.selectedTab}
@@ -330,6 +340,13 @@ class BrowseCurriculaView extends React.Component {
                       </Row>
                     </Grid>
                   </div>
+                </TabContent>
+                <TabContent for='Units'>
+                  <UnitsSearchView
+                    ref={(node) => { if (node) this.searchView = node }}
+                    searchString={this.state.searchString}
+                    selectedTab={this.state.selectedTab}
+                  />
                 </TabContent>
               </div>
             </Tabs>

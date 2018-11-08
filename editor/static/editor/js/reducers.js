@@ -30,8 +30,10 @@ function search (state = {}, action) {
   switch (action.type) {
     case ActionTypes.SEARCH_CURRICULA_LOADED:
       return Object.assign({}, state, {curricula: action.curriculaSearchList})
+    case ActionTypes.SEARCH_UNITS_LOADED:
+      return Object.assign({}, state, {units: action.untisSearchList})
     default:
-	    return state
+      return state
   }
 }
 
