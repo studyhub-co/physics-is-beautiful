@@ -14,6 +14,13 @@ class CurriculaSearchView extends React.Component {
   constructor (props) {
     super(props)
     this.doSearch = this.doSearch.bind(this)
+    this.loadNextPage = this.loadNextPage.bind(this)
+
+    this.state = {
+      lessons: [],
+      hasMoreItems: false,
+      nextHref: null
+    }
   }
 
   componentDidMount () {
@@ -32,9 +39,9 @@ class CurriculaSearchView extends React.Component {
             key={curriculum.uuid}
             curriculum={curriculum} />
         })}
-        { this.props.curriculaSearchList.results.length === 0 ? <h4>
+      { this.props.curriculaSearchList.results.length === 0 ? <h4>
           Sorry, we couldn't find any results for this query.
-        </h4> : null }
+      </h4> : null }
       </div>
       : <Row>
         <Col sm={12} md={12}>

@@ -82,7 +82,6 @@ class QuestionsSearchView extends React.Component {
           loadMore={this.loadNextPage}
           hasMore={this.state.hasMoreItems}
           loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
-          threshold={0}
         >
           {items}
         </InfiniteScroll>
