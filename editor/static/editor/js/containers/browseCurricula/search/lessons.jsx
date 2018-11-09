@@ -79,7 +79,9 @@ class LessonsSearchView extends React.Component {
         <InfiniteScroll
           pageStart={0}
           loadMore={this.loadNextPage}
-          hasMore={this.state.hasMoreItems}>
+          hasMore={this.state.hasMoreItems}
+          loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
+        >
           {items}
         </InfiniteScroll>
         { this.props.lessonsSearchList.results.length === 0 ? <h4>

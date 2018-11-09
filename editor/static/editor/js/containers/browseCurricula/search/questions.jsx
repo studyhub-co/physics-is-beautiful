@@ -51,7 +51,6 @@ class QuestionsSearchView extends React.Component {
   }
 
   loadNextPage (page) {
-    console.log(page);
     if (this.state.hasMoreItems) {
       this.props.loadSearchQuestions(this.props.searchString, this.state.nextHref)
     }
@@ -81,7 +80,10 @@ class QuestionsSearchView extends React.Component {
         <InfiniteScroll
           pageStart={0}
           loadMore={this.loadNextPage}
-          hasMore={this.state.hasMoreItems}>
+          hasMore={this.state.hasMoreItems}
+          loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
+          threshold={0}
+        >
           {items}
         </InfiniteScroll>
         { this.props.questionsSearchList.results.length === 0 ? <h4>
