@@ -142,7 +142,7 @@ class UnitViewSet(mixins.UpdateModelMixin,
                   GenericViewSet,
                   SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Unit.objects.all().order_by('uuid')
+    queryset = Unit.objects.all().order_by('-curriculum__number_of_learners_denormalized', 'uuid')
     serializer_class = PublicUnitSerializer
     lookup_field = 'uuid'
     search_fields = ['name', ]
@@ -159,7 +159,7 @@ class ModuleViewSet(mixins.UpdateModelMixin,
                     GenericViewSet,
                     SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Module.objects.all().order_by('uuid')
+    queryset = Module.objects.all().order_by('-unit__curriculum__number_of_learners_denormalized', 'uuid')
     serializer_class = PublicModuleSerializer
     lookup_field = 'uuid'
     search_fields = ['name', ]
@@ -176,7 +176,7 @@ class LessonViewSet(mixins.UpdateModelMixin,
                     GenericViewSet,
                     SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Lesson.objects.all().order_by('uuid')
+    queryset = Lesson.objects.all().order_by('-module__unit__curriculum__number_of_learners_denormalized', 'uuid')
     serializer_class = PublisLessonSerializer
     search_fields = ['name', ]
     lookup_field = 'uuid'
@@ -193,7 +193,7 @@ class QuestionViewSet(mixins.UpdateModelMixin,
                       GenericViewSet,
                       SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Question.objects.all().order_by('uuid')
+    queryset = Question.objects.all().order_by('-lesson__module__unit__curriculum__number_of_learners_denormalized', 'uuid')
     serializer_class = PublicQuestionSerializer
     search_fields = ['text', ]  # TODO add answers text
     lookup_field = 'uuid'
