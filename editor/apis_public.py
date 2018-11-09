@@ -195,7 +195,7 @@ class QuestionViewSet(mixins.UpdateModelMixin,
     permission_classes = (permissions.IsAuthenticated, )
     queryset = Question.objects.all().order_by('uuid')
     serializer_class = PublicQuestionSerializer
-    search_fields = ['name', ] # TODO add answers text
+    search_fields = ['text', ]  # TODO add answers text
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
 

@@ -36,23 +36,23 @@ class QuestionMenuToggle extends React.Component {
 export class QuestionThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.onTitleClick = this.onTitleClick.bind(this)
-    this.onLearnSelect = this.onLearnSelect.bind(this)
+    // this.onTitleClick = this.onTitleClick.bind(this)
+    // this.onLearnSelect = this.onLearnSelect.bind(this)
     this.onForkSelect = this.onForkSelect.bind(this)
-    this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
+    // this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
   }
 
-  onLearnSelect () {
-    window.open('/curriculum/questions/' + this.props.question.uuid + '/', '_blank')
-  }
+  // onLearnSelect () {
+  //   window.open('/curriculum/questions/' + this.props.question.uuid + '/', '_blank')
+  // }
+  //
+  // onTitleClick () {
+  //   window.open('/curriculum/questions/' + this.props.question.uuid + '/', '_blank')
+  // }
 
-  onTitleClick () {
-    window.open('/curriculum/questions/' + this.props.question.uuid + '/', '_blank')
-  }
-
-  onCopyShareableLink (e) {
-    copy(window.location.origin + '/curriculum/question/' + this.props.question.uuid + '/')
-  }
+  // onCopyShareableLink (e) {
+  //   copy(window.location.origin + '/curriculum/question/' + this.props.question.uuid + '/')
+  // }
 
   onForkSelect (e) {
     // store.dispatch(addQuestion(this.props.question.uuid))
@@ -65,7 +65,7 @@ export class QuestionThumbnailPublic extends React.Component {
         md={2}
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
-        <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+        <div style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
           <Thumbnail image={this.props.question.image} />
         </div>
         <div>
@@ -75,9 +75,9 @@ export class QuestionThumbnailPublic extends React.Component {
             <QuestionMenuToggle bsRole='toggle' />
             {/*<CustomQuestionMenu bsRole='menu'>*/}
             <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-              <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
+              {/*<MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>*/}
               <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
-              <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
+              {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
             </Dropdown.Menu>
             {/*</CustomQuestionMenu>*/}
           </Dropdown>
