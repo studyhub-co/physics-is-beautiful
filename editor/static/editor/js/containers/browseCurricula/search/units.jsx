@@ -2,6 +2,8 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
+import InfiniteScroll from 'react-infinite-scroller'
+
 import { Grid, Row, Col } from 'react-bootstrap'
 
 import { connect } from 'react-redux'
@@ -14,11 +16,35 @@ class UnitsSearchView extends React.Component {
   constructor (props) {
     super(props)
     this.doSearch = this.doSearch.bind(this)
+    this.loadNextPage = this.loadNextPage.bind(this)
+
+    this.state = {
+      units: [],
+      hasMoreItems: false,
+      nextHref: null
+    }
   }
 
   componentWillReceiveProps (props) {
     if (this.props.selectedTab !== props.selectedTab && props.selectedTab === 'Units') {
       this.props.loadSearchUnits(this.props.searchString)
+    }
+    if (this.props.unitsSearchList !== props.unitsSearchList && props.unitsSearchList) {
+      if (props.unitsSearchList.previous == null) {
+      // 1st page
+        this.setState({
+          units: props.unitsSearchList.results,
+          hasMoreItems: Boolean(props.unitsSearchList.next),
+          nextHref: props.unitsSearchList.next})
+      } else {
+      // add to list
+        var newlist = [...this.state.units, ...props.unitsSearchList.results]
+
+        this.setState({
+          units: newlist,
+          hasMoreItems: Boolean(props.unitsSearchList.next),
+          nextHref: props.unitsSearchList.next})
+      }
     }
   }
 
@@ -26,16 +52,38 @@ class UnitsSearchView extends React.Component {
     this.props.loadSearchUnits(this.props.searchString)
   }
 
+  loadNextPage (page) {
+    if (this.state.hasMoreItems) {
+      this.props.loadSearchUnits(this.props.searchString, this.state.nextHref)
+    }
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    return this.props.searchString === nextProps.searchString
+  }
+
   render () {
-    return (<Grid fluid>{this.props.unitsSearchList
-      ? <div> { this.props.unitsSearchList.results.map(function (unit, i) {
-        return <UnitThumbnailPublic
+    var items = []
+
+    this.state.units.map((unit, i) => {
+      items.push(
+        <UnitThumbnailPublic
           key={unit.uuid}
           unit={unit} />
-      })}
-      { this.props.unitsSearchList.results.length === 0 ? <h4>
+      )
+    })
+
+    return (<Grid fluid>{this.props.unitsSearchList
+      ? <div>
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={this.loadNextPage}
+          hasMore={this.state.hasMoreItems}>
+          {items}
+        </InfiniteScroll>
+        { this.props.unitsSearchList.results.length === 0 ? <h4>
         Sorry, we couldn't find any results for this query.
-      </h4> : null }
+        </h4> : null }
       </div>
       : <Row>
         <Col sm={12} md={12}>
@@ -69,7 +117,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadSearchUnits: (unitSearchString) => dispatch(loadSearchUnits(unitSearchString)),
+    loadSearchUnits: (unitSearchString, url) => dispatch(loadSearchUnits(unitSearchString, url)),
     loadPublicUnits: () => dispatch(loadSearchUnits())
   }
 }

@@ -36,20 +36,7 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
-class CurriculumViewSet(mixins.UpdateModelMixin,
-                        mixins.ListModelMixin,
-                        GenericViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = PublicCurriculumSerializer
-    # serializer_class = CurriculumSerializer
-    pagination_class = StandardResultsSetPagination
-
-    filter_backends = (filters.OrderingFilter, DjangoFilterBackend, RecentlyFilterBackend)  # ordering and search support
-    ordering_fields = ('number_of_learners_denormalized', 'published_on', 'created_on',
-                       'units__modules__lessons__progress__updated_on')
-    lookup_field = 'uuid'
-    # ordering = ('-number_of_learners_denormalized',)
-
+class SearchMixin:
     @action(methods=['GET'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def search(self, request):
 
@@ -60,7 +47,7 @@ class CurriculumViewSet(mixins.UpdateModelMixin,
             raise NotAcceptable('Search query required')
 
         query = SearchQuery(keywords)
-        vector = SearchVector('name', 'description')
+        vector = SearchVector(*self.search_fields)
         qs = qs.annotate(search=vector).filter(search=query)
         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 
@@ -72,6 +59,46 @@ class CurriculumViewSet(mixins.UpdateModelMixin,
         serializer = self.get_serializer(qs, many=True)
 
         return Response(serializer.data)
+
+
+class CurriculumViewSet(mixins.UpdateModelMixin,
+                        mixins.ListModelMixin,
+                        GenericViewSet,
+                        SearchMixin):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PublicCurriculumSerializer
+    # serializer_class = CurriculumSerializer
+    pagination_class = StandardResultsSetPagination
+    search_fields = ['name', 'description']
+
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend, RecentlyFilterBackend)  # ordering and search support
+    ordering_fields = ('number_of_learners_denormalized', 'published_on', 'created_on',
+                       'units__modules__lessons__progress__updated_on')
+    lookup_field = 'uuid'
+    # ordering = ('-number_of_learners_denormalized',)
+
+    # @action(methods=['GET'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
+    # def search(self, request):
+    #
+    #     qs = self.get_queryset()
+    #
+    #     keywords = request.GET.get('query')
+    #     if not keywords:
+    #         raise NotAcceptable('Search query required')
+    #
+    #     query = SearchQuery(keywords)
+    #     vector = SearchVector('name', 'description')
+    #     qs = qs.annotate(search=vector).filter(search=query)
+    #     qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+    #
+    #     # search pagination
+    #     page = self.paginate_queryset(qs)
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+    #     serializer = self.get_serializer(qs, many=True)
+    #
+    #     return Response(serializer.data)
 
     @action(methods=['POST'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def add_to_dashboard(self, request, uuid):
@@ -108,40 +135,17 @@ class CurriculumViewSet(mixins.UpdateModelMixin,
             distinct()
 
 
-# # Postgresql FTS Search
-# from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-#
-#
-# class CurriculaSearchViewSet(mixins.ListModelMixin,
-#                              GenericViewSet):
-#     permission_classes = (permissions.IsAuthenticated,)
-#     serializer_class = CurriculumSerializer
-#     queryset = Curriculum.objects.all()
-#     lookup_field = 'uuid'
-#
-#     def get_queryset(self):
-#         qs = self.queryset
-#
-#         keywords = self.request.GET.get('query')
-#         if not keywords:
-#             raise NotAcceptable('Search query required')
-#
-#         query = SearchQuery(keywords)
-#         vector = SearchVector('name', 'description')
-#         qs = qs.annotate(search=vector).filter(search=query)
-#         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
-#
-#         return qs
-
 # TODO order by "popular" all by number of learners
 
 class UnitViewSet(mixins.UpdateModelMixin,
                   mixins.ListModelMixin,
-                  GenericViewSet):
+                  GenericViewSet,
+                  SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Unit.objects.all()
+    queryset = Unit.objects.all().order_by('uuid')
     serializer_class = PublicUnitSerializer
     lookup_field = 'uuid'
+    search_fields = ['name', ]
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
@@ -152,11 +156,13 @@ class UnitViewSet(mixins.UpdateModelMixin,
 
 class ModuleViewSet(mixins.UpdateModelMixin,
                     mixins.ListModelMixin,
-                    GenericViewSet):
+                    GenericViewSet,
+                    SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Module.objects.all()
+    queryset = Module.objects.all().order_by('uuid')
     serializer_class = PublicModuleSerializer
     lookup_field = 'uuid'
+    search_fields = ['name', ]
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
@@ -167,25 +173,29 @@ class ModuleViewSet(mixins.UpdateModelMixin,
 
 class LessonViewSet(mixins.UpdateModelMixin,
                     mixins.ListModelMixin,
-                    GenericViewSet):
+                    GenericViewSet,
+                    SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all().order_by('uuid')
     serializer_class = PublisLessonSerializer
+    search_fields = ['name', ]
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         return self.queryset.filter(Q(module__unit__curriculum__setting_publically=True) |
-                                     (Q(module__unit__curriculum__author=self.request.user) |
+                                     Q(Q(module__unit__curriculum__author=self.request.user) |
                                       Q(module__unit__curriculum__collaborators=self.request.user.profile))).distinct()
 
 
 class QuestionViewSet(mixins.UpdateModelMixin,
                       mixins.ListModelMixin,
-                      GenericViewSet):
+                      GenericViewSet,
+                      SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Question.objects.all()
+    queryset = Question.objects.all().order_by('uuid')
     serializer_class = PublicQuestionSerializer
+    search_fields = ['name', ] # TODO add answers text
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
 
