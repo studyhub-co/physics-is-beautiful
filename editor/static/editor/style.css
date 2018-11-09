@@ -244,7 +244,7 @@
     border-style: solid;
     border-color: rgb(216, 216, 216);
     margin: 0 1rem 1rem 0;
-    /*float: left;*/
+    float: left;
     position: relative;
     text-align: center;
     /*padding-top: 1rem;*/
