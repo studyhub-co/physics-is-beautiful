@@ -251,11 +251,15 @@ function unitsSearchLoaded (data) {
   }
 }
 
-export function loadSearchUnits (searchString) {
+export function loadSearchUnits (searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/units/' // all units
 
   if (searchString) {
     url = API_PREFIX + 'public/units/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
   }
 
   return function (dispatch) {
@@ -278,11 +282,15 @@ function modulesSearchLoaded (data) {
   }
 }
 
-export function loadSearchModules (searchString) {
+export function loadSearchModules (searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/modules/' // all units
 
   if (searchString) {
     url = API_PREFIX + 'public/modules/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
   }
 
   return function (dispatch) {
@@ -305,11 +313,15 @@ function lessonsSearchLoaded (data) {
   }
 }
 
-export function loadSearchLessons (searchString) {
+export function loadSearchLessons (searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/lessons/'
 
   if (searchString) {
     url = API_PREFIX + 'public/lessons/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
   }
 
   return function (dispatch) {
@@ -332,11 +344,15 @@ function questionsSearchLoaded (data) {
   }
 }
 
-export function loadSearchQuestions (searchString) {
+export function loadSearchQuestions (searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/questions/'
 
   if (searchString) {
     url = API_PREFIX + 'public/questions/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
   }
 
   return function (dispatch) {

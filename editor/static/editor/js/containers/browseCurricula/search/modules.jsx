@@ -2,11 +2,13 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
+import InfiniteScroll from 'react-infinite-scroller'
+
 import { Grid, Row, Col } from 'react-bootstrap'
 
 import { connect } from 'react-redux'
 import { loadSearchModules } from '../../../actions'
-import { UnitThumbnailPublic } from './../../../components/not_editor/unit_thumbnail_public'
+import { ModuleThumbnailPublic } from './../../../components/not_editor/module_thumbnail_public'
 
 import { RingLoader } from 'react-spinners'
 
@@ -14,11 +16,42 @@ class ModulesSearchView extends React.Component {
   constructor (props) {
     super(props)
     this.doSearch = this.doSearch.bind(this)
+    this.loadNextPage = this.loadNextPage.bind(this)
+
+    this.state = {
+      modules: [],
+      hasMoreItems: false,
+      nextHref: null
+    }
   }
 
   componentWillReceiveProps (props) {
     if (this.props.selectedTab !== props.selectedTab && props.selectedTab === 'Modules') {
       this.props.loadSearchModules(this.props.searchString)
+    }
+
+    if (this.props.modulesSearchList !== props.modulesSearchList && props.modulesSearchList) {
+      if (props.modulesSearchList.previous == null) {
+      // 1st page
+        this.setState({
+          modules: props.modulesSearchList.results,
+          hasMoreItems: Boolean(props.modulesSearchList.next),
+          nextHref: props.modulesSearchList.next})
+      } else {
+      // add to list
+        var newlist = [...this.state.modules, ...props.modulesSearchList.results]
+
+        this.setState({
+          modules: newlist,
+          hasMoreItems: Boolean(props.modulesSearchList.next),
+          nextHref: props.modulesSearchList.next})
+      }
+    }
+  }
+
+  loadNextPage (page) {
+    if (this.state.hasMoreItems) {
+      this.props.loadSearchModules(this.props.searchString, this.state.nextHref)
     }
   }
 
@@ -26,16 +59,32 @@ class ModulesSearchView extends React.Component {
     this.props.loadSearchModules(this.props.searchString)
   }
 
+  shouldComponentUpdate (nextProps, nextState) {
+    return this.props.searchString === nextProps.searchString
+  }
+
   render () {
+    var items = []
+
+    this.state.modules.map((module, i) => {
+      items.push(
+        <ModuleThumbnailPublic
+          key={module.uuid}
+          module={module} />
+      )
+    })
+
     return (<Grid fluid>{this.props.modulesSearchList
-      ? <div> { this.props.modulesSearchList.results.map(function (unit, i) {
-        return <UnitThumbnailPublic
-          key={unit.uuid}
-          unit={unit} />
-      })}
-      { this.props.modulesSearchList.results.length === 0 ? <h4>
+      ? <div>
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={this.loadNextPage}
+          hasMore={this.state.hasMoreItems}>
+          {items}
+        </InfiniteScroll>
+        { this.props.modulesSearchList.results.length === 0 ? <h4>
         Sorry, we couldn't find any results for this query.
-      </h4> : null }
+        </h4> : null }
       </div>
       : <Row>
         <Col sm={12} md={12}>
@@ -70,7 +119,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    loadSearchModules: (searchString) => dispatch(loadSearchModules(searchString)),
+    loadSearchModules: (searchString, url) => dispatch(loadSearchModules(searchString, url)),
     loadPublicModules: () => dispatch(loadSearchModules())
   }
 }

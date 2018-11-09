@@ -51,6 +51,7 @@ class BrowseCurriculaView extends React.Component {
     this.onAddRemoveFromDashboardSildes = this.onAddRemoveFromDashboardSildes.bind(this)
     this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
     this.clearSearchButtonClick = this.clearSearchButtonClick.bind(this)
+    this.doTabsSearch = this.doTabsSearch.bind(this)
   }
 
   componentDidMount () {
@@ -232,7 +233,7 @@ class BrowseCurriculaView extends React.Component {
   }
 
   clearSearchButtonClick (e) {
-    this.setState({searchString: ''})
+    this.setState({searchString: ''}, this.doTabsSearch)
     this.setState({searchEnabeled: false})
     this.searchView = null
   }
@@ -243,6 +244,21 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
+  doTabsSearch () {
+    if (this.state.selectedTab === 'Units') {
+      this.searchUnitsView.getWrappedInstance().doSearch()
+    }
+    if (this.state.selectedTab === 'Modules') {
+      this.searchModulesView.getWrappedInstance().doSearch()
+    }
+    if (this.state.selectedTab === 'Lessons') {
+      this.searchLessonsView.getWrappedInstance().doSearch()
+    }
+    if (this.state.selectedTab === 'Questions') {
+      this.searchQuestionsView.getWrappedInstance().doSearch()
+    }
+  }
+
   searchButtonClick (e) {
     var searchString = this.state.searchString
     if (searchString) {
@@ -250,6 +266,7 @@ class BrowseCurriculaView extends React.Component {
       if (this.searchView) {
         this.searchView.getWrappedInstance().doSearch()
       }
+      this.doTabsSearch()
     }
   }
 
