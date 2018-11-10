@@ -230,11 +230,22 @@ function curriculaSearchLoaded (data) {
   }
 }
 
-export function loadSeacrhCurricula (searchString) {
+export function loadSearchCurricula (searchString, nextPageUrl) {
+
+  var url = API_PREFIX + 'public/curricula/' // all units
+
+  if (searchString) {
+    url = API_PREFIX + 'public/curricula/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
+  }
+
   return function (dispatch) {
     $.ajax({
       async: true,
-      url: API_PREFIX + 'public/curricula/search/?query=' + searchString,
+      url: url,
       context: this,
       success: function (data, status, jqXHR) {
         dispatch(curriculaSearchLoaded(data))

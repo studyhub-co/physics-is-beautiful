@@ -43,15 +43,15 @@ export class UnitThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open('/curriculum/unit/' + this.props.unit.uuid + '/', '_blank')
+    window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
   }
 
   onTitleClick () {
-    window.open('/curriculum/unit/' + this.props.unit.uuid + '/', '_blank')
+    window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
   }
 
   onCopyShareableLink (e) {
-    copy(window.location.origin + '/curriculum/unit/' + this.props.unit.uuid + '/')
+    copy(window.location.origin + '/curriculum/units/' + this.props.unit.uuid + '/')
   }
 
   onForkSelect (e) {
