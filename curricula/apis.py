@@ -26,6 +26,8 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
 # from profiles.serializers import PublicProfileSerializer
 # from pib_auth.models import User
 
+# TODO need to filter all elements with Curriculum setting_publically=True or request.user is author or in collaborators
+
 
 def check_classroom_progress(service, user):
     if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
@@ -194,6 +196,11 @@ class ModuleViewSet(ModelViewSet):
 
 
 class UnitViewSet(ModelViewSet):
+
+    def get_serializer_context(self):
+        context = super(UnitViewSet, self).get_serializer_context()
+        context['progress_service'] = get_progress_service(context['request'])
+        return context
 
     serializer_class = UnitSerializer
     queryset = Unit.objects.all()
