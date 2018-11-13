@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import copy from 'copy-to-clipboard'
 
 import { Dropdown, MenuItem, Glyphicon, Image } from 'react-bootstrap'
-import { addUnit } from '../../actions'
+import { addUnit, addToNewCurriculum } from '../../actions'
 
 export class DropdownThumbnail extends Dropdown {
   componentDidMount () {
@@ -52,6 +52,7 @@ class ThumbnailMenu extends Dropdown.Menu {
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.addUnitToNewCurriculum = this.addUnitToNewCurriculum.bind(this)
 
     var baseName = ''
 
@@ -97,12 +98,12 @@ class ThumbnailMenu extends Dropdown.Menu {
 
   onSelectCurriculum (curriculum) {
     if (this.state.baseName === 'unit') {
-      this.props.addUnit(curriculum, this.props.unit)
+      this.props.addUnit(curriculum.uuid, this.props.unit)
     }
   }
 
-  addUnitToNew () {
-    // todo
+  addUnitToNewCurriculum () {
+    this.props.addToNewCurriculum(this.state.baseName, this.props[this.state.baseName])
   }
 
   render () {
@@ -135,7 +136,7 @@ class ThumbnailMenu extends Dropdown.Menu {
       // level 3 <span style={{float: 'right'}}>{'>'}</span>
 
       if (this.state.baseName === 'unit') {
-        menus.push(<MenuItem onSelect={this.addUnitToNew} key='4' eventKey='4' style={{color: 'blue'}}>
+        menus.push(<MenuItem onSelect={this.addUnitToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
           <Glyphicon glyph='plus' /> Add unit to new curriculum
         </MenuItem>)
       }
@@ -168,8 +169,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    addUnit: (curriculum, unit) => dispatch(addUnit(curriculum.uuid, unit))
-    //loadRecentCurricula: (url) => dispatch(loadAllCurricula(url, 'recent'))
+    addUnit: (curriculumUuid, unit) => dispatch(addUnit(curriculumUuid, unit)),
+    addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value))
   }
 }
 
