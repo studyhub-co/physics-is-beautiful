@@ -518,18 +518,24 @@ export function unitAdded(curriculumUuid, data) {
 	    modules : extract(data, 'modules')}
 }
 
-export function addUnit(curriculumUuid) {
-    return dispatch => {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'units/',
-	    method : 'POST',
-	    data : {name : 'New unit', curriculum:curriculumUuid},
-	    success: function(data, status, jqXHR) {
-		dispatch(unitAdded(curriculumUuid, data));
-	    }
-	});
-    }  
+export function addUnit (curriculumUuid, unit) {
+  var data = {name: 'New unit', curriculum: curriculumUuid}
+  if (unit) {
+    data['prototype'] = unit.uuid
+    data['name'] = unit.name
+  }
+
+  return dispatch => {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'units/',
+      method: 'POST',
+      data: data,
+      success: function (data, status, jqXHR) {
+        dispatch(unitAdded(curriculumUuid, data))
+      }
+    })
+  }
 }
 
 export function deleteUnit(unitUuid) {

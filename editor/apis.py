@@ -48,6 +48,13 @@ class UnitViewSet(ModelViewSet):
     serializer_class = UnitSerializer
     lookup_field = 'uuid'
 
+    def perform_create(self, serializer):
+        new_unit = serializer.save()
+
+        if 'prototype' in self.request.data and self.request.data['prototype']:
+            prototype = Unit.objects.get(uuid=self.request.data['prototype'])
+            prototype.clone(new_unit.curriculum)
+
     def get_queryset(self):
         return Unit.objects.filter(Q(curriculum__author=self.request.user) |
                                    Q(curriculum__collaborators=self.request.user.profile))
