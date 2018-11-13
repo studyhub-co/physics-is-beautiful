@@ -52,15 +52,16 @@ class ThumbnailMenu extends Dropdown.Menu {
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onBack = this.onBack.bind(this)
-    this.addUnitToNewCurriculum = this.addUnitToNewCurriculum.bind(this)
+    this.addElementToNewCurriculum = this.addElementToNewCurriculum.bind(this)
+    // this.onSelectCurriculum = this.onSelectCurriculum.bind(this)
 
     var baseName = ''
 
     if (props.unit) {
       baseName = 'unit'
+    } else if (props.module) {
+      baseName = 'module'
     }
-
-    // todo calculate max level
 
     this.state = {
       level: 1,
@@ -96,13 +97,16 @@ class ThumbnailMenu extends Dropdown.Menu {
     this.setState({level: 2})
   }
 
-  onSelectCurriculum (curriculum) {
+  onSelectCurriculum (curriculum, e, event) {
     if (this.state.baseName === 'unit') {
       this.props.addUnit(curriculum.uuid, this.props.unit)
+    } else { // move to next level
+      event.stopPropagation()
+      this.setState({level: this.state.level + 1})
     }
   }
 
-  addUnitToNewCurriculum () {
+  addElementToNewCurriculum () {
     this.props.addToNewCurriculum(this.state.baseName, this.props[this.state.baseName])
   }
 
@@ -117,29 +121,37 @@ class ThumbnailMenu extends Dropdown.Menu {
         shareable link</MenuItem>)
     }
 
-    if (this.state.level === 2) {
+    if (this.state.level === 2) { // Curricula list
       menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
       // for (var i = 0; i < this.props.myCurricula.results.length; i++) {
       //   var curriculum = this.props.myCurricula.results[i]
-      for (var uuid in this.props.myCurricula) {
+
+      var subMenu = ''
+      if (this.state.baseName !== 'unit') {
+        subMenu = <span style={{float: 'right'}}>{'>'}</span>
+      }
+
+      for (let uuid in this.props.myCurricula) {
         var curriculum = this.props.myCurricula[uuid]
         menus.push(<MenuItem
+          //onSelect={this.onSelectCurriculum.bind(this, curriculum)}
           onSelect={this.onSelectCurriculum.bind(this, curriculum)}
           key={curriculum.uuid}>
           {curriculum.image
             ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={curriculum.image} />
             : null }
-          {curriculum.name}
+          {curriculum.name}{subMenu}
         </MenuItem>)
       }
 
-      // level 3 <span style={{float: 'right'}}>{'>'}</span>
+      menus.push(<MenuItem onSelect={this.addElementToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
+        <Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum
+      </MenuItem>)
+    }
 
-      if (this.state.baseName === 'unit') {
-        menus.push(<MenuItem onSelect={this.addUnitToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
-          <Glyphicon glyph='plus' /> Add unit to new curriculum
-        </MenuItem>)
-      }
+    if (this.state.level === 3) { // Units list
+      menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
+      // TODO load Units list
     }
 
     return (
@@ -156,7 +168,8 @@ class ThumbnailMenu extends Dropdown.Menu {
 }
 
 ThumbnailMenu.propTypes = {
-  unit: PropTypes.object.isRequired,
+  unit: PropTypes.object,
+  module: PropTypes.object,
   curricula: PropTypes.object
 }
 
