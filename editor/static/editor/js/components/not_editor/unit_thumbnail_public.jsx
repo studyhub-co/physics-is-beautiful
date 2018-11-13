@@ -25,12 +25,6 @@ export class UnitThumbnailPublic extends React.Component {
         </div>
         <div>
           <ThumbnailMenu unit={this.props.unit} />
-          {/*<DropdownThumbnail*/}
-            {/*style={{float: 'right'}}*/}
-            {/*id='dropdown-custom-menu'>*/}
-            {/*<UnitMenuToggle bsRole='toggle' rootCloseEvent={'click'} />*/}
-            {/*<ThumbnailMenu unit={this.props.unit} bsRole='menu' rootCloseEvent={'click'} />*/}
-          {/*</DropdownThumbnail>*/}
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.unit.name}
           </div>
