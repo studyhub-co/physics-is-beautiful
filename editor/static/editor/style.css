@@ -255,8 +255,8 @@
     /* new values */
     padding: 0;
     width: 25rem;
-    /*height: 30rem;*/
-    height: 40rem;  /* temp fix for swiper overflow hidden, drop down menu does not visible at the full */
+    height: 30rem;
+    /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
 }
 
 .editor .pop-up-window {
@@ -320,3 +320,7 @@
 .pib-swiper-button:hover::after {
     opacity: 1;
   }
+
+.swiper-wrapper {
+    height: 40rem; /* fix for the dropdown menu in carousel */
+}

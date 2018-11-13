@@ -6,7 +6,8 @@ import { connect } from 'react-redux'
 
 import copy from 'copy-to-clipboard'
 
-import { Dropdown, MenuItem, Glyphicon } from 'react-bootstrap'
+import { Dropdown, MenuItem, Glyphicon, Image } from 'react-bootstrap'
+import { addUnit } from '../../actions'
 
 export class DropdownThumbnail extends Dropdown {
   componentDidMount () {
@@ -66,6 +67,10 @@ class ThumbnailMenu extends Dropdown.Menu {
     }
   }
 
+  // componentDidMount () {
+  //
+  // }
+
   onLearnSelect () {
     //window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
     window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
@@ -91,6 +96,12 @@ class ThumbnailMenu extends Dropdown.Menu {
   }
 
   onSelectCurriculum (curriculum) {
+    if (this.state.baseName === 'unit') {
+      this.props.addUnit(curriculum, this.props.unit)
+    }
+  }
+
+  addUnitToNew () {
     // todo
   }
 
@@ -107,12 +118,25 @@ class ThumbnailMenu extends Dropdown.Menu {
 
     if (this.state.level === 2) {
       menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
-      // recentCurricula list
-      for (var i = 0; i < this.props.recentCurricula.results.length; i++) {
-        var curriculum = this.props.recentCurricula.results[i]
+      // for (var i = 0; i < this.props.myCurricula.results.length; i++) {
+      //   var curriculum = this.props.myCurricula.results[i]
+      for (var uuid in this.props.myCurricula) {
+        var curriculum = this.props.myCurricula[uuid]
         menus.push(<MenuItem
-          onSelect={() => { this.onSelectCurriculum(curriculum) }}
-          key={curriculum.uuid}>{curriculum.name}
+          onSelect={this.onSelectCurriculum.bind(this, curriculum)}
+          key={curriculum.uuid}>
+          {curriculum.image
+            ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={curriculum.image} />
+            : null }
+          {curriculum.name}
+        </MenuItem>)
+      }
+
+      // level 3 <span style={{float: 'right'}}>{'>'}</span>
+
+      if (this.state.baseName === 'unit') {
+        menus.push(<MenuItem onSelect={this.addUnitToNew} key='4' eventKey='4' style={{color: 'blue'}}>
+          <Glyphicon glyph='plus' /> Add unit to new curriculum
         </MenuItem>)
       }
     }
@@ -132,20 +156,20 @@ class ThumbnailMenu extends Dropdown.Menu {
 
 ThumbnailMenu.propTypes = {
   unit: PropTypes.object.isRequired,
-  recentCurricula: PropTypes.object
+  curricula: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    recentCurricula: state.filteredCurricula.recentCurricula
+    myCurricula: state.curricula // myCurricula
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    //loadSearchCurricula: (curriculaSearchString, url) => dispatch(loadSearchCurricula(curriculaSearchString, url)),
-    //loadMyCurricula
+    addUnit: (curriculum, unit) => dispatch(addUnit(curriculum.uuid, unit))
+    //loadRecentCurricula: (url) => dispatch(loadAllCurricula(url, 'recent'))
   }
 }
 
