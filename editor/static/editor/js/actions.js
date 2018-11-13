@@ -510,7 +510,6 @@ export function deleteCurriculum(uuid) {
     }
 }
 
-
 export function unitAdded(curriculumUuid, data) {
     return {type : ActionTypes.UNIT_ADDED,
 	    curriculumUuid : curriculumUuid,
@@ -532,7 +531,47 @@ export function addUnit (curriculumUuid, unit) {
       method: 'POST',
       data: data,
       success: function (data, status, jqXHR) {
-        dispatch(unitAdded(curriculumUuid, data))
+        //dispatch(unitAdded(curriculumUuid, data))
+        // reload expanded
+        loadCurriculum(curriculumUuid, dispatch)
+        history.push('/studio/editor/curricula/' + curriculumUuid + '/')
+      }
+    })
+  }
+}
+
+export function addToNewCurriculum (type, value) {
+  return dispatch => {
+    $.ajax({ // create curriculum
+      async: true,
+      url: API_PREFIX + 'curricula/',
+      method: 'POST',
+      data: {
+        name: 'New curriculum',
+      },
+      success: function (data, status, jqXHR) {
+        var unitData = {name: 'New unit', curriculum: data.uuid}
+
+        if (type === 'unit') {
+          unitData['prototype'] = value.uuid
+          unitData['name'] = value.name
+        }
+
+        $.ajax({
+          async: true,
+          url: API_PREFIX + 'units/',
+          method: 'POST',
+          data: unitData,
+          success: function (data, status, jqXHR) {
+            if (type === 'unit') {
+              //dispatch(unitAdded(unitData.curriculum, data))
+              loadCurriculum(unitData.curriculum, dispatch)
+              history.push('/studio/editor/curricula/' + unitData.curriculum + '/')
+            } else {
+              // create module
+            }
+          }
+        })
       }
     })
   }
