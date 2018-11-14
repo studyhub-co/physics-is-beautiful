@@ -86,6 +86,15 @@ class LessonViewSet(ModelViewSet):
     serializer_class = LessonSerializer
     lookup_field = 'uuid'
 
+    def create(self, request, *args, **kwargs):
+        if 'prototype' in self.request.data and self.request.data['prototype']:
+            prototype = Lesson.objects.get(uuid=self.request.data['prototype'])
+            copied_lesson = prototype.clone(Module.objects.get(uuid=self.request.data['module']))
+
+            return Response(LessonSerializer(copied_lesson, context={'request': request}).data, status=status.HTTP_201_CREATED)
+        else:
+            return super().create(request, *args, **kwargs)
+
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
                                      Q(module__unit__curriculum__collaborators=self.request.user.profile))

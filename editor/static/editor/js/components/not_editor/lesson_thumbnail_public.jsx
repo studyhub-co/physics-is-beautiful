@@ -10,28 +10,27 @@ import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import copy from 'copy-to-clipboard'
 
 import { Thumbnail } from './../thumbnail'
+import ThumbnailMenu from './thumbnail_menu'
 
-import { store } from '../../app'
-
-class LessonMenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
-        {this.props.children}
-      </Glyphicon>
-    )
-  }
-}
+// class LessonMenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
+//         {this.props.children}
+//       </Glyphicon>
+//     )
+//   }
+// }
 
 export class LessonThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -69,18 +68,19 @@ export class LessonThumbnailPublic extends React.Component {
           <Thumbnail image={this.props.lesson.image} />
         </div>
         <div>
-          <Dropdown
-            style={{float: 'right'}}
-            id='dropdown-custom-menu'>
-            <LessonMenuToggle bsRole='toggle' />
-            {/*<CustomLessonMenu bsRole='menu'>*/}
-            <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-              <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
-              <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
-              <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-            </Dropdown.Menu>
-            {/*</CustomLessonMenu>*/}
-          </Dropdown>
+          <ThumbnailMenu lesson={this.props.lesson} />
+          {/*<Dropdown*/}
+            {/*style={{float: 'right'}}*/}
+            {/*id='dropdown-custom-menu'>*/}
+            {/*<LessonMenuToggle bsRole='toggle' />*/}
+            {/*/!*<CustomLessonMenu bsRole='menu'>*!/*/}
+            {/*<Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>*/}
+              {/*<MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>*/}
+              {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>*/}
+              {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
+            {/*</Dropdown.Menu>*/}
+            {/*/!*</CustomLessonMenu>*!/*/}
+          {/*</Dropdown>*/}
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.lesson.name}
           </div>

@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import copy from 'copy-to-clipboard'
 
 import { Dropdown, MenuItem, Glyphicon, Image } from 'react-bootstrap'
-import { addUnit, addToNewCurriculum, addModule } from '../../actions'
+import { addUnit, addToNewCurriculum, addModule, addLesson } from '../../actions'
 
 export class DropdownThumbnail extends Dropdown {
   componentDidMount () {
@@ -61,13 +61,16 @@ class ThumbnailMenu extends Dropdown.Menu {
       baseName = 'unit'
     } else if (props.module) {
       baseName = 'module'
+    } else if (props.lesson) {
+      baseName = 'lesson'
     }
 
     this.state = {
       level: 1,
       baseName: baseName,
       selectedCurriculum: null,
-      selectedUnit: null
+      selectedUnit: null,
+      selectedModule: null
     }
   }
 
@@ -114,6 +117,15 @@ class ThumbnailMenu extends Dropdown.Menu {
     } else { // move to next level
       event.stopPropagation()
       this.setState({level: this.state.level + 1, selectedUnit: unit})
+    }
+  }
+
+  onSelectModule (module, e, event) {
+    if (this.state.baseName === 'lesson') {
+      this.props.addLesson(module.uuid, this.props.lesson)
+    } else { // move to next level
+      event.stopPropagation()
+      this.setState({level: this.state.level + 1, selectedModule: module})
     }
   }
 
@@ -183,6 +195,29 @@ class ThumbnailMenu extends Dropdown.Menu {
       }
     }
 
+    // modules list
+    if (this.state.level === 4) {
+      let subMenu = ''
+      if (this.state.baseName !== 'lesson') {
+        subMenu = <span style={{float: 'right'}}>{'>'}</span>
+      }
+
+      menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
+
+      for (let x = 0; x < this.state.selectedUnit.modules.length; x++) {
+        var module = this.props.modules[this.state.selectedUnit.modules[x]]
+
+        menus.push(<MenuItem
+          onSelect={this.onSelectModule.bind(this, module)}
+          key={module.uuid}>
+          {module.image
+            ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={module.image} />
+            : null }
+          {module.name}{subMenu}
+        </MenuItem>)
+      }
+    }
+
     return (
       <DropdownThumbnail
         style={{float: 'right'}}
@@ -198,6 +233,7 @@ class ThumbnailMenu extends Dropdown.Menu {
 
 ThumbnailMenu.propTypes = {
   unit: PropTypes.object,
+  lesson: PropTypes.object,
   module: PropTypes.object,
   curricula: PropTypes.object
 }
@@ -205,7 +241,8 @@ ThumbnailMenu.propTypes = {
 const mapStateToProps = (state) => {
   return {
     myCurricula: state.curricula, // myCurricula
-    units: state.units
+    units: state.units,
+    modules: state.modules
   }
 }
 
@@ -214,6 +251,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     addUnit: (curriculumUuid, unit) => dispatch(addUnit(curriculumUuid, unit)),
     addModule: (unitUuid, module) => dispatch(addModule(unitUuid, module)),
+    addLesson: (moduleUuid, lesson) => dispatch(addLesson(moduleUuid, lesson)),
     addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value))
   }
 }

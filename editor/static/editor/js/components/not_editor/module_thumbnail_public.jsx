@@ -14,25 +14,25 @@ import ThumbnailMenu from './thumbnail_menu'
 
 import { store } from '../../app'
 
-class ModuleMenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
-        {this.props.children}
-      </Glyphicon>
-    )
-  }
-}
+// class ModuleMenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
+//         {this.props.children}
+//       </Glyphicon>
+//     )
+//   }
+// }
 
 export class ModuleThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -71,18 +71,6 @@ export class ModuleThumbnailPublic extends React.Component {
         </div>
         <div>
           <ThumbnailMenu module={this.props.module} />
-          {/*<Dropdown*/}
-            {/*style={{float: 'right'}}*/}
-            {/*id='dropdown-custom-menu'>*/}
-            {/*<ModuleMenuToggle bsRole='toggle' />*/}
-            {/*/!*<CustomModuleMenu bsRole='menu'>*!/*/}
-            {/*<Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>*/}
-              {/*<MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>*/}
-              {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>*/}
-              {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
-            {/*</Dropdown.Menu>*/}
-            {/*/!*</CustomModuleMenu>*!/*/}
-          {/*</Dropdown>*/}
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.module.name}
           </div>
