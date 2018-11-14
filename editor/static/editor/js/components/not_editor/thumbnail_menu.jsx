@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import copy from 'copy-to-clipboard'
 
 import { Dropdown, MenuItem, Glyphicon, Image } from 'react-bootstrap'
-import { addUnit, addToNewCurriculum } from '../../actions'
+import { addUnit, addToNewCurriculum, addModule } from '../../actions'
 
 export class DropdownThumbnail extends Dropdown {
   componentDidMount () {
@@ -65,7 +65,9 @@ class ThumbnailMenu extends Dropdown.Menu {
 
     this.state = {
       level: 1,
-      baseName: baseName
+      baseName: baseName,
+      selectedCurriculum: null,
+      selectedUnit: null
     }
   }
 
@@ -102,7 +104,16 @@ class ThumbnailMenu extends Dropdown.Menu {
       this.props.addUnit(curriculum.uuid, this.props.unit)
     } else { // move to next level
       event.stopPropagation()
-      this.setState({level: this.state.level + 1})
+      this.setState({level: this.state.level + 1, selectedCurriculum: curriculum})
+    }
+  }
+
+  onSelectUnit (unit, e, event) {
+    if (this.state.baseName === 'module') {
+      this.props.addModule(unit.uuid, this.props.module)
+    } else { // move to next level
+      event.stopPropagation()
+      this.setState({level: this.state.level + 1, selectedUnit: unit})
     }
   }
 
@@ -121,12 +132,13 @@ class ThumbnailMenu extends Dropdown.Menu {
         shareable link</MenuItem>)
     }
 
-    if (this.state.level === 2) { // Curricula list
+    // Curricula list
+    if (this.state.level === 2) {
       menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
       // for (var i = 0; i < this.props.myCurricula.results.length; i++) {
       //   var curriculum = this.props.myCurricula.results[i]
 
-      var subMenu = ''
+      let subMenu = ''
       if (this.state.baseName !== 'unit') {
         subMenu = <span style={{float: 'right'}}>{'>'}</span>
       }
@@ -134,7 +146,6 @@ class ThumbnailMenu extends Dropdown.Menu {
       for (let uuid in this.props.myCurricula) {
         var curriculum = this.props.myCurricula[uuid]
         menus.push(<MenuItem
-          //onSelect={this.onSelectCurriculum.bind(this, curriculum)}
           onSelect={this.onSelectCurriculum.bind(this, curriculum)}
           key={curriculum.uuid}>
           {curriculum.image
@@ -149,9 +160,27 @@ class ThumbnailMenu extends Dropdown.Menu {
       </MenuItem>)
     }
 
-    if (this.state.level === 3) { // Units list
+    // Units list
+    if (this.state.level === 3) {
+      let subMenu = ''
+      if (this.state.baseName !== 'module') {
+        subMenu = <span style={{float: 'right'}}>{'>'}</span>
+      }
+
       menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
-      // TODO load Units list
+
+      for (let x = 0; x < this.state.selectedCurriculum.units.length; x++) {
+        var unit = this.props.units[this.state.selectedCurriculum.units[x]]
+
+        menus.push(<MenuItem
+          onSelect={this.onSelectUnit.bind(this, unit)}
+          key={unit.uuid}>
+          {unit.image
+            ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={unit.image} />
+            : null }
+          {unit.name}{subMenu}
+        </MenuItem>)
+      }
     }
 
     return (
@@ -175,7 +204,8 @@ ThumbnailMenu.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    myCurricula: state.curricula // myCurricula
+    myCurricula: state.curricula, // myCurricula
+    units: state.units
   }
 }
 
@@ -183,6 +213,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     addUnit: (curriculumUuid, unit) => dispatch(addUnit(curriculumUuid, unit)),
+    addModule: (unitUuid, module) => dispatch(addModule(unitUuid, module)),
     addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value))
   }
 }

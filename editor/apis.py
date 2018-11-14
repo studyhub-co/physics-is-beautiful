@@ -67,6 +67,15 @@ class ModuleViewSet(ModelViewSet):
     serializer_class = ModuleSerializer
     lookup_field = 'uuid'
 
+    def create(self, request, *args, **kwargs):
+        if 'prototype' in self.request.data and self.request.data['prototype']:
+            prototype = Module.objects.get(uuid=self.request.data['prototype'])
+            copied_module = prototype.clone(Unit.objects.get(uuid=self.request.data['unit']))
+
+            return Response(ModuleSerializer(copied_module, context={'request': request}).data, status=status.HTTP_201_CREATED)
+        else:
+            return super().create(request, *args, **kwargs)
+
     def get_queryset(self):
         return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
                                      Q(unit__curriculum__collaborators=self.request.user.profile))

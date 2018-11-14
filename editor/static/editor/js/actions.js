@@ -569,6 +569,28 @@ export function addToNewCurriculum (type, value) {
               history.push('/studio/editor/curricula/' + unitData.curriculum + '/')
             } else {
               // create module
+              var moduleData = {name: 'New module', unit: data.uuid}
+
+              if (type === 'module') {
+                moduleData['prototype'] = value.uuid
+                moduleData['name'] = value.name
+              }
+
+              $.ajax({
+                async: true,
+                url: API_PREFIX + 'modules/',
+                method: 'POST',
+                data: moduleData,
+                success: function (data, status, jqXHR) {
+                  if (type === 'module') {
+                    // dispatch(moduleAdded(data))
+                    loadCurriculum(unitData.curriculum, dispatch)
+                    history.push('/studio/editor/modules/' + data.uuid + '/')
+                  } else {
+                    // create lesson
+                  }
+                }
+              })
             }
           }
         })
@@ -660,21 +682,26 @@ export function moduleAdded(data) {
 
 }
 
-export function addModule(unitUuid) {
-    return dispatch => {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'modules/',
-	    method : 'POST',
-	    data : {name : 'New module', unit : unitUuid},
-	    success: function(data, status, jqXHR) {
-		dispatch(moduleAdded(data));
-		history.push('/studio/editor/modules/'+data.uuid+'/');
-	    }
-	});   
-    }  
-}
+export function addModule (unitUuid, module) {
+  var data = {name: 'New module', unit: unitUuid}
+  if (module) {
+    data['prototype'] = module.uuid
+    data['name'] = module.name
+  }
 
+  return dispatch => {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'modules/',
+      method: 'POST',
+      data: data,
+      success: function (data, status, jqXHR) {
+        dispatch(moduleAdded(data))
+        history.push('/studio/editor/modules/' + data.uuid + '/')
+      }
+    })
+  }
+}
 
 export function moduleLoaded(data){    
     return {type : ActionTypes.MODULE_LOADED,
@@ -1425,35 +1452,3 @@ export function findUsers (searchString) {
     })
   }
 }
-
-// export function curricilumStaffListLoaded (data) {
-//   return {
-//     type: ActionTypes.CURRICULUM_STUFF_LIST_LOADED,
-//     curricilumStaffList: data
-//   }
-// }
-//
-// export function loadCurricilumStaffList (searchString) {
-//  return (dispatch, getState) => {
-//     $.ajax({
-//       url: API_PROFILE_PREFIX + '',
-//       type: 'GET',
-//       success: function (data, status, jqXHR) {
-//         dispatch(loadCurricilumStaffList(data))
-//       }
-//     })
-//   }
-// }
-//
-// export function addCollaborators (collaborators) {
-//   return (dispatch, getState) => {
-//     $.ajax({
-//       url: API_PROFILE_PREFIX + '',
-//       data: collaborators,
-//       type: 'POST',
-//       success: function (data, status, jqXHR) {
-//         dispatch(loadCurricilumStaffList(data))
-//       }
-//     })
-//   }
-// }
