@@ -128,7 +128,7 @@ class CurriculumViewSet(mixins.UpdateModelMixin,
     def get_queryset(self):
         return Curriculum.objects.filter(
               Q(setting_publically=True) |
-              (Q(author=self.request.user) | Q(collaborators=self.request.user.profile))).\
+              Q(Q(author=self.request.user) | Q(collaborators=self.request.user.profile))).\
             select_related('author').\
             annotate(count_lessons=Count('units__modules__lessons', distinct=True)).\
             order_by('-published_on').\
@@ -150,7 +150,7 @@ class UnitViewSet(mixins.UpdateModelMixin,
 
     def get_queryset(self):
         return self.queryset.filter(Q(curriculum__setting_publically=True) |
-                                     (Q(curriculum__author=self.request.user) |
+                                    Q(Q(curriculum__author=self.request.user) |
                                       Q(curriculum__collaborators=self.request.user.profile))).distinct()
 
 
@@ -167,7 +167,7 @@ class ModuleViewSet(mixins.UpdateModelMixin,
 
     def get_queryset(self):
         return self.queryset.filter(Q(unit__curriculum__setting_publically=True) |
-                                     (Q(unit__curriculum__author=self.request.user) |
+                                    Q(Q(unit__curriculum__author=self.request.user) |
                                       Q(unit__curriculum__collaborators=self.request.user.profile))).distinct()
 
 
@@ -184,7 +184,7 @@ class LessonViewSet(mixins.UpdateModelMixin,
 
     def get_queryset(self):
         return self.queryset.filter(Q(module__unit__curriculum__setting_publically=True) |
-                                     Q(Q(module__unit__curriculum__author=self.request.user) |
+                                    Q(Q(module__unit__curriculum__author=self.request.user) |
                                       Q(module__unit__curriculum__collaborators=self.request.user.profile))).distinct()
 
 
@@ -203,5 +203,5 @@ class QuestionViewSet(mixins.UpdateModelMixin,
 
     def get_queryset(self):
         return self.queryset.filter(Q(lesson__module__unit__curriculum__setting_publically=True) |
-                                     (Q(lesson__module__unit__curriculum__author=self.request.user) |
+                                    Q(Q(lesson__module__unit__curriculum__author=self.request.user) |
                                       Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile))).distinct()
