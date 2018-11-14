@@ -63,6 +63,7 @@ class SearchMixin:
 
 class CurriculumViewSet(mixins.UpdateModelMixin,
                         mixins.ListModelMixin,
+                        mixins.RetrieveModelMixin,
                         GenericViewSet,
                         SearchMixin):
     permission_classes = (permissions.IsAuthenticated,)
