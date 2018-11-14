@@ -588,6 +588,33 @@ export function addToNewCurriculum (type, value) {
                     history.push('/studio/editor/modules/' + data.uuid + '/')
                   } else {
                     // create lesson
+                    var lessonData = {name: 'New module', module: data.uuid}
+
+                    if (type === 'lesson') {
+                      // lesson prototype
+                      lessonData['prototype'] = value.uuid
+                      lessonData['name'] = value.name
+
+                    }
+
+                    // load created module
+                    dispatch(loadModuleIfNeeded(data.uuid))
+
+                    $.ajax({
+                      async: true,
+                      url: API_PREFIX + 'lessons/',
+                      method: 'POST',
+                      data: lessonData,
+                      success: function (data, status, jqXHR) {
+                        var questions = extract(data, 'questions')
+                        dispatch({type: ActionTypes.LESSON_ADDED,
+                          lesson: data,
+                          questions: questions,
+                          answers: extractAll(questions, 'answers')
+                        })
+                        history.push('/studio/editor/lessons/' + data.uuid + '/')
+                      }
+                    })
                   }
                 }
               })
@@ -798,40 +825,48 @@ export function deleteModule(moduleUuid) {
 }
 
 export function loadModuleIfNeeded(uuid) {
-    return (dispatch, getState) => {
-	if (!(uuid in getState().modules) || !('lessons' in getState().modules[uuid])) {
-	    $.ajax({
-		async: true,
-		url: API_PREFIX + 'modules/'+uuid +'/',
-		success: function(data, status, jqXHR) {
-		    dispatch(moduleLoaded(data));
-		}
-	    });
-	}
+  return (dispatch, getState) => {
+    if (!(uuid in getState().modules) || !('lessons' in getState().modules[uuid])) {
+        $.ajax({
+          async: true,
+          url: API_PREFIX + 'modules/'+uuid +'/',
+          success: function(data, status, jqXHR) {
+              dispatch(moduleLoaded(data));
+          }
+        });
     }
+  }
 }
 
+export function addLesson (moduleUuid, lesson) {
+  var data = {name: 'New lesson', module: moduleUuid}
+  if (lesson) {
+    data['prototype'] = lesson.uuid
+    data['name'] = lesson.name
+  }
+  return dispatch => {
+    if (lesson) {
+      // load module
+      dispatch(loadModuleIfNeeded(moduleUuid))
+    }
 
-export function addLesson(moduleUuid) {
-    return dispatch => {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'lessons/',
-	    method : 'POST',
-	    data : {name : 'New lesson', module : moduleUuid},
-	    success: function(data, status, jqXHR) {
-		var questions = extract(data, 'questions')		
-		dispatch({type : ActionTypes.LESSON_ADDED,
-			  lesson : data,
-			  questions : questions,
-			  answers : extractAll(questions, 'answers')
-			 });
-		history.push('/studio/editor/lessons/'+data.uuid+'/');
-	    }
-	});   
-    }  
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'lessons/',
+      method: 'POST',
+      data: data,
+      success: function (data, status, jqXHR) {
+        var questions = extract(data, 'questions')
+        dispatch({type: ActionTypes.LESSON_ADDED,
+          lesson: data,
+          questions: questions,
+          answers: extractAll(questions, 'answers')
+        })
+        history.push('/studio/editor/lessons/' + data.uuid + '/')
+      }
+    })
+  }
 }
-
 
 export function lessonLoaded(data) {
     var questions = extract(data, 'questions')
