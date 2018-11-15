@@ -225,10 +225,12 @@ class BrowseCurriculaView extends React.Component {
   // TODO create new component for search
 
   handleSearchString (e) {
-    this.setState({searchString: e.target.value})
     if (!e.target.value) {
+      this.setState({searchString: e.target.value}, this.doTabsSearch) // reset
       this.setState({searchEnabeled: false})
       this.searchView = null
+    } else {
+      this.setState({searchString: e.target.value})
     }
   }
 
