@@ -59,7 +59,7 @@ class UnitViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Unit.objects.filter(Q(curriculum__author=self.request.user) |
-                                   Q(curriculum__collaborators=self.request.user.profile))
+                                   Q(curriculum__collaborators=self.request.user.profile)).distinct()
 
     
 class ModuleViewSet(ModelViewSet):
@@ -78,7 +78,7 @@ class ModuleViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
-                                     Q(unit__curriculum__collaborators=self.request.user.profile))
+                                     Q(unit__curriculum__collaborators=self.request.user.profile)).distinct()
 
     
 class LessonViewSet(ModelViewSet):
@@ -97,17 +97,28 @@ class LessonViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
-                                     Q(module__unit__curriculum__collaborators=self.request.user.profile))
+                                     Q(module__unit__curriculum__collaborators=self.request.user.profile)).distinct()
 
 
 class QuestionViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsQuestionOwnerOrCollaborator)
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
+
+    def create(self, request, *args, **kwargs):
+        if 'prototype' in self.request.data and self.request.data['prototype']:
+            prototype = Question.objects.get(uuid=self.request.data['prototype'])
+            copied_question = prototype.clone(Lesson.objects.get(uuid=self.request.data['lesson']))
+
+            return Response(QuestionSerializer(copied_question, context={'request': request}).data,
+                            status=status.HTTP_201_CREATED)
+        else:
+            return super().create(request, *args, **kwargs)
     
     def get_queryset(self):
         return Question.objects.filter(Q(lesson__module__unit__curriculum__author=self.request.user) |
-                                       Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile))
+                                       Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile)).\
+                                distinct()
 
     
 class AnswerViewSet(ModelViewSet):
@@ -117,4 +128,5 @@ class AnswerViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Answer.objects.filter(Q(question__lesson__module__unit__curriculum__author=self.request.user) |
-                                     Q(question__lesson__module__unit__curriculum__collaborators=self.request.user.profile))
+                                     Q(question__lesson__module__unit__curriculum__collaborators=self.request.user.profile)).\
+                              distinct()

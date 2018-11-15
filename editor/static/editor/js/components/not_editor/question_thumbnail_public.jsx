@@ -13,25 +13,27 @@ import { Thumbnail } from './../thumbnail'
 
 import { store } from '../../app'
 
-class QuestionMenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
+import ThumbnailMenu from './thumbnail_menu'
 
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
-        {this.props.children}
-      </Glyphicon>
-    )
-  }
-}
+// class QuestionMenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
+//         {this.props.children}
+//       </Glyphicon>
+//     )
+//   }
+// }
 
 export class QuestionThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -61,42 +63,53 @@ export class QuestionThumbnailPublic extends React.Component {
   render () {
     return (
       <Col
-        sm={2}
-        md={2}
-        className={'curriculum-card'}
-        style={{'cursor': 'pointer'}}>
-        <div style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
-          <Thumbnail image={this.props.question.image} />
-        </div>
-        <div>
-          <Dropdown
-            style={{float: 'right'}}
-            id='dropdown-custom-menu'>
-            <QuestionMenuToggle bsRole='toggle' />
-            {/*<CustomQuestionMenu bsRole='menu'>*/}
-            <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-              {/*<MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>*/}
-              <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
-              {/*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*/}
-            </Dropdown.Menu>
-            {/*</CustomQuestionMenu>*/}
-          </Dropdown>
-          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
-            {this.props.question.name}
+        sm={12}
+        md={12}
+        className={'staff-user-row'}>
+        <Col
+          sm={2}
+          md={2}
+        >
+          <div style={{padding: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+            {this.props.question ? <Image responsive src={this.props.question.image} /> : null }
+          </div>
+        </Col>
+        <Col
+          sm={10}
+          md={10}
+        >
+          <ThumbnailMenu question={this.props.question} />
+          {/*<Dropdown*/}
+            {/*style={{float: 'right'}}*/}
+            {/*id='dropdown-custom-menu'>*/}
+            {/*<QuestionMenuToggle bsRole='toggle' />*/}
+            {/*/!*<CustomQuestionMenu bsRole='menu'>*!/*/}
+            {/*<Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>*/}
+              {/*/!*<MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>*!/*/}
+              {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>*/}
+              {/*/!*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*!/*/}
+            {/*</Dropdown.Menu>*/}
+            {/*/!*</CustomQuestionMenu>*!/*/}
+          {/*</Dropdown>*/}
+          <div style={{fontSize: '2rem'}} onClick={this.onTitleClick}>
+            {this.props.question.text}
+          </div>
+          <div style={{fontSize: '1.5rem', margin: '1rem 0 1rem 0'}} onClick={this.onTitleClick}>
+            {this.props.question.lesson.name}
           </div>
           {/*<div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
             {/*<a href={this.props.question.author.get_absolute_url} target={'_blank'}>*/}
               {/*{this.props.question.author.display_name}*/}
             {/*</a> ∙ {this.props.question.count_questions } questions ∙ { this.props.question.number_of_learners } learners*/}
           {/*</div>*/}
-          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0'}}>
             Created <Moment fromNow>
               {this.props.question.created_on}
             </Moment> ∙ Last updated <Moment fromNow>
               {this.props.question.updated_on}
             </Moment>
           </div>
-        </div>
+        </Col>
       </Col>
     )
   }

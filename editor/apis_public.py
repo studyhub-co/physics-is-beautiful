@@ -194,7 +194,9 @@ class QuestionViewSet(mixins.UpdateModelMixin,
                       GenericViewSet,
                       SearchMixin):
     permission_classes = (permissions.IsAuthenticated, )
-    queryset = Question.objects.all().order_by('-lesson__module__unit__curriculum__number_of_learners_denormalized', 'uuid')
+    queryset = Question.objects.all()\
+        .order_by('-lesson__module__unit__curriculum__number_of_learners_denormalized', 'uuid')\
+        .select_related('lesson')
     serializer_class = PublicQuestionSerializer
     search_fields = ['text', ]  # TODO add answers text
     lookup_field = 'uuid'
