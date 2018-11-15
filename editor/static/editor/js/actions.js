@@ -588,17 +588,16 @@ export function addToNewCurriculum (type, value) {
                     history.push('/studio/editor/modules/' + data.uuid + '/')
                   } else {
                     // create lesson
-                    var lessonData = {name: 'New module', module: data.uuid}
+                    var lessonData = {name: 'New lesson', module: data.uuid}
 
                     if (type === 'lesson') {
                       // lesson prototype
                       lessonData['prototype'] = value.uuid
                       lessonData['name'] = value.name
-
                     }
 
                     // load created module
-                    dispatch(loadModuleIfNeeded(data.uuid))
+                    // dispatch(loadModuleIfNeeded(data.uuid))
 
                     $.ajax({
                       async: true,
@@ -606,13 +605,35 @@ export function addToNewCurriculum (type, value) {
                       method: 'POST',
                       data: lessonData,
                       success: function (data, status, jqXHR) {
-                        var questions = extract(data, 'questions')
-                        dispatch({type: ActionTypes.LESSON_ADDED,
-                          lesson: data,
-                          questions: questions,
-                          answers: extractAll(questions, 'answers')
-                        })
-                        history.push('/studio/editor/lessons/' + data.uuid + '/')
+                        if (type === 'lesson') {
+                          // var questions = extract(data, 'questions')
+                          // dispatch({
+                          //   type: ActionTypes.LESSON_ADDED,
+                          //   lesson: data,
+                          //   questions: questions,
+                          //   answers: extractAll(questions, 'answers')
+                          // })
+                          history.push('/studio/editor/lessons/' + data.uuid + '/')
+                        } else {
+                          // add question
+                          var questionData = {text: 'New question', lesson: data.uuid}
+
+                          if (type === 'question') {
+                            // question prototype
+                            questionData['prototype'] = value.uuid
+                            questionData['text'] = value.text
+                          }
+
+                          $.ajax({
+                            async: true,
+                            method: 'POST',
+                            url: API_PREFIX + 'questions/',
+                            data: questionData,
+                            success: function (data, status, jqXHR) {
+                              history.push('/studio/editor/lessons/' + data.lesson + '/')
+                            }
+                          })
+                        }
                       }
                     })
                   }
@@ -1096,22 +1117,29 @@ export function goToQuestion(uuid){
     }
 }
 
-export function addQuestion(lesson){
-     return dispatch => {
-	 $.ajax({
-	     async: true,
-	     method : 'POST',
-	     url: API_PREFIX + 'questions/',
-	     data : {lesson : lesson,
-		     text : 'New question'},
-	     success: function(data, status, jqXHR) {
-		 dispatch({type : ActionTypes.QUESTION_ADDED,
-			   question : data});
-	     }});	    
-     }
-   
-}
+export function addQuestion (lesson, question) {
+  var data = {text: 'New lesson', lesson: lesson}
+  if (question) {
+    data['prototype'] = question.uuid
+  }
 
+  return dispatch => {
+    $.ajax({
+      async: true,
+      method: 'POST',
+      url: API_PREFIX + 'questions/',
+      data: data, // {lesson : lesson, text : 'New question'},
+      success: function (data, status, jqXHR) {
+        if (question) {
+          history.push('/studio/editor/lessons/' + lesson + '/')
+        } else {
+          dispatch(
+            {type: ActionTypes.QUESTION_ADDED,
+              question: data})
+        }
+      }})
+  }
+}
 
 export function moveQuestion(uuid, beforeUuid) {    
     return (dispatch, getState) => {

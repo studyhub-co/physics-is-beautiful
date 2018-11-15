@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import copy from 'copy-to-clipboard'
 
 import { Dropdown, MenuItem, Glyphicon, Image } from 'react-bootstrap'
-import { addUnit, addToNewCurriculum, addModule, addLesson } from '../../actions'
+import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadModuleIfNeeded } from '../../actions'
 
 export class DropdownThumbnail extends Dropdown {
   componentDidMount () {
@@ -63,6 +63,8 @@ class ThumbnailMenu extends Dropdown.Menu {
       baseName = 'module'
     } else if (props.lesson) {
       baseName = 'lesson'
+    } else if (props.question) {
+      baseName = 'question'
     }
 
     this.state = {
@@ -70,26 +72,30 @@ class ThumbnailMenu extends Dropdown.Menu {
       baseName: baseName,
       selectedCurriculum: null,
       selectedUnit: null,
-      selectedModule: null
+      selectedModule: null,
+      selectedLesson: null
     }
   }
 
-  // componentDidMount () {
-  //
-  // }
-
   onLearnSelect () {
     //window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
-    window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+    if (this.state.baseName === 'question') { // open lesson view
+      window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_blank')
+    } else {
+      window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+    }
   }
 
   onTitleClick () {
-    //window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
     window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
   }
 
   onCopyShareableLink (e) {
-    copy(window.location.origin + '/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/')
+    if (this.state.baseName === 'question') { // copy lesson view
+      copy(window.location.origin + '/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/')
+    } else {
+      copy(window.location.origin + '/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/')
+    }
   }
 
   onBack (e, event) {
@@ -125,7 +131,15 @@ class ThumbnailMenu extends Dropdown.Menu {
       this.props.addLesson(module.uuid, this.props.lesson)
     } else { // move to next level
       event.stopPropagation()
+      this.props.loadModuleIfNeeded(module.uuid)
       this.setState({level: this.state.level + 1, selectedModule: module})
+      // TODO load lesson of the module
+    }
+  }
+
+  onSelectLesson (lesson, e, event) {
+    if (this.state.baseName === 'question') {
+      this.props.addQuestion(lesson.uuid, this.props.question)
     }
   }
 
@@ -136,12 +150,18 @@ class ThumbnailMenu extends Dropdown.Menu {
   render () {
     var menus = []
     if (this.state.level === 1) {
-      menus.push(<MenuItem onSelect={this.onLearnSelect} key='1' eventKey='1'><Glyphicon
-        glyph='education' /> Learn</MenuItem>)
-      menus.push(<MenuItem onSelect={this.onForkSelect} key='3' eventKey='3'><Glyphicon glyph='export' /> Fork to
-        curriculum studio</MenuItem>)
-      menus.push(<MenuItem onSelect={this.onCopyShareableLink} key='4' eventKey='4'><Glyphicon glyph='share-alt' /> Copy
-        shareable link</MenuItem>)
+      var learnText = 'Learn'
+      var copyText = 'Copy shareable link'
+      if (this.state.baseName === 'question') {
+        learnText = 'Learn lesson with the question'
+        copyText = 'Copy link to lesson'
+      }
+      menus.push(<MenuItem onSelect={this.onLearnSelect} key='1' eventKey='1'><Glyphicon glyph='education' />
+        &nbsp;{learnText}</MenuItem>)
+      menus.push(<MenuItem onSelect={this.onForkSelect} key='3' eventKey='3'><Glyphicon glyph='export' />
+        &nbsp;Fork to curriculum studio</MenuItem>)
+      menus.push(<MenuItem onSelect={this.onCopyShareableLink} key='4' eventKey='4'><Glyphicon glyph='share-alt' />
+        &nbsp;{copyText}</MenuItem>)
     }
 
     // Curricula list
@@ -218,9 +238,32 @@ class ThumbnailMenu extends Dropdown.Menu {
       }
     }
 
+    // lessons list
+    if (this.state.level === 5) {
+      menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
+      var lessonsUuidsList = this.props.modules[this.state.selectedModule.uuid].lessons
+
+      if (lessonsUuidsList) {
+        for (let x = 0; x < lessonsUuidsList.length; x++) {
+          var lesson = this.props.lessons[lessonsUuidsList[x]]
+
+          menus.push(<MenuItem
+            onSelect={this.onSelectLesson.bind(this, lesson)}
+            key={lesson.uuid}>
+            {lesson.image
+              ? <Image
+                style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}}
+                src={lesson.image} />
+              : null}
+            {lesson.name}
+          </MenuItem>)
+        }
+      }
+    }
+
     return (
       <DropdownThumbnail
-        style={{float: 'right'}}
+        style={{float: 'right', 'cursor': 'pointer'}}
         id='dropdown-custom-menu'>
         <MenuToggle bsRole='toggle' />
         <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
@@ -242,7 +285,8 @@ const mapStateToProps = (state) => {
   return {
     myCurricula: state.curricula, // myCurricula
     units: state.units,
-    modules: state.modules
+    modules: state.modules,
+    lessons: state.lessons
   }
 }
 
@@ -252,6 +296,8 @@ const mapDispatchToProps = (dispatch) => {
     addUnit: (curriculumUuid, unit) => dispatch(addUnit(curriculumUuid, unit)),
     addModule: (unitUuid, module) => dispatch(addModule(unitUuid, module)),
     addLesson: (moduleUuid, lesson) => dispatch(addLesson(moduleUuid, lesson)),
+    addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),
+    loadModuleIfNeeded: (moduleUuid) => dispatch(loadModuleIfNeeded(moduleUuid)),
     addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value))
   }
 }

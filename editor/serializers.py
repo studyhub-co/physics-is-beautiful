@@ -236,7 +236,7 @@ class LessonSerializer(BaseSerializer):
     def create(self, validated_data):
         validated_data['module'] = validated_data['module']['uuid']
         new_lesson = super().create(validated_data)
-        Question.objects.create(lesson=new_lesson, text='New question')
+        Question.objects.create(lesson=new_lesson, text='New question')  # WT ?
         return new_lesson
 
     class Meta:
