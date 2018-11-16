@@ -14,50 +14,16 @@ import { Thumbnail } from './../thumbnail'
 import { store } from '../../app'
 
 import ThumbnailMenu from './thumbnail_menu'
-
-// class QuestionMenuToggle extends React.Component {
-//   constructor (props, context) {
-//     super(props, context)
-//     this.handleClick = this.handleClick.bind(this)
-//   }
-//
-//   handleClick (e) {
-//     e.preventDefault()
-//     this.props.onClick(e)
-//   }
-//
-//   render () {
-//     return (
-//       <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
-//         {this.props.children}
-//       </Glyphicon>
-//     )
-//   }
-// }
+import { DEFAULT_MATHJAX_OPTIONS } from '../label'
 
 export class QuestionThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // this.onTitleClick = this.onTitleClick.bind(this)
-    // this.onLearnSelect = this.onLearnSelect.bind(this)
-    this.onForkSelect = this.onForkSelect.bind(this)
-    // this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
   }
 
-  // onLearnSelect () {
-  //   window.open('/curriculum/questions/' + this.props.question.uuid + '/', '_blank')
-  // }
-  //
-  // onTitleClick () {
-  //   window.open('/curriculum/questions/' + this.props.question.uuid + '/', '_blank')
-  // }
-
-  // onCopyShareableLink (e) {
-  //   copy(window.location.origin + '/curriculum/question/' + this.props.question.uuid + '/')
-  // }
-
-  onForkSelect (e) {
-    // store.dispatch(addQuestion(this.props.question.uuid))
+  componentDidMount () {
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
   }
 
   render () {
@@ -79,18 +45,6 @@ export class QuestionThumbnailPublic extends React.Component {
           md={10}
         >
           <ThumbnailMenu question={this.props.question} />
-          {/*<Dropdown*/}
-            {/*style={{float: 'right'}}*/}
-            {/*id='dropdown-custom-menu'>*/}
-            {/*<QuestionMenuToggle bsRole='toggle' />*/}
-            {/*/!*<CustomQuestionMenu bsRole='menu'>*!/*/}
-            {/*<Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>*/}
-              {/*/!*<MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>*!/*/}
-              {/*<MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>*/}
-              {/*/!*<MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>*!/*/}
-            {/*</Dropdown.Menu>*/}
-            {/*/!*</CustomQuestionMenu>*!/*/}
-          {/*</Dropdown>*/}
           <div style={{fontSize: '2rem'}} onClick={this.onTitleClick}>
             {this.props.question.text}
           </div>
