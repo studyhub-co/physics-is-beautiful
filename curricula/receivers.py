@@ -3,8 +3,10 @@ from django.contrib.contenttypes.models import ContentType
 
 from allauth.account.signals import user_signed_up
 
+from django.db.models.signals import post_save
+
 from .services import AnonymousProgressService
-from .models import Lesson, UserResponse, Answer
+from .models import Lesson, UserResponse, Answer, LessonProgress, CurriculumUserDashboard
 
 
 @receiver(user_signed_up)
@@ -44,3 +46,23 @@ def transfer_lesson_progress(request, user, **kwargs):
             )
     # clear the session
     request.session['lessons'] = {}
+
+
+@receiver(post_save, sender=LessonProgress)
+def count_the_number_of_learners(sender, instance, created, **kwargs):
+    if instance.status == LessonProgress.Status.COMPLETE:
+        instance.lesson.module.unit.curriculum.count_number_of_learners(sender)
+
+
+@receiver(post_save, sender=LessonProgress)
+def update_curriculum_user_dashboard(sender, instance, created, **kwargs):
+    if instance.status == LessonProgress.Status.COMPLETE:
+        # try to find CurriculumUserDashboard
+        curriculum = instance.lesson.module.unit.curriculum
+        curriculum_user_dashboard, created = CurriculumUserDashboard.objects.get_or_create(
+            profile=instance.profile,
+            curriculum=curriculum
+        )
+        if not created:
+            curriculum_user_dashboard.save(update_fields=["updated_on"])
+

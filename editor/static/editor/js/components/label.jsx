@@ -114,25 +114,31 @@ export class EditableExternalEventLabel extends EditableLabel {
   }
 
   render () {
+    var inputParams = {type: 'text',
+      value: this.state.value || '',
+      onChange: this.handleInputChange,
+      onBlur: this.handleInputBlur,
+      ref: this.setInputRef,
+      onKeyUp: this.handleInputKeyUp}
+
+    var input = <input {...inputParams} />
+    if (this.props.textArea) {
+      input = <textarea {...inputParams} style={{ 'width': '90%' }} />
+    }
     if (this.state.editing) {
       return (
         <form onSubmit={this.handleFormSubmit} style={{display: 'inline'}}>
-          <input
-            type='text'
-            value={this.state.value}
-            onChange={this.handleInputChange}
-            onBlur={this.handleInputBlur}
-            ref={this.setInputRef}
-            onKeyUp={this.handleInputKeyUp} />
+          {input}
         </form>)
     } else {
       return (
         <span
-          className={'editable-label' + (((this.props.value && this.props.value.trim()) || this.props.defaultValue) ? '': ' empty')}
-          onClick={this.handleEditClick}>
+          className={'editable-label' + (((this.props.value && this.props.value.trim()) || this.props.defaultValue) ? '' : ' empty')}
+          onClick={this.handleEditClick}
+          style={{whiteSpace: 'pre-line'}}
+        >
           <span>{this.props.value || this.props.defaultValue}</span>
         </span>)
     }
   }
-
 }

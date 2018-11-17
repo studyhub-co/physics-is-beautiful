@@ -6,13 +6,13 @@ import {ActionTypes} from './actions'
 function curricula(state={}, action){
   switch (action.type) {
     case ActionTypes.CURRICULA_LOADED:
-	    return action.curricula
+      return action.curricula
     case ActionTypes.CURRICULUM_LOADED:
-	    return Object.assign({}, state, {[action.curriculum.uuid] : action.curriculum})
+      return Object.assign({}, state, {[action.curriculum.uuid] : action.curriculum})
     case ActionTypes.DELETE_CURRICULUM:
-	    var ret = Object.assign({}, state)
-	    delete ret[action.uuid]
-	    return ret
+      var ret = Object.assign({}, state)
+      delete ret[action.uuid]
+      return ret
     case ActionTypes.UNIT_ADDED:
       var ret = Object.assign({}, state)
       ret[action.curriculumUuid].units.push(action.unit.uuid)
@@ -22,8 +22,25 @@ function curricula(state={}, action){
       ret[action.curriculumUuid].units.splice(ret[action.curriculumUuid].units.indexOf(action.uuid), 1)
       return ret
     default:
-	    return state
-    }
+      return state
+  }
+}
+
+function search (state = {}, action) {
+  switch (action.type) {
+    case ActionTypes.SEARCH_CURRICULA_LOADED:
+      return Object.assign({}, state, {curricula: action.curriculaSearchList})
+    case ActionTypes.SEARCH_UNITS_LOADED:
+      return Object.assign({}, state, {units: action.untisSearchList})
+    case ActionTypes.SEARCH_MODULES_LOADED:
+      return Object.assign({}, state, {modules: action.modulesSearchList})
+    case ActionTypes.SEARCH_LESSONS_LOADED:
+      return Object.assign({}, state, {lessons: action.lessonsSearchList})
+    case ActionTypes.SEARCH_QUESTIONS_LOADED:
+      return Object.assign({}, state, {questions: action.questionsSearchList})
+    default:
+      return state
+  }
 }
 
 function units(state={}, action){
@@ -210,13 +227,40 @@ function currentQuestion(state=null, action){
    default:
        return state
    }
-    
 }
 
-function allCurricula (state = {}, action){
-  if (action.type === ActionTypes.ALL_CURRICULA_LOADED){
+function allCurricula (state = {}, action) {
+  if (action.type === ActionTypes.ALL_CURRICULA_LOADED) {
     return action.curricula
   } else return state
+}
+
+function filteredCurricula (state = {}, action) {
+  if (action.type === ActionTypes.RECENT_CURRICULA_LOADED) {
+    return Object.assign({}, state, {recentCurricula: action.curricula})
+  } else if (action.type === ActionTypes.NEW_CURRICULA_LOADED) {
+    return Object.assign({}, state, {newCurricula: action.curricula})
+  } else if (action.type === ActionTypes.POPULAR_CURRICULA_LOADED) {
+    return Object.assign({}, state, {popularCurricula: action.curricula})
+  } else return state
+}
+
+function curriculum (state = {}, action) {
+  if (action.type === ActionTypes.PUBLIC_CURRICULUM_LOADED) {
+    return Object.assign({}, state, {publicCurriculum: action.publicCurriculum})
+  }
+  return state
+}
+
+function users (state = {}, action) {
+  switch (action.type) {
+    case ActionTypes.FOUND_USERS_LOADED:
+      return Object.assign({}, state, {foundUsers: action.foundUsers})
+    case ActionTypes.FOUND_USERS_REQUEST:
+      return Object.assign({}, state, {findUserRequest: action.findUserRequest})
+    default:
+      return state
+  }
 }
 
 function studioTabs (state = {tab: null}, action) {
@@ -228,16 +272,8 @@ function studioTabs (state = {tab: null}, action) {
   }
 }
 
-// function curriculaDashboard (state={tab: null}, action){
-//   switch (action.type) {
-//     case ActionTypes.CHANGE_SELECTED_TAB:
-//       return Object.assign({}, state,  {[action.namespace]: action.tab})
-//     default:
-//       return state
-//     }
-// }
-
 const combined = combineReducers({
+  search,
   curricula,
   units,
   modules,
@@ -245,8 +281,11 @@ const combined = combineReducers({
   questions,
   answers,
   currentQuestion,
+  filteredCurricula,
   allCurricula,
+  curriculum,
   studioTabs,
+  users,
   router: routerReducer
 })
 

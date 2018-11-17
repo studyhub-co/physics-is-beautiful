@@ -1,17 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Sheet } from './sheet'
-import { BackButton } from './../components/back_button'
-import { CurriculumThumbnail } from './../components/curriculum_thumbnail'
-import { AddCurriculumButton } from './../components/add_curriculum_button'
-import { addCurriculum, loadCurricula, loadCurriculumIfNeeded } from './../actions'
+import { history } from './../../history'
+
 import { Grid, Row } from 'react-bootstrap'
-import { history } from './../history'
+
+import { CurriculumThumbnail } from './../../components/not_editor/curriculum_thumbnail'
+import { AddCurriculumButton } from './../../components/add_curriculum_button'
+import { addCurriculum, loadCurricula } from './../../actions'
 
 class Curricula extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {prototypeChoice : null}
+    this.state = {prototypeChoice: null}
     this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(this)
     this.handleAddClick = this.handleAddClick.bind(this)
   }
@@ -36,17 +36,18 @@ class Curricula extends React.Component {
           key={uuid}
           {...this.props.curricula[uuid]}
           onEditCurriculumProfileClick={this.props.onEditCurriculumProfileClick.bind(null, uuid)}
+          onDeleteCurriculumClick={this.props.onDeleteCurriculumClick.bind(null, uuid)}
           onClick={this.props.onCurriculumClick.bind(null, uuid)} />
       )
     }
 
     const prototypeChoices = []
-    for (var i in this.props.allCurricula) {
+    for (var i in this.props.allCurricula.results) {
       prototypeChoices.push(
         <option
-          key={this.props.allCurricula[i].uuid}
-          value={this.props.allCurricula[i].uuid}>
-          {this.props.allCurricula[i].name + ' by ' + this.props.allCurricula[i].author}
+          key={this.props.allCurricula.results[i].uuid}
+          value={this.props.allCurricula.results[i].uuid}>
+          {this.props.allCurricula.results[i].name + ' by ' + this.props.allCurricula.results[i].author.display_name}
         </option>
       )
     }
@@ -73,7 +74,7 @@ class Curricula extends React.Component {
   }
 }
 
-let CurriculaApp = connect(
+let CurriculaView = connect(
   state => {
     return {
       curriculum: state.curriculum,
@@ -85,10 +86,10 @@ let CurriculaApp = connect(
     return {
       onAddClick: prototype => dispatch(addCurriculum(prototype)),
       onMounted: () => dispatch(loadCurricula()),
-      onCurriculumClick: (uuid) => { history.push('/editor/curricula/' + uuid + '/') }}
+      onCurriculumClick: (uuid) => { history.push('/studio/editor/curricula/' + uuid + '/') }}
     // onCurriculumClick: (uuid) => dispatch(loadCurriculumIfNeeded(uuid))}
   }
 )(Curricula)
 
-CurriculaApp = connect()(CurriculaApp)
-export {CurriculaApp}
+CurriculaView = connect()(CurriculaView)
+export {CurriculaView}

@@ -4,7 +4,7 @@ from django.urls import reverse
 
 def homepage(request):
     if request.user.is_authenticated():
-        return redirect(reverse('curricula:curriculum'))
+        return redirect(reverse('main_curricula:curriculum'))
     return render(request, 'homepage/homepage.html')
 
 def About(request):

@@ -1,0 +1,3 @@
+{# used only with django haystack #}
+{{ object.name }}
+{{ object.description}}

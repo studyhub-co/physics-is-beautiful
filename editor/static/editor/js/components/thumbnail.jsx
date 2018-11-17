@@ -4,7 +4,7 @@ export function Thumbnail (props) {
   if (props.image) {
     return <img src={props.image} />
   } else {
-    return <span className='glyphicon glyphicon-picture'/>
+    return <span className='glyphicon glyphicon-picture' />
   }
 }
 

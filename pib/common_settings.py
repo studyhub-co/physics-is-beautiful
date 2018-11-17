@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # FTS
+    # 'haystack',
     # assets
     'django_s3_storage',
     # For allauth
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     # drf
     'rest_framework',
+    'django_filters',
     # webpack
     'webpack_loader',
     # Nested admin
@@ -127,12 +130,13 @@ WSGI_APPLICATION = 'pib.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DJANGO_DB_TYPE', 'django.db.backends.mysql'),
-        'NAME': os.getenv('DJANGO_DB_NAME', 'pib_development'),
-        'USER': os.getenv('DJANGO_DB_USER', 'root'),
-        'PASSWORD': os.getenv('DJANGO_DB_PASS', ''),
+        'ENGINE': os.getenv('DJANGO_DB_TYPE', 'django.db.backends.postgresql_psycopg2'),
+        'NAME': os.getenv('DJANGO_DB_NAME', 'pib_production'),
+        'USER': os.getenv('DJANGO_DB_USER', 'dbadmin'),
         'HOST': os.getenv('DJANGO_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('DJANGO_DB_PORT', '3306'),
+        'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASS', ''),
+
         # 'OPTIONS': {
         #     # Minor hack to allow creation of Djeddit threads
         #     # See https://stackoverflow.com/a/9699805/6609551
@@ -227,6 +231,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 WEBPACK_LOADER = {
@@ -235,3 +240,12 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
     }
 }
+
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+#         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+#     },
+# }
+
+# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

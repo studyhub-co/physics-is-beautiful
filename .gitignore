@@ -121,3 +121,5 @@ sh.exe.stackdump
 
 # vscode settings
 .vscode/settings.json
+/whoosh_index/
+pip-selfcheck.json

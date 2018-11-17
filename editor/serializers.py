@@ -14,7 +14,10 @@ from curricula.models import Vector, ImageWText, MathematicalExpression, UnitCon
 
 from curricula.serializers import BaseSerializer, UserSerializer
 
-# from profiles.serializers import PublicProfileSerializer
+from profiles.serializers import PublicProfileSerializer
+from django.core.files.images import get_image_dimensions
+
+from profiles.models import Profile
 
 
 class DictSerializer(serializers.ListSerializer):
@@ -36,20 +39,9 @@ class SimpleModuleSerializer(BaseSerializer):
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'url']
         read_only_fields = ('uuid', 'curriculum')
         extra_kwargs = {
-            'url' : {'lookup_field': 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }
 
-
-class MiniCurriculumSerializer(BaseSerializer):
-    author = serializers.SerializerMethodField()
-
-    def get_author(self, obj):
-        return obj.author.display_name
-    
-    class Meta:
-        model = Curriculum
-        fields = ['uuid', 'name', 'author']
-        
 
 class AnswerContentField(serializers.Field):
     def to_representation(self, obj):
@@ -244,7 +236,7 @@ class LessonSerializer(BaseSerializer):
     def create(self, validated_data):
         validated_data['module'] = validated_data['module']['uuid']
         new_lesson = super().create(validated_data)
-        Question.objects.create(lesson=new_lesson, text='New question')
+        Question.objects.create(lesson=new_lesson, text='New question')  # WT ?
         return new_lesson
 
     class Meta:
@@ -324,21 +316,38 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
             'modules': (ModuleSerializer, (), {'many': True}),
         }
         extra_kwargs = {
-            'url': {'lookup_field' : 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }
 
 
 class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
+    collaborators = PublicProfileSerializer(many=True, read_only=True)
+    collaborators_ids = serializers.SlugRelatedField(queryset=Profile.objects.all(), source='collaborators',
+                                                     slug_field='id', many=True, write_only=True)
     count_lessons = serializers.IntegerField(read_only=True)
+    number_of_learners = serializers.IntegerField(read_only=True, source='number_of_learners_denormalized')
 
     def validate_name(self, value):
         if value and value.lower() == Curriculum.Name.DEFAULT.lower():
-            raise serializers.ValidationError("Invalid name: %s"%value)
+            raise serializers.ValidationError("Invalid name: %s" % value)
+        return value
+
+    def validate_cover_photo(self, value):
+        w, h = get_image_dimensions(value)
+        if value:
+            if round(w / h, 1) != 2.7:
+                raise serializers.ValidationError("Invalid aspect ratio (2.7 : 1)")
         return value
 
     def update(self, instance, validated_data):
+        # TODO Do we need to save collaborators while create curriculum?
+        try:
+            instance.collaborators = validated_data.pop('collaborators')
+        except KeyError:
+            pass
+
         if 'name' in validated_data and self.instance.name == Curriculum.Name.DEFAULT:
             del validated_data['name']
         return super().update(instance, validated_data)
@@ -346,8 +355,11 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'url', 'units', 'author', 'created_on', 'updated_on', 'count_lessons',
-                  'cover_photo']
+        fields = ['uuid', 'name', 'image', 'url', 'units', 'created_on', 'updated_on', 'count_lessons', 'author',
+                  'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids',
+                  'setting_units_unlocked', 'setting_modules_unlocked', 'setting_lessons_unlocked',
+                  'setting_publically'
+                  ]
         read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),

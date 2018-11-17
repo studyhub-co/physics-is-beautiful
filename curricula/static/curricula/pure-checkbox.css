@@ -26,6 +26,8 @@
   clip: rect(0 0 0 0);
   /*height: 1px;*!*/
   /*margin: -1px;*/
+  display: none;  /* firefox fix TODO needs to test!*/
+  opacity: 0;
   height: 0px;
   margin: 0px;
   overflow: hidden;

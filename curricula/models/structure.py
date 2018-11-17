@@ -3,6 +3,7 @@ from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
 
 from pib_auth.models import User
+from profiles.models import Profile
 
 from . import BaseModel, get_earliest_gap
 
@@ -10,7 +11,7 @@ from . import BaseModel, get_earliest_gap
 class CurriculumQuerySet(models.QuerySet):
 
     def get_default(self, user=None):
-        # try to find curriculum in a last classrooms
+        # try to find curriculum in last classrooms
         if user and user.profile.as_student_classrooms.count() > 0:
             return user.profile.as_student_classrooms.last().curriculum
 
@@ -36,10 +37,25 @@ class Curriculum(BaseModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     cover_photo = models.ImageField(blank=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, default='')
+    number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
     author = models.ForeignKey(User)
-    collaborators = models.ManyToManyField(User, related_name='coauthored_curricula')
+    collaborators = models.ManyToManyField(Profile, related_name='coauthored_curricula')
+
+    # settings
+    setting_units_unlocked = models.BooleanField(default=False, blank=True)
+    setting_modules_unlocked = models.BooleanField(default=False, blank=True)
+    setting_lessons_unlocked = models.BooleanField(default=False, blank=True)
+    setting_publically = models.BooleanField(default=False, blank=True)
+
+    def count_number_of_learners(self, LessonProgressClass):
+        lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
+                                                       lesson__module__unit__curriculum=self). \
+            values('profile').distinct().count()
+
+        self.number_of_learners_denormalized = lps_count
+        self.save(update_fields=['number_of_learners_denormalized'])
 
     def clone(self, to_curriculum):
         for unit in self.units.all():
@@ -88,7 +104,6 @@ class Module(BaseModel):
         parent_field = 'unit'
         children_field = 'lessons'
 
-        
     uuid = ShortUUIDField()
     unit = models.ForeignKey(Unit, related_name='modules', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -180,8 +195,7 @@ class Lesson(BaseModel):
             game.lesson = copy
             game.save()
         return copy
-        
-            
+
     def __str__(self):
         return 'Lesson: {}'.format(self.name)
 

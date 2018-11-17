@@ -2,14 +2,17 @@ import datetime
 
 from django.utils import timezone
 
-from django.db.models import Q
+# from django.db.models import Q
 
-from rest_framework import serializers, status
+from rest_framework import serializers, status, permissions, mixins
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import NotFound
-from rest_framework.permissions import AllowAny
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
+# from drf_haystack.serializers import HaystackSerializer
+# from drf_haystack.viewsets import HaystackViewSet
 
 from .models import Curriculum, Unit, Module, Lesson, Question, Game, UnitConversion
 from .services import get_progress_service, LessonLocked, LessonProgress
@@ -18,40 +21,19 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
     CurriculumSerializer, LessonProgressSerializer
 
+# from .search_indexes import CurriculumIndex
+
+# from profiles.serializers import PublicProfileSerializer
+# from pib_auth.models import User
+
+# TODO need to filter all elements with Curriculum setting_publically=True or request.user is author or in collaborators
+
 
 def check_classroom_progress(service, user):
-    # TODO check start and due to date
     if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
         from classroom.models import AssignmentProgress
 
         AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
-
-        # from classroom.models import Assignment, AssignmentProgress
-        # assignments = Assignment.objects.filter(lessons__id=service.current_lesson.id)
-        # assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
-        #                                                              student__user=user,
-        #                                                              completed_on__isnull=True)
-        # for assignment_progress in assignment_progress_list:
-        #     # user can have several assignments (from different classroom e.g.) to one lesson
-        #     try:
-        #         assignment_progress.completed_lessons.add(service.current_lesson)
-        #
-        #         # do not support by mysql db
-        #         # if assignment_progress.assignment.lessons.difference(assignment_progress.completed_lessons.all())\
-        #         #        .count() == 0:
-        #         completed_lessons_ids = []
-        #         [completed_lessons_ids.append(lesson.id) for lesson in assignment_progress.completed_lessons.all()]
-        #         difference = assignment_progress.assignment.lessons.exclude(id__in=completed_lessons_ids)
-        #         if difference.count() == 0:
-        #             if timezone.now() < assignment_progress.assignment.due_on.replace():
-        #                 assignment_progress.completed_on = datetime.datetime.now()
-        #             else:
-        #                 assignment_progress.delayed_on = datetime.datetime.now()
-        #
-        #         assignment_progress.save()  # update updated_on date
-        #
-        #     except AssignmentProgress.DoesNotExist:
-        #         pass
 
 
 class QuestionViewSet(ModelViewSet):
@@ -215,6 +197,11 @@ class ModuleViewSet(ModelViewSet):
 
 class UnitViewSet(ModelViewSet):
 
+    def get_serializer_context(self):
+        context = super(UnitViewSet, self).get_serializer_context()
+        context['progress_service'] = get_progress_service(context['request'])
+        return context
+
     serializer_class = UnitSerializer
     queryset = Unit.objects.all()
     lookup_field = 'uuid'
@@ -231,7 +218,7 @@ class CurriculaViewSet(ModelViewSet):
         filter_by = self.request.query_params.get('filter', None)
         if filter_by and self.request.user.is_authenticated():
             if filter_by == 'my':
-                # todo do wee need to get curricula of user classrooms?
+                # todo do we need to get curricula of user classrooms?
                 queryset = queryset.filter(author=self.request.user)
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
@@ -253,3 +240,72 @@ class CurriculaViewSet(ModelViewSet):
                 user = self.request.user
             return Curriculum.objects.get_default(user=user)
         return super(CurriculaViewSet, self).get_object()
+
+
+# # Postgresql FTS Search
+# from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+#
+#
+# class CurriculaSearchViewSet(mixins.ListModelMixin,
+#                              GenericViewSet):
+#     permission_classes = (permissions.IsAuthenticated,)
+#     serializer_class = CurriculumSerializer
+#     queryset = Curriculum.objects.all()
+#     lookup_field = 'uuid'
+#
+#     def get_queryset(self):
+#         qs = self.queryset
+#
+#         keywords = self.request.GET.get('query')
+#         if not keywords:
+#             raise NotAcceptable('Search query required')
+#
+#         query = SearchQuery(keywords)
+#         vector = SearchVector('name', 'description')
+#         qs = qs.annotate(search=vector).filter(search=query)
+#         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
+#
+#         return qs
+
+
+# FTS Search
+
+# class CurriculumSearchSerializer(HaystackSerializer):
+#
+#     def to_representation(self, instance):
+#         representation = super().to_representation(instance)
+#         # WO hitting DB
+#         request = self.context.get('request', None)
+#         if 'image' in representation and representation['image']:
+#             if request is not None:
+#                 representation['image'] = request.build_absolute_uri(representation['image'])
+#         # With hitting DB
+#         # representation['image'] = None
+#         # if instance.object.image:
+#         #     representation['image'] = instance.object.image.url
+#
+#         representation['author'] = {}
+#         representation['author']['pk'] = instance.author_pk
+#         representation['author']['get_absolute_url'] = instance.author_get_absolute_url
+#         representation['author']['display_name'] = instance.author_display_name
+#
+#         return representation
+#
+#     class Meta:
+#         index_classes = [CurriculumIndex]
+#
+#         # The `fields` contains all the fields we want to include.
+#         # NOTE: Make sure you don't confuse these with model attributes. These
+#         # fields belong to the search index!
+#         fields = [
+#             "text", "name", "description", "uuid", "image", "author"
+#         ]
+#
+#
+# class CurriculaSearchViewSet(HaystackViewSet):
+#     permission_classes = [IsAuthenticated]
+#     index_models = [Curriculum]
+#     serializer_class = CurriculumSearchSerializer
+
+
+

@@ -3,14 +3,22 @@ import Moment from 'react-moment'
 import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Clipboard from 'react-clipboard.js'
-import { history }from '../../history'
+
+import { history } from '../../history'
 import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { changeCurriculumCoverPhoto, changeCurriculumImage, loadCurriculumIfNeeded, renameCurriculum } from '../../actions'
+import {
+  changeCurriculumCoverPhoto,
+  changeCurriculumImage,
+  loadCurriculumIfNeeded,
+  renameCurriculum,
+  saveCurriculumDescription
+} from '../../actions'
 
 import { EditableExternalEventLabel } from '../../components/label'
+import EditCurriculumSettingsView from './editSettings'
+// import { BASE_URL } from '../../../../../../classroom/static/classroom/js/utils/config'
 
 function makeblob (dataURL, filename) {
   var BASE64_MARKER = ';base64,'
@@ -63,11 +71,11 @@ function getCroppedImg (image, pixelCrop) {
   )
 
   // As Base64 string
-  const base64Image = canvas.toDataURL('image/jpeg');
+  const base64Image = canvas.toDataURL('image/jpeg')
   return base64Image
 }
 
-class PencilImageUpload extends React.Component {
+class PencilImageUpload extends React.Component { // TODO move to utils
   constructor (props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
@@ -90,6 +98,10 @@ class PencilImageUpload extends React.Component {
   }
 }
 
+PencilImageUpload.propTypes = {
+  onFileSelect: PropTypes.func.isRequired
+}
+
 class EditCurriculumProfileView extends React.Component {
   constructor (props) {
     super(props)
@@ -99,7 +111,9 @@ class EditCurriculumProfileView extends React.Component {
     this.imageUpload = this.imageUpload.bind(this)
     this.coverPhotoSelected = this.coverPhotoSelected.bind(this)
     this.editNameClick = this.editNameClick.bind(this)
+    this.editDescriptionClick = this.editDescriptionClick.bind(this)
     this.onNameChanged = this.onNameChanged.bind(this)
+    this.onDescriptionChanged = this.onDescriptionChanged.bind(this)
     this.onCropChange = this.onCropChange.bind(this)
     this.onCropComplete = this.onCropComplete.bind(this)
     this.saveCroppedPhoto = this.saveCroppedPhoto.bind(this)
@@ -111,12 +125,15 @@ class EditCurriculumProfileView extends React.Component {
       imgToCropBlob: null,
       cropInfo: null,
       crop: {
-        aspect: 2.7 / 1
+        aspect: 2.7 / 1,
+        x: 10,
+        y: 10,
+        width: 80
       }
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.props.loadCurriculum(this.props.match.params.uuid)
   }
 
@@ -127,7 +144,7 @@ class EditCurriculumProfileView extends React.Component {
 
   handleSelectTab (tabname, tabspace) {
     if (tabname === 'edit') {
-      history.push('/editor/curricula/' + this.props.match.params.uuid + '/')
+      history.push('/studio/editor/curricula/' + this.props.match.params.uuid + '/')
     }
     if (tabname !== this.state.tabname) {
       this.setState({selectedTab: tabname})
@@ -138,18 +155,20 @@ class EditCurriculumProfileView extends React.Component {
     window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
   }
 
-  imageUpload (image) {
-    if (image) {
-      this.props.changeCurriculumImage(this.props.match.params.uuid, image)
-    }
+  // ==== description
+
+  editDescriptionClick () {
+    this.setState({descriptionEditMode: true})
   }
 
+  onDescriptionChanged (text) {
+    this.props.onDescriptionChange(this.props.match.params.uuid, text)
+    this.setState({descriptionEditMode: false})
+  }
+
+  // ==== Name
   editNameClick () {
     this.setState({nameEditMode: true})
-  }
-
-  onCropChange (crop) {
-    this.setState({ crop })
   }
 
   onNameChanged (name) {
@@ -157,8 +176,21 @@ class EditCurriculumProfileView extends React.Component {
     this.setState({nameEditMode: false})
   }
 
+  //  ==== Image
+
+  imageUpload (image) {
+    if (image) {
+      this.props.changeCurriculumImage(this.props.match.params.uuid, image)
+    }
+  }
+
+  //  ==== Cover photo
+
+  onCropChange (crop) {
+    this.setState({ crop })
+  }
+
   coverPhotoSelected (image) {
-    // TODO set up default crop
     if (image) {
       this.setState({
         imgToCropBlob: URL.createObjectURL(image),
@@ -170,7 +202,6 @@ class EditCurriculumProfileView extends React.Component {
 
   saveCroppedPhoto () {
     if (this.state.cropInfo) {
-
       var img = new Image()
       img.src = this.state.imgToCropBlob
 
@@ -206,11 +237,11 @@ class EditCurriculumProfileView extends React.Component {
     // if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
     //   studentsS = 's'
     // }
-    var copiedTooltip = (
-      <Tooltip id='copiedTooltip'>
-        Copied!
-      </Tooltip>
-    )
+    // var copiedTooltip = (
+    //   <Tooltip id='copiedTooltip'>
+    //     Copied!
+    //   </Tooltip>
+    // )
 
     var selectedCurriculum = this.props.curricula[this.props.match.params.uuid]
 
@@ -218,6 +249,10 @@ class EditCurriculumProfileView extends React.Component {
 
     return (
       <div className={'pop-up-window'}>
+        <a className={'back-button'} onClick={() => { history.push('/studio/') }} >
+          <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+            My Curricula
+        </a>
         <Tabs name='editCurriculumProfileTabs'
           className='tabs'
           handleSelect={this.handleSelectTab}
@@ -230,10 +265,17 @@ class EditCurriculumProfileView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='profile'>
+              {/* Todo move the tab content to a new component */}
               <Grid fluid>
                 <Row style={{padding: 0}}>
-                  <Col sm={12} md={12} style={{padding: 0, paddingTop: '37%', width: '100%',
-                    overflow: 'hidden', position: 'relative'}}>
+                  <Col sm={12} md={12}
+                    style={{
+                      padding: 0,
+                      paddingTop: '37%',
+                      width: '100%',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      backgroundColor: '#12adf4'}} >
                     <div
                       style={{
                         position: 'absolute',
@@ -242,7 +284,7 @@ class EditCurriculumProfileView extends React.Component {
                         bottom: '0',
                         right: '0'}}
                     >
-                      <div style={{position: 'relative'}}>
+                      <div style={{position: selectedCurriculum.cover_photo ? 'relative' : ''}}>
                         {this.state.croppingCoverPhotoMode
                           ? <div>
                             <ReactCrop
@@ -258,11 +300,11 @@ class EditCurriculumProfileView extends React.Component {
                                 onClick={this.saveCroppedPhoto}>Save photo</button>
                               : null }
                           </div>
-                          : <ImageBs
-                            src={selectedCurriculum.cover_photo}
-                            responsive />
+                          : <div>{ selectedCurriculum.cover_photo
+                            ? <ImageBs src={selectedCurriculum.cover_photo} responsive />
+                            : <div style={{ height: '100%', width: '100%' }} /> }
+                          </div>
                         }
-                        {/* TODO add default background */}
                         <div title={'Change cover photo'} className={'base-circle-edit bottom-circle-edit right-circle-edit'}>
                           <PencilImageUpload onFileSelect={this.coverPhotoSelected} />
                         </div>
@@ -289,7 +331,6 @@ class EditCurriculumProfileView extends React.Component {
                     <Row style={{padding: 0}}>
                       <Col sm={12} md={12}>
                         <div className={'blue-title'}>
-                          {/*{selectedCurriculum.name}*/}
                           <EditableExternalEventLabel
                             value={selectedCurriculum.name}
                             onChange={this.onNameChanged}
@@ -311,11 +352,11 @@ class EditCurriculumProfileView extends React.Component {
                         <div style={{fontSize: '2rem'}}>
                           { selectedCurriculum.author.display_name }
                           ∙ { selectedCurriculum.count_lessons } lessons
-                          ∙ { selectedCurriculum.count_lessons } learners
+                          ∙ { selectedCurriculum.number_of_learners } learners
                         </div>
                       </Col>
                     </Row>
-                    <Row style={{padding: 0}}>
+                    <Row>
                       <Col sm={12} md={12}>
                         <div style={{color: 'gray'}}>
                           Created <Moment fromNow>{selectedCurriculum.created_on}</Moment>
@@ -328,14 +369,30 @@ class EditCurriculumProfileView extends React.Component {
                     <button className={'editor-common-button'} onClick={this.startCurriculum}>Start Curriculum</button>
                   </Col>
                 </Row>
+                <Row style={{padding: '2rem'}}>
+                  <Col sm={12} md={12}>
+                    <EditableExternalEventLabel
+                      textArea={Boolean(true)}
+                      value={selectedCurriculum.description}
+                      onChange={this.onDescriptionChanged}
+                      editMode={this.state.descriptionEditMode}
+                    />
+                    <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                      <span className={'base-circle-edit'}>
+                        <Glyphicon
+                          glyph={'pencil'}
+                          onClick={this.editDescriptionClick}
+                          style={{fontSize: '2rem', lineHeight: '2'}} />
+                      </span>
+                    </span>
+                  </Col>
+                </Row>
               </Grid>
             </TabContent>
             <TabContent for='settings'>
-              settings tab
+              <EditCurriculumSettingsView curriculum={selectedCurriculum} />
             </TabContent>
-            <TabContent for='edit'>
-              edit tab
-            </TabContent>
+            <TabContent for='edit' />
           </div>
         </Tabs>
       </div>)
@@ -347,6 +404,7 @@ EditCurriculumProfileView.propTypes = {
   loadCurriculum: PropTypes.func.isRequired,
   changeCurriculumImage: PropTypes.func.isRequired,
   changeCurriculumCoverPhoto: PropTypes.func.isRequired,
+  onDescriptionChange: PropTypes.func.isRequired,
   // data
   curricula: PropTypes.object
 }
@@ -363,6 +421,7 @@ const mapDispatchToProps = (dispatch) => {
     loadCurriculum: (uuid) => dispatch(loadCurriculumIfNeeded(uuid)),
     changeCurriculumImage: (uuid, image) => dispatch(changeCurriculumImage(uuid, image)),
     onNameChange: (uuid, name) => dispatch(renameCurriculum(uuid, name)),
+    onDescriptionChange: (uuid, text) => dispatch(saveCurriculumDescription(uuid, text)),
     changeCurriculumCoverPhoto: (uuid, image) => dispatch(changeCurriculumCoverPhoto(uuid, image))
   }
 }

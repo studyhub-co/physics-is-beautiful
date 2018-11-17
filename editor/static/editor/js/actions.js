@@ -3,12 +3,23 @@ import { history } from './history'
 import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} from './utils'
 
 const API_PREFIX = '/api/v1/editor/'
+const API_PROFILE_PREFIX = '/api/v1/profiles/'
+const API_CURRICULA_PREFIX = '/api/v1/curricula/'
 
 export const ActionTypes = Object.freeze({
   REQUEST_ADD_CURRICULUM: 'REQUEST_ADD_CURRICULUM',
   CURRICULA_LOADED: 'CURRICULA_LOADED',
   ALL_CURRICULA_LOADED: 'ALL_CURRICULA_LOADED',
+  SEARCH_CURRICULA_LOADED: 'SEARCH_CURRICULA_LOADED',
+  SEARCH_UNITS_LOADED: 'SEARCH_UNITS_LOADED',
+  SEARCH_MODULES_LOADED: 'SEARCH_MODULES_LOADED',
+  SEARCH_LESSONS_LOADED: 'SEARCH_LESSONS_LOADED',
+  RECENT_CURRICULA_LOADED: 'RECENT_CURRICULA_LOADED',
+  POPULAR_CURRICULA_LOADED: 'POPULAR_CURRICULA_LOADED',
+  SEARCH_QUESTIONS_LOADED: 'SEARCH_QUESTIONS_LOADED',
+  NEW_CURRICULA_LOADED: 'NEW_CURRICULA_LOADED',
   LOAD_CURRICULA: 'LOAD_CURRICULA',
+  PUBLIC_CURRICULUM_LOADED: 'PUBLIC_CURRICULUM_LOADED',
   CURRICULUM_LOADED: 'CURRICULUM_LOADED',
   RENAME_CURRICULUM: 'RENAME_CURRICULUM',
   CHANGE_CURRICULUM_IMAGE: 'CHANGE_CURRICULUM_IMAGE',
@@ -34,7 +45,9 @@ export const ActionTypes = Object.freeze({
   DELETE_ANSWER: 'DELETE_ANSWER',
   SET_ANSWER_EXCLUSIVELY_CORRECT: 'SET_ANSWER_EXCLUSIVELY_CORRECT',
   SET_ANSWER_IS_CORRECT: 'SET_ANSWER_IS_CORRECT',
-  STUDIO_TAB_CHANGED: 'STUDIO_TAB_CHANGED'
+  STUDIO_TAB_CHANGED: 'STUDIO_TAB_CHANGED',
+  FOUND_USERS_LOADED: 'FOUND_USERS_LOADED',
+  FOUND_USERS_REQUEST: 'FOUND_USERS_REQUEST'
 })
 
 /*
@@ -55,20 +68,46 @@ export function changeStudioSelectedTab (selectedTab, tabNamespace) {
 }
 
 export function addCurriculum (prototype) {
-    return function(dispatch) {
-	//	dispatch(requestAddCurriculum());
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'curricula/',
-	    method : 'POST',
-	    data : {name : 'New curriculum',
-		    prototype : prototype},
-	    success: function(data, status, jqXHR) {		
-		dispatch(curriculumLoaded(data));
-		history.push('/editor/curricula/'+data.uuid+'/');
-	    }
-	});
-    }
+  return function (dispatch) {
+    //	dispatch(requestAddCurriculum());
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/',
+      method: 'POST',
+      data: {
+        name: 'New curriculum',
+        prototype: prototype
+      },
+      success: function (data, status, jqXHR) {
+        dispatch(curriculumLoaded(data))
+        history.push('/studio/editor/curricula/' + data.uuid + '/')
+      }
+    })
+  }
+}
+
+export function addCurriculumToDashboard (uuid) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'public/curricula/' + uuid + '/add_to_dashboard/',
+      method: 'POST',
+      success: function (data, status, jqXHR) {
+      }
+    })
+  }
+}
+
+export function removeCurriculumFromDashboard (uuid) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'public/curricula/' + uuid + '/remove_from_dashboard/',
+      method: 'POST',
+      success: function (data, status, jqXHR) {
+      }
+    })
+  }
 }
 
 export function curriculaLoaded(data) {
@@ -98,9 +137,21 @@ function extractAll(object, prop){
     return ret
 }
 
-export function allCurriculaLoaded(data) {
-    return {type : ActionTypes.ALL_CURRICULA_LOADED,
-	    curricula : data}
+export function allCurriculaLoaded (data, filter, ordering) {
+  var type = ActionTypes.ALL_CURRICULA_LOADED
+  if (filter === 'recent') {
+    type = ActionTypes.RECENT_CURRICULA_LOADED
+  }
+  if (ordering === '-created_on') {
+    type = ActionTypes.NEW_CURRICULA_LOADED
+  }
+  if (ordering === '-number_of_learners_denormalized') {
+    type = ActionTypes.POPULAR_CURRICULA_LOADED
+  }
+  return {
+    type: type,
+    curricula: data
+  }
 }
 
 export function loadMyCurricula() {
@@ -111,8 +162,8 @@ export function loadMyCurricula() {
         context: this,
         success: function (data, status, jqXHR) {
           dispatch((data) => {
-            return { type : ActionTypes.CURRICULA_LOADED,
-                     curricula : data,
+            return { type: ActionTypes.CURRICULA_LOADED,
+                     curricula: data,
             }
           })
         }
@@ -120,28 +171,213 @@ export function loadMyCurricula() {
     }
 }
 
-export function loadCurricula() {
-    return function(dispatch) {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'curricula/',
-	    context: this,
-	    success: function(data, status, jqXHR) {
-		dispatch(curriculaLoaded(data))
-	    }	
-	});
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'curricula/all/',
-	    context: this,
-	    success: function(data, status, jqXHR) {
-		dispatch(allCurriculaLoaded(data))
-	    }	
-	});
-	
+export function loadAllCurricula (url, filter, ordering) {
+  return function (dispatch) {
+    var GETParams = {}
+    if (filter) {
+      GETParams['filter'] = filter
     }
-    
+    if (ordering) {
+      GETParams['ordering'] = ordering
+    }
+
+    var paramsString = ''
+
+    if (Object.keys(GETParams).length !== 0) {
+      paramsString = '?' + Object.entries(GETParams).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&')
+    }
+    $.ajax({
+      async: true,
+      url: url || API_PREFIX + 'public/curricula/' + paramsString,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(allCurriculaLoaded(data, filter, ordering))
+      }
+    })
+  }
 }
+
+// export function loadRecentCurricula () {
+//   return function (dispatch) {
+//     $.ajax({
+//       async: true,
+//       url: API_PREFIX + 'curricula/',
+//       context: this,
+//       success: function (data, status, jqXHR) {
+//         dispatch(curriculaLoaded(data))
+//       }})
+//   }
+// }
+
+export function loadCurricula () {
+  return function (dispatch) {
+    dispatch(loadAllCurricula())
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/',
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(curriculaLoaded(data))
+      }})
+  }
+}
+
+function curriculaSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_CURRICULA_LOADED
+  return {
+    type: type,
+    curriculaSearchList: data
+  }
+}
+
+export function loadSearchCurricula (searchString, nextPageUrl) {
+
+  var url = API_PREFIX + 'public/curricula/' // all units
+
+  if (searchString) {
+    url = API_PREFIX + 'public/curricula/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(curriculaSearchLoaded(data))
+      }
+    })
+  }
+}
+
+function unitsSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_UNITS_LOADED
+  return {
+    type: type,
+    untisSearchList: data
+  }
+}
+
+export function loadSearchUnits (searchString, nextPageUrl) {
+  var url = API_PREFIX + 'public/units/' // all units
+
+  if (searchString) {
+    url = API_PREFIX + 'public/units/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(unitsSearchLoaded(data))
+      }
+    })
+  }
+}
+
+function modulesSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_MODULES_LOADED
+  return {
+    type: type,
+    modulesSearchList: data
+  }
+}
+
+export function loadSearchModules (searchString, nextPageUrl) {
+  var url = API_PREFIX + 'public/modules/' // all units
+
+  if (searchString) {
+    url = API_PREFIX + 'public/modules/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(modulesSearchLoaded(data))
+      }
+    })
+  }
+}
+
+function lessonsSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_LESSONS_LOADED
+  return {
+    type: type,
+    lessonsSearchList: data
+  }
+}
+
+export function loadSearchLessons (searchString, nextPageUrl) {
+  var url = API_PREFIX + 'public/lessons/'
+
+  if (searchString) {
+    url = API_PREFIX + 'public/lessons/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(lessonsSearchLoaded(data))
+      }
+    })
+  }
+}
+
+function questionsSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_QUESTIONS_LOADED
+  return {
+    type: type,
+    questionsSearchList: data
+  }
+}
+
+export function loadSearchQuestions (searchString, nextPageUrl) {
+  var url = API_PREFIX + 'public/questions/'
+
+  if (searchString) {
+    url = API_PREFIX + 'public/questions/search/?query=' + searchString
+  }
+
+  if (nextPageUrl) {
+    url = nextPageUrl
+  }
+
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: url,
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(questionsSearchLoaded(data))
+      }
+    })
+  }
+}
+
 
 export function curriculumLoaded(data) {
     var units = extract(data, 'units');
@@ -164,6 +400,36 @@ export function renameCurriculum(uuid, newName) {
     }
 }
 
+export function saveCurriculumDescription (uuid, newText) {
+  return function (dispatch) {
+    $.ajax({url: API_PREFIX + 'curricula/' + uuid + '/',
+      type: 'PATCH',
+      data: {description: newText},
+      success: function (data, status, jqXHR) {
+        dispatch(curriculumLoaded(data))
+      }})
+  }
+}
+
+export function publicCurriculumLoaded (data) {
+  return {
+    type: ActionTypes.PUBLIC_CURRICULUM_LOADED,
+    publicCurriculum: data
+  }
+}
+
+export function loadPublicCurriculum (uuid) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'public/curricula/' + uuid + '/',
+      success: function (data, status, jqXHR) {
+        dispatch(publicCurriculumLoaded(data))
+      }
+    })
+  }
+}
+
 function loadCurriculum (uuid, dispatch) {
   $.ajax({
     async: true,
@@ -172,6 +438,19 @@ function loadCurriculum (uuid, dispatch) {
       dispatch(curriculumLoaded(data))
     }
   })
+}
+
+export function updateCurriculum (curriculum) {
+  return function (dispatch) {
+    $.ajax({url: API_PREFIX + 'curricula/' + curriculum.uuid + '/',
+      dataType: 'json', // due https://github.com/encode/django-rest-framework/issues/5807
+      contentType: 'application/json',
+      type: 'PATCH',
+      data: JSON.stringify(curriculum),
+      success: function (data, status, jqXHR) {
+        dispatch(curriculumLoaded(data))
+      }})
+  }
 }
 
 export function loadCurriculumIfNeeded (uuid) {
@@ -223,14 +502,13 @@ export function deleteCurriculum(uuid) {
             url : API_PREFIX + 'curricula/'+uuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/');
+		history.push('/studio/');
 		//TODO: reload all curricula
             }
 	});
 	
     }
 }
-
 
 export function unitAdded(curriculumUuid, data) {
     return {type : ActionTypes.UNIT_ADDED,
@@ -239,18 +517,134 @@ export function unitAdded(curriculumUuid, data) {
 	    modules : extract(data, 'modules')}
 }
 
-export function addUnit(curriculumUuid) {
-    return dispatch => {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'units/',
-	    method : 'POST',
-	    data : {name : 'New unit', curriculum:curriculumUuid},
-	    success: function(data, status, jqXHR) {
-		dispatch(unitAdded(curriculumUuid, data));
-	    }
-	});   
-    }  
+export function addUnit (curriculumUuid, unit) {
+  var data = {name: 'New unit', curriculum: curriculumUuid}
+  if (unit) {
+    data['prototype'] = unit.uuid
+    data['name'] = unit.name
+  }
+
+  return dispatch => {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'units/',
+      method: 'POST',
+      data: data,
+      success: function (data, status, jqXHR) {
+        //dispatch(unitAdded(curriculumUuid, data))
+        // reload expanded
+        loadCurriculum(curriculumUuid, dispatch)
+        history.push('/studio/editor/curricula/' + curriculumUuid + '/')
+      }
+    })
+  }
+}
+
+export function addToNewCurriculum (type, value) {
+  return dispatch => {
+    $.ajax({ // create curriculum
+      async: true,
+      url: API_PREFIX + 'curricula/',
+      method: 'POST',
+      data: {
+        name: 'New curriculum',
+      },
+      success: function (data, status, jqXHR) {
+        var unitData = {name: 'New unit', curriculum: data.uuid}
+
+        if (type === 'unit') {
+          unitData['prototype'] = value.uuid
+          unitData['name'] = value.name
+        }
+
+        $.ajax({
+          async: true,
+          url: API_PREFIX + 'units/',
+          method: 'POST',
+          data: unitData,
+          success: function (data, status, jqXHR) {
+            if (type === 'unit') {
+              //dispatch(unitAdded(unitData.curriculum, data))
+              loadCurriculum(unitData.curriculum, dispatch)
+              history.push('/studio/editor/curricula/' + unitData.curriculum + '/')
+            } else {
+              // create module
+              var moduleData = {name: 'New module', unit: data.uuid}
+
+              if (type === 'module') {
+                moduleData['prototype'] = value.uuid
+                moduleData['name'] = value.name
+              }
+
+              $.ajax({
+                async: true,
+                url: API_PREFIX + 'modules/',
+                method: 'POST',
+                data: moduleData,
+                success: function (data, status, jqXHR) {
+                  if (type === 'module') {
+                    // dispatch(moduleAdded(data))
+                    loadCurriculum(unitData.curriculum, dispatch)
+                    history.push('/studio/editor/modules/' + data.uuid + '/')
+                  } else {
+                    // create lesson
+                    var lessonData = {name: 'New lesson', module: data.uuid}
+
+                    if (type === 'lesson') {
+                      // lesson prototype
+                      lessonData['prototype'] = value.uuid
+                      lessonData['name'] = value.name
+                    }
+
+                    // load created module
+                    // dispatch(loadModuleIfNeeded(data.uuid))
+
+                    $.ajax({
+                      async: true,
+                      url: API_PREFIX + 'lessons/',
+                      method: 'POST',
+                      data: lessonData,
+                      success: function (data, status, jqXHR) {
+                        if (type === 'lesson') {
+                          // var questions = extract(data, 'questions')
+                          // dispatch({
+                          //   type: ActionTypes.LESSON_ADDED,
+                          //   lesson: data,
+                          //   questions: questions,
+                          //   answers: extractAll(questions, 'answers')
+                          // })
+                          history.push('/studio/editor/lessons/' + data.uuid + '/')
+                        } else {
+                          // add question
+                          var questionData = {text: 'New question', lesson: data.uuid}
+
+                          if (type === 'question') {
+                            // question prototype
+                            questionData['prototype'] = value.uuid
+                            questionData['text'] = value.text
+                          }
+
+                          $.ajax({
+                            async: true,
+                            method: 'POST',
+                            url: API_PREFIX + 'questions/',
+                            data: questionData,
+                            success: function (data, status, jqXHR) {
+                              history.push('/studio/editor/lessons/' + data.lesson + '/')
+                            }
+                          })
+                        }
+                      }
+                    })
+                  }
+                }
+              })
+            }
+          }
+        })
+      }
+    })
+  }
 }
 
 export function deleteUnit(unitUuid) {
@@ -336,21 +730,26 @@ export function moduleAdded(data) {
 
 }
 
-export function addModule(unitUuid) {
-    return dispatch => {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'modules/',
-	    method : 'POST',
-	    data : {name : 'New module', unit : unitUuid},
-	    success: function(data, status, jqXHR) {
-		dispatch(moduleAdded(data));
-		history.push('/editor/modules/'+data.uuid+'/');
-	    }
-	});   
-    }  
-}
+export function addModule (unitUuid, module) {
+  var data = {name: 'New module', unit: unitUuid}
+  if (module) {
+    data['prototype'] = module.uuid
+    data['name'] = module.name
+  }
 
+  return dispatch => {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'modules/',
+      method: 'POST',
+      data: data,
+      success: function (data, status, jqXHR) {
+        dispatch(moduleAdded(data))
+        history.push('/studio/editor/modules/' + data.uuid + '/')
+      }
+    })
+  }
+}
 
 export function moduleLoaded(data){    
     return {type : ActionTypes.MODULE_LOADED,
@@ -440,47 +839,55 @@ export function deleteModule(moduleUuid) {
             url : API_PREFIX + 'modules/'+moduleUuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/editor/curricula/'+curriculum+'/');
+		history.push('/studio/editor/curricula/'+curriculum+'/');
 	    }
 	});	
     }
 }
 
 export function loadModuleIfNeeded(uuid) {
-    return (dispatch, getState) => {
-	if (!(uuid in getState().modules) || !('lessons' in getState().modules[uuid])) {
-	    $.ajax({
-		async: true,
-		url: API_PREFIX + 'modules/'+uuid +'/',
-		success: function(data, status, jqXHR) {
-		    dispatch(moduleLoaded(data));
-		}
-	    });
-	}
+  return (dispatch, getState) => {
+    if (!(uuid in getState().modules) || !('lessons' in getState().modules[uuid])) {
+        $.ajax({
+          async: true,
+          url: API_PREFIX + 'modules/'+uuid +'/',
+          success: function(data, status, jqXHR) {
+              dispatch(moduleLoaded(data));
+          }
+        });
     }
+  }
 }
 
+export function addLesson (moduleUuid, lesson) {
+  var data = {name: 'New lesson', module: moduleUuid}
+  if (lesson) {
+    data['prototype'] = lesson.uuid
+    data['name'] = lesson.name
+  }
+  return dispatch => {
+    if (lesson) {
+      // load module
+      dispatch(loadModuleIfNeeded(moduleUuid))
+    }
 
-export function addLesson(moduleUuid) {
-    return dispatch => {
-	$.ajax({
-	    async: true,
-	    url: API_PREFIX + 'lessons/',
-	    method : 'POST',
-	    data : {name : 'New lesson', module : moduleUuid},
-	    success: function(data, status, jqXHR) {
-		var questions = extract(data, 'questions')		
-		dispatch({type : ActionTypes.LESSON_ADDED,
-			  lesson : data,
-			  questions : questions,
-			  answers : extractAll(questions, 'answers')
-			 });
-		history.push('/editor/lessons/'+data.uuid+'/');
-	    }
-	});   
-    }  
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'lessons/',
+      method: 'POST',
+      data: data,
+      success: function (data, status, jqXHR) {
+        var questions = extract(data, 'questions')
+        dispatch({type: ActionTypes.LESSON_ADDED,
+          lesson: data,
+          questions: questions,
+          answers: extractAll(questions, 'answers')
+        })
+        history.push('/studio/editor/lessons/' + data.uuid + '/')
+      }
+    })
+  }
 }
-
 
 export function lessonLoaded(data) {
     var questions = extract(data, 'questions')
@@ -608,7 +1015,7 @@ export function deleteLesson(lessonUuid) {
             url : API_PREFIX + 'lessons/'+lessonUuid+'/',
             method : 'DELETE',
             success : function(data, status, jqXHR) {
-		history.push('/editor/modules/'+moduleUuid+'/');
+		history.push('/studio/editor/modules/'+moduleUuid+'/');
 	    }
 	});	
     }
@@ -710,22 +1117,29 @@ export function goToQuestion(uuid){
     }
 }
 
-export function addQuestion(lesson){
-     return dispatch => {
-	 $.ajax({
-	     async: true,
-	     method : 'POST',
-	     url: API_PREFIX + 'questions/',
-	     data : {lesson : lesson,
-		     text : 'New question'},
-	     success: function(data, status, jqXHR) {
-		 dispatch({type : ActionTypes.QUESTION_ADDED,
-			   question : data});
-	     }});	    
-     }
-   
-}
+export function addQuestion (lesson, question) {
+  var data = {text: 'New lesson', lesson: lesson}
+  if (question) {
+    data['prototype'] = question.uuid
+  }
 
+  return dispatch => {
+    $.ajax({
+      async: true,
+      method: 'POST',
+      url: API_PREFIX + 'questions/',
+      data: data, // {lesson : lesson, text : 'New question'},
+      success: function (data, status, jqXHR) {
+        if (question) {
+          history.push('/studio/editor/lessons/' + lesson + '/')
+        } else {
+          dispatch(
+            {type: ActionTypes.QUESTION_ADDED,
+              question: data})
+        }
+      }})
+  }
+}
 
 export function moveQuestion(uuid, beforeUuid) {    
     return (dispatch, getState) => {
@@ -1047,7 +1461,7 @@ export function removeConversionStep(answerUuid){
 
 export function clearQuestionVectors(uuid){
     return dispatch => {
-	$.ajax({url:API_PREFIX + 'questions/'+uuid+'/',
+	$.ajax({url: API_PREFIX + 'questions/'+uuid+'/',
 		type:'PATCH',
 		data:{'vectors':'[]'},
 		success: function(data,status, jqXHR){
@@ -1072,4 +1486,32 @@ export function addQuestionVector(uuid, x_component, y_component){
 		}});
     }    
     
+}
+
+export function foundUsersLoaded (data) {
+  return {
+    type: ActionTypes.FOUND_USERS_LOADED,
+    foundUsers: data
+  }
+}
+
+export function findUserRequest (data) {
+  return {
+    type: ActionTypes.FOUND_USERS_REQUEST,
+    findUserRequest: data
+  }
+}
+
+export function findUsers (searchString) {
+  return (dispatch, getState) => {
+    dispatch(findUserRequest(true))
+    $.ajax({
+      url: API_PROFILE_PREFIX + 'find?q=' + searchString,
+      type: 'GET',
+      success: function (data, status, jqXHR) {
+        dispatch(foundUsersLoaded(data))
+        dispatch(findUserRequest(false))
+      }
+    })
+  }
 }

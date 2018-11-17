@@ -146,9 +146,7 @@ class CurriculumApp extends React.Component {
   }
 
   componentDidMount () {
-    setTimeout(function () { // Start the timer
-      this.setState({loading: false})
-    }.bind(this), 1500)
+    this.setState({loading: false})
 
     window.parent.postMessage({
       'message': 'canGoBack',
@@ -267,6 +265,96 @@ class ModulesApp extends React.Component {
     return (
       <SectionSheet
         backLink={this.state.backLink}
+        sections={this.state.sections}
+      />
+    )
+  }
+}
+
+class UnitsApp extends React.Component {
+  constructor (obj) {
+    super()
+    this.state = {
+      currentId: obj.match.params.currentId || 'default',
+      sections: []
+    }
+    this.fetchState()
+
+    this.curriculum = null
+    this.unit = null
+  }
+
+  // componentDidMount () {
+  //   window.parent.postMessage({
+  //     'message': 'canGoBack',
+  //     'data': true
+  //   }, '*')
+  // }
+
+  load () {
+    if (!this.unit) {
+      return
+    }
+    var items = []
+    for (var moduleIndex = 0; moduleIndex < this.unit.modules.length; moduleIndex++) {
+      var module = this.unit.modules[moduleIndex]
+
+      var href = '/modules/' + module.uuid
+      items.push({
+        name: module.name + ' ',
+        image: module.image,
+        href: href,
+        uuid: module.uuid,
+        status: module.status
+      })
+    }
+
+    var sections = [{
+      name: this.unit.name,
+      items: items,
+      uuid: this.unit.uuid
+    }]
+
+    var backLink = '/curriculum/'
+
+    // If we are using the mobile app, make the query persist.
+    // if (window.IS_MOBILE_APP) backLink += '?pib_mobile=true'
+
+    if (window.IS_MOBILE_APP) {
+      this.setState({
+        sections: sections,
+        question: null,
+        progress: 0,
+        answer: null
+      })
+    } else {
+      this.setState({
+        sections: sections,
+        backLink: backLink,
+        question: null,
+        progress: 0,
+        answer: null
+      })
+    }
+  }
+
+  fetchState () {
+    $.ajax({
+      async: true,
+      url: '/api/v1/curricula/units/' + this.state.currentId,
+      data: {'expand': 'modules'},
+      context: this,
+      success: function (data, status, jqXHR) {
+        this.unit = data
+        this.load()
+      }
+    })
+  }
+
+  render () {
+    return (
+      <SectionSheet
+        // backLink={this.state.backLink}
         sections={this.state.sections}
       />
     )
@@ -467,6 +555,7 @@ export default class CurriculumRouter extends React.Component {
         <Switch>
           <Route path='/lessons/:currentId' component={LessonsApp} />
           <Route path='/modules/:currentId' component={ModulesApp} />
+          <Route path='/units/:currentId' component={UnitsApp} />
           {/* <Route path='/games/:slug' component={GamesApp} /> */}
           <Route path='/games/:uuid/:slug' component={GamesApp} />
           <Route path='/:currentId' component={CurriculumApp} />

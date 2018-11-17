@@ -23,10 +23,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^', include('homepage.urls')),
 
+    url(r'^curriculum/profile/', include('editor.urls', namespace='curriculum_profile')),  # must be upper curriculum/
     # namespase is a fix for api/v1/editor/curricula url (drf router)
-    url(r'^curriculum/', include('curricula.urls', namespace='curricula')),
+    url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
     # url(r'^editor/', include('editor.urls')),
-    url(r'^studio/', include('editor.urls')),
+    url(r'^studio/', include('editor.urls', namespace='studio')),
+    url(r'^browse/', include('editor.urls', namespace='browse')),
     url(r'^classroom/', include('classroom.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
