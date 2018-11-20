@@ -1,8 +1,5 @@
 import {
-  // CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
-  // CLASSROOM_RECEIVE_TEACHER_CLASSROOM, CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
-  // CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
-  // CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM
+  RESOURCE_RECEIVE_RESOURCE_OPTIONS,
 } from '../constants'
 
 const initialState = {
@@ -12,10 +9,10 @@ const initialState = {
 
 export default function resourcesReducer (state = initialState, action) {
   switch (action.type) {
-    // case CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST:
-    //   return Object.assign({}, state, {
-    //     classroomList: action.payload.classroomList
-    //   })
+    case RESOURCE_RECEIVE_RESOURCE_OPTIONS:
+      return Object.assign({}, state, {
+        resourceOptions: action.payload.resourceOptions
+      })
     // case CLASSROOM_RECEIVE_TEACHER_CLASSROOM:
     //   return Object.assign({}, state, {
     //     classroomTeacherClassroom: action.payload.classroomTeacher

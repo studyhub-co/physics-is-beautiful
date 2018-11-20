@@ -1,0 +1,31 @@
+
+
+/* common with classroom, need to create common.css */
+
+.resources .blue-title {
+    font-size: 2rem;
+    color: rgb(8, 209, 255);
+}
+
+.resources .common-button {
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 1rem 4rem 1rem 4rem;
+    margin: 1rem 0 1rem 0;
+}
+
+.resources .back-button {
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #d8d8d8;
+    transition: color 300ms;
+}
+
+.resources .back-button:hover {
+    text-decoration: none;
+    color: #1caff6;
+}
+

@@ -8,22 +8,22 @@ import { Sheet } from '../../components/Sheet'
 
 import { Grid, Row, Col, Button, Glyphicon } from 'react-bootstrap'
 
-import { AddResourceView } from '../../containers/index'
-
 // import * as tabsCreators from '../../actions/tab'
 
-import { Route } from 'react-router'
+import history from '../../history'
 
 class IndexView extends React.Component {
+  onAddResourceClick (addResourceUrl) {
+    history.push(addResourceUrl)
+  }
 
   render () {
-    var baseUrl =  this.props.match.url.replace(/\/$/, '')
+    var baseUrl = this.props.match.url.replace(/\/$/, '')
     var addResourceUrl = baseUrl + '/add/'
     // var editUrl = baseUrl + '/:uuid/edit/'
 
     return (
       <Sheet>
-        <Route path={addResourceUrl} component={AddResourceView} />
         <Grid fluid>
           <Row>
             <Col sm={10} md={10}>
@@ -32,7 +32,7 @@ class IndexView extends React.Component {
               </div>
             </Col>
             <Col sm={2} md={2}>
-              <Button onClick={this.searchButtonClick}>
+              <Button onClick={() => { this.onAddResourceClick(addResourceUrl) }} className={'common-button'}>
                 <Glyphicon glyph='plus' /> Add resource
               </Button>
             </Col>
