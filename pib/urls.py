@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^studio/', include('editor.urls', namespace='studio')),
     url(r'^browse/', include('editor.urls', namespace='browse')),
     url(r'^classroom/', include('classroom.urls')),
+    url(r'^resources/', include('resources.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/', include('pib_auth.urls')),

@@ -89,7 +89,8 @@
                     <li class="nav-item{% current_url_starts_with 'classroom' %}"><a href="{% url 'classroom' %}">Classroom</a></li>
                     {% if user.is_authenticated %}
                     {% endif %}
-                    <li class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}"><a href="{% url 'blog:bloghomepage' %}">Resources</a></li>
+                    <li class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}"><a href="{% url 'blog:bloghomepage' %}">Blog</a></li>
+                    <li class="nav-item{% current_url_starts_with 'resources' %}"><a href="{% url 'resources' %}">Resources</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right nav-pills">
                     <li class="nav-item">
