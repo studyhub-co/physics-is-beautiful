@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'djeddit',
     'meta',
     'classroom',
+    'resources',
     'pagedown',
     'markdown_deux'
 ]
