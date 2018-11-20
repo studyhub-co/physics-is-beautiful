@@ -55,9 +55,8 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resource
-        fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'count_students',
-                  'teacher', 'curriculum_uuid', 'external_classroom']
-        read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type']
+        read_only_fields = ('uuid',  'created_on', 'updated_on')
 
 
 class ResourceListSerializer(ResourceBaseSerializer):

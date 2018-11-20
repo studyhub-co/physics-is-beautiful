@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 
+from shortuuidfield import ShortUUIDField
+
 
 class Resource(models.Model):
     TEXTBOOK = 'TB'
@@ -16,6 +18,8 @@ class Resource(models.Model):
         # (TEST, 'standardized test'),
         # (COURSE, 'course')
     )
+
+    uuid = ShortUUIDField(unique=True)
 
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)

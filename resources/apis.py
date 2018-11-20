@@ -13,7 +13,7 @@ from rest_framework.exceptions import NotFound, NotAcceptable
 # from profiles.models import Profile
 
 from .models import Resource
-from .serializers import ResourceBaseSerializer
+from .serializers import ResourceBaseSerializer, ResourceListSerializer
 
 
 class SeparateListObjectSerializerMixin:
@@ -28,7 +28,7 @@ class SeparateListObjectSerializerMixin:
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)  # TODO add more
     serializer_class = ResourceBaseSerializer
-    # list_serializer_class = ResourceListSerializer
+    list_serializer_class = ResourceListSerializer
     queryset = Resource.objects.all()
     lookup_field = 'uuid'
 
