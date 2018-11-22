@@ -8,7 +8,7 @@ import { Sheet } from '../../components/Sheet'
 
 import * as resourcesCreators from '../../actions/resources'
 
-import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Image } from 'react-bootstrap'
 
 import history from '../../history'
 import { BASE_URL } from '../../utils/config'
@@ -58,6 +58,10 @@ class AddTextBookResourceView extends React.Component {
 
   }
 
+  onSelectBook (book) {
+    // Todo go to the next phase
+  }
+
   render () {
     return (
       <div>
@@ -89,7 +93,23 @@ class AddTextBookResourceView extends React.Component {
                 { this.props.googleBooksList.length > 0
                   // TODO show array of found books
                   ? <div>
-                    Title: { this.props.googleBooksList[0].volumeInfo.title }
+                    { this.props.googleBooksList.map(function (book, i) {
+                      return <span key={book.id}>
+                        <div>
+                          { book.volumeInfo.imageLinks.thumbnail
+                            ? <Image src={book.volumeInfo.imageLinks.thumbnail} />
+                            : <span>No image</span>
+                          }
+                        </div>
+                        <div>
+                          { book.volumeInfo.title }
+                        </div>
+                        <Button onClick={() => { this.onSelectBook(book) }} className={'common-button'}>
+                          <Glyphicon glyph='plus' /> Select
+                        </Button>
+                      </span>
+                    }, this)
+                    }
                   </div>
                   : <div>
                     Book not found
