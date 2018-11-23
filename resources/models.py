@@ -42,3 +42,5 @@ class TextBookProblem(models.Model):
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
     textbooksection = models.ForeignKey(Resource, related_name='problems')
+
+# TODO create file model
