@@ -54,6 +54,7 @@ class AddTextBookChaptersView extends React.Component {
                 />
                 <InputGroup.Button>
                   <Button
+                    disabled={!parseInt(this.state.numberOfChapters)}
                     onClick={this.addNumberOfChaptersClick}
                   ><Glyphicon glyph='ok' /> Next step</Button>
                 </InputGroup.Button>
