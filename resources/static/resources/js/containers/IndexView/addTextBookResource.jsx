@@ -8,14 +8,18 @@ import { Sheet } from '../../components/Sheet'
 
 import * as resourcesCreators from '../../actions/resources'
 
-import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Image } from 'react-bootstrap'
+import { Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 
 import history from '../../history'
 import { BASE_URL } from '../../utils/config'
+
 import * as googleCreators from '../../actions/google'
 
-class AddTextBookResourceView extends React.Component {
+import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
+import AddTextBookChaptersView from '../AddTextBookResourceSteps/1_addTextBookChapters'
+import AddTextBookProblemsView from '../AddTextBookResourceSteps/2_addTextBookProblems'
 
+class AddTextBookResourceView extends React.Component {
   componentWillMount () {
     this.props.googleActions.gapiInitialize()
   }
@@ -24,12 +28,16 @@ class AddTextBookResourceView extends React.Component {
     super(props)
     this.state = {
       ISBNString: '',
-      //searchWasRequested: false
+      selectedGoogleBook: null,
+      numberOfChapters: 0,
+      step: 0
     }
 
     this.searchISBNClick = this.searchISBNClick.bind(this)
     this.handleISBNString = this.handleISBNString.bind(this)
     this.handleISBNInputKeyUp = this.handleISBNInputKeyUp.bind(this)
+    this.onSelectBook = this.onSelectBook.bind(this)
+    this.onAddNumberOfChapters = this.onAddNumberOfChapters.bind(this)
   }
 
   handleISBNString (e) {
@@ -44,7 +52,6 @@ class AddTextBookResourceView extends React.Component {
     if (ISBNString) {
       //  load data from google books API
       this.props.googleActions.googleFetchBooksList(ISBNString)
-      //this.setState({searchWasRequested: true})
     }
   }
 
@@ -59,12 +66,18 @@ class AddTextBookResourceView extends React.Component {
   }
 
   onSelectBook (book) {
-    // Todo go to the next phase
+    this.setState({selectedGoogleBook: book, step: 1})
+  }
+
+  onAddNumberOfChapters (number) {
+    this.setState({numberOfChapters: parseInt(number), step: 2})
   }
 
   render () {
-    return (
-      <div>
+    var toReturn
+
+    if (this.state.step === 0) {
+      toReturn = <div>
         <Row>
           <Col sm={12} md={12}>
             <FormGroup>
@@ -93,17 +106,9 @@ class AddTextBookResourceView extends React.Component {
                 { this.props.googleBooksList.length > 0
                   // TODO show array of found books
                   ? <div>
-                    { this.props.googleBooksList.map(function (book, i) {
+                    { this.props.googleBooksList.slice(0, 10).map(function (book, i) {
                       return <span key={book.id}>
-                        <div>
-                          { book.volumeInfo.imageLinks.thumbnail
-                            ? <Image src={book.volumeInfo.imageLinks.thumbnail} />
-                            : <span>No image</span>
-                          }
-                        </div>
-                        <div>
-                          { book.volumeInfo.title }
-                        </div>
+                        <GoogleBookThumbnail googleBook={book} />
                         <Button onClick={() => { this.onSelectBook(book) }} className={'common-button'}>
                           <Glyphicon glyph='plus' /> Select
                         </Button>
@@ -120,6 +125,18 @@ class AddTextBookResourceView extends React.Component {
           </Col>
         </Row>
       </div>
+    } else if (this.state.step === 1) {
+      toReturn = <AddTextBookChaptersView
+        googleBook={this.state.selectedGoogleBook}
+        onAddNumberOfChapters={this.onAddNumberOfChapters} />
+    } else if (this.state.step === 2) {
+      toReturn = <AddTextBookProblemsView
+        googleBook={this.state.selectedGoogleBook}
+        numberOfChapters={this.state.numberOfChapters} />
+    }
+
+    return (
+      toReturn
     )
   }
 }
