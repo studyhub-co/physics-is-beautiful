@@ -5,6 +5,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from shortuuidfield import ShortUUIDField
 
+from .validators import validate_pdf_extension
+
 
 class Resource(models.Model):
     TEXTBOOK = 'TB'
@@ -41,6 +43,17 @@ class TextBookChapter(models.Model):
 class TextBookProblem(models.Model):
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
-    textbooksection = models.ForeignKey(Resource, related_name='problems')
+    textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')
 
-# TODO create file model
+
+class TextBookSolutionPDF(models.Model):
+    created_on = models.DateTimeField(auto_now_add=True)
+    file = models.FileField(upload_to="resources/%Y/%m/%d", validators=[validate_pdf_extension])
+
+
+class TextBookSolution(models.Model):
+    pdf = models.OneToOneField(TextBookProblem, related_name='solution')
+    title = models.CharField(max_length=400)
+    position = models.PositiveSmallIntegerField("Position")
+    textbook_problem = models.ForeignKey(TextBookProblem, related_name='solutions')
+
