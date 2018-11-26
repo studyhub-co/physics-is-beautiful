@@ -18,9 +18,10 @@ class AddTextBookProblemsView extends React.Component {
       chaptersList: this.generateChaptersList(props.numberOfChapters)
     }
 
-    // this.handleNumberOfChapters = this.handleNumberOfChapters.bind(this)
-    // this.handleNumberOfChaptersInputKeyUp = this.handleNumberOfChaptersInputKeyUp.bind(this)
-    // this.addNumberOfChaptersClick = this.addNumberOfChaptersClick.bind(this)
+    this.addProblemClick = this.addProblemClick.bind(this)
+    this.onChangeChapterTitle = this.onChangeChapterTitle.bind(this)
+    this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
+    this.isOneProblemInChapters = this.isOneProblemInChapters.bind(this)
   }
 
   generateChaptersList (numberOfChapters) {
@@ -31,20 +32,33 @@ class AddTextBookProblemsView extends React.Component {
     return chaptersList
   }
 
-  // handleNumberOfChapters (e) {
-  //   // remove all chars
-  //   var s = e.target.value.replace(/\D/g, '')
-  //
-  //   this.setState({numberOfChapters: s})
-  // }
-  //
-  // handleNumberOfChaptersInputKeyUp (e) {
-  //   if (e.keyCode === 13) { // 'enter' key
-  //     this.addNumberOfChaptersClick(e)
-  //   }
-  // }
-  //
-  addProblemClick () {
+  isOneProblemInChapters () {
+    var chaptersList = this.state.chaptersList
+    for (var x = 0; x < chaptersList.length; x++) {
+      if (chaptersList[x].hasOwnProperty('problems')) {
+        if (chaptersList[x].problems.length > 0){
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  addProblemClick (chapter) {
+    var chaptersList = this.state.chaptersList
+    for (var x = 0; x < chaptersList.length; x++) {
+      if (chapter.position === chaptersList[x].position) {
+        if (!chaptersList[x].hasOwnProperty('problems')) {
+          chaptersList[x].problems = []
+        }
+        chaptersList[x].problems.push('')
+        this.setState({chaptersList: chaptersList})
+        break
+      }
+    }
+  }
+
+  nextStepClick () {
 
   }
 
@@ -60,22 +74,53 @@ class AddTextBookProblemsView extends React.Component {
     this.setState({chaptersList: chaptersList})
   }
 
+  onChangeProblemTitle (newTitle, chapter, position) {
+    if (!newTitle) { return }
+    var chaptersList = this.state.chaptersList
+    for (var x = 0; x < chaptersList.length; x++) {
+      if (chapter.position === chaptersList[x].position) {
+        chaptersList[x].problems[position] = newTitle
+        this.setState({chaptersList: chaptersList})
+        break
+      }
+    }
+  }
+
   render () {
     return (
       <div>
-        <div className={'blue-title'}>Second step</div>
+        <div className={'blue-title'}>
+          <span style={{paddingRight: '2rem'}}>Second step</span>
+          <Button
+            disabled={!this.isOneProblemInChapters()}
+            onClick={this.nextStepClick}
+          >Next step</Button>
+        </div>
         <div className={'gray-text'}>Add at least 1 problem</div>
         <br />
         <Row>
           <Col sm={8} md={8}>
-            {this.state.chaptersList.map(function (chapter, i) {
+            {this.state.chaptersList.map(function (chapter, i) { // chapters
               return <div key={chapter.position}>
                 <EditableLabel
                   value={chapter.title}
                   onChange={(title) => { this.onChangeChapterTitle(title, chapter) }}
                   defaultValue={chapter.title} />
-                <div
+                { chapter.problems // chapter problems
+                  ? <div style={{paddingLeft: '2rem'}}>
+                    { chapter.problems.map(function (problem, i) {
+                      return <div key={i} className={'blue-text'}>
+                        <Glyphicon glyph='asterisk' />&nbsp;
+                        <EditableLabel
+                          value={problem}
+                          onChange={(problemString) => { this.onChangeProblemTitle(problemString, chapter, i) }}
+                          defaultValue={i + 1} />
+                      </div>
+                    }, this)}</div>
+                  : null }
+                <div // Add problem button
                   style={{paddingLeft: '2rem', cursor: 'pointer'}}
+                  onClick={() => this.addProblemClick(chapter)}
                   className={'blue-text'}>
                   <Glyphicon glyph='plus' /> Add problem
                 </div>
