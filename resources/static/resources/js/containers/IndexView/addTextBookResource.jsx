@@ -18,6 +18,7 @@ import * as googleCreators from '../../actions/google'
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 import AddTextBookChaptersView from '../AddTextBookResourceSteps/1_addTextBookChapters'
 import AddTextBookProblemsView from '../AddTextBookResourceSteps/2_addTextBookProblems'
+import AddTextBookSolutionsView from '../AddTextBookResourceSteps/3_addTextBookSolutions'
 
 class AddTextBookResourceView extends React.Component {
   componentWillMount () {
@@ -30,6 +31,7 @@ class AddTextBookResourceView extends React.Component {
       ISBNString: '',
       selectedGoogleBook: null,
       numberOfChapters: 0,
+      chaptersList: [],
       step: 0
     }
 
@@ -38,6 +40,8 @@ class AddTextBookResourceView extends React.Component {
     this.handleISBNInputKeyUp = this.handleISBNInputKeyUp.bind(this)
     this.onSelectBook = this.onSelectBook.bind(this)
     this.onAddNumberOfChapters = this.onAddNumberOfChapters.bind(this)
+    this.onFinish = this.onFinish.bind(this)
+    this.onNextStep = this.onNextStep.bind(this)
   }
 
   handleISBNString (e) {
@@ -71,6 +75,14 @@ class AddTextBookResourceView extends React.Component {
 
   onAddNumberOfChapters (number) {
     this.setState({numberOfChapters: parseInt(number), step: 2})
+  }
+
+  onNextStep (chaptersList) {
+    this.setState({chaptersList: chaptersList, step: this.state.step + 1})
+  }
+
+  onFinish (chaptersList) {
+    // TODO create resource
   }
 
   render () {
@@ -132,7 +144,16 @@ class AddTextBookResourceView extends React.Component {
     } else if (this.state.step === 2) {
       toReturn = <AddTextBookProblemsView
         googleBook={this.state.selectedGoogleBook}
-        numberOfChapters={this.state.numberOfChapters} />
+        numberOfChapters={this.state.numberOfChapters}
+        onNextStep={this.onNextStep}
+      />
+    } else if (this.state.step === 3) {
+      toReturn = <AddTextBookSolutionsView
+        googleBook={this.state.selectedGoogleBook}
+        numberOfChapters={this.state.numberOfChapters}
+        chaptersList={this.state.chaptersList}
+        onFinish={this.onFinish}
+      />
     }
 
     return (
@@ -142,10 +163,6 @@ class AddTextBookResourceView extends React.Component {
 }
 
 AddTextBookResourceView.propTypes = {
-  // resourcesActions: PropTypes.shape({
-  //   fetchResourceOptions: PropTypes.func.isRequired
-  // }).isRequired,
-  // resourceOptions: PropTypes.object
   googleActions: PropTypes.shape({
     gapiInitialize: PropTypes.func.isRequired,
     googleFetchBooksList: PropTypes.func.isRequired
@@ -157,7 +174,7 @@ AddTextBookResourceView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     gapiInitState: state.google.gapiInitState,
-    googleBooksList: state.google.googleBooksList,
+    googleBooksList: state.google.googleBooksList
     // resourceOptions: state.resources.resourceOptions,
   }
 }
@@ -166,10 +183,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     googleActions: bindActionCreators(googleCreators, dispatch)
-    //resourcesActions: bindActionCreators(resourcesCreators, dispatch)
-    // tabActions: bindActionCreators(tabsCreators, dispatch),
-    // classroomActions: bindActionCreators(classroomCreators, dispatch),
-    // googleActions: bindActionCreators(googleCreators, dispatch),
   }
 }
 

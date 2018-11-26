@@ -1,16 +1,16 @@
 import React from 'react'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Glyphicon, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
+import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
 import { EditableLabel } from '../../components/label'
 
-class AddTextBookProblemsView extends React.Component {
+export default class AddTextBookProblemsView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -22,6 +22,7 @@ class AddTextBookProblemsView extends React.Component {
     this.onChangeChapterTitle = this.onChangeChapterTitle.bind(this)
     this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
     this.isOneProblemInChapters = this.isOneProblemInChapters.bind(this)
+    this.nextStepClick = this.nextStepClick.bind(this)
   }
 
   generateChaptersList (numberOfChapters) {
@@ -36,7 +37,7 @@ class AddTextBookProblemsView extends React.Component {
     var chaptersList = this.state.chaptersList
     for (var x = 0; x < chaptersList.length; x++) {
       if (chaptersList[x].hasOwnProperty('problems')) {
-        if (chaptersList[x].problems.length > 0){
+        if (chaptersList[x].problems.length > 0) {
           return true
         }
       }
@@ -51,7 +52,10 @@ class AddTextBookProblemsView extends React.Component {
         if (!chaptersList[x].hasOwnProperty('problems')) {
           chaptersList[x].problems = []
         }
-        chaptersList[x].problems.push('')
+        chaptersList[x].problems.push({
+          title: '' + (chaptersList[x].problems.length + 1),
+          index: chaptersList[x].problems.length
+        })
         this.setState({chaptersList: chaptersList})
         break
       }
@@ -59,7 +63,7 @@ class AddTextBookProblemsView extends React.Component {
   }
 
   nextStepClick () {
-
+    this.props.onNextStep(this.state.chaptersList)
   }
 
   onChangeChapterTitle (newTitle, chapter) {
@@ -79,7 +83,7 @@ class AddTextBookProblemsView extends React.Component {
     var chaptersList = this.state.chaptersList
     for (var x = 0; x < chaptersList.length; x++) {
       if (chapter.position === chaptersList[x].position) {
-        chaptersList[x].problems[position] = newTitle
+        chaptersList[x].problems[position].title = newTitle
         this.setState({chaptersList: chaptersList})
         break
       }
@@ -96,7 +100,7 @@ class AddTextBookProblemsView extends React.Component {
             onClick={this.nextStepClick}
           >Next step</Button>
         </div>
-        <div className={'gray-text'}>Add at least 1 problem</div>
+        <div className={'gray-text'}>Add at least one problem</div>
         <br />
         <Row>
           <Col sm={8} md={8}>
@@ -112,7 +116,7 @@ class AddTextBookProblemsView extends React.Component {
                       return <div key={i} className={'blue-text'}>
                         <Glyphicon glyph='asterisk' />&nbsp;
                         <EditableLabel
-                          value={problem}
+                          value={problem.title}
                           onChange={(problemString) => { this.onChangeProblemTitle(problemString, chapter, i) }}
                           defaultValue={i + 1} />
                       </div>
@@ -138,27 +142,20 @@ class AddTextBookProblemsView extends React.Component {
 
 AddTextBookProblemsView.propTypes = {
   googleBook: PropTypes.object,
-  numberOfChapters: PropTypes.number
+  numberOfChapters: PropTypes.number.isRequired,
+  onNextStep: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => {
-  return {
-    // gapiInitState: state.google.gapiInitState,
-    // googleBooksList: state.google.googleBooksList,
-    // resourceOptions: state.resources.resourceOptions,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dispatch,
-    // googleActions: bindActionCreators(googleCreators, dispatch)
-    //resourcesActions: bindActionCreators(resourcesCreators, dispatch)
-    // tabActions: bindActionCreators(tabsCreators, dispatch),
-    // classroomActions: bindActionCreators(classroomCreators, dispatch),
-    // googleActions: bindActionCreators(googleCreators, dispatch),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddTextBookProblemsView)
-export { AddTextBookProblemsView as AddTextBookProblemsViewNotConnected }
+// const mapStateToProps = (state) => {
+//   return {
+//   }
+// }
+//
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     dispatch
+//   }
+// }
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(AddTextBookProblemsView)
+// export { AddTextBookProblemsView as AddTextBookProblemsViewNotConnected }

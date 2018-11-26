@@ -1,14 +1,14 @@
 import React from 'react'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
 import { Row, Col, Glyphicon, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
-class AddTextBookChaptersView extends React.Component {
+export default class AddTextBookChaptersView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -49,6 +49,7 @@ class AddTextBookChaptersView extends React.Component {
                   type='text'
                   value={this.state.numberOfChapters}
                   placeholder='Enter number of chapters...'
+                  autoFocus={Boolean(true)}
                   onChange={this.handleNumberOfChapters}
                   onKeyUp={this.handleNumberOfChaptersInputKeyUp}
                 />
@@ -75,24 +76,24 @@ AddTextBookChaptersView.propTypes = {
   onAddNumberOfChapters: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => {
-  return {
-    // gapiInitState: state.google.gapiInitState,
-    // googleBooksList: state.google.googleBooksList,
-    // resourceOptions: state.resources.resourceOptions,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dispatch,
-    // googleActions: bindActionCreators(googleCreators, dispatch)
-    //resourcesActions: bindActionCreators(resourcesCreators, dispatch)
-    // tabActions: bindActionCreators(tabsCreators, dispatch),
-    // classroomActions: bindActionCreators(classroomCreators, dispatch),
-    // googleActions: bindActionCreators(googleCreators, dispatch),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddTextBookChaptersView)
-export { AddTextBookChaptersView as AddTextBookChaptersViewNotConnected }
+// const mapStateToProps = (state) => {
+//   return {
+//     // gapiInitState: state.google.gapiInitState,
+//     // googleBooksList: state.google.googleBooksList,
+//     // resourceOptions: state.resources.resourceOptions,
+//   }
+// }
+//
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     dispatch,
+//     // googleActions: bindActionCreators(googleCreators, dispatch)
+//     //resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+//     // tabActions: bindActionCreators(tabsCreators, dispatch),
+//     // classroomActions: bindActionCreators(classroomCreators, dispatch),
+//     // googleActions: bindActionCreators(googleCreators, dispatch),
+//   }
+// }
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(AddTextBookChaptersView)
+// export { AddTextBookChaptersView as AddTextBookChaptersViewNotConnected }
