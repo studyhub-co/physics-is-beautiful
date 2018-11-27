@@ -112,9 +112,9 @@ export class EditableLabel extends React.Component {
 }
 
 export class EditableExternalEventLabel extends EditableLabel {
-  componentWillReceiveProps (props) {
+  enableEditMode () {
     var val = this.props.value
-    if (props.editMode) {
+    if (this.props.editMode) {
       if (this.props.value === this.props.defaultValue) {
         val = ''
       }
@@ -125,6 +125,16 @@ export class EditableExternalEventLabel extends EditableLabel {
         editing: true,
         value: val
       })
+    }
+  }
+
+  componentDidMount () {
+    this.enableEditMode()
+  }
+
+  componentWillReceiveProps (props) {
+    if (props.editMode) {
+      this.enableEditMode()
     }
   }
 

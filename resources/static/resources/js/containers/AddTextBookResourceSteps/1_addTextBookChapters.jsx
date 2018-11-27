@@ -12,7 +12,7 @@ export default class AddTextBookChaptersView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      numberOfChapters: ''
+      numberOfChapters: this.props.numberOfChapters || ''
     }
 
     this.handleNumberOfChapters = this.handleNumberOfChapters.bind(this)
@@ -57,7 +57,7 @@ export default class AddTextBookChaptersView extends React.Component {
                   <Button
                     disabled={!parseInt(this.state.numberOfChapters)}
                     onClick={this.addNumberOfChaptersClick}
-                  ><Glyphicon glyph='ok' /> Next step</Button>
+                  >Next <Glyphicon glyph='chevron-right' /></Button>
                 </InputGroup.Button>
               </InputGroup>
             </FormGroup>
@@ -73,7 +73,8 @@ export default class AddTextBookChaptersView extends React.Component {
 
 AddTextBookChaptersView.propTypes = {
   googleBook: PropTypes.object,
-  onAddNumberOfChapters: PropTypes.func.isRequired
+  onAddNumberOfChapters: PropTypes.func.isRequired,
+  numberOfChapters: PropTypes.number
 }
 
 // const mapStateToProps = (state) => {

@@ -7,7 +7,7 @@ export class GoogleBookThumbnail extends React.Component {
   render () {
     var book = this.props.googleBook
     return (<span>
-      <div style={{height: '176px'}}>
+      <div style={{minHeight: '176px'}}>
         {book.volumeInfo.imageLinks.thumbnail
           ? <Image src={book.volumeInfo.imageLinks.thumbnail} /> // TODO it seems need to replace http->https for production
           : <span>No image</span>

@@ -29,6 +29,10 @@
     color: #1caff6;
 }
 
+.resources .red-text {
+    color: red;
+}
+
 .resources .blue-text {
     color: rgb(8, 209, 255)
 }
