@@ -8,7 +8,7 @@ import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
-import { EditableLabel } from '../../components/label'
+// import { EditableLabel } from '../../components/label'
 
 export default class AddTextBookSolutionsView extends React.Component {
   constructor (props) {
@@ -21,15 +21,8 @@ export default class AddTextBookSolutionsView extends React.Component {
     // this.onChangeChapterTitle = this.onChangeChapterTitle.bind(this)
     // this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
     this.isOneSolutionInChapters = this.isOneSolutionInChapters.bind(this)
+    this.prevStepClick = this.prevStepClick.bind(this)
   }
-
-  // generateChaptersList (numberOfChapters) {
-  //   var chaptersList = []
-  //   for (var x = 0; x < numberOfChapters; x++) {
-  //     chaptersList.push({title: 'Chapter ' + (x + 1), position: x})
-  //   }
-  //   return chaptersList
-  // }
 
   isOneSolutionInChapters () {
     var chaptersList = this.state.chaptersList
@@ -67,34 +60,17 @@ export default class AddTextBookSolutionsView extends React.Component {
     }
   }
 
-  // onChangeChapterTitle (newTitle, chapter) {
-  //   if (!newTitle) { return }
-  //   var chaptersList = this.state.chaptersList
-  //   for (var x = 0; x < chaptersList.length; x++) {
-  //     if (chapter.position === chaptersList[x].position) {
-  //       chaptersList[x].title = newTitle
-  //       break
-  //     }
-  //   }
-  //   this.setState({chaptersList: chaptersList})
-  // }
-  //
-  // onChangeProblemTitle (newTitle, chapter, position) {
-  //   if (!newTitle) { return }
-  //   var chaptersList = this.state.chaptersList
-  //   for (var x = 0; x < chaptersList.length; x++) {
-  //     if (chapter.position === chaptersList[x].position) {
-  //       chaptersList[x].problems[position] = newTitle
-  //       this.setState({chaptersList: chaptersList})
-  //       break
-  //     }
-  //   }
-  // }
+  prevStepClick () {
+    this.props.onPrevStep(this.state.chaptersList)
+  }
 
   render () {
     return (
       <div>
         <div className={'blue-title'}>
+          <Button
+            onClick={this.prevStepClick}
+          ><Glyphicon glyph='chevron-left' /> Previous</Button>
           <span style={{paddingRight: '2rem'}}>Third step</span>
           <Button
             disabled={!this.isOneSolutionInChapters()}
@@ -151,7 +127,8 @@ export default class AddTextBookSolutionsView extends React.Component {
 
 AddTextBookSolutionsView.propTypes = {
   googleBook: PropTypes.object,
-  chaptersList: PropTypes.array
+  chaptersList: PropTypes.array,
+  onPrevStep: PropTypes.func.isRequired
 }
 
 // const mapStateToProps = (state) => {

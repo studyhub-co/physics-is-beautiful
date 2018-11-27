@@ -31,7 +31,7 @@ class AddTextBookResourceView extends React.Component {
       ISBNString: '',
       selectedGoogleBook: null,
       numberOfChapters: 0,
-      chaptersList: [],
+      chaptersList: null,
       step: 0
     }
 
@@ -42,6 +42,7 @@ class AddTextBookResourceView extends React.Component {
     this.onAddNumberOfChapters = this.onAddNumberOfChapters.bind(this)
     this.onFinish = this.onFinish.bind(this)
     this.onNextStep = this.onNextStep.bind(this)
+    this.onPrevStep = this.onPrevStep.bind(this)
   }
 
   handleISBNString (e) {
@@ -69,6 +70,12 @@ class AddTextBookResourceView extends React.Component {
 
   }
 
+  componentWillUpdate (nextProps, nextState) {
+    if (this.state.step !== nextState.step) {
+      this.props.onStepUpdated(nextState.step)
+    }
+  }
+
   onSelectBook (book) {
     this.setState({selectedGoogleBook: book, step: 1})
   }
@@ -79,6 +86,10 @@ class AddTextBookResourceView extends React.Component {
 
   onNextStep (chaptersList) {
     this.setState({chaptersList: chaptersList, step: this.state.step + 1})
+  }
+
+  onPrevStep (chaptersList) {
+    this.setState({chaptersList: chaptersList, step: this.state.step - 1})
   }
 
   onFinish (chaptersList) {
@@ -138,20 +149,29 @@ class AddTextBookResourceView extends React.Component {
         </Row>
       </div>
     } else if (this.state.step === 1) {
+      var numberOfChapters = ''
+      if (numberOfChapters !== 0) {
+        numberOfChapters = this.state.numberOfChapters
+      }
+
       toReturn = <AddTextBookChaptersView
+        numberOfChapters={numberOfChapters}
         googleBook={this.state.selectedGoogleBook}
         onAddNumberOfChapters={this.onAddNumberOfChapters} />
     } else if (this.state.step === 2) {
       toReturn = <AddTextBookProblemsView
         googleBook={this.state.selectedGoogleBook}
         numberOfChapters={this.state.numberOfChapters}
+        chaptersList={this.state.chaptersList}
         onNextStep={this.onNextStep}
+        onPrevStep={this.onPrevStep}
       />
     } else if (this.state.step === 3) {
       toReturn = <AddTextBookSolutionsView
         googleBook={this.state.selectedGoogleBook}
         numberOfChapters={this.state.numberOfChapters}
         chaptersList={this.state.chaptersList}
+        onPrevStep={this.onPrevStep}
         onFinish={this.onFinish}
       />
     }
@@ -168,7 +188,8 @@ AddTextBookResourceView.propTypes = {
     googleFetchBooksList: PropTypes.func.isRequired
   }).isRequired,
   gapiInitState: PropTypes.bool,
-  googleBooksList: PropTypes.array
+  googleBooksList: PropTypes.array,
+  onStepUpdated: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
