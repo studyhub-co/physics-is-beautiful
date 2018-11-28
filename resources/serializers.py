@@ -70,3 +70,5 @@ class ResourceListSerializer(ResourceBaseSerializer):
     # class Meta(ClassroomBaseSerializer.Meta):
     #     fields = ClassroomBaseSerializer.Meta.fields + ['less_students']
     pass
+
+
