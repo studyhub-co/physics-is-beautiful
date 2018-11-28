@@ -8,6 +8,10 @@ import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
+import { checkHttpStatus, getAxios } from '../../utils'
+import { API_PREFIX } from '../../utils/config'
+import { receiveResourceOptions } from '../../actions/resources'
+
 // import { EditableLabel } from '../../components/label'
 
 export default class AddTextBookSolutionsView extends React.Component {
@@ -64,6 +68,17 @@ export default class AddTextBookSolutionsView extends React.Component {
     this.props.onPrevStep(this.state.chaptersList)
   }
 
+  handleImageChange (file, chapter, problem) {
+    // Seems we don't need to use global state
+    var formData = new FormData()
+    formData.append('file', file)
+    getAxios().POST(API_PREFIX + 'upload_solution_pdf/')
+      .then(checkHttpStatus)
+      .then((response) => {
+         // solution.files_ids.push(response.id)
+      })
+  }
+
   render () {
     return (
       <div>
@@ -71,7 +86,7 @@ export default class AddTextBookSolutionsView extends React.Component {
           <Button
             onClick={this.prevStepClick}
           ><Glyphicon glyph='chevron-left' /> Previous</Button>
-          <span style={{paddingRight: '2rem'}}>Third step</span>
+          <span style={{padding: '0 2rem'}}>Third step</span>
           <Button
             disabled={!this.isOneSolutionInChapters()}
             onClick={this.nextStepClick}
@@ -94,11 +109,17 @@ export default class AddTextBookSolutionsView extends React.Component {
                       return <div key={i}>
                         <Glyphicon glyph='asterisk' />&nbsp;{problem.title}
                         <span
-                          className={'blue-text'}
+                          className={'blue-text selectable-file'}
                           style={{paddingLeft: '2rem', cursor: 'pointer'}}
-                          onClick={() => this.addSolutionClick(chapter, problem)}
+                          // onClick={() => this.addSolutionClick(chapter, problem)}
                         >
                           <Glyphicon glyph='plus' />&nbsp;add solution
+                          <input
+                            type='file'
+                            name='pdf'
+                            accept='application/pdf'
+                            onChange={(file) => this.handleImageChange(file, chapter, problem)}
+                            style={{fontSize: '1px'}} />
                         </span>
                         {/*<EditableLabel*/}
                           {/*value={problem}*/}

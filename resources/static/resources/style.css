@@ -44,3 +44,20 @@
 .resources .editable-label:not(.empty) .glyphicon-pencil, .editor .mq-editable-label:not(.empty) .glyphicon-pencil{ display:none; }
 .resources .editable-label:hover .glyphicon-pencil, .editor .mq-editable-label:hover .glyphicon-pencil { display:inline; }
 .resources .editable-label:hover, .editor .mq-editable-label:hover, .editor .mq-editable-label:hover .mq-math-mode { cursor:pointer; }
+
+/* resources only css */
+
+.resources .selectable-file {
+    position: relative;
+    cursor: pointer;
+}
+
+.resources .selectable-file input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}

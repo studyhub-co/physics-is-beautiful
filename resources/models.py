@@ -50,10 +50,20 @@ class TextBookSolutionPDF(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to="resources/%Y/%m/%d", validators=[validate_pdf_extension])
 
+    # TODO create signal to remove file onDelete
+
 
 class TextBookSolution(models.Model):
     pdf = models.OneToOneField(TextBookProblem, related_name='solution')
-    title = models.CharField(max_length=400)
+    _title = models.CharField(max_length=400, blank=True, default='', db_column='title')
     position = models.PositiveSmallIntegerField("Position")
     textbook_problem = models.ForeignKey(TextBookProblem, related_name='solutions')
+
+    @property
+    def title(self):
+        if self._title:
+            return self._title
+        else:
+            return self.pdf.file.filename
+
 

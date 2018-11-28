@@ -223,7 +223,7 @@ export default class AddTextBookProblemsView extends React.Component {
                           className={'red-text'}
                           style={{cursor: 'pointer'}}
                           onClick={() => this.removeProblemClick(chapter, problem)}
-                          title={'Remove the chapter'}
+                          title={'Remove the problem'}
                         >
                           <Glyphicon glyph='remove' />&nbsp;
                         </span>

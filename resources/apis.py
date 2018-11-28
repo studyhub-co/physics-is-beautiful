@@ -12,7 +12,7 @@ from rest_framework.exceptions import NotFound, NotAcceptable
 
 # from profiles.models import Profile
 
-from .models import Resource
+from .models import Resource, TextBookSolutionPDF
 from .serializers import ResourceBaseSerializer, ResourceListSerializer
 
 
@@ -31,6 +31,13 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     list_serializer_class = ResourceListSerializer
     queryset = Resource.objects.all()
     lookup_field = 'uuid'
+
+    @action(methods=['POST'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
+    def upload_solution_pdf(self, request):
+        # TextBookSolutionPDF.objects.create
+
+        # TODO remove pdfs without related TextBookSolution
+        pass
 
     # def get_queryset(self):
     #     queryset = self.queryset. \
@@ -85,3 +92,9 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     #     return Response(serializer.data)
 
 
+# class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
+#     permission_classes = (permissions.IsAuthenticated,)  # TODO add more
+#     serializer_class = TextBookSolutionBaseSerializer
+#     list_serializer_class = TextBookSolutionListSerializer
+#     queryset = Resource.objects.all()
+#     lookup_field = 'uuid'
