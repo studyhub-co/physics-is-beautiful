@@ -46,7 +46,7 @@ export default class AddTextBookSolutionsView extends React.Component {
     return false
   }
 
-  addSolutionClick (chapter, problem) {
+  addSolution (chapter, problem, file) {
     var chaptersList = this.state.chaptersList
     for (var x = 0; x < chaptersList.length; x++) {
       if (chapter.position === chaptersList[x].position) {
@@ -55,8 +55,8 @@ export default class AddTextBookSolutionsView extends React.Component {
             if (!chaptersList[x].problems[y].hasOwnProperty('solutions')) {
               chaptersList[x].problems[y].solutions = []
             }
-            // TODO open file-upload box and upload file to the server
-            // this.setState({chaptersList: chaptersList})
+            chaptersList[x].problems[y].solutions.push({ 'pdf': file })
+            this.setState({chaptersList: chaptersList})
             break
           }
         }
@@ -68,14 +68,18 @@ export default class AddTextBookSolutionsView extends React.Component {
     this.props.onPrevStep(this.state.chaptersList)
   }
 
-  handleImageChange (file, chapter, problem) {
+  handleFileChange (file, chapter, problem) {
     // Seems we don't need to use global state
+    if (!file) {
+      return
+    }
+
     var formData = new FormData()
-    formData.append('file', file)
-    getAxios().POST(API_PREFIX + 'upload_solution_pdf/')
+    formData.append('file', file.target.files[0])
+    getAxios().post(API_PREFIX + 'upload_solution_pdf/', formData)
       .then(checkHttpStatus)
       .then((response) => {
-         // solution.files_ids.push(response.id)
+        this.addSolution(chapter, problem, response.data)
       })
   }
 
@@ -108,6 +112,13 @@ export default class AddTextBookSolutionsView extends React.Component {
                     { chapter.problems.map(function (problem, i) {
                       return <div key={i}>
                         <Glyphicon glyph='asterisk' />&nbsp;{problem.title}
+                        { problem.hasOwnProperty('solutions') ? problem.solutions.map(function (solution, i) {
+                          var filename = solution.pdf.file.replace(/^.*[\\\/]/, '')
+                          return <span key={i} style={{paddingLeft: '2rem'}}>
+                            { filename }
+                          </span>
+                        }) : null
+                        }
                         <span
                           className={'blue-text selectable-file'}
                           style={{paddingLeft: '2rem', cursor: 'pointer'}}
@@ -118,7 +129,7 @@ export default class AddTextBookSolutionsView extends React.Component {
                             type='file'
                             name='pdf'
                             accept='application/pdf'
-                            onChange={(file) => this.handleImageChange(file, chapter, problem)}
+                            onChange={(file) => this.handleFileChange(file, chapter, problem)}
                             style={{fontSize: '1px'}} />
                         </span>
                         {/*<EditableLabel*/}

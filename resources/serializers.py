@@ -4,8 +4,7 @@ from django.core.files.storage import get_storage_class
 
 from rest_framework import serializers
 
-from .models import Resource
-
+from .models import Resource, TextBookSolutionPDF
 
 from urllib.parse import urljoin
 
@@ -72,3 +71,9 @@ class ResourceListSerializer(ResourceBaseSerializer):
     pass
 
 
+class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TextBookSolutionPDF
+        fields = '__all__'
+        read_only_fields = ('created_on', )
