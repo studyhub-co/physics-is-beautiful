@@ -2,10 +2,10 @@ import { push } from 'connected-react-router'
 
 import { checkHttpStatus, getAxios } from '../utils'
 import {
-  RESOURCE_RECEIVE_RESOURCE_OPTIONS
+  RESOURCE_RECEIVE_RESOURCE_OPTIONS, CREATE_RESOURCE_SUCCESS
 } from '../constants'
 
-import { API_PREFIX } from '../utils/config'
+import { BASE_URL, API_PREFIX } from '../utils/config'
 
 export function receiveResourceOptions (resourceOptions) {
   return {
@@ -22,6 +22,29 @@ export function fetchResourceOptions () {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveResourceOptions(response.data))
+      })
+  }
+}
+
+export function createResourceSuccess (classroomTeacher) {
+  return {
+    type: CREATE_RESOURCE_SUCCESS,
+    payload: {
+      classroomTeacher
+    }
+  }
+}
+
+export function createResource (chaptersList) {
+  return (dispatch, state) => {
+    return getAxios().post(API_PREFIX, chaptersList)
+      .then(checkHttpStatus)
+      .then((response) => {
+        // dispatch(createResourceSuccess(response.data))
+        dispatch(push(BASE_URL)) // redirect ro main page
+        // if (typeof callback === 'function') {
+        //   callback(response.data)
+        // }
       })
   }
 }
@@ -186,37 +209,6 @@ export function fetchResourceOptions () {
 //         dispatch(classroomFetchStudentClassroomsList())
 //         // move to clasrooms list page
 //         dispatch(push(BASE_URL))
-//       })
-//   }
-// }
-//
-// export function receiveStudentClassroomSuccess (classroomStudent) {
-//   return {
-//     type: CLASSROOM_RECEIVE_STUDENT_CLASSROOM,
-//     payload: {
-//       classroomStudent
-//     }
-//   }
-// }
-//
-// export function classroomFetchStudentClassroom (classroomUuid) {
-//   return (dispatch, state) => {
-//     return getAxios().get(API_PREFIX + classroomUuid + '/')
-//       .then(checkHttpStatus)
-//       .then((response) => {
-//         dispatch(receiveStudentClassroomSuccess(response.data))
-//       })
-//   }
-// }
-//
-// export function bulkStudentsUpdate (classroomUuid, studentsList, origin, refreshClassroomsStudentsList) {
-//   return (dispatch, state) => {
-//     return getAxios().post(API_PREFIX + classroomUuid + '/roster/', {students: studentsList, origin: origin})
-//       .then((response) => {
-//         if (refreshClassroomsStudentsList) {
-//           dispatch(classroomFetchStudentsClassroomList(classroomUuid))
-//         }
-//         dispatch(classroomFetchTeacherClassroomsList())
 //       })
 //   }
 // }

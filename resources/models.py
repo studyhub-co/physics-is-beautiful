@@ -11,6 +11,8 @@ from shortuuidfield import ShortUUIDField
 
 from .validators import validate_pdf_extension
 
+from profiles.models import Profile
+
 
 class Resource(models.Model):
     TEXTBOOK = 'TB'
@@ -31,6 +33,13 @@ class Resource(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     resource_type = models.CharField(max_length=2, choices=RESOURCE_TYPE_CHOICES, default=TEXTBOOK)
+    owner = models.ForeignKey(Profile, related_name='resources')
+
+
+class RecentUserResource(models.Model):
+    user = models.ForeignKey(Profile, related_name='recent_resources')
+    resource = models.ForeignKey(Resource)
+    last_access_date = models.DateTimeField(auto_now=True)
 
 
 class ResourceMetaData(models.Model):
@@ -68,7 +77,7 @@ class TextBookSolution(models.Model):
     _title = models.CharField(max_length=400, blank=True, default='', db_column='title')
     position = models.PositiveSmallIntegerField("Position")
     textbook_problem = models.ForeignKey(TextBookProblem, related_name='solutions')
-    posted_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='resources_solutions')
+    posted_by = models.ForeignKey(Profile, related_name='resources_solutions')
 
     @property
     def title(self):

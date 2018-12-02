@@ -93,7 +93,16 @@ class AddTextBookResourceView extends React.Component {
   }
 
   onFinish (chaptersList) {
-    // TODO create resource
+    // create resource
+    // console.log(chaptersList);
+    // console.log(this.state.selectedGoogleBook);
+    var textBookResource = {resource_type: 'TB',
+      metadata: {data: this.state.selectedGoogleBook},
+      sections: chaptersList
+    }
+
+    this.props.resourcesActions.createResource(textBookResource)
+    // { resource_type: 'TB', metadata: {data: json(this.props.selectedGoogleBook), sections: chaptersList} }
   }
 
   render () {
@@ -189,7 +198,10 @@ AddTextBookResourceView.propTypes = {
   }).isRequired,
   gapiInitState: PropTypes.bool,
   googleBooksList: PropTypes.array,
-  onStepUpdated: PropTypes.func
+  onStepUpdated: PropTypes.func,
+  resourcesActions: PropTypes.shape({
+    createResource: PropTypes.func.isRequired
+  }).isRequired
 }
 
 const mapStateToProps = (state) => {
@@ -203,7 +215,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    googleActions: bindActionCreators(googleCreators, dispatch)
+    googleActions: bindActionCreators(googleCreators, dispatch),
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
   }
 }
 

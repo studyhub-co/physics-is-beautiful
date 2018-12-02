@@ -4,57 +4,116 @@ from django.core.files.storage import get_storage_class
 
 from rest_framework import serializers
 
-from .models import Resource, TextBookSolutionPDF
+from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, TextBookProblem, TextBookSolution
 
-from urllib.parse import urljoin
+# from urllib.parse import urljoin
+#
+# from django.utils import timezone
+# from django.conf import settings
+# from django.urls import reverse
+#
+# from django.template import loader
+#
+# from django.core.mail import EmailMessage
+#
+# from django.contrib.sites.models import Site
 
-from django.utils import timezone
-from django.conf import settings
-from django.urls import reverse
 
-from django.template import loader
+class ResourceMetaDataSerializer(serializers.ModelSerializer):
 
-from django.core.mail import EmailMessage
+    class Meta:
+        model = ResourceMetaData
+        fields = ['data', ]
 
-from django.contrib.sites.models import Site
+
+class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=False)
+
+    class Meta:
+        model = TextBookSolutionPDF
+        fields = ['id', ]
+
+
+class TextBookSolutionSerializer(serializers.ModelSerializer):
+    pdf = TextBookSolutionPDFSerializer(many=False)
+
+    class Meta:
+        model = TextBookSolution
+        fields = ['pdf', ]
+
+
+class TextBookProblemSerializer(serializers.ModelSerializer):
+    solutions = TextBookSolutionSerializer(many=True, required=False)
+
+    class Meta:
+        model = TextBookProblem
+        fields = ['title', 'solutions']
+
+
+class TextBookChapterSerializer(serializers.ModelSerializer):
+    problems = TextBookProblemSerializer(many=True, required=False)
+
+    class Meta:
+        model = TextBookChapter
+        fields = ['title', 'problems']
 
 
 class ResourceBaseSerializer(serializers.ModelSerializer):
-    # count_students = serializers.IntegerField(read_only=True)
-    # teacher = PublicProfileSerializer(read_only=True)
-    # curriculum = CurriculumSerializer(read_only=True)
-    # # curriculum = SimpleCurriculumSerializer(read_only=True)
-    # curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
-    #                                                slug_field='uuid', write_only=True)
-    #
-    # external_classroom = ExternalClassroomSerializer(many=False, required=False)
 
-    # def create(self, validated_data):
-    #     external_classroom = None
-    #     if 'external_classroom' in validated_data:
-    #         external_classroom = validated_data.pop('external_classroom')
-    #
-    #     to_return = super(ClassroomBaseSerializer, self).create(validated_data)
-    #
-    #     if external_classroom:
-    #         # save external data
-    #         kwargs = external_classroom
-    #         # if 'provider' in external_classroom:
-    #         #     kwargs['provider'] = external_classroom.pop('provider')
-    #         # external_id=external_classroom['external_id'],
-    #         #                                              name=external_classroom['name'],
-    #         #                                              teacher_id=external_classroom['teacher_id'],
-    #         #                                              code=external_classroom['code'],
-    #         try:
-    #             ExternalClassroom.objects.create(classroom=to_return,
-    #                                          **kwargs)
-    #         except:  # TODO raise error message
-    #             pass
-    #     return to_return
+    metadata = ResourceMetaDataSerializer(many=False, required=False)
+    sections = TextBookChapterSerializer(many=True)
+
+    def create(self, validated_data):
+        metadata_data = validated_data.pop('metadata')
+
+        sections = validated_data.pop('sections')
+
+        instance = super(ResourceBaseSerializer, self).create(validated_data)
+
+        # TODO need to check that at least one solution exists
+        if instance.resource_type == 'TB':
+            # add TextBook Resource type sections
+
+            sections_objects = []
+            for i, section in enumerate(sections):
+                sections_objects.append(
+                    TextBookChapter(resource=instance, title=section['title'], position=i)
+                )
+
+            saved_sections = TextBookChapter.objects.bulk_create(sections_objects)
+
+            for saved_section in saved_sections:
+                section_data = sections[saved_section.position]
+                if 'problems' in section_data:
+                    problems_objects = []
+                    for i, problem in enumerate(section_data['problems']):
+                        problems_objects.append(
+                            TextBookProblem(textbook_section=saved_section, title=problem['title'], position=i)
+                        )
+                    # save problems
+                    saved_problems = TextBookProblem.objects.bulk_create(problems_objects)
+
+                    for saved_problem in saved_problems:
+                        problem_data = section_data['problems'][saved_problem.position]
+                        if 'solutions' in problem_data:
+                            solutions_objects = []
+                            for y, solution in enumerate(problem_data['solutions']):
+                                solutions_objects.append(
+                                    TextBookSolution(pdf_id=solution['pdf']['id'],
+                                                     position=y,
+                                                     textbook_problem=saved_problem,
+                                                     posted_by=validated_data['owner'])
+                                )
+                            # save solutions
+                            TextBookSolution.objects.bulk_create(solutions_objects)
+
+        ResourceMetaData.objects.create(resource=instance, **metadata_data)
+
+        return instance
 
     class Meta:
         model = Resource
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type']
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections']
         read_only_fields = ('uuid',  'created_on', 'updated_on')
 
 
