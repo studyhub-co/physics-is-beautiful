@@ -10,9 +10,6 @@ import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
 import { checkHttpStatus, getAxios } from '../../utils'
 import { API_PREFIX } from '../../utils/config'
-import { receiveResourceOptions } from '../../actions/resources'
-
-// import { EditableLabel } from '../../components/label'
 
 export default class AddTextBookSolutionsView extends React.Component {
   constructor (props) {
@@ -93,7 +90,7 @@ export default class AddTextBookSolutionsView extends React.Component {
           <span style={{padding: '0 2rem'}}>Third step</span>
           <Button
             disabled={!this.isOneSolutionInChapters()}
-            onClick={this.nextStepClick}
+            onClick={() => { this.props.onFinish(this.state.chaptersList) }}
           >Create Resource!</Button>
         </div>
         <div className={'gray-text'}>3. Add at least one solution (.pdf) </div>
@@ -160,7 +157,8 @@ export default class AddTextBookSolutionsView extends React.Component {
 AddTextBookSolutionsView.propTypes = {
   googleBook: PropTypes.object,
   chaptersList: PropTypes.array,
-  onPrevStep: PropTypes.func.isRequired
+  onPrevStep: PropTypes.func.isRequired,
+  onFinish: PropTypes.func.isRequired
 }
 
 // const mapStateToProps = (state) => {
