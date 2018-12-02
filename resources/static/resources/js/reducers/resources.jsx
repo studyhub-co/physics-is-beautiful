@@ -1,5 +1,8 @@
 import {
   RESOURCE_RECEIVE_RESOURCE_OPTIONS,
+  RESOURCE_RECEIVE_POPULAR_RESOURCES,
+  RESOURCE_RECEIVE_RECENT_RESOURCES,
+  RESOURCE_RECEIVE_NEW_RESOURCES
 } from '../constants'
 
 const initialState = {
@@ -13,34 +16,18 @@ export default function resourcesReducer (state = initialState, action) {
       return Object.assign({}, state, {
         resourceOptions: action.payload.resourceOptions
       })
-    // case CLASSROOM_RECEIVE_TEACHER_CLASSROOM:
-    //   return Object.assign({}, state, {
-    //     classroomTeacherClassroom: action.payload.classroomTeacher
-    //   })
-    // case CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS:
-    //   return Object.assign({}, state, {
-    //     classroomTeacherClassroom: action.payload.classroomTeacher
-    //   })
-    // case CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS:
-    //   return Object.assign({}, state, {
-    //     classroomTeacherClassroom: action.payload.classroomTeacher
-    //   })
-    // case CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS:
-    //   return Object.assign({}, state, {
-    //     classroomStudentClassroom: action.payload.classroomStudent
-    //   })
-    // case CLASSROOM_RECEIVE_STUDENT_CLASSROOM:
-    //   return Object.assign({}, state, {
-    //     classroomStudentClassroom: action.payload.classroomStudent
-    //   })
-    // case CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS:
-    //   return Object.assign({}, state, {
-    //     classroomStudentClassroom: undefined
-    //   })
-    // case CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST:
-    //   return Object.assign({}, state, {
-    //     classroomStudentList: action.payload.classroomStudentList
-    //   })
+    case RESOURCE_RECEIVE_POPULAR_RESOURCES:
+      return Object.assign({}, state, {
+        popularResourcesList: action.payload.popularResourcesList
+      })
+    case RESOURCE_RECEIVE_RECENT_RESOURCES:
+      return Object.assign({}, state, {
+        popularResourcesList: action.payload.popularResourcesList
+      })
+    case RESOURCE_RECEIVE_NEW_RESOURCES:
+      return Object.assign({}, state, {
+        popularResourcesList: action.payload.popularResourcesList
+      })
     default:
       return state
   }

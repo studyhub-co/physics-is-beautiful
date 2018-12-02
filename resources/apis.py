@@ -10,7 +10,11 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework import filters
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 # from profiles.models import Profile
 
@@ -27,11 +31,30 @@ class SeparateListObjectSerializerMixin:
         return self.list_serializer_class
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10  # TODO get it from the project settings
+
+
+class RecentlyFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        filter_param = request.query_params.get('filter')
+        if filter_param and filter_param == 'recent':
+            queryset = queryset.\
+                filter(user_recent_list__profile__user=request.user).\
+                order_by('user_recent_list__last_access_date')
+            # queryset = queryset.filter(curricula_user_dashboard__profile__user=request.user\)
+        return queryset
+
+# TODO PopularFilterBackend
+
+
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)  # TODO add more
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
+    pagination_class = StandardResultsSetPagination
     queryset = Resource.objects.all()
+    filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
 
     @action(methods=['POST'],
@@ -51,6 +74,8 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user.profile)
+
+    # TODO save_or_create RecentUserResource while get
 
     # def get_queryset(self):
     #     queryset = self.queryset. \

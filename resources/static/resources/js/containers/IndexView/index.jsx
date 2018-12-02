@@ -11,8 +11,29 @@ import { Grid, Row, Col, Button, Glyphicon } from 'react-bootstrap'
 // import * as tabsCreators from '../../actions/tab'
 
 import history from '../../history'
+import * as resourcesCreators from '../../actions/resources'
 
 class IndexView extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      searchString: '',
+      searchEnabeled: false,
+      recentSlides: [],
+      recentNextPageUrl: null,
+      popularSlides: [],
+      popularNextPageUrl: null,
+      newSlides: [],
+      newNextPageUrl: null
+    }
+  }
+
+  componentDidMount () {
+    this.props.resourcesActions.loadPopularResourcesList()
+    this.props.resourcesActions.loadRecentResourcesList()
+    this.props.resourcesActions.loadNewResourcesList()
+  }
+
   onAddResourceClick (addResourceUrl) {
     history.push(addResourceUrl)
   }
@@ -44,44 +65,31 @@ class IndexView extends React.Component {
 }
 
 IndexView.propTypes = {
-  // tabActions: PropTypes.shape({
-  //   changeSelectedTab: PropTypes.func.isRequired
-  // }).isRequired,
-  // googleActions: PropTypes.shape({
-  //   googleFetchClassroomList: PropTypes.func.isRequired,
-  //   gapiInitialize: PropTypes.func.isRequired,
-  //   googleSaveClassroomsWithStudents: PropTypes.func.isRequired
-  // }).isRequired,
-  // classroomActions: PropTypes.shape({
-  //   classroomCreateClassroom: PropTypes.func.isRequired,
-  //   classroomFetchTeacherClassroomsList: PropTypes.func.isRequired,
-  //   classroomFetchStudentClassroomsList: PropTypes.func.isRequired,
-  //   classroomJoinClassroom: PropTypes.func.isRequired
-  // }).isRequired,
-  // tab: PropTypes.string,
-  // classroomList: PropTypes.array,
-  // classroomStudentList: PropTypes.array,
-  // googleClassroomsList: PropTypes.array,
-  // gapiInitState: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired
+  // actions
+  resourcesActions: PropTypes.shape({
+    loadPopularResourcesList: PropTypes.func.isRequired,
+    loadRecentResourcesList: PropTypes.func.isRequired,
+    loadNewResourcesList: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired
+  }),
+  // data
+  popularResourcesList: PropTypes.object,
+  recentResourcesList: PropTypes.object,
+  newResourcesList: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    // tab: state.tab.tab,
-    // classroomList: state.classroom.classroomList,
-    // classroomStudentList: state.classroom.classroomStudentList,
-    // googleClassroomsList: state.google.googleClassroomsList,
-    // gapiInitState: state.google.gapiInitState
+    popularResourcesList: state.resources.popularResourcesList,
+    recentResourcesList: state.resources.recentResourcesList,
+    newResourcesList: state.resources.newResourcesList
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    // tabActions: bindActionCreators(tabsCreators, dispatch),
-    // classroomActions: bindActionCreators(classroomCreators, dispatch),
-    // googleActions: bindActionCreators(googleCreators, dispatch),
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
   }
 }
 
