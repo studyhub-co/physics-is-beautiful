@@ -38,7 +38,7 @@ class Resource(models.Model):
 
 class RecentUserResource(models.Model):
     user = models.ForeignKey(Profile, related_name='recent_resources')
-    resource = models.ForeignKey(Resource)
+    resource = models.ForeignKey(Resource, related_name='user_recent_list')
     last_access_date = models.DateTimeField(auto_now=True)
 
 
