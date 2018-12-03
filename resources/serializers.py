@@ -31,7 +31,8 @@ class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookSolutionPDF
-        fields = ['id', ]
+        fields = ['id', 'file']
+        read_only_fields = ('file',)
 
 
 class TextBookSolutionSerializer(serializers.ModelSerializer):
@@ -124,10 +125,9 @@ class ResourceListSerializer(ResourceBaseSerializer):
     #     students = container.students.all()[:12]
     #     serializer = PublicProfileSerializer(instance=students, many=True)
     #     return serializer.data
-    #
-    # class Meta(ClassroomBaseSerializer.Meta):
-    #     fields = ClassroomBaseSerializer.Meta.fields + ['less_students']
-    pass
+
+    class Meta(ResourceBaseSerializer.Meta):
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata']
 
 
 class TextBookSolutionPDFSerializer(serializers.ModelSerializer):

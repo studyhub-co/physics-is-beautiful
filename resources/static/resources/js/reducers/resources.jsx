@@ -22,11 +22,11 @@ export default function resourcesReducer (state = initialState, action) {
       })
     case RESOURCE_RECEIVE_RECENT_RESOURCES:
       return Object.assign({}, state, {
-        popularResourcesList: action.payload.popularResourcesList
+        recentResourcesList: action.payload.recentResourcesList
       })
     case RESOURCE_RECEIVE_NEW_RESOURCES:
       return Object.assign({}, state, {
-        popularResourcesList: action.payload.popularResourcesList
+        newResourcesList: action.payload.newResourcesList
       })
     default:
       return state

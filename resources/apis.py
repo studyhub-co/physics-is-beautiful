@@ -5,6 +5,8 @@
 from django.utils import timezone
 from datetime import timedelta
 
+from django.db.models import F
+
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes, action
@@ -18,7 +20,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 # from profiles.models import Profile
 
-from .models import Resource, TextBookSolutionPDF
+from .models import Resource, TextBookSolutionPDF, RecentUserResource
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer
 
 
@@ -40,12 +42,10 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         filter_param = request.query_params.get('filter')
         if filter_param and filter_param == 'recent':
             queryset = queryset.\
-                filter(user_recent_list__profile__user=request.user).\
+                filter(user_recent_list__user__user=request.user).\
                 order_by('user_recent_list__last_access_date')
             # queryset = queryset.filter(curricula_user_dashboard__profile__user=request.user\)
         return queryset
-
-# TODO PopularFilterBackend
 
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
@@ -53,7 +53,11 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
     pagination_class = StandardResultsSetPagination
-    queryset = Resource.objects.all()
+    queryset = Resource.objects.all().\
+        order_by('-created_on').\
+        select_related('metadata').\
+        prefetch_related('sections__problems__solutions')
+
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
 
@@ -75,13 +79,20 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user.profile)
 
-    # TODO save_or_create RecentUserResource while get
+    def retrieve(self, request, *args, **kwargs):
+        # try to find user last access date
+        instance = self.get_object()
+        try:
+            user_access = RecentUserResource.objects.get(user=request.user.profile, resource=instance)
+            user_access.last_access_date = timezone.now()
+            user_access.save()
+        except RecentUserResource.DoesNotExist:
+            RecentUserResource.objects.create(user=request.user.profile, resource=instance)
 
-    # def get_queryset(self):
-    #     queryset = self.queryset. \
-    #             annotate(count_students=Count('students', distinct=True))
-    #     return queryset
+        # increment view count
+        instance.update(count_views=F('count_views') + 1)
 
+        return super(ResourceViewSet).retrieve(request, *args, **kwargs)
 
 
 
