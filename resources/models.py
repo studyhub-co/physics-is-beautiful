@@ -34,6 +34,7 @@ class Resource(models.Model):
     deleted_on = models.DateTimeField(blank=True, null=True)
     resource_type = models.CharField(max_length=2, choices=RESOURCE_TYPE_CHOICES, default=TEXTBOOK)
     owner = models.ForeignKey(Profile, related_name='resources')
+    count_views = models.IntegerField(default=0)
 
 
 class RecentUserResource(models.Model):
