@@ -136,15 +136,15 @@ class AddTextBookResourceView extends React.Component {
             {this.props.googleBooksList
               ? <div>
                 { this.props.googleBooksList.length > 0
-                  // TODO show array of found books
-                  ? <div>
+                  // show array of found books
+                  ? <div style={{display: 'flex', flexFlow: 'row wrap'}}>
                     { this.props.googleBooksList.slice(0, 10).map(function (book, i) {
-                      return <span key={book.id}>
+                      return <div key={book.id} style={{width: '20rem', paddingRight: '1rem'}}>
                         <GoogleBookThumbnail googleBook={book} />
                         <Button onClick={() => { this.onSelectBook(book) }} className={'common-button'}>
                           <Glyphicon glyph='plus' /> Select
                         </Button>
-                      </span>
+                      </div>
                     }, this)
                     }
                   </div>

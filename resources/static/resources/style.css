@@ -1,4 +1,4 @@
-
+@import "swiper.min.css";
 
 /* common with classroom, need to create common.css */
 
@@ -40,6 +40,65 @@
 .resources .gray-text {
     color: #ababab;
 }
+
+.resources .curriculum-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: #efefef;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    float: left;
+    position: relative;
+    text-align: center;
+    /*padding-top: 1rem;*/
+    margin-top: 1rem;
+
+    vertical-align: top;
+
+    /* new values */
+    padding: 0;
+    width: 25rem;
+    height: 30rem;
+    /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
+}
+
+/*.resources .curriculum-card div img {*/
+    /*width: 100%;*/
+    /*display: block;*/
+    /*height: 20rem;*/
+/*}*/
+
+.resources .curriculum-card > div > span {
+    width: 100%;
+    display: block;
+    height: 20rem;
+    font-size: 20rem;
+}
+
+.pib-swiper-button {
+    height: 90% !important;
+    top: 10% !important;
+}
+
+.pib-swiper-button::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    left: 0;
+    top: 0;
+    transition: opacity 0.6s;
+    opacity: 0;
+    border-radius: 0.5rem;
+  }
+
+.pib-swiper-button:hover::after {
+    opacity: 1;
+  }
 
 .resources .editable-label:not(.empty) .glyphicon-pencil, .editor .mq-editable-label:not(.empty) .glyphicon-pencil{ display:none; }
 .resources .editable-label:hover .glyphicon-pencil, .editor .mq-editable-label:hover .glyphicon-pencil { display:inline; }

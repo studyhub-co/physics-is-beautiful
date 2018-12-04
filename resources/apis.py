@@ -20,17 +20,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 # from profiles.models import Profile
 
+from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
+
 from .models import Resource, TextBookSolutionPDF, RecentUserResource
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer
-
-
-class SeparateListObjectSerializerMixin:
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return self.list_serializer_class
-        if self.action in ('retrieve', 'partial_update', 'update'):
-            return self.serializer_class
-        return self.list_serializer_class
 
 
 class StandardResultsSetPagination(PageNumberPagination):
