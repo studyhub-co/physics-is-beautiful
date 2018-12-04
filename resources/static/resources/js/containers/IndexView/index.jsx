@@ -1,16 +1,14 @@
 import React from 'react'
 
-import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
 
 import Swiper from 'react-id-swiper'
-
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 
-// import * as tabsCreators from '../../actions/tab'
+import { BASE_URL } from '../../utils/config'
 
 import {
   getParams,
@@ -24,6 +22,7 @@ import SearchRowView from './searchRow'
 
 import history from '../../history'
 import * as resourcesCreators from '../../actions/resources'
+import ResourceThumbnail from '../../components/resourceThumbnail'
 
 const slidesNames = ['newSlides', 'popularSlides', 'recentSlides']
 
@@ -49,9 +48,6 @@ class IndexView extends React.Component {
   }
 
   populateSlides (slidesListName, props) {
-    
-    console.log(slidesListName);
-    
     var slides = []
     var resourcesList = props.popularResourcesList
 
@@ -67,7 +63,11 @@ class IndexView extends React.Component {
     }
 
     for (var index in resourcesList.results) {
-      slides.push(<span key={index}>I am slide</span>)
+      slides.push(<ResourceThumbnail
+        key={resourcesList.results[index].uuid}
+        resource={resourcesList.results[index]}
+        onTitleClick={() => this.onResourceClick(resourcesList.results[index].uuid)}
+      />)
       // if (!this.alreadyInSlides(slides, resourcesList.results[index].uuid)) {
       //   slides.push(<span>I will be slide</span>)
       // }
@@ -81,7 +81,6 @@ class IndexView extends React.Component {
     // }
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
-
 
       if (props[prefix + 'ResourcesList'] && props[prefix + 'ResourcesList'] !== this.props[prefix + 'ResourcesList']) {
         var slides = this.populateSlides(slidesNames[i], props)
@@ -97,17 +96,22 @@ class IndexView extends React.Component {
     history.push(addResourceUrl)
   }
 
+  onResourceClick (resourceUuid) {
+    history.push(BASE_URL + resourceUuid)
+  }
+
   getParams (slidesListName) {
     var self = this
+
     var reachEndFunc = function () {
-      if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
-        self.props.loadPopularResourcesList(self.state.popularNextPageUrl)
-      }
       if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
-        self.props.loadRecentResourcesList(self.state.recentNextPageUrl)
+        self.props.resourcesActions.loadRecentResourcesList(self.state.recentNextPageUrl)
+      }
+      if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+        self.props.resourcesActions.loadPopularResourcesList(self.state.popularNextPageUrl)
       }
       if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
-        self.props.loadNewResourcesList(self.state.newNextPageUrl)
+        self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
       }
     }
 

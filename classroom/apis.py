@@ -14,19 +14,12 @@ from profiles.models import Profile
 
 from curricula.serializers import LessonSerializer
 
+from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
+
 from .models import Classroom, Assignment, ClassroomStudent, AssignmentProgress
 from .permissions import IsClassroomTeacherOrStudentReadonly, IsAssignmentClassroomTeacherOrStudentReadonly
 from .serializers import ClassroomSerializer, AssignmentSerializer, AssignmentListSerializer, ClassroomListSerializer,\
     StudentProfileSerializer, StudentAssignmentSerializer
-
-
-class SeparateListObjectSerializerMixin:
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return self.list_serializer_class
-        if self.action in ('retrieve', 'partial_update', 'update'):
-            return self.serializer_class
-        return self.list_serializer_class
 
 
 class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):

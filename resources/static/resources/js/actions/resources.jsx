@@ -59,9 +59,9 @@ export function receiveNewResourcesList (newResourcesList) {
   }
 }
 
-export function loadNewResourcesList () {
+export function loadNewResourcesList (url) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX)
+    return getAxios().get(url || API_PREFIX)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveNewResourcesList(response.data))
@@ -78,9 +78,9 @@ export function receivePopularResourcesList (popularResourcesList) {
   }
 }
 
-export function loadPopularResourcesList () {
+export function loadPopularResourcesList (url) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + '?ordering=count_views')
+    return getAxios().get(url || API_PREFIX + '?ordering=count_views')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receivePopularResourcesList(response.data))
@@ -97,9 +97,9 @@ export function receiveRecentResourcesList (recentResourcesList) {
   }
 }
 
-export function loadRecentResourcesList () {
+export function loadRecentResourcesList (url) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + '?filter=recent')
+    return getAxios().get(url || API_PREFIX + '?filter=recent')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveRecentResourcesList(response.data))

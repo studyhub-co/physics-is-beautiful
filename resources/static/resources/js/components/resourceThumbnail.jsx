@@ -1,0 +1,48 @@
+import React from 'react'
+
+import PropTypes from 'prop-types'
+
+import { Image, Glyphicon } from 'react-bootstrap'
+
+export default class ResourceThumbnail extends React.Component {
+  render () {
+    return (
+      <div
+        className={'curriculum-card'}>
+        <div
+          onClick={this.props.onTitleClick}
+          style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px', cursor: 'pointer'}}>
+          { this.props.resource.resource_type === 'TB' &&
+          this.props.resource.metadata &&
+          this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
+          this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
+            ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
+            : <Glyphicon glyph='picture' /> }
+        </div>
+        { this.props.resource.resource_type === 'TB' && this.props.resource.metadata
+          ? <div>
+            <div onClick={this.props.onTitleClick} className={'blue-text'} style={{fontSize: '1.5rem', cursor: 'pointer'}}>
+              <div>{
+                this.props.resource.metadata.data.volumeInfo.title.length > 49
+                  ? this.props.resource.metadata.data.volumeInfo.title.substr(0, 50) + '...'
+                  : this.props.resource.metadata.data.volumeInfo.title
+              }</div>
+            </div>
+            <div>{this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
+              return <span key={author} style={{paddingRight: '1rem'}}>
+                {author}
+                {this.props.resource.metadata.data.volumeInfo.authors.length - 1 !== i ? ',' : null }
+              </span> // TODO limit authors list
+            }, this)}</div>
+          </div>
+          : <span>Unknown resource</span>
+        }
+      </div>
+    )
+  }
+}
+
+ResourceThumbnail.propTypes = {
+  resource: PropTypes.object.isRequired,
+  onTitleClick: PropTypes.func.isRequired
+}
