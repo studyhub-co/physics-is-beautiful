@@ -83,9 +83,12 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             RecentUserResource.objects.create(user=request.user.profile, resource=instance)
 
         # increment view count
-        instance.update(count_views=F('count_views') + 1)
+        if instance:
+            # instance.count_views = F('count_views') + 1 - not so good, will be run on every following instance saving
+            instance.count_views += 1
+            instance.save(update_fields=['count_views', ])
 
-        return super(ResourceViewSet).retrieve(request, *args, **kwargs)
+        return super(ResourceViewSet, self).retrieve(request, *args, **kwargs)
 
 
 
