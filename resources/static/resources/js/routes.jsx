@@ -7,7 +7,7 @@ export default(
   <Switch>
     <Route exact path={BASE_URL} component={IndexView} />
     <Route exact path={BASE_URL + 'add/'} component={AddResourceView} />
-    <Route exact path={BASE_URL + '/resource/:resourceUuid/'} component={ResourceView} />
+    <Route exact path={BASE_URL + ':uuid/'} component={ResourceView} />
     {/* <Route path='*' component={NotFoundView} /> */}
   </Switch>
 )

@@ -41,6 +41,7 @@ class Resource(ModeratedModel):
     class Moderator:
         notify_moderator = True
         auto_approve_for_superusers = True
+        fields_exclude = ['count_views', ]
 
 
 class RecentUserResource(models.Model):

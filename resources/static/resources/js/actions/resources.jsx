@@ -3,7 +3,7 @@ import { push } from 'connected-react-router'
 import { checkHttpStatus, getAxios } from '../utils'
 import {
   RESOURCE_RECEIVE_RESOURCE_OPTIONS, CREATE_RESOURCE_SUCCESS, RESOURCE_RECEIVE_POPULAR_RESOURCES,
-  RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES
+  RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE
 } from '../constants'
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
@@ -103,6 +103,25 @@ export function loadRecentResourcesList (url) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveRecentResourcesList(response.data))
+      })
+  }
+}
+
+export function receiveResource (resource) {
+  return {
+    type: RESOURCE_RECEIVE_RESOURCE,
+    payload: {
+      resource
+    }
+  }
+}
+
+export function fetchResource (uuid) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + uuid)
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveResource(response.data))
       })
   }
 }
