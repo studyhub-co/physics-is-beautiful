@@ -13,8 +13,10 @@ from .validators import validate_pdf_extension
 
 from profiles.models import Profile
 
+from moderation.db import ModeratedModel
 
-class Resource(models.Model):
+
+class Resource(ModeratedModel):
     TEXTBOOK = 'TB'
     ONLINE = 'OL'
     TEST = 'TS'
@@ -35,6 +37,10 @@ class Resource(models.Model):
     resource_type = models.CharField(max_length=2, choices=RESOURCE_TYPE_CHOICES, default=TEXTBOOK)
     owner = models.ForeignKey(Profile, related_name='resources')
     count_views = models.IntegerField(default=0)
+
+    class Moderator:
+        notify_moderator = True
+        auto_approve_for_superusers = True
 
 
 class RecentUserResource(models.Model):
