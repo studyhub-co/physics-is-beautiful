@@ -11,7 +11,11 @@ export default class ResourceThumbnail extends React.Component {
         className={'curriculum-card'}>
         <div
           onClick={this.props.onTitleClick}
-          style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px', cursor: 'pointer'}}>
+          style={{paddingBottom: '1rem',
+            height: '200px',
+            overflow: 'hidden',
+            borderRadius: '15px',
+            cursor: 'pointer'}}>
           { this.props.resource.resource_type === 'TB' &&
           this.props.resource.metadata &&
           this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
