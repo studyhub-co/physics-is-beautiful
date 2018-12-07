@@ -3,14 +3,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { Image, Glyphicon } from 'react-bootstrap'
+import { BASE_URL } from '../utils/config'
+import history from '../history'
 
-export default class ResourceThumbnail extends React.Component {
+export default class ResourceThumbnail extends React.Component { // TODO create components for each resources types
+  constructor (props) {
+    super(props)
+    this.onTitleClick = this.onTitleClick.bind(this)
+  }
+
+  onTitleClick (resourceUuid) {
+    history.push(BASE_URL + this.props.resource.uuid)
+  }
   render () {
     return (
       <div
         className={'curriculum-card'}>
         <div
-          onClick={this.props.onTitleClick}
+          onClick={this.onTitleClick}
           style={{paddingBottom: '1rem',
             height: '200px',
             overflow: 'hidden',
@@ -47,6 +57,5 @@ export default class ResourceThumbnail extends React.Component {
 }
 
 ResourceThumbnail.propTypes = {
-  resource: PropTypes.object.isRequired,
-  onTitleClick: PropTypes.func.isRequired
+  resource: PropTypes.object.isRequired
 }

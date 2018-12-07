@@ -12,6 +12,8 @@ import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl }
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 
+import TextBookResourceView from './textBookResourceView'
+
 class ResourceView extends React.Component {
   componentDidMount () {
     if (this.props.match.params && this.props.match.params['uuid']) {
@@ -31,14 +33,10 @@ class ResourceView extends React.Component {
               </a>
             </Col>
           </Row>
-          <Row>
-            <Col sm={12} md={12}>
-              <div className={''}>
-                sefdfds
-              </div>
-            </Col>
-          </Row>
         </Grid>
+        { this.props.resource && this.props.resource.resource_type === 'TB'
+          ? <TextBookResourceView resource={this.props.resource} />
+          : null }
       </Sheet>
     )
   }

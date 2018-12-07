@@ -36,7 +36,7 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         if filter_param and filter_param == 'recent':
             queryset = queryset.\
                 filter(user_recent_list__user__user=request.user).\
-                order_by('user_recent_list__last_access_date')
+                order_by('-user_recent_list__last_access_date')
             # queryset = queryset.filter(curricula_user_dashboard__profile__user=request.user\)
         return queryset
 
@@ -84,9 +84,9 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         # increment view count
         if instance:
-            # instance.count_views = F('count_views') + 1 - not so good, will be run on every following instance saving
-            instance.count_views += 1
-            instance.save(update_fields=['count_views', ])
+            # instance.count_views += 1
+            # instance.save(update_fields=['count_views', ])
+            Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
 
         return super(ResourceViewSet, self).retrieve(request, *args, **kwargs)
 
