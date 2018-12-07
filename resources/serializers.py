@@ -114,8 +114,8 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resource
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections']
-        read_only_fields = ('uuid',  'created_on', 'updated_on')
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views']
+        read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views')
 
 
 class ResourceListSerializer(ResourceBaseSerializer):
@@ -127,7 +127,7 @@ class ResourceListSerializer(ResourceBaseSerializer):
     #     return serializer.data
 
     class Meta(ResourceBaseSerializer.Meta):
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata']
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'count_views']
 
 
 class TextBookSolutionPDFSerializer(serializers.ModelSerializer):

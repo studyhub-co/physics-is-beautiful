@@ -80,7 +80,7 @@ export function receivePopularResourcesList (popularResourcesList) {
 
 export function loadPopularResourcesList (url) {
   return (dispatch, state) => {
-    return getAxios().get(url || API_PREFIX + '?ordering=count_views')
+    return getAxios().get(url || API_PREFIX + '?ordering=-count_views')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receivePopularResourcesList(response.data))
