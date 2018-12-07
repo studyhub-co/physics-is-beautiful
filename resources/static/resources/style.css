@@ -5,6 +5,7 @@
 .resources .blue-title {
     font-size: 2rem;
     color: rgb(8, 209, 255);
+    padding-bottom: 2rem;
 }
 
 .resources .common-button {
@@ -39,6 +40,10 @@
 
 .resources .gray-text {
     color: #ababab;
+}
+
+.resources .text-align-center {
+    text-align: center;
 }
 
 .resources .curriculum-card {

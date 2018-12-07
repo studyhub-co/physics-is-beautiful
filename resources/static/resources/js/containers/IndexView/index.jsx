@@ -39,6 +39,7 @@ class IndexView extends React.Component {
       newSlides: [],
       newNextPageUrl: null
     }
+    this.populateSlides = this.populateSlides.bind(this)
   }
 
   componentDidMount () {
@@ -66,7 +67,6 @@ class IndexView extends React.Component {
       slides.push(<ResourceThumbnail
         key={resourcesList.results[index].uuid}
         resource={resourcesList.results[index]}
-        onTitleClick={() => this.onResourceClick(resourcesList.results[index].uuid)}
       />)
       // if (!this.alreadyInSlides(slides, resourcesList.results[index].uuid)) {
       //   slides.push(<span>I will be slide</span>)
@@ -94,10 +94,6 @@ class IndexView extends React.Component {
 
   onAddResourceClick (addResourceUrl) {
     history.push(addResourceUrl)
-  }
-
-  onResourceClick (resourceUuid) {
-    history.push(BASE_URL + resourceUuid)
   }
 
   getParams (slidesListName) {
