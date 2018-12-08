@@ -8,7 +8,8 @@ import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
-import { EditableExternalEventLabel, EditableLabel } from '../../components/label'
+// import { EditableExternalEventLabel, EditableLabel } from '../../components/label'
+import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableLabel'
 
 export default class AddTextBookProblemsView extends React.Component {
   constructor (props) {

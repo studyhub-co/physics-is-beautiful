@@ -62,6 +62,7 @@ class TextBookChapter(models.Model):
 
 
 class TextBookProblem(models.Model):
+    uuid = ShortUUIDField(unique=True)
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
     textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')

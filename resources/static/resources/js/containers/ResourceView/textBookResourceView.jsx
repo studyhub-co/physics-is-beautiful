@@ -11,8 +11,32 @@ import { Grid, Row, Col, Image, Button, Glyphicon, FormGroup, InputGroup, FormCo
 
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
+import { EditableLabel, EditableExternalEventLabel } from '../../utils/editableLabel'
 
 class TextBookResourceView extends React.Component {
+  constructor (props) {
+    super(props)
+    // TODO copy resource from props to state to allow user modify
+    this.state = {
+      chapterEditMode: null,
+      problemEditMode: null
+    }
+  }
+
+  editChapterClick (id) {
+    this.setState({
+      chapterEditMode: id
+    })
+  }
+
+  onChangeChapterValue (value, id) {
+    // TODO save title in state
+  }
+
+  onChangeProblemTitle (value, id) {
+    // TODO save title in state
+  }
+
   render () {
     var isbn = null
     if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('industryIdentifiers')) {
@@ -33,7 +57,57 @@ class TextBookResourceView extends React.Component {
         </Row>
         <Row>
           <Col sm={9} md={9}>
-            sections
+            {this.props.resource.sections ? this.props.resource.sections.map(function (chapter, i) { // ============ chapters
+              return <Row key={chapter.position}>
+                <Col sm={12} md={12}>
+                  <span className={'blue-title'}>
+                    <EditableExternalEventLabel
+                      value={chapter.title}
+                      onChange={(value) => { this.onChangeChapterValue(value, chapter.id) }}
+                      editMode={this.state.chapterEditMode === chapter.id}
+                    />
+                  </span>
+                  <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                    <span className={'base-circle-edit'}>
+                      [<span
+                        onClick={() => this.editChapterClick(chapter.id)}
+                        className={'blue-text'}
+                        style={{cursor: 'pointer'}}
+                      >
+                        Edit
+                      </span>]
+                    </span>
+                  </span>
+                  {chapter.problems ? chapter.problems.map(function (problem, i) { // ============ problems
+                    return <Row key={problem.uuid} className={'blue-text'}>
+                      <Col sm={2} md={2}>
+                        <EditableLabel
+                          value={problem.title}
+                          onChange={(value) => { this.onChangeProblemTitle(value, problem.uuid) }}
+                        />
+                      </Col>
+                      <Col sm={9} md={9}>
+                        { problem.count_solutions > 0
+                          ? <span
+                            style={{cursor: 'pointer'}}
+                            onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + problem.uuid) }}>
+                            {problem.count_solutions} solution{problem.count_solutions > 1 ? 's' : null}
+                          </span>
+                          : 'No solutions'
+                        }
+                      </Col>
+                      <Col sm={1} md={1}>
+                        {/* TODO drop down menu for request more solutions */}
+                      </Col>
+                    </Row>
+                  }, this)
+                    : null
+                  }
+                </Col>
+              </Row>
+            }, this)
+              : null
+            }
           </Col>
           <Col sm={3} md={3}>
             <div
@@ -136,4 +210,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TextBookResourceView)
-export { TextBookResourceView as IndexViewNotConnected }
+export { TextBookResourceView as TextBookResourceViewNotConnected }

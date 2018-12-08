@@ -1,8 +1,7 @@
 import {
-  RESOURCE_RECEIVE_RESOURCE_OPTIONS,
-  RESOURCE_RECEIVE_POPULAR_RESOURCES,
-  RESOURCE_RECEIVE_RECENT_RESOURCES,
-  RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE
+  RESOURCE_RECEIVE_RESOURCE_OPTIONS, RESOURCE_RECEIVE_POPULAR_RESOURCES,
+  RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES,
+  RESOURCE_RECEIVE_RESOURCE, RESOURCE_RECEIVE_PROBLEM
 } from '../constants'
 
 const initialState = {
@@ -31,6 +30,10 @@ export default function resourcesReducer (state = initialState, action) {
     case RESOURCE_RECEIVE_RESOURCE:
       return Object.assign({}, state, {
         resource: action.payload.resource
+      })
+    case RESOURCE_RECEIVE_PROBLEM:
+      return Object.assign({}, state, {
+        problem: action.payload.problem
       })
     default:
       return state

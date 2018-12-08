@@ -1,29 +1,27 @@
 # from django.db import transaction
-#
-# from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField, Value, CharField
-#
+
 from django.utils import timezone
 from datetime import timedelta
 
-from django.db.models import F
+from django.db.models import F, Count, Prefetch
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import permissions, status
+from rest_framework import permissions, status, mixins, filters
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.exceptions import NotFound, NotAcceptable
-from rest_framework import filters
+# from rest_framework.exceptions import NotFound, NotAcceptable
 
-from django_filters.rest_framework import DjangoFilterBackend
+# from django_filters.rest_framework import DjangoFilterBackend
 
 # from profiles.models import Profile
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
-from .models import Resource, TextBookSolutionPDF, RecentUserResource
-from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer
+from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem
+from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
+    FullTextBookProblemSerializer
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -41,15 +39,27 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
+class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
+                              mixins.RetrieveModelMixin,
+                              GenericViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = FullTextBookProblemSerializer
+    queryset = TextBookProblem.objects.all()
+    lookup_field = 'uuid'
+
+
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)  # TODO add more
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
     pagination_class = StandardResultsSetPagination
     queryset = Resource.objects.all().\
         order_by('-created_on').\
-        select_related('metadata').\
-        prefetch_related('sections__problems__solutions')
+        select_related('metadata'). \
+        prefetch_related(Prefetch('sections__problems',
+                         queryset=TextBookProblem.objects.annotate(count_solutions=Count('solutions', distinct=True)))
+                         )
+        # prefetch_related('sections__problems__solutions')
 
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
