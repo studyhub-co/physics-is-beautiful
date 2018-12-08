@@ -12,12 +12,10 @@ import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl }
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 
-import TextBookResourceView from './textBookResourceView'
-
-class ResourceView extends React.Component {
+class TextBookProblemView extends React.Component {
   componentDidMount () {
     if (this.props.match.params && this.props.match.params['uuid']) {
-      this.props.resourcesActions.fetchResource(this.props.match.params['uuid'])
+      this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
     }
   }
 
@@ -27,33 +25,44 @@ class ResourceView extends React.Component {
         <Grid fluid>
           <Row>
             <Col sm={12} md={12}>
-              <a className={'back-button'} onClick={() => { history.push(BASE_URL) }} >
+              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid'])}} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
-                All Resources
+                All problems
               </a>
             </Col>
           </Row>
         </Grid>
-        { this.props.resource && this.props.resource.resource_type === 'TB'
-          ? <TextBookResourceView resource={this.props.resource} />
+        { this.props.problem
+          ? <Grid fluid>
+            <Row>
+              <Col sm={12} md={12}>
+                <div className={'blue-title'}>{this.props.problem.title}</div>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={12} md={12}>
+                solutions list
+              </Col>
+            </Row>
+          </Grid>
           : null }
       </Sheet>
     )
   }
 }
 
-ResourceView.propTypes = {
+TextBookProblemView.propTypes = {
   // // actions
   resourcesActions: PropTypes.shape({
-    fetchResource: PropTypes.func.isRequired
+    fetchProblem: PropTypes.func.isRequired
   }),
   // data
-  resource: PropTypes.object
+  problem: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    resource: state.resources.resource
+    problem: state.resources.problem
   }
 }
 
@@ -64,5 +73,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResourceView)
-export { ResourceView as ResourceViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(TextBookProblemView)
+export { TextBookProblemView as TextBookProblemViewNotConnected }

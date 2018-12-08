@@ -3,7 +3,8 @@ import { push } from 'connected-react-router'
 import { checkHttpStatus, getAxios } from '../utils'
 import {
   RESOURCE_RECEIVE_RESOURCE_OPTIONS, CREATE_RESOURCE_SUCCESS, RESOURCE_RECEIVE_POPULAR_RESOURCES,
-  RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE
+  RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE,
+  RESOURCE_RECEIVE_PROBLEM
 } from '../constants'
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
@@ -27,14 +28,14 @@ export function fetchResourceOptions () {
   }
 }
 
-export function createResourceSuccess (classroomTeacher) {
-  return {
-    type: CREATE_RESOURCE_SUCCESS,
-    payload: {
-      classroomTeacher
-    }
-  }
-}
+// export function createResourceSuccess (resource) {
+//   return {
+//     type: CREATE_RESOURCE_SUCCESS,
+//     payload: {
+//       resource
+//     }
+//   }
+// }
 
 export function createResource (chaptersList) {
   return (dispatch, state) => {
@@ -122,6 +123,25 @@ export function fetchResource (uuid) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveResource(response.data))
+      })
+  }
+}
+
+export function receiveProblem (problem) {
+  return {
+    type: RESOURCE_RECEIVE_PROBLEM,
+    payload: {
+      problem
+    }
+  }
+}
+
+export function fetchProblem (uuid) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + 'problems/' + uuid)
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveProblem(response.data))
       })
   }
 }

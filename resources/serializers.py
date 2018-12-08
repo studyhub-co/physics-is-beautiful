@@ -43,12 +43,24 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
         fields = ['pdf', ]
 
 
-class TextBookProblemSerializer(serializers.ModelSerializer):
+class FullTextBookProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
 
     class Meta:
         model = TextBookProblem
-        fields = ['title', 'solutions']
+        fields = ['title', 'solutions', 'position', 'uuid', 'solutions']
+
+
+class TextBookProblemSerializer(serializers.ModelSerializer):
+    solutions = TextBookSolutionSerializer(many=True, required=False, write_only=True)
+    count_solutions = serializers.SerializerMethodField()
+
+    def get_count_solutions(self, obj):
+        return obj.count_solutions if hasattr(obj, 'count_solutions') else 0
+
+    class Meta:
+        model = TextBookProblem
+        fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions']
 
 
 class TextBookChapterSerializer(serializers.ModelSerializer):
@@ -56,7 +68,7 @@ class TextBookChapterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookChapter
-        fields = ['title', 'problems']
+        fields = ['title', 'problems', 'position', 'id']
 
 
 class ResourceBaseSerializer(serializers.ModelSerializer):
