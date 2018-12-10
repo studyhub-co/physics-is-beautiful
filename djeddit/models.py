@@ -74,7 +74,8 @@ class Topic(NamedModel):
         except Topic.DoesNotExist:
             return slug
         # if topic is exist
-        return self._gen_slug(title, ++try_count)
+        try_count += 1
+        return self._gen_slug(title, try_count)
 
     @property
     def urlTitle(self):
