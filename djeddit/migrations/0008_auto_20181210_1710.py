@@ -21,7 +21,8 @@ def _gen_slug(apps, title, try_count=0):
     except TopicClass.DoesNotExist:
         return slug
     # if topic is exist
-    return _gen_slug(title, ++try_count)
+    try_count += 1
+    return _gen_slug(title, try_count)
 
 
 def generate_slug_for_topic(apps, schema_editor):
