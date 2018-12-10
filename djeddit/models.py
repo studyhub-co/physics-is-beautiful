@@ -13,6 +13,8 @@ else:
 # Third party imports
 from mptt.models import MPTTModel, TreeForeignKey
 from slugify import slugify
+# we can use following for this
+# from django.template.defaultfilters import slugify
 from ipware.ip import get_ip
 
 # Our app imports
@@ -41,7 +43,13 @@ class NamedModel(models.Model):
 @python_2_unicode_compatible
 class Topic(NamedModel):
     alphanumeric = RegexValidator(r'^[0-9a-zA-Z ]*$', 'Only alphanumeric characters are allowed.')
-    title = models.CharField(max_length=30, blank=False, unique=True, validators=[alphanumeric])
+
+    # title = models.CharField(max_length=30, blank=False, unique=True, validators=[alphanumeric])
+    # it can be ungiue by titles, but not with urlTitle, example:
+    # urlTitle("About page") -> "about-page" and urlTitle("About-page") -> "about-page"
+
+    slug = models.SlugField(unique=True, null=True, max_length=200)
+    title = models.CharField(max_length=30, blank=False, validators=[alphanumeric])
     description = models.CharField(max_length=120, blank=True, default='')
 
     def __str__(self):
@@ -50,28 +58,51 @@ class Topic(NamedModel):
     def getThreadCount(self):
         return Thread.objects.filter(topic=self).count()
 
+    def save(self, *args, **kwargs):
+        self.slug = self._gen_slug(self.title)
+        super(Topic, self).save(*args, **kwargs)
+
+    def _gen_slug(self, title, try_count=0):
+
+        if try_count != 0:
+            slug = slugify("{} {}".format(title, try_count), to_lower=True, max_length=180)
+        else:
+            slug = slugify(title, to_lower=True, max_length=180)
+        # try fo find existing Thread
+        try:
+            Topic.objects.get(slug=slug)
+        except Topic.DoesNotExist:
+            return slug
+        # if topic is exist
+        return self._gen_slug(title, ++try_count)
+
     @property
     def urlTitle(self):
-        return self.title.replace(' ', '-').lower()
+        # return self.title.replace(' ', '-').lower()
+        return self.slug
 
     def get_absolute_url(self):
         return reverse('topicPage', args=[self.urlTitle])
 
     @staticmethod
     def getTopic(title):
-        try:
-            return Topic.objects.get(title=title)
-        except ObjectDoesNotExist:
-            try:
-                return Topic.objects.get(title=title.replace('-', ' '))
-            except ObjectDoesNotExist:
-                return Topic.objects.get(title=title.replace('_', ' ').lower())
+        return Topic.objects.get(slug=title)
+
+        # following is very ugly code
+        # try:
+        #     return Topic.objects.get(title=title)
+        # except ObjectDoesNotExist:
+        #     try:
+        #         return Topic.objects.get(title=title.replace('-', ' '))
+        #     except ObjectDoesNotExist:
+        #         return Topic.objects.get(title=title.replace('_', ' ')))
 
 
 @python_2_unicode_compatible
 class Thread(NamedModel):
     title = models.CharField(max_length=70, blank=False)
-    slug = models.SlugField(unique=False, null=True, max_length=200)
+    # Not necessary slug
+    slug = models.SlugField(unique=False, max_length=200)
     url = models.URLField(max_length=120, blank=True, default='')
     views = models.IntegerField(blank=True, default=0)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
@@ -86,16 +117,17 @@ class Thread(NamedModel):
         self.slug = self._genSlug()
         super(Thread, self).save(*args, **kwargs)
 
+    # TODO Not correct function, see Topic._gen_slug
+    def _genSlug(self):
+        slug = slugify(self.title, to_lower=True, max_length=180)
+        return slug
+
     def delete(self, *args, **kwargs):
         try:
             self.op.delete()
         except Post.DoesNotExist:
             pass
         super(Thread, self).delete(*args, **kwargs)
-
-    def _genSlug(self):
-        slug = slugify(self.title, to_lower=True, max_length=180)
-        return slug
 
     @property
     def relativeUrl(self):
