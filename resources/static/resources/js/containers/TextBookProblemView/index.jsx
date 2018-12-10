@@ -3,14 +3,13 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Sheet } from '../../components/Sheet'
-
-import * as resourcesCreators from '../../actions/resources'
-
+import Moment from 'react-moment'
 import { Grid, Row, Col, Table, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 
-import { BASE_URL } from '../../utils/config'
 import history from '../../history'
+import { Sheet } from '../../components/Sheet'
+import * as resourcesCreators from '../../actions/resources'
+import { BASE_URL } from '../../utils/config'
 
 class TextBookProblemView extends React.Component {
   componentDidMount () {
@@ -20,6 +19,12 @@ class TextBookProblemView extends React.Component {
     if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
       this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
     }
+  }
+
+  onPostSolutionClick () {
+    // TODO
+    // upload file/link
+    // add solution info to solutions list
   }
 
   render () {
@@ -51,26 +56,46 @@ class TextBookProblemView extends React.Component {
               </Col>
             </Row>
             <Row>
+              <Col sm={10} md={10}>
+                {/* TODO sort */}
+              </Col>
+              <Col sm={2} md={2}>
+                <Button onClick={() => { this.onPostSolutionClick() }} className={'common-button'}>
+                  <Glyphicon glyph='plus' /> Post solution
+                </Button>
+              </Col>
+            </Row>
+            <Row>
               <Col sm={12} md={12}>
                 <Table striped bordered condensed hover responsive>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td colSpan="2">Larry the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
+                    { this.props.problem
+                      ? this.props.problem.solutions.map(function (solution, i) { // ============ chapters
+                        return <tr key={solution.position}>
+                          <td>
+                            <Glyphicon
+                              glyph='arrow-down'
+                              style={{cursor: 'pointer'}}
+                              onClick={() => this.upDownSolutionClick(solution.id, -1)} />
+                            &nbsp;90k&nbsp;
+                            <Glyphicon
+                              glyph='arrow-up'
+                              style={{cursor: 'pointer'}}
+                              onClick={() => this.upDownSolutionClick(solution.id, -1)} />
+                          </td>
+                          <td>{solution.pdf ? <div className={'pdf-ico'} /> : null}</td>
+                          <td>
+                            <div className={'title'}>{solution.title}</div>
+                            <div className={'small-text gray-text'}>
+                              Posted by <a href={solution.posted_by.get_absolute_url} target={'_blank'}>
+                                {solution.posted_by.display_name}
+                              </a>&nbsp;-&nbsp;
+                              <Moment fromNow>{solution.created_on}</Moment></div>
+                          </td>
+                          <td><Glyphicon glyph='comment' />&nbsp;1.7k</td>
+                          <td></td>
+                        </tr>
+                      }, this) : null }
                   </tbody>
                 </Table>
               </Col>
@@ -90,7 +115,7 @@ TextBookProblemView.propTypes = {
   }),
   // data
   problem: PropTypes.object,
-  resource: PropTypes.object,
+  resource: PropTypes.object
 }
 
 const mapStateToProps = (state) => {

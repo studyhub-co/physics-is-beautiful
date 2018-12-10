@@ -26,8 +26,8 @@ class PublicProfileSerializer(BaseSerializer):
 
     class Meta:
         model = Profile
-        fields = ['display_name', 'username', 'avatar_url', 'id']
-        read_only_fields = ['avatar_url']
+        fields = ['display_name', 'username', 'avatar_url', 'id', 'get_absolute_url']
+        read_only_fields = ['avatar_url', 'get_absolute_url']
 
 
 class ProfileSerializer(BaseSerializer):
