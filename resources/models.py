@@ -9,14 +9,17 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from shortuuidfield import ShortUUIDField
 
+from vote.models import VoteModel
+
 from .validators import validate_pdf_extension
 
 from profiles.models import Profile
 
-from moderation.db import ModeratedModel
+# from moderation.db import ModeratedModel
 
 
-class Resource(ModeratedModel):
+# class Resource(ModeratedModel):
+class Resource(models.Model):
     TEXTBOOK = 'TB'
     ONLINE = 'OL'
     TEST = 'TS'
@@ -81,7 +84,7 @@ def delete_file(sender, instance, *args, **kwargs):
         instance.file.delete(save=False)
 
 
-class TextBookSolution(models.Model):
+class TextBookSolution(VoteModel, models.Model):
     pdf = models.OneToOneField(TextBookSolutionPDF, related_name='solution')
     _title = models.CharField(max_length=400, blank=True, default='', db_column='title')
     position = models.PositiveSmallIntegerField("Position")

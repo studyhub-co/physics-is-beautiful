@@ -19,9 +19,9 @@ from rest_framework.pagination import PageNumberPagination
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
-from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem
+from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
-    FullTextBookProblemSerializer
+    FullTextBookProblemSerializer, TextBookSolutionSerializer
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -45,6 +45,14 @@ class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = FullTextBookProblemSerializer
     queryset = TextBookProblem.objects.all()
+    lookup_field = 'uuid'
+
+
+class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
+                               GenericViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = TextBookSolutionSerializer
+    queryset = TextBookSolution.objects.all()
     lookup_field = 'uuid'
 
 
@@ -94,9 +102,8 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         # increment view count
         if instance:
-            # instance.count_views += 1
-            # instance.save(update_fields=['count_views', ])
-            Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+            # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+            Resource.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
 
         return super(ResourceViewSet, self).retrieve(request, *args, **kwargs)
 
