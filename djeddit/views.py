@@ -287,7 +287,9 @@ def votePost(request):
                     post.upvotes -= 1
             else:
                 post.upvotes -= 1
-        post.save()
+        # post.save()
+        # Fix for do not change modified_on dates
+        post.save(update_fields=['_upvotes', '_downvotes'])
     scoreStr = postScore(post.score)
     return JsonResponse(dict(scoreStr=scoreStr, score=post.score))
 
