@@ -4,6 +4,8 @@ from django.core.files.storage import get_storage_class
 
 from rest_framework import serializers
 
+from  profiles.serializers import PublicProfileSerializer
+
 from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, TextBookProblem, TextBookSolution
 
 # from urllib.parse import urljoin
@@ -37,10 +39,16 @@ class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
 
 class TextBookSolutionSerializer(serializers.ModelSerializer):
     pdf = TextBookSolutionPDFSerializer(many=False)
+    posted_by = PublicProfileSerializer()
+    title = serializers.SerializerMethodField()
+
+    def get_title(self, obj):
+        return obj.title
 
     class Meta:
         model = TextBookSolution
-        fields = ['pdf', ]
+        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on']
+        read_only_fileds = ('posted_by', 'id', 'position', 'title', 'created_on')
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):

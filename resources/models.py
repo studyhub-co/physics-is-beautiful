@@ -2,7 +2,7 @@ import os
 
 from django.db import models
 from django.dispatch import receiver
-from django.conf import settings
+from django.utils import timezone
 
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
@@ -90,12 +90,17 @@ class TextBookSolution(VoteModel, models.Model):
     position = models.PositiveSmallIntegerField("Position")
     textbook_problem = models.ForeignKey(TextBookProblem, related_name='solutions')
     posted_by = models.ForeignKey(Profile, related_name='resources_solutions')
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
 
     @property
     def title(self):
         if self._title:
             return self._title
         else:
-            return self.pdf.file.filename
+            if self.pdf:
+                return os.path.basename(self.pdf.file.name)
+            else:
+                return ''
 
 
