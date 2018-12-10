@@ -275,6 +275,7 @@ def votePost(request):
     if voteDelta:
         if voteDelta > 0:
             if userPostVote.val:
+                # TODO not so good idea, we need to recalculate UserPostVote count(), not just increment upvotes
                 post.upvotes += 1
                 if voteDelta == 2:
                     post.downvotes -= 1
@@ -288,7 +289,7 @@ def votePost(request):
             else:
                 post.upvotes -= 1
         # post.save()
-        # Fix for do not change modified_on dates
+        # do not change modified_on dates
         post.save(update_fields=['_upvotes', '_downvotes'])
     scoreStr = postScore(post.score)
     return JsonResponse(dict(scoreStr=scoreStr, score=post.score))
