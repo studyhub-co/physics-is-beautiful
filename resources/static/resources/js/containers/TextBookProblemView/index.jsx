@@ -7,7 +7,7 @@ import { Sheet } from '../../components/Sheet'
 
 import * as resourcesCreators from '../../actions/resources'
 
-import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, Table, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
@@ -16,6 +16,9 @@ class TextBookProblemView extends React.Component {
   componentDidMount () {
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
+    }
+    if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
+      this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
     }
   }
 
@@ -36,12 +39,40 @@ class TextBookProblemView extends React.Component {
           ? <Grid fluid>
             <Row>
               <Col sm={12} md={12}>
-                <div className={'blue-title'}>{this.props.problem.title}</div>
+                <div className={'text-align-center blue-title'}>{this.props.resource && this.props.resource.metadata
+                  ? this.props.resource.metadata.data.volumeInfo.title
+                  : 'Unknown resource'}
+                </div>
               </Col>
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                solutions list
+                <h1 style={{fontSize: '3rem'}} className={'text-align-center gray-text'}>{this.props.problem.title}</h1>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={12} md={12}>
+                <Table striped bordered condensed hover responsive>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td>@mdo</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td colSpan="2">Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                  </tbody>
+                </Table>
               </Col>
             </Row>
           </Grid>
@@ -54,15 +85,18 @@ class TextBookProblemView extends React.Component {
 TextBookProblemView.propTypes = {
   // // actions
   resourcesActions: PropTypes.shape({
-    fetchProblem: PropTypes.func.isRequired
+    fetchProblem: PropTypes.func.isRequired,
+    fetchResource: PropTypes.func.isRequired
   }),
   // data
-  problem: PropTypes.object
+  problem: PropTypes.object,
+  resource: PropTypes.object,
 }
 
 const mapStateToProps = (state) => {
   return {
-    problem: state.resources.problem
+    problem: state.resources.problem,
+    resource: state.resources.resource
   }
 }
 

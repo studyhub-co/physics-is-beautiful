@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-from moderation.admin import ModerationAdmin
+# from moderation.admin import ModerationAdmin
 
 from .models import Resource
 
 
-class ResourceAdmin(ModerationAdmin):
+# class ResourceAdmin(ModerationAdmin):
+class ResourceAdmin(admin.ModelAdmin):
     # visibility_column = 'visible_moderator'
     list_select_related = ('owner__user', )
 

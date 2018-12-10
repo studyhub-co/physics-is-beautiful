@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     # Nested admin
     'nested_admin',
     'django_gravatar',
+    'vote',
+    'reversion',
     # pib apps
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
@@ -79,8 +81,8 @@ INSTALLED_APPS = [
     'classroom',
     'resources',
     'pagedown',
-    'markdown_deux',
-    'moderation.apps.SimpleModerationConfig'
+    'markdown_deux'  # ,
+    # 'moderation.apps.SimpleModerationConfig'
 ]
 
 MIDDLEWARE = [
