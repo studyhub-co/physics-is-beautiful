@@ -17,6 +17,14 @@
     margin: 1rem 0 1rem 0;
 }
 
+.resources .disabled-button {
+    background-color: rgb(216, 216, 216);
+}
+
+.resources .disabled-button:hover {
+    color: #1caff6;
+}
+
 .resources .back-button {
     border: none;
     font-size: 18px;
@@ -137,4 +145,8 @@ div.pdf-ico {
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
+}
+
+.resources .title {
+    font-size: 2rem;
 }
