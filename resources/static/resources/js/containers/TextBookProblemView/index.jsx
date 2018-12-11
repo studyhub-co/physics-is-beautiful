@@ -27,6 +27,10 @@ class TextBookProblemView extends React.Component {
     // add solution info to solutions list
   }
 
+  onClickSolution (uuid) {
+    history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
+  }
+
   render () {
     return (
       <Sheet>
@@ -81,11 +85,14 @@ class TextBookProblemView extends React.Component {
                             <Glyphicon
                               glyph='arrow-up'
                               style={{cursor: 'pointer'}}
-                              onClick={() => this.upDownSolutionClick(solution.id, -1)} />
+                              onClick={() => this.upDownSolutionClick(solution.id, 1)} />
                           </td>
                           <td>{solution.pdf ? <div className={'pdf-ico'} /> : null}</td>
                           <td>
-                            <div className={'title'}>{solution.title}</div>
+                            <div
+                              className={'title blue-text'}
+                              style={{cursor: 'pointer'}}
+                              onClick={() => this.onClickSolution(solution.uuid)}>{solution.title}</div>
                             <div className={'small-text gray-text'}>
                               Posted by <a href={solution.posted_by.get_absolute_url} target={'_blank'}>
                                 {solution.posted_by.display_name}

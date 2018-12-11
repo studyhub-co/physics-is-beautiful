@@ -4,7 +4,7 @@ import { checkHttpStatus, getAxios } from '../utils'
 import {
   RESOURCE_RECEIVE_RESOURCE_OPTIONS, CREATE_RESOURCE_SUCCESS, RESOURCE_RECEIVE_POPULAR_RESOURCES,
   RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE,
-  RESOURCE_RECEIVE_PROBLEM
+  RESOURCE_RECEIVE_PROBLEM, RESOURCE_RECEIVE_SOLUTION
 } from '../constants'
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
@@ -142,6 +142,25 @@ export function fetchProblem (uuid) {
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveProblem(response.data))
+      })
+  }
+}
+
+export function receiveSolution (solution) {
+  return {
+    type: RESOURCE_RECEIVE_SOLUTION,
+    payload: {
+      solution
+    }
+  }
+}
+
+export function fetchSolution (uuid) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PREFIX + 'solutions/' + uuid)
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveSolution(response.data))
       })
   }
 }

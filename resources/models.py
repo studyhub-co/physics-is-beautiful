@@ -85,6 +85,7 @@ def delete_file(sender, instance, *args, **kwargs):
 
 
 class TextBookSolution(VoteModel, models.Model):
+    uuid = ShortUUIDField(unique=True)
     pdf = models.OneToOneField(TextBookSolutionPDF, related_name='solution')
     _title = models.CharField(max_length=400, blank=True, default='', db_column='title')
     position = models.PositiveSmallIntegerField("Position")
