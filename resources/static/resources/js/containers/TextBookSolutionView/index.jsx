@@ -102,10 +102,10 @@ class TextBookSolutionView extends React.Component {
               </InputGroup.Addon>
             </InputGroup>
             &nbsp;{nextButton}
-            &nbsp;<Button onClick={() => { this.onZoomPdfClick(0.1) }} className={'common-button'}>
+            &nbsp;<Button onClick={() => { this.onZoomPdfClick(0.3) }} className={'common-button'}>
               <Glyphicon glyph='plus' />
             </Button>
-            &nbsp;<Button onClick={() => { this.onZoomPdfClick(-0.1) }} className={'common-button'}>
+            &nbsp;<Button onClick={() => { this.onZoomPdfClick(-0.3) }} className={'common-button'}>
               <Glyphicon glyph='minus' />
             </Button>
           </FormGroup>
