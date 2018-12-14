@@ -46,12 +46,25 @@ class TextBookSolutionView extends React.Component {
       for (let x = 0; x < this.props.problem.solutions.length; x++) {
         if (this.props.problem.solutions[x].uuid === this.props.solution.uuid) {
           if (value === 'next') {
+            // TODO refactoring this
             if (typeof this.props.problem.solutions[x + 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x + 1].uuid)
+              history.push(BASE_URL +
+                this.props.resource.uuid +
+                '/problems/' +
+                this.props.problem.uuid +
+                '/solutions/' +
+                this.props.problem.solutions[x + 1].uuid)
             }
           } else {
             if (typeof this.props.problem.solutions[x - 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x - 1].uuid)
+              history.push(BASE_URL +
+                this.props.resource.uuid +
+                '/problems/' +
+                this.props.problem.uuid +
+                '/solutions/' +
+                this.props.problem.solutions[x - 1].uuid)
             }
           }
         }
@@ -101,6 +114,7 @@ class TextBookSolutionView extends React.Component {
     if (page === pages) {
       nextButton = <Button disabled className={'common-button disabled-button'}>Next</Button>
     }
+
     return (
       <div>
         <Form inline>
@@ -134,6 +148,20 @@ class TextBookSolutionView extends React.Component {
     let pagination = null
     if (this.state.pdfPages) {
       pagination = this.renderPagination(this.state.currentPdfpage, this.state.pdfPages)
+    }
+
+    let prevSolutionDisabled = ''
+    let nextSolutionDisabled = ''
+
+    if (this.props.problem && this.props.solution) {
+      if (
+        this.props.problem.solutions[this.props.problem.solutions.length - 1].uuid === this.props.solution.uuid) {
+        nextSolutionDisabled = ' disabled-button'
+      }
+
+      if (this.props.problem.solutions[0].uuid === this.props.solution.uuid) {
+        prevSolutionDisabled = ' disabled-button'
+      }
     }
 
     return (
@@ -196,10 +224,10 @@ class TextBookSolutionView extends React.Component {
                 <div><h1 className={'gray-text title'}>{this.props.solution.title}</h1></div>
               </Col>
               <Col sm={4} md={4}>
-                <Button onClick={() => { this.onPrevNextSolutionClick('prev') }} className={'common-button'}>
+                <Button onClick={() => { this.onPrevNextSolutionClick('prev') }} className={'common-button' + prevSolutionDisabled}>
                   <Glyphicon glyph='plus' /> Previous solution
                 </Button>
-                <Button onClick={() => { this.onPrevNextSolutionClick('next') }} className={'common-button'}>
+                <Button onClick={() => { this.onPrevNextSolutionClick('next') }} className={'common-button' + nextSolutionDisabled}>
                   <Glyphicon glyph='plus' /> Next solution
                 </Button>
               </Col>
@@ -212,6 +240,8 @@ class TextBookSolutionView extends React.Component {
               <Col sm={12} md={12} className={'text-align-center'}>
                 {/*<Document file={this.props.solution.pdf.file} />*/}
                 <PDF
+                  // ref={(el) => { this.pdfRef = el }}
+                  key={this.props.solution.pdf.id}
                   file={this.props.solution.pdf.file}
                   onDocumentComplete={this.onDocumentComplete}
                   page={this.state.currentPdfpage}
