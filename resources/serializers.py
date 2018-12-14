@@ -41,14 +41,19 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
     pdf = TextBookSolutionPDFSerializer(many=False)
     posted_by = PublicProfileSerializer(read_only=True)
     title = serializers.SerializerMethodField()
+    count_votes = serializers.SerializerMethodField()
+
+    def get_count_votes(self, obj):
+        # return obj.count_votes if hasattr(obj, 'count_votes') else 0
+        return obj.votes.count()
 
     def get_title(self, obj):
         return obj.title
 
     class Meta:
         model = TextBookSolution
-        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid']
-        read_only_fields = ('id', 'title', 'created_on', 'uuid')
+        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'count_votes']
+        read_only_fields = ('id', 'title', 'created_on', 'uuid', 'count_votes')
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):

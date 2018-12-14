@@ -76,6 +76,10 @@ class TextBookSolutionView extends React.Component {
     }
   }
 
+  upDownSolutionClick (solutionId, val) {
+    this.props.resourcesActions.solutionVoteAndRefresh(solutionId, val)
+  }
+
   renderPagination (page, pages) {
     let previousButton = <Button onClick={() => { this.handlePrevious() }} className={'common-button'}>Previous</Button>
     if (page === 1) {
@@ -149,22 +153,22 @@ class TextBookSolutionView extends React.Component {
                 <div style={{fontSize: '3rem'}} className={'text-align-center gray-text'}>{this.props.problem.title}</div>
               </Col>
             </Row>
-            <Row>
+            <Row className={'text-align-center'}>
               <Col sm={1} md={1}>
                 <div>
                   <Glyphicon
                     glyph='arrow-up'
                     style={{cursor: 'pointer'}}
-                    onClick={() => this.upDownSolutionClick(this.props.solution.id, 1)} />
+                    onClick={() => this.upDownSolutionClick(this.props.solution.uuid, 1)} />
                 </div>
                 <div>
-                      90k
+                  {this.props.solution.count_votes}
                 </div>
                 <div>
                   <Glyphicon
                     glyph='arrow-down'
                     style={{cursor: 'pointer'}}
-                    onClick={() => this.upDownSolutionClick(this.props.solution.id, -1)} />
+                    onClick={() => this.upDownSolutionClick(this.props.solution.uuid, -1)} />
                 </div>
               </Col>
               <Col sm={1} md={1}>
@@ -216,7 +220,8 @@ TextBookSolutionView.propTypes = {
   resourcesActions: PropTypes.shape({
     fetchProblem: PropTypes.func.isRequired,
     fetchResource: PropTypes.func.isRequired,
-    fetchSolution: PropTypes.func.isRequired
+    fetchSolution: PropTypes.func.isRequired,
+    solutionVoteAndRefresh: PropTypes.func.isRequired
   }),
   // data
   problem: PropTypes.object,

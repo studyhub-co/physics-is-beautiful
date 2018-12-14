@@ -73,6 +73,9 @@ class TextBookProblem(models.Model):
     position = models.PositiveSmallIntegerField("Position")
     textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')
 
+    class Meta:
+        ordering = ['position']
+
 
 class TextBookSolutionPDF(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
@@ -97,6 +100,8 @@ class TextBookSolution(VoteModel, models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
+    # TODO need to create denormalized model of votes count
+
     @property
     def title(self):
         if self._title:
@@ -107,4 +112,5 @@ class TextBookSolution(VoteModel, models.Model):
             else:
                 return ''
 
-
+    class Meta:
+        ordering = ['position']
