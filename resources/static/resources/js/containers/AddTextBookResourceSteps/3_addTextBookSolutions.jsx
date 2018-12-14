@@ -52,7 +52,7 @@ export default class AddTextBookSolutionsView extends React.Component {
             if (!chaptersList[x].problems[y].hasOwnProperty('solutions')) {
               chaptersList[x].problems[y].solutions = []
             }
-            chaptersList[x].problems[y].solutions.push({ 'pdf': file })
+            chaptersList[x].problems[y].solutions.push({ 'pdf': file, 'position': y })
             this.setState({chaptersList: chaptersList})
             break
           }
