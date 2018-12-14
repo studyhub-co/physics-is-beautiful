@@ -39,7 +39,7 @@ class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
 
 class TextBookSolutionSerializer(serializers.ModelSerializer):
     pdf = TextBookSolutionPDFSerializer(many=False)
-    posted_by = PublicProfileSerializer()
+    posted_by = PublicProfileSerializer(read_only=True)
     title = serializers.SerializerMethodField()
 
     def get_title(self, obj):
@@ -48,7 +48,7 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextBookSolution
         fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid']
-        read_only_fileds = ('posted_by', 'id', 'position', 'title', 'created_on', 'uuid')
+        read_only_fileds = ('id', 'title', 'created_on', 'uuid')
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):
