@@ -41,10 +41,22 @@ class TextBookSolutionView extends React.Component {
     }
   }
 
-  onPrevNextSolutionClick () {
-    // TODO
-    // upload file/link
-    // add solution info to solutions list
+  onPrevNextSolutionClick (value) {
+    if (this.props.solution && this.props.problem) {
+      for (let x = 0; x < this.props.problem.solutions.length; x++) {
+        if (this.props.problem.solutions[x].uuid === this.props.solution.uuid) {
+          if (value === 'next') {
+            if (typeof this.props.problem.solutions[x + 1] !== 'undefined') {
+              this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x + 1].uuid)
+            }
+          } else {
+            if (typeof this.props.problem.solutions[x - 1] !== 'undefined') {
+              this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x - 1].uuid)
+            }
+          }
+        }
+      }
+    }
   }
 
   onDocumentComplete (pages) {
@@ -162,7 +174,7 @@ class TextBookSolutionView extends React.Component {
                     onClick={() => this.upDownSolutionClick(this.props.solution.uuid, 1)} />
                 </div>
                 <div>
-                  {this.props.solution.count_votes}
+                  {this.props.solution.vote_score}
                 </div>
                 <div>
                   <Glyphicon
@@ -184,10 +196,10 @@ class TextBookSolutionView extends React.Component {
                 <div><h1 className={'gray-text title'}>{this.props.solution.title}</h1></div>
               </Col>
               <Col sm={4} md={4}>
-                <Button onClick={() => { this.onPrevNextSolutionClick() }} className={'common-button'}>
+                <Button onClick={() => { this.onPrevNextSolutionClick('prev') }} className={'common-button'}>
                   <Glyphicon glyph='plus' /> Previous solution
                 </Button>
-                <Button onClick={() => { this.onPrevNextSolutionClick() }} className={'common-button'}>
+                <Button onClick={() => { this.onPrevNextSolutionClick('next') }} className={'common-button'}>
                   <Glyphicon glyph='plus' /> Next solution
                 </Button>
               </Col>

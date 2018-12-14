@@ -31,6 +31,10 @@ class TextBookProblemView extends React.Component {
     history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
   }
 
+  upDownSolutionClick (solutionUuid, val) {
+    this.props.resourcesActions.solutionVoteAndRefreshList(solutionUuid, val, this.props.problem.uuid)
+  }
+
   render () {
     return (
       <Sheet>
@@ -80,12 +84,12 @@ class TextBookProblemView extends React.Component {
                             <Glyphicon
                               glyph='arrow-down'
                               style={{cursor: 'pointer'}}
-                              onClick={() => this.upDownSolutionClick(solution.id, -1)} />
-                            &nbsp;90k&nbsp;
+                              onClick={() => this.upDownSolutionClick(solution.uuid, -1)} />
+                            &nbsp;{solution.vote_score}&nbsp;
                             <Glyphicon
                               glyph='arrow-up'
                               style={{cursor: 'pointer'}}
-                              onClick={() => this.upDownSolutionClick(solution.id, 1)} />
+                              onClick={() => this.upDownSolutionClick(solution.uuid, 1)} />
                           </td>
                           <td>{solution.pdf ? <div className={'pdf-ico'} /> : null}</td>
                           <td>
@@ -118,7 +122,8 @@ TextBookProblemView.propTypes = {
   // // actions
   resourcesActions: PropTypes.shape({
     fetchProblem: PropTypes.func.isRequired,
-    fetchResource: PropTypes.func.isRequired
+    fetchResource: PropTypes.func.isRequired,
+    solutionVoteAndRefreshList: PropTypes.func.isRequired
   }),
   // data
   problem: PropTypes.object,
