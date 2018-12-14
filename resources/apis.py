@@ -65,8 +65,9 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         order_by('-created_on').\
         select_related('metadata'). \
         prefetch_related(Prefetch('sections__problems',
-                         queryset=TextBookProblem.objects.annotate(count_solutions=Count('solutions', distinct=True)))
-                         )
+                         queryset=TextBookProblem.objects.
+                                  annotate(count_solutions=Count('solutions', distinct=True))
+                         ))
         # prefetch_related('sections__problems__solutions')
 
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,

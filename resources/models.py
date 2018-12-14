@@ -63,6 +63,9 @@ class TextBookChapter(models.Model):
     position = models.PositiveSmallIntegerField("Position")
     resource = models.ForeignKey(Resource, related_name='sections')
 
+    class Meta:
+        ordering = ['position']
+
 
 class TextBookProblem(models.Model):
     uuid = ShortUUIDField(unique=True)

@@ -48,7 +48,7 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextBookSolution
         fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid']
-        read_only_fileds = ('id', 'title', 'created_on', 'uuid')
+        read_only_fields = ('id', 'title', 'created_on', 'uuid')
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):
