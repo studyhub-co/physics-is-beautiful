@@ -164,3 +164,14 @@ export function fetchSolution (uuid) {
       })
   }
 }
+
+export function solutionVoteAndRefresh (uuid, val) {
+  return (dispatch, state) => {
+    return getAxios().post(API_PREFIX + 'solutions/' + uuid + '/vote/', {value: val})
+      .then(checkHttpStatus)
+      .then((response) => {
+        // reload soltuition
+        dispatch(fetchSolution(uuid))
+      })
+  }
+}

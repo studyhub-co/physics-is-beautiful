@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.pagination import PageNumberPagination
-# from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework.exceptions import NotFound, NotAcceptable
 
 # from django_filters.rest_framework import DjangoFilterBackend
 
@@ -53,7 +53,29 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TextBookSolutionSerializer
     queryset = TextBookSolution.objects.all()
+    # .annotate(count_votes=Count('votes', distinct=True))
     lookup_field = 'uuid'
+
+    @action(methods=['POST'],
+            detail=True,
+            permission_classes=[permissions.IsAuthenticated, ],)
+    def vote(self, request, uuid):
+        try:
+            solution = TextBookSolution.objects.get(uuid=uuid)
+        except TextBookSolution.DoesNotExist:
+            raise NotFound()
+
+        value = request.data.get('value', None)
+
+        if not value or value not in (-1, 1):
+            raise NotAcceptable()
+
+        if value == 1:
+            solution.votes.up(request.user.id)
+        else:
+            solution.votes.down(request.user.id)
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
