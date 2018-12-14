@@ -165,13 +165,27 @@ export function fetchSolution (uuid) {
   }
 }
 
-export function solutionVoteAndRefresh (uuid, val) {
+export function solutionVote (uuid, val) {
   return (dispatch, state) => {
     return getAxios().post(API_PREFIX + 'solutions/' + uuid + '/vote/', {value: val})
       .then(checkHttpStatus)
-      .then((response) => {
-        // reload soltuition
-        dispatch(fetchSolution(uuid))
-      })
+  }
+}
+
+export function solutionVoteAndRefresh (uuid, val) {
+  return (dispatch, state) => {
+    return dispatch(solutionVote(uuid, val)).then((response) => {
+      // reload solutition
+      dispatch(fetchSolution(uuid))
+    })
+  }
+}
+
+export function solutionVoteAndRefreshList (uuid, val, problemUuid) {
+  return (dispatch, state) => {
+    return dispatch(solutionVote(uuid, val)).then((response) => {
+      // reload problem
+      dispatch(fetchProblem(problemUuid))
+    })
   }
 }
