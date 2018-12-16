@@ -50,6 +50,7 @@ export default class AddTextBookSolutionsView extends React.Component {
         if (chaptersList[x].hasOwnProperty('problems')) {
           for (var y = 0; y < chaptersList[x].problems.length; y++) {
             if (problem.position === chaptersList[x].problems[y].position) {
+
               if (!chaptersList[x].problems[y].hasOwnProperty('solutions')) {
                 chaptersList[x].problems[y].solutions = []
               }
@@ -69,7 +70,7 @@ export default class AddTextBookSolutionsView extends React.Component {
 
   handleFileChange (file, chapter, problem) {
     // Seems we don't need to use global state
-    if (!file) {
+    if (!file || file.target.files.length === 0) {
       return
     }
 
@@ -120,16 +121,19 @@ export default class AddTextBookSolutionsView extends React.Component {
                         }
                         <span
                           className={'blue-text selectable-file'}
-                          style={{paddingLeft: '2rem', cursor: 'pointer'}}
+                          style={{paddingLeft: '2rem' }}
                           // onClick={() => this.addSolutionClick(chapter, problem)}
                         >
-                          <Glyphicon glyph='plus' />&nbsp;add solution
                           <input
                             type='file'
                             name='pdf'
+                            id={'solution-input-' + chapter.position + problem.position}
                             accept='application/pdf'
                             onChange={(file) => this.handleFileChange(file, chapter, problem)}
                             style={{fontSize: '1px'}} />
+                          <label htmlFor={'solution-input-' + chapter.position + problem.position} style={{cursor: 'pointer'}}>
+                            <Glyphicon glyph='plus' />&nbsp;add solution
+                          </label>
                         </span>
                         {/*<EditableLabel*/}
                           {/*value={problem}*/}
