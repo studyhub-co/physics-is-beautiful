@@ -49,12 +49,14 @@ export default class AddTextBookSolutionsView extends React.Component {
       if (chapter.position === chaptersList[x].position) {
         if (chaptersList[x].hasOwnProperty('problems')) {
           for (var y = 0; y < chaptersList[x].problems.length; y++) {
-            if (!chaptersList[x].problems[y].hasOwnProperty('solutions')) {
-              chaptersList[x].problems[y].solutions = []
+            if (problem.position === chaptersList[x].problems[y].position) {
+              if (!chaptersList[x].problems[y].hasOwnProperty('solutions')) {
+                chaptersList[x].problems[y].solutions = []
+              }
+              chaptersList[x].problems[y].solutions.push({'pdf': file, 'position': y})
+              this.setState({chaptersList: chaptersList})
+              break
             }
-            chaptersList[x].problems[y].solutions.push({ 'pdf': file, 'position': y })
-            this.setState({chaptersList: chaptersList})
-            break
           }
         }
       }
