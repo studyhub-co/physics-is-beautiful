@@ -74,6 +74,9 @@ class TextBookSolutionView extends React.Component {
 
   onDocumentComplete (pages) {
     this.setState({ currentPdfpage: 1, pdfPages: pages })
+    if (window.innerWidth < 595) {
+      this.setState({pdfScale: window.innerWidth / 1000})
+    }
   }
 
   handlePrevious () {
@@ -182,9 +185,10 @@ class TextBookSolutionView extends React.Component {
           ? <Grid fluid>
             <Row>
               <Col sm={12} md={12}>
-                <div className={'text-align-center blue-title'}>{this.props.resource.metadata
-                  ? this.props.resource.metadata.data.volumeInfo.title
-                  : 'Unknown resource'}
+                <div className={'text-align-center blue-title'}>
+                  { this.props.resource.metadata
+                    ? this.props.resource.metadata.data.volumeInfo.title
+                    : 'Unknown resource' }
                 </div>
               </Col>
             </Row>
@@ -221,7 +225,11 @@ class TextBookSolutionView extends React.Component {
                   </a>&nbsp;-&nbsp;
                   <Moment fromNow>{this.props.solution.created_on}</Moment>
                 </div>
-                <div><h1 className={'gray-text title'}>{this.props.solution.title}</h1></div>
+                <div><a href={this.props.solution.pdf.file}>
+                  <h1 className={'gray-text title'}>
+                    {this.props.solution.title}</h1>
+                </a>
+                </div>
               </Col>
               <Col sm={4} md={4}>
                 <Button onClick={() => { this.onPrevNextSolutionClick('prev') }} className={'common-button' + prevSolutionDisabled}>
@@ -238,15 +246,18 @@ class TextBookSolutionView extends React.Component {
             {/*</Row>*/}
             <Row>
               <Col sm={12} md={12} className={'text-align-center'}>
+                <div style={{overflowX: 'auto', position: 'relative'}}>
                 {/*<Document file={this.props.solution.pdf.file} />*/}
-                <PDF
-                  // ref={(el) => { this.pdfRef = el }}
-                  key={this.props.solution.pdf.id}
-                  file={this.props.solution.pdf.file}
-                  onDocumentComplete={this.onDocumentComplete}
-                  page={this.state.currentPdfpage}
-                  scale={this.state.pdfScale}
-                />
+                  <PDF
+                    // ref={(el) => { this.pdfRef = el }}
+                    // fillWidth={Boolean(true)} // not supported anymore
+                    key={this.props.solution.pdf.id}
+                    file={this.props.solution.pdf.file}
+                    onDocumentComplete={this.onDocumentComplete}
+                    page={this.state.currentPdfpage}
+                    scale={this.state.pdfScale}
+                  />
+                </div>
                 {pagination}
               </Col>
             </Row>
