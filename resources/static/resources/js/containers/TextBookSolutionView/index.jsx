@@ -232,12 +232,21 @@ class TextBookSolutionView extends React.Component {
                 </div>
               </Col>
               <Col sm={4} md={4}>
-                <Button onClick={() => { this.onPrevNextSolutionClick('prev') }} className={'common-button' + prevSolutionDisabled}>
-                  <Glyphicon glyph='plus' /> Previous solution
-                </Button>
-                <Button onClick={() => { this.onPrevNextSolutionClick('next') }} className={'common-button' + nextSolutionDisabled}>
-                  <Glyphicon glyph='plus' /> Next solution
-                </Button>
+                <button
+                  onClick={() => { this.onPrevNextSolutionClick('prev') }}
+                  className={'common-button' + prevSolutionDisabled}
+                  disabled={prevSolutionDisabled === '' ? Boolean(false) : Boolean(true)}
+                >
+                  <Glyphicon glyph='menu-left' /> Previous solution
+                </button>
+                &nbsp;
+                <button
+                  onClick={() => { this.onPrevNextSolutionClick('next') }}
+                  className={'common-button' + nextSolutionDisabled}
+                  disabled={nextSolutionDisabled === '' ? Boolean(false) : Boolean(true)}
+                >
+                  Next solution <Glyphicon glyph='menu-right' />
+                </button>
               </Col>
             </Row>
             {/*<Row>*/}

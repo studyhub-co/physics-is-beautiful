@@ -101,7 +101,7 @@ class Topic(NamedModel):
 
 @python_2_unicode_compatible
 class Thread(NamedModel):
-    title = models.CharField(max_length=70, blank=False)
+    title = models.CharField(max_length=200, blank=False)
     # Not necessary slug
     slug = models.SlugField(unique=False, max_length=200)
     url = models.URLField(max_length=120, blank=True, default='')
