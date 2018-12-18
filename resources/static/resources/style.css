@@ -19,10 +19,7 @@
 
 .resources .disabled-button {
     background-color: rgb(216, 216, 216);
-}
-
-.resources .disabled-button:hover {
-    color: #1caff6;
+    cursor: default;
 }
 
 .resources .back-button {

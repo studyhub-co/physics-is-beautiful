@@ -5,6 +5,8 @@ from datetime import timedelta
 
 from django.db.models import F, Count, Prefetch
 
+from django.db import transaction
+
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status, mixins, filters
 from rest_framework.decorators import api_view, permission_classes, action
@@ -13,6 +15,8 @@ from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import NotFound, NotAcceptable
 
+from djeddit.models import Topic, Thread, Post
+
 # from django_filters.rest_framework import DjangoFilterBackend
 
 # from profiles.models import Profile
@@ -20,8 +24,10 @@ from rest_framework.exceptions import NotFound, NotAcceptable
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
 from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution
+
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
     FullTextBookProblemSerializer, TextBookSolutionSerializer
+from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -75,7 +81,47 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
         else:
             solution.votes.down(request.user.id)
 
+        # TODO calculate vore for djedit
+
         return Response(status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, *args, **kwargs):
+        # try to find user last access date
+        instance = self.get_object()
+
+        # get or create comments solutions topic / solution thread / .
+        if instance:
+            new_thread = None
+            try:
+                solutions_topic = Topic.objects.get(id=TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID)
+            except Topic.DoesNotExist:
+                solutions_topic = Topic.objects.create(title='Textbook problems solutions', id=TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID)
+
+            if not instance.thread:
+                with transaction.atomic():
+                    solutions_post = Post.objects.create(created_by_id=SYSTEM_USER_ID)
+                    title = ''
+                    if instance.textbook_problem.textbook_section.resource.resource_type == 'TB':
+                        # get resourse title from metadata
+                        if 'title' in instance.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']:
+                            title = '{}'.format(instance.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']['title'])
+                    else:
+                        title = '{}'.format('Unknwon rsource name')
+
+                    title = '{} / {}'.format(title, instance.textbook_problem.textbook_section.title)
+                    title = '{} / {}'.format(title, instance.textbook_problem.title)
+                    title = '{} / {}'.format(title, instance.title)
+
+                    new_thread = Thread.objects.create(title=title[:199], topic=solutions_topic, op=solutions_post)
+
+            # increment view count
+            # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+            if new_thread:
+                TextBookSolution.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread=new_thread)
+            else:
+                TextBookSolution.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+
+        return super(TextBookSolutionsViewSet, self).retrieve(request, *args, **kwargs)
 
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):

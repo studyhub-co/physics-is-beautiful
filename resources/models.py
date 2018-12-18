@@ -11,9 +11,10 @@ from shortuuidfield import ShortUUIDField
 
 from vote.models import VoteModel
 
-from .validators import validate_pdf_extension
-
 from profiles.models import Profile
+from djeddit.models import Thread
+
+from .validators import validate_pdf_extension
 
 # from moderation.db import ModeratedModel
 
@@ -99,6 +100,8 @@ class TextBookSolution(VoteModel, models.Model):
     posted_by = models.ForeignKey(Profile, related_name='resources_solutions')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+    count_views = models.IntegerField(default=0)
+    thread = models.ForeignKey(Thread, related_name='test_book_solutions', null=True)
 
     @property
     def title(self):
@@ -112,3 +115,4 @@ class TextBookSolution(VoteModel, models.Model):
 
     class Meta:
         ordering = ['position']
+
