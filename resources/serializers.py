@@ -47,7 +47,7 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookSolution
-        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score']
+        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread']
         read_only_fields = ('id', 'title', 'created_on', 'uuid', 'vote_score')
 
 

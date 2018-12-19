@@ -81,7 +81,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
         else:
             solution.votes.down(request.user.id)
 
-        # TODO calculate vore for djedit
+        # TODO calculate votes for djedit
 
         return Response(status=status.HTTP_201_CREATED)
 

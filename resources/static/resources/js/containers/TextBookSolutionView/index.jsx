@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Form } from 'react-bootstrap'
+import { CommentsThread } from '../../components/commentsThread'
+
 // import { Document } from 'react-pdf' // https://github.com/wojtekmaj/react-pdf/issues/52
 // import { Document, setOptions } from 'react-pdf/dist/entry.webpack'
 // setOptions({ workerSrc: 'react-pdf/dist/pdf.worker.min.js' })
@@ -14,6 +16,8 @@ import PDF from 'react-pdf-js'
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
+import * as djedditCreators from '../../actions/djeddit'
+
 import { BASE_URL } from '../../utils/config'
 
 class TextBookSolutionView extends React.Component {
@@ -38,6 +42,13 @@ class TextBookSolutionView extends React.Component {
     }
     if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
       this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.solution !== this.props.solution) {
+      // reload thread
+      this.props.djedditActions.fetchThreadSolution(this.props.solution.thread)
     }
   }
 
@@ -270,6 +281,11 @@ class TextBookSolutionView extends React.Component {
                 {pagination}
               </Col>
             </Row>
+            <Row>
+              <Col sm={12} md={12}>
+                <CommentsThread />
+              </Col>
+            </Row>
           </Grid>
           : null }
       </Sheet>
@@ -278,12 +294,15 @@ class TextBookSolutionView extends React.Component {
 }
 
 TextBookSolutionView.propTypes = {
-  // // actions
+  // actions
   resourcesActions: PropTypes.shape({
     fetchProblem: PropTypes.func.isRequired,
     fetchResource: PropTypes.func.isRequired,
     fetchSolution: PropTypes.func.isRequired,
     solutionVoteAndRefresh: PropTypes.func.isRequired
+  }),
+  djedditActions: PropTypes.shape({
+    fetchThreadSolution: PropTypes.func.isRequired
   }),
   // data
   problem: PropTypes.object,
@@ -302,7 +321,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    djedditActions: bindActionCreators(djedditCreators, dispatch)
   }
 }
 
