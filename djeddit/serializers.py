@@ -11,20 +11,22 @@ from .models import Thread, Post
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ['content', 'created_by', 'created_on', 'modified_on']
+        fields = ['uid', 'content', 'created_by', 'created_on', 'parent', 'modified_on', 'level', 'score']
+        read_only_fields = ('level',)
         model = Post
 
 
 class ThreadSerializer(serializers.ModelSerializer):
-    posts_tree = serializers.SerializerMethodField()
+    posts_in_tree_order = serializers.SerializerMethodField()
 
-    def get_posts_tree(self, obj):
-        threads_list = obj.op.getSortedReplies()
-        serializer = PostSerializer(threads_list, many=True)
+    def get_posts_in_tree_order(self, obj):
+        posts_list = obj.op.get_descendants(include_self=True)
+        # djeddit have one root post due 'op = models.ForeignKey('Post')' field
+        serializer = PostSerializer(posts_list, many=True)
         return serializer.data
 
     class Meta:
         model = Thread
-        fields = ['title', 'slug', 'views', 'posts_tree']
+        fields = ['title', 'slug', 'views', 'posts_in_tree_order']
 
 

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Form } from 'react-bootstrap'
-import { CommentsThread } from '../../components/commentsThread'
+import { Thread } from '../../components/reactDjeddit/thread'
 
 // import { Document } from 'react-pdf' // https://github.com/wojtekmaj/react-pdf/issues/52
 // import { Document, setOptions } from 'react-pdf/dist/entry.webpack'
@@ -17,6 +17,7 @@ import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import * as djedditCreators from '../../actions/djeddit'
+import * as profileCreators from '../../actions/profile'
 
 import { BASE_URL } from '../../utils/config'
 
@@ -43,6 +44,7 @@ class TextBookSolutionView extends React.Component {
     if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
       this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
     }
+    this.props.profileActions.fetchProfileMe()
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -185,7 +187,7 @@ class TextBookSolutionView extends React.Component {
             <Col sm={12} md={12}>
               <a
                 className={'back-button'}
-                onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid'])}} >
+                onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid']) }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All solutions
               </a>
@@ -283,7 +285,11 @@ class TextBookSolutionView extends React.Component {
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                <CommentsThread />
+                { this.props.thread
+                  ? <Thread
+                    thread={this.props.thread}
+                    current_profile={this.props.profile}
+                  /> : null }
               </Col>
             </Row>
           </Grid>
@@ -304,17 +310,24 @@ TextBookSolutionView.propTypes = {
   djedditActions: PropTypes.shape({
     fetchThreadSolution: PropTypes.func.isRequired
   }),
+  profileActions: PropTypes.shape({
+    fetchProfileMe: PropTypes.func.isRequired
+  }),
   // data
   problem: PropTypes.object,
   resource: PropTypes.object,
-  solution: PropTypes.object
+  solution: PropTypes.object,
+  thread: PropTypes.object,
+  profile: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
     problem: state.resources.problem,
     resource: state.resources.resource,
-    solution: state.resources.solution
+    solution: state.resources.solution,
+    thread: state.djeddit.thread,
+    profile: state.profile.me
   }
 }
 
@@ -322,7 +335,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
-    djedditActions: bindActionCreators(djedditCreators, dispatch)
+    djedditActions: bindActionCreators(djedditCreators, dispatch),
+    profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 
