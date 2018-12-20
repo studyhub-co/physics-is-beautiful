@@ -205,6 +205,7 @@ class Post(MPTTModel, NamedModel):
         return sorted_replies
 
     def _getPostsWithChildren(self, replies):
+        # TODO replace with django mptt model functions
         for p in list(replies):
             if not hasattr(p, 'included_children'):
                 p.included_children = []
