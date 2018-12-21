@@ -17,6 +17,12 @@
     margin: 1rem 0 1rem 0;
 }
 
+.resources .pib-link {
+    color: rgb(8, 209, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .resources .disabled-button {
     background-color: rgb(216, 216, 216);
     cursor: default;

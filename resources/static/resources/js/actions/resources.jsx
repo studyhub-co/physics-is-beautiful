@@ -43,6 +43,7 @@ export function createResource (chaptersList) {
       .then(checkHttpStatus)
       .then((response) => {
         // dispatch(createResourceSuccess(response.data))
+        // TODO redirect to resource page!
         dispatch(push(BASE_URL)) // redirect ro main page
         // if (typeof callback === 'function') {
         //   callback(response.data)

@@ -23,9 +23,9 @@ from djeddit.models import Topic, Thread, Post
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
-from .models import Thread
+from .models import Thread, Post
 
-from .serializers import ThreadSerializer
+from .serializers import ThreadSerializer, PostSerializer
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -39,6 +39,16 @@ class ThreadViewSet(ModelViewSet):
     lookup_field = 'id'
 
 
+class PostViewSet(mixins.CreateModelMixin,
+                  mixins.UpdateModelMixin,
+                  GenericViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    lookup_field = 'uid'
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 
 

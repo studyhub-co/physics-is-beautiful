@@ -42,26 +42,7 @@ export class Thread extends React.Component {
     this.setState({ replyForm: !this.state.replyForm })
   }
 
-  renderReplyForm (parent_post = null) {
-    if (this.state.replyForm === true) {
-      return (
-        <Form reply onSubmit={e => e.preventDefault()}>
-          Comment as
-          {/* TODO add markdown */}
-          <Form.TextArea placeholder='Text' onChange={this.changeReplyText} />
-          <Button
-            content='Comment'
-            labelPosition='left'
-            icon='edit'
-            primary
-            onClick={event => this.sendReply(event)}
-          />
-        </Form>
-      )
-    }
-  }
-
-  // onClick={this.toggleReplyForm}
+   // onClick={this.toggleReplyForm}
 
   renderPost (post) {
     let widthRem = post.level + 'rem'
@@ -82,7 +63,14 @@ export class Thread extends React.Component {
     return (
       <div>
         <div>
-          <ReplyForm />
+          {this.props.thread && this.props.currentProfile
+            ? <ReplyForm
+              parentPost={this.props.thread.posts_in_tree_order[0]}
+              currentProfile={this.props.currentProfile}
+              onSubmitPost={this.props.onSubmitPost}
+            />
+            : null
+          }
         </div>
         { this.props.thread.posts_in_tree_order.map(function (post, i) {
           return this.renderPost(post)
@@ -94,5 +82,6 @@ export class Thread extends React.Component {
 
 Thread.propTypes = {
   thread: PropTypes.object.isRequired,
-  current_profile: PropTypes.object
+  currentProfile: PropTypes.object,
+  onSubmitPost: PropTypes.func.isRequired
 }
