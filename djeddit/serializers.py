@@ -4,12 +4,14 @@ from django.core.files.storage import get_storage_class
 
 from rest_framework import serializers
 
-from  profiles.serializers import PublicProfileSerializer
+from profiles.serializers import PublicProfileSerializer
 
 from .models import Thread, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
+    created_by = PublicProfileSerializer(source='created_by.profile', read_only=True)
+
     class Meta:
         fields = ['uid', 'content', 'created_by', 'created_on', 'parent', 'modified_on', 'level', 'score']
         read_only_fields = ('level',)

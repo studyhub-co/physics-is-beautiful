@@ -32,6 +32,7 @@ class TextBookSolutionView extends React.Component {
     this.onDocumentComplete = this.onDocumentComplete.bind(this)
     this.handleChangeNumberOfPdfPage = this.handleChangeNumberOfPdfPage.bind(this)
     this.onZoomPdfClick = this.onZoomPdfClick.bind(this)
+    this.onSubmitPost = this.onSubmitPost.bind(this)
   }
 
   componentDidMount () {
@@ -119,6 +120,10 @@ class TextBookSolutionView extends React.Component {
 
   upDownSolutionClick (solutionId, val) {
     this.props.resourcesActions.solutionVoteAndRefresh(solutionId, val)
+  }
+
+  onSubmitPost (post) {
+    this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread)
   }
 
   renderPagination (page, pages) {
@@ -288,7 +293,8 @@ class TextBookSolutionView extends React.Component {
                 { this.props.thread
                   ? <Thread
                     thread={this.props.thread}
-                    current_profile={this.props.profile}
+                    currentProfile={this.props.profile}
+                    onSubmitPost={this.onSubmitPost}
                   /> : null }
               </Col>
             </Row>
@@ -308,7 +314,8 @@ TextBookSolutionView.propTypes = {
     solutionVoteAndRefresh: PropTypes.func.isRequired
   }),
   djedditActions: PropTypes.shape({
-    fetchThreadSolution: PropTypes.func.isRequired
+    fetchThreadSolution: PropTypes.func.isRequired,
+    createPostWithRefreshThread: PropTypes.func.isRequired
   }),
   profileActions: PropTypes.shape({
     fetchProfileMe: PropTypes.func.isRequired

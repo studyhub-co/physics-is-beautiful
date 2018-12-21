@@ -40,8 +40,9 @@ class ProfileSerializer(BaseSerializer):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'id',
+        fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'id', 'get_absolute_url',
                   'gravatar_url', 'avatar_url', 'google_avatar_url', 'selected_avatar', 'user_avatar']
+        read_only_fields = ['get_absolute_url', ]
 
     def to_representation(self, obj):
         if isinstance(obj, Profile):
