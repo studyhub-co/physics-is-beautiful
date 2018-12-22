@@ -10,41 +10,7 @@ import { Post } from './post'
 import { ReplyForm } from './replyForm'
 
 export class Thread extends React.Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      replyForm: false,
-      replyTo: null,
-      replyText: ''
-    }
-
-    this.sendReply = this.sendReply.bind(this)
-    this.changeReplyAuthor = this.changeReplyAuthor.bind(this)
-    this.changeReplyText = this.changeReplyText.bind(this)
-    this.toggleReplyForm = this.toggleReplyForm.bind(this)
-  }
-
-  changeReplyAuthor (event) {
-    this.setState({ replyAuthor: event.currentTarget.value })
-  }
-
-  changeReplyText (event) {
-    this.setState({ replyText: event.currentTarget.value })
-  }
-
-  sendReply () {
-    // TODO axios send comment
-    this.toggleReplyForm()
-  }
-
-  toggleReplyForm () {
-    this.setState({ replyForm: !this.state.replyForm })
-  }
-
-   // onClick={this.toggleReplyForm}
-
-  renderPost (post) {
+  renderPost (post, onSubmitReplay) {
     let widthRem = post.level + 'rem'
 
     if (post.level === 0) { return null }
@@ -54,7 +20,11 @@ export class Thread extends React.Component {
         {/* TODO: add threadline if needed*/}
       </div>
       <div style={{position: 'relative'}}>
-        <Post post={post} />
+        <Post
+          post={post}
+          onSubmitReplay={onSubmitReplay}
+          currentProfile={this.props.currentProfile}
+        />
       </div>
     </div>
   }
@@ -73,7 +43,7 @@ export class Thread extends React.Component {
           }
         </div>
         { this.props.thread.posts_in_tree_order.map(function (post, i) {
-          return this.renderPost(post)
+          return this.renderPost(post, this.props.onSubmitPost)
         }, this)}
       </div>
     )

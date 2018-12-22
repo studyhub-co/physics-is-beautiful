@@ -124,6 +124,16 @@
 .resources .editable-label:hover .glyphicon-pencil, .editor .mq-editable-label:hover .glyphicon-pencil { display:inline; }
 .resources .editable-label:hover, .editor .mq-editable-label:hover, .editor .mq-editable-label:hover .mq-math-mode { cursor:pointer; }
 
+/* from djeddit css */
+
+.bs-callout {
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fff;
+}
+
 /* resources only css */
 
 .resources .selectable-file {

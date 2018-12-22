@@ -6,7 +6,29 @@ import Moment from 'react-moment'
 
 import { Glyphicon, Grid, Row, Col, FormControl, Checkbox, Form, Button } from 'react-bootstrap'
 
+import { ReplyForm } from './replyForm'
+
 export class Post extends React.Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      replyFormShow: false
+    }
+
+    this.onSubmitReplay = this.onSubmitReplay.bind(this)
+    this.toggleReplyForm = this.toggleReplyForm.bind(this)
+  }
+
+  onSubmitReplay (...args) {
+    this.props.onSubmitReplay(...args)
+    this.toggleReplyForm()
+  }
+
+  toggleReplyForm () {
+    this.setState({ replyFormShow: !this.state.replyFormShow })
+  }
+
   render () {
     return (
       <div>
@@ -58,13 +80,22 @@ export class Post extends React.Component {
                 </Row>
                 <Row>
                   <Col sm={12} md={12}>
-                    <span className='pib-link'>Reply</span>
+                    <span className='pib-link' onClick={this.toggleReplyForm}>Reply</span>
                     &nbsp;
-                    <span className='pib-link'>Share</span>
+                    <span className='pib-link' onClick={this.toggleReplyForm}>Share</span>
+                    {/*/ec744tb*/}
                     {/*<button>Report</button>*/}
                     {/*<button>Save</button>*/}
                   </Col>
                 </Row>
+                {this.state.replyFormShow
+                  ? <ReplyForm
+                    parentPost={this.props.post}
+                    currentProfile={this.props.currentProfile}
+                    onSubmitPost={this.onSubmitReplay}
+                    onToggleForm={this.toggleReplyForm}
+                  /> : null
+                }
               </Col>
             </Row>
           </Grid> : null }
@@ -74,6 +105,7 @@ export class Post extends React.Component {
 }
 
 Post.propTypes = {
-  post: PropTypes.object,
-  onAction: PropTypes.func
+  post: PropTypes.object.isRequired,
+  onSubmitReplay: PropTypes.func.isRequired,
+  currentProfile: PropTypes.object.isRequired
 }
