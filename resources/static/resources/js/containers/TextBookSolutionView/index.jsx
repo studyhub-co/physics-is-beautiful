@@ -55,6 +55,14 @@ class TextBookSolutionView extends React.Component {
     }
   }
 
+  componentWillUpdate () {
+    console.log(this.props.thread);
+  }
+
+  componentWillReceiveProps (csa) {
+    console.log(csa);
+  }
+
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
       for (let x = 0; x < this.props.problem.solutions.length; x++) {
@@ -295,6 +303,7 @@ class TextBookSolutionView extends React.Component {
                     thread={this.props.thread}
                     currentProfile={this.props.profile}
                     onSubmitPost={this.onSubmitPost}
+                    changePostVote={this.props.djedditActions.changePostVote}
                   /> : null }
               </Col>
             </Row>
@@ -315,7 +324,8 @@ TextBookSolutionView.propTypes = {
   }),
   djedditActions: PropTypes.shape({
     fetchThreadSolution: PropTypes.func.isRequired,
-    createPostWithRefreshThread: PropTypes.func.isRequired
+    createPostWithRefreshThread: PropTypes.func.isRequired,
+    changePostVote: PropTypes.func.isRequired
   }),
   profileActions: PropTypes.shape({
     fetchProfileMe: PropTypes.func.isRequired

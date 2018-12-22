@@ -22,7 +22,7 @@ class ThreadSerializer(serializers.ModelSerializer):
     posts_in_tree_order = serializers.SerializerMethodField()
 
     def get_posts_in_tree_order(self, obj):
-        posts_list = obj.op.get_descendants(include_self=True)
+        posts_list = obj.op.get_descendants(include_self=True).select_related('created_by__profile')
         # djeddit have one root post due 'op = models.ForeignKey('Post')' field
         serializer = PostSerializer(posts_list, many=True)
         return serializer.data
