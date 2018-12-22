@@ -28,18 +28,14 @@ export class ReplyForm extends React.Component {
     this.setState({content: ''})
   }
 
-  // componentDidUpdate () {
-  //   DjangoPagedown.init()
-  // }
-
   componentDidMount () {
-    DjangoPagedown.init()
+    DjangoPagedown.init(this.props.parentPost.uid + 'id_content')
   }
 
   render () {
     return (
       <div className='row'>
-        <div className='post-container'>
+        <div className='post-container bs-callout'>
           {this.props.parentPost.level === 0
             ? <div className=''><h6 style={{display: 'inline'}} className=''>Comment as </h6>
               { this.props.currentProfile
@@ -52,9 +48,12 @@ export class ReplyForm extends React.Component {
             </div>
             : <div className=''><h6 style={{display: 'inline'}} className=''>Reply to </h6>
               <h4 className='' style={{display: 'inline'}}>
-                <a href={this.props.parentPost.created_by.get_absolute_url} target={'blank'}>
-                  {this.props.parentPost.created_by.display_name}
-                </a>
+                {this.props.parentPost.created_by
+                  ? <a href={this.props.parentPost.created_by.get_absolute_url} target={'blank'}>
+                    {this.props.parentPost.created_by.display_name}
+                  </a>
+                  : 'Guest'
+                }
               </h4>
             </div>
           }
@@ -65,12 +64,12 @@ export class ReplyForm extends React.Component {
               <div className='controls'>
                 <div className='wmd-wrapper' id='id_content-wmd-wrapper'>
                   <div className='wmd-panel'>
-                    <div id='id_content_wmd_button_bar' />
+                    <div id={this.props.parentPost.uid + 'id_content_wmd_button_bar'} />
                     <textarea
                       style={{height: '10rem'}}
                       className='pagedownwidget wmd-input'
                       cols='40'
-                      id='id_content'
+                      id={this.props.parentPost.uid + 'id_content'}
                       name='content'
                       rows='10'
                       required
@@ -80,7 +79,7 @@ export class ReplyForm extends React.Component {
                   <p className='wmd-preview-title'>
                     <small>Preview:</small>
                   </p>
-                  <div id='id_content_wmd_preview' className='wmd-panel wmd-preview' />
+                  <div id={this.props.parentPost.uid + 'id_content_wmd_preview'} className='wmd-panel wmd-preview' />
                 </div>
               </div>
             </div>
@@ -91,8 +90,8 @@ export class ReplyForm extends React.Component {
                   type='submit'
                   disabled={this.state.content === ''}>Comment</button>
                 : <span>
-                  <span className='common-button' type='reset'>Cancel</span>
                   <button className='common-button' type='submit' disabled={this.state.content === ''}>Reply</button>
+                  &nbsp;<span className='pib-link' type='reset' onClick={this.props.onToggleForm}>Cancel</span>
                 </span>
               }
             </div>
@@ -106,5 +105,6 @@ export class ReplyForm extends React.Component {
 ReplyForm.propTypes = {
   parentPost: PropTypes.object.isRequired,
   currentProfile: PropTypes.object.isRequired,
-  onSubmitPost: PropTypes.func.isRequired
+  onSubmitPost: PropTypes.func.isRequired,
+  onToggleForm: PropTypes.func
 }
