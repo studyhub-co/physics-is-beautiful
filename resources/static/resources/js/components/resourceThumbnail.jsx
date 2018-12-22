@@ -42,12 +42,15 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
                   : this.props.resource.metadata.data.volumeInfo.title
               }</div>
             </div>
-            <div>{this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
-              return <span key={author} style={{paddingRight: '1rem'}}>
-                {author}
-                {this.props.resource.metadata.data.volumeInfo.authors.length - 1 !== i ? ',' : null }
-              </span> // TODO limit authors list
-            }, this)}</div>
+            <div>{
+              this.props.resource.metadata &&
+              this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors') &&
+              this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
+                return <span key={author} style={{paddingRight: '1rem'}}>
+                  {author}
+                  {this.props.resource.metadata.data.volumeInfo.authors.length - 1 !== i ? ',' : null }
+                </span> // TODO limit authors list
+              }, this)}</div>
           </div>
           : <span>Unknown resource</span>
         }

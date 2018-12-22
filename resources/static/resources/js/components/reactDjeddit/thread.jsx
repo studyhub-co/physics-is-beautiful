@@ -24,6 +24,7 @@ export class Thread extends React.Component {
           post={post}
           onSubmitReplay={onSubmitReplay}
           currentProfile={this.props.currentProfile}
+          changePostVote={this.props.changePostVote}
         />
       </div>
     </div>
@@ -53,5 +54,6 @@ export class Thread extends React.Component {
 Thread.propTypes = {
   thread: PropTypes.object.isRequired,
   currentProfile: PropTypes.object,
-  onSubmitPost: PropTypes.func.isRequired
+  onSubmitPost: PropTypes.func.isRequired,
+  changePostVote: PropTypes.func.isRequired
 }

@@ -44,7 +44,7 @@ class PostViewSet(mixins.CreateModelMixin,
                   GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
+    queryset = Post.objects.select_related('created_by__profile').all()
     lookup_field = 'uid'
 
     def perform_create(self, serializer):

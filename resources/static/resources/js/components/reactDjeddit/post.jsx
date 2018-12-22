@@ -18,6 +18,7 @@ export class Post extends React.Component {
 
     this.onSubmitReplay = this.onSubmitReplay.bind(this)
     this.toggleReplyForm = this.toggleReplyForm.bind(this)
+    this.upDownClick = this.upDownClick.bind(this)
   }
 
   onSubmitReplay (...args) {
@@ -27,6 +28,10 @@ export class Post extends React.Component {
 
   toggleReplyForm () {
     this.setState({ replyFormShow: !this.state.replyFormShow })
+  }
+
+  upDownClick (value) {
+    this.props.changePostVote(this.props.post, value)
   }
 
   render () {
@@ -41,7 +46,7 @@ export class Post extends React.Component {
                     <Glyphicon
                       glyph='arrow-up'
                       style={{cursor: 'pointer'}}
-                      onClick={() => this.upDownClick(this.props.post.uid, 1)} />
+                      onClick={() => this.upDownClick(1)} />
                   </div>
                   <div>
                     {this.props.post.score}
@@ -50,7 +55,7 @@ export class Post extends React.Component {
                     <Glyphicon
                       glyph='arrow-down'
                       style={{cursor: 'pointer'}}
-                      onClick={() => this.upDownSolutionClick(this.props.post.uid, -1)} />
+                      onClick={() => this.upDownClick(-1)} />
                   </div>
                 </div>
               </Col>
@@ -107,5 +112,6 @@ export class Post extends React.Component {
 Post.propTypes = {
   post: PropTypes.object.isRequired,
   onSubmitReplay: PropTypes.func.isRequired,
-  currentProfile: PropTypes.object.isRequired
+  currentProfile: PropTypes.object.isRequired,
+  changePostVote: PropTypes.func.isRequired
 }

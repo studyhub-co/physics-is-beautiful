@@ -24,7 +24,6 @@ DjangoPagedown = (function () {
         }
         that.editors[el.id] = new Markdown.Editor(that.converter, '', selectors)
         that.editors[el.id].run()
-        console.log(el);
         return true
       } else {
         console.log('Pagedown editor already attached to element: <#' + el.id + '>')
