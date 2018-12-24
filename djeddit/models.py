@@ -156,6 +156,7 @@ class Post(MPTTModel, NamedModel):
         super(Post, self).__init__(*args, **kwargs)
         Post.upvotes = property(lambda self: self._upvotes, Post._voteSetterWrapper('_upvotes'))
         Post.downvotes = property(lambda self: self._downvotes, Post._voteSetterWrapper('_downvotes'))
+        self._repliesCache = None
 
     class MPTTMetta:
         order_insertion_by = ['created_on']
@@ -182,10 +183,13 @@ class Post(MPTTModel, NamedModel):
         return self.upvotes - self.downvotes
 
     def getReplies(self, excluded=()):
+        # TODO this code generate too many SQL queries
         """:param excluded: exclude all posts with these uids and their descendants"""
         replies = Post.objects.filter(parent=self.uid).exclude(uid__in=excluded)
-        for reply in replies:
-            replies |= reply.getReplies(excluded=excluded)
+        if not self._repliesCache:
+            for reply in replies:
+                replies |= reply.getReplies(excluded=excluded)
+        self._repliesCache = replies
         return replies
 
     def getSortedReplies(self, limit=50, by_wsi=True, excluded=()):
