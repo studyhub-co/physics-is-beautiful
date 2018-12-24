@@ -55,14 +55,6 @@ class TextBookSolutionView extends React.Component {
     }
   }
 
-  componentWillUpdate () {
-    console.log(this.props.thread);
-  }
-
-  componentWillReceiveProps (csa) {
-    console.log(csa);
-  }
-
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
       for (let x = 0; x < this.props.problem.solutions.length; x++) {

@@ -6,6 +6,7 @@ import logging
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseForbidden, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
 # from django.contrib.auth.models import User
+from django.urls import reverse
 
 from django.contrib.auth import get_user_model
 
@@ -184,6 +185,21 @@ def threadPage(request, topic_title='', thread_id='', slug=''):
                 )
                 thread.views += 1
                 thread.save()
+
+                # redirect to solution
+                if hasattr(thread, 'textbook_solution'):
+                    # resources/ieHqK3sKVHYpCgMhXeHT6m/problems/YGjud5APPVEesyjcC5SDxG/solutions/vWdGyyWrC7RG8iC77CyZzh
+                    resources_root_url = reverse('resources')
+                    redirect_url = '{}{}/{}/{}/{}/{}'.format(
+                        resources_root_url,
+                        thread.textbook_solution.textbook_problem.textbook_section.resource.uuid,
+                        'problems',
+                        thread.textbook_solution.textbook_problem.uuid,
+                        'solutions',
+                        thread.textbook_solution.uuid,
+                    )
+                    return HttpResponseRedirect(redirect_url)
+
                 context = dict(thread=thread, nodes=thread.op.getSortedReplies(), meta=meta)
                 return render(request, 'djeddit/thread.html', context)
         except (Topic.DoesNotExist, Thread.DoesNotExist):

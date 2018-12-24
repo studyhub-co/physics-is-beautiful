@@ -101,7 +101,7 @@ class TextBookSolution(VoteModel, models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     count_views = models.IntegerField(default=0)
-    thread = models.ForeignKey(Thread, related_name='test_book_solutions', null=True)
+    thread = models.OneToOneField(Thread, related_name='textbook_solution', null=True)
 
     @property
     def title(self):
