@@ -125,7 +125,8 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
 
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
     pagination_class = StandardResultsSetPagination
