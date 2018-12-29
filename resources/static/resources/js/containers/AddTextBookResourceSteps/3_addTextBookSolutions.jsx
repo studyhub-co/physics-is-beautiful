@@ -119,8 +119,7 @@ export default class AddTextBookSolutionsView extends React.Component {
 
     var id = url.searchParams.get('id')
     var that = this
-    // url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
-    url = 'https://www.googleapis.com/drive/v2/files/' + id
+    url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
     if (url) {
       var SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
@@ -130,6 +129,7 @@ export default class AddTextBookSolutionsView extends React.Component {
         immediate: false
       }
       gapi.auth.authorize(authData, function (response) {
+        // TODO check if token exist
         var accessToken = gapi.auth.getToken().access_token
         var xhr = new XMLHttpRequest()
         xhr.open('GET', url)

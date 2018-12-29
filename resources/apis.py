@@ -21,6 +21,8 @@ from djeddit.models import Topic, Thread, Post
 
 # from profiles.models import Profile
 
+from .permissions import IsStaffOrReadOnly
+
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
 from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution
@@ -126,7 +128,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
     pagination_class = StandardResultsSetPagination
@@ -144,7 +146,7 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
     @action(methods=['POST'],
             detail=False,
-            permission_classes=[permissions.IsAuthenticated, ],
+            permission_classes=[permissions.IsAuthenticated,],
             parser_classes=(FormParser, MultiPartParser, FileUploadParser))
     def upload_solution_pdf(self, request):
         # remove pdfs without related TextBookSolution
