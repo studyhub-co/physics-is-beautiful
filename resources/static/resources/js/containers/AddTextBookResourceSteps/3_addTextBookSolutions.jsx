@@ -8,8 +8,12 @@ import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
+import { EditableLabel } from '../../utils/editableLabel'
+
 import { checkHttpStatus, getAxios } from '../../utils'
 import { API_PREFIX } from '../../utils/config'
+
+// const SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
 
 export default class AddTextBookSolutionsView extends React.Component {
   constructor (props) {
@@ -18,11 +22,10 @@ export default class AddTextBookSolutionsView extends React.Component {
       chaptersList: props.chaptersList
     }
 
-    // this.addProblemClick = this.addProblemClick.bind(this)
-    // this.onChangeChapterTitle = this.onChangeChapterTitle.bind(this)
-    // this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
     this.isOneSolutionInChapters = this.isOneSolutionInChapters.bind(this)
     this.prevStepClick = this.prevStepClick.bind(this)
+    this.onChangeGoogleDriveUrl = this.onChangeGoogleDriveUrl.bind(this)
+    this.getGoogleDriveNameAndUpload = this.getGoogleDriveNameAndUpload.bind(this)
   }
 
   isOneSolutionInChapters () {
@@ -68,19 +71,80 @@ export default class AddTextBookSolutionsView extends React.Component {
     this.props.onPrevStep(this.state.chaptersList)
   }
 
-  handleFileChange (file, chapter, problem) {
+  handleFileChange (file, chapter, problem, filename) {
     // Seems we don't need to use global state
     if (!file || file.target.files.length === 0) {
       return
     }
 
     var formData = new FormData()
-    formData.append('file', file.target.files[0])
+    if (filename) {
+      formData.append('file', file.target.files[0], filename)
+    } else {
+      formData.append('file', file.target.files[0])
+    }
     getAxios().post(API_PREFIX + 'upload_solution_pdf/', formData)
       .then(checkHttpStatus)
       .then((response) => {
         this.addSolution(chapter, problem, response.data)
       })
+  }
+
+  getGoogleDriveNameAndUpload (id, chapter, problem, accessToken, mediaData) {
+    var url = 'https://www.googleapis.com/drive/v2/files/' + id
+    var that = this
+    if (url) {
+      var xhr = new XMLHttpRequest()
+      xhr.open('GET', url)
+      xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
+      xhr.onload = function () {
+        var jsonResp = JSON.parse(xhr.response);
+        that.handleFileChange(mediaData, chapter, problem, jsonResp['title'])
+      }
+      xhr.send()
+    }
+  }
+
+  onChangeGoogleDriveUrl (urlString, chapter, problem) {
+    // download from google drive and upload
+    // existing link
+    // https://drive.google.com/open?id=0B1Kj1ZClSFusekhNdGRhdDNYY0E
+    if (!urlString || !this.props.gapiInitState) return
+    // https://www.googleapis.com/drive/v2/files/fileId
+    try {
+      var url = new URL(urlString)
+    } catch (e) {
+      return
+    }
+
+    var id = url.searchParams.get('id')
+    var that = this
+    // url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
+    url = 'https://www.googleapis.com/drive/v2/files/' + id
+    if (url) {
+      var SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+
+      var authData = {
+        client_id: '1090448644110-r8o52h1sqpbq7pp1j8ougcr1e35qicqg.apps.googleusercontent.com',
+        scope: SCOPES,
+        immediate: false
+      }
+      gapi.auth.authorize(authData, function (response) {
+        var accessToken = gapi.auth.getToken().access_token
+        var xhr = new XMLHttpRequest()
+        xhr.open('GET', url)
+        xhr.responseType = 'blob'
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
+        xhr.onload = function () {
+          var file = {}
+          file.target = {}
+          file.target.files = [ xhr.response, ]
+          // that.handleFileChange(file, chapter, problem))
+          that.getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file)
+        }
+        xhr.send()
+      })
+    }
   }
 
   render () {
@@ -119,9 +183,10 @@ export default class AddTextBookSolutionsView extends React.Component {
                           </span>
                         }) : null
                         }
+                        &nbsp;&nbsp;<Glyphicon glyph='plus' />&nbsp;add solution
                         <span
                           className={'blue-text selectable-file'}
-                          style={{paddingLeft: '2rem' }}
+                          style={{ paddingLeft: '2rem' }}
                           // onClick={() => this.addSolutionClick(chapter, problem)}
                         >
                           <input
@@ -132,22 +197,23 @@ export default class AddTextBookSolutionsView extends React.Component {
                             onChange={(file) => this.handleFileChange(file, chapter, problem)}
                             style={{fontSize: '1px'}} />
                           <label htmlFor={'solution-input-' + chapter.position + problem.position} style={{cursor: 'pointer'}}>
-                            <Glyphicon glyph='plus' />&nbsp;add solution
+                            pdf
                           </label>
                         </span>
-                        {/*<EditableLabel*/}
-                          {/*value={problem}*/}
-                          {/*onChange={(problemString) => { this.onChangeProblemTitle(problemString, chapter, i) }}*/}
-                          {/*defaultValue={i + 1} />*/}
+                        <span
+                          style={{paddingLeft: '2rem', cursor: 'pointer'}}
+                          className={'blue-text'}
+                        >
+                          <b>
+                            <EditableLabel
+                              value={'google drive link'}
+                              onChange={(url) => { this.onChangeGoogleDriveUrl(url, chapter, problem) }}
+                              defaultValue={'google drive link'} />
+                          </b>
+                        </span>
                       </div>
                     }, this)}</div>
                   : null }
-                {/*<div // Add problem button*/}
-                  {/*style={{paddingLeft: '2rem', cursor: 'pointer'}}*/}
-                  {/*onClick={() => this.addProblemClick(chapter)}*/}
-                  {/*className={'blue-text'}>*/}
-                  {/*<Glyphicon glyph='plus' /> Add problem*/}
-                {/*</div>*/}
               </div>
             }, this)}
           </Col>
@@ -164,7 +230,8 @@ AddTextBookSolutionsView.propTypes = {
   googleBook: PropTypes.object,
   chaptersList: PropTypes.array,
   onPrevStep: PropTypes.func.isRequired,
-  onFinish: PropTypes.func.isRequired
+  onFinish: PropTypes.func.isRequired,
+  gapiInitState: PropTypes.bool.isRequired
 }
 
 // const mapStateToProps = (state) => {
