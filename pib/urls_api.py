@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^profiles/', include('profiles.urls_api')),
     url(r'^classroom/', include('classroom.urls_api')),
     url(r'^editor/', include('editor.urls_api')),
+    url(r'^resources/', include('resources.urls_api')),
+    url(r'^djeddit/', include('djeddit.urls_api')),
 ]

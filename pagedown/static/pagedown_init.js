@@ -40,24 +40,31 @@ DjangoPagedown = (function () {
     return false
   }
 
-  var init = function () {
+  var init = function (textareaId) {
     console.log('init')
     that.converter = Markdown.getSanitizingConverter()
     Markdown.Extra.init(that.converter, {
       extensions: 'all'
     })
-    that.elements = document.getElementsByTagName('textarea')
-    that.editors = {}
-    for (var i = 0; i < that.elements.length; ++i) {
-      if (isPagedownable(that.elements[i])) {
-        createEditor(that.elements[i])
+    if (textareaId) {
+      let el = document.getElementById(textareaId)
+      // if (isPagedownable(el)) { // no need, already in createEditor
+      createEditor(el)
+      // }
+    } else {
+      that.elements = document.getElementsByTagName('textarea')
+      that.editors = {}
+      for (var i = 0; i < that.elements.length; ++i) {
+        if (isPagedownable(that.elements[i])) {
+          createEditor(that.elements[i])
+        }
       }
     }
   }
 
   return {
-    init: function () {
-      return init()
+    init: function (textareaId) {
+      return init(textareaId)
     },
     createEditor: function (el) {
       return createEditor(el)

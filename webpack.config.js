@@ -11,6 +11,7 @@ module.exports = function (env) {
       profile: './profiles/static/profiles/js/profile_modal',
       editor: './editor/static/editor/js/app',
       classroom: './classroom/static/classroom/js/index',
+      resources: './resources/static/resources/js/index'
     },
 
     output: {

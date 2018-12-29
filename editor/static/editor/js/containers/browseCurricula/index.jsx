@@ -17,9 +17,11 @@ import UnitsSearchView from './search/units'
 import ModulesSearchView from './search/modules'
 import LessonsSearchView from './search/lessons'
 import QuestionsSearchView from './search/questions'
+import { getParams, alreadyInSlides, updateSliderNavigation, getPrefixFromSlidesName, updateSlidersNavigation } from './sliderHelpers'
+import SearchRowView from './searchRow'
 
 import { loadAllCurricula } from './../../actions'
-import { history } from '../../history'
+// import { history } from '../../history'
 
 const slidesNames = ['newSlides', 'popularSlides', 'recentSlides']
 
@@ -66,63 +68,96 @@ class BrowseCurriculaView extends React.Component {
 
   getParams (slidesListName) {
     var self = this
-    // var activeSlideKey = 0
-
-    var swiper = self[slidesListName + 'Swiper']
-
-    if (swiper) {
-      // populate virtual.data with fake slidersList
-      var fakeSlides = []
-      // activeSlideKey = swiper.virtual.slides.length
-      for (var i = 0; i < this.state[slidesListName].length; i += 1) {
-        fakeSlides.push('')
+    var reachEndFunc = function () {
+      if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+        self.props.loadPopularCurricula(self.state.popularNextPageUrl)
       }
-      swiper.virtual.slides = fakeSlides
-    }
-
-    var swiperParams = {
-      navigation: {
-        nextEl: '.swiper-button-next.pib-swiper-button',
-        prevEl: '.swiper-button-prev.pib-swiper-button'
-      },
-      // preventClicks: false,
-      spaceBetween: 0,
-      slidesPerView: 5, // must be more than API paginator page size!
-      // activeSlideKey: activeSlideKey,
-      // rebuildOnUpdate: true, // if we will update or rebuild we will lose navigation position
-      // shouldSwiperUpdate: true,
-      virtual: {
-        slides: self.state[slidesListName],
-        renderExternal: function (data) {
-          // empty function needs to disable internal rendering, more info http://idangero.us/swiper/api/#virtual
-          // if (swiper) { swiper.navigation.update() } // hack for update navigation buttons
-        }
-      },
-      on: {
-        reachEnd: function () {
-          if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
-            self.props.loadPopularCurricula(self.state.popularNextPageUrl)
-          }
-          if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
-            self.props.loadRecentCurricula(self.state.recentNextPageUrl)
-          }
-          if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
-            self.props.loadNewCurricula(self.state.newNextPageUrl)
-          }
-        }
+      if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+        self.props.loadRecentCurricula(self.state.recentNextPageUrl)
+      }
+      if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
+        self.props.loadNewCurricula(self.state.newNextPageUrl)
       }
     }
-    return swiperParams
+
+    return getParams(slidesListName, this, reachEndFunc)
   }
 
   alreadyInSlides (slides, uuid) {
-    for (var i = 0; i < slides.length; i++) {
-      if (slides[i].props.curriculum.uuid === uuid) {
-        return true
-      }
-    }
-    return false
+    return alreadyInSlides(slides, uuid)
   }
+
+  updateSlidersNavigation () {
+    return updateSlidersNavigation(slidesNames, this)
+  }
+
+  updateSliderNavigation (slidesListName) {
+    return updateSliderNavigation(slidesListName, this)
+  }
+
+  getPrefixFromSlidesName (slidesName) {
+    return getPrefixFromSlidesName(slidesName)
+  }
+
+  // getParams (slidesListName) {
+  //   var self = this
+  //   // var activeSlideKey = 0
+  //
+  //   var swiper = self[slidesListName + 'Swiper']
+  //
+  //   if (swiper) {
+  //     // populate virtual.data with fake slidersList
+  //     var fakeSlides = []
+  //     // activeSlideKey = swiper.virtual.slides.length
+  //     for (var i = 0; i < this.state[slidesListName].length; i += 1) {
+  //       fakeSlides.push('')
+  //     }
+  //     swiper.virtual.slides = fakeSlides
+  //   }
+  //
+  //   var swiperParams = {
+  //     navigation: {
+  //       nextEl: '.swiper-button-next.pib-swiper-button',
+  //       prevEl: '.swiper-button-prev.pib-swiper-button'
+  //     },
+  //     // preventClicks: false,
+  //     spaceBetween: 0,
+  //     slidesPerView: 5, // must be more than API paginator page size!
+  //     // activeSlideKey: activeSlideKey,
+  //     // rebuildOnUpdate: true, // if we will update or rebuild we will lose navigation position
+  //     // shouldSwiperUpdate: true,
+  //     virtual: {
+  //       slides: self.state[slidesListName],
+  //       renderExternal: function (data) {
+  //         // empty function needs to disable internal rendering, more info http://idangero.us/swiper/api/#virtual
+  //         // if (swiper) { swiper.navigation.update() } // hack for update navigation buttons
+  //       }
+  //     },
+  //     on: {
+  //       reachEnd: function () {
+  //         if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+  //           self.props.loadPopularCurricula(self.state.popularNextPageUrl)
+  //         }
+  //         if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+  //           self.props.loadRecentCurricula(self.state.recentNextPageUrl)
+  //         }
+  //         if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
+  //           self.props.loadNewCurricula(self.state.newNextPageUrl)
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return swiperParams
+  // }
+
+  // alreadyInSlides (slides, uuid) {
+  //   for (var i = 0; i < slides.length; i++) {
+  //     if (slides[i].props.curriculum.uuid === uuid) {
+  //       return true
+  //     }
+  //   }
+  //   return false
+  // }
 
   onAddRemoveFromDashboardSildes (action, curriculum) {
     var newRecent = this.state['recentSlides']
@@ -185,25 +220,6 @@ class BrowseCurriculaView extends React.Component {
     return slides
   }
 
-  updateSliderNavigation (slidesListName) {
-    var swiper = this[slidesListName + 'Swiper']
-    if (swiper) {
-      swiper.navigation.update()
-      // TODO we need to check that is not pagination update
-      swiper.update()
-    } // hack for update navigation buttons
-  }
-
-  updateSlidersNavigation () {
-    for (var i = 0, len = slidesNames.length; i < len; i++) {
-      this.updateSliderNavigation(slidesNames[i])
-    }
-  }
-
-  getPrefixFromSlidesName (slidesName) {
-    return slidesName.replace('Slides', '')
-  }
-
   componentWillReceiveProps (props) {
     // if (this.props.tab !== props.tab) {
     this.updateSlidersNavigation()
@@ -221,8 +237,6 @@ class BrowseCurriculaView extends React.Component {
       }
     }
   }
-
-  // TODO create new component for search
 
   handleSearchString (e) {
     if (!e.target.value) {
@@ -287,32 +301,13 @@ class BrowseCurriculaView extends React.Component {
     return (
       <div>
         <Grid fluid>
-          <Row style={{padding: 0}}>
-            <Col sm={10} md={10}>
-              <FormGroup>
-                <InputGroup>
-                  <FormControl
-                    type='text'
-                    value={this.state.searchString}
-                    placeholder='Search'
-                    onChange={this.handleSearchString}
-                    onKeyUp={this.handleSearchInputKeyUp}
-                  />
-                  <InputGroup.Button>
-                    <Button
-                      onClick={this.searchButtonClick}
-                    ><Glyphicon glyph='search' /></Button>
-                    <Button
-                      onClick={this.clearSearchButtonClick}
-                    ><Glyphicon glyph='remove' /></Button>
-                  </InputGroup.Button>
-                </InputGroup>
-              </FormGroup>
-            </Col>
-            <Col sm={2} md={2}>
-              <Button disabled>Filter</Button>
-            </Col>
-          </Row>
+          <SearchRowView
+            searchButtonClick={this.searchButtonClick}
+            handleSearchString={this.handleSearchString}
+            handleSearchInputKeyUp={this.handleSearchInputKeyUp}
+            clearSearchButtonClick={this.clearSearchButtonClick}
+            searchString={this.state.searchString}
+          />
         </Grid>
         <div className={'pop-up-window'}>
           <div className='tab-links'>
@@ -400,6 +395,39 @@ class BrowseCurriculaView extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    popularCurricula: state.filteredCurricula.popularCurricula,
+    recentCurricula: state.filteredCurricula.recentCurricula,
+    newCurricula: state.filteredCurricula.newCurricula,
+    tab: state.studioTabs.tab
+  }
+}
+
+BrowseCurriculaView.propTypes = {
+  // actions
+  loadRecentCurricula: PropTypes.func.isRequired,
+  loadPopularCurricula: PropTypes.func.isRequired,
+  loadNewCurricula: PropTypes.func.isRequired,
+  // data
+  popularCurricula: PropTypes.object,
+  recentCurricula: PropTypes.object,
+  newCurricula: PropTypes.object,
+  tab: PropTypes.string
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatch,
+    loadRecentCurricula: (url) => dispatch(loadAllCurricula(url, 'recent')),
+    loadNewCurricula: (url) => dispatch(loadAllCurricula(url, null, '-created_on')),
+    loadPopularCurricula: (url) => dispatch(loadAllCurricula(url, null, '-number_of_learners_denormalized')) // popular
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BrowseCurriculaView)
+export { BrowseCurriculaView as BrowseCurriculaViewNotConnected }
+
 {/*<Grid fluid>*/}
                    {/*<Row>*/}
                      {/*<Col sm={12} md={12}>*/}
@@ -456,36 +484,3 @@ class BrowseCurriculaView extends React.Component {
                      {/*</Col>*/}
                    {/*</Row>*/}
                  {/*</Grid>*/}
-
-const mapStateToProps = (state) => {
-  return {
-    popularCurricula: state.filteredCurricula.popularCurricula,
-    recentCurricula: state.filteredCurricula.recentCurricula,
-    newCurricula: state.filteredCurricula.newCurricula,
-    tab: state.studioTabs.tab
-  }
-}
-
-BrowseCurriculaView.propTypes = {
-  // actions
-  loadRecentCurricula: PropTypes.func.isRequired,
-  loadPopularCurricula: PropTypes.func.isRequired,
-  loadNewCurricula: PropTypes.func.isRequired,
-  // data
-  popularCurricula: PropTypes.object,
-  recentCurricula: PropTypes.object,
-  newCurricula: PropTypes.object,
-  tab: PropTypes.string
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dispatch,
-    loadRecentCurricula: (url) => dispatch(loadAllCurricula(url, 'recent')),
-    loadNewCurricula: (url) => dispatch(loadAllCurricula(url, null, '-created_on')),
-    loadPopularCurricula: (url) => dispatch(loadAllCurricula(url, null, '-number_of_learners_denormalized')) // popular
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BrowseCurriculaView)
-export { BrowseCurriculaView as BrowseCurriculaViewNotConnected }

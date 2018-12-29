@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     # Nested admin
     'nested_admin',
     'django_gravatar',
+    'vote',
+    'reversion',
     # pib apps
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
@@ -77,8 +79,10 @@ INSTALLED_APPS = [
     'djeddit',
     'meta',
     'classroom',
+    'resources',
     'pagedown',
-    'markdown_deux'
+    'markdown_deux'  # ,
+    # 'moderation.apps.SimpleModerationConfig'
 ]
 
 MIDDLEWARE = [
@@ -97,7 +101,7 @@ ADMIN_REORDER = (
     # Reorder app models
     {'app': 'curricula', 'models': ('curricula.Curriculum', 'curricula.Unit', 'curricula.Module',
                                     'curricula.Lesson', 'curricula.Question')},
-    'classroom', 'account', 'auth', 'djeddit', 'pib_auth', 'profiles', 'sites', 'socialaccount'
+    'moderation',  'classroom', 'account', 'auth', 'djeddit', 'pib_auth', 'profiles', 'sites', 'socialaccount', 'resources'
 )
 
 ROOT_URLCONF = 'pib.urls'
