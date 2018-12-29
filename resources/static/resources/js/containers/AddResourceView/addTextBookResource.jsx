@@ -182,6 +182,7 @@ class AddTextBookResourceView extends React.Component {
         chaptersList={this.state.chaptersList}
         onPrevStep={this.onPrevStep}
         onFinish={this.onFinish}
+        gapiInitState={this.props.gapiInitState}
       />
     }
 
