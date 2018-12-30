@@ -10,13 +10,13 @@
 
 
 {#  pagedown editor  #}
-<link href="/static/pagedown/demo/browser/demo.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="/static/pagedown/Markdown.Converter.js"></script>
-<script type="text/javascript" src="/static/pagedown-extra/pagedown/Markdown.Converter.js"></script>
-<script type="text/javascript" src="/static/pagedown/Markdown.Sanitizer.js"></script>
-<script type="text/javascript" src="/static/pagedown/Markdown.Editor.js"></script>
-<script type="text/javascript" src="/static/pagedown-extra/Markdown.Extra.js"></script>
-<script type="text/javascript" src="/static/pagedown_init.js"></script>
+<link href="{% static 'pagedown/demo/browser/demo.css' %}" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="{% static 'pagedown/Markdown.Converter.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown-extra/pagedown/Markdown.Converter.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown/Markdown.Sanitizer.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown/Markdown.Editor.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown-extra/Markdown.Extra.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown_init.js' %}"></script>
 
 
 {% endblock extrahead %}
