@@ -15,17 +15,22 @@ import PDF from 'react-pdf-js'
 
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
+
+import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
+
 import * as resourcesCreators from '../../actions/resources'
 import * as djedditCreators from '../../actions/djeddit'
 import * as profileCreators from '../../actions/profile'
 
 import { BASE_URL } from '../../utils/config'
+import * as googleCreators from '../../actions/google'
 
 class TextBookSolutionView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      pdfScale: 1
+      pdfScale: 1,
+      externalPdfUrlFile: null
     }
     this.handlePrevious = this.handlePrevious.bind(this)
     this.handleNext = this.handleNext.bind(this)
@@ -33,9 +38,11 @@ class TextBookSolutionView extends React.Component {
     this.handleChangeNumberOfPdfPage = this.handleChangeNumberOfPdfPage.bind(this)
     this.onZoomPdfClick = this.onZoomPdfClick.bind(this)
     this.onSubmitPost = this.onSubmitPost.bind(this)
+    this.loadExternalGooglePdf = this.loadExternalGooglePdf.bind(this)
   }
 
   componentDidMount () {
+    this.props.googleActions.gapiInitialize()
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchSolution(this.props.match.params['uuid'])
     }
@@ -52,7 +59,24 @@ class TextBookSolutionView extends React.Component {
     if (prevProps.solution !== this.props.solution) {
       // reload thread
       this.props.djedditActions.fetchThreadSolution(this.props.solution.thread)
+      // try to load pdf from google drive
+      if (this.props.solution.pdf.external_url) {
+        // We need to download PDf from drive.google.com due CORS limitation.
+        // if (this.props.gapiInitState) {
+        //   this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
+        // } else {
+        //   setTimeout(() => { this.loadExternalGooglePdf(this.props.solution.pdf.external_url) }, 1000)
+        // }
+      }
     }
+  }
+
+  loadExternalGooglePdf (url) {
+    downloadGoogleDriveUrl(url, (response) => {
+      let pdfURL = null
+      pdfURL = URL.createObjectURL(response)
+      this.setState({externalPdfUrlFile: pdfURL})
+    })
   }
 
   onPrevNextSolutionClick (value) {
@@ -185,6 +209,20 @@ class TextBookSolutionView extends React.Component {
       }
     }
 
+    let pdfFile = null
+
+    if (this.props.solution) {
+      if (this.props.solution.pdf.external_url) {
+        if (this.state.externalPdfUrlFile) {
+          // file donwloaded
+          pdfFile = this.state.externalPdfUrlFile
+        }
+      } else {
+        pdfFile = this.props.solution.pdf
+      }
+    }
+    // console.log(pdfFile);
+
     return (
       <Sheet>
         <Grid fluid>
@@ -275,15 +313,23 @@ class TextBookSolutionView extends React.Component {
               <Col sm={12} md={12} className={'text-align-center'}>
                 <div style={{overflowX: 'auto', position: 'relative'}}>
                 {/*<Document file={this.props.solution.pdf.file} />*/}
-                  <PDF
+                  { this.props.solution.pdf.external_url && !pdfFile
+                    ? <Button
+                      onClick={() => { this.loadExternalGooglePdf(this.props.solution.pdf.external_url) }}
+                      className={'common-button'}>
+                      Click to load file from Google Drive
+                    </Button> : null
+                  }
+                  { pdfFile
+                    ? <PDF
                     // ref={(el) => { this.pdfRef = el }}
                     // fillWidth={Boolean(true)} // not supported anymore
-                    key={this.props.solution.pdf.id}
-                    file={this.props.solution.pdf.file}
-                    onDocumentComplete={this.onDocumentComplete}
-                    page={this.state.currentPdfpage}
-                    scale={this.state.pdfScale}
-                  />
+                      key={this.props.solution.pdf.id}
+                      file={pdfFile}
+                      onDocumentComplete={this.onDocumentComplete}
+                      page={this.state.currentPdfpage}
+                      scale={this.state.pdfScale}
+                    /> : null }
                 </div>
                 {pagination}
               </Col>
@@ -322,12 +368,16 @@ TextBookSolutionView.propTypes = {
   profileActions: PropTypes.shape({
     fetchProfileMe: PropTypes.func.isRequired
   }),
+  googleActions: PropTypes.shape({
+    gapiInitialize: PropTypes.func.isRequired,
+  }).isRequired,
   // data
   problem: PropTypes.object,
   resource: PropTypes.object,
   solution: PropTypes.object,
   thread: PropTypes.object,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  gapiInitState: PropTypes.bool
 }
 
 const mapStateToProps = (state) => {
@@ -336,7 +386,8 @@ const mapStateToProps = (state) => {
     resource: state.resources.resource,
     solution: state.resources.solution,
     thread: state.djeddit.thread,
-    profile: state.profile.me
+    profile: state.profile.me,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
@@ -345,7 +396,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
     djedditActions: bindActionCreators(djedditCreators, dispatch),
-    profileActions: bindActionCreators(profileCreators, dispatch)
+    profileActions: bindActionCreators(profileCreators, dispatch),
+    googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 
