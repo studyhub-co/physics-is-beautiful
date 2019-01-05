@@ -13,7 +13,7 @@ var API_KEY = 'AIzaSyBNaX7xo_Vo08-myCDEzY4AKZkkfyJYIc8'
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-const SCOPES = 'https://www.googleapis.com/auth/books'
+const SCOPES = 'https://www.googleapis.com/auth/books https://www.googleapis.com/auth/drive.readonly'
 
 // var DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest']
 

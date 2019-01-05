@@ -33,8 +33,8 @@ class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookSolutionPDF
-        fields = ['id', 'file']
-        read_only_fields = ('file',)
+        fields = ['id', 'file', 'external_url']
+        read_only_fields = ('file', 'external_url')
 
 
 class TextBookSolutionSerializer(serializers.ModelSerializer):
