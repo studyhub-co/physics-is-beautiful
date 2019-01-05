@@ -22,9 +22,9 @@ class TextBookProblemView extends React.Component {
   }
 
   onPostSolutionClick () {
-    // TODO
     // upload file/link
     // add solution info to solutions list
+    // load 3dh step
   }
 
   onClickSolution (uuid) {

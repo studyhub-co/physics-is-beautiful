@@ -10,8 +10,7 @@ import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
 import { EditableLabel } from '../../utils/editableLabel'
 
-import { checkHttpStatus, getAxios } from '../../utils'
-import { API_PREFIX } from '../../utils/config'
+import { handleFileChange, onChangeGoogleDriveUrl } from './lib'
 
 // const SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
 
@@ -24,8 +23,8 @@ export default class AddTextBookSolutionsView extends React.Component {
 
     this.isOneSolutionInChapters = this.isOneSolutionInChapters.bind(this)
     this.prevStepClick = this.prevStepClick.bind(this)
-    this.onChangeGoogleDriveUrl = this.onChangeGoogleDriveUrl.bind(this)
-    this.getGoogleDriveNameAndUpload = this.getGoogleDriveNameAndUpload.bind(this)
+    // this.onChangeGoogleDriveUrl = this.onChangeGoogleDriveUrl.bind(this)
+    // this.getGoogleDriveNameAndUpload = this.getGoogleDriveNameAndUpload.bind(this)
   }
 
   isOneSolutionInChapters () {
@@ -69,82 +68,6 @@ export default class AddTextBookSolutionsView extends React.Component {
 
   prevStepClick () {
     this.props.onPrevStep(this.state.chaptersList)
-  }
-
-  handleFileChange (file, chapter, problem, filename) {
-    // Seems we don't need to use global state
-    if (!file || file.target.files.length === 0) {
-      return
-    }
-
-    var formData = new FormData()
-    if (filename) {
-      formData.append('file', file.target.files[0], filename)
-    } else {
-      formData.append('file', file.target.files[0])
-    }
-    getAxios().post(API_PREFIX + 'upload_solution_pdf/', formData)
-      .then(checkHttpStatus)
-      .then((response) => {
-        this.addSolution(chapter, problem, response.data)
-      })
-  }
-
-  getGoogleDriveNameAndUpload (id, chapter, problem, accessToken, mediaData) {
-    var url = 'https://www.googleapis.com/drive/v2/files/' + id
-    var that = this
-    if (url) {
-      var xhr = new XMLHttpRequest()
-      xhr.open('GET', url)
-      xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-      xhr.onload = function () {
-        var jsonResp = JSON.parse(xhr.response);
-        that.handleFileChange(mediaData, chapter, problem, jsonResp['title'])
-      }
-      xhr.send()
-    }
-  }
-
-  onChangeGoogleDriveUrl (urlString, chapter, problem) {
-    // download from google drive and upload
-    // existing link
-    // https://drive.google.com/open?id=0B1Kj1ZClSFusekhNdGRhdDNYY0E
-    if (!urlString || !this.props.gapiInitState) return
-    // https://www.googleapis.com/drive/v2/files/fileId
-    try {
-      var url = new URL(urlString)
-    } catch (e) {
-      return
-    }
-
-    var id = url.searchParams.get('id')
-    var that = this
-    url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
-    if (url) {
-      var SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
-
-      var authData = {
-        client_id: '1090448644110-r8o52h1sqpbq7pp1j8ougcr1e35qicqg.apps.googleusercontent.com',
-        scope: SCOPES,
-        immediate: false
-      }
-      gapi.auth.authorize(authData, function (response) {
-        // TODO check if token exist
-        var accessToken = gapi.auth.getToken().access_token
-        var xhr = new XMLHttpRequest()
-        xhr.open('GET', url)
-        xhr.responseType = 'blob'
-        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-        xhr.onload = function () {
-          var file = {}
-          file.target = {}
-          file.target.files = [ xhr.response, ]
-          // that.handleFileChange(file, chapter, problem))
-          that.getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file)
-        }
-        xhr.send()
-      })
-    }
   }
 
   render () {
@@ -194,7 +117,9 @@ export default class AddTextBookSolutionsView extends React.Component {
                             name='pdf'
                             id={'solution-input-' + chapter.position + problem.position}
                             accept='application/pdf'
-                            onChange={(file) => this.handleFileChange(file, chapter, problem)}
+                            // onChange={(file) => this.handleFileChange(file, chapter, problem, (...args) => { this.addSolution(...args) })}
+                            onChange={(file) =>
+                              handleFileChange(file, chapter, problem, null, (...args) => { this.addSolution(...args) })}
                             style={{fontSize: '1px'}} />
                           <label htmlFor={'solution-input-' + chapter.position + problem.position} style={{cursor: 'pointer'}}>
                             pdf
@@ -207,7 +132,13 @@ export default class AddTextBookSolutionsView extends React.Component {
                           <b>
                             <EditableLabel
                               value={'google drive link'}
-                              onChange={(url) => { this.onChangeGoogleDriveUrl(url, chapter, problem) }}
+                              //onChange={(url) => { this.onChangeGoogleDriveUrl(url, chapter, problem) }}
+                              onChange={(url) => {
+                                if (this.props.gapiInitState) {
+                                  onChangeGoogleDriveUrl(url, chapter, problem, (...args) => { this.addSolution(...args) })
+                                }
+                              }
+                              }
                               defaultValue={'google drive link'} />
                           </b>
                         </span>
@@ -233,20 +164,3 @@ AddTextBookSolutionsView.propTypes = {
   onFinish: PropTypes.func.isRequired,
   gapiInitState: PropTypes.bool.isRequired
 }
-
-// const mapStateToProps = (state) => {
-//   return {
-//     // gapiInitState: state.google.gapiInitState,
-//     // googleBooksList: state.google.googleBooksList,
-//     // resourceOptions: state.resources.resourceOptions,
-//   }
-// }
-//
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     dispatch,
-//   }
-// }
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(AddTextBookSolutionsView)
-// export { AddTextBookSolutionsView as AddTextBookSolutionsViewNotConnected }

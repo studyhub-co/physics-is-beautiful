@@ -81,6 +81,7 @@ class TextBookProblem(models.Model):
 class TextBookSolutionPDF(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to="resources/%Y/%m/%d", validators=[validate_pdf_extension])
+    external_url = models.URLField(max_length=255, blank=True, null=True)
 
 
 # signal to remove file onDelete
