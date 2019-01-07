@@ -15,25 +15,22 @@ ALLOWED_HOSTS = [
 
 from pib.common_settings import *  # noqa: E402, F401
 
-# django-s3-storage
-
 EMAIL_BACKEND = 'django_ses.SESBackend'
+
+# django-s3-storage
 AWS_REGION = 'us-east-1'
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = AWS_REGION
 AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
-# AWS_S3_PUBLIC_URL = 'https://pib-media-production.s3.amazonaws.com'
-
 AWS_S3_BUCKET_AUTH = False
 
-# media
+# django-s3-storage media
 AWS_S3_PUBLIC_URL = os.getenv('AWS_STORAGE_PUBLIC_URL')
 AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 
-# static
+# django-s3-storage static
 AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
-# AWS_S3_PUBLIC_URL_STATIC = 'https://assets.physicsisbeautiful.com'
 AWS_S3_PUBLIC_URL_STATIC = os.getenv('AWS_STORAGE_PUBLIC_URL_STATIC')
 
 
