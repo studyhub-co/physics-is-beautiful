@@ -37,7 +37,7 @@ class MenuToggle extends React.Component {
 
   render () {
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
+      <Glyphicon glyph={'option-vertical'} onClick={(e) => { this.handleClick(e) }} style={{fontSize: '2rem'}}>
         {this.props.children}
       </Glyphicon>
     )
