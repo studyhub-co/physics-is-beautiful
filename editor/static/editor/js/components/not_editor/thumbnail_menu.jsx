@@ -25,23 +25,27 @@ export class DropdownThumbnail extends Dropdown {
 }
 
 class MenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
+  // constructor (props, context) {
+  //   super(props, context)
+  //   this.handleClick = this.handleClick.bind(this)
+  // }
+  //
+  // handleClick (e) {
+  //   e.preventDefault()
+  //   this.props.onClick(e)
+  // }
 
   render () {
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={(e) => { this.handleClick(e) }} style={{fontSize: '2rem'}}>
+      <Glyphicon glyph={'option-vertical'} onClick={(e) => { e.preventDefault(); this.props.onClick(e) }} style={{fontSize: '2rem'}}>
         {this.props.children}
       </Glyphicon>
     )
   }
+}
+
+MenuToggle.propTypes = {
+  onClick: PropTypes.func
 }
 
 class ThumbnailMenu extends Dropdown.Menu {
@@ -56,20 +60,26 @@ class ThumbnailMenu extends Dropdown.Menu {
     // this.onSelectCurriculum = this.onSelectCurriculum.bind(this)
 
     var baseName = ''
+    var uuid = ''
 
     if (props.unit) {
       baseName = 'unit'
+      uuid = props.unit.uuid
     } else if (props.module) {
       baseName = 'module'
+      uuid = props.module.uuid
     } else if (props.lesson) {
       baseName = 'lesson'
+      uuid = props.lesson.uuid
     } else if (props.question) {
       baseName = 'question'
+      uuid = props.question.uuid
     }
 
     this.state = {
       level: 1,
       baseName: baseName,
+      uuid: uuid,
       selectedCurriculum: null,
       selectedUnit: null,
       selectedModule: null,
@@ -264,7 +274,8 @@ class ThumbnailMenu extends Dropdown.Menu {
     return (
       <DropdownThumbnail
         style={{float: 'right', 'cursor': 'pointer'}}
-        id='dropdown-custom-menu'>
+        id={`dropdown-menu-` + this.state.uuid}
+      >
         <MenuToggle bsRole='toggle' />
         <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
           {menus}
@@ -278,7 +289,8 @@ ThumbnailMenu.propTypes = {
   unit: PropTypes.object,
   lesson: PropTypes.object,
   module: PropTypes.object,
-  curricula: PropTypes.object
+  curricula: PropTypes.object,
+  // uuid: PropTypes.string
 }
 
 const mapStateToProps = (state) => {
