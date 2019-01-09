@@ -99,7 +99,7 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @property
     def get_absolute_url(self):
-        return reverse('user-profile', kwargs={"pk": self.id})
+        return reverse('user-profile', kwargs={"pk": self.id})  # self.id(user.id) != profile.id
 
     def __str__(self):
         return '{}'.format(self.display_name)

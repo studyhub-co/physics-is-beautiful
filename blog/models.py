@@ -181,5 +181,4 @@ class Collegescorecard(models.Model):
     academicyear = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'CollegeScorecard'
