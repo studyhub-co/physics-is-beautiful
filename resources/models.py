@@ -47,6 +47,8 @@ class Resource(models.Model):
         auto_approve_for_superusers = True
         fields_exclude = ['count_views', ]
 
+# TODO signal for remove djedit Topic onDelete resource
+
 
 class RecentUserResource(models.Model):
     user = models.ForeignKey(Profile, related_name='recent_resources')

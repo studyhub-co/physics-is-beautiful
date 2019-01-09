@@ -216,12 +216,13 @@ class TextBookSolutionView extends React.Component {
         if (this.state.externalPdfUrlFile) {
           // file donwloaded
           pdfFile = this.state.externalPdfUrlFile
+          // TODO if external pdf failed then load local
+          // TODO add direct media link (not only google drive) support
         }
       } else {
-        pdfFile = this.props.solution.pdf
+        pdfFile = this.props.solution.pdf.file
       }
     }
-    // console.log(pdfFile);
 
     return (
       <Sheet>
