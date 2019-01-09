@@ -66,13 +66,22 @@ if (window.IS_MOBILE_APP) {
 
 // TODO move this to window.IS_MOBILE_APP and check parent origin before sending
 // Get profile data asynchronously and send it to the app
-$.get('/api/v1/profiles/me', function (data) {
-  // document.body.innerHTML = data
-  window.parent.postMessage({
-    'message': 'loginInfo',
-    'data': data
-  }, window.appOrigin)
-})
+var postProfile = function () {
+  var xmlHttp = new XMLHttpRequest()
+
+  xmlHttp.onreadystatechange = function () {
+    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+      // window.alert('posting: ' + JSON.stringify(xmlHttp.responseText))
+      window.parent.postMessage({
+        'message': 'loginInfo',
+        'data': JSON.stringify(xmlHttp.responseText)
+      }, '*')
+    }
+  }
+  xmlHttp.open('GET', '/api/v1/profiles/me', true)
+  xmlHttp.send(null)
+}
+window.setTimeout(postProfile, 1000)
 
 window.mobilizedUrl = function (url) {
   if (window.IS_MOBILE_APP && url.indexOf('pib_mobile') === -1) {
