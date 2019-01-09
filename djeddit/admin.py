@@ -16,6 +16,7 @@ class ThreadAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     fields = ('content', 'modified_on')
     readonly_fields = ('created_by',
+                       'modified_on',
                        'created_on',
                        '_upvotes',
                        '_downvotes',
