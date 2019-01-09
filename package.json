@@ -64,6 +64,7 @@
     "react-infinite-scroller": "^1.2.2",
     "react-mathjax": "^0.1.1",
     "react-moment": "^0.7.9",
+    "react-pdf-js": "^4.0.2",
     "react-redux": "^5.0.7",
     "react-responsive": "^1.3.0",
     "react-router": "^4.3.1",

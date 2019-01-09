@@ -43,16 +43,16 @@ class Classroom(models.Model):
 
 
 class ExternalClassroom(models.Model):
-    GOOGLE_CLASSRROM = 'GC'
+    GOOGLE_CLASSROOM = 'GC'
     EXTERNAL_PROVIDER_CHOICES = (
-        (GOOGLE_CLASSRROM, 'google classrrrom'),
+        (GOOGLE_CLASSROOM, 'google classrrrom'),
     )
 
     external_id = models.CharField(max_length=400)
     name = models.CharField(max_length=400)
     teacher_id = models.CharField(max_length=400)
     code = models.CharField(max_length=400)
-    provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSRROM)
+    provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSROOM)
     classroom = models.OneToOneField(Classroom, related_name='external_classroom', blank=True, null=True)
     alternate_link = models.CharField(max_length=100, blank=True, null=True)
 

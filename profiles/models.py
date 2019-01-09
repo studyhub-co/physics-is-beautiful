@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
+from django.urls import reverse
 
 class BaseModel(models.Model):
 
@@ -42,6 +43,10 @@ class Profile(BaseModel):
                 return self.google_avatar_url
             elif self.selected_avatar == 'a':
                 return self.gravatar_url
+
+    @property
+    def get_absolute_url(self):
+        return reverse('user-profile', kwargs={"pk": self.user.id})
 
     def __str__(self):
         return 'Profile: {}'.format(self.user.email)  # todo seems we need swith to username here

@@ -104,7 +104,7 @@ def postDate(dt, prefix='', verbose=True):
         return '%s ago' % string if verbose else '%sy' % years
 
     months = int(delta / 2592000)
-    string = getAmountContext(months, 'day')
+    string = getAmountContext(months, 'month')
     if string:
         return '%s ago' % string if verbose else '%smo' % months
 

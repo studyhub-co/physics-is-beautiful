@@ -84,9 +84,9 @@ class CurriculaSearchView extends React.Component {
         >
           {items}
         </InfiniteScroll>
-      { this.props.curriculaSearchList.results.length === 0 ? <h4>
+        { this.props.curriculaSearchList.results.length === 0 ? <h4>
           Sorry, we couldn't find any results for this query.
-      </h4> : null }
+        </h4> : null }
       </div>
       : <Row>
         <Col sm={12} md={12}>
