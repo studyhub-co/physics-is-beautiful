@@ -74,13 +74,15 @@ var postProfile = function () {
       // window.alert('posting: ' + JSON.stringify(xmlHttp.responseText))
       window.parent.postMessage({
         'message': 'loginInfo',
-        'data': JSON.stringify(xmlHttp.responseText)
+        'data': xmlHttp.responseText
       }, '*')
     }
   }
   xmlHttp.open('GET', '/api/v1/profiles/me', true)
   xmlHttp.send(null)
 }
+
+// TODO change to less
 window.setTimeout(postProfile, 1000)
 
 window.mobilizedUrl = function (url) {
