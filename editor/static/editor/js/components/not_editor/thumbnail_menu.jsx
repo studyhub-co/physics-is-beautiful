@@ -11,6 +11,7 @@ import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadMod
 
 export class DropdownThumbnail extends Dropdown {
   componentDidMount () {
+    console.log(this.refs.inner)
     this.refs.inner.handleClose = this.handleClose.bind(this)
   }
 
@@ -25,19 +26,19 @@ export class DropdownThumbnail extends Dropdown {
 }
 
 class MenuToggle extends React.Component {
-  // constructor (props, context) {
-  //   super(props, context)
-  //   this.handleClick = this.handleClick.bind(this)
-  // }
-  //
-  // handleClick (e) {
-  //   e.preventDefault()
-  //   this.props.onClick(e)
-  // }
+  constructor (props, context) {
+    super(props, context)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick (e) {
+    e.preventDefault()
+    this.props.onClick(e)
+  }
 
   render () {
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={(e) => { e.preventDefault(); this.props.onClick(e) }} style={{fontSize: '2rem'}}>
+      <Glyphicon glyph={'option-vertical'} onClick={ this.handleClick } style={{fontSize: '2rem'}}>
         {this.props.children}
       </Glyphicon>
     )
@@ -274,7 +275,7 @@ class ThumbnailMenu extends Dropdown.Menu {
     return (
       <DropdownThumbnail
         style={{float: 'right', 'cursor': 'pointer'}}
-        id={`dropdown-menu-` + this.state.uuid}
+        id={`dropdown-menu-` + this.props.uuid}
       >
         <MenuToggle bsRole='toggle' />
         <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
