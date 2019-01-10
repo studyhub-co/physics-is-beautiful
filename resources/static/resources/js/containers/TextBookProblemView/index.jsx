@@ -4,14 +4,28 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Grid, Row, Col, Table, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, Table, Button, Glyphicon, Modal } from 'react-bootstrap'
 
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
 
+import { handleFileChange, onChangeGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
+
+import { EditableLabel } from '../../utils/editableLabel'
+
 class TextBookProblemView extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      showPostSolutionModal: false
+    }
+    this.onPostSolutionClick = this.onPostSolutionClick.bind(this)
+    this.handleClosePostSolutionModal = this.handleClosePostSolutionModal.bind(this)
+    this.addSolution = this.addSolution.bind(this)
+  }
+
   componentDidMount () {
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
@@ -22,17 +36,24 @@ class TextBookProblemView extends React.Component {
   }
 
   onPostSolutionClick () {
-    // upload file/link
-    // add solution info to solutions list
-    // load 3dh step
+    this.setState({ showPostSolutionModal: !this.state.showPostSolutionModal })
   }
 
   onClickSolution (uuid) {
     history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
   }
 
+  handleClosePostSolutionModal () {
+    this.setState({ showPostSolutionModal: !this.state.showPostSolutionModal })
+  }
+
   upDownSolutionClick (solutionUuid, val) {
     this.props.resourcesActions.solutionVoteAndRefreshList(solutionUuid, val, this.props.problem.uuid)
+  }
+
+  addSolution (chapter, problem, file) {
+    // TODO save new solution for the problem
+    console.log(file);
   }
 
   render () {
@@ -72,6 +93,55 @@ class TextBookProblemView extends React.Component {
                   <Glyphicon glyph='plus' /> Post solution
                 </Button>
               </Col>
+              <Modal
+                show={this.state.showPostSolutionModal}
+                onHide={this.handleClosePostSolutionModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Post solution</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div>
+                    <span
+                      className={'blue-text selectable-file'}
+                      style={{ paddingLeft: '2rem' }}
+                    >
+                      <input
+                        type='file'
+                        name='pdf'
+                        id={'solution-input-' + this.props.problem.uuid}
+                        accept='application/pdf'
+                        // onChange={(file) => this.handleFileChange(file, chapter, problem, (...args) => { this.addSolution(...args) })}
+                        onChange={(file) =>
+                          handleFileChange(file, null, this.props.problem, null, (...args) => { this.addSolution(...args) })}
+                        style={{fontSize: '1px'}} />
+                      <label htmlFor={'solution-input-' + this.props.problem.uuid} style={{cursor: 'pointer'}}>
+                        pdf
+                      </label>
+                    </span>
+                  </div>
+                  <div>
+                    <span
+                      style={{paddingLeft: '2rem', cursor: 'pointer'}}
+                      className={'blue-text'}
+                    >
+                      <b>
+                        <EditableLabel
+                          value={'google drive link'}
+                          onChange={(url) => {
+                            if (this.props.gapiInitState) {
+                              onChangeGoogleDriveUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
+                            }
+                          }
+                          }
+                          defaultValue={'google drive link'} />
+                      </b>
+                    </span>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={this.handleClosePostSolutionModal}>Close</Button>
+                </Modal.Footer>
+              </Modal>
             </Row>
             <Row>
               <Col sm={12} md={12}>
