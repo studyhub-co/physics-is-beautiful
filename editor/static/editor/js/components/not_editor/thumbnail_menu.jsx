@@ -11,8 +11,9 @@ import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadMod
 
 export class DropdownThumbnail extends Dropdown {
   componentDidMount () {
-    console.log(this.refs.inner)
-    this.refs.inner.handleClose = this.handleClose.bind(this)
+    if (this.refs.inner) {
+      this.refs.inner.handleClose = this.handleClose.bind(this)
+    }
   }
 
   handleClose (event, eventDetails) {
