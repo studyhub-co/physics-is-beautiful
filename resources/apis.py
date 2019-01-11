@@ -57,6 +57,7 @@ class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
 
 
 class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
+                               mixins.CreateModelMixin,
                                GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TextBookSolutionSerializer
@@ -124,6 +125,11 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
                 TextBookSolution.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
 
         return super(TextBookSolutionsViewSet, self).retrieve(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        with transaction.atomic():
+            position = self.queryset.filter(textbook_problem=serializer.validated_data['textbook_problem']).count()
+            serializer.save(posted_by=self.request.user.profile, position=position)
 
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
