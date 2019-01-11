@@ -4,7 +4,7 @@ import { checkHttpStatus, getAxios } from '../utils'
 import {
   RESOURCE_RECEIVE_RESOURCE_OPTIONS, CREATE_RESOURCE_SUCCESS, RESOURCE_RECEIVE_POPULAR_RESOURCES,
   RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE,
-  RESOURCE_RECEIVE_PROBLEM, RESOURCE_RECEIVE_SOLUTION
+  RESOURCE_RECEIVE_PROBLEM, RESOURCE_RECEIVE_PROBLEM_SOLUTION
 } from '../constants'
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
@@ -149,7 +149,7 @@ export function fetchProblem (uuid) {
 
 export function receiveSolution (solution) {
   return {
-    type: RESOURCE_RECEIVE_SOLUTION,
+    type: RESOURCE_RECEIVE_PROBLEM_SOLUTION,
     payload: {
       solution
     }
@@ -187,6 +187,27 @@ export function solutionVoteAndRefreshList (uuid, val, problemUuid) {
     return dispatch(solutionVote(uuid, val)).then((response) => {
       // reload problem
       dispatch(fetchProblem(problemUuid))
+    })
+  }
+}
+
+export function createSolution (file, problem) {
+  return (dispatch, state) => {
+    let solution = {pdf_id: file.id, textbook_problem_uuid: problem.uuid}
+
+    return getAxios().post(API_PREFIX + 'solutions/', solution)
+      .then(checkHttpStatus)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function addSolution (file, problem) {
+  return (dispatch, state) => {
+    return dispatch(createSolution(file, problem)).then((response) => {
+      // reload problem
+      dispatch(fetchProblem(problem.uuid))
     })
   }
 }

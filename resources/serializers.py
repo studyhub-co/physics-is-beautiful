@@ -38,17 +38,36 @@ class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
 
 
 class TextBookSolutionSerializer(serializers.ModelSerializer):
-    pdf = TextBookSolutionPDFSerializer(many=False)
+    pdf = TextBookSolutionPDFSerializer(many=False,
+                                        required=False  # we can set existing pdf solution
+                                        )
     posted_by = PublicProfileSerializer(read_only=True)
     title = serializers.SerializerMethodField()
+
+    pdf_id = serializers.PrimaryKeyRelatedField(queryset=TextBookSolutionPDF.objects.all(),
+                                                source='pdf',
+                                                many=False,
+                                                write_only=True,
+                                                required=False  # we can set existing pdf solution
+                                                )
+    textbook_problem_uuid = serializers.SlugRelatedField(queryset=TextBookProblem.objects.all(),
+                                                         source='textbook_problem',
+                                                         slug_field='uuid',
+                                                         many=False,
+                                                         write_only=True,
+                                                         required=False  # we can set existing textbook_problem
+                                                         )
 
     def get_title(self, obj):
         return obj.title
 
     class Meta:
         model = TextBookSolution
-        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread']
-        read_only_fields = ('id', 'title', 'created_on', 'uuid', 'vote_score')
+        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread',
+                  'textbook_problem_uuid', 'pdf_id']
+        read_only_fields = ('id', 'title', 'created_on', 'uuid', 'vote_score', 'pdf')
+        extra_kwargs = {'position': {'required': False}}
+        # extra_kwargs = {'textbook_problem_uuid': {'write_only': True}, 'pdf_id': {'write_only': True}}
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):

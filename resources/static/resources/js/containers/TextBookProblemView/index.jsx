@@ -14,6 +14,7 @@ import { BASE_URL } from '../../utils/config'
 import { handleFileChange, onChangeGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
 
 import { EditableLabel } from '../../utils/editableLabel'
+import * as googleCreators from '../../actions/google'
 
 class TextBookProblemView extends React.Component {
   constructor (props) {
@@ -33,6 +34,7 @@ class TextBookProblemView extends React.Component {
     if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
       this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
     }
+    this.props.googleActions.gapiInitialize()
   }
 
   onPostSolutionClick () {
@@ -52,8 +54,9 @@ class TextBookProblemView extends React.Component {
   }
 
   addSolution (chapter, problem, file) {
-    // TODO save new solution for the problem
-    console.log(file);
+    // save new solution for the problem
+    this.props.resourcesActions.addSolution(file, problem)
+    this.setState({ showPostSolutionModal: false })
   }
 
   render () {
@@ -103,7 +106,7 @@ class TextBookProblemView extends React.Component {
                   <div>
                     <span
                       className={'blue-text selectable-file'}
-                      style={{ paddingLeft: '2rem' }}
+                      style={{ paddingLeft: '2rem', position: 'relative' }}
                     >
                       <input
                         type='file'
@@ -115,7 +118,7 @@ class TextBookProblemView extends React.Component {
                           handleFileChange(file, null, this.props.problem, null, (...args) => { this.addSolution(...args) })}
                         style={{fontSize: '1px'}} />
                       <label htmlFor={'solution-input-' + this.props.problem.uuid} style={{cursor: 'pointer'}}>
-                        pdf
+                        upload pdf file...
                       </label>
                     </span>
                   </div>
@@ -149,7 +152,7 @@ class TextBookProblemView extends React.Component {
                   <tbody>
                     { this.props.problem
                       ? this.props.problem.solutions.map(function (solution, i) { // ============ chapters
-                        return <tr key={solution.position}>
+                        return <tr key={solution.uuid}>
                           <td>
                             <Glyphicon
                               glyph='arrow-down'
@@ -189,12 +192,16 @@ class TextBookProblemView extends React.Component {
 }
 
 TextBookProblemView.propTypes = {
-  // // actions
+  // actions
   resourcesActions: PropTypes.shape({
     fetchProblem: PropTypes.func.isRequired,
     fetchResource: PropTypes.func.isRequired,
-    solutionVoteAndRefreshList: PropTypes.func.isRequired
+    solutionVoteAndRefreshList: PropTypes.func.isRequired,
+    addSolution: PropTypes.func.isRequired
   }),
+  googleActions: PropTypes.shape({
+    gapiInitialize: PropTypes.func.isRequired
+  }).isRequired,
   // data
   problem: PropTypes.object,
   resource: PropTypes.object
@@ -203,13 +210,15 @@ TextBookProblemView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     problem: state.resources.problem,
-    resource: state.resources.resource
+    resource: state.resources.resource,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
+    googleActions: bindActionCreators(googleCreators, dispatch),
     resourcesActions: bindActionCreators(resourcesCreators, dispatch)
   }
 }

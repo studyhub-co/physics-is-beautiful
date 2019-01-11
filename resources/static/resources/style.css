@@ -163,3 +163,19 @@ div.pdf-ico {
 .resources .title {
     font-size: 2rem;
 }
+
+/* fix for bootstrp modal (attached to body) */
+
+.blue-text {
+    color: rgb(8, 209, 255)
+}
+
+.selectable-file input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
