@@ -87,14 +87,11 @@ class TextBookResourceView extends React.Component {
                         />
                       </Col>
                       <Col sm={9} md={9}>
-                        { problem.count_solutions > 0
-                          ? <span
-                            style={{cursor: 'pointer'}}
-                            onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + problem.uuid) }}>
-                            {problem.count_solutions} solution{problem.count_solutions > 1 ? 's' : null}
-                          </span>
-                          : 'No solutions'
-                        }
+                        <span
+                          style={{cursor: 'pointer'}}
+                          onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + problem.uuid) }}>
+                          {problem.count_solutions} solution{problem.count_solutions > 1 ? 's' : null}
+                        </span>
                       </Col>
                       <Col sm={1} md={1}>
                         {/* TODO drop down menu for request more solutions */}
