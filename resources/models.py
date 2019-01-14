@@ -75,6 +75,7 @@ class TextBookProblem(models.Model):
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
     textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')
+    posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
 
     class Meta:
         ordering = ['position']

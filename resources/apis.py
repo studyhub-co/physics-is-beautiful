@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework.exceptions import NotFound, ValidationError
 
 from djeddit.models import Topic, Thread, Post
 
@@ -49,11 +49,19 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
 
 class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
                               mixins.RetrieveModelMixin,
+                              mixins.CreateModelMixin,
                               GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = FullTextBookProblemSerializer
     queryset = TextBookProblem.objects.all()
     lookup_field = 'uuid'
+
+    def perform_create(self, serializer):
+        with transaction.atomic():
+            if 'textbook_section' not in serializer.validated_data:
+                raise ValidationError('textbook_section field not found')
+            position = self.queryset.filter(textbook_section=serializer.validated_data['textbook_section']).count()
+            serializer.save(posted_by=self.request.user.profile, position=position)
 
 
 class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
@@ -77,7 +85,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
         value = request.data.get('value', None)
 
         if not value or value not in (-1, 1):
-            raise NotAcceptable()
+            raise ValidationError('vote value must be 1 or -1')
 
         if value == 1:
             solution.votes.up(request.user.id)
@@ -128,6 +136,8 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
 
     def perform_create(self, serializer):
         with transaction.atomic():
+            if 'textbook_problem' not in serializer.validated_data:
+                raise ValidationError('textbook_problem field not found')
             position = self.queryset.filter(textbook_problem=serializer.validated_data['textbook_problem']).count()
             serializer.save(posted_by=self.request.user.profile, position=position)
 
