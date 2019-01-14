@@ -211,3 +211,24 @@ export function addSolution (file, problem) {
     })
   }
 }
+
+export function createProblem (title, chapter) {
+  return (dispatch, state) => {
+    let problem = {title: title, textbook_section_id: chapter.id}
+
+    return getAxios().post(API_PREFIX + 'problems/', problem)
+      .then(checkHttpStatus)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function addProblem (title, chapter, resource) {
+  return (dispatch, state) => {
+    return dispatch(createProblem(title, chapter)).then((response) => {
+      // reload resource
+      dispatch(fetchResource(resource.uuid))
+    })
+  }
+}

@@ -3,7 +3,6 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Sheet } from '../../components/Sheet'
 
 import * as resourcesCreators from '../../actions/resources'
 
@@ -29,12 +28,18 @@ class TextBookResourceView extends React.Component {
     })
   }
 
-  onChangeChapterValue (value, id) {
-    // TODO save title in state
+  addProblemClick (chapter) {
+    // add problem in list
+    this.props.resourcesActions.addProblem('' + (chapter.problems.length + 1), chapter, this.props.resource)
   }
 
-  onChangeProblemTitle (value, id) {
-    // TODO save title in state
+  onChangeChapterValue (value, id) {
+    // TODO save title
+  }
+
+  onChangeProblemTitle (value, uuid) {
+    // TODO save problem title
+
   }
 
   render () {
@@ -78,6 +83,14 @@ class TextBookResourceView extends React.Component {
                       </span>]
                     </span>
                   </span>
+                  {this.state.chapterEditMode === chapter.id
+                    ? <div // Add problem button
+                      style={{paddingLeft: '2rem', cursor: 'pointer'}}
+                      onClick={() => this.addProblemClick(chapter)}
+                      className={'blue-text'}>
+                      <Glyphicon glyph='plus' /> Add problem
+                    </div>
+                    : null}
                   {chapter.problems ? chapter.problems.map(function (problem, i) { // ============ problems
                     return <Row key={problem.uuid} className={'blue-text'}>
                       <Col sm={2} md={2}>
@@ -186,16 +199,17 @@ class TextBookResourceView extends React.Component {
 
 TextBookResourceView.propTypes = {
   // actions
-  // resourcesActions: PropTypes.shape({
-  //   fetchResource: PropTypes.func.isRequired
-  // }),
+  resourcesActions: PropTypes.shape({
+    // fetchResource: PropTypes.func.isRequired,
+    addProblem: PropTypes.func.isRequired
+  }),
   // data
   resource: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    //resource: state.resources.resource
+    resource: state.resources.resource
   }
 }
 
