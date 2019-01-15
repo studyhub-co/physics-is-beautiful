@@ -232,3 +232,41 @@ export function addProblem (title, chapter, resource) {
     })
   }
 }
+
+export function updateProblem (problem) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_PREFIX + 'problems/' + problem.uuid + '/', problem)
+      .then(checkHttpStatus)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function updateProblemReloadResource (problem, resource) {
+  return (dispatch, state) => {
+    return dispatch(updateProblem(problem)).then((response) => {
+      // reload resource
+      dispatch(fetchResource(resource.uuid))
+    })
+  }
+}
+
+export function updateChapter (chapter) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_PREFIX + 'chapters/' + chapter.id + '/', chapter)
+      .then(checkHttpStatus)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function updateChapterReloadResource (chapter, resource) {
+  return (dispatch, state) => {
+    return dispatch(updateChapter(chapter)).then((chapter) => {
+      // reload resource
+      dispatch(fetchResource(resource.uuid))
+    })
+  }
+}

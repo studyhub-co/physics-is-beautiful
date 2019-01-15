@@ -29,17 +29,23 @@ class TextBookResourceView extends React.Component {
   }
 
   addProblemClick (chapter) {
-    // add problem in list
+    this.setState({
+      chapterEditMode: null
+    })
+    // add problem to list
     this.props.resourcesActions.addProblem('' + (chapter.problems.length + 1), chapter, this.props.resource)
   }
 
   onChangeChapterValue (value, id) {
-    // TODO save title
+    // save chapter title
+    let chapter = {id: id, title: value}
+    this.props.resourcesActions.updateChapterReloadResource(chapter, this.props.resource)
   }
 
   onChangeProblemTitle (value, uuid) {
-    // TODO save problem title
-
+    // update problem title
+    let problem = {uuid: uuid, title: value}
+    this.props.resourcesActions.updateProblemReloadResource(problem, this.props.resource)
   }
 
   render () {
@@ -200,8 +206,9 @@ class TextBookResourceView extends React.Component {
 TextBookResourceView.propTypes = {
   // actions
   resourcesActions: PropTypes.shape({
-    // fetchResource: PropTypes.func.isRequired,
-    addProblem: PropTypes.func.isRequired
+    addProblem: PropTypes.func.isRequired,
+    updateProblemReloadResource: PropTypes.func.isRequired,
+    updateChapterReloadResource: PropTypes.func.isRequired
   }),
   // data
   resource: PropTypes.object

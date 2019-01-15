@@ -25,10 +25,12 @@ from .permissions import IsStaffOrReadOnly
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
-from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution
+from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
 
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
     FullTextBookProblemSerializer, TextBookSolutionSerializer
+from .serializers_flat import TextBookChapterSerializerFlat, TextBookProblemSerializerFlat
+
 from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID
 
 
@@ -47,12 +49,23 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
+class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
+                              # mixins.CreateModelMixin,
+                              mixins.UpdateModelMixin,
+                              GenericViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = TextBookChapterSerializerFlat # we use flat only with post & patch
+    queryset = TextBookChapter.objects.all()
+    lookup_field = 'id'
+
+
 class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
                               mixins.RetrieveModelMixin,
                               mixins.CreateModelMixin,
+                              mixins.UpdateModelMixin,
                               GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    serializer_class = FullTextBookProblemSerializer
+    serializer_class = TextBookProblemSerializerFlat  # we use flat only with post & patch
     queryset = TextBookProblem.objects.all()
     lookup_field = 'uuid'
 
@@ -66,6 +79,7 @@ class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
 
 class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
                                mixins.CreateModelMixin,
+                               mixins.UpdateModelMixin,
                                GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TextBookSolutionSerializer
