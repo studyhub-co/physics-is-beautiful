@@ -1,24 +1,8 @@
-from django.db import transaction
-
-from django.core.files.storage import get_storage_class
-
 from rest_framework import serializers
 
-from  profiles.serializers import PublicProfileSerializer
+from profiles.serializers import PublicProfileSerializer
 
 from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, TextBookProblem, TextBookSolution
-
-# from urllib.parse import urljoin
-#
-# from django.utils import timezone
-# from django.conf import settings
-# from django.urls import reverse
-#
-# from django.template import loader
-#
-# from django.core.mail import EmailMessage
-#
-# from django.contrib.sites.models import Site
 
 
 class ResourceMetaDataSerializer(serializers.ModelSerializer):
@@ -72,24 +56,24 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
-    # FIXME need to think about adding uuid to textbook_section (chapter)
-    # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
-    #                                                      source='textbook_section',
-    #                                                      slug_field='uuid',
-    #                                                      many=False,
-    #                                                      write_only=True,
-    #                                                      required=False  # we can set existing
-    #                                                      )
-    textbook_section_id = serializers.PrimaryKeyRelatedField(queryset=TextBookChapter.objects.all(),
-                                                             source='textbook_section',
-                                                             many=False,
-                                                             write_only=True,
-                                                             required=False  # we can set existing
-                                                             )
+    # # FIXME need to think about adding uuid to textbook_section (chapter)
+    # # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
+    # #                                                      source='textbook_section',
+    # #                                                      slug_field='uuid',
+    # #                                                      many=False,
+    # #                                                      write_only=True,
+    # #                                                      required=False  # we can set existing
+    # #                                                      )
+    # textbook_section_id = serializers.PrimaryKeyRelatedField(queryset=TextBookChapter.objects.all(),
+    #                                                          source='textbook_section',
+    #                                                          many=False,
+    #                                                          write_only=True,
+    #                                                          required=False  # we can set existing
+    #                                                          )
 
     class Meta:
         model = TextBookProblem
-        fields = ['title', 'solutions', 'position', 'uuid', 'solutions', 'textbook_section_id']
+        fields = ['title', 'position', 'uuid', 'solutions', 'textbook_section_id']
         extra_kwargs = {'position': {'required': False}}
 
 
