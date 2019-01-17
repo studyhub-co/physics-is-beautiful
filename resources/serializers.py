@@ -78,7 +78,7 @@ class FullTextBookProblemSerializer(serializers.ModelSerializer):
 
 
 class TextBookProblemSerializer(serializers.ModelSerializer):
-    solutions = TextBookSolutionSerializer(many=True, required=False, write_only=True)
+    solutions = TextBookSolutionSerializer(many=True, required=False)
     count_solutions = serializers.SerializerMethodField()
 
     def get_count_solutions(self, obj):

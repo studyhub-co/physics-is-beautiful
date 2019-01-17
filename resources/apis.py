@@ -28,7 +28,7 @@ from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
 
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
-    FullTextBookProblemSerializer, TextBookSolutionSerializer
+    FullTextBookProblemSerializer, TextBookSolutionSerializer, TextBookProblemSerializer
 from .serializers_flat import TextBookChapterSerializerFlat, TextBookProblemSerializerFlat
 
 from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID
@@ -65,7 +65,8 @@ class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
                               mixins.UpdateModelMixin,
                               GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    serializer_class = TextBookProblemSerializerFlat  # we use flat only with post & patch
+    serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch TODO
+    serializer_class = TextBookProblemSerializer
     queryset = TextBookProblem.objects.all()
     lookup_field = 'uuid'
 
@@ -179,15 +180,46 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             permission_classes=[permissions.IsAuthenticated,],
             parser_classes=(FormParser, MultiPartParser, FileUploadParser))
     def upload_solution_pdf(self, request):
-        # remove pdfs without related TextBookSolution
-        month_ago = timezone.now() - timedelta(30)
-        TextBookSolutionPDF.objects.filter(created_on__lt=month_ago, solution__isnull=True).delete()
+        self.remove_unrelated_pdfs()
 
         serializer = TextBookSolutionPDFSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
 
         return Response(serializer.data)
+
+    @action(methods=['POST'],
+            detail=False,
+            permission_classes=[permissions.IsAuthenticated, ])
+    def upload_direct_pdf(self, request):
+        self.remove_unrelated_pdfs()
+        # TODO download data from external url, check it content, save serializer
+
+        if 'url' not in request.data or not request.data['url']:
+            raise ValidationError('url field not found')
+
+        file_url = request.data['url']
+
+        import requests
+
+        # TODO Check filesize (chunk downloading?)
+
+        data = requests.get(file_url)
+
+        # TODO
+        assert False
+
+        # serializer = TextBookSolutionPDFSerializer(data=request.data)
+        serializer = TextBookSolutionPDFSerializer()
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+        return Response(serializer.data)
+
+    def remove_unrelated_pdfs(self):
+        # remove pdfs without related TextBookSolution
+        month_ago = timezone.now() - timedelta(30)
+        TextBookSolutionPDF.objects.filter(created_on__lt=month_ago, solution__isnull=True).delete()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user.profile)
