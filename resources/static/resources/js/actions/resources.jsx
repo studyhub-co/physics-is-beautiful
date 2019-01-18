@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router'
 
-import { checkHttpStatus, getAxios } from '../utils'
+import { checkHttpStatus, checkHttpError, getAxios } from '../utils'
 import {
   RESOURCE_RECEIVE_RESOURCE_OPTIONS, CREATE_RESOURCE_SUCCESS, RESOURCE_RECEIVE_POPULAR_RESOURCES,
   RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE,
@@ -169,7 +169,7 @@ export function fetchSolution (uuid) {
 export function solutionVote (uuid, val) {
   return (dispatch, state) => {
     return getAxios().post(API_PREFIX + 'solutions/' + uuid + '/vote/', {value: val})
-      .then(checkHttpStatus)
+      .catch(checkHttpError)
   }
 }
 
@@ -196,7 +196,7 @@ export function createSolution (file, problem) {
     let solution = {pdf_id: file.id, textbook_problem_uuid: problem.uuid}
 
     return getAxios().post(API_PREFIX + 'solutions/', solution)
-      .then(checkHttpStatus)
+      .catch(checkHttpError)
       .then((response) => {
         return response
       })
@@ -217,7 +217,7 @@ export function createProblem (title, chapter) {
     let problem = {title: title, textbook_section_id: chapter.id}
 
     return getAxios().post(API_PREFIX + 'problems/', problem)
-      .then(checkHttpStatus)
+      .catch(checkHttpError)
       .then((response) => {
         return response
       })
@@ -236,7 +236,7 @@ export function addProblem (title, chapter, resource) {
 export function updateProblem (problem) {
   return (dispatch, state) => {
     return getAxios().patch(API_PREFIX + 'problems/' + problem.uuid + '/', problem)
-      .then(checkHttpStatus)
+      .catch(checkHttpError)
       .then((response) => {
         return response
       })
@@ -255,7 +255,7 @@ export function updateProblemReloadResource (problem, resource) {
 export function updateChapter (chapter) {
   return (dispatch, state) => {
     return getAxios().patch(API_PREFIX + 'chapters/' + chapter.id + '/', chapter)
-      .then(checkHttpStatus)
+      .catch(checkHttpError)
       .then((response) => {
         return response
       })

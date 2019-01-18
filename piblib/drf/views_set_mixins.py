@@ -6,3 +6,10 @@ class SeparateListObjectSerializerMixin:
         if self.action in ('retrieve', 'partial_update', 'update', 'create'):
             return self.serializer_class
         return self.list_serializer_class
+
+
+class SeparateFlatCreateUpdateObjectSerializerMixin:
+    def get_serializer_class(self):
+        if self.action in ('partial_update', 'update', 'create'):
+            return self.serializer_class_flat
+        return self.serializer_class

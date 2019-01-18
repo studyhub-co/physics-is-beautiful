@@ -1,10 +1,10 @@
-# from django.db import transaction
-
-from django.utils import timezone
+import os
 from datetime import timedelta
+from urllib.parse import urlparse
 
+from django.core.files.base import ContentFile
+from django.utils import timezone
 from django.db.models import F, Count, Prefetch
-
 from django.db import transaction
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -23,7 +23,7 @@ from djeddit.models import Topic, Thread, Post
 
 from .permissions import IsStaffOrReadOnly
 
-from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
+from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
 
 from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
 
@@ -40,12 +40,13 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class RecentlyFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
-        filter_param = request.query_params.get('filter')
-        if filter_param and filter_param == 'recent':
-            queryset = queryset.\
-                filter(user_recent_list__user__user=request.user).\
-                order_by('-user_recent_list__last_access_date')
-            # queryset = queryset.filter(curricula_user_dashboard__profile__user=request.user\)
+        if request.user.is_authenticated:
+            filter_param = request.query_params.get('filter')
+            if filter_param and filter_param == 'recent':
+                queryset = queryset.\
+                    filter(user_recent_list__user__user=request.user).\
+                    order_by('-user_recent_list__last_access_date')
+                # queryset = queryset.filter(curricula_user_dashboard__profile__user=request.user\)
         return queryset
 
 
@@ -59,13 +60,13 @@ class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
     lookup_field = 'id'
 
 
-class TextBookProblemsViewSet(SeparateListObjectSerializerMixin,
+class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
                               mixins.RetrieveModelMixin,
                               mixins.CreateModelMixin,
                               mixins.UpdateModelMixin,
                               GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch TODO
+    serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch
     serializer_class = TextBookProblemSerializer
     queryset = TextBookProblem.objects.all()
     lookup_field = 'uuid'
@@ -158,8 +159,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
 
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsStaffOrReadOnly)
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
     pagination_class = StandardResultsSetPagination
@@ -193,8 +193,7 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             permission_classes=[permissions.IsAuthenticated, ])
     def upload_direct_pdf(self, request):
         self.remove_unrelated_pdfs()
-        # TODO download data from external url, check it content, save serializer
-
+        # download data from external url, check it content, save serializer
         if 'url' not in request.data or not request.data['url']:
             raise ValidationError('url field not found')
 
@@ -204,13 +203,19 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         # TODO Check filesize (chunk downloading?)
 
+        # check file ext
+        if not file_url.endswith('.pdf'):
+            raise ValidationError('Not a pdf file')
+
         data = requests.get(file_url)
 
-        # TODO
-        assert False
+        a = urlparse(file_url)
+        file_name = os.path.basename(a.path)
+
+        pdf = ContentFile(data.content, name=file_name)
 
         # serializer = TextBookSolutionPDFSerializer(data=request.data)
-        serializer = TextBookSolutionPDFSerializer()
+        serializer = TextBookSolutionPDFSerializer(data={'file': pdf, 'external_url': file_url})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
 
@@ -227,12 +232,13 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         # try to find user last access date
         instance = self.get_object()
-        try:
-            user_access = RecentUserResource.objects.get(user=request.user.profile, resource=instance)
-            user_access.last_access_date = timezone.now()
-            user_access.save()
-        except RecentUserResource.DoesNotExist:
-            RecentUserResource.objects.create(user=request.user.profile, resource=instance)
+        if request.user.is_authenticated:
+            try:
+                user_access = RecentUserResource.objects.get(user=request.user.profile, resource=instance)
+                user_access.last_access_date = timezone.now()
+                user_access.save()
+            except RecentUserResource.DoesNotExist:
+                RecentUserResource.objects.create(user=request.user.profile, resource=instance)
 
         # increment view count
         if instance:
