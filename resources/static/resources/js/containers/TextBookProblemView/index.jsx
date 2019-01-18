@@ -11,10 +11,11 @@ import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
 
-import { handleFileChange, onChangeGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
+import { handleFileChange, onChangeDirectUrl, onChangeGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
 
 import { EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
+import * as profileCreators from '../../actions/profile'
 
 class TextBookProblemView extends React.Component {
   constructor (props) {
@@ -35,10 +36,18 @@ class TextBookProblemView extends React.Component {
       this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
     }
     this.props.googleActions.gapiInitialize()
+    this.props.profileActions.fetchProfileMe()
   }
 
   onPostSolutionClick () {
-    this.setState({ showPostSolutionModal: !this.state.showPostSolutionModal })
+    if (this.props.profile.is_anonymous === true) {
+      let url = '/accounts/login/?next=' + window.location.pathname
+      window.location.replace(url)
+      throw new Error('redirecting...')
+    }
+    else {
+      this.setState({showPostSolutionModal: !this.state.showPostSolutionModal})
+    }
   }
 
   onClickSolution (uuid) {
@@ -140,6 +149,22 @@ class TextBookProblemView extends React.Component {
                       </b>
                     </span>
                   </div>
+                  <div>
+                    <span
+                      style={{paddingLeft: '2rem', cursor: 'pointer'}}
+                      className={'blue-text'}
+                    >
+                      <b>
+                        <EditableLabel
+                          value={'direct link'}
+                          onChange={(url) => {
+                            onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
+                          }
+                          }
+                          defaultValue={'direct link'} />
+                      </b>
+                    </span>
+                  </div>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button onClick={this.handleClosePostSolutionModal}>Close</Button>
@@ -202,8 +227,12 @@ TextBookProblemView.propTypes = {
   googleActions: PropTypes.shape({
     gapiInitialize: PropTypes.func.isRequired
   }).isRequired,
+  profileActions: PropTypes.shape({
+    fetchProfileMe: PropTypes.func.isRequired
+  }),
   // data
   problem: PropTypes.object,
+  profile: PropTypes.object,
   resource: PropTypes.object
 }
 
@@ -211,7 +240,8 @@ const mapStateToProps = (state) => {
   return {
     problem: state.resources.problem,
     resource: state.resources.resource,
-    gapiInitState: state.google.gapiInitState
+    gapiInitState: state.google.gapiInitState,
+    profile: state.profile.me,
   }
 }
 
@@ -219,7 +249,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     googleActions: bindActionCreators(googleCreators, dispatch),
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 

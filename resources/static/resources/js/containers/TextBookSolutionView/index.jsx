@@ -212,12 +212,11 @@ class TextBookSolutionView extends React.Component {
     let pdfFile = null
 
     if (this.props.solution) {
-      if (this.props.solution.pdf.external_url) {
+      if (this.props.solution.pdf.external_url && this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
         if (this.state.externalPdfUrlFile) {
           // file donwloaded
           pdfFile = this.state.externalPdfUrlFile
-          // TODO if external pdf failed then load local
-          // TODO add direct media link (not only google drive) support
+          // TODO if external google drive pdf failed then load local
         }
       } else {
         pdfFile = this.props.solution.pdf.file
@@ -282,7 +281,7 @@ class TextBookSolutionView extends React.Component {
                   </a>&nbsp;-&nbsp;
                   <Moment fromNow>{this.props.solution.created_on}</Moment>
                 </div>
-                <div><a href={this.props.solution.pdf.file}>
+                <div><a href={this.props.solution.pdf.external_url || this.props.solution.pdf.file}>
                   <h1 className={'gray-text title'}>
                     {this.props.solution.title}</h1>
                 </a>
