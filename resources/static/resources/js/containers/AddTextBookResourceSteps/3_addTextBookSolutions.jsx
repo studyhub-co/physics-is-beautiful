@@ -12,8 +12,6 @@ import { EditableLabel } from '../../utils/editableLabel'
 
 import { handleFileChange, onChangeGoogleDriveUrl, onChangeDirectUrl } from './lib'
 
-// const SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
-
 export default class AddTextBookSolutionsView extends React.Component {
   constructor (props) {
     super(props)

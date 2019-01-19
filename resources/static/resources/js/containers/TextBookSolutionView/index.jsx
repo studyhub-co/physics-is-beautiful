@@ -59,14 +59,12 @@ class TextBookSolutionView extends React.Component {
     if (prevProps.solution !== this.props.solution) {
       // reload thread
       this.props.djedditActions.fetchThreadSolution(this.props.solution.thread)
-      // try to load pdf from google drive
-      if (this.props.solution.pdf.external_url) {
-        // We need to download PDf from drive.google.com due CORS limitation.
-        // if (this.props.gapiInitState) {
-        //   this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
-        // } else {
-        //   setTimeout(() => { this.loadExternalGooglePdf(this.props.solution.pdf.external_url) }, 1000)
-        // }
+      // we can't login in to google (auth popup will be blocked by browser)
+      if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
+        // so load pdf only if user already logged in
+        if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token) {
+          this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
+        }
       }
     }
   }

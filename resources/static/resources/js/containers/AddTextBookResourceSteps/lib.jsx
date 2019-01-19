@@ -32,7 +32,7 @@ function getGoogleDriveNameAndUpload (id, chapter, problem, accessToken, mediaDa
     xhr.open('GET', url)
     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
     xhr.onload = function () {
-      var jsonResp = JSON.parse(xhr.response);
+      var jsonResp = JSON.parse(xhr.response)
       //that.handleFileChange(mediaData, chapter, problem, jsonResp['title'])
       handleFileChange(mediaData, chapter, problem, jsonResp['title'], callback, urlString)
     }
@@ -51,25 +51,35 @@ export function downloadGoogleDriveUrl (urlString, callback) {
   // var that = this
   url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
   if (url) {
-    var SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
-    var authData = {
-      client_id: '1090448644110-r8o52h1sqpbq7pp1j8ougcr1e35qicqg.apps.googleusercontent.com',
-      scope: SCOPES,
-      immediate: false
-    }
-    gapi.auth.authorize(authData, function (response) {
-      // TODO check if token already get
-      var accessToken = gapi.auth.getToken().access_token
+    let downloadFile = function (accessToken) {
       var xhr = new XMLHttpRequest()
       xhr.open('GET', url)
       xhr.responseType = 'blob'
       xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-      xhr.onload = function () {
-        callback(xhr.response, id, accessToken)
+      xhr.onload = function (e) {
+        if (e.target.status === 401) {
+          // user remove permission from https://myaccount.google.com/permissions , gapi use old token
+          gapi.auth2.getAuthInstance().signIn().then(function (user) {
+            // need user allow popup windows
+            downloadFile(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token)
+          })
+        } else {
+          callback(xhr.response, id, accessToken)
+        }
       }
       xhr.send()
-    })
+    }
+
+    // check that user logged in google
+    if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token) {
+      downloadFile(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token)
+    } else {
+    // user not loggen in google / TODO it seems we need to check scopes
+      gapi.auth2.getAuthInstance().signIn().then(function (user) {
+        downloadFile(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token)
+      })
+    }
   }
 }
 
