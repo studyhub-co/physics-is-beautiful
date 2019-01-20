@@ -110,3 +110,12 @@ export function onChangeGoogleDriveUrl (urlString, chapter, problem, callback) {
       getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file, callback, urlString)
     })
 }
+
+export function onChangeExternalUrl (...args) {
+  let fileUrl = args[0]
+  if (fileUrl.startsWith('https://drive.google.com/')) {
+    onChangeGoogleDriveUrl(...args)
+  } else {
+    onChangeDirectUrl(...args)
+  }
+}
