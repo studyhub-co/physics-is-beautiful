@@ -11,7 +11,12 @@ import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
 
-import { handleFileChange, onChangeDirectUrl, onChangeGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
+import {
+  handleFileChange,
+  onChangeDirectUrl,
+  onChangeExternalUrl,
+  onChangeGoogleDriveUrl
+} from '../AddTextBookResourceSteps/lib'
 
 import { EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
@@ -138,33 +143,36 @@ class TextBookProblemView extends React.Component {
                     >
                       <b>
                         <EditableLabel
-                          value={'google drive link'}
+                          // value={'google drive link'}
+                          value={'external link'}
                           onChange={(url) => {
                             if (this.props.gapiInitState) {
-                              onChangeGoogleDriveUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
+                              // onChangeGoogleDriveUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
+                              onChangeExternalUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
                             }
                           }
                           }
-                          defaultValue={'google drive link'} />
+                          // defaultValue={'google drive link'} />
+                          defaultValue={'external link'} />
                       </b>
                     </span>
                   </div>
-                  <div>
-                    <span
-                      style={{paddingLeft: '2rem', cursor: 'pointer'}}
-                      className={'blue-text'}
-                    >
-                      <b>
-                        <EditableLabel
-                          value={'direct link'}
-                          onChange={(url) => {
-                            onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
-                          }
-                          }
-                          defaultValue={'direct link'} />
-                      </b>
-                    </span>
-                  </div>
+                  {/*<div>*/}
+                    {/*<span*/}
+                      {/*style={{paddingLeft: '2rem', cursor: 'pointer'}}*/}
+                      {/*className={'blue-text'}*/}
+                    {/*>*/}
+                      {/*<b>*/}
+                        {/*<EditableLabel*/}
+                          {/*value={'direct link'}*/}
+                          {/*onChange={(url) => {*/}
+                            {/*onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })*/}
+                          {/*}*/}
+                          {/*}*/}
+                          {/*defaultValue={'direct link'} />*/}
+                      {/*</b>*/}
+                    {/*</span>*/}
+                  {/*</div>*/}
                 </Modal.Body>
                 <Modal.Footer>
                   <Button onClick={this.handleClosePostSolutionModal}>Close</Button>

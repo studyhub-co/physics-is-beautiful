@@ -62,7 +62,8 @@ class TextBookSolutionView extends React.Component {
       // we can't login in to google (auth popup will be blocked by browser)
       if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
         // so load pdf only if user already logged in
-        if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token) {
+        if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token &&
+          this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
           this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
         }
       }
