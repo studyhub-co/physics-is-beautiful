@@ -16,7 +16,7 @@ import PDF from 'react-pdf-js'
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 
-import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
+// import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
 
 import * as resourcesCreators from '../../actions/resources'
 import * as djedditCreators from '../../actions/djeddit'
@@ -38,7 +38,9 @@ class TextBookSolutionView extends React.Component {
     this.handleChangeNumberOfPdfPage = this.handleChangeNumberOfPdfPage.bind(this)
     this.onZoomPdfClick = this.onZoomPdfClick.bind(this)
     this.onSubmitPost = this.onSubmitPost.bind(this)
-    this.loadExternalGooglePdf = this.loadExternalGooglePdf.bind(this)
+
+    // !=== part of google proxy pdf viewer
+    // this.loadExternalGooglePdf = this.loadExternalGooglePdf.bind(this)
   }
 
   componentDidMount () {
@@ -59,24 +61,27 @@ class TextBookSolutionView extends React.Component {
     if (prevProps.solution !== this.props.solution) {
       // reload thread
       this.props.djedditActions.fetchThreadSolution(this.props.solution.thread)
+
+      // !=== part of google proxy pdf viewer
       // we can't login in to google (auth popup will be blocked by browser)
-      if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
-        // so load pdf only if user already logged in
-        if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token &&
-          this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
-          this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
-        }
-      }
+      // if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
+      //   // so load pdf only if user already logged in
+      //   if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token &&
+      //     this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
+      //     this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
+      //   }
+      // }
     }
   }
 
-  loadExternalGooglePdf (url) {
-    downloadGoogleDriveUrl(url, (response) => {
-      let pdfURL = null
-      pdfURL = URL.createObjectURL(response)
-      this.setState({externalPdfUrlFile: pdfURL})
-    })
-  }
+  // !=== part of google proxy pdf viewer
+  // loadExternalGooglePdf (url) {
+  //   downloadGoogleDriveUrl(url, (response) => {
+  //     let pdfURL = null
+  //     pdfURL = URL.createObjectURL(response)
+  //     this.setState({externalPdfUrlFile: pdfURL})
+  //   })
+  // }
 
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
@@ -211,15 +216,18 @@ class TextBookSolutionView extends React.Component {
     let pdfFile = null
 
     if (this.props.solution) {
-      if (this.props.solution.pdf.external_url && this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
-        if (this.state.externalPdfUrlFile) {
-          // file donwloaded
-          pdfFile = this.state.externalPdfUrlFile
-          // TODO if external google drive pdf failed then load local
-        }
-      } else {
-        pdfFile = this.props.solution.pdf.file
-      }
+      // !=== part of google proxy pdf viewer
+      // if (this.props.solution.pdf.external_url) {
+      //   if (this.props.solution.pdf.external_url.startsWith('https://drive.google.com/'))
+      //   {if (this.state.externalPdfUrlFile) {
+      //     // file donwloaded
+      //     pdfFile = this.state.externalPdfUrlFile
+      //     } else {
+      //       pdfFile = this.props.solution.pdf.file
+      //     }
+      //   }
+
+      pdfFile = this.props.solution.pdf.file
     }
 
     return (
