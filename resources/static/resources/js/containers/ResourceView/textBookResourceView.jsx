@@ -18,13 +18,20 @@ class TextBookResourceView extends React.Component {
     // TODO copy resource from props to state to allow user modify
     this.state = {
       chapterEditMode: null,
-      problemEditMode: null
+      problemEditMode: null,
+      resourceEditMode: false
     }
   }
 
   editChapterClick (id) {
     this.setState({
       chapterEditMode: id
+    })
+  }
+
+  editResourceClick () {
+    this.setState({
+      resourceEditMode: !this.state.resourceEditMode
     })
   }
 
@@ -63,6 +70,19 @@ class TextBookResourceView extends React.Component {
           <Col sm={12} md={12}>
             <h1 className={'blue-title text-align-center'}>
               {this.props.resource.metadata ? this.props.resource.metadata.data.volumeInfo.title : 'Unknown resource'}
+              <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                <span className={'base-circle-edit'}>
+                  [<span
+                    onClick={() => this.editResourceClick()}
+                    className={'blue-text'}
+                    style={{cursor: 'pointer'}}
+                  >
+                    {this.state.resourceEditMode
+                      ? 'View'
+                      : 'Edit'}
+                  </span>]
+                </span>
+              </span>
             </h1>
           </Col>
         </Row>
@@ -72,24 +92,26 @@ class TextBookResourceView extends React.Component {
               return <Row key={chapter.position}>
                 <Col sm={12} md={12}>
                   <span className={'blue-title'}>
-                    <EditableExternalEventLabel
-                      value={chapter.title}
-                      onChange={(value) => { this.onChangeChapterValue(value, chapter.id) }}
-                      editMode={this.state.chapterEditMode === chapter.id}
-                    />
+                    {this.state.resourceEditMode
+                      ? <EditableLabel
+                        value={chapter.title}
+                        onChange={(value) => { this.onChangeChapterValue(value, chapter.id) }}
+                        editMode={this.state.chapterEditMode === chapter.id}
+                      /> : chapter.title
+                    }
                   </span>
-                  <span style={{position: 'relative', paddingLeft: '1rem'}}>
-                    <span className={'base-circle-edit'}>
-                      [<span
-                        onClick={() => this.editChapterClick(chapter.id)}
-                        className={'blue-text'}
-                        style={{cursor: 'pointer'}}
-                      >
-                        Edit
-                      </span>]
-                    </span>
-                  </span>
-                  {this.state.chapterEditMode === chapter.id
+                  {/*<span style={{position: 'relative', paddingLeft: '1rem'}}>*/}
+                    {/*<span className={'base-circle-edit'}>*/}
+                      {/*[<span*/}
+                        {/*onClick={() => this.editChapterClick(chapter.id)}*/}
+                        {/*className={'blue-text'}*/}
+                        {/*style={{cursor: 'pointer'}}*/}
+                      {/*>*/}
+                        {/*Edit*/}
+                      {/*</span>]*/}
+                    {/*</span>*/}
+                  {/*</span>*/}
+                  {this.state.resourceEditMode
                     ? <div // Add problem button
                       style={{paddingLeft: '2rem', cursor: 'pointer'}}
                       onClick={() => this.addProblemClick(chapter)}
@@ -100,10 +122,13 @@ class TextBookResourceView extends React.Component {
                   {chapter.problems ? chapter.problems.map(function (problem, i) { // ============ problems
                     return <Row key={problem.uuid} className={'blue-text'}>
                       <Col sm={2} md={2}>
-                        <EditableLabel
-                          value={problem.title}
-                          onChange={(value) => { this.onChangeProblemTitle(value, problem.uuid) }}
-                        />
+                        {this.state.resourceEditMode
+                          ? <EditableLabel
+                            value={problem.title}
+                            onChange={(value) => { this.onChangeProblemTitle(value, problem.uuid) }}
+                          />
+                          : problem.title
+                        }
                       </Col>
                       <Col sm={9} md={9}>
                         <span
