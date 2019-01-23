@@ -16,6 +16,7 @@ import PDF from 'react-pdf-js'
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 
+// !=== part of google proxy pdf viewer
 // import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
 
 import * as resourcesCreators from '../../actions/resources'

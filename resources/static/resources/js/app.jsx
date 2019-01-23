@@ -1,6 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+
 import PropTypes from 'prop-types'
 
 class App extends React.Component {
@@ -15,7 +18,7 @@ class App extends React.Component {
   }
 }
 App.propTypes = {
-  children: PropTypes.shape().isRequired,
+  children: PropTypes.shape().isRequired
   // dispatch: PropTypes.func.isRequired,
   // location: PropTypes.shape({
   //   pathname: PropTypes.string
@@ -31,5 +34,5 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(App)
+export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(App))
 export { App as AppNotConnected }
