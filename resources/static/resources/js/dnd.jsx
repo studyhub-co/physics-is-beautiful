@@ -2,18 +2,19 @@ import React from 'react'
 import { DropTarget } from 'react-dnd'
 
 export const DragItemTypes = {
-  SOLUTION: 'solution'
+  SOLUTION: 'solution',
+  CHAPTER: 'chapter'
 }
 
-class DockableDropTarget extends React.Component {
+let DockableDropTargetClass = class DockableDropTarget extends React.Component {
   render () {
     let dockSite = null
-    let isOver = this.props.dragOver && this.props.itemOver.uuid !== this.props.selfUuid
+    let isOver = this.props.dragOver && this.props.itemOver.id !== this.props.self.id
     if (isOver) {
       dockSite = <div className='dock-site' />
     }
     return this.props.connectDropTarget(
-      <div className={'drop-target' + (isOver ? ' drag-over': '')}>
+      <div className={'drop-target' + (isOver ? ' drag-over' : '')}>
         {dockSite}
         {this.props.children}
       </div>
@@ -21,10 +22,10 @@ class DockableDropTarget extends React.Component {
   }
 }
 
-DockableDropTarget = DropTarget(props => props.itemType,
+let DockableDropTarget = DropTarget(props => props.itemType,
   {drop: function (props, monitor) {
     var item = monitor.getItem()
-    if (item.uuid !== props.selfUuid) {
+    if (item.id !== props.self.id) {
       props.onDrop(item)
     }
   }
@@ -35,39 +36,6 @@ DockableDropTarget = DropTarget(props => props.itemType,
       dragOver: monitor.isOver(),
       itemOver: monitor.getItem()
     }
-  })(DockableDropTarget)
+  })(DockableDropTargetClass)
 
 export {DockableDropTarget}
-
-class DragHoverable extends React.Component {
-  render () {
-    return this.props.connectDropTarget(
-      <div>
-        {this.props.children}
-      </div>
-    )
-  }
-}
-
-DragHoverable = DropTarget(props => props.itemType,
-  {
-    hover: (props, monitor, component) => {
-      component.lastDragOver = Date.now()
-      if (!component.timer) {
-        component.timer = setTimeout(() => {
-          component.timer = null
-          if (Date.now() - component.lastDragOver < 200) {
-            props.onDragHover()
-          }
-        }, 500)
-      }
-    }},
-  (connect, monitor) => {
-    return {
-      connectDropTarget: connect.dropTarget(),
-      dragOver: monitor.isOver()
-    }
-  }
-)(DragHoverable)
-
-export {DragHoverable}

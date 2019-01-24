@@ -59,6 +59,11 @@ class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
     queryset = TextBookChapter.objects.all()
     lookup_field = 'id'
 
+    # def perform_update(self, serializer):
+    #     # reorder positions
+    #     pass
+    #     serializer.save()
+
 
 class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
                               mixins.RetrieveModelMixin,

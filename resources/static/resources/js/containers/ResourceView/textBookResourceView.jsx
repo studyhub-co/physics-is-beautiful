@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 
 import * as resourcesCreators from '../../actions/resources'
 
+import {DockableDropTarget, DragItemTypes} from '../../dnd'
+
 import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
 
 import Chapter from './Components/chapter'
@@ -56,6 +58,20 @@ class TextBookResourceView extends React.Component {
     this.props.resourcesActions.updateProblemReloadResource(problem, this.props.resource)
   }
 
+  onChapterDroppedBefore (beforeChapter, chapter) {
+    let updateChapter = {id: chapter.id}
+    if (beforeChapter) {
+      updateChapter['position'] = beforeChapter.position
+    } else { // at the end of list
+      // not so good if already reordered by another user (used in editor also)
+      // var lastChapter = this.props.resource.sections[this.props.resource.sections.length - 1]
+      // updateChapter['position'] = lastChapter.position + 1
+      updateChapter['position'] = -1
+    }
+
+    this.props.resourcesActions.updateChapterReloadResource(updateChapter, this.props.resource)
+  }
+
   render () {
     var isbn = null
     if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('industryIdentifiers')) {
@@ -90,17 +106,23 @@ class TextBookResourceView extends React.Component {
         <Row>
           <Col sm={9} md={9}>
             {this.props.resource.sections ? this.props.resource.sections.map(function (chapter, i) { // ============ chapters
-              return <Row key={chapter.position}>
+              return <Row key={chapter.id}>
                 <Col sm={12} md={12}>
-                  <Chapter
-                    chapter={chapter}
-                    chapterEditModeId={this.state.chapterEditModeId}
-                    onChangeProblemTitle={this.onChangeProblemTitle}
-                    onChangeChapterValue={this.onChangeChapterValue}
-                    resourceEditMode={this.state.resourceEditMode}
-                    addProblemClick={this.addProblemClick}
-                    resource={this.props.resource}
-                  />
+                  <DockableDropTarget
+                    key={chapter.id}
+                    onDrop={(droppedChapter) => { this.onChapterDroppedBefore(chapter, droppedChapter) }}
+                    itemType={DragItemTypes.CHAPTER}
+                    self={chapter}>
+                    <Chapter
+                      chapter={chapter}
+                      chapterEditModeId={this.state.chapterEditModeId}
+                      onChangeProblemTitle={this.onChangeProblemTitle}
+                      onChangeChapterValue={this.onChangeChapterValue}
+                      resourceEditMode={this.state.resourceEditMode}
+                      addProblemClick={this.addProblemClick}
+                      resource={this.props.resource}
+                    />
+                  </DockableDropTarget>
                 </Col>
               </Row>
             }, this)
