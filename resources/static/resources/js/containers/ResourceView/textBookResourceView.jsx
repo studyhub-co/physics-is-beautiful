@@ -6,28 +6,29 @@ import PropTypes from 'prop-types'
 
 import * as resourcesCreators from '../../actions/resources'
 
-import { Grid, Row, Col, Image, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
 
-import { BASE_URL } from '../../utils/config'
-import history from '../../history'
-import { EditableLabel, EditableExternalEventLabel } from '../../utils/editableLabel'
+import Chapter from './Components/chapter'
 
 class TextBookResourceView extends React.Component {
   constructor (props) {
     super(props)
-    // TODO copy resource from props to state to allow user modify
+    // enh copy resource from props to state to allow user modify
     this.state = {
-      chapterEditMode: null,
-      problemEditMode: null,
+      chapterEditModeId: null,
       resourceEditMode: false
     }
+
+    this.addProblemClick = this.addProblemClick.bind(this)
+    this.onChangeChapterValue = this.onChangeChapterValue.bind(this)
+    this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
   }
 
-  editChapterClick (id) {
-    this.setState({
-      chapterEditMode: id
-    })
-  }
+  // editChapterClick (id) {
+  //   this.setState({
+  //     chapterEditMode: id
+  //   })
+  // }
 
   editResourceClick () {
     this.setState({
@@ -37,7 +38,7 @@ class TextBookResourceView extends React.Component {
 
   addProblemClick (chapter) {
     this.setState({
-      chapterEditMode: null
+      chapterEditModeId: null
     })
     // add problem to list
     this.props.resourcesActions.addProblem('' + (chapter.problems.length + 1), chapter, this.props.resource)
@@ -91,59 +92,15 @@ class TextBookResourceView extends React.Component {
             {this.props.resource.sections ? this.props.resource.sections.map(function (chapter, i) { // ============ chapters
               return <Row key={chapter.position}>
                 <Col sm={12} md={12}>
-                  <span className={'blue-title'}>
-                    {this.state.resourceEditMode
-                      ? <EditableLabel
-                        value={chapter.title}
-                        onChange={(value) => { this.onChangeChapterValue(value, chapter.id) }}
-                        editMode={this.state.chapterEditMode === chapter.id}
-                      /> : chapter.title
-                    }
-                  </span>
-                  {/*<span style={{position: 'relative', paddingLeft: '1rem'}}>*/}
-                    {/*<span className={'base-circle-edit'}>*/}
-                      {/*[<span*/}
-                        {/*onClick={() => this.editChapterClick(chapter.id)}*/}
-                        {/*className={'blue-text'}*/}
-                        {/*style={{cursor: 'pointer'}}*/}
-                      {/*>*/}
-                        {/*Edit*/}
-                      {/*</span>]*/}
-                    {/*</span>*/}
-                  {/*</span>*/}
-                  {this.state.resourceEditMode
-                    ? <div // Add problem button
-                      style={{paddingLeft: '2rem', cursor: 'pointer'}}
-                      onClick={() => this.addProblemClick(chapter)}
-                      className={'blue-text'}>
-                      <Glyphicon glyph='plus' /> Add problem
-                    </div>
-                    : null}
-                  {chapter.problems ? chapter.problems.map(function (problem, i) { // ============ problems
-                    return <Row key={problem.uuid} className={'blue-text'}>
-                      <Col sm={2} md={2}>
-                        {this.state.resourceEditMode
-                          ? <EditableLabel
-                            value={problem.title}
-                            onChange={(value) => { this.onChangeProblemTitle(value, problem.uuid) }}
-                          />
-                          : problem.title
-                        }
-                      </Col>
-                      <Col sm={9} md={9}>
-                        <span
-                          style={{cursor: 'pointer'}}
-                          onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + problem.uuid) }}>
-                          {problem.count_solutions} solution{problem.count_solutions > 1 ? 's' : null}
-                        </span>
-                      </Col>
-                      <Col sm={1} md={1}>
-                        {/* TODO drop down menu for request more solutions */}
-                      </Col>
-                    </Row>
-                  }, this)
-                    : null
-                  }
+                  <Chapter
+                    chapter={chapter}
+                    chapterEditModeId={this.state.chapterEditModeId}
+                    onChangeProblemTitle={this.onChangeProblemTitle}
+                    onChangeChapterValue={this.onChangeChapterValue}
+                    resourceEditMode={this.state.resourceEditMode}
+                    addProblemClick={this.addProblemClick}
+                    resource={this.props.resource}
+                  />
                 </Col>
               </Row>
             }, this)
