@@ -9,7 +9,7 @@ export const DragItemTypes = {
 let DockableDropTargetClass = class DockableDropTarget extends React.Component {
   render () {
     let dockSite = null
-    let isOver = this.props.dragOver && this.props.itemOver.id !== this.props.self.id
+    let isOver = this.props.dragOver && (!this.props.self || this.props.itemOver.id !== this.props.self.id)
     if (isOver) {
       dockSite = <div className='dock-site' />
     }
@@ -25,7 +25,7 @@ let DockableDropTargetClass = class DockableDropTarget extends React.Component {
 let DockableDropTarget = DropTarget(props => props.itemType,
   {drop: function (props, monitor) {
     var item = monitor.getItem()
-    if (item.id !== props.self.id) {
+    if (!props.self || item.id !== props.self.id) {
       props.onDrop(item)
     }
   }
