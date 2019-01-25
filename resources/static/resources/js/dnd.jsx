@@ -2,14 +2,17 @@ import React from 'react'
 import { DropTarget } from 'react-dnd'
 
 export const DragItemTypes = {
-  SOLUTION: 'solution',
+  PROBLEM: 'problem',
   CHAPTER: 'chapter'
 }
 
 let DockableDropTargetClass = class DockableDropTarget extends React.Component {
   render () {
     let dockSite = null
-    let isOver = this.props.dragOver && (!this.props.self || this.props.itemOver.id !== this.props.self.id)
+
+    let idAttr = this.props.idAttr
+
+    let isOver = this.props.dragOver && (!this.props.self || this.props.itemOver[idAttr] !== this.props.self[idAttr])
     if (isOver) {
       dockSite = <div className='dock-site' />
     }
@@ -25,7 +28,8 @@ let DockableDropTargetClass = class DockableDropTarget extends React.Component {
 let DockableDropTarget = DropTarget(props => props.itemType,
   {drop: function (props, monitor) {
     var item = monitor.getItem()
-    if (!props.self || item.id !== props.self.id) {
+    let idAttr = props.idAttr
+    if (!props.self || item[idAttr] !== props.self[idAttr]) {
       props.onDrop(item)
     }
   }

@@ -26,12 +26,6 @@ class TextBookResourceView extends React.Component {
     this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
   }
 
-  // editChapterClick (id) {
-  //   this.setState({
-  //     chapterEditMode: id
-  //   })
-  // }
-
   editResourceClick () {
     this.setState({
       resourceEditMode: !this.state.resourceEditMode
@@ -68,10 +62,22 @@ class TextBookResourceView extends React.Component {
       updateChapter['position'] = beforeChapter.position
     } else { // at the end of list
       // POST without position
-      // updateChapter['position'] = -1
     }
 
     this.props.resourcesActions.updateChapterReloadResource(updateChapter, this.props.resource)
+  }
+
+  onProblemDroppedBefore (problemBefore, droppedProblem, newParentChapter) {
+    let updateProblem = {
+      uuid: droppedProblem.uuid,
+      textbook_section_id: newParentChapter.id
+    }
+
+    if (problemBefore) {
+      updateProblem['position'] = problemBefore.position
+    }
+
+    this.props.resourcesActions.updateProblemReloadResource(updateProblem, this.props.resource)
   }
 
   render () {
@@ -114,12 +120,19 @@ class TextBookResourceView extends React.Component {
                     key={chapter.id}
                     onDrop={(droppedChapter) => { this.onChapterDroppedBefore(chapter, droppedChapter) }}
                     itemType={DragItemTypes.CHAPTER}
-                    self={chapter}>
+                    self={chapter}
+                    idAttr={'id'}
+                  >
                     <Chapter
                       chapter={chapter}
                       chapterEditModeId={this.state.chapterEditModeId}
                       onChangeProblemTitle={this.onChangeProblemTitle}
                       onChangeChapterValue={this.onChangeChapterValue}
+                      onProblemDroppedBefore={
+                        (problem, droppedProblem) => {
+                          this.onProblemDroppedBefore(problem, droppedProblem, chapter)
+                        }
+                      }
                       resourceEditMode={this.state.resourceEditMode}
                       addProblemClick={this.addProblemClick}
                       resource={this.props.resource}
@@ -135,6 +148,7 @@ class TextBookResourceView extends React.Component {
                 onDrop={(droppedChapter) => { this.onChapterDroppedBefore(null, droppedChapter) }}
                 itemType={DragItemTypes.CHAPTER}
                 self={null}
+                idAttr={'id'}
               >
                 <div // Add chapter button
                   style={{cursor: 'pointer'}}

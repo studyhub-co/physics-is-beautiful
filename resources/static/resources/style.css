@@ -126,7 +126,14 @@
 
 /* common with editor, need to create common.css */
 
-.resources .drag-handle {background-image:url(img/drag-handle.png); background-size:contain; width:2rem; height:2rem; }
+.resources .drag-handle {
+    background-image: url(img/drag-handle.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 2rem;
+    height: 2rem;
+    padding: 0 1rem 0 1rem;
+}
 .resources .drag-handle:hover { cursor: move; }
 .resources .drag-handle {
     display: inline-block;
