@@ -6,14 +6,31 @@ from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookCha
 
 
 class TextBookChapterSerializerFlat(serializers.ModelSerializer):
+    resource_uuid = serializers.SlugRelatedField(queryset=Resource.objects.all(),
+                                                 source='resource',
+                                                 slug_field='uuid',
+                                                 many=False,
+                                                 write_only=True,
+                                                 required=False  # we can set existing resource
+                                                 )
 
     def to_internal_value(self, data):
-        if data['position'] == -1:
-            try:
-                last_position = TextBookChapter.objects.filter(
-                    resource=self.instance.resource
-                ).last().position + 1
-            except TextBookChapter.DoesNotExist:
+        if not self.instance:
+            if 'resource_uuid' not in data:
+                raise serializers.ValidationError({
+                    'resource_uuid': 'This field is required.'
+                })
+            resource_uuid = data['resource_uuid']
+        else:
+            resource_uuid = self.instance.resource.uuid
+
+        if 'position' not in data:  # default last position
+            last = TextBookChapter.objects.filter(
+                resource__uuid=resource_uuid
+            ).last()
+            if last:
+                last_position = last.position + 1
+            else:
                 last_position = 0
             data['position'] = last_position
 
@@ -28,7 +45,8 @@ class TextBookChapterSerializerFlat(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookChapter
-        fields = ['title', 'position', 'id']
+        fields = ['title', 'position', 'id', 'resource_uuid']
+        extra_kwargs = {'position': {'required': False}}
 
 
 class TextBookProblemSerializerFlat(serializers.ModelSerializer):
@@ -46,6 +64,28 @@ class TextBookProblemSerializerFlat(serializers.ModelSerializer):
                                                              write_only=True,
                                                              required=False  # we can set existing
                                                              )
+
+    def to_internal_value(self, data):
+        if not self.instance:
+            if 'textbook_section_id' not in data:
+                raise serializers.ValidationError({
+                    'textbook_section_id': 'This field is required.'
+                })
+            textbook_section_id = data['textbook_section_id']
+        else:
+            textbook_section_id = self.instance.textbook_section_id
+
+        if 'position' not in data:  # default last position
+            last = TextBookProblem.objects.filter(
+                textbook_section_id=textbook_section_id
+            ).last()
+            if last:
+                last_position = last.position + 1
+            else:
+                last_position = 0
+            data['position'] = last_position
+
+        return super().to_internal_value(data)
 
     class Meta:
         model = TextBookProblem

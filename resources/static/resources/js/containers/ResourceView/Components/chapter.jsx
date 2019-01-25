@@ -20,7 +20,7 @@ let ChapterClass = class Chapter extends React.Component {
                 {this.props.connectDragSource(<span className='drag-handle' />)}
                 <EditableLabel
                   value={this.props.chapter.title}
-                  onChange={(value) => { this.props.onChangeChapterValue(value, this.props.chapter.id) }}
+                  onChange={(value) => { this.props.onChangeChapterValue(value, this.props.chapter) }}
                   editMode={this.props.chapterEditModeId === this.props.chapter.id}
                 /></div> : this.props.chapter.title
             }

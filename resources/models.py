@@ -65,6 +65,7 @@ class TextBookChapter(models.Model):
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
     resource = models.ForeignKey(Resource, related_name='sections')
+    posted_by = models.ForeignKey(Profile, related_name='resources_chapter', null=True)
 
     class Meta:
         ordering = ['position']
