@@ -87,6 +87,14 @@ class TextBookProblemSerializerFlat(serializers.ModelSerializer):
 
         return super().to_internal_value(data)
 
+    def update(self, instance, validated_data):
+        # refresh positions for problems gt than current
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            TextBookProblem.objects.filter(position__gte=validated_data['position'],
+                                           textbook_section=validated_data.get('textbook_section', instance.textbook_section))\
+                .update(position=F('position')+1)
+        return super().update(instance, validated_data)
+
     class Meta:
         model = TextBookProblem
         fields = ['title', 'position', 'uuid', 'textbook_section_id']
