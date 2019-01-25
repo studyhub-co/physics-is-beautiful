@@ -81,11 +81,13 @@ INSTALLED_APPS = [
     'classroom',
     'resources',
     'pagedown',
-    'markdown_deux'  # ,
+    'markdown_deux',
+    'corsheaders'
     # 'moderation.apps.SimpleModerationConfig'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
