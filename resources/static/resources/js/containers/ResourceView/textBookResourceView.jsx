@@ -38,6 +38,10 @@ class TextBookResourceView extends React.Component {
     })
   }
 
+  addChapterClick () {
+    // this.props.resourcesActions.addProblem('Chapter ' + (this.props.resource.length + 1), this.props.resource)
+  }
+
   addProblemClick (chapter) {
     this.setState({
       chapterEditModeId: null
@@ -127,6 +131,20 @@ class TextBookResourceView extends React.Component {
               </Row>
             }, this)
               : null
+            }
+            {this.state.resourceEditMode
+              ? <DockableDropTarget
+                onDrop={(droppedChapter) => { this.onChapterDroppedBefore(null, droppedChapter) }}
+                itemType={DragItemTypes.CHAPTER}
+                self={null}
+              >
+                <div // Add chapter button
+                  style={{cursor: 'pointer'}}
+                  onClick={() => this.addChapterClick()}
+                  className={'blue-text'}>
+                  <Glyphicon glyph='plus' /> Add chapter
+                </div>
+              </DockableDropTarget> : null
             }
           </Col>
           <Col sm={3} md={3}>

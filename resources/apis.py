@@ -55,7 +55,7 @@ class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
                               mixins.UpdateModelMixin,
                               GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    serializer_class = TextBookChapterSerializerFlat # we use flat only with post & patch
+    serializer_class = TextBookChapterSerializerFlat  # we use flat only with post & patch
     queryset = TextBookChapter.objects.all()
     lookup_field = 'id'
 

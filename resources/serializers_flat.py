@@ -7,21 +7,23 @@ from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookCha
 
 class TextBookChapterSerializerFlat(serializers.ModelSerializer):
 
+    def to_internal_value(self, data):
+        if data['position'] == -1:
+            try:
+                last_position = TextBookChapter.objects.filter(
+                    resource=self.instance.resource
+                ).last().position + 1
+            except TextBookChapter.DoesNotExist:
+                last_position = 0
+            data['position'] = last_position
+
+        return super().to_internal_value(data)
+
     def update(self, instance, validated_data):
         if 'position' in validated_data and instance.position != validated_data['position']:
-            if instance.position != -1:
-                TextBookChapter.objects.filter(position__gte=validated_data['position'],
-                                               resource=validated_data.get('resource', instance.resource))\
-                    .update(position=F('position')+1)
-            else:
-                try:
-                    last_position = TextBookChapter.objects.filter(
-                        resource=validated_data.get('resource', instance.resource)
-                    ).last().position + 1
-                except TextBookChapter.DoesNotExist:
-                    last_position = 0
-                validated_data['position'] = last_position
-
+            TextBookChapter.objects.filter(position__gte=validated_data['position'],
+                                           resource=validated_data.get('resource', instance.resource))\
+                .update(position=F('position')+1)
         return super().update(instance, validated_data)
 
     class Meta:
