@@ -18,7 +18,7 @@ export default class Problem extends React.Component {
             {this.props.resourceEditMode
               ? <EditableLabel
                 value={this.props.problem.title}
-                onChange={(value) => { this.props.onChangeProblemTitle(value, this.props.problem.uuid) }}
+                onChange={(value) => { this.props.onChangeProblemTitle(value, this.props.problem) }}
               />
               : this.props.problem.title
             }

@@ -252,6 +252,30 @@ export function updateProblemReloadResource (problem, resource) {
   }
 }
 
+/// chapters/sections
+
+export function createChapter (title, resource) {
+  return (dispatch, state) => {
+    let chapter = {title: title, resource_uuid: resource.uuid}
+
+    return getAxios().post(API_PREFIX + 'chapters/', chapter)
+      .catch(checkHttpError)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function addChapter (title, resource) {
+  return (dispatch, state) => {
+    return dispatch(createChapter(title, resource)).then((response) => {
+      // reload resource
+      dispatch(fetchResource(resource.uuid))
+    })
+  }
+}
+
+
 export function updateChapter (chapter) {
   return (dispatch, state) => {
     return getAxios().patch(API_PREFIX + 'chapters/' + chapter.id + '/', chapter)

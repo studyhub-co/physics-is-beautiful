@@ -51,7 +51,7 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
 
 
 class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
-                              # mixins.CreateModelMixin,
+                              mixins.CreateModelMixin,
                               mixins.UpdateModelMixin,
                               GenericViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
@@ -59,10 +59,8 @@ class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
     queryset = TextBookChapter.objects.all()
     lookup_field = 'id'
 
-    # def perform_update(self, serializer):
-    #     # reorder positions
-    #     pass
-    #     serializer.save()
+    def perform_create(self, serializer):
+        serializer.save(posted_by=self.request.user.profile)
 
 
 class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
@@ -77,11 +75,12 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
     lookup_field = 'uuid'
 
     def perform_create(self, serializer):
-        with transaction.atomic():
-            if 'textbook_section' not in serializer.validated_data:
-                raise ValidationError('textbook_section field not found')
-            position = self.queryset.filter(textbook_section=serializer.validated_data['textbook_section']).count()
-            serializer.save(posted_by=self.request.user.profile, position=position)
+        # with transaction.atomic():
+        #     if 'textbook_section' not in serializer.validated_data:
+        #         raise ValidationError('textbook_section field not found')
+        #     position = self.queryset.filter(textbook_section=serializer.validated_data['textbook_section']).count()
+        #     serializer.save(posted_by=self.request.user.profile, position=position)
+        serializer.save(posted_by=self.request.user.profile)
 
 
 class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,

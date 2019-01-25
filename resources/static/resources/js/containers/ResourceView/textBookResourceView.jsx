@@ -39,7 +39,7 @@ class TextBookResourceView extends React.Component {
   }
 
   addChapterClick () {
-    // this.props.resourcesActions.addProblem('Chapter ' + (this.props.resource.length + 1), this.props.resource)
+    this.props.resourcesActions.addChapter('Chapter ' + (this.props.resource.sections.length + 1), this.props.resource)
   }
 
   addProblemClick (chapter) {
@@ -50,16 +50,16 @@ class TextBookResourceView extends React.Component {
     this.props.resourcesActions.addProblem('' + (chapter.problems.length + 1), chapter, this.props.resource)
   }
 
-  onChangeChapterValue (value, id) {
+  onChangeChapterValue (value, chapter) {
     // save chapter title
-    let chapter = {id: id, title: value}
-    this.props.resourcesActions.updateChapterReloadResource(chapter, this.props.resource)
+    let newChapter = {id: chapter.id, title: value, position: chapter.position}
+    this.props.resourcesActions.updateChapterReloadResource(newChapter, this.props.resource)
   }
 
-  onChangeProblemTitle (value, uuid) {
+  onChangeProblemTitle (value, problem) {
     // update problem title
-    let problem = {uuid: uuid, title: value}
-    this.props.resourcesActions.updateProblemReloadResource(problem, this.props.resource)
+    let newProblem = {uuid: problem.uuid, title: value, position: problem.position}
+    this.props.resourcesActions.updateProblemReloadResource(newProblem, this.props.resource)
   }
 
   onChapterDroppedBefore (beforeChapter, chapter) {
@@ -67,10 +67,8 @@ class TextBookResourceView extends React.Component {
     if (beforeChapter) {
       updateChapter['position'] = beforeChapter.position
     } else { // at the end of list
-      // not so good if already reordered by another user (used in editor also)
-      // var lastChapter = this.props.resource.sections[this.props.resource.sections.length - 1]
-      // updateChapter['position'] = lastChapter.position + 1
-      updateChapter['position'] = -1
+      // POST without position
+      // updateChapter['position'] = -1
     }
 
     this.props.resourcesActions.updateChapterReloadResource(updateChapter, this.props.resource)
@@ -229,6 +227,7 @@ TextBookResourceView.propTypes = {
   // actions
   resourcesActions: PropTypes.shape({
     addProblem: PropTypes.func.isRequired,
+    addChapter: PropTypes.func.isRequired,
     updateProblemReloadResource: PropTypes.func.isRequired,
     updateChapterReloadResource: PropTypes.func.isRequired
   }),
