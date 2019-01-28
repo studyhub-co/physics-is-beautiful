@@ -119,5 +119,5 @@ class TextBookSolution(VoteModel, models.Model):
                 return ''
 
     class Meta:
-        ordering = ['position']
+        ordering = ['-vote_score']
 

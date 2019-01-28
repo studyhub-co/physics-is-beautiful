@@ -137,9 +137,15 @@ export function receiveProblem (problem) {
   }
 }
 
-export function fetchProblem (uuid) {
+export function fetchProblem (uuid, orderingValue) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + 'problems/' + uuid)
+    var ordering = ''
+
+    if (orderingValue) { // FIXME it is better to use orderingValue dict
+      ordering = '?ordering=' + orderingValue
+    }
+
+    return getAxios().get(API_PREFIX + 'problems/' + uuid + ordering)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveProblem(response.data))
