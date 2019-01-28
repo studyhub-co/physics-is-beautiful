@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from django.core.files.base import ContentFile
 from django.utils import timezone
-from django.db.models import F, Count, Prefetch
+from django.db.models import F, Count, Prefetch, Max
 from django.db import transaction
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -71,8 +71,26 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch
     serializer_class = TextBookProblemSerializer
-    queryset = TextBookProblem.objects.all()
+    queryset = TextBookProblem.objects. \
+        prefetch_related('solutions__posted_by', 'solutions__pdf').all()
     lookup_field = 'uuid'
+    # filter_backends = (filters.OrderingFilter,)
+    # # ordering_fields = ('solutions__created_on', )
+    # ordering_fields = ('solutions__vote_score', )
+    # ordering = ('-solutions__vote_score',)
+
+    def get_queryset(self):
+        if 'ordering' in self.request.query_params and self.request.query_params['ordering'] == '-solutions__created_on':
+            # it seems drf do not work with reverse foreign related ordering, need to investigate
+            # or replace TextBookProblem solutions list with a separate API query
+            qs = TextBookProblem.objects.prefetch_related(
+              Prefetch(
+                'solutions',
+                queryset=TextBookSolution.objects.all().order_by('-created_on'),
+                )).all()
+            return qs
+
+        return self.queryset
 
     def perform_create(self, serializer):
         # with transaction.atomic():

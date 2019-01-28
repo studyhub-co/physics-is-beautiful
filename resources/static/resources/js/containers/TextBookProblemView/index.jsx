@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Grid, Row, Col, Table, Button, Glyphicon, Modal } from 'react-bootstrap'
+import { Grid, Row, Col, Table, Button, Glyphicon, Modal, Dropdown, MenuItem } from 'react-bootstrap'
 
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
@@ -13,9 +13,7 @@ import { BASE_URL } from '../../utils/config'
 
 import {
   handleFileChange,
-  onChangeDirectUrl,
-  onChangeExternalUrl,
-  onChangeGoogleDriveUrl
+  onChangeExternalUrl
 } from '../AddTextBookResourceSteps/lib'
 
 import { EditableLabel } from '../../utils/editableLabel'
@@ -26,11 +24,13 @@ class TextBookProblemView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      showPostSolutionModal: false
+      showPostSolutionModal: false,
+      ordering: 'Top'
     }
     this.onPostSolutionClick = this.onPostSolutionClick.bind(this)
     this.handleClosePostSolutionModal = this.handleClosePostSolutionModal.bind(this)
     this.addSolution = this.addSolution.bind(this)
+    this.handleOrderSelect = this.handleOrderSelect .bind(this)
   }
 
   componentDidMount () {
@@ -73,6 +73,17 @@ class TextBookProblemView extends React.Component {
     this.setState({ showPostSolutionModal: false })
   }
 
+  handleOrderSelect (val) {
+    this.setState({'ordering': val})
+    if (this.props.match.params && this.props.match.params['uuid']) {
+      if (val === 'Top') {
+        this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
+      } else if (val === 'New') {
+        this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'], '-solutions__created_on')
+      }
+    }
+  }
+
   render () {
     return (
       <Sheet>
@@ -102,8 +113,18 @@ class TextBookProblemView extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col sm={10} md={10}>
-                {/* TODO sort */}
+              <Col sm={1} md={1}>
+                <Dropdown onSelect={this.handleOrderSelect} id={'dropdown-settings'}>
+                  <Dropdown.Toggle className={'common-button'} style={{padding: '1rem'}}>
+                    {this.state.ordering}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <MenuItem eventKey='Top'>Top</MenuItem>
+                    <MenuItem eventKey='New'>New</MenuItem>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+              <Col sm={9} md={9}>
               </Col>
               <Col sm={2} md={2}>
                 <Button onClick={() => { this.onPostSolutionClick() }} className={'common-button'}>
