@@ -51,13 +51,16 @@ export function downloadGoogleDriveUrl (urlString, callback) {
   // var that = this
   url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
   if (url) {
-
     let downloadFile = function (accessToken) {
       var xhr = new XMLHttpRequest()
       xhr.open('GET', url)
       xhr.responseType = 'blob'
       xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
       xhr.onload = function (e) {
+        if (e.target.status === 403) {
+          alert('You don\'t have permission to download the file')
+          return
+        }
         if (e.target.status === 401) {
           // user remove permission from https://myaccount.google.com/permissions , gapi use old token
           gapi.auth2.getAuthInstance().signIn().then(function (user) {
