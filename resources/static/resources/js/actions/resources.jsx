@@ -312,7 +312,25 @@ export function removeChapter (chapter) {
 
 export function removeChapterReloadResource (chapter, resource) {
   return (dispatch, state) => {
-    return dispatch(removeChapter(chapter)).then((chapter) => {
+    return dispatch(removeChapter(chapter)).then(() => {
+      dispatch(fetchResource(resource.uuid))
+    })
+  }
+}
+
+export function removeProblem (problem) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_PREFIX + 'problems/' + problem.uuid + '/')
+      .catch(checkHttpError)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function removeProblemReloadResource (problem, resource) {
+  return (dispatch, state) => {
+    return dispatch(removeProblem(problem)).then(() => {
       dispatch(fetchResource(resource.uuid))
     })
   }

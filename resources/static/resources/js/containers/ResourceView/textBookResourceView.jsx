@@ -25,12 +25,19 @@ class TextBookResourceView extends React.Component {
     this.addProblemClick = this.addProblemClick.bind(this)
     this.onChangeChapterValue = this.onChangeChapterValue.bind(this)
     this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
-    this.removeChapterClick = this.removeChapterClick.bind(this)
+    this.onRemoveChapter = this.onRemoveChapter.bind(this)
+    this.onRemoveProblem = this.onRemoveProblem.bind(this)
   }
 
-  removeChapterClick (chapter) {
+  onRemoveChapter (chapter) {
     if (confirm('Are you sure you want to delete this chapter?')) { // TODO we can use Modal from react bootstrap if needed
       this.props.resourcesActions.removeChapterReloadResource(chapter, this.props.resource)
+    }
+  }
+
+  onRemoveProblem (problem) {
+    if (confirm('Are you sure you want to delete this problem?')) { // TODO we can use Modal from react bootstrap if needed
+      this.props.resourcesActions.removeProblemReloadResource(problem, this.props.resource)
     }
   }
 
@@ -142,7 +149,8 @@ class TextBookResourceView extends React.Component {
                       chapterEditModeId={this.state.chapterEditModeId}
                       onChangeProblemTitle={this.onChangeProblemTitle}
                       onChangeChapterValue={this.onChangeChapterValue}
-                      removeChapterClick={this.removeChapterClick}
+                      onRemoveChapter={this.onRemoveChapter}
+                      onRemoveProblem={this.onRemoveProblem}
                       onProblemDroppedBefore={
                         (problem, droppedProblem) => {
                           this.onProblemDroppedBefore(problem, droppedProblem, chapter)
@@ -265,7 +273,8 @@ TextBookResourceView.propTypes = {
     addChapter: PropTypes.func.isRequired,
     updateProblemReloadResource: PropTypes.func.isRequired,
     updateChapterReloadResource: PropTypes.func.isRequired,
-    removeChapterReloadResource: PropTypes.func.isRequired
+    removeChapterReloadResource: PropTypes.func.isRequired,
+    removeProblemReloadResource: PropTypes.func.isRequired
   }),
   // googleActions: PropTypes.shape({
   //   addAd: PropTypes.func.isRequired
