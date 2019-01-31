@@ -53,8 +53,9 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
 class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
                               mixins.CreateModelMixin,
                               mixins.UpdateModelMixin,
+                              mixins.DestroyModelMixin,
                               GenericViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsStaffOrReadOnly,)
     serializer_class = TextBookChapterSerializerFlat  # we use flat only with post & patch
     queryset = TextBookChapter.objects.all()
     lookup_field = 'id'
@@ -68,7 +69,7 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
                               mixins.CreateModelMixin,
                               mixins.UpdateModelMixin,
                               GenericViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsStaffOrReadOnly, )
     serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch
     serializer_class = TextBookProblemSerializer
     queryset = TextBookProblem.objects. \
@@ -105,7 +106,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
                                mixins.CreateModelMixin,
                                mixins.UpdateModelMixin,
                                GenericViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)  # users can send soltions
     serializer_class = TextBookSolutionSerializer
     queryset = TextBookSolution.objects.all()
     # .annotate(count_votes=Count('votes', distinct=True))
@@ -181,7 +182,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
 
 
 class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsStaffOrReadOnly)
+    permission_classes = (IsStaffOrReadOnly, )
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
     pagination_class = StandardResultsSetPagination

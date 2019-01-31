@@ -4,11 +4,12 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import * as resourcesCreators from '../../actions/resources'
+import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
 
 import {DockableDropTarget, DragItemTypes} from '../../dnd'
 
-import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
+// import * as googleCreators from '../../actions/google'
+import * as resourcesCreators from '../../actions/resources'
 
 import Chapter from './Components/chapter'
 
@@ -24,6 +25,13 @@ class TextBookResourceView extends React.Component {
     this.addProblemClick = this.addProblemClick.bind(this)
     this.onChangeChapterValue = this.onChangeChapterValue.bind(this)
     this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
+    this.removeChapterClick = this.removeChapterClick.bind(this)
+  }
+
+  removeChapterClick (chapter) {
+    if (confirm('Are you sure you want to delete this chapter?')) { // TODO we can use Modal from react bootstrap if needed
+      this.props.resourcesActions.removeChapterReloadResource(chapter, this.props.resource)
+    }
   }
 
   editResourceClick () {
@@ -80,6 +88,11 @@ class TextBookResourceView extends React.Component {
     this.props.resourcesActions.updateProblemReloadResource(updateProblem, this.props.resource)
   }
 
+  // addGoogleAdClick () {
+  //   let ad = {'slot': 111, 'client': 'ca-pub-1780955227395785'}
+  //   this.props.googleActions.addAd(ad, this.props.resource)
+  // }
+
   render () {
     var isbn = null
     if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('industryIdentifiers')) {
@@ -102,6 +115,7 @@ class TextBookResourceView extends React.Component {
                     className={'blue-text'}
                     style={{cursor: 'pointer'}}
                   >
+                    {/* TODO check user is staff */}
                     {this.state.resourceEditMode
                       ? 'View'
                       : 'Edit'}
@@ -128,6 +142,7 @@ class TextBookResourceView extends React.Component {
                       chapterEditModeId={this.state.chapterEditModeId}
                       onChangeProblemTitle={this.onChangeProblemTitle}
                       onChangeChapterValue={this.onChangeChapterValue}
+                      removeChapterClick={this.removeChapterClick}
                       onProblemDroppedBefore={
                         (problem, droppedProblem) => {
                           this.onProblemDroppedBefore(problem, droppedProblem, chapter)
@@ -156,6 +171,12 @@ class TextBookResourceView extends React.Component {
                   className={'blue-text'}>
                   <Glyphicon glyph='plus' /> Add chapter
                 </div>
+                {/*<div // Add google ads button*/}
+                  {/*style={{cursor: 'pointer'}}*/}
+                  {/*onClick={() => this.addGoogleAdClick()}*/}
+                  {/*className={'blue-text'}>*/}
+                  {/*<Glyphicon glyph='plus' /> Add Google ad*/}
+                {/*</div>*/}
               </DockableDropTarget> : null
             }
           </Col>
@@ -243,8 +264,12 @@ TextBookResourceView.propTypes = {
     addProblem: PropTypes.func.isRequired,
     addChapter: PropTypes.func.isRequired,
     updateProblemReloadResource: PropTypes.func.isRequired,
-    updateChapterReloadResource: PropTypes.func.isRequired
+    updateChapterReloadResource: PropTypes.func.isRequired,
+    removeChapterReloadResource: PropTypes.func.isRequired
   }),
+  // googleActions: PropTypes.shape({
+  //   addAd: PropTypes.func.isRequired
+  // }).isRequired,
   // data
   resource: PropTypes.object
 }
@@ -258,7 +283,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    // googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 
