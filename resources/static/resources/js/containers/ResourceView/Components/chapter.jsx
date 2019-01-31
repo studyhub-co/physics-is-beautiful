@@ -29,7 +29,7 @@ let ChapterClass = class Chapter extends React.Component {
             ? <span
               className={'red-text'}
               style={{cursor: 'pointer', paddingLeft: '1rem'}}
-              onClick={() => this.props.removeChapterClick(this.props.chapter)}
+              onClick={() => this.props.onRemoveChapter(this.props.chapter)}
               title={'Remove the chapter'}
             >
               {/* remove chapter button */}
@@ -49,6 +49,7 @@ let ChapterClass = class Chapter extends React.Component {
                 resource={this.props.resource}
                 resourceEditMode={this.props.resourceEditMode}
                 onChangeProblemTitle={this.props.onChangeProblemTitle}
+                onRemoveProblem={this.props.onRemoveProblem}
                 key={problem.uuid}
                 problem={problem}
               />
@@ -85,7 +86,8 @@ ChapterClass.propTypes = {
   onProblemDroppedBefore: PropTypes.func.isRequired,
   onChangeChapterValue: PropTypes.func.isRequired,
   addProblemClick: PropTypes.func.isRequired,
-  removeChapterClick: PropTypes.func.isRequired
+  onRemoveChapter: PropTypes.func.isRequired,
+  onRemoveProblem: PropTypes.func.isRequired
 }
 
 const dragSource = {

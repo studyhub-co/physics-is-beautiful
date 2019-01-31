@@ -68,6 +68,7 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
                               mixins.RetrieveModelMixin,
                               mixins.CreateModelMixin,
                               mixins.UpdateModelMixin,
+                              mixins.DestroyModelMixin,
                               GenericViewSet):
     permission_classes = (IsStaffOrReadOnly, )
     serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch

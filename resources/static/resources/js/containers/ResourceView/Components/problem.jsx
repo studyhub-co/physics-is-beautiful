@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import { DragSource } from 'react-dnd'
 
-import { Row, Col } from 'react-bootstrap'
+import { Glyphicon, Row, Col } from 'react-bootstrap'
 
 import { EditableLabel } from '../../../utils/editableLabel'
 
@@ -27,6 +27,15 @@ let ProblemClass = class Problem extends React.Component {
                     value={this.props.problem.title}
                     onChange={(value) => { this.props.onChangeProblemTitle(value, this.props.problem) }}
                   />
+                  <span
+                    className={'red-text'}
+                    style={{cursor: 'pointer', paddingLeft: '1rem'}}
+                    onClick={() => { this.props.onRemoveProblem(this.props.problem) }}
+                    title={'Remove the chapter'}
+                  >
+                    {/* remove chapter button */}
+                    <Glyphicon glyph='remove' />&nbsp;
+                  </span>
                 </div>
                 : this.props.problem.title
               }
@@ -51,7 +60,8 @@ ProblemClass.propTypes = {
   problem: PropTypes.object,
   resourceEditMode: PropTypes.bool,
   resource: PropTypes.object,
-  onChangeProblemTitle: PropTypes.func.isRequired
+  onChangeProblemTitle: PropTypes.func.isRequired,
+  onRemoveProblem: PropTypes.func.isRequired
 }
 
 const dragSource = {
