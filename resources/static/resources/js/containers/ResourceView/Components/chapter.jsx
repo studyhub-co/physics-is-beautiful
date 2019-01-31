@@ -16,15 +16,26 @@ let ChapterClass = class Chapter extends React.Component {
         <div style={{display: this.props.isDragging ? 'none' : 'block'}}>
           <span className={'blue-title'}>
             {this.props.resourceEditMode
-              ? <div>
+              ? <span>
                 {this.props.connectDragSource(<span className='drag-handle' />)}
                 <EditableLabel
                   value={this.props.chapter.title}
                   onChange={(value) => { this.props.onChangeChapterValue(value, this.props.chapter) }}
                   editMode={this.props.chapterEditModeId === this.props.chapter.id}
-                /></div> : this.props.chapter.title
+                /></span> : this.props.chapter.title
             }
           </span>
+          {this.props.resourceEditMode
+            ? <span
+              className={'red-text'}
+              style={{cursor: 'pointer', paddingLeft: '1rem'}}
+              onClick={() => this.props.removeChapterClick(this.props.chapter)}
+              title={'Remove the chapter'}
+            >
+              {/* remove chapter button */}
+              <Glyphicon glyph='remove' />&nbsp;
+            </span>
+            : null }
           { this.props.chapter.problems ? this.props.chapter.problems.map(function (problem, i) { // ============ problems
             return <DockableDropTarget
               key={problem.uuid}
@@ -73,7 +84,8 @@ ChapterClass.propTypes = {
   onChangeProblemTitle: PropTypes.func.isRequired,
   onProblemDroppedBefore: PropTypes.func.isRequired,
   onChangeChapterValue: PropTypes.func.isRequired,
-  addProblemClick: PropTypes.func.isRequired
+  addProblemClick: PropTypes.func.isRequired,
+  removeChapterClick: PropTypes.func.isRequired
 }
 
 const dragSource = {

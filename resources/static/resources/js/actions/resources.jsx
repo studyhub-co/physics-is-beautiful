@@ -281,7 +281,6 @@ export function addChapter (title, resource) {
   }
 }
 
-
 export function updateChapter (chapter) {
   return (dispatch, state) => {
     return getAxios().patch(API_PREFIX + 'chapters/' + chapter.id + '/', chapter)
@@ -296,6 +295,24 @@ export function updateChapterReloadResource (chapter, resource) {
   return (dispatch, state) => {
     return dispatch(updateChapter(chapter)).then((chapter) => {
       // reload resource
+      dispatch(fetchResource(resource.uuid))
+    })
+  }
+}
+
+export function removeChapter (chapter) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_PREFIX + 'chapters/' + chapter.id + '/')
+      .catch(checkHttpError)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function removeChapterReloadResource (chapter, resource) {
+  return (dispatch, state) => {
+    return dispatch(removeChapter(chapter)).then((chapter) => {
       dispatch(fetchResource(resource.uuid))
     })
   }

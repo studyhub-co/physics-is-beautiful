@@ -2,7 +2,6 @@ import os
 
 from django.db import models
 from django.dispatch import receiver
-from django.utils import timezone
 
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
@@ -17,6 +16,8 @@ from djeddit.models import Thread
 from .validators import validate_pdf_extension
 
 # from moderation.db import ModeratedModel
+# from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 # class Resource(ModeratedModel):
@@ -120,4 +121,14 @@ class TextBookSolution(VoteModel, models.Model):
 
     class Meta:
         ordering = ['-vote_score']
+
+
+# class GoogleAd(models.Model):
+#     # TODO move to GoogleAds application
+#     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+#     object_id = models.PositiveIntegerField()
+#     content_object = GenericForeignKey()
+#     client = models.CharField(max_length=255)
+#     slot = models.CharField(max_length=255)
+#     title = models.CharField(max_length=255)
 
