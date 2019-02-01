@@ -45,7 +45,7 @@ class TextBookChapterSerializerFlat(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookChapter
-        fields = ['title', 'position', 'id', 'resource_uuid']
+        fields = ['title', 'position', 'id', 'resource_uuid', 'show_ad']
         extra_kwargs = {'position': {'required': False}}
 
 
