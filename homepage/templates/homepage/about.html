@@ -1,9 +1,11 @@
-{% extends "homepage/navbar.html" %}
+{% extends "navbar.html" %}
 {% load static %}
 
 {% block extrahead %}
     <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}" />
 {% endblock %}
+
+{% block body_content %}
 
 {% block content %}
     <div class="container">
@@ -106,4 +108,5 @@
 
   </div>
     </div>
+{% endblock %}
 {% endblock %}
