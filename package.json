@@ -47,6 +47,7 @@
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "react": "15.5.4",
+    "react-adsense": "0.0.6",
     "react-bootstrap": "^0.32.0",
     "react-bootstrap-date-picker": "^5.1.0",
     "react-bootstrap-time-picker": "^1.0.3",

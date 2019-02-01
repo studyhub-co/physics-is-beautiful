@@ -201,4 +201,7 @@ div.pdf-ico {
     cursor: pointer;
 }
 
-
+/* one row fix */
+.pure-radiobutton input[type="radio"] + label {
+    width: 6rem !important;
+}

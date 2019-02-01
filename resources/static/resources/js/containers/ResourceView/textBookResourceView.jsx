@@ -27,6 +27,7 @@ class TextBookResourceView extends React.Component {
     this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
     this.onRemoveChapter = this.onRemoveChapter.bind(this)
     this.onRemoveProblem = this.onRemoveProblem.bind(this)
+    this.onChangeChapterShowAd = this.onChangeChapterShowAd.bind(this)
   }
 
   onRemoveChapter (chapter) {
@@ -95,6 +96,13 @@ class TextBookResourceView extends React.Component {
     this.props.resourcesActions.updateProblemReloadResource(updateProblem, this.props.resource)
   }
 
+  onChangeChapterShowAd (chapter, checked) {
+    let updateChapter = {id: chapter.id, show_ad: checked, position: chapter.position}
+    // this.props.resourcesActions.updateChapter(updateChapter)
+    // needs to reload to refres View mode
+    this.props.resourcesActions.updateChapterReloadResource(updateChapter, this.props.resource)
+  }
+
   // addGoogleAdClick () {
   //   let ad = {'slot': 111, 'client': 'ca-pub-1780955227395785'}
   //   this.props.googleActions.addAd(ad, this.props.resource)
@@ -151,6 +159,7 @@ class TextBookResourceView extends React.Component {
                       onChangeChapterValue={this.onChangeChapterValue}
                       onRemoveChapter={this.onRemoveChapter}
                       onRemoveProblem={this.onRemoveProblem}
+                      onChangeChapterShowAd={this.onChangeChapterShowAd}
                       onProblemDroppedBefore={
                         (problem, droppedProblem) => {
                           this.onProblemDroppedBefore(problem, droppedProblem, chapter)
@@ -271,6 +280,7 @@ TextBookResourceView.propTypes = {
   resourcesActions: PropTypes.shape({
     addProblem: PropTypes.func.isRequired,
     addChapter: PropTypes.func.isRequired,
+    // updateChapter: PropTypes.func.isRequired,
     updateProblemReloadResource: PropTypes.func.isRequired,
     updateChapterReloadResource: PropTypes.func.isRequired,
     removeChapterReloadResource: PropTypes.func.isRequired,

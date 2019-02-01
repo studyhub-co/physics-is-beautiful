@@ -2,6 +2,8 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
+import AdSense from 'react-adsense'
+
 import { DragSource } from 'react-dnd'
 import { Glyphicon } from 'react-bootstrap'
 
@@ -10,6 +12,35 @@ import { DockableDropTarget, DragItemTypes } from '../../../dnd'
 import Problem from './problem'
 
 let ChapterClass = class Chapter extends React.Component {
+  constructor (props) {
+    super(props)
+
+    if (props.chapter.show_ad) {
+      this.state = {
+        [props.chapter.id + 'checked']: 'on'
+      }
+    } else {
+      this.state = {
+        [props.chapter.id + 'checked']: 'off'
+      }
+    }
+
+    this.handleShowAdChange = this.handleShowAdChange.bind(this)
+  }
+
+  handleShowAdChange (e, id) {
+    var checked = 'on'
+    if (this.state[id + 'checked'] === 'on') {
+      checked = 'off'
+    }
+    this.setState({[id + 'checked']: checked})
+    let booleanChecked = true
+    if (checked === 'off') {
+      booleanChecked = false
+    }
+    this.props.onChangeChapterShowAd(this.props.chapter, booleanChecked)
+  }
+
   render () {
     return (
       this.props.connectDragPreview(
@@ -36,6 +67,39 @@ let ChapterClass = class Chapter extends React.Component {
               <Glyphicon glyph='remove' />&nbsp;
             </span>
             : null }
+          { !this.props.resourceEditMode && this.props.chapter.show_ad
+            ? <AdSense.Google
+              client='ca-pub-1780955227395785'
+              slot='ca-pub-1780955227395785'
+            /> : null
+          }
+          { this.props.resourceEditMode
+            ? <div // enable ad
+              style={{paddingLeft: '3rem'}}
+              className={'blue-text'}>
+                Show an ad:&nbsp;
+              <span className={'pure-radiobutton'}>
+                <input
+                  id={'radio_on' + this.props.chapter.id}
+                  value={'on'}
+                  name={'settings' + this.props.chapter.id}
+                  onChange={(e) => (this.handleShowAdChange(e, this.props.chapter.id))}
+                  type='radio'
+                  checked={this.state[this.props.chapter.id + 'checked'] === 'on'} />
+                <label htmlFor={'radio_on' + this.props.chapter.id}>{'On'}</label>
+              </span>
+              <span className={'pure-radiobutton'}>
+                <input
+                  id={'radio_off' + this.props.chapter.id}
+                  value={'off'}
+                  name={'settings' + this.props.chapter.id}
+                  onChange={(e) => (this.handleShowAdChange(e, this.props.chapter.id))}
+                  type='radio'
+                  checked={this.state[this.props.chapter.id + 'checked'] === 'off'} />
+                <label htmlFor={'radio_off' + this.props.chapter.id}>{'Off'}</label>
+              </span>
+            </div> : null
+          }
           { this.props.chapter.problems ? this.props.chapter.problems.map(function (problem, i) { // ============ problems
             return <DockableDropTarget
               key={problem.uuid}
@@ -85,6 +149,7 @@ ChapterClass.propTypes = {
   onChangeProblemTitle: PropTypes.func.isRequired,
   onProblemDroppedBefore: PropTypes.func.isRequired,
   onChangeChapterValue: PropTypes.func.isRequired,
+  onChangeChapterShowAd: PropTypes.func.isRequired,
   addProblemClick: PropTypes.func.isRequired,
   onRemoveChapter: PropTypes.func.isRequired,
   onRemoveProblem: PropTypes.func.isRequired

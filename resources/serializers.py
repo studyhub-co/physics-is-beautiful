@@ -94,7 +94,7 @@ class TextBookChapterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookChapter
-        fields = ['title', 'problems', 'position', 'id']
+        fields = ['title', 'problems', 'position', 'id', 'show_ad']
 
 
 class ResourceBaseSerializer(serializers.ModelSerializer):
