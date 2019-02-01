@@ -192,9 +192,10 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         select_related('metadata'). \
         prefetch_related(Prefetch('sections__problems',
                          queryset=TextBookProblem.objects.
-                                  annotate(count_solutions=Count('solutions', distinct=True))
-                         ))
-        # prefetch_related('sections__problems__solutions')
+                                  annotate(count_solutions=Count('solutions', distinct=True)))
+                         )\
+        .prefetch_related('sections__problems__solutions__posted_by')\
+        .prefetch_related('sections__problems__solutions__pdf')
 
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
