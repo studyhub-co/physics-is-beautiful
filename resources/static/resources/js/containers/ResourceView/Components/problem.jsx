@@ -18,38 +18,48 @@ let ProblemClass = class Problem extends React.Component {
     return (
       this.props.connectDragPreview(
         <div style={{display: this.props.isDragging ? 'none' : 'block'}}>
-          <Row key={this.props.problem.uuid} className={'blue-text'}>
-            <Col sm={2} md={2} style={{paddingLeft: '3rem'}}>
+          <Row
+            key={this.props.problem.uuid}
+            className={'problem-row'}
+            onClick={() => {
+              this.props.resourceEditMode ? null : history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid)
+            }}
+          >
+            <Col xs={4} md={3} >
               {this.props.resourceEditMode
                 ? <div>
                   {this.props.connectDragSource(<span className='drag-handle' style={{width: '1rem', height: '1rem'}} />)}
-                  <EditableLabel
-                    value={this.props.problem.title}
-                    onChange={(value) => { this.props.onChangeProblemTitle(value, this.props.problem) }}
-                  />
                   <span
                     className={'red-text'}
-                    style={{cursor: 'pointer', paddingLeft: '1rem'}}
+                    style={{cursor: 'pointer', paddingRight: '1rem'}}
                     onClick={() => { this.props.onRemoveProblem(this.props.problem) }}
                     title={'Remove the chapter'}
                   >
                     {/* remove chapter button */}
                     <Glyphicon glyph='remove' />&nbsp;
                   </span>
+                  <EditableLabel
+                    value={this.props.problem.title}
+                    onChange={(value) => { this.props.onChangeProblemTitle(value, this.props.problem) }}
+                  />
                 </div>
-                : this.props.problem.title
+                : <span style={{paddingLeft: '2rem'}} >
+                  {this.props.problem.title}
+                </span>
               }
             </Col>
-            <Col sm={9} md={9}>
+            <Col xs={8} md={9}>
               <span
                 style={{cursor: 'pointer'}}
-                onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid) }}>
-                {this.props.problem.count_solutions} solution{this.props.problem.count_solutions > 1 ? 's' : null}
+                className={'solution-count'}
+                onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid) }}
+              >
+                {this.props.problem.count_solutions} solution{this.props.problem.count_solutions !== 1 ? 's' : null}
               </span>
             </Col>
-            <Col sm={1} md={1}>
-              {/* TODO drop down menu for request more solutions */}
-            </Col>
+            {/* <Col sm={1} md={1}> */}
+            {/* TODO drop down menu for request more solutions */}
+            {/* </Col> */}
           </Row>
         </div>)
     )
