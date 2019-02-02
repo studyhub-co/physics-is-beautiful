@@ -146,7 +146,7 @@ class CurriculumApp extends React.Component {
   }
 
   componentDidMount () {
-    this.setState({loading: false})
+    setTimeout(() => this.setState({loading: false}), 1000)
 
     window.parent.postMessage({
       'message': 'canGoBack',
