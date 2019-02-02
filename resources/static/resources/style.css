@@ -8,6 +8,24 @@
     padding-bottom: 2rem;
 }
 
+.resources .textbook-title {
+    font-size: 3rem;
+    color: rgb(8, 209, 255);
+    padding-bottom: 2rem;
+}
+
+.resources .problem-row {
+    color: rgb(38, 161, 255);
+    border: 1px solid white;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.resources .problem-row:hover {
+    border: 1px solid rgba(38, 165, 255, 0.45);
+    border-radius: 7px;
+}
+
 .resources .common-button {
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
@@ -46,7 +64,11 @@
 }
 
 .resources .blue-text {
-    color: rgb(8, 209, 255)
+    color: rgb(38, 161, 255)
+}
+
+.resources .solution-count {
+    color: rgb(255, 0, 154)
 }
 
 .resources .gray-text {

@@ -57,7 +57,7 @@ class TextBookResourceView extends React.Component {
       chapterEditModeId: null
     })
     // add problem to list
-    this.props.resourcesActions.addProblem('' + (chapter.problems.length + 1), chapter, this.props.resource)
+    this.props.resourcesActions.addProblem(chapter.id + '.' + (chapter.problems.length + 1), chapter, this.props.resource)
   }
 
   onChangeChapterValue (value, chapter) {
@@ -121,22 +121,22 @@ class TextBookResourceView extends React.Component {
       <Grid fluid>
         <Row>
           <Col sm={12} md={12}>
-            <h1 className={'blue-title text-align-center'}>
-              {this.props.resource.metadata ? this.props.resource.metadata.data.volumeInfo.title : 'Unknown resource'}
-              <span style={{position: 'relative', paddingLeft: '1rem'}}>
-                <span className={'base-circle-edit'}>
+            <span style={{position: 'relative', float: 'right', fontSize:10}}>
+              <span className={'base-circle-edit'}>
                   [<span
-                    onClick={() => this.editResourceClick()}
-                    className={'blue-text'}
-                    style={{cursor: 'pointer'}}
-                  >
-                    {/* TODO check user is staff */}
-                    {this.state.resourceEditMode
-                      ? 'View'
-                      : 'Edit'}
-                  </span>]
-                </span>
+                  onClick={() => this.editResourceClick()}
+                  className={'blue-text'}
+                  style={{cursor: 'pointer'}}
+                >
+                  {/* TODO check user is staff */}
+                  {this.state.resourceEditMode
+                    ? 'View'
+                    : 'Edit'}
+                </span>]
               </span>
+            </span>
+            <h1 className={'textbook-title text-align-center'}>
+              {this.props.resource.metadata ? this.props.resource.metadata.data.volumeInfo.title : 'Unknown resource'} Solutions
             </h1>
           </Col>
         </Row>
@@ -188,12 +188,12 @@ class TextBookResourceView extends React.Component {
                   className={'blue-text'}>
                   <Glyphicon glyph='plus' /> Add chapter
                 </div>
-                {/*<div // Add google ads button*/}
-                  {/*style={{cursor: 'pointer'}}*/}
-                  {/*onClick={() => this.addGoogleAdClick()}*/}
-                  {/*className={'blue-text'}>*/}
-                  {/*<Glyphicon glyph='plus' /> Add Google ad*/}
-                {/*</div>*/}
+                {/* <div // Add google ads button */}
+                {/* style={{cursor: 'pointer'}} */}
+                {/* onClick={() => this.addGoogleAdClick()} */}
+                {/* className={'blue-text'}> */}
+                {/* <Glyphicon glyph='plus' /> Add Google ad */}
+                {/* </div> */}
               </DockableDropTarget> : null
             }
           </Col>
@@ -302,7 +302,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
     // googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
