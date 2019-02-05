@@ -70,7 +70,7 @@ let ChapterClass = class Chapter extends React.Component {
           { !this.props.resourceEditMode && this.props.chapter.show_ad
             ? <AdSense.Google
               client='ca-pub-1780955227395785'
-              slot='ca-pub-1780955227395785'
+              slot='4334626488'
             /> : null
           }
           { this.props.resourceEditMode
