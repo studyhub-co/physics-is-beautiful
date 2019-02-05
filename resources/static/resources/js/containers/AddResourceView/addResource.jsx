@@ -48,7 +48,16 @@ class AddResourceView extends React.Component {
       </option>)
 
     if (resourceOptions) {
+      if (!resourceOptions.hasOwnProperty('actions')) {
+        // user can't create resource
+        // redirect to login page
+        let url = '/accounts/login/?next=' + window.location.pathname
+        window.location.replace(url)
+        throw new Error('redirecting...')
+      }
+
       var resourceTypeChoices = resourceOptions.actions.POST.resource_type.choices
+
       for (var x = 0; x < resourceTypeChoices.length; x++) {
         resourceTypesOptions.push(
           <option key={resourceTypeChoices[x].value} value={resourceTypeChoices[x].value}>

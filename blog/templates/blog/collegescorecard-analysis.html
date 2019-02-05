@@ -38,12 +38,13 @@
         </p>
         <p class="justify">
             In figure 1 I plot the average faculty salary vs the in-state tuition and fees at nearly every university in the United States. I've color-coded the universities by sector in order to make better sense of the data.
-            An interactive version of this plot can be found on the app page <a href="{% url 'blog:collegescorecard' %}">here</a>.
+{#            An interactive version of this plot can be found on the app page <a href="{% url 'blog:collegescorecard' %}">here</a>.#}
         </p>
         <figure>
             <img src="{% static 'blog/images/college_scorecard/gif_of_salary_and_tuition/bokeh_plot.gif' %}"  width="100%" />
             <figcaption style="text-align: center;font-size:smaller;">
-                <b>Fig. 1</b>  Dynamic plot of faculty salary vs in-state tuition and fees from 2001 to 2014. The dot colors are blue: public 2 year; green: public 4 year; orange: non-profit 4 year; red: non-profit 2 year; purple: for-profit 4 year; and brown: for-profit 2 year colleges. The tuition and fees at the most expensive schools in 2001 were about $28k/year in 2001, compared to around $50k in 2014. This is an increase in sticker price of roughly 80%, compared to inflation which caused a net increase of 39% from 2001 to 2014. An interactive version of the plot is on the app page <a href="{% url 'blog:collegescorecard' %}">here</a>.
+                <b>Fig. 1</b>  Dynamic plot of faculty salary vs in-state tuition and fees from 2001 to 2014. The dot colors are blue: public 2 year; green: public 4 year; orange: non-profit 4 year; red: non-profit 2 year; purple: for-profit 4 year; and brown: for-profit 2 year colleges. The tuition and fees at the most expensive schools in 2001 were about $28k/year in 2001, compared to around $50k in 2014. This is an increase in sticker price of roughly 80%, compared to inflation which caused a net increase of 39% from 2001 to 2014.
+{#                                An interactive version of the plot is on the app page <a href="{% url 'blog:collegescorecard' %}">here</a>.#}
             </figcaption>
         </figure>
         <br>
@@ -76,7 +77,7 @@
         <p class="justify">
             In figure 3 I plot earnings vs debt for all universities in the United States.
             This plot appears much more scattered, with less clumping by sector compared to the faculty salary vs tuition plot above.
-            To interact with the data, please visit the interactive page <a href="{% url 'blog:collegescorecard' %}">here</a>, and select the appropriate columns.
+{#            To interact with the data, please visit the interactive page <a href="{% url 'blog:collegescorecard' %}">here</a>, and select the appropriate columns.#}
         </p>
         <p class="justify">
             So which universities yield the highest-earning students?

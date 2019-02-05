@@ -1,24 +1,8 @@
-from django.db import transaction
-
-from django.core.files.storage import get_storage_class
-
 from rest_framework import serializers
 
-from  profiles.serializers import PublicProfileSerializer
+from profiles.serializers import PublicProfileSerializer
 
 from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, TextBookProblem, TextBookSolution
-
-# from urllib.parse import urljoin
-#
-# from django.utils import timezone
-# from django.conf import settings
-# from django.urls import reverse
-#
-# from django.template import loader
-#
-# from django.core.mail import EmailMessage
-#
-# from django.contrib.sites.models import Site
 
 
 class ResourceMetaDataSerializer(serializers.ModelSerializer):
@@ -38,29 +22,63 @@ class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
 
 
 class TextBookSolutionSerializer(serializers.ModelSerializer):
-    pdf = TextBookSolutionPDFSerializer(many=False)
+    pdf = TextBookSolutionPDFSerializer(many=False,
+                                        required=False  # we can set existing pdf solution
+                                        )
     posted_by = PublicProfileSerializer(read_only=True)
     title = serializers.SerializerMethodField()
+
+    pdf_id = serializers.PrimaryKeyRelatedField(queryset=TextBookSolutionPDF.objects.all(),
+                                                source='pdf',
+                                                many=False,
+                                                write_only=True,
+                                                required=False  # we can set existing pdf solution
+                                                )
+    textbook_problem_uuid = serializers.SlugRelatedField(queryset=TextBookProblem.objects.all(),
+                                                         source='textbook_problem',
+                                                         slug_field='uuid',
+                                                         many=False,
+                                                         write_only=True,
+                                                         required=False  # we can set existing textbook_problem
+                                                         )
 
     def get_title(self, obj):
         return obj.title
 
     class Meta:
         model = TextBookSolution
-        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread']
-        read_only_fields = ('id', 'title', 'created_on', 'uuid', 'vote_score')
+        fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread',
+                  'textbook_problem_uuid', 'pdf_id']
+        read_only_fields = ('id', 'title', 'created_on', 'uuid', 'vote_score', 'pdf')
+        extra_kwargs = {'position': {'required': False}}
+        # extra_kwargs = {'textbook_problem_uuid': {'write_only': True}, 'pdf_id': {'write_only': True}}
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
+    # # FIXME need to think about adding uuid to textbook_section (chapter)
+    # # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
+    # #                                                      source='textbook_section',
+    # #                                                      slug_field='uuid',
+    # #                                                      many=False,
+    # #                                                      write_only=True,
+    # #                                                      required=False  # we can set existing
+    # #                                                      )
+    # textbook_section_id = serializers.PrimaryKeyRelatedField(queryset=TextBookChapter.objects.all(),
+    #                                                          source='textbook_section',
+    #                                                          many=False,
+    #                                                          write_only=True,
+    #                                                          required=False  # we can set existing
+    #                                                          )
 
     class Meta:
         model = TextBookProblem
-        fields = ['title', 'solutions', 'position', 'uuid', 'solutions']
+        fields = ['title', 'position', 'uuid', 'solutions', 'textbook_section_id']
+        extra_kwargs = {'position': {'required': False}}
 
 
 class TextBookProblemSerializer(serializers.ModelSerializer):
-    solutions = TextBookSolutionSerializer(many=True, required=False, write_only=True)
+    solutions = TextBookSolutionSerializer(many=True, required=False)
     count_solutions = serializers.SerializerMethodField()
 
     def get_count_solutions(self, obj):
@@ -76,7 +94,7 @@ class TextBookChapterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookChapter
-        fields = ['title', 'problems', 'position', 'id']
+        fields = ['title', 'problems', 'position', 'id', 'show_ad']
 
 
 class ResourceBaseSerializer(serializers.ModelSerializer):

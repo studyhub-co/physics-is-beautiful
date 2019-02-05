@@ -1,4 +1,4 @@
-import { checkHttpStatus, getAxios } from '../utils'
+import { checkHttpError, checkHttpStatus, getAxios } from '../utils'
 import { API_DJEDDIT_PREFIX, BASE_URL } from '../utils/config'
 import {
   DJEDDIT_RECEIVE_THREAD,
@@ -36,7 +36,7 @@ export function fetchThreadSolution (threadId) {
 export function createPost (post) {
   return (dispatch, state) => {
     return getAxios().post(API_DJEDDIT_PREFIX + 'posts/', post)
-      .then(checkHttpStatus)
+      .catch(checkHttpError)
       .then((response) => {
         // dispatch(createResourceSuccess(response.data))
       })
@@ -75,7 +75,7 @@ export function changePostVote (post, vote) {
 
     // return getAxios().post(QUERY_URL, {post: post.uid, vote: vote})
     return getAxios().post(QUERY_URL, formData)
-      .then(checkHttpStatus)
+      .catch(checkHttpError)
       .then((response) => {
         dispatch(votesForPostsChaged(post, response.data['score']))
       })

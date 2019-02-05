@@ -2,7 +2,6 @@ import os
 
 from django.db import models
 from django.dispatch import receiver
-from django.utils import timezone
 
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
@@ -17,6 +16,8 @@ from djeddit.models import Thread
 from .validators import validate_pdf_extension
 
 # from moderation.db import ModeratedModel
+# from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 # class Resource(ModeratedModel):
@@ -47,6 +48,8 @@ class Resource(models.Model):
         auto_approve_for_superusers = True
         fields_exclude = ['count_views', ]
 
+# TODO signal for remove djedit Topic onDelete resource
+
 
 class RecentUserResource(models.Model):
     user = models.ForeignKey(Profile, related_name='recent_resources')
@@ -63,6 +66,8 @@ class TextBookChapter(models.Model):
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
     resource = models.ForeignKey(Resource, related_name='sections')
+    posted_by = models.ForeignKey(Profile, related_name='resources_chapter', null=True)
+    show_ad = models.NullBooleanField()
 
     class Meta:
         ordering = ['position']
@@ -73,6 +78,7 @@ class TextBookProblem(models.Model):
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
     textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')
+    posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
 
     class Meta:
         ordering = ['position']
@@ -115,5 +121,15 @@ class TextBookSolution(VoteModel, models.Model):
                 return ''
 
     class Meta:
-        ordering = ['position']
+        ordering = ['-vote_score']
+
+
+# class GoogleAd(models.Model):
+#     # TODO move to GoogleAds application
+#     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+#     object_id = models.PositiveIntegerField()
+#     content_object = GenericForeignKey()
+#     client = models.CharField(max_length=255)
+#     slot = models.CharField(max_length=255)
+#     title = models.CharField(max_length=255)
 

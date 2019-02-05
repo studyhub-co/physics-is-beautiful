@@ -8,6 +8,24 @@
     padding-bottom: 2rem;
 }
 
+.resources .textbook-title {
+    font-size: 3rem;
+    color: rgb(8, 209, 255);
+    padding-bottom: 2rem;
+}
+
+.resources .problem-row {
+    color: rgb(38, 161, 255);
+    border: 1px solid white;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.resources .problem-row:hover {
+    border: 1px solid rgba(38, 165, 255, 0.45);
+    border-radius: 7px;
+}
+
 .resources .common-button {
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
@@ -46,7 +64,11 @@
 }
 
 .resources .blue-text {
-    color: rgb(8, 209, 255)
+    color: rgb(38, 161, 255)
+}
+
+.resources .solution-count {
+    color: rgb(255, 0, 154)
 }
 
 .resources .gray-text {
@@ -124,6 +146,27 @@
 .resources .editable-label:hover .glyphicon-pencil, .editor .mq-editable-label:hover .glyphicon-pencil { display:inline; }
 .resources .editable-label:hover, .editor .mq-editable-label:hover, .editor .mq-editable-label:hover .mq-math-mode { cursor:pointer; }
 
+/* common with editor, need to create common.css */
+
+.resources .drag-handle {
+    background-image: url(img/drag-handle.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 2rem;
+    height: 2rem;
+    padding: 0 1rem 0 1rem;
+}
+.resources .drag-handle:hover { cursor: move; }
+.resources .drag-handle {
+    display: inline-block;
+    filter: none;
+}
+
+.resources .drop-target .dock-site { height:60px; }
+/*.unit .drop-target .dock-site, .module .drop-target .dock-site { float:left; width:110px; height:150px; }*/
+/*.unit .drop-target, .module .drop-target { float:left; margin-left:-60px; padding-left:60px;}*/
+/*.editor .unit .btn-add-module, .editor .module .btn-add-lesson {text-align:center;}*/
+
 /* from djeddit css */
 
 .bs-callout {
@@ -162,4 +205,25 @@ div.pdf-ico {
 
 .resources .title {
     font-size: 2rem;
+}
+
+/* fix for bootstrp modal (attached to body) */
+
+.blue-text {
+    color: rgb(8, 209, 255)
+}
+
+.selectable-file input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* one row fix */
+.pure-radiobutton input[type="radio"] + label {
+    width: 6rem !important;
 }
