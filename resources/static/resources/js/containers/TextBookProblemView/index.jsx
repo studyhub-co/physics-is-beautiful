@@ -4,14 +4,35 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Grid, Row, Col, Table, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, Table, Button, Glyphicon, Modal, Dropdown, MenuItem } from 'react-bootstrap'
 
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
 
+import {
+  handleFileChange,
+  onChangeExternalUrl
+} from '../AddTextBookResourceSteps/lib'
+
+import { EditableLabel } from '../../utils/editableLabel'
+import * as googleCreators from '../../actions/google'
+import * as profileCreators from '../../actions/profile'
+
 class TextBookProblemView extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      showPostSolutionModal: false,
+      ordering: 'Top'
+    }
+    this.onPostSolutionClick = this.onPostSolutionClick.bind(this)
+    this.handleClosePostSolutionModal = this.handleClosePostSolutionModal.bind(this)
+    this.addSolution = this.addSolution.bind(this)
+    this.handleOrderSelect = this.handleOrderSelect .bind(this)
+  }
+
   componentDidMount () {
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
@@ -19,20 +40,48 @@ class TextBookProblemView extends React.Component {
     if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
       this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
     }
+    this.props.googleActions.gapiInitialize()
+    this.props.profileActions.fetchProfileMe()
   }
 
   onPostSolutionClick () {
-    // upload file/link
-    // add solution info to solutions list
-    // load 3dh step
+    if (this.props.profile.is_anonymous === true) {
+      let url = '/accounts/login/?next=' + window.location.pathname
+      window.location.replace(url)
+      throw new Error('redirecting...')
+    }
+    else {
+      this.setState({showPostSolutionModal: !this.state.showPostSolutionModal})
+    }
   }
 
   onClickSolution (uuid) {
     history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
   }
 
+  handleClosePostSolutionModal () {
+    this.setState({ showPostSolutionModal: !this.state.showPostSolutionModal })
+  }
+
   upDownSolutionClick (solutionUuid, val) {
     this.props.resourcesActions.solutionVoteAndRefreshList(solutionUuid, val, this.props.problem.uuid)
+  }
+
+  addSolution (chapter, problem, file) {
+    // save new solution for the problem
+    this.props.resourcesActions.addSolution(file, problem)
+    this.setState({ showPostSolutionModal: false })
+  }
+
+  handleOrderSelect (val) {
+    this.setState({'ordering': val})
+    if (this.props.match.params && this.props.match.params['uuid']) {
+      if (val === 'Top') {
+        this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
+      } else if (val === 'New') {
+        this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'], '-solutions__created_on')
+      }
+    }
   }
 
   render () {
@@ -64,14 +113,92 @@ class TextBookProblemView extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col sm={10} md={10}>
-                {/* TODO sort */}
+              <Col sm={1} md={1}>
+                <Dropdown onSelect={this.handleOrderSelect} id={'dropdown-settings'}>
+                  <Dropdown.Toggle className={'common-button'} style={{padding: '1rem'}}>
+                    {this.state.ordering}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <MenuItem eventKey='Top'>Top</MenuItem>
+                    <MenuItem eventKey='New'>New</MenuItem>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
+              <Col sm={9} md={9}>
               </Col>
               <Col sm={2} md={2}>
                 <Button onClick={() => { this.onPostSolutionClick() }} className={'common-button'}>
                   <Glyphicon glyph='plus' /> Post solution
                 </Button>
               </Col>
+              <Modal
+                show={this.state.showPostSolutionModal}
+                onHide={this.handleClosePostSolutionModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Post solution</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div>
+                    <span
+                      className={'blue-text selectable-file'}
+                      style={{ paddingLeft: '2rem', position: 'relative' }}
+                    >
+                      <input
+                        type='file'
+                        name='pdf'
+                        id={'solution-input-' + this.props.problem.uuid}
+                        accept='application/pdf'
+                        // onChange={(file) => this.handleFileChange(file, chapter, problem, (...args) => { this.addSolution(...args) })}
+                        onChange={(file) =>
+                          handleFileChange(file, null, this.props.problem, null, (...args) => { this.addSolution(...args) })}
+                        style={{fontSize: '1px'}} />
+                      <label htmlFor={'solution-input-' + this.props.problem.uuid} style={{cursor: 'pointer'}}>
+                        upload pdf file...
+                      </label>
+                    </span>
+                  </div>
+                  <div>
+                    <span
+                      style={{paddingLeft: '2rem', cursor: 'pointer'}}
+                      className={'blue-text'}
+                    >
+                      <b>
+                        <EditableLabel
+                          // value={'google drive link'}
+                          value={'external link'}
+                          onChange={(url) => {
+                            if (this.props.gapiInitState) {
+                              // onChangeGoogleDriveUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
+                              onChangeExternalUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
+                            }
+                          }
+                          }
+                          // defaultValue={'google drive link'} />
+                          defaultValue={'external link'} />
+                      </b>
+                    </span>
+                  </div>
+                  {/*<div>*/}
+                    {/*<span*/}
+                      {/*style={{paddingLeft: '2rem', cursor: 'pointer'}}*/}
+                      {/*className={'blue-text'}*/}
+                    {/*>*/}
+                      {/*<b>*/}
+                        {/*<EditableLabel*/}
+                          {/*value={'direct link'}*/}
+                          {/*onChange={(url) => {*/}
+                            {/*onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })*/}
+                          {/*}*/}
+                          {/*}*/}
+                          {/*defaultValue={'direct link'} />*/}
+                      {/*</b>*/}
+                    {/*</span>*/}
+                  {/*</div>*/}
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={this.handleClosePostSolutionModal}>Close</Button>
+                </Modal.Footer>
+              </Modal>
             </Row>
             <Row>
               <Col sm={12} md={12}>
@@ -79,7 +206,7 @@ class TextBookProblemView extends React.Component {
                   <tbody>
                     { this.props.problem
                       ? this.props.problem.solutions.map(function (solution, i) { // ============ chapters
-                        return <tr key={solution.position}>
+                        return <tr key={solution.uuid}>
                           <td>
                             <Glyphicon
                               glyph='arrow-down'
@@ -119,28 +246,40 @@ class TextBookProblemView extends React.Component {
 }
 
 TextBookProblemView.propTypes = {
-  // // actions
+  // actions
   resourcesActions: PropTypes.shape({
     fetchProblem: PropTypes.func.isRequired,
     fetchResource: PropTypes.func.isRequired,
-    solutionVoteAndRefreshList: PropTypes.func.isRequired
+    solutionVoteAndRefreshList: PropTypes.func.isRequired,
+    addSolution: PropTypes.func.isRequired
+  }),
+  googleActions: PropTypes.shape({
+    gapiInitialize: PropTypes.func.isRequired
+  }).isRequired,
+  profileActions: PropTypes.shape({
+    fetchProfileMe: PropTypes.func.isRequired
   }),
   // data
   problem: PropTypes.object,
+  profile: PropTypes.object,
   resource: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
     problem: state.resources.problem,
-    resource: state.resources.resource
+    resource: state.resources.resource,
+    gapiInitState: state.google.gapiInitState,
+    profile: state.profile.me,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+    googleActions: bindActionCreators(googleCreators, dispatch),
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 

@@ -10,9 +10,7 @@ import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
 import { EditableLabel } from '../../utils/editableLabel'
 
-import { handleFileChange, onChangeGoogleDriveUrl } from './lib'
-
-// const SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
+import { handleFileChange, onChangeGoogleDriveUrl, onChangeDirectUrl, onChangeExternalUrl } from './lib'
 
 export default class AddTextBookSolutionsView extends React.Component {
   constructor (props) {
@@ -126,21 +124,31 @@ export default class AddTextBookSolutionsView extends React.Component {
                           </label>
                         </span>
                         <span
-                          style={{paddingLeft: '2rem', cursor: 'pointer'}}
                           className={'blue-text'}
                         >
-                          <b>
+                          <b style={{paddingLeft: '1rem', cursor: 'pointer'}}>
                             <EditableLabel
-                              value={'google drive link'}
-                              //onChange={(url) => { this.onChangeGoogleDriveUrl(url, chapter, problem) }}
+                              // value={'google drive link'}
+                              value={'external link'}
                               onChange={(url) => {
                                 if (this.props.gapiInitState) {
-                                  onChangeGoogleDriveUrl(url, chapter, problem, (...args) => { this.addSolution(...args) })
+                                  // onChangeGoogleDriveUrl(url, chapter, problem, (...args) => { this.addSolution(...args) })
+                                  onChangeExternalUrl(url, chapter, problem, (...args) => { this.addSolution(...args) })
                                 }
                               }
                               }
-                              defaultValue={'google drive link'} />
+                              // defaultValue={'google drive link'}
+                              defaultValue={'external link'} />
                           </b>
+                          {/*<b style={{paddingLeft: '1rem', cursor: 'pointer'}}>*/}
+                            {/*<EditableLabel*/}
+                              {/*value={'direct link'}*/}
+                              {/*onChange={(url) => {*/}
+                                {/*onChangeDirectUrl(url, chapter, problem, (...args) => { this.addSolution(...args) })*/}
+                              {/*}*/}
+                              {/*}*/}
+                              {/*defaultValue={'direct link'} />*/}
+                          {/*</b>*/}
                         </span>
                       </div>
                     }, this)}</div>

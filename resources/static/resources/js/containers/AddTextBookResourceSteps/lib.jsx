@@ -20,7 +20,6 @@ export function handleFileChange (file, chapter, problem, filename, callback, ur
   getAxios().post(API_PREFIX + 'upload_solution_pdf/', formData)
     .then(checkHttpStatus)
     .then((response) => {
-      //this.addSolution(chapter, problem, response.data)
       callback(chapter, problem, response.data)
     })
 }
@@ -33,7 +32,7 @@ function getGoogleDriveNameAndUpload (id, chapter, problem, accessToken, mediaDa
     xhr.open('GET', url)
     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
     xhr.onload = function () {
-      var jsonResp = JSON.parse(xhr.response);
+      var jsonResp = JSON.parse(xhr.response)
       //that.handleFileChange(mediaData, chapter, problem, jsonResp['title'])
       handleFileChange(mediaData, chapter, problem, jsonResp['title'], callback, urlString)
     }
@@ -52,35 +51,58 @@ export function downloadGoogleDriveUrl (urlString, callback) {
   // var that = this
   url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
   if (url) {
-    var SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
-
-    var authData = {
-      client_id: '1090448644110-r8o52h1sqpbq7pp1j8ougcr1e35qicqg.apps.googleusercontent.com',
-      scope: SCOPES,
-      immediate: false
-    }
-    gapi.auth.authorize(authData, function (response) {
-      // TODO check if token already get
-      var accessToken = gapi.auth.getToken().access_token
+    let downloadFile = function (accessToken) {
       var xhr = new XMLHttpRequest()
       xhr.open('GET', url)
       xhr.responseType = 'blob'
       xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-      xhr.onload = function () {
-        callback(xhr.response, id, accessToken)
-        // var file = {}
-        // file.target = {}
-        // file.target.files = [ xhr.response, ]
-        // // that.handleFileChange(file, chapter, problem))
-        // // that.getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file)
-        // getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file, callback, urlString)
+      xhr.onload = function (e) {
+        if (e.target.status === 403) {
+          alert('You don\'t have permission to download the file')
+          return
+        }
+        if (e.target.status === 401) {
+          // user remove permission from https://myaccount.google.com/permissions , gapi use old token
+          gapi.auth2.getAuthInstance().signIn().then(function (user) {
+            // need user allow popup windows
+            downloadFile(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token)
+          })
+        } else {
+          callback(xhr.response, id, accessToken)
+        }
       }
       xhr.send()
-    })
+    }
+
+    // check that user logged in google
+    if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token) {
+      downloadFile(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token)
+    } else {
+    // user not loggen in google / TODO it seems we need to check scopes
+      gapi.auth2.getAuthInstance().signIn().then(function (user) {
+        downloadFile(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token)
+      })
+    }
   }
 }
 
+export function onChangeDirectUrl (urlString, chapter, problem, callback) {
+  try {
+    var url = new URL(urlString)
+  } catch (e) {
+    return
+  }
+  // download file
+  getAxios().post(API_PREFIX + 'upload_direct_pdf/', {url: url})
+    .then(checkHttpStatus)
+    .then((response) => {
+      callback(chapter, problem, response.data)
+    })
+}
+
 export function onChangeGoogleDriveUrl (urlString, chapter, problem, callback) {
+  // download from google drive and upload to the API
+  // https://drive.google.com/open?id=0B1Kj1ZClSFusekhNdGRhdDNYY0E
   downloadGoogleDriveUrl(urlString,
     (response, id, accessToken) => {
       var file = {}
@@ -90,43 +112,13 @@ export function onChangeGoogleDriveUrl (urlString, chapter, problem, callback) {
       // that.getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file)
       getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file, callback, urlString)
     })
-  // download from google drive and upload to the API
-  // https://drive.google.com/open?id=0B1Kj1ZClSFusekhNdGRhdDNYY0E
-  // if (!urlString) return
-  // // https://www.googleapis.com/drive/v2/files/fileId
-  // try {
-  //   var url = new URL(urlString)
-  // } catch (e) {
-  //   return
-  // }
-  //
-  // var id = url.searchParams.get('id')
-  // // var that = this
-  // url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
-  // if (url) {
-  //   var SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
-  //
-  //   var authData = {
-  //     client_id: '1090448644110-r8o52h1sqpbq7pp1j8ougcr1e35qicqg.apps.googleusercontent.com',
-  //     scope: SCOPES,
-  //     immediate: false
-  //   }
-  //   gapi.auth.authorize(authData, function (response) {
-  //     // TODO check if token exist
-  //     var accessToken = gapi.auth.getToken().access_token
-  //     var xhr = new XMLHttpRequest()
-  //     xhr.open('GET', url)
-  //     xhr.responseType = 'blob'
-  //     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-  //     xhr.onload = function () {
-  //       var file = {}
-  //       file.target = {}
-  //       file.target.files = [ xhr.response, ]
-  //       // that.handleFileChange(file, chapter, problem))
-  //       // that.getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file)
-  //       getGoogleDriveNameAndUpload(id, chapter, problem, accessToken, file, callback, urlString)
-  //     }
-  //     xhr.send()
-  //   })
-  // }
+}
+
+export function onChangeExternalUrl (...args) {
+  let fileUrl = args[0]
+  if (fileUrl.startsWith('https://drive.google.com/')) {
+    onChangeGoogleDriveUrl(...args)
+  } else {
+    onChangeDirectUrl(...args)
+  }
 }
