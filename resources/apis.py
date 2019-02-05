@@ -73,8 +73,12 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
     permission_classes = (IsStaffOrReadOnly, )
     serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch
     serializer_class = TextBookProblemSerializer
-    queryset = TextBookProblem.objects. \
-        prefetch_related('solutions__posted_by', 'solutions__pdf').all()
+    queryset = TextBookProblem.objects.\
+        prefetch_related('solutions', 'solutions__posted_by', 'solutions__pdf', 'solutions__thread').\
+        all()
+    # annotate(count_solutions=Count('solutions', distinct=True)).\
+    # todo add denorm field for thread posts count.
+
     lookup_field = 'uuid'
     # filter_backends = (filters.OrderingFilter,)
     # # ordering_fields = ('solutions__created_on', )
@@ -85,7 +89,7 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
         if 'ordering' in self.request.query_params and self.request.query_params['ordering'] == '-solutions__created_on':
             # it seems drf do not work with reverse foreign related ordering, need to investigate
             # or replace TextBookProblem solutions list with a separate API query
-            qs = TextBookProblem.objects.prefetch_related(
+            qs = self.queryset.prefetch_related(
               Prefetch(
                 'solutions',
                 queryset=TextBookSolution.objects.all().order_by('-created_on'),
