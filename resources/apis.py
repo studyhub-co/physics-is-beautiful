@@ -76,8 +76,6 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
     queryset = TextBookProblem.objects.\
         prefetch_related('solutions', 'solutions__posted_by', 'solutions__pdf', 'solutions__thread').\
         all()
-    # annotate(count_solutions=Count('solutions', distinct=True)).\
-    # todo add denorm field for thread posts count.
 
     lookup_field = 'uuid'
     # filter_backends = (filters.OrderingFilter,)

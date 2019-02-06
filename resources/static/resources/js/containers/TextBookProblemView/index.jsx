@@ -230,7 +230,7 @@ class TextBookProblemView extends React.Component {
                               </a>&nbsp;-&nbsp;
                               <Moment fromNow>{solution.created_on}</Moment></div>
                           </td>
-                          <td><Glyphicon glyph='comment' />&nbsp;1.7k</td>
+                          <td><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
                           <td></td>
                         </tr>
                       }, this) : null }
