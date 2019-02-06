@@ -106,7 +106,9 @@ class Thread(NamedModel):
     slug = models.SlugField(unique=False, max_length=200)
     url = models.URLField(max_length=120, blank=True, default='')
     views = models.IntegerField(blank=True, default=0)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    # topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, related_name='thread', on_delete=models.CASCADE)
+    # op - this is first Post in thread
     op = models.ForeignKey('Post', related_name='+', on_delete=models.CASCADE)
     locked = models.BooleanField(blank=True, default=False)
     is_stickied = models.BooleanField(default=False)
@@ -151,6 +153,7 @@ class Post(MPTTModel, NamedModel):
     wsi = models.FloatField(blank=True, default=0) # Wilson score interval
     ip_address = models.GenericIPAddressField(blank=True, null=True)
     user_agent = models.CharField(max_length=150, blank=True, null=True)
+    # count_all_replies = models.IntegerField(blank=True, default=0)  # count all replies for all descendants
 
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
@@ -172,7 +175,7 @@ class Post(MPTTModel, NamedModel):
         return voteSetter
 
     @property
-    def thread(self): # TODO: thread should be stored in Post
+    def thread(self):  # TODO: thread should be stored in Post
         post = self
         while post.parent:
             post = post.parent
@@ -255,5 +258,7 @@ class Post(MPTTModel, NamedModel):
 
 class UserPostVote(NamedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='+')
-    post = models.ForeignKey(Post, related_name='+', on_delete=models.CASCADE)
+    # originally by djeedit
+    # post = models.ForeignKey(Post, related_name='+', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='user_post_votes', on_delete=models.CASCADE)
     val = IntegerRangeField(blank=True, default=0, min_value=-1, max_value=1)
