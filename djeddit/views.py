@@ -5,6 +5,7 @@ import logging
 # Core Dajngo imports
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseForbidden, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.db.models import Prefetch
 # from django.contrib.auth.models import User
 from django.urls import reverse
 
@@ -157,8 +158,27 @@ def topicPage(request, topic_title):
 
 
 def discussionPage(request):
-    topics = Topic.objects.all()
-    threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
+    # originally by djeedit
+    # topics = Topic.objects..all()
+    # threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
+
+    topics = Topic.objects. \
+        prefetch_related('thread').all(). \
+        prefetch_related(
+            Prefetch('thread__op__user_post_votes',
+                     queryset=UserPostVote.objects.filter(user=request.user),
+                     to_attr='current_user_post_votes'))
+        # prefetch_related('thread__op__user_post_votes').all()
+
+    threads = Thread.objects.all(). \
+        select_related('topic').\
+        prefetch_related('op__created_by'). \
+        prefetch_related(
+        Prefetch('op__user_post_votes',
+                 queryset=UserPostVote.objects.filter(user=request.user),
+                 to_attr='current_user_post_votes')).\
+        order_by('-is_stickied', '-op__created_on')
+        # prefetch_related('op__user_post_votes__user')
     context = dict(threads=threads, topics=topics)
     return render(request, 'djeddit/discussion.html', context)
 
