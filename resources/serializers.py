@@ -42,13 +42,23 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
                                                          required=False  # we can set existing textbook_problem
                                                          )
 
+    count_comments = serializers.SerializerMethodField()
+
+    def get_count_comments(self, obj):
+        count_comments = 0
+
+        if hasattr(obj, 'thread') and obj.thread:
+            count_comments = obj.thread.op.get_descendant_count()
+
+        return count_comments
+
     def get_title(self, obj):
         return obj.title
 
     class Meta:
         model = TextBookSolution
         fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread',
-                  'textbook_problem_uuid', 'pdf_id']
+                  'textbook_problem_uuid', 'pdf_id', 'count_comments']
         read_only_fields = ('id', 'title', 'created_on', 'uuid', 'vote_score', 'pdf')
         extra_kwargs = {'position': {'required': False}}
         # extra_kwargs = {'textbook_problem_uuid': {'write_only': True}, 'pdf_id': {'write_only': True}}
