@@ -67,12 +67,6 @@ let ChapterClass = class Chapter extends React.Component {
               <Glyphicon glyph='remove' />&nbsp;
             </span>
             : null }
-          { !this.props.resourceEditMode && this.props.chapter.show_ad
-            ? <AdSense.Google
-              client='ca-pub-1780955227395785'
-              slot='4334626488'
-            /> : null
-          }
           { this.props.resourceEditMode
             ? <div // enable ad
               style={{paddingLeft: '3rem'}}
@@ -120,6 +114,13 @@ let ChapterClass = class Chapter extends React.Component {
             </DockableDropTarget>
           }, this)
             : null
+          }
+          { !this.props.resourceEditMode && this.props.chapter.show_ad
+            ? <AdSense.Google
+              client='ca-pub-1780955227395785'
+              slot='4334626488'
+              style={{marginTop: 20, marginBottom: 20}}
+            /> : null
           }
           {this.props.resourceEditMode
             ? <DockableDropTarget
