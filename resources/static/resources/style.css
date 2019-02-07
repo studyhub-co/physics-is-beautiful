@@ -207,6 +207,20 @@ div.pdf-ico {
     font-size: 2rem;
 }
 
+/* fix for solutions edit/delete menu */
+
+.resources .solution-dropdown-menu > div > ul {
+    min-width: auto !important;
+}
+
+.resources .solution-dropdown-menu > div > ul > li > a {
+    padding: 0 1rem !important;
+}
+
+.resources td.solution-dropdown-menu {
+    min-width: 3rem;
+}
+
 /* fix for bootstrp modal (attached to body) */
 
 .blue-text {
