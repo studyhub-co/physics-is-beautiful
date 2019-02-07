@@ -20,6 +20,29 @@ import { EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
 
+class HotizonltalOptionToggle extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick (e) {
+    e.preventDefault()
+    this.props.onClick(e)
+  }
+
+  render () {
+    return (
+      <span onClick={this.handleClick}>
+        <Glyphicon
+          glyph='option-horizontal'
+          style={{cursor: 'pointer'}}
+        />
+      </span>
+    )
+  }
+}
+
 class TextBookProblemView extends React.Component {
   constructor (props) {
     super(props)
@@ -79,6 +102,17 @@ class TextBookProblemView extends React.Component {
         this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
       } else if (val === 'New') {
         this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'], '-solutions__created_on')
+      }
+    }
+  }
+
+  handleSolutionMenuClick (val, solution) {
+    if (val === 'Edit') {
+      // todo add editabvle lable for title and sve
+    } else if (val === 'Delete') {
+      // todo check user rights
+      if (confirm('Are you sure you want to delete this solution?')) { // TODO we can use Modal from react bootstrap if needed
+        // todo remove solution
       }
     }
   }
@@ -228,8 +262,20 @@ class TextBookProblemView extends React.Component {
                               </a>&nbsp;-&nbsp;
                               <Moment fromNow>{solution.created_on}</Moment></div>
                           </td>
-                          <td><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
-                          <td />
+                          <td style={{textAlign: 'center'}}><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
+                          <td className={'solution-dropdown-menu'}>
+                            {/* todo create table's overlapped menu */}
+                            <Dropdown
+                              onSelect={(val) => { this.handleSolutionMenuClick(val, solution) }}
+                              id={'dropdown-settings' + solution.uuid}
+                            >
+                              <HotizonltalOptionToggle bsRole='toggle' data-boundary='body' />
+                              <Dropdown.Menu>
+                                <MenuItem eventKey='Edit'>Edit</MenuItem>
+                                <MenuItem eventKey='Delete'>Delete</MenuItem>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </td>
                         </tr>
                       }, this) : null }
                   </tbody>

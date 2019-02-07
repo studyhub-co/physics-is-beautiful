@@ -87,11 +87,12 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
         if 'ordering' in self.request.query_params and self.request.query_params['ordering'] == '-solutions__created_on':
             # it seems drf do not work with reverse foreign related ordering, need to investigate
             # or replace TextBookProblem solutions list with a separate API query
-            qs = self.queryset.prefetch_related(
+            qs = TextBookProblem.objects.prefetch_related(
               Prefetch(
                 'solutions',
                 queryset=TextBookSolution.objects.all().order_by('-created_on'),
-                )).all()
+                )).\
+                prefetch_related('solutions', 'solutions__posted_by', 'solutions__pdf', 'solutions__thread').all()
             return qs
 
         return self.queryset
