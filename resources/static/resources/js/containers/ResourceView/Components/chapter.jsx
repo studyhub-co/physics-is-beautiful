@@ -119,7 +119,7 @@ let ChapterClass = class Chapter extends React.Component {
             ? <AdSense.Google
               client='ca-pub-1780955227395785'
               slot='4334626488'
-              style={{marginTop: 20, marginBottom: 20}}
+              // style={{marginTop: 20, marginBottom: 20}}
             /> : null
           }
           {this.props.resourceEditMode
