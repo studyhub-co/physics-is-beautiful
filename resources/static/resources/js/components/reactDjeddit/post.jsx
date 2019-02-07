@@ -40,25 +40,25 @@ export class Post extends React.Component {
         { this.props.post
           ? <Grid fluid style={{padding: 0}}>
             <Row>
-              <Col sm={1} md={1} xs={1} style={{padding: 0, width: 'fit-content'}}>
-                <div className={'text-align-center'}>
-                  <div>
-                    <Glyphicon
-                      glyph='arrow-up'
-                      style={{cursor: 'pointer'}}
-                      onClick={() => this.upDownClick(1)} />
-                  </div>
-                  <div>
-                    {this.props.post.score}
-                  </div>
-                  <div>
-                    <Glyphicon
-                      glyph='arrow-down'
-                      style={{cursor: 'pointer'}}
-                      onClick={() => this.upDownClick(-1)} />
-                  </div>
-                </div>
-              </Col>
+              {/*<Col sm={1} md={1} xs={1} style={{padding: 0, width: 'fit-content'}}>*/}
+                {/*<div className={'text-align-center'}>*/}
+                  {/*<div>*/}
+                    {/*<Glyphicon*/}
+                      {/*glyph='arrow-up'*/}
+                      {/*style={{cursor: 'pointer'}}*/}
+                      {/*onClick={() => this.upDownClick(1)} />*/}
+                  {/*</div>*/}
+                  {/*<div>*/}
+                    {/*{this.props.post.score}*/}
+                  {/*</div>*/}
+                  {/*<div>*/}
+                    {/*<Glyphicon*/}
+                      {/*glyph='arrow-down'*/}
+                      {/*style={{cursor: 'pointer'}}*/}
+                      {/*onClick={() => this.upDownClick(-1)} />*/}
+                  {/*</div>*/}
+                {/*</div>*/}
+              {/*</Col>*/}
               <Col sm={11} md={11}>
                 <Row className={'gray-text'}>
                   <Col md={1} sm={2} xs={4}>
@@ -80,17 +80,49 @@ export class Post extends React.Component {
                 </Row>
                 <Row>
                   <Col sm={12} md={12}>
-                    { this.props.post.content }
+                    {/* djeddit part*/}
+                    <div className='postcol'>
+                      <div className='post-content'>
+                        { this.props.post.content }
+                      </div>
+                      <div className='djeddit-post-item-footer'>
+                        <div className='djeddit-score'>
+                          <i className='fas fa-arrow-up djeddit-score-upvote  ' onClick={() => this.upDownClick(1)} />
+                          <span className=' djeddit-score-number'>{this.props.post.score}</span>
+                          <i className='fas fa-arrow-down djeddit-score-downvote ' onClick={() => this.upDownClick(-1)} />
+                        </div>
+                        <div className='btn-group btn-group-xs fixed-50' role='group'>
+                          <button
+                            onClick={this.toggleReplyForm}
+                            className='btn btn-secondary'>
+                            Edit
+                          </button>
+                          <button
+                            onClick={this.toggleReplyForm}
+                            className='btn btn-secondary'>
+                            Reply
+                          </button>
+                          <button
+                            onClick={this.toggleReplyForm}
+                            className='btn btn-secondary'>
+                            Parent
+                          </button>
+                          <button
+                            onClick={this.toggleReplyForm}
+                            className='btn btn-secondary'>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </Col>
                 </Row>
                 <Row>
                   <Col sm={12} md={12}>
-                    <span className='pib-link' onClick={this.toggleReplyForm}>Reply</span>
-                    &nbsp;
-                    <span className='pib-link' onClick={this.toggleReplyForm}>Share</span>
-                    {/*/ec744tb*/}
-                    {/*<button>Report</button>*/}
-                    {/*<button>Save</button>*/}
+                    <div className='btn-group btn-group-xs fixed-50' role='group'>
+                      {/*<span className='pib-link' onClick={this.toggleReplyForm}>Reply</span>*/}
+                      {/*<span className='pib-link' onClick={this.toggleReplyForm}>Share</span>*/}
+                    </div>
                   </Col>
                 </Row>
                 {this.state.replyFormShow
