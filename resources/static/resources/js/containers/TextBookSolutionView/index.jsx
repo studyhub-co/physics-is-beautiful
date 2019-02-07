@@ -25,6 +25,7 @@ import * as profileCreators from '../../actions/profile'
 
 import { BASE_URL } from '../../utils/config'
 import * as googleCreators from '../../actions/google'
+import AdSense from 'react-adsense'
 
 class TextBookSolutionView extends React.Component {
   constructor (props) {
@@ -313,14 +314,14 @@ class TextBookSolutionView extends React.Component {
                 </button>
               </Col>
             </Row>
-            {/*<Row>*/}
-              {/*<Col sm={12} md={12} className={'text-align-center'}>*/}
-              {/*</Col>*/}
-            {/*</Row>*/}
+            {/* <Row> */}
+            {/* <Col sm={12} md={12} className={'text-align-center'}> */}
+            {/* </Col> */}
+            {/* </Row> */}
             <Row>
               <Col sm={12} md={12} className={'text-align-center'}>
                 <div style={{overflowX: 'auto', position: 'relative'}}>
-                {/*<Document file={this.props.solution.pdf.file} />*/}
+                  {/* <Document file={this.props.solution.pdf.file} /> */}
                   { this.props.solution.pdf.external_url && !pdfFile
                     ? <Button
                       onClick={() => { this.loadExternalGooglePdf(this.props.solution.pdf.external_url) }}
@@ -340,6 +341,15 @@ class TextBookSolutionView extends React.Component {
                     /> : null }
                 </div>
                 {pagination}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <AdSense.Google
+                  client='ca-pub-1780955227395785'
+                  slot='4334626488'
+                  style={{marginTop: 20, marginBottom: 20}}
+                />
               </Col>
             </Row>
             <Row>
@@ -377,7 +387,7 @@ TextBookSolutionView.propTypes = {
     fetchProfileMe: PropTypes.func.isRequired
   }),
   googleActions: PropTypes.shape({
-    gapiInitialize: PropTypes.func.isRequired,
+    gapiInitialize: PropTypes.func.isRequired
   }).isRequired,
   // data
   problem: PropTypes.object,

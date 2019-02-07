@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Grid, Row, Col, Table, Button, Glyphicon, Modal, Dropdown, MenuItem } from 'react-bootstrap'
-
+import AdSense from 'react-adsense'
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
@@ -30,7 +30,7 @@ class TextBookProblemView extends React.Component {
     this.onPostSolutionClick = this.onPostSolutionClick.bind(this)
     this.handleClosePostSolutionModal = this.handleClosePostSolutionModal.bind(this)
     this.addSolution = this.addSolution.bind(this)
-    this.handleOrderSelect = this.handleOrderSelect .bind(this)
+    this.handleOrderSelect = this.handleOrderSelect.bind(this)
   }
 
   componentDidMount () {
@@ -49,8 +49,7 @@ class TextBookProblemView extends React.Component {
       let url = '/accounts/login/?next=' + window.location.pathname
       window.location.replace(url)
       throw new Error('redirecting...')
-    }
-    else {
+    } else {
       this.setState({showPostSolutionModal: !this.state.showPostSolutionModal})
     }
   }
@@ -90,7 +89,7 @@ class TextBookProblemView extends React.Component {
         <Grid fluid>
           <Row>
             <Col sm={12} md={12}>
-              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid'])}} >
+              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid']) }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All problems
               </a>
@@ -124,8 +123,7 @@ class TextBookProblemView extends React.Component {
                   </Dropdown.Menu>
                 </Dropdown>
               </Col>
-              <Col sm={9} md={9}>
-              </Col>
+              <Col sm={9} md={9} />
               <Col sm={2} md={2}>
                 <Button onClick={() => { this.onPostSolutionClick() }} className={'common-button'}>
                   <Glyphicon glyph='plus' /> Post solution
@@ -178,22 +176,22 @@ class TextBookProblemView extends React.Component {
                       </b>
                     </span>
                   </div>
-                  {/*<div>*/}
-                    {/*<span*/}
-                      {/*style={{paddingLeft: '2rem', cursor: 'pointer'}}*/}
-                      {/*className={'blue-text'}*/}
-                    {/*>*/}
-                      {/*<b>*/}
-                        {/*<EditableLabel*/}
-                          {/*value={'direct link'}*/}
-                          {/*onChange={(url) => {*/}
-                            {/*onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })*/}
-                          {/*}*/}
-                          {/*}*/}
-                          {/*defaultValue={'direct link'} />*/}
-                      {/*</b>*/}
-                    {/*</span>*/}
-                  {/*</div>*/}
+                  {/* <div> */}
+                  {/* <span */}
+                  {/* style={{paddingLeft: '2rem', cursor: 'pointer'}} */}
+                  {/* className={'blue-text'} */}
+                  {/* > */}
+                  {/* <b> */}
+                  {/* <EditableLabel */}
+                  {/* value={'direct link'} */}
+                  {/* onChange={(url) => { */}
+                  {/* onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) }) */}
+                  {/* } */}
+                  {/* } */}
+                  {/* defaultValue={'direct link'} /> */}
+                  {/* </b> */}
+                  {/* </span> */}
+                  {/* </div> */}
                 </Modal.Body>
                 <Modal.Footer>
                   <Button onClick={this.handleClosePostSolutionModal}>Close</Button>
@@ -231,11 +229,16 @@ class TextBookProblemView extends React.Component {
                               <Moment fromNow>{solution.created_on}</Moment></div>
                           </td>
                           <td><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
-                          <td></td>
+                          <td />
                         </tr>
                       }, this) : null }
                   </tbody>
                 </Table>
+                <AdSense.Google
+                  client='ca-pub-1780955227395785'
+                  slot='4334626488'
+                  style={{marginTop: 40}}
+                />
               </Col>
             </Row>
           </Grid>
@@ -270,7 +273,7 @@ const mapStateToProps = (state) => {
     problem: state.resources.problem,
     resource: state.resources.resource,
     gapiInitState: state.google.gapiInitState,
-    profile: state.profile.me,
+    profile: state.profile.me
   }
 }
 
