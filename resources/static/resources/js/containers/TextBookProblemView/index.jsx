@@ -237,7 +237,7 @@ class TextBookProblemView extends React.Component {
                 <AdSense.Google
                   client='ca-pub-1780955227395785'
                   slot='4334626488'
-                  style={{marginTop: 40}}
+                  // style={{marginTop: 40}}
                 />
               </Col>
             </Row>
