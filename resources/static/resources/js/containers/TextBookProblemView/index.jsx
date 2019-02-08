@@ -280,11 +280,12 @@ class TextBookProblemView extends React.Component {
                       }, this) : null }
                   </tbody>
                 </Table>
-                <AdSense.Google
-                  client='ca-pub-1780955227395785'
-                  slot='4334626488'
-                  // style={{marginTop: 40}}
-                />
+                <div style={{marginTop: 20, marginBottom: 20}}>
+                  <AdSense.Google
+                    client='ca-pub-1780955227395785'
+                    slot='4334626488'
+                  />
+                </div>
               </Col>
             </Row>
           </Grid>
