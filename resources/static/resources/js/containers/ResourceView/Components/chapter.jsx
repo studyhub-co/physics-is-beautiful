@@ -52,7 +52,6 @@ let ChapterClass = class Chapter extends React.Component {
                 <EditableLabel
                   value={this.props.chapter.title}
                   onChange={(value) => { this.props.onChangeChapterValue(value, this.props.chapter) }}
-                  editMode={this.props.chapterEditModeId === this.props.chapter.id}
                 /></span> : this.props.chapter.title
             }
           </span>

@@ -21,7 +21,7 @@ from djeddit.models import Topic, Thread, Post
 
 # from profiles.models import Profile
 
-from .permissions import IsStaffOrReadOnly
+from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
 
@@ -109,8 +109,9 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
 class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
                                mixins.CreateModelMixin,
                                mixins.UpdateModelMixin,
+                               mixins.DestroyModelMixin,
                                GenericViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)  # users can send soltions
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, EditDeleteByOwnerOrStaff)  # users can send soltions
     serializer_class = TextBookSolutionSerializer
     queryset = TextBookSolution.objects.all()
     # .annotate(count_votes=Count('votes', distinct=True))
