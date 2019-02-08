@@ -237,6 +237,12 @@ div.pdf-ico {
     cursor: pointer;
 }
 
+/* fix for cutting off dropdown of menu table  */
+
+.table-responsive {
+    overflow: inherit !important;
+}
+
 /* one row fix */
 .pure-radiobutton input[type="radio"] + label {
     width: 6rem !important;
