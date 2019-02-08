@@ -16,7 +16,7 @@ import {
   onChangeExternalUrl
 } from '../AddTextBookResourceSteps/lib'
 
-import { EditableLabel } from '../../utils/editableLabel'
+import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
 
@@ -48,12 +48,14 @@ class TextBookProblemView extends React.Component {
     super(props)
     this.state = {
       showPostSolutionModal: false,
-      ordering: 'Top'
+      ordering: 'Top',
+      solutionEditModeUuid: null
     }
     this.onPostSolutionClick = this.onPostSolutionClick.bind(this)
     this.handleClosePostSolutionModal = this.handleClosePostSolutionModal.bind(this)
     this.addSolution = this.addSolution.bind(this)
     this.handleOrderSelect = this.handleOrderSelect.bind(this)
+    this.onChangeSolutionTitle = this.onChangeSolutionTitle.bind(this)
   }
 
   componentDidMount () {
@@ -78,6 +80,7 @@ class TextBookProblemView extends React.Component {
   }
 
   onClickSolution (uuid) {
+    if (this.state.solutionEditModeUuid === uuid) { return } // do not redirect while edit mode
     history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
   }
 
@@ -85,6 +88,7 @@ class TextBookProblemView extends React.Component {
     this.setState({ showPostSolutionModal: !this.state.showPostSolutionModal })
   }
 
+  // Vote solution click
   upDownSolutionClick (solutionUuid, val) {
     this.props.resourcesActions.solutionVoteAndRefreshList(solutionUuid, val, this.props.problem.uuid)
   }
@@ -108,12 +112,19 @@ class TextBookProblemView extends React.Component {
 
   handleSolutionMenuClick (val, solution) {
     if (val === 'Edit') {
-      // todo add editabvle lable for title and sve
+      this.setState({solutionEditModeUuid: solution.uuid})
     } else if (val === 'Delete') {
       if (confirm('Are you sure you want to delete this solution?')) {
-        // todo remove solution
+        this.props.resourcesActions.removeSolutionReloadProblem({uuid: solution.uuid}, this.props.problem)
       }
     }
+  }
+
+  onChangeSolutionTitle (value, solution) {
+    if (!value) return
+    let newSolution = {uuid: solution.uuid, title: value}
+    this.props.resourcesActions.updateSolutionReloadProblem(newSolution, this.props.problem)
+    this.setState({solutionEditModeUuid: null})
   }
 
   render () {
@@ -205,36 +216,17 @@ class TextBookProblemView extends React.Component {
                     >
                       <b>
                         <EditableLabel
-                          // value={'google drive link'}
                           value={'external link'}
                           onChange={(url) => {
                             if (this.props.gapiInitState) {
-                              // onChangeGoogleDriveUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
                               onChangeExternalUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
                             }
                           }
                           }
-                          // defaultValue={'google drive link'} />
                           defaultValue={'external link'} />
                       </b>
                     </span>
                   </div>
-                  {/* <div> */}
-                  {/* <span */}
-                  {/* style={{paddingLeft: '2rem', cursor: 'pointer'}} */}
-                  {/* className={'blue-text'} */}
-                  {/* > */}
-                  {/* <b> */}
-                  {/* <EditableLabel */}
-                  {/* value={'direct link'} */}
-                  {/* onChange={(url) => { */}
-                  {/* onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) }) */}
-                  {/* } */}
-                  {/* } */}
-                  {/* defaultValue={'direct link'} /> */}
-                  {/* </b> */}
-                  {/* </span> */}
-                  {/* </div> */}
                 </Modal.Body>
                 <Modal.Footer>
                   <Button onClick={this.handleClosePostSolutionModal}>Close</Button>
@@ -261,10 +253,18 @@ class TextBookProblemView extends React.Component {
                           </td>
                           <td>{solution.pdf ? <div className={'pdf-ico'} /> : null}</td>
                           <td>
+                            {/* Solution title */}
                             <div
                               className={'title blue-text'}
                               style={{cursor: 'pointer'}}
-                              onClick={() => this.onClickSolution(solution.uuid)}>{solution.title}</div>
+                              onClick={() => this.onClickSolution(solution.uuid)}>
+                              <EditableExternalEventLabel
+                                value={solution.title}
+                                onChange={(value) => { this.onChangeSolutionTitle(value, solution) }}
+                                editMode={this.state.solutionEditModeUuid === solution.uuid}
+                              />
+                              {/*{solution.title}*/}
+                            </div>
                             <div className={'small-text gray-text'}>
                               Posted by <a href={solution.posted_by.get_absolute_url} target={'_blank'}>
                                 {solution.posted_by.display_name}
@@ -310,7 +310,9 @@ TextBookProblemView.propTypes = {
     fetchProblem: PropTypes.func.isRequired,
     fetchResource: PropTypes.func.isRequired,
     solutionVoteAndRefreshList: PropTypes.func.isRequired,
-    addSolution: PropTypes.func.isRequired
+    addSolution: PropTypes.func.isRequired,
+    updateSolutionReloadProblem: PropTypes.func.isRequired,
+    removeSolutionReloadProblem: PropTypes.func.isRequired,
   }),
   googleActions: PropTypes.shape({
     gapiInitialize: PropTypes.func.isRequired

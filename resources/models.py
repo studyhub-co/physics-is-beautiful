@@ -120,6 +120,10 @@ class TextBookSolution(VoteModel, models.Model):
             else:
                 return ''
 
+    @title.setter
+    def title(self, value):
+        self._title = value
+
     class Meta:
         ordering = ['-vote_score']
 
