@@ -31,7 +31,7 @@
     border-radius: 2rem;
     border-width: 1px;
     color: white;
-    padding: 1rem 4rem 1rem 4rem;
+    padding: 4px 12px 4px 12px;
     margin: 1rem 0 1rem 0;
 }
 
@@ -43,7 +43,7 @@
 
 .resources .disabled-button {
     background-color: rgb(216, 216, 216);
-    cursor: default;
+    pointer-events: none;
 }
 
 .resources .back-button {
@@ -73,6 +73,12 @@
 
 .resources .gray-text {
     color: #ababab;
+}
+
+.resources .solution-title {
+    color: #1caff6;
+    margin-top: 0;
+    font-size: 20px;
 }
 
 .resources .small-text {
@@ -246,4 +252,19 @@ div.pdf-ico {
 /* one row fix */
 .pure-radiobutton input[type="radio"] + label {
     width: 6rem !important;
+}
+
+@media all and (max-width: 770px) { /* Mobile optimization */
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .text-align-center {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .col-sm-12 {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
