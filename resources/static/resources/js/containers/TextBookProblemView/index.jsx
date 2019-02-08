@@ -20,7 +20,7 @@ import { EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
 
-class HotizonltalOptionToggle extends React.Component {
+class HorizontalOptionToggle extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.handleClick = this.handleClick.bind(this)
@@ -264,12 +264,11 @@ class TextBookProblemView extends React.Component {
                           </td>
                           <td style={{textAlign: 'center'}}><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
                           <td className={'solution-dropdown-menu'}>
-                            {/* todo create table's overlapped menu */}
                             <Dropdown
                               onSelect={(val) => { this.handleSolutionMenuClick(val, solution) }}
                               id={'dropdown-settings' + solution.uuid}
                             >
-                              <HotizonltalOptionToggle bsRole='toggle' data-boundary='body' />
+                              <HorizontalOptionToggle bsRole='toggle' data-boundary='body' />
                               <Dropdown.Menu>
                                 <MenuItem eventKey='Edit'>Edit</MenuItem>
                                 <MenuItem eventKey='Delete'>Delete</MenuItem>
