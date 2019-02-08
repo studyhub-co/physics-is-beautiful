@@ -110,14 +110,23 @@ class TextBookProblemView extends React.Component {
     if (val === 'Edit') {
       // todo add editabvle lable for title and sve
     } else if (val === 'Delete') {
-      // todo check user rights
-      if (confirm('Are you sure you want to delete this solution?')) { // TODO we can use Modal from react bootstrap if needed
+      if (confirm('Are you sure you want to delete this solution?')) {
         // todo remove solution
       }
     }
   }
 
   render () {
+    var self = this
+    let getHaveSolutionEditAccess = function (solution) {
+      if (self.props.profile &&
+          self.props.profile.is_anonymous !== true &&
+         (self.props.profile.is_staff === true || self.props.profile.id === solution.posted_by.id)) {
+        return true
+      }
+      return false
+    }
+
     return (
       <Sheet>
         <Grid fluid>
@@ -263,18 +272,19 @@ class TextBookProblemView extends React.Component {
                               <Moment fromNow>{solution.created_on}</Moment></div>
                           </td>
                           <td style={{textAlign: 'center'}}><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
-                          <td className={'solution-dropdown-menu'}>
-                            <Dropdown
-                              onSelect={(val) => { this.handleSolutionMenuClick(val, solution) }}
-                              id={'dropdown-settings' + solution.uuid}
-                            >
-                              <HorizontalOptionToggle bsRole='toggle' data-boundary='body' />
-                              <Dropdown.Menu>
-                                <MenuItem eventKey='Edit'>Edit</MenuItem>
-                                <MenuItem eventKey='Delete'>Delete</MenuItem>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </td>
+                          { getHaveSolutionEditAccess(solution)
+                            ? <td className={'solution-dropdown-menu'}>
+                              <Dropdown
+                                onSelect={(val) => { this.handleSolutionMenuClick(val, solution) }}
+                                id={'dropdown-settings' + solution.uuid}
+                              >
+                                <HorizontalOptionToggle bsRole='toggle' data-boundary='body' />
+                                <Dropdown.Menu>
+                                  <MenuItem eventKey='Edit'>Edit</MenuItem>
+                                  <MenuItem eventKey='Delete'>Delete</MenuItem>
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </td> : null }
                         </tr>
                       }, this) : null }
                   </tbody>
