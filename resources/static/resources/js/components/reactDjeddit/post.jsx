@@ -8,6 +8,10 @@ import { Glyphicon, Grid, Row, Col, FormControl, Checkbox, Form, Button } from '
 
 import { ReplyForm } from './replyForm'
 
+import MathJax from 'react-mathjax2'
+
+// import RMathJax from 'react-mathjax'
+
 export class Post extends React.Component {
   constructor (props) {
     super(props)
@@ -35,6 +39,51 @@ export class Post extends React.Component {
   }
 
   render () {
+    var renderMathJs = function (content) {
+      return (
+        <MathJax.Context
+          input='ascii'
+          onError={(MathJax, error) => {
+            console.warn(error);
+            console.log('Encountered a MathJax error, re-attempting a typeset!');
+            MathJax.Hub.Queue(
+              MathJax.Hub.Typeset()
+            )
+          }}
+          script='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=AM_HTMLorMML'
+          options={{
+            extensions: ['tex2jax.js', '[mhchem]/mhchem.js'],
+            jax: ['input/TeX', 'output/HTML-CSS'],
+            tex2jax: {
+              inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+              displayMath: [ ['$$','$$'], ['\\[','\\]'] ],
+              processEscapes: true
+            },
+            'HTML-CSS': { fonts: ['TeX'] }
+          }}>
+          <MathJax.Text text={content} />
+        </MathJax.Context>
+      )
+
+    // react-mathjax1 do not work with "options="
+    //   return (
+    //    <RMathJax.Context
+    //    options={{
+    //         extensions: ['tex2jax.js', '[mhchem]/mhchem.js'],
+    //         jax: ['input/TeX', 'output/HTML-CSS'],
+    //         tex2jax: {
+    //           inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+    //           displayMath: [ ['$$','$$'], ['\\[','\\]'] ],
+    //           processEscapes: true
+    //         },
+    //         'HTML-CSS': { fonts: ['TeX'] }}}>
+    //     <RMathJax.Node inline>
+    //       { content }
+    //     </RMathJax.Node>
+    //   </RMathJax.Context>
+    //   )
+    }
+
     return (
       <div>
         { this.props.post
@@ -83,7 +132,7 @@ export class Post extends React.Component {
                     {/* djeddit part*/}
                     <div className='postcol'>
                       <div className='post-content'>
-                        { this.props.post.content }
+                        { renderMathJs(this.props.post.content) }
                       </div>
                       <div className='djeddit-post-item-footer'>
                         <div className='djeddit-score'>
