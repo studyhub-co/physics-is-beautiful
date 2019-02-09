@@ -111,7 +111,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
                                mixins.UpdateModelMixin,
                                mixins.DestroyModelMixin,
                                GenericViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, EditDeleteByOwnerOrStaff)  # users can send soltions
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, EditDeleteByOwnerOrStaff)  # users can upload solutions
     serializer_class = TextBookSolutionSerializer
     queryset = TextBookSolution.objects.all()
     # .annotate(count_votes=Count('votes', distinct=True))
