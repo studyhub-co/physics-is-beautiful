@@ -57,10 +57,10 @@ export class AssignmentView extends React.Component {
     var className = 'assignment-teacher-card'
     var dateText = ''
     if (this.props.assignment) {
-      dateText = 'Assigned on ' + new Date(this.props.assignment.due_on).toLocaleDateString() + ' at ' +
-                new Date(this.props.assignment.due_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
-                ' and due on ' + new Date(this.props.assignment.start_on).toLocaleDateString() + ' at ' +
-                new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+      dateText = 'Assigned on ' + new Date(this.props.assignment.start_on).toLocaleDateString() + ' at ' +
+                new Date(this.props.assignment.start_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) +
+                ' and due on ' + new Date(this.props.assignment.due_on).toLocaleDateString() + ' at ' +
+                new Date(this.props.assignment.due_on).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
     }
     var postOnGoogleUrl = null
     if (this.props.classroomTeacher &&
