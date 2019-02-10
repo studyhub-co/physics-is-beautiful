@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Prefetch
 # from django.contrib.auth.models import User
 from django.urls import reverse
-
+from django import get_version
 from django.contrib.auth import get_user_model
 
 from django.contrib.auth.decorators import user_passes_test
@@ -162,11 +162,24 @@ def discussionPage(request):
     # topics = Topic.objects..all()
     # threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
 
+    is_anonymous = False
+
+    if get_version() >= '2.0':
+        if request.user.is_anonymous:
+            is_anonymous = True
+    elif request.user.is_anonymous():
+        is_anonymous = True
+
+    if is_anonymous:
+        vote_queryset = UserPostVote.objects.all()
+    else:
+        vote_queryset = UserPostVote.objects.filter(user=request.user)
+
     topics = Topic.objects. \
         prefetch_related('thread').all(). \
         prefetch_related(
             Prefetch('thread__op__user_post_votes',
-                     queryset=UserPostVote.objects.filter(user=request.user),
+                     queryset=vote_queryset,
                      to_attr='current_user_post_votes'))
         # prefetch_related('thread__op__user_post_votes').all()
 
@@ -175,7 +188,7 @@ def discussionPage(request):
         prefetch_related('op__created_by'). \
         prefetch_related(
         Prefetch('op__user_post_votes',
-                 queryset=UserPostVote.objects.filter(user=request.user),
+                 queryset=vote_queryset,
                  to_attr='current_user_post_votes')).\
         order_by('-is_stickied', '-op__created_on')
         # prefetch_related('op__user_post_votes__user')
