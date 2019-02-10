@@ -158,7 +158,7 @@ def topicPage(request, topic_title):
 
 
 def discussionPage(request):
-    # originally by djeedit
+    # originally by djeddit
     # topics = Topic.objects..all()
     # threads = Thread.objects.all().order_by('-is_stickied', '-op__created_on')
 
@@ -181,7 +181,6 @@ def discussionPage(request):
             Prefetch('thread__op__user_post_votes',
                      queryset=vote_queryset,
                      to_attr='current_user_post_votes'))
-        # prefetch_related('thread__op__user_post_votes').all()
 
     threads = Thread.objects.all(). \
         select_related('topic').\
@@ -191,7 +190,7 @@ def discussionPage(request):
                  queryset=vote_queryset,
                  to_attr='current_user_post_votes')).\
         order_by('-is_stickied', '-op__created_on')
-        # prefetch_related('op__user_post_votes__user')
+
     context = dict(threads=threads, topics=topics)
     return render(request, 'djeddit/discussion.html', context)
 
