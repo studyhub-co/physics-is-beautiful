@@ -25,6 +25,7 @@ import * as profileCreators from '../../actions/profile'
 
 import { BASE_URL } from '../../utils/config'
 import * as googleCreators from '../../actions/google'
+import AdSense from 'react-adsense'
 
 class TextBookSolutionView extends React.Component {
   constructor (props) {
@@ -168,9 +169,9 @@ class TextBookSolutionView extends React.Component {
     return (
       <div>
         <Form inline>
-          <FormGroup>
+          <FormGroup style={{marginBottom: 0}}>
             {previousButton}&nbsp;
-            <InputGroup>
+            <InputGroup style={{maxWidth: 80}}>
               <FormControl
                 type='text'
                 value={page}
@@ -283,23 +284,25 @@ class TextBookSolutionView extends React.Component {
                 {this.props.solution.pdf ? <div className={'pdf-ico'} /> : null}
               </Col>
               <Col sm={5} md={5}>
+                <div><a href={this.props.solution.pdf.external_url || this.props.solution.pdf.file}>
+                  <h1 className={'solution-title'}>
+                    {this.props.solution.title}</h1>
+                </a>
+                </div>
                 <div className={'small-text gray-text'}>
                   Posted by <a href={this.props.solution.posted_by.get_absolute_url} target={'_blank'}>
                     {this.props.solution.posted_by.display_name}
                   </a>&nbsp;-&nbsp;
                   <Moment fromNow>{this.props.solution.created_on}</Moment>
                 </div>
-                <div><a href={this.props.solution.pdf.external_url || this.props.solution.pdf.file}>
-                  <h1 className={'gray-text title'}>
-                    {this.props.solution.title}</h1>
-                </a>
-                </div>
+
               </Col>
-              <Col sm={4} md={4}>
+              <Col sm={5} md={5}>
                 <button
                   onClick={() => { this.onPrevNextSolutionClick('prev') }}
                   className={'common-button' + prevSolutionDisabled}
                   disabled={prevSolutionDisabled === '' ? Boolean(false) : Boolean(true)}
+                  style={{marginTop: 0}}
                 >
                   <Glyphicon glyph='menu-left' /> Previous solution
                 </button>
@@ -308,19 +311,21 @@ class TextBookSolutionView extends React.Component {
                   onClick={() => { this.onPrevNextSolutionClick('next') }}
                   className={'common-button' + nextSolutionDisabled}
                   disabled={nextSolutionDisabled === '' ? Boolean(false) : Boolean(true)}
+                  style={{marginTop: 0}}
                 >
                   Next solution <Glyphicon glyph='menu-right' />
                 </button>
               </Col>
             </Row>
-            {/*<Row>*/}
-              {/*<Col sm={12} md={12} className={'text-align-center'}>*/}
-              {/*</Col>*/}
-            {/*</Row>*/}
+            <Row>
+              <Col sm={12} md={12} className={'text-align-center'}>
+                {pagination}
+              </Col>
+            </Row>
             <Row>
               <Col sm={12} md={12} className={'text-align-center'}>
                 <div style={{overflowX: 'auto', position: 'relative'}}>
-                {/*<Document file={this.props.solution.pdf.file} />*/}
+                  {/* <Document file={this.props.solution.pdf.file} /> */}
                   { this.props.solution.pdf.external_url && !pdfFile
                     ? <Button
                       onClick={() => { this.loadExternalGooglePdf(this.props.solution.pdf.external_url) }}
@@ -339,7 +344,16 @@ class TextBookSolutionView extends React.Component {
                       scale={this.state.pdfScale}
                     /> : null }
                 </div>
-                {pagination}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <div style={{marginTop: 20, marginBottom: 20}}>
+                  <AdSense.Google
+                    client='ca-pub-1780955227395785'
+                    slot='4334626488'
+                  />
+                </div>
               </Col>
             </Row>
             <Row>
@@ -377,7 +391,7 @@ TextBookSolutionView.propTypes = {
     fetchProfileMe: PropTypes.func.isRequired
   }),
   googleActions: PropTypes.shape({
-    gapiInitialize: PropTypes.func.isRequired,
+    gapiInitialize: PropTypes.func.isRequired
   }).isRequired,
   // data
   problem: PropTypes.object,

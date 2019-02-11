@@ -1,3 +1,4 @@
+from builtins import IndexError
 from datetime import datetime
 from django import VERSION as DJANGO_VERSION
 from django import template
@@ -62,23 +63,34 @@ def postWidth(thread, post):
 @register.simple_tag
 def postVoteClicked(user, post, upvote):
     try:
-        userPostVote = UserPostVote.objects.get(user=user, post=post)
+        # try to find post in prefetch objects see discussionPage(request) view for details
+        if hasattr(post, 'current_user_post_votes'):
+            userPostVote = post.current_user_post_votes[0]
+        else:
+            # originally by djeedit
+            userPostVote = UserPostVote.objects.get(user=user, post=post)
         if (userPostVote.val == 1 and upvote) or (userPostVote.val == -1 and not upvote):
             return 'color-primary'
-    except UserPostVote.DoesNotExist:
+    except (IndexError, UserPostVote.DoesNotExist):
         pass
     return ''
 
 
 @register.simple_tag
 def postVoteColor(user, post):
+
     try:
-        userPostVote = UserPostVote.objects.get(user=user, post=post)
+        # try to find post in prefetch objects see discussionPage(request) view for details
+        if hasattr(post, 'current_user_post_votes'):
+            userPostVote = post.current_user_post_votes[0]
+        else:
+            # originally by djeedit
+            userPostVote = UserPostVote.objects.get(user=user, post=post)
         if (userPostVote.val == 1):
             return 'color-upvote'
         elif (userPostVote.val == -1):
             return 'color-downvote'
-    except UserPostVote.DoesNotExist:
+    except (IndexError, UserPostVote.DoesNotExist):
         pass
     return ''
 

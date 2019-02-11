@@ -5,13 +5,13 @@
         <div class="col-sm-1 col-icon djeddit-score-container">
             <div class="djeddit-score-large">
                 {% if user.is_authenticated %}
-                <i class="fas fa-chevron-up djeddit-score-upvote-large {% postVoteClicked user thread.op True %} " 
+                <i class="fas fa-chevron-up djeddit-score-upvote-large {% postVoteClicked user thread.op True %} "
                     onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', true, $(this).hasClass('color-primary'), '{% url "votePost" %}')"></i>
                 <div class="{% postVoteColor user thread.op %} djeddit-score-number-large">{{ thread.op.score }}</div>
                 <i class="fas fa-chevron-down djeddit-score-downvote-large {% postVoteClicked user thread.op False %}"
                     onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', $(this).hasClass('color-primary'), true, '{% url "votePost" %}')"></i>
                 {% else %}
-                <i class="fas fa-chevron-up djeddit-score-upvote-large" 
+                <i class="fas fa-chevron-up djeddit-score-upvote-large"
                     onclick="javascript:window.topicFuncs.loginNeeded()"></i>
                 <div class="djeddit-score-number-large">{{ thread.op.score }}</div>
                 <i class="fas fa-chevron-down djeddit-score-downvote-large"
@@ -28,13 +28,13 @@
             <div class="text-muted inline full-lined djeddit-thread-item-footer">
                 <div class="djeddit-score">
                     {% if user.is_authenticated %}
-                    <i class="fas fa-arrow-up djeddit-score-upvote {% postVoteClicked user thread.op True %} " 
+                    <i class="fas fa-arrow-up djeddit-score-upvote {% postVoteClicked user thread.op True %} "
                         onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', true, $(this).hasClass('color-primary'), '{% url "votePost" %}')"></i>
                     <span class="{% postVoteColor user thread.op %} djeddit-score-number">{{ thread.op.score }}</span>
                     <i class="fas fa-arrow-down djeddit-score-downvote {% postVoteClicked user thread.op False %}"
                         onclick="javascript:window.topicFuncs.votePost(this, '{{ thread.op.uid }}', $(this).hasClass('color-primary'), true, '{% url "votePost" %}')"></i>
                     {% else %}
-                    <i class="fas fa-arrow-up djeddit-score-upvote" 
+                    <i class="fas fa-arrow-up djeddit-score-upvote"
                         onclick="javascript:window.topicFuncs.loginNeeded()"></i>
                     <span class="djeddit-score-number">{{ thread.op.score }}</span>
                     <i class="fas fa-arrow-down djeddit-score-downvote"
@@ -43,10 +43,10 @@
                 </div>
                 <div class="djeddit-created-by">
                         {% if thread.op.created_by %}
-                            <a href="{% url 'userSummary' thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a> 
-                        {% else %} 
-                            {% postUserName thread.op.created_by %} 
-                        {% endif %} 
+                            <a href="{% url 'userSummary' thread.op.created_by.pk %}">{% postUserName thread.op.created_by %}</a>
+                        {% else %}
+                            {% postUserName thread.op.created_by %}
+                        {% endif %}
                         <div class="djeddit-date-verbose">
                             &middot;
                             {% postDate thread.op.created_on 'on ' %}
@@ -57,9 +57,10 @@
                         </div>
                 </div>
                 <div class="count-box-small" onclick="window.location=window.util.mobileUrl('{{ thread.relativeUrl }}')">
-                    &middot;
                     <i class="far fa-comment"></i>
-                    {% with thread.op.getReplies|length as commentsCount %}
+                    {# replace with mtpp tree count #}
+{#                    {% with thread.op.getReplies|length as commentsCount %}#}
+                    {% with thread.op.get_descendant_count as commentsCount %}
                         {{ commentsCount }}
                     {% endwith%}
                 </div>
@@ -75,7 +76,8 @@
                 <div class="count-box-context text-muted">Views</div>
             </div> {% endcomment %}
             <div class="count-box" onclick="window.location=window.util.mobileUrl('{{ thread.relativeUrl }}')">
-                {% with thread.op.getReplies|length as commentsCount %}
+{#                {% with thread.op.getReplies|length as commentsCount %}#}
+                {% with thread.op.get_descendant_count as commentsCount %}
                     <div class="count-box-score text-muted">{{ commentsCount }}</div>
                     {% if commentsCount == 1 %}
                     <div class="count-box-context text-muted">Comment</div>
