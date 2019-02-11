@@ -56,7 +56,7 @@
 
 {% block mathjax_config %}
 
-<script type="text/x-mathjax-config" src="{% static 'djeddit/js/mathjax-settings.js' %}">
+<script type="text/x-mathjax-config" src="{% static 'djeddit/js/mathjax-settings.js' %}"> {# FIXME we do not have djeddit/js/mathjax-settings.js file #}
     MathJax.Ajax.config.path["mhchem"] =
   "https://cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.0";
 MathJax.Hub.Config({

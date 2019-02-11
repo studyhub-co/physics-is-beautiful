@@ -22,7 +22,9 @@ let ProblemClass = class Problem extends React.Component {
             key={this.props.problem.uuid}
             className={'problem-row'}
             onClick={() => {
-              this.props.resourceEditMode ? null : history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid)
+              if (!this.props.resourceEditMode) {
+                history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid)
+              }
             }}
           >
             <Col xs={4} md={3} >
@@ -57,9 +59,6 @@ let ProblemClass = class Problem extends React.Component {
                 {this.props.problem.count_solutions} solution{this.props.problem.count_solutions !== 1 ? 's' : null}
               </span>
             </Col>
-            {/* <Col sm={1} md={1}> */}
-            {/* TODO drop down menu for request more solutions */}
-            {/* </Col> */}
           </Row>
         </div>)
     )

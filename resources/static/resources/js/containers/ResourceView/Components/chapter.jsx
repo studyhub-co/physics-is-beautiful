@@ -52,7 +52,6 @@ let ChapterClass = class Chapter extends React.Component {
                 <EditableLabel
                   value={this.props.chapter.title}
                   onChange={(value) => { this.props.onChangeChapterValue(value, this.props.chapter) }}
-                  editMode={this.props.chapterEditModeId === this.props.chapter.id}
                 /></span> : this.props.chapter.title
             }
           </span>
@@ -67,12 +66,6 @@ let ChapterClass = class Chapter extends React.Component {
               <Glyphicon glyph='remove' />&nbsp;
             </span>
             : null }
-          { !this.props.resourceEditMode && this.props.chapter.show_ad
-            ? <AdSense.Google
-              client='ca-pub-1780955227395785'
-              slot='ca-pub-1780955227395785'
-            /> : null
-          }
           { this.props.resourceEditMode
             ? <div // enable ad
               style={{paddingLeft: '3rem'}}
@@ -120,6 +113,15 @@ let ChapterClass = class Chapter extends React.Component {
             </DockableDropTarget>
           }, this)
             : null
+          }
+          { !this.props.resourceEditMode && this.props.chapter.show_ad
+            ? <div style={{marginTop: 20, marginBottom: 20}}>
+              <AdSense.Google
+                client='ca-pub-1780955227395785'
+                slot='4334626488'
+              // style={{marginTop: 20, marginBottom: 20}}
+              />
+            </div> : null
           }
           {this.props.resourceEditMode
             ? <DockableDropTarget

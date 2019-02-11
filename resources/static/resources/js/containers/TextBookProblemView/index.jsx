@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Grid, Row, Col, Table, Button, Glyphicon, Modal, Dropdown, MenuItem } from 'react-bootstrap'
-
+import AdSense from 'react-adsense'
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
@@ -16,21 +16,46 @@ import {
   onChangeExternalUrl
 } from '../AddTextBookResourceSteps/lib'
 
-import { EditableLabel } from '../../utils/editableLabel'
+import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
+
+class HorizontalOptionToggle extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick (e) {
+    e.preventDefault()
+    this.props.onClick(e)
+  }
+
+  render () {
+    return (
+      <span onClick={this.handleClick}>
+        <Glyphicon
+          glyph='option-horizontal'
+          style={{cursor: 'pointer'}}
+        />
+      </span>
+    )
+  }
+}
 
 class TextBookProblemView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       showPostSolutionModal: false,
-      ordering: 'Top'
+      ordering: 'Top',
+      solutionEditModeUuid: null
     }
     this.onPostSolutionClick = this.onPostSolutionClick.bind(this)
     this.handleClosePostSolutionModal = this.handleClosePostSolutionModal.bind(this)
     this.addSolution = this.addSolution.bind(this)
-    this.handleOrderSelect = this.handleOrderSelect .bind(this)
+    this.handleOrderSelect = this.handleOrderSelect.bind(this)
+    this.onChangeSolutionTitle = this.onChangeSolutionTitle.bind(this)
   }
 
   componentDidMount () {
@@ -49,13 +74,13 @@ class TextBookProblemView extends React.Component {
       let url = '/accounts/login/?next=' + window.location.pathname
       window.location.replace(url)
       throw new Error('redirecting...')
-    }
-    else {
+    } else {
       this.setState({showPostSolutionModal: !this.state.showPostSolutionModal})
     }
   }
 
   onClickSolution (uuid) {
+    if (this.state.solutionEditModeUuid === uuid) { return } // do not redirect while edit mode
     history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
   }
 
@@ -63,6 +88,7 @@ class TextBookProblemView extends React.Component {
     this.setState({ showPostSolutionModal: !this.state.showPostSolutionModal })
   }
 
+  // Vote solution click
   upDownSolutionClick (solutionUuid, val) {
     this.props.resourcesActions.solutionVoteAndRefreshList(solutionUuid, val, this.props.problem.uuid)
   }
@@ -84,13 +110,41 @@ class TextBookProblemView extends React.Component {
     }
   }
 
+  handleSolutionMenuClick (val, solution) {
+    if (val === 'Edit') {
+      this.setState({solutionEditModeUuid: solution.uuid})
+    } else if (val === 'Delete') {
+      if (confirm('Are you sure you want to delete this solution?')) {
+        this.props.resourcesActions.removeSolutionReloadProblem({uuid: solution.uuid}, this.props.problem)
+      }
+    }
+  }
+
+  onChangeSolutionTitle (value, solution) {
+    if (!value) return
+    let newSolution = {uuid: solution.uuid, title: value}
+    this.props.resourcesActions.updateSolutionReloadProblem(newSolution, this.props.problem)
+    this.setState({solutionEditModeUuid: null})
+  }
+
   render () {
+    var self = this
+    let getHaveSolutionEditAccess = function (solution) {
+
+      if (self.props.profile &&
+          self.props.profile.is_anonymous !== true &&
+         (self.props.profile.is_staff === true || self.props.profile.id === solution.posted_by.id)) {
+        return true
+      }
+      return false
+    }
+
     return (
       <Sheet>
         <Grid fluid>
           <Row>
             <Col sm={12} md={12}>
-              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid'])}} >
+              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid']) }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All problems
               </a>
@@ -124,8 +178,7 @@ class TextBookProblemView extends React.Component {
                   </Dropdown.Menu>
                 </Dropdown>
               </Col>
-              <Col sm={9} md={9}>
-              </Col>
+              <Col sm={9} md={9} />
               <Col sm={2} md={2}>
                 <Button onClick={() => { this.onPostSolutionClick() }} className={'common-button'}>
                   <Glyphicon glyph='plus' /> Post solution
@@ -164,36 +217,17 @@ class TextBookProblemView extends React.Component {
                     >
                       <b>
                         <EditableLabel
-                          // value={'google drive link'}
                           value={'external link'}
                           onChange={(url) => {
                             if (this.props.gapiInitState) {
-                              // onChangeGoogleDriveUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
                               onChangeExternalUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })
                             }
                           }
                           }
-                          // defaultValue={'google drive link'} />
                           defaultValue={'external link'} />
                       </b>
                     </span>
                   </div>
-                  {/*<div>*/}
-                    {/*<span*/}
-                      {/*style={{paddingLeft: '2rem', cursor: 'pointer'}}*/}
-                      {/*className={'blue-text'}*/}
-                    {/*>*/}
-                      {/*<b>*/}
-                        {/*<EditableLabel*/}
-                          {/*value={'direct link'}*/}
-                          {/*onChange={(url) => {*/}
-                            {/*onChangeDirectUrl(url, null, this.props.problem, (...args) => { this.addSolution(...args) })*/}
-                          {/*}*/}
-                          {/*}*/}
-                          {/*defaultValue={'direct link'} />*/}
-                      {/*</b>*/}
-                    {/*</span>*/}
-                  {/*</div>*/}
                 </Modal.Body>
                 <Modal.Footer>
                   <Button onClick={this.handleClosePostSolutionModal}>Close</Button>
@@ -220,22 +254,48 @@ class TextBookProblemView extends React.Component {
                           </td>
                           <td>{solution.pdf ? <div className={'pdf-ico'} /> : null}</td>
                           <td>
+                            {/* Solution title */}
                             <div
                               className={'title blue-text'}
                               style={{cursor: 'pointer'}}
-                              onClick={() => this.onClickSolution(solution.uuid)}>{solution.title}</div>
+                              onClick={() => this.onClickSolution(solution.uuid)}>
+                              <EditableExternalEventLabel
+                                value={solution.title}
+                                onChange={(value) => { this.onChangeSolutionTitle(value, solution) }}
+                                editMode={this.state.solutionEditModeUuid === solution.uuid}
+                              />
+                              {/*{solution.title}*/}
+                            </div>
                             <div className={'small-text gray-text'}>
                               Posted by <a href={solution.posted_by.get_absolute_url} target={'_blank'}>
                                 {solution.posted_by.display_name}
                               </a>&nbsp;-&nbsp;
                               <Moment fromNow>{solution.created_on}</Moment></div>
                           </td>
-                          <td><Glyphicon glyph='comment' />&nbsp;1.7k</td>
-                          <td></td>
+                          <td style={{textAlign: 'center'}}><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
+                          { getHaveSolutionEditAccess(solution)
+                            ? <td className={'solution-dropdown-menu'}>
+                              <Dropdown
+                                onSelect={(val) => { this.handleSolutionMenuClick(val, solution) }}
+                                id={'dropdown-settings' + solution.uuid}
+                              >
+                                <HorizontalOptionToggle bsRole='toggle' data-boundary='body' />
+                                <Dropdown.Menu>
+                                  <MenuItem eventKey='Edit'>Edit</MenuItem>
+                                  <MenuItem eventKey='Delete'>Delete</MenuItem>
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </td> : null }
                         </tr>
                       }, this) : null }
                   </tbody>
                 </Table>
+                <div style={{marginTop: 20, marginBottom: 20}}>
+                  <AdSense.Google
+                    client='ca-pub-1780955227395785'
+                    slot='4334626488'
+                  />
+                </div>
               </Col>
             </Row>
           </Grid>
@@ -251,7 +311,9 @@ TextBookProblemView.propTypes = {
     fetchProblem: PropTypes.func.isRequired,
     fetchResource: PropTypes.func.isRequired,
     solutionVoteAndRefreshList: PropTypes.func.isRequired,
-    addSolution: PropTypes.func.isRequired
+    addSolution: PropTypes.func.isRequired,
+    updateSolutionReloadProblem: PropTypes.func.isRequired,
+    removeSolutionReloadProblem: PropTypes.func.isRequired,
   }),
   googleActions: PropTypes.shape({
     gapiInitialize: PropTypes.func.isRequired
@@ -270,7 +332,7 @@ const mapStateToProps = (state) => {
     problem: state.resources.problem,
     resource: state.resources.resource,
     gapiInitState: state.google.gapiInitState,
-    profile: state.profile.me,
+    profile: state.profile.me
   }
 }
 

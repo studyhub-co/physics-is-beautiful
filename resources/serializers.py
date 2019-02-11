@@ -26,7 +26,8 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
                                         required=False  # we can set existing pdf solution
                                         )
     posted_by = PublicProfileSerializer(read_only=True)
-    title = serializers.SerializerMethodField()
+    # title = serializers.SerializerMethodField()
+    title = serializers.CharField(required=False)
 
     pdf_id = serializers.PrimaryKeyRelatedField(queryset=TextBookSolutionPDF.objects.all(),
                                                 source='pdf',
@@ -42,14 +43,24 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
                                                          required=False  # we can set existing textbook_problem
                                                          )
 
-    def get_title(self, obj):
-        return obj.title
+    count_comments = serializers.SerializerMethodField()
+
+    def get_count_comments(self, obj):
+        count_comments = 0
+
+        if hasattr(obj, 'thread') and obj.thread:
+            count_comments = obj.thread.op.get_descendant_count()
+
+        return count_comments
+
+    # def get_title(self, obj):
+    #     return obj.title
 
     class Meta:
         model = TextBookSolution
         fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread',
-                  'textbook_problem_uuid', 'pdf_id']
-        read_only_fields = ('id', 'title', 'created_on', 'uuid', 'vote_score', 'pdf')
+                  'textbook_problem_uuid', 'pdf_id', 'count_comments']
+        read_only_fields = ('id', 'created_on', 'uuid', 'vote_score', 'pdf')
         extra_kwargs = {'position': {'required': False}}
         # extra_kwargs = {'textbook_problem_uuid': {'write_only': True}, 'pdf_id': {'write_only': True}}
 

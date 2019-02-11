@@ -21,7 +21,7 @@ from djeddit.models import Topic, Thread, Post
 
 # from profiles.models import Profile
 
-from .permissions import IsStaffOrReadOnly
+from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
 
@@ -73,8 +73,10 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
     permission_classes = (IsStaffOrReadOnly, )
     serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch
     serializer_class = TextBookProblemSerializer
-    queryset = TextBookProblem.objects. \
-        prefetch_related('solutions__posted_by', 'solutions__pdf').all()
+    queryset = TextBookProblem.objects.\
+        prefetch_related('solutions', 'solutions__posted_by', 'solutions__pdf', 'solutions__thread').\
+        all()
+
     lookup_field = 'uuid'
     # filter_backends = (filters.OrderingFilter,)
     # # ordering_fields = ('solutions__created_on', )
@@ -89,7 +91,8 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
               Prefetch(
                 'solutions',
                 queryset=TextBookSolution.objects.all().order_by('-created_on'),
-                )).all()
+                )).\
+                prefetch_related('solutions', 'solutions__posted_by', 'solutions__pdf', 'solutions__thread').all()
             return qs
 
         return self.queryset
@@ -106,8 +109,9 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
 class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
                                mixins.CreateModelMixin,
                                mixins.UpdateModelMixin,
+                               mixins.DestroyModelMixin,
                                GenericViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)  # users can send soltions
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, EditDeleteByOwnerOrStaff)  # users can upload solutions
     serializer_class = TextBookSolutionSerializer
     queryset = TextBookSolution.objects.all()
     # .annotate(count_votes=Count('votes', distinct=True))

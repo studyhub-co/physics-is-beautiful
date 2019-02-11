@@ -153,6 +153,8 @@ export function fetchProblem (uuid, orderingValue) {
   }
 }
 
+// solutions
+
 export function receiveSolution (solution) {
   return {
     type: RESOURCE_RECEIVE_PROBLEM_SOLUTION,
@@ -217,6 +219,45 @@ export function addSolution (file, problem) {
     })
   }
 }
+
+export function updateSolution (solution) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_PREFIX + 'solutions/' + solution.uuid + '/', solution)
+      .catch(checkHttpError)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function updateSolutionReloadProblem (solution, problem) {
+  return (dispatch, state) => {
+    return dispatch(updateSolution(solution)).then((response) => {
+      // reload resource
+      dispatch(fetchProblem(problem.uuid))
+    })
+  }
+}
+
+export function removeSolution (solution) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_PREFIX + 'solutions/' + solution.uuid + '/')
+      .catch(checkHttpError)
+      .then((response) => {
+        return response
+      })
+  }
+}
+
+export function removeSolutionReloadProblem (solution, problem) {
+  return (dispatch, state) => {
+    return dispatch(removeSolution(solution)).then(() => {
+      dispatch(fetchProblem(problem.uuid))
+    })
+  }
+}
+
+// problems
 
 export function createProblem (title, chapter) {
   return (dispatch, state) => {
