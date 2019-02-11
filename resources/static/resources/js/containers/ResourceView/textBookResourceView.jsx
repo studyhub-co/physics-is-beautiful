@@ -12,6 +12,7 @@ import {DockableDropTarget, DragItemTypes} from '../../dnd'
 import * as resourcesCreators from '../../actions/resources'
 
 import Chapter from './Components/chapter'
+import * as profileCreators from '../../actions/profile'
 
 class TextBookResourceView extends React.Component {
   constructor (props) {
@@ -28,6 +29,12 @@ class TextBookResourceView extends React.Component {
     this.onRemoveChapter = this.onRemoveChapter.bind(this)
     this.onRemoveProblem = this.onRemoveProblem.bind(this)
     this.onChangeChapterShowAd = this.onChangeChapterShowAd.bind(this)
+  }
+
+  componentDidMount () {
+    if (!this.props.profile) {
+      this.props.profileActions.fetchProfileMe()
+    }
   }
 
   onRemoveChapter (chapter) {
@@ -117,23 +124,31 @@ class TextBookResourceView extends React.Component {
       }
     }
 
+    var haveEditAccess = false
+    if (this.props.profile &&
+        this.props.profile.is_anonymous !== true &&
+        this.props.profile.is_staff === true) {
+      haveEditAccess = true
+    }
+
     return (
       <Grid fluid>
         <Row>
           <Col sm={12} md={12}>
             <span style={{position: 'relative', float: 'right', fontSize:10}}>
-              <span className={'base-circle-edit'}>
+              { haveEditAccess
+                ? <span className={'base-circle-edit'}>
                   [<span
-                  onClick={() => this.editResourceClick()}
-                  className={'blue-text'}
-                  style={{cursor: 'pointer'}}
-                >
-                  {/* TODO check user is staff */}
-                  {this.state.resourceEditMode
-                    ? 'View'
-                    : 'Edit'}
-                </span>]
-              </span>
+                    onClick={() => this.editResourceClick()}
+                    className={'blue-text'}
+                    style={{cursor: 'pointer'}}>
+                    {this.state.resourceEditMode
+                      ? 'View'
+                      : 'Edit'}
+                  }
+                  </span>]
+                </span>
+                : null }
             </span>
             <h1 className={'textbook-title text-align-center'}>
               {this.props.resource.metadata ? this.props.resource.metadata.data.volumeInfo.title : 'Unknown resource'} Solutions
@@ -286,24 +301,26 @@ TextBookResourceView.propTypes = {
     removeChapterReloadResource: PropTypes.func.isRequired,
     removeProblemReloadResource: PropTypes.func.isRequired
   }),
-  // googleActions: PropTypes.shape({
-  //   addAd: PropTypes.func.isRequired
-  // }).isRequired,
+  profileActions: PropTypes.shape({
+    fetchProfileMe: PropTypes.func.isRequired
+  }),
   // data
+  profile: PropTypes.object,
   resource: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    resource: state.resources.resource
+    resource: state.resources.resource,
+    profile: state.profile.me
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
-    // googleActions: bindActionCreators(googleCreators, dispatch)
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 

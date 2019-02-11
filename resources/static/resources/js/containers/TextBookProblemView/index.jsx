@@ -130,6 +130,7 @@ class TextBookProblemView extends React.Component {
   render () {
     var self = this
     let getHaveSolutionEditAccess = function (solution) {
+
       if (self.props.profile &&
           self.props.profile.is_anonymous !== true &&
          (self.props.profile.is_staff === true || self.props.profile.id === solution.posted_by.id)) {

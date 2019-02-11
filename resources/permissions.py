@@ -25,5 +25,6 @@ class EditDeleteByOwnerOrStaff(permissions.BasePermission):
         if request.method in ['PATCH', 'DELETE', 'PUT']:
             if request.user.profile == obj.posted_by:
                 return True
-
-        return False
+            return False
+        else:
+            return True
