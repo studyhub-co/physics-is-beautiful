@@ -42,12 +42,12 @@ DjangoPagedown = (function () {
 
   var init = function (textareaId) {
     console.log('init')
-    that.converter = Markdown.getSanitizingConverter()
+    that['converter'] = Markdown.getSanitizingConverter()
     Markdown.Extra.init(that.converter, {
       extensions: 'all'
     })
     if (textareaId) {
-      let el = document.getElementById(textareaId)
+      var el = document.getElementById(textareaId)
       // if (isPagedownable(el)) { // no need, already in createEditor
       createEditor(el)
       // }
