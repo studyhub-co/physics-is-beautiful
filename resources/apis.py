@@ -193,7 +193,7 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     pagination_class = StandardResultsSetPagination
     queryset = Resource.objects.all().\
         order_by('-created_on').\
-        select_related('metadata'). \
+        select_related('metadata', 'owner'). \
         prefetch_related(Prefetch('sections__problems',
                          queryset=TextBookProblem.objects.
                                   annotate(count_solutions=Count('solutions', distinct=True)))
