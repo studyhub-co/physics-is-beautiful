@@ -260,7 +260,7 @@ class TextBookResourceView extends React.Component {
               { this.props.resource.metadata &&
               this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
               this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
-                ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
+                ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail.replace('http', 'https')} />
                 : <Glyphicon glyph='picture' /> }
             </div>
             { this.props.resource.metadata
