@@ -76,6 +76,16 @@ class TextBookResourceView extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    // clear titile
+    document.title = 'Physics is Beautiful'
+    // remove meta
+    var element = document.getElementsByTagName('meta')['description']
+    element.parentNode.removeChild(element)
+    element = document.getElementsByTagName('meta')['author']
+    element.parentNode.removeChild(element)
+  }
+
   onRemoveChapter (chapter) {
     if (confirm('Are you sure you want to delete this chapter?')) { // TODO we can use Modal from react bootstrap if needed
       this.props.resourcesActions.removeChapterReloadResource(chapter, this.props.resource)
