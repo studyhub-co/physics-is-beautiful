@@ -81,9 +81,13 @@ class TextBookResourceView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    element.parentNode.removeChild(element)
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
     element = document.getElementsByTagName('meta')['author']
-    element.parentNode.removeChild(element)
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
   }
 
   onRemoveChapter (chapter) {
