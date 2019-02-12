@@ -69,8 +69,9 @@ class TextBookProblemView extends React.Component {
     this.props.profileActions.fetchProfileMe()
   }
 
-  componentDidUpdate () {
-    if (this.props.resource && !this.titleSet) {
+  componentDidUpdate (prevProps) {
+    if (this.props.resource && this.props.problem &&
+      (!this.titleSet || prevProps.problem.uuid !== this.props.problem.uuid)) {
       var resourceTitle
 
       if (this.props.resource.metadata) {
@@ -119,9 +120,13 @@ class TextBookProblemView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    element.parentNode.removeChild(element)
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
     element = document.getElementsByTagName('meta')['author']
-    element.parentNode.removeChild(element)
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
     this.titleSet = false
   }
 

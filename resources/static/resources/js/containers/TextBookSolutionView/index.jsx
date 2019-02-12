@@ -78,7 +78,10 @@ class TextBookSolutionView extends React.Component {
       // }
     }
 
-    if (this.props.resource && this.props.solution && !this.titleSet) {
+    if (this.props.resource && this.props.solution &&
+      (!this.titleSet ||
+        prevProps.problem.uuid !== this.props.problem.uuid ||
+        prevProps.solution.uuid !== this.props.solution.uuid)) {
       var resourceTitle
 
       if (this.props.resource.metadata) {
@@ -88,7 +91,8 @@ class TextBookSolutionView extends React.Component {
       }
 
       // Principles of Quantum Mechanics: 1.11 Solution - Physics is Beautiful
-      document.title = resourceTitle + ': ' + this.props.problem.title + ' Solution - Physics is Beautiful'
+      document.title = resourceTitle + ': ' + this.props.problem.title + ': ' + this.props.solution.title +
+        ' Solution - Physics is Beautiful'
 
       var description
 
@@ -136,9 +140,13 @@ class TextBookSolutionView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    element.parentNode.removeChild(element)
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
     element = document.getElementsByTagName('meta')['author']
-    element.parentNode.removeChild(element)
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
     this.titleSet = false
   }
 
