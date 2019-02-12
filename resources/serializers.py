@@ -112,6 +112,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
     metadata = ResourceMetaDataSerializer(many=False, required=False)
     sections = TextBookChapterSerializer(many=True)
+    owner = PublicProfileSerializer(read_only=True)
 
     def create(self, validated_data):
         metadata_data = validated_data.pop('metadata')
@@ -163,7 +164,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resource
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views']
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner']
         read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views')
 
 
