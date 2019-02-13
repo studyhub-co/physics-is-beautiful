@@ -69,6 +69,67 @@ class TextBookProblemView extends React.Component {
     this.props.profileActions.fetchProfileMe()
   }
 
+  componentDidUpdate (prevProps) {
+    if (this.props.resource && this.props.problem &&
+      (!this.titleSet || prevProps.problem.uuid !== this.props.problem.uuid)) {
+      var resourceTitle
+
+      if (this.props.resource.metadata) {
+        resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      } else {
+        resourceTitle = 'Unknown resource'
+      }
+
+      // Principles of Quantum Mechanics: 1.11 - Physics is Beautiful
+      document.title = resourceTitle + ': ' + this.props.problem.title + ' - Physics is Beautiful'
+
+      var description
+
+      // authors
+      var authorsStr
+      if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+        authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
+          return author
+        }).join(', ')
+      }
+      // Poblem 1.11 from Principles of Quantum Mechanics by R. Shankar
+      description = 'Problem ' + this.props.problem.title + ' from ' +
+        resourceTitle + ' by ' + authorsStr
+
+      var meta = document.createElement('meta')
+      meta.name = 'description'
+      meta.content = description
+      document.getElementsByTagName('head')[0].appendChild(meta)
+
+      var resourceOwner = ''
+      if (this.props.resource.hasOwnProperty('owner')) {
+        resourceOwner = this.props.resource.owner.display_name
+      }
+
+      meta = document.createElement('meta')
+      meta.name = 'author'
+      meta.content = resourceOwner
+      document.getElementsByTagName('head')[0].appendChild(meta)
+
+      this.titleSet = true
+    }
+  }
+
+  componentWillUnmount () {
+    // clear titile
+    document.title = 'Physics is Beautiful'
+    // remove meta
+    var element = document.getElementsByTagName('meta')['description']
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
+    element = document.getElementsByTagName('meta')['author']
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
+    this.titleSet = false
+  }
+
   onPostSolutionClick () {
     if (this.props.profile.is_anonymous === true) {
       let url = '/accounts/login/?next=' + window.location.pathname

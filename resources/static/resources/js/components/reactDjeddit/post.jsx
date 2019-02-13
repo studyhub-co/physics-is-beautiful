@@ -34,6 +34,10 @@ export class Post extends React.Component {
     this.setState({ replyFormShow: !this.state.replyFormShow })
   }
 
+  deleteComment () {
+    // this.setState({ replyFormShow: !this.state.replyFormShow })
+  }
+
   upDownClick (value) {
     this.props.changePostVote(this.props.post, value)
   }
