@@ -10,7 +10,7 @@ import { Post } from './post'
 import { ReplyForm } from './replyForm'
 
 export class Thread extends React.Component {
-  renderPost (post, onSubmitReplay) {
+  renderPost (post, onSubmitReplay, onSubmitEdit) {
     let widthRem = post.level + 'rem'
 
     if (post.level === 0) { return null }
@@ -23,6 +23,7 @@ export class Thread extends React.Component {
         <Post
           post={post}
           onSubmitReplay={onSubmitReplay}
+          onSubmitEdit={onSubmitEdit}
           currentProfile={this.props.currentProfile}
           changePostVote={this.props.changePostVote}
         />
@@ -44,7 +45,7 @@ export class Thread extends React.Component {
           }
         </div>
         { this.props.thread.posts_in_tree_order.map(function (post, i) {
-          return this.renderPost(post, this.props.onSubmitPost)
+          return this.renderPost(post, this.props.onSubmitPost, this.props.onSubmitEditPost)
         }, this)}
       </div>
     )
@@ -55,5 +56,6 @@ Thread.propTypes = {
   thread: PropTypes.object.isRequired,
   currentProfile: PropTypes.object,
   onSubmitPost: PropTypes.func.isRequired,
+  onSubmitEditPost: PropTypes.func.isRequired,
   changePostVote: PropTypes.func.isRequired
 }
