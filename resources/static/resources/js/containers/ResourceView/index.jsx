@@ -7,7 +7,7 @@ import { Sheet } from '../../components/Sheet'
 
 import * as resourcesCreators from '../../actions/resources'
 
-import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col } from 'react-bootstrap'
 
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'

@@ -34,6 +34,9 @@ class TextBookSolutionView extends React.Component {
       pdfScale: 1,
       externalPdfUrlFile: null
     }
+
+    this.titleSet = false
+
     this.handlePrevious = this.handlePrevious.bind(this)
     this.handleNext = this.handleNext.bind(this)
     this.onDocumentComplete = this.onDocumentComplete.bind(this)
@@ -74,6 +77,53 @@ class TextBookSolutionView extends React.Component {
       //   }
       // }
     }
+
+    if (this.props.resource && this.props.solution &&
+      (!this.titleSet ||
+        prevProps.problem.uuid !== this.props.problem.uuid ||
+        prevProps.solution.uuid !== this.props.solution.uuid)) {
+      var resourceTitle
+
+      if (this.props.resource.metadata) {
+        resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      } else {
+        resourceTitle = 'Unknown resource'
+      }
+
+      // Principles of Quantum Mechanics: 1.11 Solution - Physics is Beautiful
+      document.title = resourceTitle + ': ' + this.props.problem.title + ': ' + this.props.solution.title +
+        ' Solution - Physics is Beautiful'
+
+      var description
+
+      // authors
+      var authorsStr
+      if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+        authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
+          return author
+        }).join(', ')
+      }
+      // Solution to problem 1.11 from Principles of Quantum Mechanics by R. Shankar: problem_set_07_solution.pdf
+      description = 'Solution to problem ' + this.props.problem.title + ' from ' +
+        resourceTitle + ' by ' + authorsStr + ': ' + this.props.solution.title
+
+      var meta = document.createElement('meta')
+      meta.name = 'description'
+      meta.content = description
+      document.getElementsByTagName('head')[0].appendChild(meta)
+
+      var solutionOwner = ''
+      if (this.props.solution.hasOwnProperty('posted_by')) {
+        solutionOwner = this.props.solution.posted_by.display_name
+      }
+
+      meta = document.createElement('meta')
+      meta.name = 'author'
+      meta.content = solutionOwner
+      document.getElementsByTagName('head')[0].appendChild(meta)
+
+      this.titleSet = true
+    }
   }
 
   // !=== part of google proxy pdf viewer
@@ -84,6 +134,21 @@ class TextBookSolutionView extends React.Component {
   //     this.setState({externalPdfUrlFile: pdfURL})
   //   })
   // }
+
+  componentWillUnmount () {
+    // clear titile
+    document.title = 'Physics is Beautiful'
+    // remove meta
+    var element = document.getElementsByTagName('meta')['description']
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
+    element = document.getElementsByTagName('meta')['author']
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
+    this.titleSet = false
+  }
 
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
