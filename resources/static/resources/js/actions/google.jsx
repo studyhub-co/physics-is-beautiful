@@ -13,7 +13,7 @@ var API_KEY = 'AIzaSyBNaX7xo_Vo08-myCDEzY4AKZkkfyJYIc8'
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-const SCOPES = 'https://www.googleapis.com/auth/books'
+const SCOPES = 'profile https://www.googleapis.com/auth/books https://www.googleapis.com/auth/drive.readonly'
 
 // var DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest']
 
@@ -34,7 +34,7 @@ export function gapiInitialize () {
     }
 
     function initGapiClient () {
-      gapi.client.init({
+      gapi.auth2.init({
         // discoveryDocs: DISCOVERY_DOCS,
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -69,6 +69,16 @@ export function googleFetchBooksList (isbn) {
     }).then(function (response) {
       dispatch(receiveGoogleBooksList(response.result.items || []))
     }, function (reason) {
+      if (reason.status === 401) {
+        // broken access token
+        gapi.auth2.getAuthInstance().signIn().then(function (user) {
+          gapi.client.request({
+            'path': 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbn
+              }).then(function (response) {
+                  dispatch(receiveGoogleBooksList(response.result.items || []))
+              })
+        })
+      }
       console.log('Error: ' + reason.result.error.message)
     })
   }

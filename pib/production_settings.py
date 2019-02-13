@@ -12,22 +12,31 @@ ALLOWED_HOSTS = [
     '.compute-1.amazonaws.com',
 ]
 
+# allow mobile app to access apis
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8080'
+)
+
 
 from pib.common_settings import *  # noqa: E402, F401
 
-
 EMAIL_BACKEND = 'django_ses.SESBackend'
+
+# django-s3-storage
 AWS_REGION = 'us-east-1'
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_SES_REGION_NAME = AWS_REGION
 AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
-AWS_S3_PUBLIC_URL = 'https://pib-media-production.s3.amazonaws.com'
-
-# django-s3-storage
-AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_BUCKET_AUTH = False
+
+# django-s3-storage media
+AWS_S3_PUBLIC_URL = os.getenv('AWS_STORAGE_PUBLIC_URL')
+AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+
+# django-s3-storage static
 AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
+AWS_S3_PUBLIC_URL_STATIC = os.getenv('AWS_STORAGE_PUBLIC_URL_STATIC')
 
 
 DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
@@ -48,3 +57,23 @@ RAVEN_CONFIG = {
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+# enable for logging to a file in production
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': '/opt/python/log/djangodebug.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'ERROR',
+#             'propagate': True,
+#         },
+#     },
+# }

@@ -3,39 +3,171 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Sheet } from '../../components/Sheet'
 
+import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
+
+import {DockableDropTarget, DragItemTypes} from '../../dnd'
+
+// import * as googleCreators from '../../actions/google'
 import * as resourcesCreators from '../../actions/resources'
 
-import { Grid, Row, Col, Image, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
-
-import { BASE_URL } from '../../utils/config'
-import history from '../../history'
-import { EditableLabel, EditableExternalEventLabel } from '../../utils/editableLabel'
+import Chapter from './Components/chapter'
+import * as profileCreators from '../../actions/profile'
 
 class TextBookResourceView extends React.Component {
   constructor (props) {
     super(props)
-    // TODO copy resource from props to state to allow user modify
+    // enh copy resource from props to state to allow user modify
     this.state = {
-      chapterEditMode: null,
-      problemEditMode: null
+      chapterEditModeId: null,
+      resourceEditMode: false
+    }
+
+    this.titleSet = false
+
+    this.addProblemClick = this.addProblemClick.bind(this)
+    this.onChangeChapterValue = this.onChangeChapterValue.bind(this)
+    this.onChangeProblemTitle = this.onChangeProblemTitle.bind(this)
+    this.onRemoveChapter = this.onRemoveChapter.bind(this)
+    this.onRemoveProblem = this.onRemoveProblem.bind(this)
+    this.onChangeChapterShowAd = this.onChangeChapterShowAd.bind(this)
+  }
+
+  componentDidMount () {
+    if (!this.props.profile) {
+      this.props.profileActions.fetchProfileMe()
     }
   }
 
-  editChapterClick (id) {
+  componentDidUpdate (prevProps) {
+    if (this.props.resource && !this.titleSet) {
+      var title
+
+      if (this.props.resource.metadata) {
+        title = this.props.resource.metadata.data.volumeInfo.title
+      } else {
+        title = 'Unknown resource'
+      }
+      // authors
+      var authorsStr
+      if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+        authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
+          return author
+        }).join(' ')
+      }
+
+      document.title = authorsStr + ' ' + title + ' Solutions - Physics is Beautiful'
+
+      var meta = document.createElement('meta')
+      meta.name = 'description'
+      meta.content = authorsStr + ' ' + title + ' textbook solutions manual or PDF solutions for all problems and chapters.'
+      document.getElementsByTagName('head')[0].appendChild(meta)
+
+      var resourceOwner = ''
+      if (this.props.resource.hasOwnProperty('owner')) {
+        resourceOwner = this.props.resource.owner.display_name
+      }
+
+      meta = document.createElement('meta')
+      meta.name = 'author'
+      meta.content = resourceOwner
+      document.getElementsByTagName('head')[0].appendChild(meta)
+
+      this.titleSet = true
+    }
+  }
+
+  componentWillUnmount () {
+    // clear titile
+    document.title = 'Physics is Beautiful'
+    // remove meta
+    var element = document.getElementsByTagName('meta')['description']
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
+    element = document.getElementsByTagName('meta')['author']
+    if (element.hasOwnProperty('parentNode')) {
+      element.parentNode.removeChild(element)
+    }
+  }
+
+  onRemoveChapter (chapter) {
+    if (confirm('Are you sure you want to delete this chapter?')) { // TODO we can use Modal from react bootstrap if needed
+      this.props.resourcesActions.removeChapterReloadResource(chapter, this.props.resource)
+    }
+  }
+
+  onRemoveProblem (problem) {
+    if (confirm('Are you sure you want to delete this problem?')) { // TODO we can use Modal from react bootstrap if needed
+      this.props.resourcesActions.removeProblemReloadResource(problem, this.props.resource)
+    }
+  }
+
+  editResourceClick () {
     this.setState({
-      chapterEditMode: id
+      resourceEditMode: !this.state.resourceEditMode
     })
   }
 
-  onChangeChapterValue (value, id) {
-    // TODO save title in state
+  addChapterClick () {
+    this.props.resourcesActions.addChapter('Chapter ' + (this.props.resource.sections.length + 1), this.props.resource)
   }
 
-  onChangeProblemTitle (value, id) {
-    // TODO save title in state
+  addProblemClick (chapter) {
+    this.setState({
+      chapterEditModeId: null
+    })
+    // add problem to list
+    this.props.resourcesActions.addProblem(chapter.id + '.' + (chapter.problems.length + 1), chapter, this.props.resource)
   }
+
+  onChangeChapterValue (value, chapter) {
+    // save chapter title
+    let newChapter = {id: chapter.id, title: value, position: chapter.position}
+    this.props.resourcesActions.updateChapterReloadResource(newChapter, this.props.resource)
+  }
+
+  onChangeProblemTitle (value, problem) {
+    // update problem title
+    let newProblem = {uuid: problem.uuid, title: value, position: problem.position}
+    this.props.resourcesActions.updateProblemReloadResource(newProblem, this.props.resource)
+  }
+
+  onChapterDroppedBefore (beforeChapter, chapter) {
+    let updateChapter = {id: chapter.id}
+    if (beforeChapter) {
+      updateChapter['position'] = beforeChapter.position
+    } else { // at the end of list
+      // POST without position
+    }
+
+    this.props.resourcesActions.updateChapterReloadResource(updateChapter, this.props.resource)
+  }
+
+  onProblemDroppedBefore (problemBefore, droppedProblem, newParentChapter) {
+    let updateProblem = {
+      uuid: droppedProblem.uuid,
+      textbook_section_id: newParentChapter.id
+    }
+
+    if (problemBefore) {
+      updateProblem['position'] = problemBefore.position
+    }
+
+    this.props.resourcesActions.updateProblemReloadResource(updateProblem, this.props.resource)
+  }
+
+  onChangeChapterShowAd (chapter, checked) {
+    let updateChapter = {id: chapter.id, show_ad: checked, position: chapter.position}
+    // this.props.resourcesActions.updateChapter(updateChapter)
+    // needs to reload to refres View mode
+    this.props.resourcesActions.updateChapterReloadResource(updateChapter, this.props.resource)
+  }
+
+  // addGoogleAdClick () {
+  //   let ad = {'slot': 111, 'client': 'ca-pub-1780955227395785'}
+  //   this.props.googleActions.addAd(ad, this.props.resource)
+  // }
 
   render () {
     var isbn = null
@@ -46,67 +178,92 @@ class TextBookResourceView extends React.Component {
       }
     }
 
+    var haveEditAccess = false
+    if (this.props.profile &&
+        this.props.profile.is_anonymous !== true &&
+        this.props.profile.is_staff === true) {
+      haveEditAccess = true
+    }
+
     return (
       <Grid fluid>
         <Row>
           <Col sm={12} md={12}>
-            <h1 className={'blue-title text-align-center'}>
-              {this.props.resource.metadata ? this.props.resource.metadata.data.volumeInfo.title : 'Unknown resource'}
+            <span style={{position: 'relative', float: 'right', fontSize: 10}}>
+              { haveEditAccess
+                ? <span className={'base-circle-edit'}>
+                  [<span
+                    onClick={() => this.editResourceClick()}
+                    className={'blue-text'}
+                    style={{cursor: 'pointer'}}>
+                    {this.state.resourceEditMode
+                      ? 'View'
+                      : 'Edit'}
+                  }
+                  </span>]
+                </span>
+                : null }
+            </span>
+            <h1 className={'textbook-title text-align-center'}>
+              {this.props.resource.metadata ? this.props.resource.metadata.data.volumeInfo.title : 'Unknown resource'} Solutions
             </h1>
           </Col>
         </Row>
         <Row>
           <Col sm={9} md={9}>
             {this.props.resource.sections ? this.props.resource.sections.map(function (chapter, i) { // ============ chapters
-              return <Row key={chapter.position}>
+              return <Row key={chapter.id}>
                 <Col sm={12} md={12}>
-                  <span className={'blue-title'}>
-                    <EditableExternalEventLabel
-                      value={chapter.title}
-                      onChange={(value) => { this.onChangeChapterValue(value, chapter.id) }}
-                      editMode={this.state.chapterEditMode === chapter.id}
-                    />
-                  </span>
-                  <span style={{position: 'relative', paddingLeft: '1rem'}}>
-                    <span className={'base-circle-edit'}>
-                      [<span
-                        onClick={() => this.editChapterClick(chapter.id)}
-                        className={'blue-text'}
-                        style={{cursor: 'pointer'}}
-                      >
-                        Edit
-                      </span>]
-                    </span>
-                  </span>
-                  {chapter.problems ? chapter.problems.map(function (problem, i) { // ============ problems
-                    return <Row key={problem.uuid} className={'blue-text'}>
-                      <Col sm={2} md={2}>
-                        <EditableLabel
-                          value={problem.title}
-                          onChange={(value) => { this.onChangeProblemTitle(value, problem.uuid) }}
-                        />
-                      </Col>
-                      <Col sm={9} md={9}>
-                        { problem.count_solutions > 0
-                          ? <span
-                            style={{cursor: 'pointer'}}
-                            onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + problem.uuid) }}>
-                            {problem.count_solutions} solution{problem.count_solutions > 1 ? 's' : null}
-                          </span>
-                          : 'No solutions'
+                  <DockableDropTarget
+                    key={chapter.id}
+                    onDrop={(droppedChapter) => { this.onChapterDroppedBefore(chapter, droppedChapter) }}
+                    itemType={DragItemTypes.CHAPTER}
+                    self={chapter}
+                    idAttr={'id'}
+                  >
+                    <Chapter
+                      chapter={chapter}
+                      chapterEditModeId={this.state.chapterEditModeId}
+                      onChangeProblemTitle={this.onChangeProblemTitle}
+                      onChangeChapterValue={this.onChangeChapterValue}
+                      onRemoveChapter={this.onRemoveChapter}
+                      onRemoveProblem={this.onRemoveProblem}
+                      onChangeChapterShowAd={this.onChangeChapterShowAd}
+                      onProblemDroppedBefore={
+                        (problem, droppedProblem) => {
+                          this.onProblemDroppedBefore(problem, droppedProblem, chapter)
                         }
-                      </Col>
-                      <Col sm={1} md={1}>
-                        {/* TODO drop down menu for request more solutions */}
-                      </Col>
-                    </Row>
-                  }, this)
-                    : null
-                  }
+                      }
+                      resourceEditMode={this.state.resourceEditMode}
+                      addProblemClick={this.addProblemClick}
+                      resource={this.props.resource}
+                    />
+                  </DockableDropTarget>
                 </Col>
               </Row>
             }, this)
               : null
+            }
+            {this.state.resourceEditMode
+              ? <DockableDropTarget
+                onDrop={(droppedChapter) => { this.onChapterDroppedBefore(null, droppedChapter) }}
+                itemType={DragItemTypes.CHAPTER}
+                self={null}
+                idAttr={'id'}
+              >
+                <div // Add chapter button
+                  style={{cursor: 'pointer'}}
+                  onClick={() => this.addChapterClick()}
+                  className={'blue-text'}>
+                  <Glyphicon glyph='plus' /> Add chapter
+                </div>
+                {/* <div // Add google ads button */}
+                {/* style={{cursor: 'pointer'}} */}
+                {/* onClick={() => this.addGoogleAdClick()} */}
+                {/* className={'blue-text'}> */}
+                {/* <Glyphicon glyph='plus' /> Add Google ad */}
+                {/* </div> */}
+              </DockableDropTarget> : null
             }
           </Col>
           <Col sm={3} md={3}>
@@ -118,7 +275,7 @@ class TextBookResourceView extends React.Component {
               { this.props.resource.metadata &&
               this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
               this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
-                ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
+                ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail.replace('http', 'https')} />
                 : <Glyphicon glyph='picture' /> }
             </div>
             { this.props.resource.metadata
@@ -189,23 +346,35 @@ class TextBookResourceView extends React.Component {
 
 TextBookResourceView.propTypes = {
   // actions
-  // resourcesActions: PropTypes.shape({
-  //   fetchResource: PropTypes.func.isRequired
-  // }),
+  resourcesActions: PropTypes.shape({
+    addProblem: PropTypes.func.isRequired,
+    addChapter: PropTypes.func.isRequired,
+    // updateChapter: PropTypes.func.isRequired,
+    updateProblemReloadResource: PropTypes.func.isRequired,
+    updateChapterReloadResource: PropTypes.func.isRequired,
+    removeChapterReloadResource: PropTypes.func.isRequired,
+    removeProblemReloadResource: PropTypes.func.isRequired
+  }),
+  profileActions: PropTypes.shape({
+    fetchProfileMe: PropTypes.func.isRequired
+  }),
   // data
+  profile: PropTypes.object,
   resource: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    //resource: state.resources.resource
+    resource: state.resources.resource,
+    profile: state.profile.me
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 

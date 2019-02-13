@@ -5,19 +5,24 @@
 {% block extrahead %}
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> {#TODO move to navbar#}
 <link rel="stylesheet" type="text/css" href="{% static 'resources/style.css' %}" />
-{#<link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>#}
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/pure-checkbox.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>
 {#<script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>#}
 
 
 {#  pagedown editor  #}
-<link href="/static/pagedown/demo/browser/demo.css" type="text/css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="/static/pagedown/Markdown.Converter.js"></script>
-<script type="text/javascript" src="/static/pagedown-extra/pagedown/Markdown.Converter.js"></script>
-<script type="text/javascript" src="/static/pagedown/Markdown.Sanitizer.js"></script>
-<script type="text/javascript" src="/static/pagedown/Markdown.Editor.js"></script>
-<script type="text/javascript" src="/static/pagedown-extra/Markdown.Extra.js"></script>
-<script type="text/javascript" src="/static/pagedown_init.js"></script>
+<link href="{% static 'pagedown/demo/browser/demo.css' %}" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="{% static 'pagedown/Markdown.Converter.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown-extra/pagedown/Markdown.Converter.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown/Markdown.Sanitizer.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown/Markdown.Editor.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown-extra/Markdown.Extra.js' %}"></script>
+<script type="text/javascript" src="{% static 'pagedown_init.js' %}"></script>
 
+{# djeedit #}
+<link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">
+<link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
 {% endblock extrahead %}
 
