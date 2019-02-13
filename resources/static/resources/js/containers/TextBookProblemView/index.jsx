@@ -80,9 +80,6 @@ class TextBookProblemView extends React.Component {
         resourceTitle = 'Unknown resource'
       }
 
-      // Principles of Quantum Mechanics: 1.11 - Physics is Beautiful
-      document.title = resourceTitle + ': ' + this.props.problem.title + ' - Physics is Beautiful'
-
       var description
 
       // authors
@@ -92,9 +89,10 @@ class TextBookProblemView extends React.Component {
           return author
         }).join(', ')
       }
-      // Poblem 1.11 from Principles of Quantum Mechanics by R. Shankar
-      description = 'Problem ' + this.props.problem.title + ' from ' +
-        resourceTitle + ' by ' + authorsStr
+      // Principles of Quantum Mechanics 1.11 Solutions - Physics is Beautiful
+      document.title = authorsStr + ' ' + resourceTitle + ' ' + this.props.problem.title + ' Solution - Physics is Beautiful'
+      // Problem 1.11 PDF solutions from Principles of Quantum Mechanics by R. Shankar
+      description = 'Problem ' + this.props.problem.title + 'PDF solutions from ' + resourceTitle + ' by ' + authorsStr
 
       var meta = document.createElement('meta')
       meta.name = 'description'

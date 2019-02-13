@@ -48,7 +48,6 @@ class TextBookResourceView extends React.Component {
       } else {
         title = 'Unknown resource'
       }
-      document.title = title + ' - Physics is Beautiful'
       // authors
       var authorsStr
       if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
@@ -57,9 +56,11 @@ class TextBookResourceView extends React.Component {
         }).join(' ')
       }
 
+      document.title = authorsStr + ' ' + title + ' Solutions - Physics is Beautiful'
+
       var meta = document.createElement('meta')
       meta.name = 'description'
-      meta.content = title + ' by ' + authorsStr
+      meta.content = authorsStr + ' ' + title + ' textbook solutions manual or PDF solutions for all problems and chapters.'
       document.getElementsByTagName('head')[0].appendChild(meta)
 
       var resourceOwner = ''
@@ -188,7 +189,7 @@ class TextBookResourceView extends React.Component {
       <Grid fluid>
         <Row>
           <Col sm={12} md={12}>
-            <span style={{position: 'relative', float: 'right', fontSize:10}}>
+            <span style={{position: 'relative', float: 'right', fontSize: 10}}>
               { haveEditAccess
                 ? <span className={'base-circle-edit'}>
                   [<span
