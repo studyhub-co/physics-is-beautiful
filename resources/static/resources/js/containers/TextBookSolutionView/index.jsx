@@ -44,6 +44,7 @@ class TextBookSolutionView extends React.Component {
     this.onZoomPdfClick = this.onZoomPdfClick.bind(this)
     this.onSubmitPost = this.onSubmitPost.bind(this)
     this.onEditPost = this.onEditPost.bind(this)
+    this.onDeletePost = this.onDeletePost.bind(this)
 
     // !=== part of google proxy pdf viewer
     // this.loadExternalGooglePdf = this.loadExternalGooglePdf.bind(this)
@@ -224,6 +225,10 @@ class TextBookSolutionView extends React.Component {
 
   onEditPost (post) {
     this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread)
+  }
+
+  onDeletePost (post) {
+    this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread)
   }
 
   renderPagination (page, pages) {
@@ -434,6 +439,7 @@ class TextBookSolutionView extends React.Component {
                     currentProfile={this.props.profile}
                     onSubmitPost={this.onSubmitPost}
                     onSubmitEditPost={this.onEditPost}
+                    onDeletePost={this.onDeletePost}
                     changePostVote={this.props.djedditActions.changePostVote}
                   /> : null }
               </Col>
@@ -457,7 +463,8 @@ TextBookSolutionView.propTypes = {
     fetchThreadSolution: PropTypes.func.isRequired,
     createPostWithRefreshThread: PropTypes.func.isRequired,
     changePostVote: PropTypes.func.isRequired,
-    updatePostWithRefreshThread: PropTypes.func.isRequired
+    updatePostWithRefreshThread: PropTypes.func.isRequired,
+    deletePostWithRefreshThread: PropTypes.func.isRequired
   }),
   profileActions: PropTypes.shape({
     fetchProfileMe: PropTypes.func.isRequired
