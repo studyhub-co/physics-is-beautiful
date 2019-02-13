@@ -26,6 +26,7 @@ export class Thread extends React.Component {
           onSubmitEdit={onSubmitEdit}
           currentProfile={this.props.currentProfile}
           changePostVote={this.props.changePostVote}
+          onDelete={this.props.onDeletePost}
         />
       </div>
     </div>
@@ -57,5 +58,6 @@ Thread.propTypes = {
   currentProfile: PropTypes.object,
   onSubmitPost: PropTypes.func.isRequired,
   onSubmitEditPost: PropTypes.func.isRequired,
-  changePostVote: PropTypes.func.isRequired
+  changePostVote: PropTypes.func.isRequired,
+  onDeletePost: PropTypes.func.isRequired
 }

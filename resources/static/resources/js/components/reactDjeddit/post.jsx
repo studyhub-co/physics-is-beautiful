@@ -30,6 +30,7 @@ export class Post extends React.Component {
     this.toggleEditForm = this.toggleEditForm.bind(this)
     this.upDownClick = this.upDownClick.bind(this)
     this.editComment = this.editComment.bind(this)
+    this.deleteComment = this.deleteComment.bind(this)
   }
 
   onSubmitReplay (...args) {
@@ -51,7 +52,10 @@ export class Post extends React.Component {
   }
 
   deleteComment () {
-    // TODO delete comment reload thread
+    // delete comment reload thread
+    if (confirm('Are you sure you want to delete this comment?')) { // TODO we can use Modal from react bootstrap if needed
+      this.props.onDelete(this.props.post)
+    }
   }
 
   editComment () {
@@ -167,13 +171,13 @@ export class Post extends React.Component {
                             className='btn btn-secondary'>
                             Reply
                           </button>
+                          {/*<button*/}
+                            {/*onClick={this.toggleReplyForm}*/}
+                            {/*className='btn btn-secondary'>*/}
+                            {/*Parent*/}
+                          {/*</button>*/}
                           <button
-                            onClick={this.toggleReplyForm}
-                            className='btn btn-secondary'>
-                            Parent
-                          </button>
-                          <button
-                            onClick={this.toggleReplyForm}
+                            onClick={this.deleteComment}
                             className='btn btn-secondary'>
                             Delete
                           </button>
@@ -212,5 +216,6 @@ Post.propTypes = {
   onSubmitReplay: PropTypes.func.isRequired,
   onSubmitEdit: PropTypes.func.isRequired,
   currentProfile: PropTypes.object.isRequired,
-  changePostVote: PropTypes.func.isRequired
+  changePostVote: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
 }

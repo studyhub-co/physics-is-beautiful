@@ -74,6 +74,26 @@ export function updatePostWithRefreshThread (post, threadId) {
   }
 }
 
+export function deletePost (post) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_DJEDDIT_PREFIX + 'posts/' + post.uid + '/', post)
+      .catch(checkHttpError)
+      .then((response) => {
+        // dispatch(createResourceSuccess(response.data))
+      })
+  }
+}
+
+export function deletePostWithRefreshThread (post, threadId) {
+  return (dispatch, state) => {
+    return dispatch(deletePost(post)).then(() => {
+      dispatch(fetchThreadSolution(threadId)).then(() => {
+        // todo replace with new post url
+      })
+    })
+  }
+}
+
 export function votesForPostsChaged (post, score) {
   return {
     type: DJEDDIT_VOTES_FOR_POST_CHANGED,
