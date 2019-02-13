@@ -72,6 +72,7 @@ export class ReplyForm extends React.Component {
                       rows='10'
                       required
                       value={this.state.content}
+                      onBlur={this.handleChangeContent}
                       onChange={this.handleChangeContent}
                     /></div>
                   <p className='wmd-preview-title'>
