@@ -32,6 +32,11 @@ export class EditForm extends React.Component {
     this.setState({content: this.props.parentPost.content})
   }
 
+  componentWillReceiveProps (nextProps) {
+    // refresh with reload
+    this.setState({content: nextProps.parentPost.content})
+  }
+
   render () {
     return (
       <div className='row'>
@@ -62,7 +67,7 @@ export class EditForm extends React.Component {
                       rows='10'
                       required
                       value={this.state.content}
-                      onChange={this.handleChangeContent}
+                      onBlur={this.handleChangeContent}
                     /></div>
                   <p className='wmd-preview-title'>
                     <small>Preview:</small>
