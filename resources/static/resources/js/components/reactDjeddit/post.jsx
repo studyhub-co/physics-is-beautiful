@@ -9,6 +9,8 @@ import { Glyphicon, Grid, Row, Col, FormControl, Checkbox, Form, Button } from '
 import { ReplyForm } from './replyForm'
 import { EditForm } from './editForm'
 
+import ReactMarkdown from 'react-markdown'
+
 import MathJax from 'react-mathjax2'
 
 // import RMathJax from 'react-mathjax'
@@ -145,7 +147,7 @@ export class Post extends React.Component {
                           />
                         </div>
                         {this.state.editFormShow
-                          ? null : renderMathJs(this.props.post.content)
+                          ? null : renderMathJs(<ReactMarkdown source={this.props.post.content} />)
                         }
                       </div>
                       <div className='djeddit-post-item-footer'>

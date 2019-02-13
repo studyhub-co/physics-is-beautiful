@@ -68,6 +68,7 @@ export class EditForm extends React.Component {
                       required
                       value={this.state.content}
                       onBlur={this.handleChangeContent}
+                      onChange={this.handleChangeContent}
                     /></div>
                   <p className='wmd-preview-title'>
                     <small>Preview:</small>

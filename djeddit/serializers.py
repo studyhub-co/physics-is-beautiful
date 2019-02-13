@@ -8,13 +8,19 @@ from profiles.serializers import PublicProfileSerializer
 
 from .models import Thread, Post
 
+# import markdown_deux
+
 
 class PostSerializer(serializers.ModelSerializer):
     created_by = PublicProfileSerializer(source='created_by.profile', read_only=True)
+    # mardown_content = serializers.SerializerMethodField()
+    #
+    # def get_mardown_content(self, obj):
+    #     return markdown_deux.markdown(obj.content, 'default')
 
     class Meta:
         fields = ['uid', 'content', 'created_by', 'created_on', 'parent', 'modified_on', 'level', 'score']
-        read_only_fields = ('level',)
+        read_only_fields = ('level', )
         model = Post
 
 
