@@ -1,5 +1,5 @@
 import React from 'react'
-import {Prompt} from 'react-router-dom'
+import {Prompt, Link} from 'react-router-dom'
 import {Section} from '../navigation'
 import {Question} from '../components/question'
 import {Footer} from '../components/question_footer'
@@ -118,9 +118,9 @@ export class SectionSheet extends React.Component {
     var backLink = ''
     if (this.props.backLink) {
       backLink = (
-        <a id='backToDashboard' href={this.props.backLink} type='button' className='btn btn-default btn-sm'>
+        <Link id='backToDashboard' to={this.props.backLink} replace={false} type='button' className='btn btn-default btn-sm'>
           <span className='glyphicon glyphicon-chevron-left' style={{color: '#888'}} />
-        </a>
+        </Link>
       )
     }
     var sections = []

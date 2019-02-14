@@ -225,7 +225,7 @@ class ModulesApp extends React.Component {
       uuid: this.module.uuid
     }]
 
-    var backLink = '/curriculum/'
+    var backLink = '/'
 
     // If we are using the mobile app, make the query persist.
     if (window.IS_MOBILE_APP) backLink += '?pib_mobile=true'
@@ -315,7 +315,7 @@ class UnitsApp extends React.Component {
       uuid: this.unit.uuid
     }]
 
-    var backLink = '/curriculum/'
+    var backLink = '/'
 
     // If we are using the mobile app, make the query persist.
     // if (window.IS_MOBILE_APP) backLink += '?pib_mobile=true'
