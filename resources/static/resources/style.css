@@ -267,4 +267,16 @@ div.pdf-ico {
         padding-left: 0;
         padding-right: 0;
     }
+    .resources .problem-row {
+        font-size: 24px;
+    }
+    .resources .blue-title {
+        font-size: 30px;
+    }
+    .resources .blue-title {
+        font-size: 30px;
+    }
+    .navbar.navbar-default a {
+        margin-left: 15px
+    }
 }
