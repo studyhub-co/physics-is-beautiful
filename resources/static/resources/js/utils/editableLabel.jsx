@@ -27,6 +27,11 @@ export class EditableLabel extends React.Component {
   }
 
   handleEditClick (e) {
+    // edit by external event only
+    if (this.props.hasOwnProperty('editableLabel') && this.props.editableLabel === false) {
+      return
+    }
+
     var val = this.props.value
     if (this.props.value === this.props.defaultValue) {
       val = ''
