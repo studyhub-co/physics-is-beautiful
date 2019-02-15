@@ -10,11 +10,21 @@ import { EditableLabel } from '../../../utils/editableLabel'
 
 import history from '../../../history'
 import { BASE_URL } from '../../../utils/config'
+import { slugify } from '../../../utils/urls'
 import { DragItemTypes } from '../../../dnd'
 
 // export default class Problem extends React.Component {
 let ProblemClass = class Problem extends React.Component {
   render () {
+    var problemViewUrl = null
+
+    if (this.props.resource && this.props.problem) {
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var problemTitle = this.props.problem.title
+
+      problemViewUrl = BASE_URL + slugify(resourceTitle) + '/problems/' + slugify(problemTitle) + '/' + this.props.problem.uuid
+    }
+
     return (
       this.props.connectDragPreview(
         <div style={{display: this.props.isDragging ? 'none' : 'block'}}>
@@ -23,7 +33,8 @@ let ProblemClass = class Problem extends React.Component {
             className={'problem-row'}
             onClick={() => {
               if (!this.props.resourceEditMode) {
-                history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid)
+                // history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid)
+                history.push(problemViewUrl)
               }
             }}
           >
@@ -54,8 +65,10 @@ let ProblemClass = class Problem extends React.Component {
               <span
                 style={{cursor: 'pointer'}}
                 className={'solution-count'}
-                onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid) }}
+                // onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid) }}
+                // onClick={() => { history.push(BASE_URL + slugify(resourceTitle) + '/problems/' + slugify(problemTitle) + '/' + this.props.problem.uuid) }}
               >
+                {/* /resources/resource_title/problems/problem_title/problem_uuid */}
                 {this.props.problem.count_solutions} solution{this.props.problem.count_solutions !== 1 ? 's' : null}
               </span>
             </Col>

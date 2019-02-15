@@ -10,6 +10,7 @@ import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
+import { slugify } from '../../utils/urls'
 
 import {
   handleFileChange,
@@ -62,11 +63,17 @@ class TextBookProblemView extends React.Component {
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
     }
-    if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
-      this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
-    }
+    // if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
+    //   this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
+    // }
     this.props.googleActions.gapiInitialize()
     this.props.profileActions.fetchProfileMe()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.problem && nextProps.problem) {
+      this.props.resourcesActions.fetchResource(nextProps.problem.resource_uuid)
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -118,11 +125,11 @@ class TextBookProblemView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     element = document.getElementsByTagName('meta')['author']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     this.titleSet = false
@@ -138,9 +145,21 @@ class TextBookProblemView extends React.Component {
     }
   }
 
-  onClickSolution (uuid) {
-    if (this.state.solutionEditModeUuid === uuid) { return } // do not redirect while edit mode
-    history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
+  onClickSolution (e, solution) {
+    if (this.state.solutionEditModeUuid === solution.uuid) { return } // do not redirect while edit mode
+    // history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
+
+    if (this.props.resource && this.props.problem) {
+      //path={BASE_URL + ':resource_title([A-Za-z0-9_-]+)/problems/:problem_title([A-Za-z0-9_-]+)/solutions/:solution_title([A-Za-z0-9_-]+)/:uuid'}
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var problemTitle = this.props.problem.title
+
+      history.push(BASE_URL +
+        slugify(resourceTitle) + '/problems/' +
+        slugify(problemTitle) + '/solutions/' +
+        slugify(solution.title.replace('.pdf', '')) + '/' + solution.uuid
+      )
+    }
   }
 
   handleClosePostSolutionModal () {
@@ -198,12 +217,18 @@ class TextBookProblemView extends React.Component {
       return false
     }
 
+    if (this.props.resource) {
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var resourceUrl = BASE_URL + slugify(resourceTitle) + '/' + this.props.resource.uuid
+      //history.push(BASE_URL + this.props.match.params['resource_uuid'])
+    }
+
     return (
       <Sheet>
         <Grid fluid>
           <Row>
             <Col sm={12} md={12}>
-              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid']) }} >
+              <a className={'back-button'} onClick={() => { history.push(resourceUrl) }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All problems
               </a>
@@ -317,8 +342,9 @@ class TextBookProblemView extends React.Component {
                             <div
                               className={'title blue-text'}
                               style={{cursor: 'pointer'}}
-                              onClick={() => this.onClickSolution(solution.uuid)}>
+                              onClick={(e) => this.onClickSolution(e, solution)}>
                               <EditableExternalEventLabel
+                                editableLabel={Boolean(false)}
                                 value={solution.title}
                                 onChange={(value) => { this.onChangeSolutionTitle(value, solution) }}
                                 editMode={this.state.solutionEditModeUuid === solution.uuid}

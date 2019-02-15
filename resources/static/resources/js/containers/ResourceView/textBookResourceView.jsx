@@ -82,11 +82,11 @@ class TextBookResourceView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     element = document.getElementsByTagName('meta')['author']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
   }
@@ -199,7 +199,6 @@ class TextBookResourceView extends React.Component {
                     {this.state.resourceEditMode
                       ? 'View'
                       : 'Edit'}
-                  }
                   </span>]
                 </span>
                 : null }
