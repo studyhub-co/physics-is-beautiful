@@ -91,13 +91,17 @@ class FullTextBookProblemSerializer(serializers.ModelSerializer):
 class TextBookProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
     count_solutions = serializers.SerializerMethodField()
+    resource_uuid = serializers.SerializerMethodField()
 
     def get_count_solutions(self, obj):
         return obj.count_solutions if hasattr(obj, 'count_solutions') else 0
 
+    def get_resource_uuid(self, obj):
+        return obj.textbook_section.resource.uuid  # TODO check optimization
+
     class Meta:
         model = TextBookProblem
-        fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions']
+        fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions', 'resource_uuid']
 
 
 class TextBookChapterSerializer(serializers.ModelSerializer):

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 
 import { Image, Glyphicon } from 'react-bootstrap'
 import { BASE_URL } from '../utils/config'
+import { slugify } from '../utils/urls'
+
 import history from '../history'
 
 export default class ResourceThumbnail extends React.Component { // TODO create components for each resources types
@@ -13,7 +15,8 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
   }
 
   onTitleClick (resourceUuid) {
-    history.push(BASE_URL + this.props.resource.uuid)
+    var title = this.props.resource.metadata.data.volumeInfo.title
+    history.push(BASE_URL + slugify(title) + '/' + this.props.resource.uuid)
   }
   render () {
     return (
@@ -35,7 +38,7 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
         </div>
         { this.props.resource.resource_type === 'TB' && this.props.resource.metadata
           ? <div>
-            <div onClick={this.props.onTitleClick} className={'blue-text'} style={{fontSize: '1.5rem', cursor: 'pointer'}}>
+            <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.5rem', cursor: 'pointer'}}>
               <div>{
                 this.props.resource.metadata.data.volumeInfo.title.length > 49
                   ? this.props.resource.metadata.data.volumeInfo.title.substr(0, 50) + '...'

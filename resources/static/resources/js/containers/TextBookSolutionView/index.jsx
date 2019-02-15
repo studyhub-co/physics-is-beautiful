@@ -26,6 +26,7 @@ import * as profileCreators from '../../actions/profile'
 import { BASE_URL } from '../../utils/config'
 import * as googleCreators from '../../actions/google'
 import AdSense from 'react-adsense'
+import { slugify } from '../../utils/urls'
 
 class TextBookSolutionView extends React.Component {
   constructor (props) {
@@ -142,11 +143,11 @@ class TextBookSolutionView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     element = document.getElementsByTagName('meta')['author']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     this.titleSet = false
@@ -307,6 +308,18 @@ class TextBookSolutionView extends React.Component {
       pdfFile = this.props.solution.pdf.file
     }
 
+    var problemUrl = null
+
+    if (this.props.resource && this.props.problem.title) {
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var problemTitle = this.props.problem.title
+
+      problemUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +
+        slugify(problemTitle) + '/' + this.props.problem.uuid
+    }
+
+    // history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid'])
+
     return (
       <Sheet>
         <Grid fluid>
@@ -314,7 +327,7 @@ class TextBookSolutionView extends React.Component {
             <Col sm={12} md={12}>
               <a
                 className={'back-button'}
-                onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid']) }} >
+                onClick={() => { history.push(problemUrl) }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All solutions
               </a>
