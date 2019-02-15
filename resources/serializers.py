@@ -39,7 +39,7 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
                                                          source='textbook_problem',
                                                          slug_field='uuid',
                                                          many=False,
-                                                         write_only=True,
+                                                         # write_only=True,
                                                          required=False  # we can set existing textbook_problem
                                                          )
 

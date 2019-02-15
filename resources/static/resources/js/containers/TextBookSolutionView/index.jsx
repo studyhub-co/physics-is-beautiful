@@ -56,13 +56,22 @@ class TextBookSolutionView extends React.Component {
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchSolution(this.props.match.params['uuid'])
     }
-    if (!this.props.resource && this.props.match.params && this.props.match.params['problem_uuid']) {
-      this.props.resourcesActions.fetchProblem(this.props.match.params['problem_uuid'])
-    }
-    if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
-      this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
-    }
+    // if (!this.props.resource && this.props.match.params && this.props.match.params['problem_uuid']) {
+    //   this.props.resourcesActions.fetchProblem(this.props.match.params['problem_uuid'])
+    // }
+    // if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
+    //   this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
+    // }
     this.props.profileActions.fetchProfileMe()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.solution && nextProps.solution) {
+      this.props.resourcesActions.fetchProblem(nextProps.solution.textbook_problem_uuid)
+    }
+    if (!this.props.problem && nextProps.problem) {
+      this.props.resourcesActions.fetchResource(nextProps.problem.resource_uuid)
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
