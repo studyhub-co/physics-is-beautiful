@@ -60,14 +60,13 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
         model = TextBookSolution
         fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread',
                   'textbook_problem_uuid', 'pdf_id', 'count_comments']
-        read_only_fields = ('id', 'created_on', 'uuid', 'vote_score', 'pdf')
+        read_only_fields = ('id', 'created_on', 'uuid', 'vote_score', 'pdf', 'thread')
         extra_kwargs = {'position': {'required': False}}
         # extra_kwargs = {'textbook_problem_uuid': {'write_only': True}, 'pdf_id': {'write_only': True}}
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
-    # # FIXME need to think about adding uuid to textbook_section (chapter)
     # # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
     # #                                                      source='textbook_section',
     # #                                                      slug_field='uuid',
@@ -101,7 +100,8 @@ class TextBookProblemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TextBookProblem
-        fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions', 'resource_uuid']
+        fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions', 'resource_uuid', 'thread']
+        read_only_fields = ['thread', ]
 
 
 class TextBookChapterSerializer(serializers.ModelSerializer):
@@ -168,8 +168,8 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resource
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner']
-        read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views')
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner', 'thread']
+        read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views', 'thread')
 
 
 class ResourceListSerializer(ResourceBaseSerializer):

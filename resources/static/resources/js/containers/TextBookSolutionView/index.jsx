@@ -5,16 +5,15 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Form } from 'react-bootstrap'
+import PDF from 'react-pdf-js'
+
 import { Thread } from '../../components/reactDjeddit/thread'
+import history from '../../history'
+import { Sheet } from '../../components/Sheet'
 
 // import { Document } from 'react-pdf' // https://github.com/wojtekmaj/react-pdf/issues/52
 // import { Document, setOptions } from 'react-pdf/dist/entry.webpack'
 // setOptions({ workerSrc: 'react-pdf/dist/pdf.worker.min.js' })
-
-import PDF from 'react-pdf-js'
-
-import history from '../../history'
-import { Sheet } from '../../components/Sheet'
 
 // !=== part of google proxy pdf viewer
 // import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
@@ -77,7 +76,7 @@ class TextBookSolutionView extends React.Component {
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.solution !== this.props.solution) {
       // reload thread
-      this.props.djedditActions.fetchThreadSolution(this.props.solution.thread)
+      this.props.djedditActions.fetchThread(this.props.solution.thread)
 
       // !=== part of google proxy pdf viewer
       // we can't login in to google (auth popup will be blocked by browser)
@@ -229,17 +228,17 @@ class TextBookSolutionView extends React.Component {
     this.props.resourcesActions.solutionVoteAndRefresh(solutionId, val)
   }
 
-  onSubmitPost (post) {
-    this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread)
-  }
-
-  onEditPost (post) {
-    this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread)
-  }
-
-  onDeletePost (post) {
-    this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread)
-  }
+  // onSubmitPost (post) {
+  //   this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread)
+  // }
+  //
+  // onEditPost (post) {
+  //   this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread)
+  // }
+  //
+  // onDeletePost (post) {
+  //   this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread)
+  // }
 
   renderPagination (page, pages) {
     let previousButton = <Button onClick={() => { this.handlePrevious() }} className={'common-button'}>Previous</Button>
@@ -459,9 +458,12 @@ class TextBookSolutionView extends React.Component {
                   ? <Thread
                     thread={this.props.thread}
                     currentProfile={this.props.profile}
-                    onSubmitPost={this.onSubmitPost}
-                    onSubmitEditPost={this.onEditPost}
-                    onDeletePost={this.onDeletePost}
+                    // onSubmitPost={this.onSubmitPost}
+                    // onSubmitEditPost={this.onEditPost}
+                    // onDeletePost={this.onDeletePost}
+                    onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread) }}
+                    onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}
+                    onDeletePost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}
                     changePostVote={this.props.djedditActions.changePostVote}
                   /> : null }
               </Col>
@@ -482,7 +484,7 @@ TextBookSolutionView.propTypes = {
     solutionVoteAndRefresh: PropTypes.func.isRequired
   }),
   djedditActions: PropTypes.shape({
-    fetchThreadSolution: PropTypes.func.isRequired,
+    fetchThread: PropTypes.func.isRequired,
     createPostWithRefreshThread: PropTypes.func.isRequired,
     changePostVote: PropTypes.func.isRequired,
     updatePostWithRefreshThread: PropTypes.func.isRequired,

@@ -120,7 +120,7 @@ export function receiveResource (resource) {
 
 export function fetchResource (uuid) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + uuid)
+    return getAxios().get(API_PREFIX + uuid + '/')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveResource(response.data))
