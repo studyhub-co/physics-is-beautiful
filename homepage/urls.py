@@ -9,4 +9,6 @@ urlpatterns = [
     url(r'^about/$', views.About, name='about'),
     url(r'^privacy/$', views.Privacy, name='privacy'),
     url(r'^terms/$', views.Terms, name='terms'),
+    url(r'^contact/$', views.Contact, name='contact'),
+
 ]
