@@ -42,6 +42,7 @@ class Resource(models.Model):
     resource_type = models.CharField(max_length=2, choices=RESOURCE_TYPE_CHOICES, default=TEXTBOOK)
     owner = models.ForeignKey(Profile, related_name='resources')
     count_views = models.IntegerField(default=0)
+    thread = models.OneToOneField(Thread, related_name='textbook_resource', null=True)
 
     class Moderator:
         notify_moderator = True
@@ -79,6 +80,8 @@ class TextBookProblem(models.Model):
     position = models.PositiveSmallIntegerField("Position")
     textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')
     posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
+    count_views = models.IntegerField(default=0)
+    thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
 
     class Meta:
         ordering = ['position']
