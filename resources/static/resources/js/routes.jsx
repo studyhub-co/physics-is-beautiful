@@ -13,13 +13,13 @@ export default(
     /resources/resource_title/problems/problem_title/solutions/solution_title/solution_uud
     <Route
       exact
-      path={BASE_URL + ':resource_title([A-Za-z0-9_-]+)/problems/:problem_title([A-Za-z0-9_-]+)/solutions/:solution_title([A-Za-z0-9_-]+)/:uuid'}
+      path={BASE_URL + ':resource_title([A-Za-z0-9._-]+)/problems/:problem_title([A-Za-z0-9._-]+)/solutions/:solution_title([A-Za-z0-9._-]+)/:uuid'}
       component={TextBookSolutionView} />
     <Route
       exact
-      path={BASE_URL + ':resource_title([A-Za-z0-9_-]+)/problems/:problem_title([A-Za-z0-9_-]+)/:uuid'}
+      path={BASE_URL + ':resource_title([A-Za-z0-9._-]+)/problems/:problem_title([A-Za-z0-9._-]+)/:uuid'}
       component={TextBookProblemView} />
-    <Route exact path={BASE_URL + ':title([A-Za-z0-9_-]+)/:uuid/'} component={ResourceView} />
+    <Route exact path={BASE_URL + ':title([A-Za-z0-9._-]+)/:uuid/'} component={ResourceView} />
     {/* <Route path='*' component={NotFoundView} /> */}
   </Switch>
 )
