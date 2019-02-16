@@ -48,6 +48,21 @@ export function downloadGoogleDriveUrl (urlString, callback) {
   }
 
   var id = url.searchParams.get('id')
+
+  // https://drive.google.com/file/d/id/view?usp=sharing
+  if (!id) {
+    var idRegexp = /\/file\/d\/([a-zA-Z0-9]+)\//g
+    var match = idRegexp.exec(urlString)
+    if (match) {
+      id = match[1]
+    }
+  }
+
+  if (!id) {
+    alert('Can\'t extract google drive file id.')
+    return
+  }
+
   // var that = this
   url = 'https://www.googleapis.com/drive/v2/files/' + id + '?alt=media'
   if (url) {
@@ -58,7 +73,7 @@ export function downloadGoogleDriveUrl (urlString, callback) {
       xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
       xhr.onload = function (e) {
         if (e.target.status === 403) {
-          alert('You don\'t have permission to download the file')
+          alert('You don\'t have permission to download the file.')
           return
         }
         if (e.target.status === 401) {
@@ -103,6 +118,7 @@ export function onChangeDirectUrl (urlString, chapter, problem, callback) {
 export function onChangeGoogleDriveUrl (urlString, chapter, problem, callback) {
   // download from google drive and upload to the API
   // https://drive.google.com/open?id=0B1Kj1ZClSFusekhNdGRhdDNYY0E
+  // https://drive.google.com/file/d/0B3AdXtErN2RtRXUzS3h0RmRpa1U/view?usp=sharing
   downloadGoogleDriveUrl(urlString,
     (response, id, accessToken) => {
       var file = {}

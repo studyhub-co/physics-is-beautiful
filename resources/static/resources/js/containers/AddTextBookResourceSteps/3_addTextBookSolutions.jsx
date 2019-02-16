@@ -10,7 +10,7 @@ import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
 import { EditableLabel } from '../../utils/editableLabel'
 
-import { handleFileChange, onChangeGoogleDriveUrl, onChangeDirectUrl, onChangeExternalUrl } from './lib'
+import { handleFileChange, onChangeExternalUrl } from './lib'
 
 export default class AddTextBookSolutionsView extends React.Component {
   constructor (props) {
