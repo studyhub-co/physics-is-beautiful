@@ -16,6 +16,7 @@ class ContactSerializer:
             }
         )
 
+        # Send email to us
         email = EmailMessage(
             '[PiB Contact] from ' + cleaned_form_data['name'] + '<' + cleaned_form_data['email'] + '>',
             html_message,
@@ -24,5 +25,15 @@ class ContactSerializer:
         )
         email.content_subtype = "html"
 
+        # and send an email to them
+        email2 = EmailMessage(
+            'Physics is Beautiful - Thanks for contacting us',
+            html_message,
+            settings.DEFAULT_FROM_EMAIL,
+            [cleaned_form_data['email']]
+        )
+        email2.content_subtype = "html"
+
         # Suppress email until it's fixed.
         email.send()
+        email2.send()
