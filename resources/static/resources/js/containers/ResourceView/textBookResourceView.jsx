@@ -3,16 +3,14 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-
 import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
 
 import {DockableDropTarget, DragItemTypes} from '../../dnd'
-
-// import * as googleCreators from '../../actions/google'
-import * as resourcesCreators from '../../actions/resources'
-
 import Chapter from './Components/chapter'
+import { Thread } from '../../components/reactDjeddit/thread'
+import * as resourcesCreators from '../../actions/resources'
 import * as profileCreators from '../../actions/profile'
+import * as djedditCreators from '../../actions/djeddit'
 
 class TextBookResourceView extends React.Component {
   constructor (props) {
@@ -40,6 +38,12 @@ class TextBookResourceView extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
+    if (this.props.resource && !this.props.thread) {
+      // reload thread
+      this.props.djedditActions.fetchThread(this.props.resource.thread)
+    }
+
+    // title / metatags
     if (this.props.resource && !this.titleSet) {
       var title
 
@@ -338,6 +342,19 @@ class TextBookResourceView extends React.Component {
               </div> : 'Book data not found'}
           </Col>
         </Row>
+        <Row>
+          <Col sm={12} md={12}>
+            { this.props.thread
+              ? <Thread
+                thread={this.props.thread}
+                currentProfile={this.props.profile}
+                onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread) }}
+                onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}
+                onDeletePost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}
+                changePostVote={this.props.djedditActions.changePostVote}
+              /> : null }
+          </Col>
+        </Row>
       </Grid>
     )
   }
@@ -345,6 +362,13 @@ class TextBookResourceView extends React.Component {
 
 TextBookResourceView.propTypes = {
   // actions
+  djedditActions: PropTypes.shape({
+    fetchThread: PropTypes.func.isRequired,
+    createPostWithRefreshThread: PropTypes.func.isRequired,
+    changePostVote: PropTypes.func.isRequired,
+    updatePostWithRefreshThread: PropTypes.func.isRequired,
+    deletePostWithRefreshThread: PropTypes.func.isRequired
+  }),
   resourcesActions: PropTypes.shape({
     addProblem: PropTypes.func.isRequired,
     addChapter: PropTypes.func.isRequired,
@@ -359,13 +383,15 @@ TextBookResourceView.propTypes = {
   }),
   // data
   profile: PropTypes.object,
-  resource: PropTypes.object
+  resource: PropTypes.object,
+  thread: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
     resource: state.resources.resource,
-    profile: state.profile.me
+    profile: state.profile.me,
+    thread: state.djeddit.thread
   }
 }
 
@@ -373,6 +399,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
+    djedditActions: bindActionCreators(djedditCreators, dispatch),
     profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }

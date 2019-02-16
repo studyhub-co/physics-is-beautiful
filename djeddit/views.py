@@ -194,6 +194,11 @@ def discussionPage(request):
     context = dict(threads=threads, topics=topics)
     return render(request, 'djeddit/discussion.html', context)
 
+from django.utils.text import slugify
+
+
+def slug_wo_underscores(string):
+    return slugify(string).replace('_', '-')
 
 def threadPage(request, topic_title='', thread_id='', slug=''):
     if topic_title and thread_id:
@@ -220,16 +225,83 @@ def threadPage(request, topic_title='', thread_id='', slug=''):
 
                 # redirect to solution
                 if hasattr(thread, 'textbook_solution'):
-                    # resources/ieHqK3sKVHYpCgMhXeHT6m/problems/YGjud5APPVEesyjcC5SDxG/solutions/vWdGyyWrC7RG8iC77CyZzh
                     resources_root_url = reverse('resources')
-                    redirect_url = '{}{}/{}/{}/{}/{}'.format(
+                    # resources/ieHqK3sKVHYpCgMhXeHT6m/problems/YGjud5APPVEesyjcC5SDxG/solutions/vWdGyyWrC7RG8iC77CyZzh
+                    # redirect_url = '{}{}/{}/{}/{}/{}'.format(
+                    #     resources_root_url,
+                    #     thread.textbook_solution.textbook_problem.textbook_section.resource.uuid,
+                    #     'problems',
+                    #     thread.textbook_solution.textbook_problem.uuid,
+                    #     'solutions',
+                    #     thread.textbook_solution.uuid,
+                    # )
+
+                    # resources/slow-reading/problems/22/solutions/32gb-warra/ytFRxpR8FYDVG6M9hLPR5W
+
+                    resource_title = 'Unknown resource'
+
+                    try:
+                        if 'title' in thread.textbook_solution.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']:
+                            resource_title = thread.textbook_solution.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']['title']
+                    except:
+                        pass
+
+                    redirect_url = '{}{}/{}/{}/{}/{}/{}'.format(
                         resources_root_url,
-                        thread.textbook_solution.textbook_problem.textbook_section.resource.uuid,
+                        slug_wo_underscores(resource_title),
                         'problems',
-                        thread.textbook_solution.textbook_problem.uuid,
+                        slug_wo_underscores(thread.textbook_solution.textbook_problem.title),
                         'solutions',
-                        thread.textbook_solution.uuid,
+                        slug_wo_underscores(thread.textbook_solution.title.replace('.pdf', '')),
+                        thread.textbook_solution.uuid
                     )
+
+                    return HttpResponseRedirect(redirect_url)
+
+                # redirect to problem
+                if hasattr(thread, 'textbook_problem'):
+                    resources_root_url = reverse('resources')
+
+                    resource_title = 'Unknown resource'
+
+                    try:
+                        if 'title' in thread.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']:
+                            resource_title = thread.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']['title']
+                    except:
+                        pass
+
+                    # resources/slow-reading/problems/22/9iti2TBAUHREPiWdbo7zeF
+
+                    redirect_url = '{}{}/{}/{}/{}'.format(
+                        resources_root_url,
+                        slug_wo_underscores(resource_title),
+                        'problems',
+                        slug_wo_underscores(thread.textbook_problem.title),
+                        thread.textbook_problem.uuid
+                    )
+
+                    return HttpResponseRedirect(redirect_url)
+
+                # redirect to resource
+                if hasattr(thread, 'textbook_resource'):
+                    resources_root_url = reverse('resources')
+
+                    resource_title = 'Unknown resource'
+
+                    try:
+                        if 'title' in thread.textbook_resource.metadata.data['volumeInfo']:
+                            resource_title = thread.textbook_resource.metadata.data['volumeInfo']['title']
+                    except:
+                        pass
+
+                    # resources/slow-reading/9iti2TBAUHREPiWdbo7zeF
+
+                    redirect_url = '{}{}/{}'.format(
+                        resources_root_url,
+                        slug_wo_underscores(resource_title),
+                        thread.textbook_resource.uuid
+                    )
+
                     return HttpResponseRedirect(redirect_url)
 
                 context = dict(thread=thread, nodes=thread.op.getSortedReplies(), meta=meta)
