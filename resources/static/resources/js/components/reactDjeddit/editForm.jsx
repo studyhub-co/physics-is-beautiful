@@ -1,6 +1,9 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
+import ReactMarkdown from 'react-markdown'
+
+import { renderMathJs } from './utils'
 
 export class EditForm extends React.Component {
   constructor (props) {
@@ -15,6 +18,12 @@ export class EditForm extends React.Component {
 
   handleChangeContent (event) {
     this.setState({content: event.target.value})
+    var that = this
+
+    setTimeout(function () {
+      var el = document.getElementById(that.props.parentPost.uid + 'id_edit_content')
+      that.setState({content: el.value})
+    }, 1000) // pageeditor preview hack, more info in Markdown.Editor.js
   }
 
   handleSubmit (event) {
@@ -73,7 +82,11 @@ export class EditForm extends React.Component {
                   <p className='wmd-preview-title'>
                     <small>Preview:</small>
                   </p>
-                  <div id={this.props.parentPost.uid + 'id_edit_content_wmd_preview'} className='wmd-panel wmd-preview' />
+                  <div className='wmd-panel wmd-preview'>
+                    {renderMathJs(<ReactMarkdown source={this.state.content} />)}
+                  </div>
+                  {/* native pagedown editor preview: */}
+                  {/*<div id={this.props.parentPost.uid + 'id_edit_content_wmd_preview'} className='wmd-panel wmd-preview' />*/}
                 </div>
               </div>
             </div>
