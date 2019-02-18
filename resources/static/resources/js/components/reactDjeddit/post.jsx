@@ -1,19 +1,14 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-
 import Moment from 'react-moment'
-
-import { Glyphicon, Grid, Row, Col, FormControl, Checkbox, Form, Button } from 'react-bootstrap'
+import ReactMarkdown from 'react-markdown'
+import { Grid, Row, Col } from 'react-bootstrap'
+// import RMathJax from 'react-mathjax'
 
 import { ReplyForm } from './replyForm'
 import { EditForm } from './editForm'
-
-import ReactMarkdown from 'react-markdown'
-
-import MathJax from 'react-mathjax2'
-
-// import RMathJax from 'react-mathjax'
+import { renderMathJs } from './utils'
 
 export class Post extends React.Component {
   constructor (props) {
@@ -67,31 +62,6 @@ export class Post extends React.Component {
   }
 
   render () {
-    var renderMathJs = function (content) {
-      return (
-        <MathJax.Context
-          input='ascii'
-          onError={(MathJax, error) => {
-            console.warn(error)
-            console.log('Encountered a MathJax error, re-attempting a typeset!')
-            MathJax.Hub.Queue(
-              MathJax.Hub.Typeset()
-            )
-          }}
-          script='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=AM_HTMLorMML'
-          options={{
-            extensions: ['tex2jax.js', '[mhchem]/mhchem.js'],
-            jax: ['input/TeX', 'output/HTML-CSS'],
-            tex2jax: {
-              inlineMath: [ ['$', '$'], ['\\(','\\)'] ],
-              displayMath: [ ['$$', '$$'], ['\\[','\\]'] ],
-              processEscapes: true
-            },
-            'HTML-CSS': { fonts: ['TeX'] }
-          }}>
-          <MathJax.Text text={content} />
-        </MathJax.Context>
-      )
 
     // react-mathjax1 do not work with "options="
     //   return (
@@ -110,7 +80,6 @@ export class Post extends React.Component {
     //     </RMathJax.Node>
     //   </RMathJax.Context>
     //   )
-    }
 
     return (
       <div>
@@ -130,7 +99,7 @@ export class Post extends React.Component {
                     <Moment fromNow>{this.props.post.created_on}</Moment>
                   </Col>
                   <Col md={2} sm={3} xs={4}>
-                    {this.props.post.modified_on !== this.props.post.created_on
+                    {this.props.post.modified_on
                       ? <span>edited <Moment fromNow>{this.props.post.modified_on}</Moment></span>
                       : null
                     }
