@@ -478,7 +478,7 @@ class TextBookSolutionView extends React.Component {
                     // onDeletePost={this.onDeletePost}
                     onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread) }}
                     onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}
-                    onDeletePost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}
+                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread) }}
                     changePostVote={this.props.djedditActions.changePostVote}
                   /> : null }
               </Col>

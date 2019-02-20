@@ -400,7 +400,7 @@ class TextBookProblemView extends React.Component {
                     currentProfile={this.props.profile}
                     onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.problem.thread) }}
                     onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}
-                    onDeletePost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}
+                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.problem.thread) }}
                     changePostVote={this.props.djedditActions.changePostVote}
                   /> : null }
               </Col>
