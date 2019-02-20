@@ -262,7 +262,7 @@ class Post(MPTTModel, NamedModel):
 
 @receiver(pre_save, sender=Post)
 def update_modified_on(sender, instance, *args, **kwargs):
-    # try tu find saved post due uid is populate with Post init
+    # try to find saved post due uid is populate with Post init
     instance_exist = True
     try:
         Post.objects.get(uid=instance.uid)

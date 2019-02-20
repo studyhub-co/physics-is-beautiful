@@ -130,6 +130,11 @@ class IndexView extends React.Component {
     return getPrefixFromSlidesName(slidesName)
   }
 
+  searchButtonClick () {}
+  handleSearchString () {}
+  handleSearchInputKeyUp () {}
+  clearSearchButtonClick () {}
+
   render () {
     var baseUrl = this.props.match.url.replace(/\/$/, '')
     var addResourceUrl = baseUrl + '/add/'
@@ -155,13 +160,13 @@ class IndexView extends React.Component {
               </Button>
             </Col>
           </Row>
-          {/*<SearchRowView*/}
-            {/*searchButtonClick={this.searchButtonClick}*/}
-            {/*handleSearchString={this.handleSearchString}*/}
-            {/*handleSearchInputKeyUp={this.handleSearchInputKeyUp}*/}
-            {/*clearSearchButtonClick={this.clearSearchButtonClick}*/}
-            {/*searchString={this.state.searchString}*/}
-          {/*/>*/}
+          <SearchRowView
+            searchButtonClick={this.searchButtonClick}
+            handleSearchString={this.handleSearchString}
+            handleSearchInputKeyUp={this.handleSearchInputKeyUp}
+            clearSearchButtonClick={this.clearSearchButtonClick}
+            searchString={this.state.searchString}
+          />
         </Grid>
         {/*{ this.state.searchEnabeled*/}
             {/*? <CurriculaSearchView*/}

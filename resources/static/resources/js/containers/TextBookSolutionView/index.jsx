@@ -163,28 +163,43 @@ class TextBookSolutionView extends React.Component {
 
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
+
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var problemTitle = this.props.problem.title
+
       for (let x = 0; x < this.props.problem.solutions.length; x++) {
         if (this.props.problem.solutions[x].uuid === this.props.solution.uuid) {
           if (value === 'next') {
-            // TODO refactoring this
             if (typeof this.props.problem.solutions[x + 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x + 1].uuid)
+              // history.push(BASE_URL +
+              //   this.props.resource.uuid +
+              //   '/problems/' +
+              //   this.props.problem.uuid +
+              //   '/solutions/' +
+              //   this.props.problem.solutions[x + 1].uuid)
               history.push(BASE_URL +
-                this.props.resource.uuid +
-                '/problems/' +
-                this.props.problem.uuid +
-                '/solutions/' +
-                this.props.problem.solutions[x + 1].uuid)
+                slugify(resourceTitle) + '/problems/' +
+                slugify(problemTitle) + '/solutions/' +
+                slugify(this.props.problem.solutions[x + 1].title.replace('.pdf', '')) + '/' + this.props.problem.solutions[x + 1].uuid
+              )
             }
           } else {
             if (typeof this.props.problem.solutions[x - 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x - 1].uuid)
+
               history.push(BASE_URL +
-                this.props.resource.uuid +
-                '/problems/' +
-                this.props.problem.uuid +
-                '/solutions/' +
-                this.props.problem.solutions[x - 1].uuid)
+                slugify(resourceTitle) + '/problems/' +
+                slugify(problemTitle) + '/solutions/' +
+                slugify(this.props.problem.solutions[x - 1].title.replace('.pdf', '')) + '/' + this.props.problem.solutions[x - 1].uuid
+              )
+
+            //   history.push(BASE_URL +
+            //     this.props.resource.uuid +
+            //     '/problems/' +
+            //     this.props.problem.uuid +
+            //     '/solutions/' +
+            //     this.props.problem.solutions[x - 1].uuid)
             }
           }
         }
