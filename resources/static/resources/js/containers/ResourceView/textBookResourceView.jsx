@@ -350,7 +350,7 @@ class TextBookResourceView extends React.Component {
                 currentProfile={this.props.profile}
                 onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread) }}
                 onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}
-                onDeletePost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}
+                onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread) }}
                 changePostVote={this.props.djedditActions.changePostVote}
               /> : null }
           </Col>
