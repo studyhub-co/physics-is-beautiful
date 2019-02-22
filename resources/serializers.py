@@ -123,6 +123,12 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
         sections = validated_data.pop('sections')
 
+        if metadata_data:
+            try:
+                validated_data['title'] = metadata_data['data']['volumeInfo']['title']
+            except:
+                pass
+
         instance = super(ResourceBaseSerializer, self).create(validated_data)
 
         # TODO need to check that at least one solution exists

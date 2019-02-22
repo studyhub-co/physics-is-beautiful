@@ -4,7 +4,7 @@ import { checkHttpStatus, checkHttpError, getAxios } from '../utils'
 import {
   RESOURCE_RECEIVE_RESOURCE_OPTIONS, CREATE_RESOURCE_SUCCESS, RESOURCE_RECEIVE_POPULAR_RESOURCES,
   RESOURCE_RECEIVE_RECENT_RESOURCES, RESOURCE_RECEIVE_NEW_RESOURCES, RESOURCE_RECEIVE_RESOURCE,
-  RESOURCE_RECEIVE_PROBLEM, RESOURCE_RECEIVE_PROBLEM_SOLUTION
+  RESOURCE_RECEIVE_PROBLEM, RESOURCE_RECEIVE_PROBLEM_SOLUTION, RESOURCE_RECEIVE_RESOURCE_SEARCH
 } from '../constants'
 
 import { BASE_URL, API_PREFIX } from '../utils/config'
@@ -374,5 +374,36 @@ export function removeProblemReloadResource (problem, resource) {
     return dispatch(removeProblem(problem)).then(() => {
       dispatch(fetchResource(resource.uuid))
     })
+  }
+}
+
+export function receivSearchReourses (resourceSearchListResponce) {
+  return {
+    type: RESOURCE_RECEIVE_RESOURCE_SEARCH,
+    payload: {
+      resourceSearchList: resourceSearchListResponce.data
+    }
+  }
+}
+
+export function loadSearchResources (searchString, nextPageUrl) {
+  return (dispatch, state) => {
+    // /api/v1/resources/search/?query=test
+
+    var url = API_PREFIX // all
+
+    if (searchString) {
+      url = API_PREFIX + 'search/?query=' + searchString
+    }
+
+    if (nextPageUrl) {
+      url = nextPageUrl
+    }
+
+    return getAxios().get(url)
+      .catch(checkHttpError)
+      .then((response) => {
+        dispatch(receivSearchReourses(response))
+      })
   }
 }
