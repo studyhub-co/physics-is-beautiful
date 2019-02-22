@@ -21,16 +21,16 @@ from djeddit.models import Topic, Thread, Post
 
 # from profiles.models import Profile
 
-from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
-
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
 
-from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
 
+from editor.apis_public import SearchMixin
+
+from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
+from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
     FullTextBookProblemSerializer, TextBookSolutionSerializer, TextBookProblemSerializer
 from .serializers_flat import TextBookChapterSerializerFlat, TextBookProblemSerializerFlat
-
 from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID, TEXTBOOK_PROBLEMS_TOPIC_ID, \
     TEXTBOOK_RESOURCES_TOPIC_ID
 
@@ -225,7 +225,9 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
             serializer.save(posted_by=self.request.user.profile, position=position)
 
 
-class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
+class ResourceViewSet(SeparateListObjectSerializerMixin,
+                      ModelViewSet,
+                      SearchMixin):
     permission_classes = (IsStaffOrReadOnly, )
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
@@ -239,9 +241,9 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                          )\
         .prefetch_related('sections__problems__solutions__posted_by')\
         .prefetch_related('sections__problems__solutions__pdf')
-
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
+    search_fields = ['title', ]
 
     @action(methods=['POST'],
             detail=False,
