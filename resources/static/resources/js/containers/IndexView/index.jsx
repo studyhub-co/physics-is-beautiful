@@ -168,6 +168,7 @@ class IndexView extends React.Component {
   }
 
   doSearch () {
+    this.props.resourcesActions.resetSearchResources()
     if (this.searchView && this.searchView.getWrappedInstance()) {
       this.searchView.getWrappedInstance().doSearch()
     }
@@ -247,7 +248,8 @@ IndexView.propTypes = {
   resourcesActions: PropTypes.shape({
     loadPopularResourcesList: PropTypes.func.isRequired,
     loadRecentResourcesList: PropTypes.func.isRequired,
-    loadNewResourcesList: PropTypes.func.isRequired
+    loadNewResourcesList: PropTypes.func.isRequired,
+    resetSearchResources: PropTypes.func.isRequired
   }),
   // data
   popularResourcesList: PropTypes.object,
