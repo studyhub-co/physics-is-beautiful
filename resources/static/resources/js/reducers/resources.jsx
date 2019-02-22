@@ -6,7 +6,8 @@ import {
   RESOURCE_RECEIVE_RESOURCE,
   RESOURCE_RECEIVE_PROBLEM,
   RESOURCE_RECEIVE_PROBLEM_SOLUTION,
-  RESOURCE_RECEIVE_RESOURCE_SEARCH
+  RESOURCE_RECEIVE_RESOURCE_SEARCH,
+  RESOURCE_RESET_SEARCH
 } from '../constants'
 
 const initialState = {
@@ -47,6 +48,11 @@ export default function resourcesReducer (state = initialState, action) {
     case RESOURCE_RECEIVE_RESOURCE_SEARCH:
       return Object.assign({}, state, {
         resourceSearchList: action.payload.resourceSearchList
+      })
+    case RESOURCE_RESET_SEARCH:
+      console.log('reducer');
+      return Object.assign({}, state, {
+        resourceSearchList: null
       })
     default:
       return state
