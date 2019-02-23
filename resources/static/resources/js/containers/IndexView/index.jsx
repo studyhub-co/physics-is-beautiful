@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Sheet } from '../../components/Sheet'
+import ResourceSearchView from './searchView'
 
 import Swiper from 'react-id-swiper'
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
@@ -40,6 +41,14 @@ class IndexView extends React.Component {
       newNextPageUrl: null
     }
     this.populateSlides = this.populateSlides.bind(this)
+
+    this.handleSearchString = this.handleSearchString.bind(this)
+    this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
+    this.searchButtonClick = this.searchButtonClick.bind(this)
+    this.populateSlides = this.populateSlides.bind(this)
+    this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
+    this.clearSearchButtonClick = this.clearSearchButtonClick.bind(this)
+    this.doSearch = this.doSearch.bind(this)
   }
 
   componentDidMount () {
@@ -130,10 +139,40 @@ class IndexView extends React.Component {
     return getPrefixFromSlidesName(slidesName)
   }
 
-  searchButtonClick () {}
-  handleSearchString () {}
-  handleSearchInputKeyUp () {}
-  clearSearchButtonClick () {}
+  searchButtonClick (e) {
+    var searchString = this.state.searchString
+    if (searchString) {
+      this.setState({searchEnabeled: true})
+      this.doSearch()
+    }
+  }
+
+  handleSearchString (e) {
+    if (!e.target.value) {
+      this.setState({searchString: e.target.value}, this.doSearch) // reset
+      this.setState({searchEnabeled: false})
+    } else {
+      this.setState({searchString: e.target.value})
+    }
+  }
+
+  handleSearchInputKeyUp (e) {
+    if (e.keyCode === 13) { // 'enter' key
+      this.searchButtonClick()
+    }
+  }
+
+  clearSearchButtonClick () {
+    this.setState({searchString: ''}, this.doTabsSearch)
+    this.setState({searchEnabeled: false})
+  }
+
+  doSearch () {
+    this.props.resourcesActions.resetSearchResources()
+    if (this.searchView && this.searchView.getWrappedInstance()) {
+      this.searchView.getWrappedInstance().doSearch()
+    }
+  }
 
   render () {
     var baseUrl = this.props.match.url.replace(/\/$/, '')
@@ -168,11 +207,11 @@ class IndexView extends React.Component {
             searchString={this.state.searchString}
           />
         </Grid>
-        {/*{ this.state.searchEnabeled*/}
-            {/*? <CurriculaSearchView*/}
-              {/*ref={(node) => { if (node) this.searchView = node }}*/}
-              {/*curriculaSearchString={this.state.searchString} /> : null*/}
-          {/*}*/}
+        { this.state.searchEnabeled
+          ? <ResourceSearchView
+            ref={(node) => { if (node) this.searchView = node }}
+            resourceSearchString={this.state.searchString} /> : null
+        }
         <div style={{ 'display': displyDashboard }}>
           <Grid fluid>
             <Row>
@@ -209,7 +248,8 @@ IndexView.propTypes = {
   resourcesActions: PropTypes.shape({
     loadPopularResourcesList: PropTypes.func.isRequired,
     loadRecentResourcesList: PropTypes.func.isRequired,
-    loadNewResourcesList: PropTypes.func.isRequired
+    loadNewResourcesList: PropTypes.func.isRequired,
+    resetSearchResources: PropTypes.func.isRequired
   }),
   // data
   popularResourcesList: PropTypes.object,

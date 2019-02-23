@@ -43,11 +43,25 @@ class Resource(models.Model):
     owner = models.ForeignKey(Profile, related_name='resources')
     count_views = models.IntegerField(default=0)
     thread = models.OneToOneField(Thread, related_name='textbook_resource', null=True)
+    title = models.CharField(max_length=512, blank=True, null=True)
 
+    def __str__(self):
+        return 'Resource: {}'.format(self.title)
+    
     class Moderator:
         notify_moderator = True
         auto_approve_for_superusers = True
         fields_exclude = ['count_views', ]
+
+
+# metadata are created by another serializer
+# this signal only for update in admin site
+@receiver(models.signals.post_save, sender=Resource)
+def save_title(sender, instance, *args, **kwargs):
+    """ add denorm title field """
+    if not instance.title and hasattr(instance, 'metadata'):
+        instance.title = instance.metadata.data['volumeInfo']['title']
+        instance.save()
 
 # TODO signal for remove djedit Topic onDelete resource
 
