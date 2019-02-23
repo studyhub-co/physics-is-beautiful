@@ -28,19 +28,19 @@ class ResourceSearchView extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.curriculaSearchList.previous == null) {
+    if (props.resourceSearchList.previous == null) {
     // 1st page
       this.setState({
-        resources: props.resourcesSearchList.results,
-        hasMoreItems: Boolean(props.resourcesSearchList.next),
-        nextHref: props.resourcesSearchList.next})
+        resources: props.resourceSearchList.results,
+        hasMoreItems: Boolean(props.resourceSearchList.next),
+        nextHref: props.resourceSearchList.next})
     } else {
     // add to list
-      var newlist = [...this.state.resources, ...props.resourcesSearchList.results]
+      var newlist = [...this.state.resources, ...props.resourceSearchList.results]
 
       this.setState({
         resources: newlist,
-        hasMoreItems: Boolean(props.resourcesSearchList.next),
+        hasMoreItems: Boolean(props.resourceSearchList.next),
         nextHref: props.resourcesSearchList.next})
     }
   }
@@ -57,11 +57,10 @@ class ResourceSearchView extends React.Component {
 
   render () {
     var items = []
-
     this.state.resources.map((resource, i) => {
       items.push(
         <ResourceThumbnail
-          key={curriculum.uuid}
+          key={resource.uuid}
           resource={resource} />
       )
     })
@@ -109,9 +108,7 @@ ResourceSearchView.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    // popularResourcesList: state.resources.popularResourcesList,
-    // recentResourcesList: state.resources.recentResourcesList,
-    // newResourcesList: state.resources.newResourcesList
+    resourceSearchList: state.resources.resourceSearchList
   }
 }
 
@@ -122,5 +119,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResourceSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(ResourceSearchView)
 export { ResourceSearchView as ResourceSearchViewNotConnected }
