@@ -2,7 +2,7 @@ import os
 
 from django.db import models
 from django.dispatch import receiver
-
+from django.utils.text import slugify
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -47,6 +47,9 @@ class Resource(models.Model):
 
     def __str__(self):
         return 'Resource: {}'.format(self.title)
+
+    def get_frontend_url(self):
+        return '/resources/{}/{}/'.format(slugify(self.title), self.uuid)
     
     class Moderator:
         notify_moderator = True
@@ -97,6 +100,12 @@ class TextBookProblem(models.Model):
     count_views = models.IntegerField(default=0)
     thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
 
+    def get_frontend_url(self):
+        return '/resources/{}/problems/{}/{}/'.format(
+            slugify(self.textbook_section.resource.title),
+            slugify(self.title),
+            self.uuid)
+
     class Meta:
         ordering = ['position']
 
@@ -140,6 +149,13 @@ class TextBookSolution(VoteModel, models.Model):
     @title.setter
     def title(self, value):
         self._title = value
+
+    def get_frontend_url(self):
+        return '/resources/{}/problems/{}/solutions/{}/{}/'.format(
+            slugify(self.textbook_problem.textbook_section.resource.title),
+            slugify(self.textbook_problem.title),
+            slugify(self.title),
+            self.uuid)
 
     class Meta:
         ordering = ['-vote_score']

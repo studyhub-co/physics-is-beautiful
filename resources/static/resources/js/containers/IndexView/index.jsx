@@ -9,7 +9,7 @@ import ResourceSearchView from './searchView'
 import Swiper from 'react-id-swiper'
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 
-import { BASE_URL } from '../../utils/config'
+// import { BASE_URL } from '../../utils/config'
 
 import {
   getParams,
