@@ -63,9 +63,9 @@ class ResourceSearchView extends React.Component {
     var items = []
     this.state.resources.map((resource, i) => {
       items.push(
-        <ResourceThumbnail
-          key={resource.uuid}
-          resource={resource} />
+        <div key={resource.uuid} style={{float: 'left'}}>
+          <ResourceThumbnail resource={resource} />
+        </div>
       )
     })
 
