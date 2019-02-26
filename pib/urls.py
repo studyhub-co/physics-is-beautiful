@@ -20,13 +20,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 
-from resources.sitemaps import ResourcesViewSitemap, TextBookProblemsViewSitemap, TextBookSolutionssViewSitemap
+from resources.sitemaps import ResourcesViewSitemap, TextBookProblemsViewSitemap, TextBookSolutionsViewSitemap
 from curricula.sitemaps import CurriculaViewSitemap
 
 sitemaps = {
     'resources': ResourcesViewSitemap,
     'textbook_problems': TextBookProblemsViewSitemap,
-    'textbook_solutions': TextBookSolutionssViewSitemap,
+    'textbook_solutions': TextBookSolutionsViewSitemap,
     'curricula': CurriculaViewSitemap,
 }
 
