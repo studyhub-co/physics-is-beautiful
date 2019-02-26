@@ -64,6 +64,9 @@ class Curriculum(BaseModel):
     def __str__(self):
         return 'Curriculum: {}'.format(self.name)
 
+    def get_frontend_url(self):
+        return '/curriculum/{}/'.format(self.uuid)
+
 
 class Unit(BaseModel):
 
