@@ -155,14 +155,21 @@ class IndexView extends React.Component {
           breakpoint: 1800,
           settings: {
             slidesToShow: 5,
-            slidesToScroll: 5,
+            slidesToScroll: 5
           }
         },
         {
-          breakpoint: 1376,
+          breakpoint: 1500,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 4
+          }
+        },
+        {
+          breakpoint: 1356,
           settings: {
             slidesToShow: 3,
-            slidesToScroll: 3,
+            slidesToScroll: 3
           }
         },
         {
@@ -170,7 +177,7 @@ class IndexView extends React.Component {
           settings: {
             slidesToShow: 2,
             slidesToScroll: 2,
-            variableWidth: true,
+            variableWidth: true
           }
         },
         {
