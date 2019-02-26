@@ -280,3 +280,12 @@ div.pdf-ico {
         margin-left: 15px
     }
 }
+
+.slick-slide img {
+    display: inline-block !important;
+}
+
+.slick-next:before, .slick-prev:before {
+    color: #000 !important;
+}
+
