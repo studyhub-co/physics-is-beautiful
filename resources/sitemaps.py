@@ -25,7 +25,7 @@ class TextBookProblemsViewSitemap(sitemaps.Sitemap):
         return item.get_frontend_url()
 
 
-class TextBookSolutionssViewSitemap(sitemaps.Sitemap):
+class TextBookSolutionsViewSitemap(sitemaps.Sitemap):
     priority = 0.5
     changefreq = 'daily'
 
