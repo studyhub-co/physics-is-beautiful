@@ -11,8 +11,6 @@ import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl }
 
 // import { BASE_URL } from '../../utils/config'
 
-import Slider from 'react-slick'
-
 import {
   getParams,
   alreadyInSlides,
@@ -186,41 +184,6 @@ class IndexView extends React.Component {
       displyDashboard = 'none'
     }
 
-    const sliderSettings = {
-      dots: false,
-      infinite: false,
-      speed: 500,
-      initialSlide: 0,
-      slidesToShow: 5,
-      slidesToScroll: 5,
-      arrows: true,
-      responsive: [
-        {
-          breakpoint: 1800,
-          settings: {
-            slidesToShow: 5,
-            slidesToScroll: 5,
-          }
-        },
-        {
-          breakpoint: 1376,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-          }
-        },
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            // infinite: true,
-            // dots: true
-          }
-        }
-      ]
-    }
-
     return (
       <Sheet>
         <Grid fluid>
@@ -254,12 +217,7 @@ class IndexView extends React.Component {
             <Row>
               <Col sm={12} md={12}>
                 <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                    My recently viewed
-                </div>
-                <div style={{}}>
-                  <Slider {...sliderSettings}>
-                    {this.state.recentSlides}
-                  </Slider>
+                      My recently viewed
                 </div>
                 <Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>
                   {this.state.recentSlides}
