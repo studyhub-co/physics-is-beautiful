@@ -36,6 +36,7 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
+# TODO move to lib app
 class SearchMixin:
     @action(methods=['GET'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def search(self, request):
@@ -47,7 +48,16 @@ class SearchMixin:
             raise NotAcceptable('Search query required')
 
         query = SearchQuery(keywords)
-        vector = SearchVector(*self.search_fields)
+
+        if hasattr(self, 'search_fields'):
+            vector = SearchVector(*self.search_fields)
+
+        if hasattr(self, 'casting_search_fields'):
+            from django.db.models.functions import Cast
+            from django.db.models import TextField
+            fields = [Cast(self.casting_search_fields[i], TextField()) for i in range(len(self.casting_search_fields))]
+            vector = SearchVector(*fields)
+
         qs = qs.annotate(search=vector).filter(search=query)
         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 

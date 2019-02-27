@@ -244,10 +244,11 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
     search_fields = ['title', ]
+    casting_search_fields = ['metadata__data', ]
 
     @action(methods=['POST'],
             detail=False,
-            permission_classes=[permissions.IsAuthenticated,],
+            permission_classes=[permissions.IsAuthenticated, ],
             parser_classes=(FormParser, MultiPartParser, FileUploadParser))
     def upload_solution_pdf(self, request):
         self.remove_unrelated_pdfs()
