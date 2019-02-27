@@ -98,7 +98,7 @@
     border-style: solid;
     border-color: rgb(216, 216, 216);
     margin: 0 1rem 1rem 0;
-    float: left;
+    /*float: left;*/
     position: relative;
     text-align: center;
     /*padding-top: 1rem;*/
@@ -107,8 +107,10 @@
     vertical-align: top;
 
     /* new values */
-    padding: 0;
-    width: 25rem;
+    padding: 0 1rem 0 1rem;
+    max-width: 25rem;
+    min-width: 20rem;
+    width: auto;
     height: 30rem;
     /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
 }

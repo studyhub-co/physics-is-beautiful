@@ -14,11 +14,11 @@ import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl }
 import Slider from 'react-slick'
 
 import {
-  getParams,
-  alreadyInSlides,
+  // getParams,
+  // alreadyInSlides,
   getPrefixFromSlidesName,
-  updateSliderNavigation,
-  updateSlidersNavigation
+  // updateSliderNavigation,
+  // updateSlidersNavigation
 } from './sliderHelpers'
 
 import SearchRowView from './searchRow'
@@ -45,7 +45,7 @@ class IndexView extends React.Component {
     this.populateSlides = this.populateSlides.bind(this)
 
     this.handleSearchString = this.handleSearchString.bind(this)
-    this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
+    // this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
     this.searchButtonClick = this.searchButtonClick.bind(this)
     this.populateSlides = this.populateSlides.bind(this)
     this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
@@ -86,9 +86,24 @@ class IndexView extends React.Component {
     return slides
   }
 
+  loadNextSlides (next, slidesListName) {
+    var self = this
+
+    if (self.state.recentSlides.length <= next + 5 && self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+      self.props.resourcesActions.loadRecentResourcesList(self.state.recentNextPageUrl)
+    }
+    if (self.state.popularSlides.length <= next + 5 && self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+      self.props.resourcesActions.loadPopularResourcesList(self.state.popularNextPageUrl)
+    }
+    if (self.state.newSlides.length <= next + 5 && self.state.newNextPageUrl && slidesListName === 'newSlides') {
+      self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
+    }
+
+  }
+
   componentWillReceiveProps (props) {
     // if (this.props.tab !== props.tab) {
-    this.updateSlidersNavigation()
+    // this.updateSlidersNavigation()
     // }
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
@@ -107,36 +122,90 @@ class IndexView extends React.Component {
     history.push(addResourceUrl)
   }
 
-  getParams (slidesListName) {
-    var self = this
+  // getParams (slidesListName) {
+  //   var self = this
+  //
+  //   var reachEndFunc = function () {
+  //     if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+  //       self.props.resourcesActions.loadRecentResourcesList(self.state.recentNextPageUrl)
+  //     }
+  //     if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+  //       self.props.resourcesActions.loadPopularResourcesList(self.state.popularNextPageUrl)
+  //     }
+  //     if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
+  //       self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
+  //     }
+  //   }
+  //
+  //   return getParams(slidesListName, this, reachEndFunc)
+  // }
 
-    var reachEndFunc = function () {
-      if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
-        self.props.resourcesActions.loadRecentResourcesList(self.state.recentNextPageUrl)
-      }
-      if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
-        self.props.resourcesActions.loadPopularResourcesList(self.state.popularNextPageUrl)
-      }
-      if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
-        self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
-      }
+  getSliderParams (slidesListName) {
+    const sliderSettings = {
+      dots: false,
+      infinite: false,
+      speed: 500,
+      initialSlide: 0,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      arrows: true,
+      beforeChange: (current, next) => this.loadNextSlides(next, slidesListName),
+      responsive: [
+        {
+          breakpoint: 1800,
+          settings: {
+            slidesToShow: 5,
+            slidesToScroll: 5
+          }
+        },
+        {
+          breakpoint: 1500,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 4
+          }
+        },
+        {
+          breakpoint: 1356,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3
+          }
+        },
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            variableWidth: true
+          }
+        },
+        {
+          breakpoint: 512,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows: false,
+            variableWidth: true
+          }
+        }
+      ]
     }
-
-    return getParams(slidesListName, this, reachEndFunc)
+    return sliderSettings
   }
 
-  alreadyInSlides (slides, uuid) {
-    return alreadyInSlides(slides, uuid)
-  }
-
-  updateSlidersNavigation () {
-    return updateSlidersNavigation(slidesNames, this)
-  }
-
-  updateSliderNavigation (slidesListName) {
-    return updateSliderNavigation(slidesListName, this)
-  }
-
+  // alreadyInSlides (slides, uuid) {
+  //   return alreadyInSlides(slides, uuid)
+  // }
+  //
+  // updateSlidersNavigation () {
+  //   return updateSlidersNavigation(slidesNames, this)
+  // }
+  //
+  // updateSliderNavigation (slidesListName) {
+  //   return updateSliderNavigation(slidesListName, this)
+  // }
+  //
   getPrefixFromSlidesName (slidesName) {
     return getPrefixFromSlidesName(slidesName)
   }
@@ -186,41 +255,6 @@ class IndexView extends React.Component {
       displyDashboard = 'none'
     }
 
-    const sliderSettings = {
-      dots: false,
-      infinite: false,
-      speed: 500,
-      initialSlide: 0,
-      slidesToShow: 5,
-      slidesToScroll: 5,
-      arrows: true,
-      responsive: [
-        {
-          breakpoint: 1800,
-          settings: {
-            slidesToShow: 5,
-            slidesToScroll: 5,
-          }
-        },
-        {
-          breakpoint: 1376,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-          }
-        },
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            // infinite: true,
-            // dots: true
-          }
-        }
-      ]
-    }
-
     return (
       <Sheet>
         <Grid fluid>
@@ -257,25 +291,31 @@ class IndexView extends React.Component {
                     My recently viewed
                 </div>
                 <div style={{}}>
-                  <Slider {...sliderSettings}>
+                  <Slider {...this.getSliderParams('recentSlides')}>
                     {this.state.recentSlides}
                   </Slider>
                 </div>
-                <Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>
-                  {this.state.recentSlides}
-                </Swiper>
+                {/*<Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>*/}
+                  {/*{this.state.recentSlides}*/}
+                {/*</Swiper>*/}
                 <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
                     Popular
                 </div>
-                <Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>
-                  {this.state.popularSlides}
-                </Swiper>
+                <Slider {...this.getSliderParams('popularSlides')}>
+                    {this.state.popularSlides}
+                </Slider>
+                {/*<Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>*/}
+                  {/*{this.state.popularSlides}*/}
+                {/*</Swiper>*/}
                 <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
                     New
                 </div>
-                <Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>
-                  {this.state.newSlides}
-                </Swiper>
+                <Slider {...this.getSliderParams('newSlides')}>
+                    {this.state.newSlides}
+                </Slider>
+                {/*<Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>*/}
+                  {/*{this.state.newSlides}*/}
+                {/*</Swiper>*/}
               </Col>
             </Row>
           </Grid>
