@@ -28,20 +28,24 @@ class ResourceSearchView extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if (props.resourceSearchList.previous == null) {
-    // 1st page
-      this.setState({
-        resources: props.resourceSearchList.results,
-        hasMoreItems: Boolean(props.resourceSearchList.next),
-        nextHref: props.resourceSearchList.next})
-    } else {
-    // add to list
-      var newlist = [...this.state.resources, ...props.resourceSearchList.results]
+    if (props.resourceSearchList) {
+      if (props.resourceSearchList.previous == null) {
+        // 1st page
+        this.setState({
+          resources: props.resourceSearchList.results,
+          hasMoreItems: Boolean(props.resourceSearchList.next),
+          nextHref: props.resourceSearchList.next
+        })
+      } else {
+        // add to list
+        var newlist = [...this.state.resources, ...props.resourceSearchList.results]
 
-      this.setState({
-        resources: newlist,
-        hasMoreItems: Boolean(props.resourceSearchList.next),
-        nextHref: props.resourcesSearchList.next})
+        this.setState({
+          resources: newlist,
+          hasMoreItems: Boolean(props.resourceSearchList.next),
+          nextHref: props.resourcesSearchList.next
+        })
+      }
     }
   }
 
@@ -59,9 +63,9 @@ class ResourceSearchView extends React.Component {
     var items = []
     this.state.resources.map((resource, i) => {
       items.push(
-        <ResourceThumbnail
-          key={resource.uuid}
-          resource={resource} />
+        <div key={resource.uuid} style={{float: 'left'}}>
+          <ResourceThumbnail resource={resource} />
+        </div>
       )
     })
 
