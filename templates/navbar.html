@@ -106,7 +106,7 @@
 {#                    {% render_bundle 'profile' %}#}
                     {% if user.is_authenticated %}
                         <li data-reactroot="" class="nav-item">
-                            <a class="settings" href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.first_name}}</a>
+                            <a class="settings" href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>
                         </li>
                     {% else %}
                         <li data-reactroot="" class="nav-item">
