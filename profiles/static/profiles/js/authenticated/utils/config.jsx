@@ -1,5 +1,4 @@
-// export const BASE_URL = '/resources/'
-export const BASE_URL = '/'
+export const BASE_URL = '/profile'
 export const API_PROFILE_PREFIX = '/api/v1/profiles/'
 
 // config should use named export as there can be different exports,

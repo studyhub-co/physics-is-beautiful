@@ -289,3 +289,49 @@ div.pdf-ico {
     color: #000 !important;
 }
 
+/* tabs */
+/* common with classroom, need to move to common.css */
+
+.profile .tabs {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 2rem 0 2rem;
+    font-weight: lighter;
+}
+
+.profile .tab-link{
+    font-size: 16px;
+    font-weight: lighter !important;
+    outline:0;
+}
+
+.profile .tabs .tab-link {
+    padding: 0 3rem;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    height: 40px;
+    line-height: 41px;
+    top: 3px;
+    left: -1px;
+    border-bottom: solid #d8d8d8;
+    color: rgb(216, 216, 216);
+    transition: color 500ms, border-bottom 500ms;
+}
+
+.profile .tabs .tab-link:hover {
+    border-bottom: solid #1caff6;
+    color: #1caff6;
+}
+
+.profile .tabs .tab-link-active {
+    border-bottom: 3px solid #1caff6;
+    color: #1caff6;
+}
+
+.profile .tabs .tab-links {
+    border-bottom: solid #d8d8d8;
+}
+
+/* tabs end */
