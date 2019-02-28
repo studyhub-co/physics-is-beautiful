@@ -103,8 +103,17 @@
                     </li>
                     {#                <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Blog</a></li>#}
                 </ul>
-                <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">>
-                    {% render_bundle 'profile' %}
+                <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">
+{#                    {% render_bundle 'profile' %}#}
+                    {% if user.is_authenticated %}
+                        <li data-reactroot="" class="nav-item">
+                            <a class="settings" href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>
+                        </li>
+                    {% else %}
+                        <li data-reactroot="" class="nav-item">
+                            {% render_bundle 'profile_anonymous' %}
+                        </li>
+                    {% endif %}
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

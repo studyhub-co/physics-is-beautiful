@@ -1,9 +1,10 @@
 {% extends "navbar.html" %}
-
+{% load render_bundle from webpack_loader %}
 {% load static %}
 
 {% block extrahead %}
-<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> {#TODO move to navbar#}
+<link rel="stylesheet" type="text/css" href="{% static 'profiles/style.css' %}" />
 {% endblock %}
 
 {% block body_content %}
@@ -14,5 +15,8 @@
     <div class='curriculum-title'>{{ object.user.display_name }}</div>
     <div>Username: {{ object.user.username }}</div>
     Registration date: {{ object.created_on }}
+</div>
+<div id="react-app" class="profiles">
+    {% render_bundle 'profile' %}
 </div>
 {% endblock %}
