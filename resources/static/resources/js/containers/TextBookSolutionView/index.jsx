@@ -181,7 +181,7 @@ class TextBookSolutionView extends React.Component {
               history.push(BASE_URL +
                 slugify(resourceTitle) + '/problems/' +
                 slugify(problemTitle) + '/solutions/' +
-                slugify(this.props.problem.solutions[x + 1].title.replace('.pdf', '')) + '/' + this.props.problem.solutions[x + 1].uuid
+                slugify(this.props.problem.solutions[x + 1].title) + '/' + this.props.problem.solutions[x + 1].uuid + '/'
               )
             }
           } else {
@@ -191,7 +191,7 @@ class TextBookSolutionView extends React.Component {
               history.push(BASE_URL +
                 slugify(resourceTitle) + '/problems/' +
                 slugify(problemTitle) + '/solutions/' +
-                slugify(this.props.problem.solutions[x - 1].title.replace('.pdf', '')) + '/' + this.props.problem.solutions[x - 1].uuid
+                slugify(this.props.problem.solutions[x - 1].title) + '/' + this.props.problem.solutions[x - 1].uuid + '/'
               )
 
             //   history.push(BASE_URL +
@@ -338,7 +338,7 @@ class TextBookSolutionView extends React.Component {
       var problemTitle = this.props.problem.title
 
       problemUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +
-        slugify(problemTitle) + '/' + this.props.problem.uuid
+        slugify(problemTitle) + '/' + this.props.problem.uuid + '/'
     }
 
     // history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid'])

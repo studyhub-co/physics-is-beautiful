@@ -2,7 +2,9 @@ import os
 
 from django.db import models
 from django.dispatch import receiver
-from django.utils.text import slugify
+# from django.utils.text import slugify
+from slugify import Slugify
+
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -19,6 +21,9 @@ from .validators import validate_pdf_extension
 # from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+slugify = Slugify()
+slugify.safe_chars = '.'
+slugify.to_lower = True
 
 # class Resource(ModeratedModel):
 class Resource(models.Model):
@@ -51,7 +56,9 @@ class Resource(models.Model):
     def get_frontend_url(self):
         # return '/resources/{}/{}/'.format(slugify(self.title), self.uuid)
         try:
-            return '/resources/{}/{}/'.format(slugify(self.metadata.data['volumeInfo']['title']), self.uuid)
+            return '/resources/{}/{}/'.\
+                format(slugify(self.metadata.data['volumeInfo']['title'])
+                       , self.uuid)
         except (KeyError, ResourceMetaData.DoesNotExist):
             return '/resources/{}/{}/'.format('unknown-resource', self.uuid)
 
