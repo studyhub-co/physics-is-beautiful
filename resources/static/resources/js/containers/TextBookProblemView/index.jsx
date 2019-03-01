@@ -166,7 +166,7 @@ class TextBookProblemView extends React.Component {
       history.push(BASE_URL +
         slugify(resourceTitle) + '/problems/' +
         slugify(problemTitle) + '/solutions/' +
-        slugify(solution.title.replace('.pdf', '')) + '/' + solution.uuid
+        slugify(solution.title) + '/' + solution.uuid + '/'
       )
     }
   }
@@ -228,7 +228,7 @@ class TextBookProblemView extends React.Component {
 
     if (this.props.resource) {
       var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
-      var resourceUrl = BASE_URL + slugify(resourceTitle) + '/' + this.props.resource.uuid
+      var resourceUrl = BASE_URL + slugify(resourceTitle) + '/' + this.props.resource.uuid + '/'
       //history.push(BASE_URL + this.props.match.params['resource_uuid'])
     }
 
