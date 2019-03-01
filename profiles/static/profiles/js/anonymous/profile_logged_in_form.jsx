@@ -5,6 +5,8 @@ import { Modal, Popover, OverlayTrigger, Button, OverlayMixin, FormGroup,
 
 import { getAxios, API_PREFIX } from './utils'
 
+// This code is deprecated
+
 function ChangePicturePopover (props) {
   return (
     <div

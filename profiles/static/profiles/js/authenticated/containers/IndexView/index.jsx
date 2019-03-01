@@ -33,7 +33,7 @@ class IndexView extends React.Component {
     var profileNotificationsUrl = '/:id/notifications/'
 
     return (
-      <Sheet>
+      <Sheet type={'problem'}>
         <Tabs name='profileTab'
           className='tabs'
           handleSelect={
@@ -50,7 +50,7 @@ class IndexView extends React.Component {
           </div>
           <div className='content'>
             <TabContent for='profile'>
-              <ProfileTabView />
+              <ProfileTabView profileId={this.props.match.params.id}/>
             </TabContent>
             <TabContent for='settings'>
               <Route exact path={profileSettingsUrl} component={SettingsTabView} />
@@ -70,6 +70,9 @@ IndexView.propTypes = {
   tabActions: PropTypes.shape({
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
+  profileActions: PropTypes.shape({
+    fetchProfile: PropTypes.func.isRequired,
+  }).isRequired,
   // data
   tab: PropTypes.string,
   dispatch: PropTypes.func.isRequired
@@ -78,9 +81,7 @@ IndexView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     tab: state.tabs.profileTab,
-    // popularResourcesList: state.resources.popularResourcesList,
-    // recentResourcesList: state.resources.recentResourcesList,
-    // newResourcesList: state.resources.newResourcesList
+    profile: state.profile.profile
   }
 }
 
@@ -88,7 +89,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     // profileActions: bindActionCreators(profileCreators, dispatch)
-    tabActions: bindActionCreators(tabsCreators, dispatch)
+    tabActions: bindActionCreators(tabsCreators, dispatch),
+    profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 
