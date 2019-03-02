@@ -12,7 +12,7 @@ from .serializers import ProfileSerializer, PublicProfileSerializer
 
 class ProfileViewSet(mixins.RetrieveModelMixin,
                      GenericViewSet):
-    lookup_field = 'id'
+    lookup_field = 'user__id'
     queryset = Profile.objects.filter(user__is_active=True)
     serializer_class = PublicProfileSerializer
 
