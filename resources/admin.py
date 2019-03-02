@@ -2,13 +2,19 @@ from django.contrib import admin
 
 # from moderation.admin import ModerationAdmin
 
-from .models import Resource
+from .models import Resource, ResourceMetaData
+
+
+class ResourceMetaDataInline(admin.TabularInline):
+    model = ResourceMetaData
+    can_delete = False
 
 
 # class ResourceAdmin(ModerationAdmin):
 class ResourceAdmin(admin.ModelAdmin):
     # visibility_column = 'visible_moderator'
     list_select_related = ('owner__user', )
+    inlines = [ResourceMetaDataInline]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if 'queryset' in kwargs:

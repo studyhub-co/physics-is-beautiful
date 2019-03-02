@@ -50,7 +50,6 @@ export default function resourcesReducer (state = initialState, action) {
         resourceSearchList: action.payload.resourceSearchList
       })
     case RESOURCE_RESET_SEARCH:
-      console.log('reducer');
       return Object.assign({}, state, {
         resourceSearchList: null
       })

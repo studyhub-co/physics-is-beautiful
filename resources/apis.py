@@ -243,7 +243,7 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
         .prefetch_related('sections__problems__solutions__pdf')
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
-    search_fields = ['title', ]
+    # search_fields = ['title', ] # title is in metadata
     casting_search_fields = ['metadata__data', ]
 
     @action(methods=['POST'],
