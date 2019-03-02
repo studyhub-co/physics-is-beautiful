@@ -73,11 +73,11 @@ html, body {
     position: relative;
     width: 80%;
     margin-top: 20px;
-    border-radius: 15px;
+    border-radius: 2px;
     padding: 30px 60px;
     height: 80%;
     background-color: white;
-    box-shadow: 0 0 10px #d8d8d8;
+    box-shadow: 0 0 2px #d8d8d8;
     margin-bottom: 20px;
     height: auto;
 }
@@ -328,8 +328,9 @@ img.grayed-out-img {
     display: inline-block;
     width: 150px;
     color: #666666;
-    box-shadow: 0px 0px 10px #BBB;
+    box-shadow: 0px 0px 2px #BBB;
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
+    background: #eee;
 }
 .curriculum .col-md-1:hover {
     color: #1caff6;
