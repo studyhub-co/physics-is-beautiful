@@ -16,7 +16,7 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
 
   onTitleClick (resourceUuid) {
     var title = this.props.resource.metadata.data.volumeInfo.title
-    history.push(BASE_URL + slugify(title) + '/' + this.props.resource.uuid)
+    history.push(BASE_URL + slugify(title) + '/' + this.props.resource.uuid + '/')
   }
   render () {
     return (

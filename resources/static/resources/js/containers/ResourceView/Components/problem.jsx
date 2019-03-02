@@ -22,7 +22,8 @@ let ProblemClass = class Problem extends React.Component {
       var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
       var problemTitle = this.props.problem.title
 
-      problemViewUrl = BASE_URL + slugify(resourceTitle) + '/problems/' + slugify(problemTitle) + '/' + this.props.problem.uuid
+      problemViewUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +
+        slugify(problemTitle) + '/' + this.props.problem.uuid + '/'
     }
 
     return (

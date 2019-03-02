@@ -43,7 +43,7 @@ class ResourceSearchView extends React.Component {
         this.setState({
           resources: newlist,
           hasMoreItems: Boolean(props.resourceSearchList.next),
-          nextHref: props.resourcesSearchList.next
+          nextHref: props.resourceSearchList.next
         })
       }
     }
