@@ -39,3 +39,30 @@ export function fetchProfile (id) {
       })
   }
 }
+
+// export function receiveProfile (profile) {
+//   return {
+//     type: PROFILE_RECEIVE_PROFILE,
+//     payload: {
+//       profile
+//     }
+//   }
+// }
+
+export function updateProfile (profileJson) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_PROFILE_PREFIX + profileJson.id + '/', profileJson)
+      .then(checkHttpStatus)
+      .then((response) => {
+        // dispatch(receiveProfile(response.data))
+      })
+  }
+}
+
+export function updateReloadProfile (profileJson) {
+  return (dispatch, state) => {
+    return dispatch(updateProfile(profileJson)).then(() => {
+      dispatch(fetchProfile(profileJson.id))
+    })
+  }
+}
