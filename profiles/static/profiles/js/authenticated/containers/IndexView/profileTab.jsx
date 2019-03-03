@@ -12,17 +12,32 @@ import * as tabsCreators from '../../actions/tab'
 import * as profileCreators from '../../actions/profile'
 
 import ChangePicturePopover from '../../components/ChangePicturePopover'
-import { API_PREFIX, getAxios } from '../../../anonymous/utils'
+import { EditableExternalEventLabel } from '../../utils/editableLabel'
 
 class ProfileTabView extends React.Component {
   constructor (props, context) {
     super(props, context)
 
+    // TODO refactor this
+    // editFirstNameClick => editClick['FirstName']
+    // onTitleChanged => editClick['FirstName']
+    // this.state.firstNameEditMode => this.state.EditModes['firstName']
+    // etc...
+
     this.onChangeAvatarClick = this.onChangeAvatarClick.bind(this)
     this.selectAvatar = this.selectAvatar.bind(this)
+    this.onFirstNameChanged = this.onFirstNameChanged.bind(this)
+    this.onLastNameChanged = this.onLastNameChanged.bind(this)
+    this.onDisplayNameChanged = this.onDisplayNameChanged .bind(this)
+    this.editFirstNameClick = this.editFirstNameClick.bind(this)
+    this.editLastNameClick = this.editLastNameClick.bind(this)
+    this.editDisplayNameClick = this.editDisplayNameClick.bind(this)
 
     this.state = {
-      showChangeImagePanel: false
+      showChangeImagePanel: false,
+      firstNameEditMode: false,
+      lastNameEditMode: false,
+      displayNameEditMode: false
     }
   }
 
@@ -34,18 +49,46 @@ class ProfileTabView extends React.Component {
   }
 
   selectAvatar (type) {
-    // getAxios().patch(API_PREFIX + 'me', {selected_avatar: type}).then((response) => {
-    //   // close overlay + reeload profile
-    //   // this.setState({ showChangeImagePanel: false })
-    //   this.props.profileToState(response.data)
-    // })
     this.setState({ showChangeImagePanel: false })
 
-    // if (type === this.props.profile) {
-    //   return
-    // }
+    if (type === this.props.profile.selected_avatar) {
+      return
+    }
 
     var profile = {id: this.props.profile.id, selected_avatar: type}
+    this.props.profileActions.updateReloadProfile(profile)
+  }
+
+  onFirstNameChanged (name) {
+    this.setState({firstNameEditMode: false})
+
+    if (name === this.props.profile.first_name) {
+      return
+    }
+
+    var profile = {id: this.props.profile.id, first_name: name}
+    this.props.profileActions.updateReloadProfile(profile)
+  }
+
+  onLastNameChanged (name) {
+    this.setState({lastNameEditMode: false})
+
+    if (name === this.props.profile.last_name) {
+      return
+    }
+
+    var profile = {id: this.props.profile.id, last_name: name}
+    this.props.profileActions.updateReloadProfile(profile)
+  }
+
+  onDisplayNameChanged (name) {
+    this.setState({displayNameEditMode: false})
+
+    if (name === this.props.profile.display_name) {
+      return
+    }
+
+    var profile = {id: this.props.profile.id, display_name: name}
     this.props.profileActions.updateReloadProfile(profile)
   }
 
@@ -53,20 +96,25 @@ class ProfileTabView extends React.Component {
     this.setState({ showChangeImagePanel: !this.state.showChangeImagePanel })
   }
 
-  render () {
-    // var baseUrl =  this.props.match.url.replace(/\/$/, '')
-    // var studentClassroomUrl = baseUrl + '/:uuid/'
-    //
-    // var joinUrl = baseUrl + '/new/join'
-    //
-    // if (this.props.match.params && this.props.match.params.joinCode) {
-    //   var joinCode = this.props.match.params.joinCode
-    //   // join to classroom and redirect to classroom student view
-    //   if (joinCode) {
-    //     this.props.classroomActions.classroomJoinClassroom(joinCode)
-    //   }
-    // }
+  editFirstNameClick () {
+    this.setState({
+      firstNameEditMode: true
+    })
+  }
 
+  editLastNameClick () {
+    this.setState({
+      lastNameEditMode: true
+    })
+  }
+
+  editDisplayNameClick () {
+    this.setState({
+      displayNameEditMode: true
+    })
+  }
+
+  render () {
     return <div>
       {this.props.profile
         ? <Grid fluid>
@@ -91,7 +139,7 @@ class ProfileTabView extends React.Component {
                   {/*</div>*/}
                   <div
                     title={'Change avatar'}
-                    className={'base-circle-edit bottom-circle-edit right-circle-edit'}
+                    className={'base-circle-edit bottom-circle-edit'}
                     onClick={this.onChangeAvatarClick}
                     ref={(node) => { this._changeImageButton = node }}
                   >
@@ -120,7 +168,63 @@ class ProfileTabView extends React.Component {
             <Col sm={5} md={5}>
               <Row>
                 <Col sm={12} md={12}>
-                  <h2>{this.props.profile.display_name}</h2>
+                  {!this.props.profile.is_current_user_profile
+                    ? <h2>{this.props.profile.display_name}</h2>
+                    : <h2><EditableExternalEventLabel
+                      value={this.props.profile.display_name}
+                      onChange={this.onDisplayNameChanged}
+                      editMode={this.state.displayNameEditMode}
+                    />
+                    <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                      <span className={'base-circle-edit'}>
+                        <Glyphicon
+                          glyph={'pencil'}
+                          onClick={this.editDisplayNameClick}
+                          style={{fontSize: '2rem'}} />
+                      </span>
+                    </span>
+                    </h2> }
+                </Col>
+              </Row>
+              <Row style={{fontSize: '2rem'}}>
+                <Col sm={6} md={6} xs={12}>
+                  {!this.props.profile.is_current_user_profile
+                    ? null
+                    : <span>
+                      <EditableExternalEventLabel
+                        value={this.props.profile.first_name}
+                        onChange={this.onFirstNameChanged}
+                        editMode={this.state.firstNameEditMode}
+                      />
+                      <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                        <span className={'base-circle-edit'}>
+                          <Glyphicon
+                            glyph={'pencil'}
+                            onClick={this.editFirstNameClick}
+                            style={{fontSize: '2rem', top: '1rem'}} />
+                        </span>
+                      </span>
+                    </span>
+                  }
+                </Col>
+                <Col sm={6} md={6} xs={12}>
+                  {!this.props.profile.is_current_user_profile
+                    ? null
+                    : <span>
+                      <EditableExternalEventLabel
+                        value={this.props.profile.last_name}
+                        onChange={this.onLastNameChanged}
+                        editMode={this.state.lastNameEditMode}
+                      />
+                      <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                        <span className={'base-circle-edit'}>
+                          <Glyphicon
+                            glyph={'pencil'}
+                            onClick={this.editLastNameClick}
+                            style={{fontSize: '2rem', top: '1rem'}} />
+                        </span>
+                      </span>
+                    </span> }
                 </Col>
               </Row>
             </Col>
