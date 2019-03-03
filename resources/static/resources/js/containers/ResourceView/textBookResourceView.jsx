@@ -64,7 +64,7 @@ class TextBookResourceView extends React.Component {
 
       var meta = document.createElement('meta')
       meta.name = 'description'
-      meta.content = authorsStr + ' ' + title + ' textbook solutions manual or PDF solutions for all problems and chapters.'
+      meta.content = authorsStr + ' ' + title + ' textbook solutions or solutions manual for all problems and chapters.'
       document.getElementsByTagName('head')[0].appendChild(meta)
 
       // var resourceOwner = ''
@@ -75,6 +75,11 @@ class TextBookResourceView extends React.Component {
       meta = document.createElement('meta')
       meta.name = 'author'
       meta.content = authorsStr
+      document.getElementsByTagName('head')[0].appendChild(meta)
+
+      meta = document.createElement('meta')
+      meta.name = 'date'
+      meta.content = this.props.resource.updated_on ? this.props.resource.updated_on : this.props.resource.created_on
       document.getElementsByTagName('head')[0].appendChild(meta)
 
       this.titleSet = true
