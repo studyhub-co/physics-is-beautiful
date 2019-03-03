@@ -108,7 +108,7 @@ class TextBookProblemView extends React.Component {
       // Principles of Quantum Mechanics 1.11 Solutions - Physics is Beautiful
       document.title = authorsStr + ' ' + resourceTitle + ' ' + this.props.problem.title + ' Solution - Physics is Beautiful'
       // Problem 1.11 PDF solutions from Principles of Quantum Mechanics by R. Shankar
-      description = 'Problem ' + this.props.problem.title + 'PDF solutions from ' + resourceTitle + ' by ' + authorsStr
+      description = 'Problem ' + this.props.problem.title + ' PDF solution from ' + resourceTitle + ' by ' + authorsStr
 
       var meta = document.createElement('meta')
       meta.name = 'description'
