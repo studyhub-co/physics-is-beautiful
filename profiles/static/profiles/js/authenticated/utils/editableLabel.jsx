@@ -175,4 +175,3 @@ export class EditableExternalEventLabel extends EditableLabel {
     }
   }
 }
-
