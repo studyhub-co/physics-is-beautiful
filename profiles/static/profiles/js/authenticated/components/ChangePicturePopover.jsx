@@ -61,7 +61,8 @@ export default class ChangePicturePopover extends React.Component {
               <Image
                 responsive
                 rounded
-                src={this.props.gravatarUrl}/>
+                src={this.props.gravatarUrl}
+              />
             </Col>
             <Col sm={7} md={7} className={'vcenter'}>
               <h4>Gravatar</h4>

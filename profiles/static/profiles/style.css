@@ -165,7 +165,7 @@
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     cursor: pointer;
-    z-index: 999;
+    /*z-index: 999;*/
 }
 
 .profile .right-circle-edit {
