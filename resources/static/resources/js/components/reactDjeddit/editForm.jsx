@@ -3,6 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactMarkdown from 'react-markdown'
 
+// import ReactMde from 'react-mde'
+
 import { renderMathJs } from './utils'
 
 export class EditForm extends React.Component {
@@ -41,6 +43,10 @@ export class EditForm extends React.Component {
     this.setState({content: this.props.parentPost.content})
   }
 
+  componentWillUnmount () {
+    DjangoPagedown.destroyEditor(this.props.parentPost.uid + 'id_edit_content')
+  }
+
   componentWillReceiveProps (nextProps) {
     // refresh with reload
     this.setState({content: nextProps.parentPost.content})
@@ -59,6 +65,13 @@ export class EditForm extends React.Component {
               </h4>
               : null }
           </div>
+          {/*<ReactMde*/}
+              {/*onChange={this.handleValueChange}*/}
+              {/*value={this.state.value}*/}
+              {/*generateMarkdownPreview={markdown =>*/}
+                {/*Promise.resolve(this.converter.makeHtml(markdown))*/}
+              {/*}*/}
+           {/*/>*/}
           <br />
           <form method='post' acceptCharset='utf-8' onSubmit={this.handleSubmit}>
             {/*<textarea value={this.state.content} onChange={this.handleChangeContent} />*/}

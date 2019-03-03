@@ -8,11 +8,14 @@ from rest_framework.exceptions import ParseError
 
 from .models import Profile
 from .serializers import ProfileSerializer, PublicProfileSerializer
+from .permissions import EditDeleteByOwnerOrStaff
 
 
 class ProfileViewSet(mixins.RetrieveModelMixin,
+                     mixins.UpdateModelMixin,
                      GenericViewSet):
     lookup_field = 'user__id'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, EditDeleteByOwnerOrStaff)  # users can upload solutions
     queryset = Profile.objects.filter(user__is_active=True)
     serializer_class = PublicProfileSerializer
 

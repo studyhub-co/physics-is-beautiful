@@ -39,6 +39,10 @@ export class ReplyForm extends React.Component {
     DjangoPagedown.init(this.props.parentPost.uid + 'id_content')
   }
 
+  componentWillUnmount () {
+    DjangoPagedown.destroyEditor(this.props.parentPost.uid + 'id_edit_content')
+  }
+
   render () {
     return (
       <div className='row'>

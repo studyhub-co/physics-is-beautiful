@@ -154,6 +154,28 @@
 
 /* common with editor, need to create common.css */
 
+.profile .base-circle-edit {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    text-align: center;
+    vertical-align: middle;
+    color: rgb(8, 209, 255);
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.profile .right-circle-edit {
+   right: 1rem;
+}
+
+.profile .bottom-circle-edit {
+   bottom: 1rem;
+}
+
 .profile .drag-handle {
     background-image: url(img/drag-handle.png);
     background-repeat: no-repeat;
