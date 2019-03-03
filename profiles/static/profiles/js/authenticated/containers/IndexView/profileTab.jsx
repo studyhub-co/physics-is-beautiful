@@ -34,16 +34,23 @@ class ProfileTabView extends React.Component {
   }
 
   selectAvatar (type) {
-    console.log(type);
     // getAxios().patch(API_PREFIX + 'me', {selected_avatar: type}).then((response) => {
     //   // close overlay + reeload profile
     //   // this.setState({ showChangeImagePanel: false })
     //   this.props.profileToState(response.data)
     // })
+    this.setState({ showChangeImagePanel: false })
+
+    // if (type === this.props.profile) {
+    //   return
+    // }
+
+    var profile = {id: this.props.profile.id, selected_avatar: type}
+    this.props.profileActions.updateReloadProfile(profile)
   }
 
   onChangeAvatarClick () {
-    this.setState({ showChangeImagePanel: true })
+    this.setState({ showChangeImagePanel: !this.state.showChangeImagePanel })
   }
 
   render () {
@@ -71,30 +78,44 @@ class ProfileTabView extends React.Component {
                   src={this.props.profile.avatar_url}
                   rounded /></FormGroup>
                 : null }
-              <div
-                ref={(node) => { this._changeImageButton = node }}
-                style={{
-                  fontSize: '1.3rem',
-                  textAlign: 'center',
-                  cursor: 'pointer'}}
-                onClick={this.onChangeAvatarClick}>
-                Change picture
-              </div>
-              <Overlay
-                rootClose={Boolean(true)}
-                show={this.state.showChangeImagePanel}
-                onHide={() => this.setState({ showChangeImagePanel: false })}
-                placement='bottom'
-                container={this._changeImageButton}
-                // target={() => ReactDOM.findDOMNode(this.refs.target)}
-              >
-                <ChangePicturePopover
-                  googleAvatarUrl={this.props.profile.google_avatar_url}
-                  selectedAvatar={this.props.profile.avatar_url}
-                  gravatarUrl={this.props.profile.gravatar_url}
-                  userAvatar={this.props.profile.user_avatar}
-                  selectAvatar={this.selectAvatar} />
-              </Overlay>
+              {this.props.profile.is_current_user_profile
+                ? <div>
+                  {/*<div*/}
+                    {/*ref={(node) => { this._changeImageButton = node }}*/}
+                    {/*style={{*/}
+                      {/*fontSize: '1.3rem',*/}
+                      {/*textAlign: 'center',*/}
+                      {/*cursor: 'pointer'}}*/}
+                    {/*onClick={this.onChangeAvatarClick}>*/}
+                    {/*Change picture*/}
+                  {/*</div>*/}
+                  <div
+                    title={'Change avatar'}
+                    className={'base-circle-edit bottom-circle-edit right-circle-edit'}
+                    onClick={this.onChangeAvatarClick}
+                    ref={(node) => { this._changeImageButton = node }}
+                  >
+                    <Glyphicon
+                      glyph={'pencil'}
+                      style={{fontSize: '2rem', top: '1rem'}} />
+                  </div>
+                  <Overlay
+                    rootClose={Boolean(true)}
+                    show={this.state.showChangeImagePanel}
+                    onHide={() => this.setState({ showChangeImagePanel: false })}
+                    placement='bottom'
+                    container={this._changeImageButton}
+                    // target={() => ReactDOM.findDOMNode(this.refs.target)}
+                  >
+                    <ChangePicturePopover
+                      googleAvatarUrl={this.props.profile.google_avatar_url}
+                      selectedAvatar={this.props.profile.avatar_url}
+                      gravatarUrl={this.props.profile.gravatar_url}
+                      userAvatar={this.props.profile.user_avatar}
+                      selectAvatar={this.selectAvatar} />
+                  </Overlay>
+                </div>
+                : null }
             </Col>
             <Col sm={5} md={5}>
               <Row>
@@ -132,7 +153,8 @@ ProfileTabView.propTypes = {
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
   profileActions: PropTypes.shape({
-    fetchProfile: PropTypes.func.isRequired
+    fetchProfile: PropTypes.func.isRequired,
+    updateReloadProfile: PropTypes.func.isRequired
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   profile: PropTypes.object,
