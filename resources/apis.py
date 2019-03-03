@@ -24,7 +24,7 @@ from djeddit.models import Topic, Thread, Post
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
 
 
-from editor.apis_public import SearchMixin
+from editor.apis_public import get_search_mixin
 
 from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
 from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
@@ -227,7 +227,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
 
 class ResourceViewSet(SeparateListObjectSerializerMixin,
                       ModelViewSet,
-                      SearchMixin):
+                      get_search_mixin()):
     permission_classes = (IsStaffOrReadOnly, )
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer

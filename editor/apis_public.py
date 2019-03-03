@@ -38,6 +38,7 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
 
 # TODO move to lib app
 class SearchMixin:
+
     @action(methods=['GET'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def search(self, request):
 
@@ -69,6 +70,14 @@ class SearchMixin:
         serializer = self.get_serializer(qs, many=True)
 
         return Response(serializer.data)
+
+
+def get_search_mixin(permission_classes=[]):
+    def get_search_func():
+        return action(methods=['GET'], detail=False, permission_classes=permission_classes)(SearchMixin.search)
+
+    SearchMixin.search = get_search_func()
+    return SearchMixin
 
 
 class CurriculumViewSet(mixins.UpdateModelMixin,
