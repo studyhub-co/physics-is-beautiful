@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Grid, Row, Col, Button, Glyphicon, Overlay, Image, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 import { RingLoader } from 'react-spinners'
+import Moment from 'react-moment'
 
 import * as tabsCreators from '../../actions/tab'
 import * as profileCreators from '../../actions/profile'
@@ -229,7 +230,14 @@ class ProfileTabView extends React.Component {
               </Row>
             </Col>
             <Col sm={4} md={4}>
-              contact info
+              <Row>
+                <Col sm={12} md={12}>
+                  <Glyphicon
+                    glyph={'user'} /> Member for <Moment toNow>
+                    {this.props.profile.created_on}
+                  </Moment>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Grid>
