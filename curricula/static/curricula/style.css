@@ -701,24 +701,28 @@ img.grayed-out-img {
 .homepage-sheet h1 {
     font-size: 3em;
     margin: 0;
+    font-family: "Museosansrounded", sans-serif;
 }
 
 .homepage-shadow-container {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
     padding: 10px;
 }
 
 .homepage-demo {
     width: 100%;
-    min-height: 500px;
+    min-height: 600px;
     border: none;
 }
 
 .homepage-featured-image-section  {
-    background-image: url('images/homepage-background-image.jpg');
+    background-image: url('images/homepage-background-image.png');
     padding: 2em;
-    color: lightgray;
+    color: black;
+}
+
+.homepage-featured-image-section  .modal-content {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
 }
 
 .homepage-section-2 {
@@ -733,4 +737,16 @@ img.grayed-out-img {
 .homepage-wrapper {
     max-width: 800px;
     margin: 0 auto;
+}
+
+#getStartedButton {
+    margin: 4em auto 5px auto;
+    display: table;
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 1rem 4rem 1rem 4rem;
+    border: white;
+    box-shadow: 0 2px 2px rgba(0,0,0,.5);
 }
