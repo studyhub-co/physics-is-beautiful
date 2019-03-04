@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'django_gravatar',
     'vote',
     'reversion',
+    'notifications',
     # pib apps
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
