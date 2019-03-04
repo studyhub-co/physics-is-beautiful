@@ -1,4 +1,5 @@
 // this code is clone of editor/static/editor/js/containers/browseCurricula/searchRow.jsx
+// FIXME move both to commeon utils js lib
 
 import React from 'react'
 

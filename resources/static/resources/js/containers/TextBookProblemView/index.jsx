@@ -6,10 +6,13 @@ import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Grid, Row, Col, Table, Button, Glyphicon, Modal, Dropdown, MenuItem } from 'react-bootstrap'
 import AdSense from 'react-adsense'
+
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
+import { slugify } from '../../utils/urls'
+import { Thread } from '../../components/reactDjeddit/thread'
 
 import {
   handleFileChange,
@@ -19,6 +22,7 @@ import {
 import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
+import * as djedditCreators from '../../actions/djeddit'
 
 class HorizontalOptionToggle extends React.Component {
   constructor (props, context) {
@@ -62,14 +66,26 @@ class TextBookProblemView extends React.Component {
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchProblem(this.props.match.params['uuid'])
     }
-    if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
-      this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
-    }
+    // if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
+    //   this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
+    // }
     this.props.googleActions.gapiInitialize()
     this.props.profileActions.fetchProfileMe()
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.problem && nextProps.problem) {
+      this.props.resourcesActions.fetchResource(nextProps.problem.resource_uuid)
+    }
+  }
+
   componentDidUpdate (prevProps) {
+    if (prevProps.problem !== this.props.problem) {
+      // reload thread
+      this.props.djedditActions.fetchThread(this.props.problem.thread)
+    }
+
+    // Title / tags
     if (this.props.resource && this.props.problem &&
       (!this.titleSet || prevProps.problem.uuid !== this.props.problem.uuid)) {
       var resourceTitle
@@ -92,7 +108,7 @@ class TextBookProblemView extends React.Component {
       // Principles of Quantum Mechanics 1.11 Solutions - Physics is Beautiful
       document.title = authorsStr + ' ' + resourceTitle + ' ' + this.props.problem.title + ' Solution - Physics is Beautiful'
       // Problem 1.11 PDF solutions from Principles of Quantum Mechanics by R. Shankar
-      description = 'Problem ' + this.props.problem.title + 'PDF solutions from ' + resourceTitle + ' by ' + authorsStr
+      description = 'Problem ' + this.props.problem.title + ' PDF solution from ' + resourceTitle + ' by ' + authorsStr
 
       var meta = document.createElement('meta')
       meta.name = 'description'
@@ -118,11 +134,11 @@ class TextBookProblemView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     element = document.getElementsByTagName('meta')['author']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     this.titleSet = false
@@ -138,9 +154,21 @@ class TextBookProblemView extends React.Component {
     }
   }
 
-  onClickSolution (uuid) {
-    if (this.state.solutionEditModeUuid === uuid) { return } // do not redirect while edit mode
-    history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
+  onClickSolution (e, solution) {
+    if (this.state.solutionEditModeUuid === solution.uuid) { return } // do not redirect while edit mode
+    // history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
+
+    if (this.props.resource && this.props.problem) {
+      //path={BASE_URL + ':resource_title([A-Za-z0-9_-]+)/problems/:problem_title([A-Za-z0-9_-]+)/solutions/:solution_title([A-Za-z0-9_-]+)/:uuid'}
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var problemTitle = this.props.problem.title
+
+      history.push(BASE_URL +
+        slugify(resourceTitle) + '/problems/' +
+        slugify(problemTitle) + '/solutions/' +
+        slugify(solution.title) + '/' + solution.uuid + '/'
+      )
+    }
   }
 
   handleClosePostSolutionModal () {
@@ -198,12 +226,18 @@ class TextBookProblemView extends React.Component {
       return false
     }
 
+    if (this.props.resource) {
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var resourceUrl = BASE_URL + slugify(resourceTitle) + '/' + this.props.resource.uuid + '/'
+      //history.push(BASE_URL + this.props.match.params['resource_uuid'])
+    }
+
     return (
       <Sheet>
         <Grid fluid>
           <Row>
             <Col sm={12} md={12}>
-              <a className={'back-button'} onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid']) }} >
+              <a className={'back-button'} onClick={() => { history.push(resourceUrl) }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All problems
               </a>
@@ -317,8 +351,9 @@ class TextBookProblemView extends React.Component {
                             <div
                               className={'title blue-text'}
                               style={{cursor: 'pointer'}}
-                              onClick={() => this.onClickSolution(solution.uuid)}>
+                              onClick={(e) => this.onClickSolution(e, solution)}>
                               <EditableExternalEventLabel
+                                editableLabel={Boolean(false)}
                                 value={solution.title}
                                 onChange={(value) => { this.onChangeSolutionTitle(value, solution) }}
                                 editMode={this.state.solutionEditModeUuid === solution.uuid}
@@ -357,6 +392,19 @@ class TextBookProblemView extends React.Component {
                 </div>
               </Col>
             </Row>
+            <Row>
+              <Col sm={12} md={12}>
+                { this.props.thread
+                  ? <Thread
+                    thread={this.props.thread}
+                    currentProfile={this.props.profile}
+                    onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.problem.thread) }}
+                    onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}
+                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.problem.thread) }}
+                    changePostVote={this.props.djedditActions.changePostVote}
+                  /> : null }
+              </Col>
+            </Row>
           </Grid>
           : null }
       </Sheet>
@@ -372,7 +420,14 @@ TextBookProblemView.propTypes = {
     solutionVoteAndRefreshList: PropTypes.func.isRequired,
     addSolution: PropTypes.func.isRequired,
     updateSolutionReloadProblem: PropTypes.func.isRequired,
-    removeSolutionReloadProblem: PropTypes.func.isRequired,
+    removeSolutionReloadProblem: PropTypes.func.isRequired
+  }),
+  djedditActions: PropTypes.shape({
+    fetchThread: PropTypes.func.isRequired,
+    createPostWithRefreshThread: PropTypes.func.isRequired,
+    changePostVote: PropTypes.func.isRequired,
+    updatePostWithRefreshThread: PropTypes.func.isRequired,
+    deletePostWithRefreshThread: PropTypes.func.isRequired
   }),
   googleActions: PropTypes.shape({
     gapiInitialize: PropTypes.func.isRequired
@@ -383,7 +438,8 @@ TextBookProblemView.propTypes = {
   // data
   problem: PropTypes.object,
   profile: PropTypes.object,
-  resource: PropTypes.object
+  resource: PropTypes.object,
+  thread: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
@@ -391,7 +447,8 @@ const mapStateToProps = (state) => {
     problem: state.resources.problem,
     resource: state.resources.resource,
     gapiInitState: state.google.gapiInitState,
-    profile: state.profile.me
+    profile: state.profile.me,
+    thread: state.djeddit.thread
   }
 }
 
@@ -399,6 +456,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     googleActions: bindActionCreators(googleCreators, dispatch),
+    djedditActions: bindActionCreators(djedditCreators, dispatch),
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
     profileActions: bindActionCreators(profileCreators, dispatch)
   }

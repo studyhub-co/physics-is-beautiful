@@ -1,0 +1,359 @@
+/* common with classroom and resource, need to create common.css */
+
+.profile .blue-title {
+    font-size: 2rem;
+    color: rgb(8, 209, 255);
+    padding-bottom: 2rem;
+}
+
+.profile .textbook-title {
+    font-size: 3rem;
+    color: rgb(8, 209, 255);
+    padding-bottom: 2rem;
+}
+
+.profile .problem-row {
+    color: rgb(38, 161, 255);
+    border: 1px solid white;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.profile .problem-row:hover {
+    border: 1px solid rgba(38, 165, 255, 0.45);
+    border-radius: 7px;
+}
+
+.profile .common-button {
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 4px 12px 4px 12px;
+    margin: 1rem 0 1rem 0;
+}
+
+.profile .pib-link {
+    color: rgb(8, 209, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.profile .disabled-button {
+    background-color: rgb(216, 216, 216);
+    pointer-events: none;
+}
+
+.profile .back-button {
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #d8d8d8;
+    transition: color 300ms;
+}
+
+.profile .back-button:hover {
+    text-decoration: none;
+    color: #1caff6;
+}
+
+.profile .red-text {
+    color: red;
+}
+
+.profile .blue-text {
+    color: rgb(38, 161, 255)
+}
+
+.profile .solution-count {
+    color: rgb(255, 0, 154)
+}
+
+.profile .gray-text {
+    color: #ababab;
+}
+
+.profile .solution-title {
+    color: #1caff6;
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.profile .small-text {
+    font-size: 1.5rem;
+}
+
+.profile .text-align-center {
+    text-align: center;
+}
+
+.profile .curriculum-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: #efefef;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 0 1rem 1rem 0;
+    /*float: left;*/
+    position: relative;
+    text-align: center;
+    /*padding-top: 1rem;*/
+    margin-top: 1rem;
+
+    vertical-align: top;
+
+    /* new values */
+    padding: 0 1rem 0 1rem;
+    max-width: 25rem;
+    min-width: 20rem;
+    width: auto;
+    height: 30rem;
+    /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
+}
+
+/*.profile .curriculum-card div img {*/
+    /*width: 100%;*/
+    /*display: block;*/
+    /*height: 20rem;*/
+/*}*/
+
+.profile .curriculum-card > div > span {
+    width: 100%;
+    display: block;
+    height: 20rem;
+    font-size: 20rem;
+}
+
+.pib-swiper-button {
+    height: 90% !important;
+    top: 10% !important;
+}
+
+.pib-swiper-button::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    left: 0;
+    top: 0;
+    transition: opacity 0.6s;
+    opacity: 0;
+    border-radius: 0.5rem;
+  }
+
+.pib-swiper-button:hover::after {
+    opacity: 1;
+  }
+
+.profile .editable-label:not(.empty) .glyphicon-pencil, .editor .mq-editable-label:not(.empty) .glyphicon-pencil{ display:none; }
+.profile .editable-label:hover .glyphicon-pencil, .editor .mq-editable-label:hover .glyphicon-pencil { display:inline; }
+.profile .editable-label:hover, .editor .mq-editable-label:hover, .editor .mq-editable-label:hover .mq-math-mode { cursor:pointer; }
+
+/* common with editor, need to create common.css */
+
+.profile .base-circle-edit {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    text-align: center;
+    vertical-align: middle;
+    color: rgb(8, 209, 255);
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    cursor: pointer;
+    /*z-index: 999;*/
+}
+
+.profile .right-circle-edit {
+   right: 1rem;
+}
+
+.profile .bottom-circle-edit {
+   bottom: 1rem;
+}
+
+.profile .drag-handle {
+    background-image: url(img/drag-handle.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 2rem;
+    height: 2rem;
+    padding: 0 1rem 0 1rem;
+}
+.profile .drag-handle:hover { cursor: move; }
+.profile .drag-handle {
+    display: inline-block;
+    filter: none;
+}
+
+.profile .drop-target .dock-site { height:60px; }
+/*.unit .drop-target .dock-site, .module .drop-target .dock-site { float:left; width:110px; height:150px; }*/
+/*.unit .drop-target, .module .drop-target { float:left; margin-left:-60px; padding-left:60px;}*/
+/*.editor .unit .btn-add-module, .editor .module .btn-add-lesson {text-align:center;}*/
+
+/* from djeddit css */
+
+.bs-callout {
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fff;
+}
+
+/* profile only css */
+
+.profile .selectable-file {
+    position: relative;
+    cursor: pointer;
+}
+
+.profile .selectable-file input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+div.pdf-ico {
+    width: 56px;
+    height: 56px;
+    background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4Ij4KPHBhdGggc3R5bGU9ImZpbGw6I0UyRTVFNzsiIGQ9Ik0xMjgsMGMtMTcuNiwwLTMyLDE0LjQtMzIsMzJ2NDQ4YzAsMTcuNiwxNC40LDMyLDMyLDMyaDMyMGMxNy42LDAsMzItMTQuNCwzMi0zMlYxMjhMMzUyLDBIMTI4eiIvPgo8cGF0aCBzdHlsZT0iZmlsbDojQjBCN0JEOyIgZD0iTTM4NCwxMjhoOTZMMzUyLDB2OTZDMzUyLDExMy42LDM2Ni40LDEyOCwzODQsMTI4eiIvPgo8cG9seWdvbiBzdHlsZT0iZmlsbDojQ0FEMUQ4OyIgcG9pbnRzPSI0ODAsMjI0IDM4NCwxMjggNDgwLDEyOCAiLz4KPHBhdGggc3R5bGU9ImZpbGw6I0YxNTY0MjsiIGQ9Ik00MTYsNDE2YzAsOC44LTcuMiwxNi0xNiwxNkg0OGMtOC44LDAtMTYtNy4yLTE2LTE2VjI1NmMwLTguOCw3LjItMTYsMTYtMTZoMzUyYzguOCwwLDE2LDcuMiwxNiwxNiAgVjQxNnoiLz4KPGc+Cgk8cGF0aCBzdHlsZT0iZmlsbDojRkZGRkZGOyIgZD0iTTEwMS43NDQsMzAzLjE1MmMwLTQuMjI0LDMuMzI4LTguODMyLDguNjg4LTguODMyaDI5LjU1MmMxNi42NCwwLDMxLjYxNiwxMS4xMzYsMzEuNjE2LDMyLjQ4ICAgYzAsMjAuMjI0LTE0Ljk3NiwzMS40ODgtMzEuNjE2LDMxLjQ4OGgtMjEuMzZ2MTYuODk2YzAsNS42MzItMy41ODQsOC44MTYtOC4xOTIsOC44MTZjLTQuMjI0LDAtOC42ODgtMy4xODQtOC42ODgtOC44MTZWMzAzLjE1MnogICAgTTExOC42MjQsMzEwLjQzMnYzMS44NzJoMjEuMzZjOC41NzYsMCwxNS4zNi03LjU2OCwxNS4zNi0xNS41MDRjMC04Ljk0NC02Ljc4NC0xNi4zNjgtMTUuMzYtMTYuMzY4SDExOC42MjR6Ii8+Cgk8cGF0aCBzdHlsZT0iZmlsbDojRkZGRkZGOyIgZD0iTTE5Ni42NTYsMzg0Yy00LjIyNCwwLTguODMyLTIuMzA0LTguODMyLTcuOTJ2LTcyLjY3MmMwLTQuNTkyLDQuNjA4LTcuOTM2LDguODMyLTcuOTM2aDI5LjI5NiAgIGM1OC40NjQsMCw1Ny4xODQsODguNTI4LDEuMTUyLDg4LjUyOEgxOTYuNjU2eiBNMjA0LjcyLDMxMS4wODhWMzY4LjRoMjEuMjMyYzM0LjU0NCwwLDM2LjA4LTU3LjMxMiwwLTU3LjMxMkgyMDQuNzJ6Ii8+Cgk8cGF0aCBzdHlsZT0iZmlsbDojRkZGRkZGOyIgZD0iTTMwMy44NzIsMzEyLjExMnYyMC4zMzZoMzIuNjI0YzQuNjA4LDAsOS4yMTYsNC42MDgsOS4yMTYsOS4wNzJjMCw0LjIyNC00LjYwOCw3LjY4LTkuMjE2LDcuNjggICBoLTMyLjYyNHYyNi44NjRjMCw0LjQ4LTMuMTg0LDcuOTItNy42NjQsNy45MmMtNS42MzIsMC05LjA3Mi0zLjQ0LTkuMDcyLTcuOTJ2LTcyLjY3MmMwLTQuNTkyLDMuNDU2LTcuOTM2LDkuMDcyLTcuOTM2aDQ0LjkxMiAgIGM1LjYzMiwwLDguOTYsMy4zNDQsOC45Niw3LjkzNmMwLDQuMDk2LTMuMzI4LDguNzA0LTguOTYsOC43MDRoLTM3LjI0OFYzMTIuMTEyeiIvPgo8L2c+CjxwYXRoIHN0eWxlPSJmaWxsOiNDQUQxRDg7IiBkPSJNNDAwLDQzMkg5NnYxNmgzMDRjOC44LDAsMTYtNy4yLDE2LTE2di0xNkM0MTYsNDI0LjgsNDA4LjgsNDMyLDQwMCw0MzJ6Ii8+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.profile .title {
+    font-size: 2rem;
+}
+
+/* fix for solutions edit/delete menu */
+
+.profile .solution-dropdown-menu > div > ul {
+    min-width: auto !important;
+}
+
+.profile .solution-dropdown-menu > div > ul > li > a {
+    padding: 0 1rem !important;
+}
+
+.profile td.solution-dropdown-menu {
+    min-width: 3rem;
+}
+
+/* fix for bootstrp modal (attached to body) */
+
+.blue-text {
+    color: rgb(8, 209, 255)
+}
+
+.selectable-file input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* fix for cutting off dropdown of menu table  */
+
+.table-responsive {
+    overflow: inherit !important;
+}
+
+/* one row fix */
+.pure-radiobutton input[type="radio"] + label {
+    width: 6rem !important;
+}
+
+@media all and (max-width: 770px) { /* Mobile optimization */
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .text-align-center {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .col-sm-12 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .profile .problem-row {
+        font-size: 24px;
+    }
+    .profile .blue-title {
+        font-size: 30px;
+    }
+    .profile .blue-title {
+        font-size: 30px;
+    }
+    .navbar.navbar-default a {
+        margin-left: 15px
+    }
+}
+
+.slick-slide img {
+    display: inline-block !important;
+}
+
+.slick-next:before, .slick-prev:before {
+    color: #000 !important;
+}
+
+/* tabs */
+/* common with classroom, need to move to common.css */
+
+.profile .tabs {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 2rem 0 2rem;
+    font-weight: lighter;
+}
+
+.profile .tab-link{
+    font-size: 16px;
+    font-weight: lighter !important;
+    outline:0;
+}
+
+.profile .tabs .tab-link {
+    padding: 0 3rem;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    height: 40px;
+    line-height: 41px;
+    top: 3px;
+    left: -1px;
+    border-bottom: solid #d8d8d8;
+    color: rgb(216, 216, 216);
+    transition: color 500ms, border-bottom 500ms;
+}
+
+.profile .tabs .tab-link:hover {
+    border-bottom: solid #1caff6;
+    color: #1caff6;
+}
+
+.profile .tabs .tab-link-active {
+    border-bottom: 3px solid #1caff6;
+    color: #1caff6;
+}
+
+.profile .tabs .tab-links {
+    border-bottom: solid #d8d8d8;
+}
+
+/* tabs end */

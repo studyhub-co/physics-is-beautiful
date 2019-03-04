@@ -14,7 +14,7 @@ export function receiveThreadSolution (thread) {
   }
 }
 
-export function fetchThreadSolution (threadId) {
+export function fetchThread (threadId) {
   return (dispatch, state) => {
     return getAxios().get(API_DJEDDIT_PREFIX + 'threads/' + threadId)
       .then(checkHttpStatus)
@@ -46,9 +46,49 @@ export function createPost (post) {
 export function createPostWithRefreshThread (post, threadId) {
   return (dispatch, state) => {
     return dispatch(createPost(post)).then(() => {
-      dispatch(fetchThreadSolution(threadId)).then(() => {
+      dispatch(fetchThread(threadId)).then(() => {
         // todo replace with new post url
         window.scrollTo(0, document.body.scrollHeight)
+      })
+    })
+  }
+}
+
+export function updatePost (post) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_DJEDDIT_PREFIX + 'posts/' + post.uid + '/', post)
+      .catch(checkHttpError)
+      .then((response) => {
+        // dispatch(createResourceSuccess(response.data))
+      })
+  }
+}
+
+export function updatePostWithRefreshThread (post, threadId) {
+  return (dispatch, state) => {
+    return dispatch(updatePost(post)).then(() => {
+      dispatch(fetchThread(threadId)).then(() => {
+        // todo replace with new post url
+      })
+    })
+  }
+}
+
+export function deletePost (post) {
+  return (dispatch, state) => {
+    return getAxios().delete(API_DJEDDIT_PREFIX + 'posts/' + post.uid + '/', post)
+      .catch(checkHttpError)
+      .then((response) => {
+        // dispatch(createResourceSuccess(response.data))
+      })
+  }
+}
+
+export function deletePostWithRefreshThread (post, threadId) {
+  return (dispatch, state) => {
+    return dispatch(deletePost(post)).then(() => {
+      dispatch(fetchThread(threadId)).then(() => {
+        // todo replace with new post url
       })
     })
   }

@@ -2,8 +2,11 @@
 from django.conf import settings
 from django import VERSION as DJANGO_VERSION
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.db import models
 if DJANGO_VERSION[:2] < (1, 10):
     from django.core.urlresolvers import reverse
@@ -146,7 +149,8 @@ class Post(MPTTModel, NamedModel):
     content = models.TextField(blank=True, default='')
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE, related_name='+')
     created_on = models.DateTimeField(auto_now_add=True, auto_now=False)
-    modified_on = models.DateTimeField(auto_now_add=False, auto_now=True)
+    # modified_on = models.DateTimeField(auto_now_add=False, auto_now=True)
+    modified_on = models.DateTimeField(null=True, blank=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.CASCADE)
     _upvotes = models.IntegerField(blank=True, default=0)
     _downvotes = models.IntegerField(blank=True, default=0)
@@ -254,6 +258,19 @@ class Post(MPTTModel, NamedModel):
         ua = request.META.get('HTTP_USER_AGENT', '')
         if ua:
             self.user_agent = ua
+
+
+@receiver(pre_save, sender=Post)
+def update_modified_on(sender, instance, *args, **kwargs):
+    # try to find saved post due uid is populate with Post init
+    instance_exist = True
+    try:
+        Post.objects.get(uid=instance.uid)
+    except Post.DoesNotExist:
+        instance_exist = False
+
+    if instance_exist:
+        instance.modified_on = timezone.now()
 
 
 class UserPostVote(NamedModel):

@@ -1,8 +1,9 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
+import ReactMarkdown from 'react-markdown'
 
-import { Grid, Row, Col, FormControl, Checkbox, Form, Button } from 'react-bootstrap'
+import { renderMathJs } from './utils'
 
 export class ReplyForm extends React.Component {
   constructor (props) {
@@ -17,6 +18,12 @@ export class ReplyForm extends React.Component {
 
   handleChangeContent (event) {
     this.setState({content: event.target.value})
+    var that = this
+
+    setTimeout(function () {
+      var el = document.getElementById(that.props.parentPost.uid + 'id_content')
+      that.setState({content: el.value})
+    }, 1000) // pageeditor preview hack, more info in Markdown.Editor.js
   }
 
   handleSubmit (event) {
@@ -30,6 +37,10 @@ export class ReplyForm extends React.Component {
 
   componentDidMount () {
     DjangoPagedown.init(this.props.parentPost.uid + 'id_content')
+  }
+
+  componentWillUnmount () {
+    DjangoPagedown.destroyEditor(this.props.parentPost.uid + 'id_edit_content')
   }
 
   render () {
@@ -74,12 +85,17 @@ export class ReplyForm extends React.Component {
                       rows='10'
                       required
                       value={this.state.content}
+                      onBlur={this.handleChangeContent}
                       onChange={this.handleChangeContent}
                     /></div>
                   <p className='wmd-preview-title'>
                     <small>Preview:</small>
                   </p>
-                  <div id={this.props.parentPost.uid + 'id_content_wmd_preview'} className='wmd-panel wmd-preview' />
+                  <div className='wmd-panel wmd-preview'>
+                    {renderMathJs(<ReactMarkdown source={this.state.content} />)}
+                  </div>
+                  {/* native pagedown editor preview: */}
+                  {/*<div id={this.props.parentPost.uid + 'id_content_wmd_preview'} className='wmd-panel wmd-preview' />*/}
                 </div>
               </div>
             </div>

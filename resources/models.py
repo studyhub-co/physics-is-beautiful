@@ -2,6 +2,8 @@ import os
 
 from django.db import models
 from django.dispatch import receiver
+# from django.utils.text import slugify
+from slugify import Slugify
 
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
@@ -19,6 +21,9 @@ from .validators import validate_pdf_extension
 # from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+slugify = Slugify()
+slugify.safe_chars = '.'
+slugify.to_lower = True
 
 # class Resource(ModeratedModel):
 class Resource(models.Model):
@@ -42,11 +47,35 @@ class Resource(models.Model):
     resource_type = models.CharField(max_length=2, choices=RESOURCE_TYPE_CHOICES, default=TEXTBOOK)
     owner = models.ForeignKey(Profile, related_name='resources')
     count_views = models.IntegerField(default=0)
+    thread = models.OneToOneField(Thread, related_name='textbook_resource', null=True)
+    title = models.CharField(max_length=512, blank=True, null=True, help_text='title in the admin site')
+
+    def __str__(self):
+        return 'Resource: {}'.format(self.title)
+
+    def get_frontend_url(self):
+        # return '/resources/{}/{}/'.format(slugify(self.title), self.uuid)
+        try:
+            return '/resources/{}/{}/'.\
+                format(slugify(self.metadata.data['volumeInfo']['title'])
+                       , self.uuid)
+        except (KeyError, ResourceMetaData.DoesNotExist):
+            return '/resources/{}/{}/'.format('unknown-resource', self.uuid)
 
     class Moderator:
         notify_moderator = True
         auto_approve_for_superusers = True
         fields_exclude = ['count_views', ]
+
+
+# metadata are created by another serializer
+# this signal only for update in admin site
+@receiver(models.signals.post_save, sender=Resource)
+def save_title(sender, instance, *args, **kwargs):
+    """ add denorm title field """
+    if not instance.title and hasattr(instance, 'metadata'):
+        instance.title = instance.metadata.data['volumeInfo']['title']
+        instance.save()
 
 # TODO signal for remove djedit Topic onDelete resource
 
@@ -79,6 +108,24 @@ class TextBookProblem(models.Model):
     position = models.PositiveSmallIntegerField("Position")
     textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')
     posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
+    count_views = models.IntegerField(default=0)
+    thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
+
+    def get_frontend_url(self):
+        # return '/resources/{}/problems/{}/{}/'.format(
+        #     slugify(self.textbook_section.resource.title),
+        #     slugify(self.title),
+        #     self.uuid)
+        try:
+            return '/resources/{}/problems/{}/{}/'.format(
+                slugify(self.textbook_section.resource.metadata.data['volumeInfo']['title']),
+                slugify(self.title),
+                self.uuid)
+        except (KeyError, ResourceMetaData.DoesNotExist):
+            return '/resources/{}/problems/{}/{}/'.format(
+                'unknown-resource',
+                slugify(self.title),
+                self.uuid)
 
     class Meta:
         ordering = ['position']
@@ -123,6 +170,25 @@ class TextBookSolution(VoteModel, models.Model):
     @title.setter
     def title(self, value):
         self._title = value
+
+    def get_frontend_url(self):
+        # return '/resources/{}/problems/{}/solutions/{}/{}/'.format(
+        #     slugify(self.textbook_problem.textbook_section.resource.title),
+        #     slugify(self.textbook_problem.title),
+        #     slugify(self.title),
+        #     self.uuid)
+        try:
+            return '/resources/{}/problems/{}/solutions/{}/{}/'.format(
+                slugify(self.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']['title']),
+                slugify(self.textbook_problem.title),
+                slugify(self.title),
+                self.uuid)
+        except (KeyError, ResourceMetaData.DoesNotExist):
+            return '/resources/{}/problems/{}/solutions/{}/{}/'.format(
+                'unknown-resource',
+                slugify(self.textbook_problem.title),
+                slugify(self.title),
+                self.uuid)
 
     class Meta:
         ordering = ['-vote_score']

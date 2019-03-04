@@ -15,8 +15,8 @@ window.addEventListener('message', function (event) {
     // if not in discussion, use default canGoBack
     // TODO implement a better way of checking this.
     if ('BASE_URL' in window) {
-      let sessionHistory = JSON.parse(window.sessionStorage.getItem('history'))
-      let lastUrl = sessionHistory[sessionHistory.length - 1]
+      var sessionHistory = JSON.parse(window.sessionStorage.getItem('history'))
+      var lastUrl = sessionHistory[sessionHistory.length - 1]
 
       window.sessionStorage.setItem('history', JSON.stringify(sessionHistory.splice(0, sessionHistory.length - 1)))
       window.location = lastUrl
@@ -93,7 +93,8 @@ window.mobilizedUrl = function (url) {
   }
 }
 
-window.updateCanGoBack = (canGoBack) => {
+// window.updateCanGoBack = (canGoBack) => {
+window.updateCanGoBack = function (canGoBack) {
   if (canGoBack == null) {
     window.parent.postMessage({
       'message': 'canGoBack',

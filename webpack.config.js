@@ -8,7 +8,9 @@ module.exports = function (env) {
 
     entry: {
       curriculum: './curricula/static/curricula/js/curriculum_app', // entry point of our app. assets/js/index.js should require other js modules and dependencies it needs
-      profile: './profiles/static/profiles/js/profile_modal',
+      // profile: './profiles/static/profiles/js/profile_modal',
+      profile_anonymous: './profiles/static/profiles/js/anonymous/profile_modal',
+      profile: './profiles/static/profiles/js/authenticated/index',
       editor: './editor/static/editor/js/app',
       classroom: './classroom/static/classroom/js/index',
       resources: './resources/static/resources/js/index'

@@ -5,16 +5,15 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Form } from 'react-bootstrap'
+import PDF from 'react-pdf-js'
+
 import { Thread } from '../../components/reactDjeddit/thread'
+import history from '../../history'
+import { Sheet } from '../../components/Sheet'
 
 // import { Document } from 'react-pdf' // https://github.com/wojtekmaj/react-pdf/issues/52
 // import { Document, setOptions } from 'react-pdf/dist/entry.webpack'
 // setOptions({ workerSrc: 'react-pdf/dist/pdf.worker.min.js' })
-
-import PDF from 'react-pdf-js'
-
-import history from '../../history'
-import { Sheet } from '../../components/Sheet'
 
 // !=== part of google proxy pdf viewer
 // import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
@@ -26,6 +25,7 @@ import * as profileCreators from '../../actions/profile'
 import { BASE_URL } from '../../utils/config'
 import * as googleCreators from '../../actions/google'
 import AdSense from 'react-adsense'
+import { slugify } from '../../utils/urls'
 
 class TextBookSolutionView extends React.Component {
   constructor (props) {
@@ -42,7 +42,9 @@ class TextBookSolutionView extends React.Component {
     this.onDocumentComplete = this.onDocumentComplete.bind(this)
     this.handleChangeNumberOfPdfPage = this.handleChangeNumberOfPdfPage.bind(this)
     this.onZoomPdfClick = this.onZoomPdfClick.bind(this)
-    this.onSubmitPost = this.onSubmitPost.bind(this)
+    // this.onSubmitPost = this.onSubmitPost.bind(this)
+    // this.onEditPost = this.onEditPost.bind(this)
+    // this.onDeletePost = this.onDeletePost.bind(this)
 
     // !=== part of google proxy pdf viewer
     // this.loadExternalGooglePdf = this.loadExternalGooglePdf.bind(this)
@@ -53,19 +55,28 @@ class TextBookSolutionView extends React.Component {
     if (this.props.match.params && this.props.match.params['uuid']) {
       this.props.resourcesActions.fetchSolution(this.props.match.params['uuid'])
     }
-    if (!this.props.resource && this.props.match.params && this.props.match.params['problem_uuid']) {
-      this.props.resourcesActions.fetchProblem(this.props.match.params['problem_uuid'])
-    }
-    if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
-      this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
-    }
+    // if (!this.props.resource && this.props.match.params && this.props.match.params['problem_uuid']) {
+    //   this.props.resourcesActions.fetchProblem(this.props.match.params['problem_uuid'])
+    // }
+    // if (!this.props.resource && this.props.match.params && this.props.match.params['resource_uuid']) {
+    //   this.props.resourcesActions.fetchResource(this.props.match.params['resource_uuid'])
+    // }
     this.props.profileActions.fetchProfileMe()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.solution && nextProps.solution) {
+      this.props.resourcesActions.fetchProblem(nextProps.solution.textbook_problem_uuid)
+    }
+    if (!this.props.problem && nextProps.problem) {
+      this.props.resourcesActions.fetchResource(nextProps.problem.resource_uuid)
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.solution !== this.props.solution) {
       // reload thread
-      this.props.djedditActions.fetchThreadSolution(this.props.solution.thread)
+      this.props.djedditActions.fetchThread(this.props.solution.thread)
 
       // !=== part of google proxy pdf viewer
       // we can't login in to google (auth popup will be blocked by browser)
@@ -140,11 +151,11 @@ class TextBookSolutionView extends React.Component {
     document.title = 'Physics is Beautiful'
     // remove meta
     var element = document.getElementsByTagName('meta')['description']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     element = document.getElementsByTagName('meta')['author']
-    if (element.hasOwnProperty('parentNode')) {
+    if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
     }
     this.titleSet = false
@@ -152,28 +163,43 @@ class TextBookSolutionView extends React.Component {
 
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
+
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var problemTitle = this.props.problem.title
+
       for (let x = 0; x < this.props.problem.solutions.length; x++) {
         if (this.props.problem.solutions[x].uuid === this.props.solution.uuid) {
           if (value === 'next') {
-            // TODO refactoring this
             if (typeof this.props.problem.solutions[x + 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x + 1].uuid)
+              // history.push(BASE_URL +
+              //   this.props.resource.uuid +
+              //   '/problems/' +
+              //   this.props.problem.uuid +
+              //   '/solutions/' +
+              //   this.props.problem.solutions[x + 1].uuid)
               history.push(BASE_URL +
-                this.props.resource.uuid +
-                '/problems/' +
-                this.props.problem.uuid +
-                '/solutions/' +
-                this.props.problem.solutions[x + 1].uuid)
+                slugify(resourceTitle) + '/problems/' +
+                slugify(problemTitle) + '/solutions/' +
+                slugify(this.props.problem.solutions[x + 1].title) + '/' + this.props.problem.solutions[x + 1].uuid + '/'
+              )
             }
           } else {
             if (typeof this.props.problem.solutions[x - 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x - 1].uuid)
+
               history.push(BASE_URL +
-                this.props.resource.uuid +
-                '/problems/' +
-                this.props.problem.uuid +
-                '/solutions/' +
-                this.props.problem.solutions[x - 1].uuid)
+                slugify(resourceTitle) + '/problems/' +
+                slugify(problemTitle) + '/solutions/' +
+                slugify(this.props.problem.solutions[x - 1].title) + '/' + this.props.problem.solutions[x - 1].uuid + '/'
+              )
+
+            //   history.push(BASE_URL +
+            //     this.props.resource.uuid +
+            //     '/problems/' +
+            //     this.props.problem.uuid +
+            //     '/solutions/' +
+            //     this.props.problem.solutions[x - 1].uuid)
             }
           }
         }
@@ -217,9 +243,17 @@ class TextBookSolutionView extends React.Component {
     this.props.resourcesActions.solutionVoteAndRefresh(solutionId, val)
   }
 
-  onSubmitPost (post) {
-    this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread)
-  }
+  // onSubmitPost (post) {
+  //   this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread)
+  // }
+  //
+  // onEditPost (post) {
+  //   this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread)
+  // }
+  //
+  // onDeletePost (post) {
+  //   this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread)
+  // }
 
   renderPagination (page, pages) {
     let previousButton = <Button onClick={() => { this.handlePrevious() }} className={'common-button'}>Previous</Button>
@@ -297,6 +331,18 @@ class TextBookSolutionView extends React.Component {
       pdfFile = this.props.solution.pdf.file
     }
 
+    var problemUrl = null
+
+    if (this.props.resource && this.props.problem.title) {
+      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var problemTitle = this.props.problem.title
+
+      problemUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +
+        slugify(problemTitle) + '/' + this.props.problem.uuid + '/'
+    }
+
+    // history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid'])
+
     return (
       <Sheet>
         <Grid fluid>
@@ -304,7 +350,7 @@ class TextBookSolutionView extends React.Component {
             <Col sm={12} md={12}>
               <a
                 className={'back-button'}
-                onClick={() => { history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid']) }} >
+                onClick={() => { history.push(problemUrl) }} >
                 <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
                 All solutions
               </a>
@@ -427,7 +473,12 @@ class TextBookSolutionView extends React.Component {
                   ? <Thread
                     thread={this.props.thread}
                     currentProfile={this.props.profile}
-                    onSubmitPost={this.onSubmitPost}
+                    // onSubmitPost={this.onSubmitPost}
+                    // onSubmitEditPost={this.onEditPost}
+                    // onDeletePost={this.onDeletePost}
+                    onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread) }}
+                    onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}
+                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread) }}
                     changePostVote={this.props.djedditActions.changePostVote}
                   /> : null }
               </Col>
@@ -448,9 +499,11 @@ TextBookSolutionView.propTypes = {
     solutionVoteAndRefresh: PropTypes.func.isRequired
   }),
   djedditActions: PropTypes.shape({
-    fetchThreadSolution: PropTypes.func.isRequired,
+    fetchThread: PropTypes.func.isRequired,
     createPostWithRefreshThread: PropTypes.func.isRequired,
-    changePostVote: PropTypes.func.isRequired
+    changePostVote: PropTypes.func.isRequired,
+    updatePostWithRefreshThread: PropTypes.func.isRequired,
+    deletePostWithRefreshThread: PropTypes.func.isRequired
   }),
   profileActions: PropTypes.shape({
     fetchProfileMe: PropTypes.func.isRequired

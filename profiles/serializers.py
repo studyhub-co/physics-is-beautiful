@@ -37,12 +37,20 @@ class ProfileSerializer(BaseSerializer):
     is_staff = serializers.BooleanField(source='user.is_staff')
     avatar_url = serializers.CharField(source='get_avatar_url')
     id = serializers.IntegerField(source='user.id', read_only=True)  # (sic!) user_id != profile_id
+    is_current_user_profile = serializers.SerializerMethodField()
     # selected_avatar = serializers.CharField(source='get_selected_avatar_display')
+
+    def get_is_current_user_profile(self, obj):
+        if obj.user == self.context['request'].user:
+            return True
+        return False
 
     class Meta:
         model = Profile
         fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'id', 'get_absolute_url',
-                  'gravatar_url', 'avatar_url', 'google_avatar_url', 'selected_avatar', 'user_avatar', 'is_staff']
+                  'gravatar_url', 'avatar_url', 'google_avatar_url', 'selected_avatar', 'user_avatar', 'is_staff',
+                  'is_current_user_profile'
+                  ]
         read_only_fields = ['get_absolute_url', ]
 
     def to_representation(self, obj):

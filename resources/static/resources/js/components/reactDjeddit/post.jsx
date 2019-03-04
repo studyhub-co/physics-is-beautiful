@@ -1,28 +1,31 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-
 import Moment from 'react-moment'
-
-import { Glyphicon, Grid, Row, Col, FormControl, Checkbox, Form, Button } from 'react-bootstrap'
+import ReactMarkdown from 'react-markdown'
+import { Grid, Row, Col } from 'react-bootstrap'
+// import RMathJax from 'react-mathjax'
 
 import { ReplyForm } from './replyForm'
-
-import MathJax from 'react-mathjax2'
-
-// import RMathJax from 'react-mathjax'
+import { EditForm } from './editForm'
+import { renderMathJs } from './utils'
 
 export class Post extends React.Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      replyFormShow: false
+      replyFormShow: false,
+      editFormShow: false
     }
 
     this.onSubmitReplay = this.onSubmitReplay.bind(this)
+    this.onSubmitEdit = this.onSubmitEdit.bind(this)
     this.toggleReplyForm = this.toggleReplyForm.bind(this)
+    this.toggleEditForm = this.toggleEditForm.bind(this)
     this.upDownClick = this.upDownClick.bind(this)
+    this.editComment = this.editComment.bind(this)
+    this.deleteComment = this.deleteComment.bind(this)
   }
 
   onSubmitReplay (...args) {
@@ -30,12 +33,28 @@ export class Post extends React.Component {
     this.toggleReplyForm()
   }
 
+  onSubmitEdit (...args) {
+    this.props.onSubmitEdit(...args)
+    this.toggleEditForm()
+  }
+
   toggleReplyForm () {
     this.setState({ replyFormShow: !this.state.replyFormShow })
   }
 
+  toggleEditForm () {
+    this.setState({ editFormShow: !this.state.editFormShow })
+  }
+
   deleteComment () {
-    // this.setState({ replyFormShow: !this.state.replyFormShow })
+    // delete comment reload thread
+    if (confirm('Are you sure you want to delete this comment?')) { // TODO we can use Modal from react bootstrap if needed
+      this.props.onDelete(this.props.post)
+    }
+  }
+
+  editComment () {
+    this.setState({ editFormShow: !this.state.editFormShow })
   }
 
   upDownClick (value) {
@@ -43,31 +62,6 @@ export class Post extends React.Component {
   }
 
   render () {
-    var renderMathJs = function (content) {
-      return (
-        <MathJax.Context
-          input='ascii'
-          onError={(MathJax, error) => {
-            console.warn(error)
-            console.log('Encountered a MathJax error, re-attempting a typeset!')
-            MathJax.Hub.Queue(
-              MathJax.Hub.Typeset()
-            )
-          }}
-          script='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=AM_HTMLorMML'
-          options={{
-            extensions: ['tex2jax.js', '[mhchem]/mhchem.js'],
-            jax: ['input/TeX', 'output/HTML-CSS'],
-            tex2jax: {
-              inlineMath: [ ['$', '$'], ['\\(','\\)'] ],
-              displayMath: [ ['$$', '$$'], ['\\[','\\]'] ],
-              processEscapes: true
-            },
-            'HTML-CSS': { fonts: ['TeX'] }
-          }}>
-          <MathJax.Text text={content} />
-        </MathJax.Context>
-      )
 
     // react-mathjax1 do not work with "options="
     //   return (
@@ -86,32 +80,12 @@ export class Post extends React.Component {
     //     </RMathJax.Node>
     //   </RMathJax.Context>
     //   )
-    }
 
     return (
       <div>
         { this.props.post
           ? <Grid fluid style={{padding: 0}}>
             <Row>
-              {/*<Col sm={1} md={1} xs={1} style={{padding: 0, width: 'fit-content'}}>*/}
-                {/*<div className={'text-align-center'}>*/}
-                  {/*<div>*/}
-                    {/*<Glyphicon*/}
-                      {/*glyph='arrow-up'*/}
-                      {/*style={{cursor: 'pointer'}}*/}
-                      {/*onClick={() => this.upDownClick(1)} />*/}
-                  {/*</div>*/}
-                  {/*<div>*/}
-                    {/*{this.props.post.score}*/}
-                  {/*</div>*/}
-                  {/*<div>*/}
-                    {/*<Glyphicon*/}
-                      {/*glyph='arrow-down'*/}
-                      {/*style={{cursor: 'pointer'}}*/}
-                      {/*onClick={() => this.upDownClick(-1)} />*/}
-                  {/*</div>*/}
-                {/*</div>*/}
-              {/*</Col>*/}
               <Col sm={11} md={11}>
                 <Row className={'gray-text'}>
                   <Col md={1} sm={2} xs={4}>
@@ -125,7 +99,7 @@ export class Post extends React.Component {
                     <Moment fromNow>{this.props.post.created_on}</Moment>
                   </Col>
                   <Col md={2} sm={3} xs={4}>
-                    {this.props.post.modified_on !== this.props.post.created_on
+                    {this.props.post.modified_on
                       ? <span>edited <Moment fromNow>{this.props.post.modified_on}</Moment></span>
                       : null
                     }
@@ -136,7 +110,18 @@ export class Post extends React.Component {
                     {/* djeddit part*/}
                     <div className='postcol'>
                       <div className='post-content'>
-                        { renderMathJs(this.props.post.content) }
+                        {/* fix for markdown editor */}
+                        <div style={{display: this.state.editFormShow ? 'block' : 'none'}}>
+                          <EditForm
+                            parentPost={this.props.post}
+                            currentProfile={this.props.currentProfile}
+                            onSubmitPost={this.onSubmitEdit}
+                            onToggleForm={this.toggleEditForm}
+                          />
+                        </div>
+                        {this.state.editFormShow
+                          ? null : renderMathJs(<ReactMarkdown source={this.props.post.content} />)
+                        }
                       </div>
                       <div className='djeddit-post-item-footer'>
                         <div className='djeddit-score'>
@@ -146,7 +131,7 @@ export class Post extends React.Component {
                         </div>
                         <div className='btn-group btn-group-xs fixed-50' role='group'>
                           <button
-                            onClick={this.toggleReplyForm}
+                            onClick={this.toggleEditForm}
                             className='btn btn-secondary'>
                             Edit
                           </button>
@@ -155,13 +140,13 @@ export class Post extends React.Component {
                             className='btn btn-secondary'>
                             Reply
                           </button>
+                          {/*<button*/}
+                            {/*onClick={this.toggleReplyForm}*/}
+                            {/*className='btn btn-secondary'>*/}
+                            {/*Parent*/}
+                          {/*</button>*/}
                           <button
-                            onClick={this.toggleReplyForm}
-                            className='btn btn-secondary'>
-                            Parent
-                          </button>
-                          <button
-                            onClick={this.toggleReplyForm}
+                            onClick={this.deleteComment}
                             className='btn btn-secondary'>
                             Delete
                           </button>
@@ -178,14 +163,15 @@ export class Post extends React.Component {
                     </div>
                   </Col>
                 </Row>
-                {this.state.replyFormShow
-                  ? <ReplyForm
+                {/* fix for markdown editor */}
+                <div style={{display: this.state.replyFormShow ? 'block' : 'none'}}>
+                  <ReplyForm
                     parentPost={this.props.post}
                     currentProfile={this.props.currentProfile}
                     onSubmitPost={this.onSubmitReplay}
                     onToggleForm={this.toggleReplyForm}
-                  /> : null
-                }
+                  />
+                </div>
               </Col>
             </Row>
           </Grid> : null }
@@ -197,6 +183,8 @@ export class Post extends React.Component {
 Post.propTypes = {
   post: PropTypes.object.isRequired,
   onSubmitReplay: PropTypes.func.isRequired,
+  onSubmitEdit: PropTypes.func.isRequired,
   currentProfile: PropTypes.object.isRequired,
-  changePostVote: PropTypes.func.isRequired
+  changePostVote: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
 }

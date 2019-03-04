@@ -18,7 +18,17 @@ from django.contrib import admin
 from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
 
+from resources.sitemaps import ResourcesViewSitemap, TextBookProblemsViewSitemap, TextBookSolutionsViewSitemap
+from curricula.sitemaps import CurriculaViewSitemap
+
+sitemaps = {
+    'resources': ResourcesViewSitemap,
+    'textbook_problems': TextBookProblemsViewSitemap,
+    'textbook_solutions': TextBookSolutionsViewSitemap,
+    'curricula': CurriculaViewSitemap,
+}
 
 urlpatterns = [
     url(r'^', include('homepage.urls')),
@@ -41,6 +51,8 @@ urlpatterns = [
     # due https://github.com/encode/django-rest-framework/issues/2760 namespace do not work
     # url(r'^api/v1/', include('pib.urls_api', namespace='api')),
     url(r'^api/v1/', include('pib.urls_api')),
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

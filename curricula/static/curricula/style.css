@@ -686,7 +686,7 @@ img.grayed-out-img {
 }
 
 .sweet-loading {
-  position: fixed;
+  position: fixed; /* seems it should be absolute */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

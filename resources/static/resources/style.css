@@ -1,4 +1,5 @@
-@import "swiper.min.css";
+/*@import "swiper.min.css";*/
+@import "react-mde-all.css";
 
 /* common with classroom, need to create common.css */
 
@@ -98,7 +99,7 @@
     border-style: solid;
     border-color: rgb(216, 216, 216);
     margin: 0 1rem 1rem 0;
-    float: left;
+    /*float: left;*/
     position: relative;
     text-align: center;
     /*padding-top: 1rem;*/
@@ -107,8 +108,10 @@
     vertical-align: top;
 
     /* new values */
-    padding: 0;
-    width: 25rem;
+    padding: 0 1rem 0 1rem;
+    max-width: 25rem;
+    min-width: 20rem;
+    width: auto;
     height: 30rem;
     /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
 }
@@ -267,4 +270,25 @@ div.pdf-ico {
         padding-left: 0;
         padding-right: 0;
     }
+    .resources .problem-row {
+        font-size: 24px;
+    }
+    .resources .blue-title {
+        font-size: 30px;
+    }
+    .resources .blue-title {
+        font-size: 30px;
+    }
+    .navbar.navbar-default a {
+        margin-left: 15px
+    }
 }
+
+.slick-slide img {
+    display: inline-block !important;
+}
+
+.slick-next:before, .slick-prev:before {
+    color: #000 !important;
+}
+

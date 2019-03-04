@@ -39,7 +39,7 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
                                                          source='textbook_problem',
                                                          slug_field='uuid',
                                                          many=False,
-                                                         write_only=True,
+                                                         # write_only=True,
                                                          required=False  # we can set existing textbook_problem
                                                          )
 
@@ -60,14 +60,13 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
         model = TextBookSolution
         fields = ['pdf', 'posted_by', 'id', 'position', 'title', 'created_on', 'uuid', 'vote_score', 'thread',
                   'textbook_problem_uuid', 'pdf_id', 'count_comments']
-        read_only_fields = ('id', 'created_on', 'uuid', 'vote_score', 'pdf')
+        read_only_fields = ('id', 'created_on', 'uuid', 'vote_score', 'pdf', 'thread')
         extra_kwargs = {'position': {'required': False}}
         # extra_kwargs = {'textbook_problem_uuid': {'write_only': True}, 'pdf_id': {'write_only': True}}
 
 
 class FullTextBookProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
-    # # FIXME need to think about adding uuid to textbook_section (chapter)
     # # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
     # #                                                      source='textbook_section',
     # #                                                      slug_field='uuid',
@@ -91,13 +90,18 @@ class FullTextBookProblemSerializer(serializers.ModelSerializer):
 class TextBookProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
     count_solutions = serializers.SerializerMethodField()
+    resource_uuid = serializers.SerializerMethodField()
 
     def get_count_solutions(self, obj):
         return obj.count_solutions if hasattr(obj, 'count_solutions') else 0
 
+    def get_resource_uuid(self, obj):
+        return obj.textbook_section.resource.uuid  # TODO check optimization
+
     class Meta:
         model = TextBookProblem
-        fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions']
+        fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions', 'resource_uuid', 'thread']
+        read_only_fields = ['thread', ]
 
 
 class TextBookChapterSerializer(serializers.ModelSerializer):
@@ -118,6 +122,12 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
         metadata_data = validated_data.pop('metadata')
 
         sections = validated_data.pop('sections')
+
+        if metadata_data:
+            try:
+                validated_data['title'] = metadata_data['data']['volumeInfo']['title']
+            except:
+                pass
 
         instance = super(ResourceBaseSerializer, self).create(validated_data)
 
@@ -164,8 +174,8 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resource
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner']
-        read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views')
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner', 'thread']
+        read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views', 'thread')
 
 
 class ResourceListSerializer(ResourceBaseSerializer):

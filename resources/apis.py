@@ -21,17 +21,18 @@ from djeddit.models import Topic, Thread, Post
 
 # from profiles.models import Profile
 
-from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
-
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
 
-from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
 
+from editor.apis_public import get_search_mixin
+
+from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
+from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
     FullTextBookProblemSerializer, TextBookSolutionSerializer, TextBookProblemSerializer
 from .serializers_flat import TextBookChapterSerializerFlat, TextBookProblemSerializerFlat
-
-from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID
+from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID, TEXTBOOK_PROBLEMS_TOPIC_ID, \
+    TEXTBOOK_RESOURCES_TOPIC_ID
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -82,6 +83,45 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
     # # ordering_fields = ('solutions__created_on', )
     # ordering_fields = ('solutions__vote_score', )
     # ordering = ('-solutions__vote_score',)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # get or create comments problems list topic
+        if instance:
+            new_thread = None
+            # create root problem post
+            if not instance.thread:
+                try:
+                    problems_topic = Topic.objects.get(id=TEXTBOOK_PROBLEMS_TOPIC_ID)
+                except Topic.DoesNotExist:
+                    problems_topic = Topic.objects.create(title='Textbook problems', id=TEXTBOOK_PROBLEMS_TOPIC_ID)
+
+                with transaction.atomic():
+                    problem_post = Post.objects.create(created_by_id=SYSTEM_USER_ID)
+                    title = ''
+                    if instance.textbook_section.resource.resource_type == 'TB':
+                        # get resourse title from metadata
+                        if 'title' in instance.textbook_section.resource.metadata.data['volumeInfo']:
+                            title = '{}'.format(instance.textbook_section.resource.metadata.data['volumeInfo']['title'])
+                    else:
+                        title = '{}'.format('Unknown resource')
+
+                    title = '{} / {}'.format(title, instance.textbook_section.title)
+                    title = '{} / {}'.format(title, instance.title)
+                    # title = '{} / {}'.format(title, instance.title)
+
+                    new_thread = Thread.objects.create(title=title[:199], topic=problems_topic, op=problem_post)
+
+            # increment view count
+            # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+            if new_thread:
+                # save new thread in probllem
+                TextBookProblem.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread=new_thread)
+            else:
+                TextBookProblem.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+
+        return super(TextBookProblemsViewSet, self).retrieve(request, *args, **kwargs)
 
     def get_queryset(self):
         if 'ordering' in self.request.query_params and self.request.query_params['ordering'] == '-solutions__created_on':
@@ -136,12 +176,11 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
         else:
             solution.votes.down(request.user.id)
 
-        # TODO calculate votes for djedit
+        # TODO calculate votes for djeddit
 
         return Response(status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
-        # try to find user last access date
         instance = self.get_object()
 
         # get or create comments solutions topic / solution thread / .
@@ -161,7 +200,7 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
                         if 'title' in instance.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']:
                             title = '{}'.format(instance.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']['title'])
                     else:
-                        title = '{}'.format('Unknwon rsource name')
+                        title = '{}'.format('Unknown resource')
 
                     title = '{} / {}'.format(title, instance.textbook_problem.textbook_section.title)
                     title = '{} / {}'.format(title, instance.textbook_problem.title)
@@ -186,7 +225,9 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
             serializer.save(posted_by=self.request.user.profile, position=position)
 
 
-class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
+class ResourceViewSet(SeparateListObjectSerializerMixin,
+                      ModelViewSet,
+                      get_search_mixin()):
     permission_classes = (IsStaffOrReadOnly, )
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
@@ -200,13 +241,14 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                          )\
         .prefetch_related('sections__problems__solutions__posted_by')\
         .prefetch_related('sections__problems__solutions__pdf')
-
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
+    # search_fields = ['title', ] # title is in metadata
+    casting_search_fields = ['metadata__data', ]
 
     @action(methods=['POST'],
             detail=False,
-            permission_classes=[permissions.IsAuthenticated,],
+            permission_classes=[permissions.IsAuthenticated, ],
             parser_classes=(FormParser, MultiPartParser, FileUploadParser))
     def upload_solution_pdf(self, request):
         self.remove_unrelated_pdfs()
@@ -259,8 +301,32 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         serializer.save(owner=self.request.user.profile)
 
     def retrieve(self, request, *args, **kwargs):
-        # try to find user last access date
         instance = self.get_object()
+
+        # create resource comments topic
+        new_thread = None
+
+        if instance:
+            # create root resource post
+            if not instance.thread:
+                try:
+                    resource_topic = Topic.objects.get(id=TEXTBOOK_RESOURCES_TOPIC_ID)
+                except Topic.DoesNotExist:
+                    resource_topic = Topic.objects.create(title='Textbooks resources', id=TEXTBOOK_RESOURCES_TOPIC_ID)
+
+                with transaction.atomic():
+                    resource_post = Post.objects.create(created_by_id=SYSTEM_USER_ID)
+                    title = ''
+                    if instance.resource_type == 'TB':
+                        # get resourse title from metadata
+                        if 'title' in instance.metadata.data['volumeInfo']:
+                            title = '{}'.format(instance.metadata.data['volumeInfo']['title'])
+                    else:
+                        title = '{}'.format('Unknown resource')
+
+                    new_thread = Thread.objects.create(title=title[:199], topic=resource_topic, op=resource_post)
+
+        # refresh user last date access
         if request.user.is_authenticated:
             try:
                 user_access = RecentUserResource.objects.get(user=request.user.profile, resource=instance)
@@ -272,7 +338,11 @@ class ResourceViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         # increment view count
         if instance:
             # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
-            Resource.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+            if new_thread:
+                # save new thread in Resource
+                Resource.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread = new_thread)
+            else:
+                Resource.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
 
         return super(ResourceViewSet, self).retrieve(request, *args, **kwargs)
 

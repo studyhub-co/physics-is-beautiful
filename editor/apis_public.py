@@ -36,7 +36,9 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
+# TODO move to lib app
 class SearchMixin:
+
     @action(methods=['GET'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
     def search(self, request):
 
@@ -47,7 +49,16 @@ class SearchMixin:
             raise NotAcceptable('Search query required')
 
         query = SearchQuery(keywords)
-        vector = SearchVector(*self.search_fields)
+
+        if hasattr(self, 'search_fields'):
+            vector = SearchVector(*self.search_fields)
+
+        if hasattr(self, 'casting_search_fields'):
+            from django.db.models.functions import Cast
+            from django.db.models import TextField
+            fields = [Cast(val, TextField()) for i, val in enumerate(self.casting_search_fields)]
+            vector = SearchVector(*fields)
+
         qs = qs.annotate(search=vector).filter(search=query)
         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 
@@ -59,6 +70,14 @@ class SearchMixin:
         serializer = self.get_serializer(qs, many=True)
 
         return Response(serializer.data)
+
+
+def get_search_mixin(permission_classes=[]):
+    def get_search_func():
+        return action(methods=['GET'], detail=False, permission_classes=permission_classes)(SearchMixin.search)
+
+    SearchMixin.search = get_search_func()
+    return SearchMixin
 
 
 class CurriculumViewSet(mixins.UpdateModelMixin,
