@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/pure-checkbox.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'homepage/homepage-navbar.css' %}" />
 
 {#<script src="{% static 'js/csrf.js' %}"></script> moved to navbar #}
 <script src="{% static 'curricula/mathquill-0.10.1/mathquill.js' %}"></script>
@@ -17,4 +18,5 @@
 <div id="react-app" class="homepage">
     {% render_bundle 'homepage' %}
 </div>
+{% include "footer.html" %}
 {% endblock %}
