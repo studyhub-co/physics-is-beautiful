@@ -13,7 +13,7 @@ export default class Sheet extends React.Component {
             <h3>A platform for all things physics.</h3>
             <Row style={{width: '100%'}}>
               <Col md={6}>
-                <div className='homepage-shadow-container'>
+                <div className='homepage-shadow-container modal-content'>
                   <p>What do we offer?</p>
                   <ul>
                     <li>Free courses to learn physics</li>
@@ -28,6 +28,7 @@ export default class Sheet extends React.Component {
                 <AuthSignUp />
               </Col>
             </Row>
+            <button id='getStartedButton' className='common-button btn btn-primary' onClick={() => { window.location.href = '/curriculum/' }}>Get Started</button>
           </div>
         </div>
         <div className='homepage-section-2'>
