@@ -85,6 +85,7 @@ SettingsTabView.propTypes = {
     updateReloadProfile: PropTypes.func.isRequired
   }).isRequired,
   profile: PropTypes.object,
+  profile_fetching: PropTypes.bool,
   dispatch: PropTypes.func.isRequired
 }
 

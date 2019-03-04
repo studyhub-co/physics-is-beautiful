@@ -19,6 +19,12 @@ import SettingsTabView from './settingsTab'
 // import ResourceThumbnail from '../../components/resourceThumbnail'
 
 class IndexView extends React.Component {
+  componentWillMount () {
+    if (!this.props.profile && !this.props.profile_fetching) {
+      this.props.profileActions.fetchProfile(this.props.match.params.id)
+    }
+  }
+
   render () {
     // var baseUrl = this.props.match.url.replace(/\/$/, '')
     // var addResourceUrl = baseUrl + '/add/'
@@ -45,19 +51,24 @@ class IndexView extends React.Component {
         >
           <div className='tab-links'>
             <TabLink to='profile'>Profile</TabLink>
-            <TabLink to='settings'>Settings</TabLink>
-            <TabLink to='notifications'>Notifications</TabLink>
+            {this.props.profile && this.props.profile.is_current_user_profile
+              ? <TabLink to='settings'>Settings</TabLink> : null }
+            {this.props.profile && this.props.profile.is_current_user_profile
+              ? <TabLink to='notifications'>Notifications</TabLink>
+              : null }
           </div>
           <div className='content'>
             <TabContent for='profile'>
               <ProfileTabView profileId={this.props.match.params.id}/>
             </TabContent>
-            <TabContent for='settings'>
-              <Route exact path={profileSettingsUrl} component={SettingsTabView} />
-            </TabContent>
-            <TabContent for='notifications'>
-              <Route exact path={profileNotificationsUrl} component={NotificationsTabView} />
-            </TabContent>
+            {this.props.profile && this.props.profile.is_current_user_profile
+              ? <TabContent for='settings'>
+                <Route exact path={profileSettingsUrl} component={SettingsTabView} />
+              </TabContent> : null }
+            {this.props.profile && this.props.profile.is_current_user_profile
+              ? <TabContent for='notifications'>
+                <Route exact path={profileNotificationsUrl} component={NotificationsTabView} />
+              </TabContent> : null }
           </div>
         </Tabs>
       </Sheet>
@@ -75,13 +86,16 @@ IndexView.propTypes = {
   }).isRequired,
   // data
   tab: PropTypes.string,
+  profile: PropTypes.object,
+  profile_fetching: PropTypes.bool,
   dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => {
   return {
     tab: state.tabs.profileTab,
-    profile: state.profile.profile
+    profile: state.profile.profile,
+    profile_fetching: state.profile.fetching
   }
 }
 
