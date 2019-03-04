@@ -11,17 +11,30 @@
 {% block groupItems %}
     {# list of threads & comments by date #}
     {% with True as showTopic %}
-        {% for item in items %}
-            {% if item.getName == 'Thread' %}
-                {% with item as thread %}
-                    {% include 'djeddit/thread_item.html' %}
-                {% endwith %}
-            {% elif item.getName == 'Post' %}
-                {% with item as reply %}
-                    {% include 'djeddit/user_reply_item.html' %}
-                {% endwith %}
-            {% endif %}
+        <h2>User topics</h2>
+        {% for item in threads %}
+            {% with item as thread %}
+                {% include 'djeddit/thread_item.html' %}
+            {% endwith %}
         {% endfor %}
+        <h2>User comments</h2>
+        {% for item in replies %}
+            {% with item as reply %}
+                {% include 'djeddit/user_reply_item.html' %}
+            {% endwith %}
+        {% endfor %}
+
+{#        {% for item in items %}#}
+{#            {% if item.getName == 'Thread' %}#}
+{#                {% with item as thread %}#}
+{#                    {% include 'djeddit/thread_item.html' %}#}
+{#                {% endwith %}#}
+{#            {% elif item.getName == 'Post' %}#}
+{#                {% with item as reply %}#}
+{#                    {% include 'djeddit/user_reply_item.html' %}#}
+{#                {% endwith %}#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
     {% endwith %}
 {% endblock %}
 {% block sideContent %}

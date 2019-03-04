@@ -454,15 +454,51 @@ def userSummary(request, pk):
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
         raise Http404
-    threads = Thread.objects.filter(op__created_by=user)
-    for t in threads:
-        t.modified_on = t.op.modified_on
-    replies = Post.objects.filter(created_by=user).exclude(parent=None)
-    context = dict(items=sorted(list(threads) + list(replies), key=lambda n: n.modified_on, reverse=True),
+
+    # very ugly code by djeedit below
+    # threads = Thread.objects.filter(op__created_by=user)
+    # for t in threads:
+    #     t.modified_on = t.op.modified_on
+    # replies = Post.objects.filter(created_by=user).exclude(parent=None)
+    # items = sorted(replies, key=lambda n: (n.modified_on, n.created_on), reverse=True)
+    # items = list(threads) + list(items)
+
+    from django.db.models import Sum, F
+
+    threads = Thread.objects.\
+        filter(op__created_by=user).order_by('-op__modified_on', '-op__created_on') \
+        .select_related('op', 'topic', 'op__created_by')\
+        .annotate(upvotes_sum=Sum('op___upvotes')) \
+        .annotate(downvotes_sum=Sum('op___downvotes')) \
+        .annotate(tPoints=F('upvotes_sum') - F('downvotes_sum'))
+
+    replies = Post.objects.\
+        filter(created_by=user).exclude(parent=None).order_by('-modified_on', '-created_on') \
+        .prefetch_related('thread', 'thread__topic') \
+        .annotate(upvotes_sum=Sum('_upvotes')) \
+        .annotate(downvotes_sum=Sum('_downvotes')) \
+        .annotate(rPoints=F('upvotes_sum') - F('downvotes_sum'))
+
+    if replies.count() > 0:
+        rPoints = replies.first().rPoints
+    else:
+        rPoints = 0
+
+    if threads.count() > 0:
+        tPoints = threads.first().tPoints
+    else:
+        tPoints = 0
+
+
+        # context = dict(items=items,
+    context = dict(threads=threads,
+                   replies=replies,
                    tCount=threads.count(),
                    rCount=replies.count(),
-                   tPoints=(sum(t.op.score for t in threads)),
-                   rPoints=(sum(r.score for r in replies)),
+                   # tPoints=(sum(t.op.score for t in threads)),  # too many sql qs
+                   tPoints=tPoints,
+                   # rPoints=(sum(r.score for r in replies)), # too many sql qs
+                   rPoints=rPoints,
                    pageUser=user)
     return render(request, 'djeddit/user_summary.html', context)
 
