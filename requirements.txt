@@ -1,6 +1,6 @@
 antlr4-python3-runtime==4.7
 boto==2.46.1
-Django==1.11.2
+Django==1.11.20
 django-allauth==0.30.0
 django-dotenv==1.4.1
 django-light-enums==0.1.6
