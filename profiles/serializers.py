@@ -26,8 +26,8 @@ class PublicProfileSerializer(BaseSerializer):
 
     class Meta:
         model = Profile
-        fields = ['display_name', 'username', 'avatar_url', 'id', 'get_absolute_url']
-        read_only_fields = ['avatar_url', 'get_absolute_url']
+        fields = ['display_name', 'username', 'avatar_url', 'id', 'get_absolute_url', 'created_on']
+        read_only_fields = ['avatar_url', 'get_absolute_url', 'created_on']
 
 
 class ProfileSerializer(BaseSerializer):
@@ -49,9 +49,9 @@ class ProfileSerializer(BaseSerializer):
         model = Profile
         fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'id', 'get_absolute_url',
                   'gravatar_url', 'avatar_url', 'google_avatar_url', 'selected_avatar', 'user_avatar', 'is_staff',
-                  'is_current_user_profile'
+                  'is_current_user_profile', 'created_on'
                   ]
-        read_only_fields = ['get_absolute_url', ]
+        read_only_fields = ['get_absolute_url', 'created_on']
 
     def to_representation(self, obj):
         if isinstance(obj, Profile):
