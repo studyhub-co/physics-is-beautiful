@@ -43,7 +43,7 @@ class ProfileTabView extends React.Component {
   }
 
   componentWillMount () {
-    if (!this.props.profile) {
+    if (!this.props.profile && !this.props.profile_fetching) {
       this.props.profileActions.fetchProfile(this.props.profileId)
     }
     // this.props.tabActions.changeSelectedTab('profile', 'profileTab', this.props.match.params.id, false)
@@ -269,6 +269,7 @@ ProfileTabView.propTypes = {
     updateReloadProfile: PropTypes.func.isRequired
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  profile_fetching: PropTypes.bool,
   profile: PropTypes.object,
   profileId: PropTypes.string.isRequired
 }
@@ -276,7 +277,8 @@ ProfileTabView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     // tab: tab: state.tabs.profileTab,
-    profile: state.profile.profile
+    profile: state.profile.profile,
+    profile_fetching: state.profile.fetching
   }
 }
 
