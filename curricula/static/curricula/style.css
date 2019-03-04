@@ -692,3 +692,15 @@ img.grayed-out-img {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* homepage */
+.homepage-sheet h1 {
+    font-size: 3em;
+}
+
+.homepage-shadow-container {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+}
+
