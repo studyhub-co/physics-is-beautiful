@@ -12,6 +12,7 @@ import StaffUserRow from './staffUserRow'
 import { updateCurriculum, deleteCurriculum } from '../../actions'
 import { history } from '../../history'
 
+// TODO move to lib app
 class SettingRow extends React.Component {
   constructor (props) {
     super(props)

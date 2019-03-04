@@ -5,14 +5,27 @@ import { Route } from 'react-router'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Grid } from 'react-bootstrap'
+import { Grid, Row, Col } from 'react-bootstrap'
+import { RingLoader } from 'react-spinners'
 
 import * as tabsCreators from '../../actions/tab'
+import * as profileCreators from '../../actions/profile'
+import SettingRow from './settingRow'
 
 class SettingsTabView extends React.Component {
   componentWillMount () {
     // this.props.profileActions.()
     this.props.tabActions.changeSelectedTab('settings', 'profileTab', this.props.match.params.id, false)
+    if (!this.props.profile && !this.props.profile_fetching) {
+      this.props.profileActions.fetchProfile(this.props.match.params.id)
+    // this.props.tabActions.changeSelectedTab('profile', 'profileTab', this.props.match.params.id, false)
+    }
+  }
+
+  settingChanged (name, value) {
+    var profile = {id: this.props.profile.id}
+    profile[name] = value
+    this.props.profileActions.updateReloadProfile(profile)
   }
 
   render () {
@@ -30,7 +43,35 @@ class SettingsTabView extends React.Component {
     // }
 
     return <div>
-      SettingsTabView
+      {this.props.profile
+        ? <Grid fluid>
+          <Row style={{paddingTop: '2rem'}}>
+            <Col sm={12} md={12}>
+              <div className={'blue-title'}>
+               Sounds settings
+              </div>
+            </Col>
+          </Row>
+          <SettingRow
+            value={this.props.profile.sound_enabled}
+            onChange={(value) => { this.settingChanged('sound_enabled', value) }}
+            uuid={'units'}
+            text={'Sound effects'} />
+        </Grid>
+        : <Grid fluid>
+          <Row>
+            <Col sm={12} md={12}>
+              <div style={{height: '10rem'}}>
+                <div className='sweet-loading' style={{position: 'absolute'}}>
+                  <RingLoader
+                    color={'#1caff6'}
+                    loading={Boolean(true)}
+                  />
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Grid> }
     </div>
   }
 }
@@ -39,20 +80,27 @@ SettingsTabView.propTypes = {
   tabActions: PropTypes.shape({
     changeSelectedTab: PropTypes.func.isRequired
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
+  profileActions: PropTypes.shape({
+    fetchProfile: PropTypes.func.isRequired,
+    updateReloadProfile: PropTypes.func.isRequired
+  }).isRequired,
+  profile: PropTypes.object,
+  dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => {
   return {
     // tab: tab: state.tabs.profileTab,
-    // classroomStudentList: state.classroom.classroomStudentList
+    profile: state.profile.profile,
+    profile_fetching: state.profile.fetching
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    tabActions: bindActionCreators(tabsCreators, dispatch)
+    tabActions: bindActionCreators(tabsCreators, dispatch),
+    profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 
