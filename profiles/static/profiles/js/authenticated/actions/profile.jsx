@@ -1,6 +1,6 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_PROFILE_PREFIX } from '../utils/config'
-import { PROFILE_RECEIVE_ME, PROFILE_RECEIVE_PROFILE } from '../constants'
+import { PROFILE_RECEIVE_ME, PROFILE_RECEIVE_PROFILE, PROFILE_FETCHING_PROFILE } from '../constants'
 
 export function receiveProfileMe (me) {
   return {
@@ -30,12 +30,23 @@ export function receiveProfile (profile) {
   }
 }
 
+export function fetchingProfile (state) {
+  return {
+    type: PROFILE_FETCHING_PROFILE,
+    payload: {
+      fetching: state
+    }
+  }
+}
+
 export function fetchProfile (id) {
   return (dispatch, state) => {
+    dispatch(fetchingProfile(true))
     return getAxios().get(API_PROFILE_PREFIX + id + '/')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveProfile(response.data))
+        dispatch(fetchingProfile(false))
       })
   }
 }
