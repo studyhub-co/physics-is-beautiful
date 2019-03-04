@@ -1,0 +1,13 @@
+#navTopOfScreen {
+    background: black;
+}
+
+
+.nav.navbar-nav.nav-pills a:hover{
+    background: #333;
+    color: white;
+}
+
+body {
+    background-color: white;
+}

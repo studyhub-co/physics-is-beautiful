@@ -694,13 +694,43 @@ img.grayed-out-img {
 }
 
 /* homepage */
+.homepage-sheet {
+    padding: 0;
+}
+
 .homepage-sheet h1 {
     font-size: 3em;
+    margin: 0;
 }
 
 .homepage-shadow-container {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 10px;
 }
 
+.homepage-demo {
+    width: 100%;
+    min-height: 500px;
+    border: none;
+}
+
+.homepage-featured-image-section  {
+    background-image: url('images/homepage-background-image.jpg');
+    padding: 2em;
+    color: lightgray;
+}
+
+.homepage-section-2 {
+    background-color: white;
+}
+
+#navTopOfScreen {
+    margin: 0;
+    border: none;
+}
+
+.homepage-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
