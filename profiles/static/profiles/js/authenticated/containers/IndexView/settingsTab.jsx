@@ -14,11 +14,9 @@ import SettingRow from './settingRow'
 
 class SettingsTabView extends React.Component {
   componentWillMount () {
-    // this.props.profileActions.()
     this.props.tabActions.changeSelectedTab('settings', 'profileTab', this.props.match.params.id, false)
     if (!this.props.profile && !this.props.profile_fetching) {
       this.props.profileActions.fetchProfile(this.props.match.params.id)
-    // this.props.tabActions.changeSelectedTab('profile', 'profileTab', this.props.match.params.id, false)
     }
   }
 

@@ -21,9 +21,9 @@
 
                     {# <h6 class="text-muted post-score">{% postScore node.score %}</h6> #}
                     <h6>
-                        {% postDate node.modified_on %}
 {#                      {% if node.created_on != node.modified_on %}#}
                         {% if node.modified_on %}
+                            {% postDate node.modified_on %}
                             (edited)
                         {% endif %}
                     </h6>
