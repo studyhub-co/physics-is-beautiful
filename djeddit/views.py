@@ -19,6 +19,7 @@ from django.conf import settings
 # Third-party app imports
 from ipware.ip import get_ip
 from meta.views import Meta
+from notifications.signals import notify
 
 # Imports from our apps
 from djeddit.forms import TopicForm, ThreadForm, PostForm
@@ -331,6 +332,10 @@ def replyPost(request, post_uid=''):
                 post.created_by = request.user
             post.save()
             repliedPost.children.add(post)
+
+            if request.user != repliedPost.created_by:
+                notify.send(request.user, recipient=repliedPost.created_by, verb='replied to your comment in thread',
+                            target=thread, action_object=post)
 
         url = thread.relativeUrl
 

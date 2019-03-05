@@ -68,7 +68,7 @@ def postVoteClicked(user, post, upvote):
             userPostVote = post.current_user_post_votes[0]
         else:
             # originally by djeedit
-            userPostVote = UserPostVote.objects.get(user=user, post=post)
+            userPostVote = UserPostVote.objects.get(user=user, post=post) # FIXME ! generates too much sqk queries in template!
         if (userPostVote.val == 1 and upvote) or (userPostVote.val == -1 and not upvote):
             return 'color-primary'
     except (IndexError, UserPostVote.DoesNotExist):
