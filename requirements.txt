@@ -50,3 +50,4 @@ django-haystack==2.8.1
 django-vote==2.1.7
 django-reversion==3.0.2
 django-cors-headers==2.4.0
+django-model-utils==3.1.2
