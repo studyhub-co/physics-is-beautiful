@@ -1,13 +1,19 @@
-/* #navTopOfScreen {
-    background: black;
+#navTopOfScreen {
+    background: #111;
 }
 
 
 .nav.navbar-nav.nav-pills a:hover{
     background: #333;
     color: white;
-} */
+}
 
 body {
     background-color: white;
+}
+
+.homepage-featured-image-section  {
+    background-image: url('images/deep-space.jpg');
+    padding: 2em;
+    color: black;
 }
