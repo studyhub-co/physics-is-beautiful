@@ -53,7 +53,7 @@ export default class AuthSignUp extends React.Component {
           </div>
           <div className='modal-footer'>
   Already have an account? &nbsp;
-            <a href='#' onClick={() => { this.setState({'mode': 'login'}) }}>Login »</a>
+            <button onClick={() => { this.setState({'mode': 'login'}) }}>Login »</button>
           </div>
         </div>
       )
@@ -101,7 +101,7 @@ export default class AuthSignUp extends React.Component {
           </div>
           <div className='modal-footer'>
                 Don't have an account? &nbsp;
-            <a href='#' onClick={() => { this.setState({'mode': 'signup'}) }}>Sign Up &raquo;</a>
+            <button onClick={() => { this.setState({'mode': 'signup'}) }}>Sign Up &raquo;</button>
           </div>
         </div>
       )

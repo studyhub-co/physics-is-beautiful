@@ -1,10 +1,10 @@
 #navTopOfScreen {
-    background: #111;
+    background: rgba(0, 0, 0, 0);
 }
 
 
 .nav.navbar-nav.nav-pills a:hover{
-    background: #333;
+    background: #222;
     color: white;
 }
 

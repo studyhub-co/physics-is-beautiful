@@ -696,6 +696,10 @@ img.grayed-out-img {
 /* homepage */
 .homepage-sheet {
     padding: 0;
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .homepage-sheet h1 {
@@ -716,6 +720,12 @@ img.grayed-out-img {
 
 .homepage-featured-image-section {
     color: white !important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
 }
 
 .homepage-featured-image-section  .modal-content {
@@ -726,8 +736,20 @@ img.grayed-out-img {
 .modal-content .blur-wrap {
 }
 
+.homepage-section-1 {
+    background-color: lightblue;
+}
+
 .homepage-section-2 {
     background-color: white;
+}
+
+.homepage-section-3 {
+    background-color: lightslategray;
+}
+
+.homepage-section-3 .modal-content {
+    margin: 1em;
 }
 
 #navTopOfScreen {
@@ -738,6 +760,16 @@ img.grayed-out-img {
 .homepage-wrapper {
     max-width: 800px;
     margin: 0 auto;
+}
+
+.homepage-section-footer {
+    text-align: center;
+    margin: 2rem auto 1rem auto;
+}
+
+.homepage-section-footer ul li {
+    display: inline;
+    margin: 5px;
 }
 
 #getStartedButton {
