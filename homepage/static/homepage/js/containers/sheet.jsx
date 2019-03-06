@@ -14,14 +14,16 @@ export default class Sheet extends React.Component {
             <Row style={{width: '100%'}}>
               <Col md={6}>
                 <div className='homepage-shadow-container modal-content'>
-                  <p>What do we offer?</p>
-                  <ul>
-                    <li>Free courses to learn physics</li>
-                    <li>Tools for teachers to provide practice for their students</li>
-                    <li>Create your own course, and fork existing courses</li>
-                    <li>Discuss physics on our forum</li>
-                    <li>Resources and solutions to physics problems</li>
-                  </ul>
+                  <div className='blur-wrap'>
+                    <p>What do we offer?</p>
+                    <ul>
+                      <li>Free courses to learn physics</li>
+                      <li>Tools for teachers to provide practice for their students</li>
+                      <li>Create your own course, and fork existing courses</li>
+                      <li>Discuss physics on our forum</li>
+                      <li>Resources and solutions to physics problems</li>
+                    </ul>
+                  </div>
                 </div>
               </Col>
               <Col md={6}>

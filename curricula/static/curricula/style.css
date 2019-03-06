@@ -714,15 +714,16 @@ img.grayed-out-img {
     border: none;
 }
 
-.homepage-featured-image-section  {
-    background-image: url('images/homepage-background-image.png');
-    padding: 2em;
-    color: black;
+.homepage-featured-image-section {
+    color: white !important;
 }
 
 .homepage-featured-image-section  .modal-content {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: black;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white !important;
+}
+
+.modal-content .blur-wrap {
 }
 
 .homepage-section-2 {
