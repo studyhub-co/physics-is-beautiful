@@ -239,7 +239,7 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
                          queryset=TextBookProblem.objects.
                                   annotate(count_solutions=Count('solutions', distinct=True)))
                          )\
-        .prefetch_related('sections__problems__solutions__posted_by')\
+        .prefetch_related('sections__problems__solutions__posted_by__user')\
         .prefetch_related('sections__problems__solutions__pdf')
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
@@ -340,11 +340,13 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
             # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
             if new_thread:
                 # save new thread in Resource
-                Resource.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread = new_thread)
+                Resource.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread=new_thread)
             else:
                 Resource.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
 
-        return super(ResourceViewSet, self).retrieve(request, *args, **kwargs)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+        # return super(ResourceViewSet, self).retrieve(request, *args, **kwargs)
 
 
 
