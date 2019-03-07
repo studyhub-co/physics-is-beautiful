@@ -22,14 +22,19 @@ module.exports = function (env) {
       // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
     },
 
-    plugins: [
+    plugins: this.mode === 'production' ? [
       new BundleTracker({filename: './webpack-stats.json'}),
       new webpack.DefinePlugin({
         'process.env': {
           'NODE_ENV': JSON.stringify((env && 'NODE_ENV' in env) ? env.NODE_ENV : 'production')
         }
       }),
-    ],
+      new webpack.optimize.UglifyJsPlugin(), // minify everything
+      new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
+    ]
+      : [
+        new BundleTracker({filename: './webpack-stats.json'})
+      ],
 
     module: {
       loaders: [

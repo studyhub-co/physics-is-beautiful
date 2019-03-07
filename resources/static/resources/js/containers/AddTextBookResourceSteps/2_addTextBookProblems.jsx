@@ -4,7 +4,10 @@ import React from 'react'
 // import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
+import Col from 'react-bootstrap/lib/Col'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Row from 'react-bootstrap/lib/Row'
+import Button from 'react-bootstrap/lib/Button'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 

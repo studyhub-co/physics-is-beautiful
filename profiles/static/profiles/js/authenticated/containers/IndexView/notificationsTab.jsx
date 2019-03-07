@@ -5,7 +5,11 @@ import { Route } from 'react-router'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Grid, Row, Col } from 'react-bootstrap'
+import Col from 'react-bootstrap/lib/Col'
+import Grid from 'react-bootstrap/lib/Grid'
+import Row from 'react-bootstrap/lib/Row'
+import ListGroup from 'react-bootstrap/lib/ListGroup'
+import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
 import { RingLoader } from 'react-spinners'
 import InfiniteScroll from 'react-infinite-scroller'
 import Moment from 'react-moment'
@@ -63,19 +67,20 @@ class NotificationsTabView extends React.Component {
 
         items.push(
           <Row key={currentItem.slug}>
-            <Col sm={1} md={1}>
+            <Col sm={2} md={2}>
               {/*<Moment fromNow>*/}
               {currentItem['timesince']}
               {/*</Moment>*/}
             </Col>
-            <Col sm={3} md={3}>
+            <Col sm={2} md={2}>
               <Profile profile={currentItem['actor']} />
             </Col>
             <Col sm={3} md={3}>
-              {currentItem['unread']
-                ? <b>{currentItem['verb']}</b>
-                : <span>{currentItem['verb']}</span>
-              }
+              {/*{currentItem['unread']*/}
+                {/*? <b>{currentItem['verb']}</b>*/}
+                {/*: */}
+              <span>{currentItem['verb']}</span>
+              {/*}*/}
             </Col>
             <Col sm={3} md={3}>
               { currentItem['target']['content_type'] === 'thread'
@@ -89,32 +94,42 @@ class NotificationsTabView extends React.Component {
     }
 
     return <div>
-      {this.props.notifications
-        ? <Grid fluid>
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={this.loadNextPage}
-            hasMore={this.state.hasMoreItems}
-            loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
-          >
-            {items}
-          </InfiniteScroll>
-        </Grid>
-        : <Grid fluid>
-          <Row>
-            <Col sm={12} md={12}>
-              <div style={{height: '10rem'}}>
-                <div className='sweet-loading' style={{position: 'absolute'}}>
-                  <RingLoader
-                    color={'#1caff6'}
-                    loading={Boolean(true)}
-                  />
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </Grid>
-      }
+      <Grid fluid>
+        <Row style={{padding: '2rem 0 0 0'}}>
+          <Col sm={2} md={2}>
+           {/*<Button>Unread</Button>*/}
+           {/*<Button>Read</Button>*/}
+            <ListGroup>
+              <ListGroupItem action href=''>Read</ListGroupItem>
+              <ListGroupItem action href='unread/'>Unread</ListGroupItem>
+            </ListGroup>
+          </Col>
+          <Col sm={10} md={10}>
+            {this.props.notifications
+              ? <InfiniteScroll
+                pageStart={0}
+                loadMore={this.loadNextPage}
+                hasMore={this.state.hasMoreItems}
+                loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
+              >
+                {items}
+              </InfiniteScroll>
+              : <Row>
+                <Col sm={12} md={12}>
+                  <div style={{height: '10rem'}}>
+                    <div className='sweet-loading' style={{position: 'absolute'}}>
+                      <RingLoader
+                        color={'#1caff6'}
+                        loading={Boolean(true)}
+                      />
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            }
+          </Col>
+        </Row>
+      </Grid>
     </div>
   }
 }
