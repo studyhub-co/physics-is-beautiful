@@ -31,7 +31,7 @@ module.exports = function (env) {
           'NODE_ENV': JSON.stringify(MODE)
         }
       }),
-      new webpack.optimize.UglifyJsPlugin(), // minify everything
+      // new webpack.optimize.UglifyJsPlugin(), // minify everything
       new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
     ]
       : [
