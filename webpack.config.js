@@ -3,6 +3,8 @@ var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
 
 module.exports = function (env) {
+  const MODE = (env && 'NODE_ENV' in env) ? env.NODE_ENV : 'production'
+
   return {
     context: __dirname,
 
@@ -22,11 +24,11 @@ module.exports = function (env) {
       // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
     },
 
-    plugins: this.mode === 'production' ? [
+    plugins: MODE === 'production' ? [
       new BundleTracker({filename: './webpack-stats.json'}),
       new webpack.DefinePlugin({
         'process.env': {
-          'NODE_ENV': JSON.stringify((env && 'NODE_ENV' in env) ? env.NODE_ENV : 'production')
+          'NODE_ENV': JSON.stringify(MODE)
         }
       }),
       new webpack.optimize.UglifyJsPlugin(), // minify everything
