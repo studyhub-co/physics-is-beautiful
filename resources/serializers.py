@@ -48,6 +48,12 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
     def get_count_comments(self, obj):
         count_comments = 0
 
+        view_class_name = self.context['view'].__class__.__name__
+
+        # do not run sql query is resource view
+        if view_class_name == 'ResourceViewSet':
+            return count_comments
+
         if hasattr(obj, 'thread') and obj.thread:
             count_comments = obj.thread.op.get_descendant_count()
 
