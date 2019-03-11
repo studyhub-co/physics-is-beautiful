@@ -8,11 +8,14 @@ import { connect } from 'react-redux'
 import Col from 'react-bootstrap/lib/Col'
 import Grid from 'react-bootstrap/lib/Grid'
 import Row from 'react-bootstrap/lib/Row'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ListGroup from 'react-bootstrap/lib/ListGroup'
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
 import { RingLoader } from 'react-spinners'
 import InfiniteScroll from 'react-infinite-scroller'
 import Moment from 'react-moment'
+
+import history from '../../history'
 
 import * as tabsCreators from '../../actions/tab'
 import * as notificationsCreators from '../../actions/notifications'
@@ -30,14 +33,27 @@ class NotificationsTabView extends React.Component {
     }
 
     this.loadNextPage = this.loadNextPage.bind(this)
+    this.onFilterClick = this.onFilterClick.bind(this)
+    this.markAs = this.markAs.bind(this)
   }
 
   componentWillMount () {
-    this.props.tabActions.changeSelectedTab('notifications', 'profileTab', this.props.match.params.id, false)
     // if (!this.props.profile && !this.props.profile_fetching) {
     //   this.props.profileActions.fetchProfile(this.props.match.params.id)
     // }
-    this.props.notificationsActions.fetchNotifications()
+    // var path = this.props.match.path
+    // if (path.indexOf('/notifications/', path.length - '/notifications/'.length) !== -1) {
+    if (!this.props.match.params.hasOwnProperty('filter') || this.props.match.params['filter'] !== 'read') {
+      this.props.notificationsActions.fetchNotifications(null, {'filter': 'unread'})
+      this.props.tabActions.changeSelectedTab('notifications', 'profileTab', this.props.match.params.id, false)
+    }
+
+    // console.log(this.props.match.params);
+    // if (path.indexOf('/notifications/read/', path.length - '/notifications/read/'.length) !== -1) {
+    if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
+      this.props.notificationsActions.fetchNotifications(null, {'filter': 'read'})
+      this.props.tabActions.changeSelectedTab('notifications', 'profileTab', this.props.match.params.id, false, 'read')
+    }
   }
 
   componentWillReceiveProps (nexProps) {
@@ -59,14 +75,45 @@ class NotificationsTabView extends React.Component {
     }
   }
 
+  onFilterClick (filter) {
+    if (filter === 'unread') {
+      if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
+        var unReadUrl = this.props.match.url.replace(/read\/$/, '');
+        history.push(unReadUrl)
+      }
+    }
+    if (filter === 'read') {
+      if (!this.props.match.params.hasOwnProperty('filter') || this.props.match.params['filter'] !== 'read') {
+        var readUrl = this.props.match.url + 'read/'
+        history.push(readUrl)
+      }
+    }
+  }
+
+  markAs (id) {
+    // remove from this.state.notifications
+    var notifications = this.state.notifications.filter(obj => obj.id !== id)
+    this.setState({notifications: notifications})
+    if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
+      this.props.notificationsActions.markAsRead({id: id}, 'unread')
+    } else {
+      this.props.notificationsActions.markAsRead({id: id}, 'read')
+    }
+  }
+
   render () {
     var items = []
+    var markAsTitle = 'read'
+    if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
+      markAsTitle = 'unread'
+    }
+
     if (this.props.notifications) {
       for (var i = 0; i < this.state.notifications.length; i++) {
         var currentItem = this.state.notifications[i]
 
         items.push(
-          <Row key={currentItem.slug}>
+          <Row key={currentItem.id}>
             <Col sm={2} md={2}>
               {/*<Moment fromNow>*/}
               {currentItem['timesince']}
@@ -88,6 +135,13 @@ class NotificationsTabView extends React.Component {
                 : null
               }
             </Col>
+            <Col sm={1} md={1}>
+              <Glyphicon
+                glyph={'ok'}
+                onClick={() => this.markAs(currentItem.id)}
+                title={'Mark as ' + markAsTitle}
+                style={{fontSize: '1.5rem', cursor: 'pointer'}} />
+            </Col>
           </Row>
         )
       }
@@ -100,8 +154,16 @@ class NotificationsTabView extends React.Component {
            {/*<Button>Unread</Button>*/}
            {/*<Button>Read</Button>*/}
             <ListGroup>
-              <ListGroupItem action href=''>Read</ListGroupItem>
-              <ListGroupItem action href='unread/'>Unread</ListGroupItem>
+              <ListGroupItem
+                onClick={() => this.onFilterClick('unread')}
+                action
+                style={{cursor: 'pointer',
+                  backgroundColor: markAsTitle === 'read' ? 'rgb(8, 209, 255)' : null}}>Unread</ListGroupItem>
+              <ListGroupItem
+                onClick={() => this.onFilterClick('read')}
+                action
+                style={{cursor: 'pointer',
+                  backgroundColor: markAsTitle === 'unread' ? 'rgb(8, 209, 255)' : null}}>Read</ListGroupItem>
             </ListGroup>
           </Col>
           <Col sm={10} md={10}>
@@ -143,7 +205,8 @@ NotificationsTabView.propTypes = {
   //   updateReloadProfile: PropTypes.func.isRequired
   // }).isRequired,
   notificationsActions: PropTypes.shape({
-    fetchNotifications: PropTypes.func.isRequired
+    fetchNotifications: PropTypes.func.isRequired,
+    markAsRead: PropTypes.func.isRequired
   }).isRequired,
   profile: PropTypes.object,
   profile_fetching: PropTypes.bool,

@@ -74,5 +74,5 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         # fields = ('recipient', 'slug', 'target', 'actor', 'unread', 'level', 'verb', 'action_object', 'timesince', 'description')
-        fields = ('recipient', 'slug', 'actor', 'unread', 'level', 'verb', 'action_object', 'timesince', 'description', 'target')
+        fields = ('recipient', 'id', 'actor', 'unread', 'level', 'verb', 'action_object', 'timesince', 'description', 'target')
         model = Notification

@@ -48,3 +48,11 @@ export function slugify (text, separator) {
 
   return text
 }
+
+export function dictToURI (dict) {
+  var str = []
+  for (var p in dict) {
+    str.push(encodeURIComponent(p) + '=' + encodeURIComponent(dict[p]))
+  }
+  return str.join('&')
+}
