@@ -68,7 +68,7 @@ class IndexView extends React.Component {
             {this.props.profile && this.props.profile.is_current_user_profile
               ? <TabContent for='notifications'>
                 <Route exact path={profileNotificationsUrl} component={NotificationsTabView} />
-                <Route exact path={profileNotificationsUrl + 'unread/'} component={NotificationsTabView} />
+                <Route exact path={profileNotificationsUrl + ':filter/'} component={NotificationsTabView} />
               </TabContent> : null }
           </div>
         </Tabs>
