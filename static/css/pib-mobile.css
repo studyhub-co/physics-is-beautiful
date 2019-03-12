@@ -12,6 +12,11 @@ body > #react-app {
   -webkit-overflow-scrolling: touch;
 } */
 
+body {
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
 .problem-sheet {
   height: calc(100vh - 70px);
 }
