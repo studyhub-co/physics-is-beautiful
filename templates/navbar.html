@@ -10,6 +10,10 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'curricula/images/favicon/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'curricula/navbar.css' %}" />
 
+    {% if request.GET.pib_mobile %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/pib-mobile.css' %}" />
+    {% endif %}
+
     {# Pass on variables to react #}
     <script>
         {% if request.GET.pib_mobile %}
