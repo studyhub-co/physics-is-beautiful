@@ -17,7 +17,6 @@ export default class Sheet extends React.Component {
         <div className='homepage-section-1'>
           <div className='homepage-wrapper homepage-wrapper-white'>
             <h2>Features</h2>
-            <p>What do we offer?</p>
             <ListGroup>
               <li className='list-group-item'>Free courses to learn physics</li>
               <li className='list-group-item'>Tools for teachers to provide practice for their students</li>
@@ -29,7 +28,7 @@ export default class Sheet extends React.Component {
         </div>
         <div className='homepage-section-2'>
           <div className='homepage-wrapper homepage-wrapper-white'>
-            <h2>Try a demo</h2>
+            <h2>Try it out</h2>
             <iframe className='homepage-demo' src='/curriculum/lessons/4nXkRtEGMqGnNvcpLDfXmV/?pib_mobile=true' />
           </div>
         </div>
