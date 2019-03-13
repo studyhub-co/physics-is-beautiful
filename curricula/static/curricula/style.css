@@ -148,9 +148,8 @@ html, body {
     /*bottom: 0;*/
     float: left;
     font-family: Museosansrounded;
-    padding-bottom: 0px;
+    padding-bottom: 6px;
     width: 90vw;
-    position: fixed;
     bottom: 4px;
 }
 
@@ -379,7 +378,7 @@ img.grayed-out-img {
 
 #checkContainer {
     padding-top: 6px;
-    padding-bottom: 20px;
+    padding-bottom: 6px;
 }
 
 #checkButton {
