@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 from django.urls import reverse
 
+
 class BaseModel(models.Model):
 
     class Meta:
@@ -33,6 +34,7 @@ class Profile(BaseModel):
     gravatar_url = models.URLField(null=True, blank=True)
     google_avatar_url = models.URLField(null=True, blank=True)
     selected_avatar = models.CharField(choices=AVATAR_CHOICES, null=True, blank=True, max_length=1)
+    profile_views = models.PositiveIntegerField(null=True, blank=True)
 
     @property
     def get_avatar_url(self):

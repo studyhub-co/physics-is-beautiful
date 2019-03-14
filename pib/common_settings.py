@@ -98,6 +98,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'admin_reorder.middleware.ModelAdminReorder',
+    'pib_auth.middleware.LastUserActivityMiddleware'
 ]
 
 ADMIN_REORDER = (
@@ -224,6 +225,7 @@ SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialAccountAdapter'
 
 LOGIN_REDIRECT_URL = 'pib_auth:login-next'
 
+USER_LAST_ACTIVITY_INTERVAL_SECS = 120
 
 MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT')
 MEDIA_URL = '/media/'

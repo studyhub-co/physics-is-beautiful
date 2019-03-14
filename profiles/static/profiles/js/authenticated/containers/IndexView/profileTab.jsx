@@ -238,6 +238,21 @@ class ProfileTabView extends React.Component {
                   </Moment>
                 </Col>
               </Row>
+              <Row>
+                <Col sm={12} md={12}>
+                  <Glyphicon
+                    glyph={'eye-open'} /> {this.props.profile.profile_views || 0} profile views
+                </Col>
+              </Row>
+              { this.props.profile.last_activity
+                ? <Row>
+                  <Col sm={12} md={12}>
+                    <Glyphicon
+                      glyph={'time'} /> Last seen <Moment fromNow>
+                      {this.props.profile.last_activity}
+                    </Moment>
+                  </Col>
+                </Row> : null }
             </Col>
           </Row>
         </Grid>
