@@ -9,6 +9,7 @@ from django_gravatar.helpers import get_gravatar_url, has_gravatar
 # from allauth.socialaccount.signals import social_account_updated # TOO old version django-allauth
 # from allauth.account.signals import user_signed_up, user_logged_in
 
+
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:

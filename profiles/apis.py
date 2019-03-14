@@ -1,10 +1,14 @@
+from django.db.models import F
+
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework import permissions, status, mixins, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ParseError
+from rest_framework.response import Response
 
+from piblib.search_engines import is_search_engine_bot
 
 from .models import Profile
 from .serializers import ProfileSerializer, PublicProfileSerializer
@@ -24,6 +28,17 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
     #     if request.user.is_authenticated():
     #         return request.user.profile
     #     return request.user
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not is_search_engine_bot(request):
+            if instance.profile_views:
+                instance.profile_views = F('profile_views')+1
+            else:
+                instance.profile_views = 1
+            instance.save(update_fields=["profile_views"])
+            instance.refresh_from_db()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     # show full serializer only for current user
     def get_serializer_class(self, *args, **kwargs):
