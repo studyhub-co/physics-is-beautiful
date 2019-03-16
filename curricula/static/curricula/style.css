@@ -134,6 +134,7 @@ html, body {
     border-radius: 0;
     padding-left: 5vw;
     padding-right: 5vw;
+    height: 75px;
 }
 
 .progress{

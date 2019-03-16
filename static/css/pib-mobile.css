@@ -20,7 +20,3 @@ body {
 .problem-sheet {
   height: calc(100vh - 70px);
 }
-
-#footer {
-  position: relative !important;
-}
