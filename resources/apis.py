@@ -246,6 +246,17 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
     # search_fields = ['title', ] # title is in metadata
     casting_search_fields = ['metadata__data', ]
 
+    def get_queryset(self):
+
+        queryset = self.queryset
+
+        if self.action == 'list':
+            queryset = Resource.objects.all(). \
+                order_by('-created_on'). \
+                select_related('metadata', 'owner')
+
+        return queryset
+
     @action(methods=['POST'],
             detail=False,
             permission_classes=[permissions.IsAuthenticated, ],
