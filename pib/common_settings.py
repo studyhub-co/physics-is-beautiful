@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'mptt',
     'djeddit',
+    'badges',
     'meta',
     'classroom',
     'resources',

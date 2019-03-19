@@ -279,3 +279,6 @@ class UserPostVote(NamedModel):
     # post = models.ForeignKey(Post, related_name='+', on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name='user_post_votes', on_delete=models.CASCADE)
     val = IntegerRangeField(blank=True, default=0, min_value=-1, max_value=1)
+
+
+from .meta_badges import FirstPost
