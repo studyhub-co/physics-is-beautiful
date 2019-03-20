@@ -55,4 +55,4 @@ django-reversion==3.0.2
 django-cors-headers==2.4.0
 django-model-utils==3.1.2
 django-user_agents==0.3.2
-future=0.17.1
+future==0.17.1
