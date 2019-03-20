@@ -25,6 +25,16 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
     queryset = Profile.objects.filter(user__is_active=True)
     serializer_class = PublicProfileSerializer
 
+    # def initialize_request(self, request, *args, **kwargs):
+    #     # fix for user__id lookup_field
+    #     if self.lookup_field in kwargs.keys():
+    #         try:
+    #             int(kwargs[self.lookup_field])
+    #         except ValueError:
+    #             raise ValidationError('id should be integer')
+    #
+    #     return super().initialize_request(request, *args, **kwargs)
+
     # @action(methods=['GET'], detail=False)
     # def me(self, request):
     #     if request.user.is_authenticated():
