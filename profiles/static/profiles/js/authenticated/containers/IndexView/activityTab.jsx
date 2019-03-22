@@ -41,10 +41,12 @@ class ActivityTabView extends React.Component {
         <Col sm={12} md={12}>
           {this.props.badges
             // TODO sort by level
-            ? <div> { this.props.badges.map(function (badge, i) {
+            ? <div>
+              { this.props.badges.length === 0 ? <span>No badges</span> : null }
+              { this.props.badges.map(function (badge, i) {
               // TODO create badge component
-              return <span key={badge.id}>{badge.title}</span>
-            }) }
+                return <span key={badge.id}>{badge.title}</span>
+              }) }
             </div>
             : null }
         </Col>

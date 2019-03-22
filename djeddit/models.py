@@ -281,4 +281,4 @@ class UserPostVote(NamedModel):
     val = IntegerRangeField(blank=True, default=0, min_value=-1, max_value=1)
 
 
-from .meta_badges import FirstPost
+from .meta_badges import *
