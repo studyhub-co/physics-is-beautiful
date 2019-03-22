@@ -13,3 +13,5 @@ __all__ = ["get_earliest_gap", "BaseModel",
            "LessonProgress",
            "CurriculumUserDashboard"
            ]
+
+from ..meta_badges import *
