@@ -137,6 +137,10 @@ html, body {
     height: 75px;
 }
 
+#footer .row {
+    padding-bottom: 10px;
+}
+
 .progress{
     background: rgba(255, 255, 255, 1);
     border: 1px solid rgba(214, 214, 214, 1);
