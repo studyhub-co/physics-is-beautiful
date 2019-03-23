@@ -73,11 +73,11 @@ html, body {
     position: relative;
     width: 80%;
     margin-top: 20px;
-    border-radius: 2px;
+    border-radius: 20px;
     padding: 30px 60px;
     height: 80%;
     background-color: white;
-    box-shadow: 0 0 2px #d8d8d8;
+    box-shadow: 0 0 5px #d8d8d8;
     margin-bottom: 20px;
     height: auto;
 }
@@ -149,6 +149,7 @@ html, body {
     height: 12px;
 }
 .progress-bottom-container{
+    position: absolute;   
     display: inline-block;
     /*bottom: 0;*/
     float: left;
@@ -323,24 +324,18 @@ img.grayed-out-img {
 
 .curriculum .col-md-1 {
     border-radius: 5px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: rgba(0, 0, 0, 0);
+    border: 1px solid #dadce0; 
     margin: 10px;
     margin-right: 35px;
-    padding: 0px;
+    padding: 6px;
     display: inline-block;
     width: 150px;
     color: #666666;
-    box-shadow: 0px 0px 2px #BBB;
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
-    background: #eee;
+    box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.15);
 }
 .curriculum .col-md-1:hover {
-    color: #1caff6;
-    border-style: solid;
-    border-color:#1caff6;
-    box-shadow: 0px 0px 16px #BBB;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
 }
 
 .curriculum .col-md-1.disabled {
