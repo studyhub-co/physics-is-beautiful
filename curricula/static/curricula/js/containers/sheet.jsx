@@ -56,6 +56,7 @@ class QuestionSheet extends React.Component {
   clearAnswerContinue () {
     // TODO now we can remove all updateAnswer(null) in child answers
     this.updateAnswer(null)
+    window.scrollTo(0, 0)
     this.props.continueAction()
   }
 
@@ -77,6 +78,7 @@ class QuestionSheet extends React.Component {
   }
 
   checkAnswer () {
+    window.scrollTo(0, document.body.scrollHeight)
     if (this.answer) {
       this.setState({
         questionShouldUpdate: true

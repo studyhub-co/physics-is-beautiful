@@ -14,6 +14,10 @@ def homepage(request):
     return render(request, 'homepage/homepage.html')
 
 
+def homepage2(request):
+    return render(request, 'homepage/homepage2.html')
+
+
 def About(request):
     return render(request, 'homepage/about.html')
 

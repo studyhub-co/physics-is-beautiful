@@ -73,11 +73,11 @@ html, body {
     position: relative;
     width: 80%;
     margin-top: 20px;
-    border-radius: 15px;
+    border-radius: 20px;
     padding: 30px 60px;
     height: 80%;
     background-color: white;
-    box-shadow: 0 0 10px #d8d8d8;
+    box-shadow: 0 0 5px #d8d8d8;
     margin-bottom: 20px;
     height: auto;
 }
@@ -134,6 +134,11 @@ html, body {
     border-radius: 0;
     padding-left: 5vw;
     padding-right: 5vw;
+    height: 75px;
+}
+
+#footer .row {
+    padding-bottom: 10px;
 }
 
 .progress{
@@ -144,13 +149,13 @@ html, body {
     height: 12px;
 }
 .progress-bottom-container{
+    position: absolute;   
     display: inline-block;
     /*bottom: 0;*/
     float: left;
     font-family: Museosansrounded;
-    padding-bottom: 0px;
+    padding-bottom: 6px;
     width: 90vw;
-    position: fixed;
     bottom: 4px;
 }
 
@@ -319,23 +324,18 @@ img.grayed-out-img {
 
 .curriculum .col-md-1 {
     border-radius: 5px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: rgba(0, 0, 0, 0);
+    border: 1px solid #dadce0; 
     margin: 10px;
     margin-right: 35px;
-    padding: 0px;
+    padding: 6px;
     display: inline-block;
     width: 150px;
     color: #666666;
-    box-shadow: 0px 0px 10px #BBB;
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
+    box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.15);
 }
 .curriculum .col-md-1:hover {
-    color: #1caff6;
-    border-style: solid;
-    border-color:#1caff6;
-    box-shadow: 0px 0px 16px #BBB;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
 }
 
 .curriculum .col-md-1.disabled {
@@ -378,7 +378,7 @@ img.grayed-out-img {
 
 #checkContainer {
     padding-top: 6px;
-    padding-bottom: 20px;
+    padding-bottom: 6px;
 }
 
 #checkButton {
@@ -690,4 +690,95 @@ img.grayed-out-img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* homepage */
+.homepage-sheet {
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.homepage-sheet h1 {
+    font-size: 3em;
+    margin: 0;
+    font-family: "Museosansrounded", sans-serif;
+}
+
+.homepage-shadow-container {
+    padding: 10px;
+}
+
+.homepage-demo {
+    width: 100%;
+    min-height: 600px;
+    border: none;
+}
+
+.homepage-featured-image-section {
+    color: white !important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.homepage-featured-image-section  .modal-content {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white !important;
+}
+
+.modal-content .blur-wrap {
+}
+
+.homepage-section-1 {
+    background-color: lightblue;
+}
+
+.homepage-section-2 {
+    background-color: white;
+}
+
+.homepage-section-3 {
+    background-color: lightslategray;
+}
+
+.homepage-section-3 .modal-content {
+    margin: 1em;
+}
+
+#navTopOfScreen {
+    margin: 0;
+    border: none;
+}
+
+.homepage-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.homepage-section-footer {
+    text-align: center;
+    margin: 2rem auto 1rem auto;
+}
+
+.homepage-section-footer ul li {
+    display: inline;
+    margin: 5px;
+}
+
+#getStartedButton {
+    margin: 4em auto 5px auto;
+    display: table;
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 1rem 4rem 1rem 4rem;
+    border: white;
+    box-shadow: 0 2px 2px rgba(0,0,0,.5);
 }
