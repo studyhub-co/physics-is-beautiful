@@ -8,7 +8,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.response import Response
 
-from badges.serializers import BadgeToUserSerializer
+from badges.models import Badge
+from badges.serializers import BadgeSerializer
 
 from piblib.search_engines import is_search_engine_bot
 
@@ -67,12 +68,16 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
     @action(methods=['GET'],
             detail=True,)
     def badges(self, request, user__id):
-        from badges.models import BadgeToUser
-        badges = BadgeToUser.objects.filter(user__id=user__id).\
-            select_related('badge').\
-            annotate(badge_count=Count('badge__id'))
+        # from badges.models import BadgeToUser
+        # badges = BadgeToUser.objects.filter(user__id=user__id).\
+        #     select_related('badge'). \
+        #     annotate(badge_count=Count('badge__id'))
+        # distinct('badge__id')
 
-        serializer = BadgeToUserSerializer(badges, many=True)
+        badges = Badge.objects.filter(badgetouser__user=user__id).\
+            annotate(badge_count=Count('badgetouser__user'))
+
+        serializer = BadgeSerializer(badges, many=True)
         return Response(serializer.data)
 
 
