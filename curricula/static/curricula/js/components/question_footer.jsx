@@ -2,6 +2,7 @@ import React from 'react'
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Answer} from './answers/correct_answers/correct_answer'
 import {CheckContinueButton} from './utils/check_continue_button'
+import { relative } from 'path'
 
 /* global MathJax */
 
@@ -18,8 +19,8 @@ export class Footer extends React.Component {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
 
-    let problemSheet = document.querySelectorAll('.problem-sheet')[0]
-    problemSheet.style.marginBottom = document.getElementById('footer').clientHeight + 'px'
+    // let problemSheet = document.querySelectorAll('.problem-sheet')[0]
+    // problemSheet.style.marginBottom = document.getElementById('footer').clientHeight + 'px'
   }
 
   render () {
@@ -60,7 +61,8 @@ export class Footer extends React.Component {
     }
 
     return (
-      <div id='footer' style={{backgroundColor: backgroundColor}}>
+      <div id='footer' style={{backgroundColor: backgroundColor,
+        position: (navigator.platform.match(/iPhone|iPod|iPad/) && window.IS_MOBILE_APP) ? 'relative' : 'fixed'}}>
         <div className='row'>
           <div className='col-md-6 text-center' style={{
             minHeight: (checkMarks ? '50px' : '1px'),
