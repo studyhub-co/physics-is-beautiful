@@ -45,7 +45,7 @@ class ActivityTabView extends React.Component {
               { this.props.badges.length === 0 ? <span>No badges</span> : null }
               { this.props.badges.map(function (badge, i) {
               // TODO create badge component
-                return <span key={badge.id}>{badge.title}</span>
+                return <div key={badge.id}>{badge.title} {badge.count > 1 ? 'x ' + badge.count : null}</div>
               }) }
             </div>
             : null }
