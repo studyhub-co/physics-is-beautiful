@@ -316,7 +316,7 @@ class BrowseCurriculaView extends React.Component {
               handleSelect={this.handleSelectTab}
               selectedTab={this.state.selectedTab}
             >
-              <TabLink to='Сurricula'>Curricula</TabLink>
+              <TabLink to='Сurricula'>Courses</TabLink>
               <TabLink to='Units'>Units</TabLink>
               <TabLink to='Modules'>Modules</TabLink>
               <TabLink to='Lessons'>Lessons</TabLink>
@@ -333,7 +333,7 @@ class BrowseCurriculaView extends React.Component {
                       <Row>
                         <Col sm={12} md={12}>
                           <div className={'blue-title'} style={{lineHeight: '7rem'}}>
-                                Curriculum dashboard
+                                Course dashboard
                           </div>
                           <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
                                 My recently viewed
