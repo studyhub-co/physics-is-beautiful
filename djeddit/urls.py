@@ -23,7 +23,8 @@ topic_prefix = '%s/' % settings.TOPICS_URL if settings.TOPICS_URL else ''
 
 
 urlpatterns = [
-    url(r'^$', views.discussionPage, name='discussion'),
+    # url(r'^$', views.discussionPage, name='discussion'),
+    url(r'^$', views.topicsPage, name='discussion'),
     url(r'^topics$', views.topicsPage, name='topics'),
     url(r'^lock_thread/(\d+)?/?$', views.lockThread, name='lockThread'),
     url(r'^sticky_thread/(\d+)?/?$', views.stickyThread, name='stickyThread'),
