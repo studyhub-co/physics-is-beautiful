@@ -14,7 +14,7 @@ from .models import BadgeToUser, Badge
 #         fields = ['title', 'description', 'level', 'count', 'id']
 
 class BadgeSerializer(serializers.ModelSerializer):
-    count = serializers.CharField(source='badge_count')
+    count = serializers.IntegerField(source='badge_count')
 
     class Meta:
         model = Badge

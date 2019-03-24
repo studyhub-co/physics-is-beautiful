@@ -13,6 +13,8 @@ import { Row, Col } from 'react-bootstrap/'
 import * as tabsCreators from '../../actions/tab'
 import * as profileCreators from '../../actions/profile'
 
+import Badge from '../../components/Badge'
+
 class ActivityTabView extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -45,7 +47,8 @@ class ActivityTabView extends React.Component {
               { this.props.badges.length === 0 ? <span>No badges</span> : null }
               { this.props.badges.map(function (badge, i) {
               // TODO create badge component
-                return <div key={badge.id}>{badge.title} {badge.count > 1 ? 'x ' + badge.count : null}</div>
+              //   return <div key={badge.id}>{badge.title} {badge.count > 1 ? 'x ' + badge.count : null}</div>
+                return <Badge key={badge.id} badge={badge} />
               }) }
             </div>
             : null }
