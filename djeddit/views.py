@@ -152,7 +152,7 @@ def topicPage(request, topic_title):
     else:
         form = TopicForm(instance=topic)
         showForm = False
-    threads = Thread.objects.filter(topic=topic).order_by('-is_stickied', '-op__created_on')
+    threads = Thread.objects.filter(topic=topic).order_by('-is_stickied', '-op___upvotes', '-op__created_on')[:10]
     context = dict(topic=topic, threads=threads, showCreatedBy=True, showTopic=False,
                    topicForm=form, showForm=showForm, topics=topics)
     return render(request, 'djeddit/topic.html', context)
