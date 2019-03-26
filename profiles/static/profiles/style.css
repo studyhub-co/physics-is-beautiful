@@ -325,7 +325,9 @@ div.pdf-ico {
 .profile .tab-link{
     font-size: 16px;
     font-weight: lighter !important;
-    outline:0;
+    outline: 0;
+    background-color: white;
+    border: none;
 }
 
 .profile .tabs .tab-link {

@@ -1,11 +1,12 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-import { Route } from 'react-router'
-import { push } from 'connected-react-router'
+// import { Route } from 'react-router'
+// import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Grid, Row, Col, Button, Glyphicon, Overlay, Image, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Container, Row, Col, Overlay, Image, FormGroup } from 'react-bootstrap'
+import { FaPencilAlt, FaUser, FaEye, FaClock } from 'react-icons/fa'
 import { RingLoader } from 'react-spinners'
 import Moment from 'react-moment'
 
@@ -118,12 +119,12 @@ class ProfileTabView extends React.Component {
   render () {
     return <div>
       {this.props.profile
-        ? <Grid fluid>
+        ? <Container fluid>
           <Row style={{paddingTop: '2rem'}}>
             <Col sm={2} md={2}>
               { this.props.profile.avatar_url ? <FormGroup>
                 <Image
-                  responsive
+                  fluid
                   src={this.props.profile.avatar_url}
                   rounded /></FormGroup>
                 : null }
@@ -144,9 +145,10 @@ class ProfileTabView extends React.Component {
                     onClick={this.onChangeAvatarClick}
                     ref={(node) => { this._changeImageButton = node }}
                   >
-                    <Glyphicon
-                      glyph={'pencil'}
-                      style={{fontSize: '2rem', top: '1rem'}} />
+                    {/*<Glyphicon*/}
+                      {/*glyph={'pencil'}*/}
+                      {/*style={{fontSize: '2rem', top: '1rem'}} />*/}
+                    <FaPencilAlt style={{fontSize: '2rem', cursor: 'pointer'}} />
                   </div>
                   <Overlay
                     rootClose={Boolean(true)}
@@ -178,10 +180,14 @@ class ProfileTabView extends React.Component {
                     />
                     <span style={{position: 'relative', paddingLeft: '1rem'}}>
                       <span className={'base-circle-edit'}>
-                        <Glyphicon
-                          glyph={'pencil'}
+                        {/*<Glyphicon*/}
+                          {/*glyph={'pencil'}*/}
+                          {/*onClick={this.editDisplayNameClick}*/}
+                          {/*style={{fontSize: '2rem'}} />*/}
+                        <FaPencilAlt
+                          style={{fontSize: '2rem'}}
                           onClick={this.editDisplayNameClick}
-                          style={{fontSize: '2rem'}} />
+                        />
                       </span>
                     </span>
                     </h2> }
@@ -199,10 +205,14 @@ class ProfileTabView extends React.Component {
                       />
                       <span style={{position: 'relative', paddingLeft: '1rem'}}>
                         <span className={'base-circle-edit'}>
-                          <Glyphicon
-                            glyph={'pencil'}
+                          <FaPencilAlt
+                            style={{fontSize: '2rem'}}
                             onClick={this.editFirstNameClick}
-                            style={{fontSize: '2rem', top: '1rem'}} />
+                          />
+                          {/*<Glyphicon*/}
+                            {/*glyph={'pencil'}*/}
+                            {/*onClick={this.editFirstNameClick}*/}
+                            {/*style={{fontSize: '2rem', top: '1rem'}} />*/}
                         </span>
                       </span>
                     </span>
@@ -219,10 +229,14 @@ class ProfileTabView extends React.Component {
                       />
                       <span style={{position: 'relative', paddingLeft: '1rem'}}>
                         <span className={'base-circle-edit'}>
-                          <Glyphicon
-                            glyph={'pencil'}
+                          {/*<Glyphicon*/}
+                            {/*glyph={'pencil'}*/}
+                            {/*onClick={this.editLastNameClick}*/}
+                            {/*style={{fontSize: '2rem', top: '1rem'}} />*/}
+                          <FaPencilAlt
+                            style={{fontSize: '2rem', top: '1rem'}}
                             onClick={this.editLastNameClick}
-                            style={{fontSize: '2rem', top: '1rem'}} />
+                          />
                         </span>
                       </span>
                     </span> }
@@ -232,31 +246,34 @@ class ProfileTabView extends React.Component {
             <Col sm={4} md={4}>
               <Row>
                 <Col sm={12} md={12}>
-                  <Glyphicon
-                    glyph={'user'} /> Member for <Moment toNow>
+                  {/*<Glyphicon*/}
+                    {/*glyph={'user'} />*/}
+                  <FaUser /> Member for <Moment toNow>
                     {this.props.profile.created_on}
                   </Moment>
                 </Col>
               </Row>
               <Row>
                 <Col sm={12} md={12}>
-                  <Glyphicon
-                    glyph={'eye-open'} /> {this.props.profile.profile_views || 0} profile views
+                  {/*<Glyphicon*/}
+                    {/*glyph={'eye-open'} />*/}
+                  <FaEye /> {this.props.profile.profile_views || 0} profile views
                 </Col>
               </Row>
               { this.props.profile.last_activity
                 ? <Row>
                   <Col sm={12} md={12}>
-                    <Glyphicon
-                      glyph={'time'} /> Last seen <Moment fromNow>
+                    {/*<Glyphicon*/}
+                      {/*glyph={'time'} />*/}
+                    <FaClock /> Last seen <Moment fromNow>
                       {this.props.profile.last_activity}
                     </Moment>
                   </Col>
                 </Row> : null }
             </Col>
           </Row>
-        </Grid>
-        : <Grid fluid>
+        </Container>
+        : <Container fluid>
           <Row>
             <Col sm={12} md={12}>
               <div style={{height: '10rem'}}>
@@ -269,7 +286,7 @@ class ProfileTabView extends React.Component {
               </div>
             </Col>
           </Row>
-        </Grid>
+        </Container>
       }
     </div>
   }

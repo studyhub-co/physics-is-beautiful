@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Modal, Popover, OverlayTrigger, Button, OverlayMixin, FormGroup,
-  ControlLabel, Checkbox, FormControl, Image, Grid, Row, Col, Overlay } from 'react-bootstrap'
+  ControlLabel, Checkbox, FormControl, Image, Container, Row, Col, Overlay } from 'react-bootstrap'
 
 import { getAxios, API_PREFIX } from './utils'
 
@@ -25,7 +25,7 @@ function ChangePicturePopover (props) {
       }}
     >
       <h4>Change your picture</h4>
-      <Grid fluid style={{padding: 0}}>
+      <Container fluid style={{padding: 0}}>
         {/*TODO create component frow avatar row*/}
         { props.userAvatar ? <div><Row className={'pointer'} onClick={() => { props.selectAvatar('u') }}>
           <Col sm={3} md={3}>
@@ -69,7 +69,7 @@ function ChangePicturePopover (props) {
             { props.selectedAvatar === 'a' ? <span className='glyphicon glyphicon-ok' /> : null }
           </Col>
         </Row><hr /></div> : null }
-      </Grid>
+      </Container>
     </div>
   )
 }
@@ -101,7 +101,7 @@ export default class LoggedInForm extends React.Component {
   render () {
     return (
       <form>
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col sm={3} md={3}>
               { this.props.avatarUrl ? <FormGroup>
@@ -164,7 +164,7 @@ export default class LoggedInForm extends React.Component {
               </FormGroup>
             </Col>
           </Row>
-        </Grid>
+        </Container>
       </form>
     )
   }

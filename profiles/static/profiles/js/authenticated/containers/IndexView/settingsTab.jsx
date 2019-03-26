@@ -5,7 +5,7 @@ import { Route } from 'react-router'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { RingLoader } from 'react-spinners'
 
 import * as tabsCreators from '../../actions/tab'
@@ -42,7 +42,7 @@ class SettingsTabView extends React.Component {
 
     return <div>
       {this.props.profile
-        ? <Grid fluid>
+        ? <Container fluid>
           <Row style={{paddingTop: '2rem'}}>
             <Col sm={12} md={12}>
               <div className={'blue-title'}>
@@ -55,8 +55,8 @@ class SettingsTabView extends React.Component {
             onChange={(value) => { this.settingChanged('sound_enabled', value) }}
             uuid={'units'}
             text={'Sound effects'} />
-        </Grid>
-        : <Grid fluid>
+        </Container>
+        : <Container fluid>
           <Row>
             <Col sm={12} md={12}>
               <div style={{height: '10rem'}}>
@@ -69,7 +69,7 @@ class SettingsTabView extends React.Component {
               </div>
             </Col>
           </Row>
-        </Grid> }
+        </Container> }
     </div>
   }
 }

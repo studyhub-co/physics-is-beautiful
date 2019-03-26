@@ -5,15 +5,17 @@ import { Route } from 'react-router'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Col from 'react-bootstrap/lib/Col'
-import Grid from 'react-bootstrap/lib/Grid'
-import Row from 'react-bootstrap/lib/Row'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import ListGroup from 'react-bootstrap/lib/ListGroup'
-import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+// import Glyphicon from 'react-bootstrap/Glyphicon'
+import { FaCheck } from 'react-icons/fa'
+
+import ListGroup from 'react-bootstrap/ListGroup'
+import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import { RingLoader } from 'react-spinners'
 import InfiniteScroll from 'react-infinite-scroller'
-import Moment from 'react-moment'
+// import Moment from 'react-moment'
 
 import history from '../../history'
 
@@ -140,11 +142,15 @@ class NotificationsTabView extends React.Component {
               }
             </Col>
             <Col sm={1} md={1}>
-              <Glyphicon
-                glyph={'ok'}
+              <FaCheck
                 onClick={() => this.markAs(currentItem.id)}
                 title={'Mark as ' + markAsTitle}
                 style={{fontSize: '1.5rem', cursor: 'pointer'}} />
+              {/*<Glyphicon*/}
+              {/*glyph={'ok'}*/}
+              {/*onClick={() => this.markAs(currentItem.id)}*/}
+              {/*title={'Mark as ' + markAsTitle}*/}
+              {/*style={{fontSize: '1.5rem', cursor: 'pointer'}} />*/}
             </Col>
           </Row>
         )
@@ -152,7 +158,7 @@ class NotificationsTabView extends React.Component {
     }
 
     return <div>
-      <Grid fluid>
+      <Container fluid>
         <Row style={{padding: '2rem 0 0 0'}}>
           <Col sm={2} md={2}>
            {/*<Button>Unread</Button>*/}
@@ -195,7 +201,7 @@ class NotificationsTabView extends React.Component {
             }
           </Col>
         </Row>
-      </Grid>
+      </Container>
     </div>
   }
 }

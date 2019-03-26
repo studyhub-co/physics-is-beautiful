@@ -8,7 +8,7 @@ export default class Badge extends React.Component {
         <a
           href={this.props.badge.url}
           title='bronze badge: Answer score of 10 or more'
-          className={'badge'}>
+          className={'badge badge-dark'}>
           <span className={'badge-dot badge-dot-color-' + this.props.badge.level} />
           {this.props.badge.title}</a>
         {this.props.badge.count > 1
