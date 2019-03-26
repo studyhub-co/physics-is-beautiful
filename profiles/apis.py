@@ -9,7 +9,7 @@ from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.response import Response
 
 from badges.models import Badge
-from badges.serializers import BadgeSerializer
+from badges.serializers import BadgeCountSerializer
 
 from piblib.search_engines import is_search_engine_bot
 
@@ -77,7 +77,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         badges = Badge.objects.filter(badgetouser__user=user__id).\
             annotate(badge_count=Count('badgetouser__user'))
 
-        serializer = BadgeSerializer(badges, many=True)
+        serializer = BadgeCountSerializer(badges, many=True)
         return Response(serializer.data)
 
 

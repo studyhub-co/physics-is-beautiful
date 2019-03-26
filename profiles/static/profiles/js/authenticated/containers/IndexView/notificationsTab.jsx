@@ -23,6 +23,7 @@ import * as notificationsCreators from '../../actions/notifications'
 
 import Profile from '../../components/NotificationsDeserializers/profile'
 import Thread from '../../components/NotificationsDeserializers/thread'
+import Badge from '../../components/NotificationsDeserializers/badge'
 
 class NotificationsTabView extends React.Component {
   constructor (props) {
@@ -120,18 +121,21 @@ class NotificationsTabView extends React.Component {
               {/*</Moment>*/}
             </Col>
             <Col sm={2} md={2}>
-              <Profile profile={currentItem['actor']} />
+              {currentItem['recipient'].id !== currentItem['actor'].id
+                ? <Profile profile={currentItem['actor']} />
+                : <span>You've</span>
+              }
             </Col>
             <Col sm={3} md={3}>
-              {/*{currentItem['unread']*/}
-                {/*? <b>{currentItem['verb']}</b>*/}
-                {/*: */}
               <span>{currentItem['verb']}</span>
-              {/*}*/}
             </Col>
             <Col sm={3} md={3}>
-              { currentItem['target']['content_type'] === 'thread'
+              { currentItem['target'] && currentItem['target']['content_type'] === 'thread'
                 ? <Thread thread={currentItem['target']} />
+                : null
+              }
+              { currentItem['target'] && currentItem['target']['content_type'] === 'badge'
+                ? <Badge badge={currentItem['target']} user={currentItem['recipient']} />
                 : null
               }
             </Col>
