@@ -1,5 +1,9 @@
+from django.dispatch import receiver
+
 from badges.utils import MetaBadge
-from profiles.models import Profile
+
+from notifications.signals import notify
+from badges.signals import badge_awarded
 
 from .models import Post
 
@@ -10,7 +14,7 @@ class FirstPost(MetaBadge):
     one_time_only = True
 
     title = "First Post"
-    description = "Makes their first post in Discussion"
+    description = "First post in discussion"
     level = "1"
     # ("1", "Bronze"),
     # ("2", "Silver"),
@@ -18,7 +22,24 @@ class FirstPost(MetaBadge):
     # ("4", "Diamond"),
 
     def check_first_post(self, instance):
+        self.instance = instance
         return 1
 
     def get_user(self, instance):
         return instance.created_by
+
+
+@receiver(badge_awarded)
+def send_notify(sender, user, badge, **kwargs):
+    target = None
+
+    if hasattr(sender, 'instance'):  # djeedit Post
+        target = sender.instance
+
+    notify.send(user, recipient=user,
+                verb='earned the',
+                target=badge,
+                action_object=target)
+
+
+
