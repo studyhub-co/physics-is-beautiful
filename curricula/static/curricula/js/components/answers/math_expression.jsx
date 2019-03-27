@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import RMathJax from 'react-mathjax'
-import MathJax from 'react-mathjax'
+import RMathJax from 'react-mathjax'
 // import ReactHover from 'react-hover'
-
 import {DEFAULT_MATHJAX_OPTIONS} from '../../constants'
 
 /* global MathQuill */
@@ -120,7 +118,7 @@ export class MathematicalExpressionAnswer extends React.Component {
             onClick={this.insertLatex.bind(that, buttonsLst[i])}
           >
             {/*<RMathJax.Node inline>{buttonsLst[i]}</RMathJax.Node>*/}
-            <MathJax inline>{buttonsLst[i]}</MathJax>
+            <RMathJax inline>{buttonsLst[i]}</RMathJax>
           </a>
         )
         buttons.push(button)
@@ -176,13 +174,13 @@ export class MathematicalExpressionAnswer extends React.Component {
     return (
       <div className='bounding-box'>
         <p style={{marginBottom: 5}}><span id='math-field-answer' style={mathFieldStyle} /></p>
-        <MathJax.Provider {...DEFAULT_MATHJAX_OPTIONS}>
+        <RMathJax.Provider {...DEFAULT_MATHJAX_OPTIONS}>
           <div style={{marginBottom: 10}}>
             {buttons.map(function (button, index) {
               return <span key={index}>{ button }</span>
             })}
           </div>
-        </MathJax.Provider>
+        </RMathJax.Provider>
         {/*<RMathJax.Provider {...DEFAULT_MATHJAX_OPTIONS}>*/}
           {/*<div style={{marginBottom: 10}}>*/}
             {/*{buttons.map(function (button, index) {*/}

@@ -1,6 +1,5 @@
 import React from 'react'
-// import RMathJax from 'react-mathjax'
-import MathJax from 'react-mathjax'
+import RMathJax from 'react-mathjax'
 
 export class VectorAnswer extends React.Component {
   render () {
@@ -10,7 +9,7 @@ export class VectorAnswer extends React.Component {
 
     var x, y, xComponent, yComponent = ''
     if (this.props.answer.y) {
-      y = <MathJax.Node inline>{'\\hat{y}'}</MathJax.Node>
+      y = <RMathJax.Node inline formula={'\\hat{y}'} />
       yComponent = this.props.answer.y
       if (this.props.answer.x && this.props.answer.y > 0) {
         yComponent = '+' + yComponent
@@ -18,19 +17,19 @@ export class VectorAnswer extends React.Component {
     }
     if (this.props.answer.x) {
       xComponent = this.props.answer.x
-      x = <MathJax.Node inline>{'\\hat{x}'}</MathJax.Node>
+      x = <RMathJax.Node inline formula={'\\hat{x}'} />
     }
 
     return (
       <div>
-        <MathJax.Provider>
+        <RMathJax.Provider>
           <div>
             <span>{xComponent}</span>
             {x}
             <span>{yComponent}</span>
             {y}
           </div>
-        </MathJax.Provider>
+        </RMathJax.Provider>
       </div>
     )
   }
@@ -44,7 +43,7 @@ export class TextAnswer extends React.Component {
 
 export class MathematicalExpressionAnswer extends React.Component {
   render () {
-    return <div><RMathJax.Provider><div><RMathJax.Node inline>{this.props.answer.expression}</RMathJax.Node></div></RMathJax.Provider></div>
+    return <div><RMathJax.Provider><div><RMathJax.Node formula={this.props.answer.expression} /></div></RMathJax.Provider></div>
   }
 }
 
