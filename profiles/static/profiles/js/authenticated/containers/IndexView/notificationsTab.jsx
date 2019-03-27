@@ -155,7 +155,7 @@ class NotificationsTabView extends React.Component {
             </Col>
             <Col sm={1} md={1}>
               <FaCheck
-                onClick={ getMarkAsFunc(currentItem.id) }
+                onClick={getMarkAsFunc(currentItem.id)}
                 title={'Mark as ' + markAsTitle}
                 style={{fontSize: '1.5rem', cursor: 'pointer'}} />
             </Col>

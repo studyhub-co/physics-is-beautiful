@@ -53,7 +53,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     {# JQuery #}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     {# csrf from cookie to headers #}
     <script src="{% static 'js/csrf.js' %}"></script>
 
@@ -61,8 +61,12 @@
     {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">#}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     {# Bootstrap JS #}
-    {# TODO do we realy need js part of boostrap? #}
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    {# we need js part of boostrap for expand navbar #}
+    {# FIXME but it is better to move to https://react-bootstrap.github.io/components/navbar/ #}
+    {# <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 
     {% include 'sound.html' %}
     {% block extrahead %} {% endblock %}
@@ -72,57 +76,99 @@
 
 <body>
 {% if not request.GET.pib_mobile %}
-    <nav id="navTopOfScreen" class="navbar navbar-default navbar-static-top"><!-- navbar-fixed-top -->
-        <div class="container-fluid">
-            <div class="navbar-header">
+    <nav id="navTopOfScreen"
+         class="navbar navbar-default navbar-expand-lg navbar-light"><!-- navbar-fixed-top -->
+{#        <div class="container-fluid">#}
+{#            <div class="navbar-header">#}
                 {# Physics is Beautiful logo #}
-                <a class="navbar-brand" href="/">
-                    <img src="{% static 'curricula/images/pib.svg' %}" style="max-height: 34px;">
-                </a>
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'curricula/images/pib.svg' %}" style="max-height: 34px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                     data-target="#pib-navbar" aria-controls="pib-navbar"
+                     aria-expanded="false" aria-label="Toggle navigation">
+                 <span class="navbar-toggler-icon"></span>
+            </button>
                 {# Toggle which appears only on small screens/mobile with three icon-bar lines #}
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
+{#                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"#}
+{#                        data-target="#navbar" aria-expanded="false" aria-controls="navbar">#}
+{#                    <span class="sr-only">Toggle navigation</span>#}
+{#                    <span class="icon-bar"></span>#}
+{#                    <span class="icon-bar"></span>#}
+{#                    <span class="icon-bar"></span>#}
+{#                </button>#}
+{#            </div>#}
             {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav nav-pills">
-                    <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"><a href="{% url 'main_curricula:curriculum' %}">Home</a></li>
-                    <li class="nav-item{% current_url_starts_with 'discussion' %}"><a href="{% url 'discussion' %}">Discussion</a></li>
-                    <li class="nav-item{% current_url_starts_with 'studio:editor' 'browse:editor' 'curriculum_profile:editor' %}"><a href="{% url 'browse:editor' %}">Courses</a></li>
-                    <li class="nav-item{% current_url_starts_with 'classroom' %}"><a href="{% url 'classroom' %}">Classroom</a></li>
+            <div id="pib-navbar" class="navbar-collapse collapse">
+                 <div class="nav navbar-nav nav-pills mr-auto mt-2 mt-lg-0">
+                    <a class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"
+                       href="{% url 'main_curricula:curriculum' %}">Home</a>
+                    <a class="nav-item{% current_url_starts_with 'discussion' %}"
+                       href="{% url 'discussion' %}">Discussion</a>
+                    <a class="nav-item{% current_url_starts_with 'studio:editor' 'browse:editor' 'curriculum_profile:editor' %}"
+                            href="{% url 'browse:editor' %}">Courses</a>
+                    <a class="nav-item{% current_url_starts_with 'classroom' %}"
+                       href="{% url 'classroom' %}">Classroom</a>
                     {% if user.is_authenticated %}
                     {% endif %}
-                    <li class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}"><a href="{% url 'blog:bloghomepage' %}">Blog</a></li>
-                    <li class="nav-item{% current_url_starts_with 'resources' %}"><a href="{% url 'resources' %}">Resources</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right nav-pills">
-                    <li class="nav-item">
-                        {% if user.is_authenticated %}
-                            <a id="logout-action" href="#">Logout</a>
-                        {% else %}
-                            <a id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Create a profile</a>
-                        {% endif %}
-                    </li>
-                    {#                <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Blog</a></li>#}
-                </ul>
-                <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">
-{#                    {% render_bundle 'profile' %}#}
+                    <a class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}"
+                           href="{% url 'blog:bloghomepage' %}">Blog</a>
+                    <a class="nav-item{% current_url_starts_with 'resources' %}"
+                       href="{% url 'resources' %}">Resources</a>
+                </div>
+                <div class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
+                {# TODO : replace with render #}
                     {% if user.is_authenticated %}
-                        <li data-reactroot="" class="nav-item">
-                            <a class="settings" href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>
-                        </li>
+                        <a data-reactroot=""
+                           class="nav-item"
+                           class="settings"
+                           href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>
                     {% else %}
-                        <li data-reactroot="" class="nav-item">
+                        <a id="react-profile-modal" data-reactroot="" class="nav-item">
                             {% render_bundle 'profile_anonymous' %}
-                        </li>
+                        </a>
                     {% endif %}
-                </ul>
+                    {% if user.is_authenticated %}
+                        <a class="nav-item" id="logout-action" href="#">Logout</a>
+                    {% else %}
+                        <a class="nav-item" id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Create a profile</a>
+                    {% endif %}
+                </div>
+
+{#                <ul class="nav navbar-nav nav-pills">#}
+{#                    <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"><a href="{% url 'main_curricula:curriculum' %}">Home</a></li>#}
+{#                    <li class="nav-item{% current_url_starts_with 'discussion' %}"><a href="{% url 'discussion' %}">Discussion</a></li>#}
+{#                    <li class="nav-item{% current_url_starts_with 'studio:editor' 'browse:editor' 'curriculum_profile:editor' %}"><a href="{% url 'browse:editor' %}">Courses</a></li>#}
+{#                    <li class="nav-item{% current_url_starts_with 'classroom' %}"><a href="{% url 'classroom' %}">Classroom</a></li>#}
+{#                    {% if user.is_authenticated %}#}
+{#                    {% endif %}#}
+{#                    <li class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}"><a href="{% url 'blog:bloghomepage' %}">Blog</a></li>#}
+{#                    <li class="nav-item{% current_url_starts_with 'resources' %}"><a href="{% url 'resources' %}">Resources</a></li>#}
+{#                </ul>#}
+{#                <ul class="nav navbar-nav navbar-right nav-pills">#}
+{#                    <li class="nav-item">#}
+{#                        {% if user.is_authenticated %}#}
+{#                            <a id="logout-action" href="#">Logout</a>#}
+{#                        {% else %}#}
+{#                            <a id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Create a profile</a>#}
+{#                        {% endif %}#}
+{#                    </li>#}
+                    {#                <li class="nav-item"><a  href="{% url 'blog:bloghomepage' %}">Blog</a></li>#}
+{#                </ul>#}
+{#                <ul id="react-profile-modal" class="nav navbar-nav navbar-right nav-pills">#}
+{#                    {% render_bundle 'profile' %}#}
+{#                    {% if user.is_authenticated %}#}
+{#                        <li data-reactroot="" class="nav-item">#}
+{#                            <a class="settings" href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>#}
+{#                        </li>#}
+{#                    {% else %}#}
+{#                        <li data-reactroot="" class="nav-item">#}
+{#                            {% render_bundle 'profile_anonymous' %}#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
             </div><!--/.nav-collapse -->
-        </div>
+{#        </div>#}
     </nav>
 {% endif %}
 {% auth_modal user request.get_full_path %}
