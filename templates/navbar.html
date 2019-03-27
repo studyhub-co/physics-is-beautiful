@@ -100,40 +100,52 @@
 {#            </div>#}
             {# Options which are displayed inline on the bar on desktop, or in the toggle menu for mobile #}
             <div id="pib-navbar" class="navbar-collapse collapse">
-                 <div class="nav navbar-nav nav-pills mr-auto mt-2 mt-lg-0">
-                    <a class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"
-                       href="{% url 'main_curricula:curriculum' %}">Home</a>
-                    <a class="nav-item{% current_url_starts_with 'discussion' %}"
+                 <ul class="nav navbar-nav nav-pills mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}">
+                        <a href="{% url 'main_curricula:curriculum' %}">Home</a>
+                    </li>
+                 <li class="nav-item{% current_url_starts_with 'discussion' %}">
+                    <a
                        href="{% url 'discussion' %}">Discussion</a>
-                    <a class="nav-item{% current_url_starts_with 'studio:editor' 'browse:editor' 'curriculum_profile:editor' %}"
-                            href="{% url 'browse:editor' %}">Courses</a>
-                    <a class="nav-item{% current_url_starts_with 'classroom' %}"
-                       href="{% url 'classroom' %}">Classroom</a>
-                    {% if user.is_authenticated %}
-                    {% endif %}
-                    <a class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}"
-                           href="{% url 'blog:bloghomepage' %}">Blog</a>
-                    <a class="nav-item{% current_url_starts_with 'resources' %}"
-                       href="{% url 'resources' %}">Resources</a>
-                </div>
-                <div class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
+                 </li>
+                 <li class="nav-item{% current_url_starts_with 'studio:editor' 'browse:editor' 'curriculum_profile:editor' %}">
+                    <a href="{% url 'browse:editor' %}">Courses</a>
+                 </li>
+                 <li class="nav-item{% current_url_starts_with 'classroom' %}">
+                    <a href="{% url 'classroom' %}">Classroom</a>
+                 </li>
+                 <li class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}">
+                    <a href="{% url 'blog:bloghomepage' %}">Blog</a>
+                 </li>
+                 <li class="nav-item{% current_url_starts_with 'resources' %}" >
+                    <a href="{% url 'resources' %}">Resources</a>
+                 </li>
+                </ul>
+                <il class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
                 {# TODO : replace with render #}
+                        {% if user.is_authenticated %}
+                            <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
+                                <a data-reactroot=""
+                                   class="settings"
+                                   href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a id="react-profile-modal" data-reactroot="">
+                                    {% render_bundle 'profile_anonymous' %}
+                                </a>
+                            </li>
+                        {% endif %}
                     {% if user.is_authenticated %}
-                        <a data-reactroot=""
-                           class="nav-item"
-                           class="settings"
-                           href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>
+                        <li class="nav-item">
+                            <a id="logout-action" href="#">Logout</a>
+                        </li>
                     {% else %}
-                        <a id="react-profile-modal" data-reactroot="" class="nav-item">
-                            {% render_bundle 'profile_anonymous' %}
-                        </a>
+                        <li class="nav-item">
+                            <a class="nav-item" id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Create a profile</a>
+                        </li>
                     {% endif %}
-                    {% if user.is_authenticated %}
-                        <a class="nav-item" id="logout-action" href="#">Logout</a>
-                    {% else %}
-                        <a class="nav-item" id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Create a profile</a>
-                    {% endif %}
-                </div>
+                </il>
 
 {#                <ul class="nav navbar-nav nav-pills">#}
 {#                    <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"><a href="{% url 'main_curricula:curriculum' %}">Home</a></li>#}
