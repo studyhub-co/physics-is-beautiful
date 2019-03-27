@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import {ImageWithText} from './choices/image_with_text_choice'
 
@@ -128,5 +129,5 @@ export class MultiSelectAnswer extends React.Component {
   }
 }
 MultiSelectAnswer.propTypes = {
-  updateAnswer: React.PropTypes.func.isRequired
+  updateAnswer: PropTypes.func.isRequired
 }

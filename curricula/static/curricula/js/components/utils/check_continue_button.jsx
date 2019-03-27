@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export class CheckContinueButton extends React.Component {
   keydown (e) {
@@ -32,10 +33,10 @@ export class CheckContinueButton extends React.Component {
   }
 }
 CheckContinueButton.propTypes = {
-  isCheck: React.PropTypes.bool,
-  checkAction: React.PropTypes.func.isRequired,
-  continueAction: React.PropTypes.func.isRequired,
-  disabledCheck: React.PropTypes.bool
+  isCheck: PropTypes.bool,
+  checkAction: PropTypes.func.isRequired,
+  continueAction: PropTypes.func.isRequired,
+  disabledCheck: PropTypes.bool
 }
 CheckContinueButton.defaultProps = {
   isCheck: true

@@ -5,7 +5,7 @@ import {VectorGame} from './games/vector'
 import {UnitConversionGame} from './games/unit_conversion'
 import {Vector} from 'vector_canvas'
 import {UnitConversion} from './components/answers/correct_answers/correct_answers'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { RingLoader } from 'react-spinners'
 
 class CurriculumInfoPanel extends React.Component {
@@ -26,7 +26,7 @@ class CurriculumInfoPanel extends React.Component {
     return (<div className='container section-sheet curriculum-panel-font'>
       <div className='curriculum-display-wrap'>
         {this.props.curriculum
-          ? <Grid fluid>
+          ? <Container fluid>
             {/* title */}
             <Row>
               <Col md={10} xs={8} >
@@ -75,7 +75,7 @@ class CurriculumInfoPanel extends React.Component {
                   : null}
               </Col>
             </Row>
-          </Grid>
+          </Container>
           : null}
       </div>
     </div>)

@@ -1,5 +1,5 @@
 import React from 'react'
-import MathJax from 'react-mathjax'
+import RMathJax from 'react-mathjax' // alias as RMathJax instead global MathJax
 import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
 import {VectorCanvas, CanvasVector, CanvasText} from 'vector_canvas'
@@ -24,13 +24,18 @@ class QuestionBoard extends React.Component {
       objects.push(this.props.answerText)
     }
     var disabled = !([GameState.GAME_OVER, GameState.WON].indexOf(this.props.state) > -1)
+
     return (
       <div className='text-center'>
         <MediaQuery minDeviceWidth={736}>
-          <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+        <RMathJax.Provider>
+            <h2>{this.props.question}</h2>
+        </RMathJax.Provider>
         </MediaQuery>
         <MediaQuery maxDeviceWidth={736}>
-          <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
+          <RMathJax.Provider>
+            <h4>{this.props.question}</h4>
+          </RMathJax.Provider>
         </MediaQuery>
         <VectorCanvas
           allowNull
@@ -62,11 +67,13 @@ class VectorGameBoard extends React.Component {
       case GameState.NEW:
         return (
           <div className='container game-sheet' style={style}>
-            <div className='col-md-4' />
-            <div className='col-md-4 text-center'>
-              <span><h1 className='game-title'>Vector Game</h1></span>
-              <p><span>Beat a score of 1600 to unlock the next lesson. Wrong answers end the game.</span></p>
-              <button className='hover-button' onClick={this.props.start}>Start</button>
+            <div className='row'>
+              <div className='col-md-4' />
+              <div className='col-md-4 text-center'>
+                <span><h1 className='game-title'>Vector Game</h1></span>
+                <p><span>Beat a score of 1600 to unlock the next lesson. Wrong answers end the game.</span></p>
+                <button className='hover-button' onClick={this.props.start}>Start</button>
+              </div>
             </div>
           </div>
         )
@@ -135,12 +142,19 @@ class VectorGameBoard extends React.Component {
   }
 }
 
-const xHat = <MathJax.Node inline>{'\\hat{x}'}</MathJax.Node>
-const yHat = <MathJax.Node inline>{'\\hat{y}'}</MathJax.Node>
-const iHat = <MathJax.Node inline>{'\\hat{i}'}</MathJax.Node>
-const jHat = <MathJax.Node inline>{'\\hat{j}'}</MathJax.Node>
-const vectorA = <MathJax.Node inline>{'\\vec{A}'}</MathJax.Node>
-const vectorB = <MathJax.Node inline>{'\\vec{B}'}</MathJax.Node>
+// const xHat = <RMathJax.Node inline>{'\\hat{x}'}</RMathJax.Node>
+// const yHat = <RMathJax.Node inline>{'\\hat{y}'}</RMathJax.Node>
+// const iHat = <RMathJax.Node inline>{'\\hat{i}'}</RMathJax.Node>
+// const jHat = <RMathJax.Node inline>{'\\hat{j}'}</RMathJax.Node>
+// const vectorA = <RMathJax.Node inline>{'\\vec{A}'}</RMathJax.Node>
+// const vectorB = <RMathJax.Node inline>{'\\vec{B}'}</RMathJax.Node>
+
+const xHat = <RMathJax.Node inline formula={'\\hat{x}'} />
+const yHat = <RMathJax.Node inline formula={'\\hat{y}'} />
+const iHat = <RMathJax.Node inline formula={'\\hat{i}'} />
+const jHat = <RMathJax.Node inline formula={'\\hat{j}'} />
+const vectorA = <RMathJax.Node inline formula={'\\vec{A}'} />
+const vectorB = <RMathJax.Node inline formula={'\\vec{B}'} />
 
 export class VectorGame extends React.Component {
   constructor () {

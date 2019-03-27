@@ -46,6 +46,7 @@ export class Question extends React.Component {
   }
 
   componentDidUpdate () {
+    // GLOBAL ( not react MathJax)
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
     if (this.state && this.props.question.hintCollapsed != this.state.hintCollapsed) {

@@ -76,20 +76,25 @@ export class ScoreBoard extends React.Component {
       default:
         paused = false
         score = (
-          <div>
-            <MediaQuery minDeviceWidth={736}>
-              <div className='col-md-3 align-left'>
+          <div className='col-md-8'>
+            <div className='row'>
+            {/*<MediaQuery minDeviceWidth={736}>*/}
+            {/* no MediaQuery need to work with bootram sizes*/}
+            {/*!!!!!!!!!! In a grid layout, content must be placed
+            within columns and only columns may be immediate children of rows. !!!!!!!!!!!*/}
+              <div className='col-md-6 col-xs-12 align-left'>
                 <h2 className='TwCenMT'>Score: {this.props.score}</h2>
               </div>
-              <div className='col-md-3 align-left'>
+              <div className='col-md-6 col-xs-12 align-left'>
                 <h2 className='TwCenMT'>Level: {this.props.level}</h2>
               </div>
-            </MediaQuery>
-            <MediaQuery maxDeviceWidth={736}>
-              <div className='col-md-3 text-center'>
-                <h4 className='TwCenMT'>Score: {this.props.score} Level: {this.props.level}</h4>
-              </div>
-            </MediaQuery>
+            </div>
+            {/*</MediaQuery>*/}
+            {/*<MediaQuery maxDeviceWidth={736}>*/}
+              {/*<div className='col-md-3 text-center'>*/}
+                {/*<h4 className='TwCenMT'>Score: {this.props.score} Level: {this.props.level}</h4>*/}
+              {/*</div>*/}
+            {/*</MediaQuery>*/}
           </div>
         )
     }

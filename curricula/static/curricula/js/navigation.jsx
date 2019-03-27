@@ -1,17 +1,19 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import { FaExclamationCircle, FaLock, FaCheck } from 'react-icons/fa'
 
 class LockedItem extends React.Component {
   render () {
     return (
-      <div className='col-md-1'>
+      <div className='thumbnail-block'>
         <div className='thumbnail section-thumbnail'>
-          <img className='grayed-out-img' src={this.props.item.image} />
+          <img className='grayed-out-img img-fluid' src={this.props.item.image} />
         </div>
-        <h1 className='module-locked'>
+        <h4 className='module-locked thumbnail-title'>
           {this.props.item.name}
-          <span className='glyphicon glyphicon-lock' />
-        </h1>
+          {/*<span className='glyphicon glyphicon-lock' />*/}
+          <FaLock />
+        </h4>
       </div>
     )
   }
@@ -20,21 +22,22 @@ class LockedItem extends React.Component {
 class UnlockedItem extends React.Component {
   render () {
     var span
-    if (this.props.item.status == 'new') {
-      span = <span className='glyphicon glyphicon-exclamation-sign' />
+    if (this.props.item.status === 'new') {
+      // span = <span className='glyphicon glyphicon-exclamation-sign' />
+      span = <FaExclamationCircle />
     } else {
       span = <span />
     }
     return (
       <Link to={this.props.item.href}>
-        <div className='col-md-1 module-accessible-block'>
+        <div className='thumbnail-block module-accessible-block'>
           <div className='thumbnail section-thumbnail'>
-            <img src={this.props.item.image} />
+            <img className={'img-fluid'} src={this.props.item.image} />
           </div>
-          <h1 className='module-accessible'>
+          <h4 className='module-accessible thumbnail-title'>
             {this.props.item.name}
             {span}
-          </h1>
+          </h4>
         </div>
       </Link>
     )
@@ -45,14 +48,15 @@ class CompleteItem extends React.Component {
   render () {
     return (
       <Link to={this.props.item.href}>
-        <div className='col-md-1 module-completed'>
+        <div className='thumbnail-block module-completed'>
           <div className='thumbnail section-thumbnail'>
-            <img src={this.props.item.image} />
+            <img className={'img-fluid'} src={this.props.item.image} />
           </div>
-          <h1>
+          <h4 className={'thumbnail-title'}>
             {this.props.item.name}
-            <span className='glyphicon glyphicon-ok' />
-          </h1>
+            <FaCheck />
+            {/*<span className='glyphicon glyphicon-ok' />*/}
+          </h4>
         </div>
       </Link>
     )
@@ -61,9 +65,9 @@ class CompleteItem extends React.Component {
 
 class Item extends React.Component {
   render () {
-    if (this.props.item.status == 'locked') {
+    if (this.props.item.status === 'locked') {
       return <LockedItem item={this.props.item} />
-    } else if (this.props.item.status == 'complete') {
+    } else if (this.props.item.status === 'complete') {
       return <CompleteItem item={this.props.item} />
     } else {
       return <UnlockedItem item={this.props.item} />
@@ -79,7 +83,7 @@ export class Section extends React.Component {
     })
     return (
       <div>
-        <div className='section-title'><h1>{this.props.name}</h1></div>
+        <div className='section-title'><h4>{this.props.name}</h4></div>
         <div className='row'>
           {items}
         </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export class ImageWithText extends React.Component {
   constructor (props) {
@@ -148,5 +149,5 @@ export class ImageWithText extends React.Component {
   }
 }
 ImageWithText.propTypes = {
-  selectAnswer: React.PropTypes.func.isRequired
+  selectAnswer: PropTypes.func.isRequired
 }

@@ -5,14 +5,15 @@
 /* global MathQuill, playAudio, pauseBackgroundAudio, unpauseBackgroundAudio, stopBackgroundAudio, playBackgroundAudio */
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import axios from 'axios'
-import MathJax from 'react-mathjax'
+import RMathJax from 'react-mathjax' // alias as RMathJax instead global MathJax
 import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
+import Draggable from 'react-draggable'
+
 import {ScoreBoard} from './score_board'
 import {GameState} from '../constants'
-import Draggable from 'react-draggable'
-import PropTypes from 'prop-types'
 
 var math = require('mathjs')
 var Qty = require('js-quantities')
@@ -591,8 +592,8 @@ export class UnitConversionBase extends React.Component {
   }
 }
 UnitConversionBase.propTypes = {
-  level: React.PropTypes.number,
-  unit: React.PropTypes.string
+  level: PropTypes.number,
+  unit: PropTypes.string
 }
 
 export class UnitConversionCanvas extends UnitConversionBase {
@@ -817,7 +818,9 @@ export class UnitConversionCanvas extends UnitConversionBase {
 
     if (this.props.gameState === GameState.GAME_OVER) {
       pointerEvents = 'none'
-      document.getElementById('tryAgain').focus()
+      try {
+        document.getElementById('tryAgain').focus()
+      } catch (e) {}
     }
 
     return (
@@ -933,9 +936,10 @@ class UnitConversionQuestionBoard extends React.Component {
 
       return value
     } catch (e) {
-      if (!(e instanceof SyntaxError)) { // catch SyntaxError
-        throw e
-      }
+      // https://github.com/josdejong/mathjs/issues/8 catched undefined error, wait for newer version of mathjs
+      // if (!(e instanceof SyntaxError)) { // catch SyntaxError
+      // throw e
+      // }
     }
 
     return false
@@ -984,10 +988,10 @@ class UnitConversionQuestionBoard extends React.Component {
         <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}} cancel='.mq-root-block'>
           <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
             <MediaQuery minDeviceWidth={736}>
-              <MathJax.Context><h2>{this.props.question}</h2></MathJax.Context>
+              <h2>{ this.props.question }</h2>
             </MediaQuery>
             <MediaQuery maxDeviceWidth={736}>
-              <MathJax.Context><h4>{this.props.question}</h4></MathJax.Context>
+              <h2>{ this.props.question }</h2>
             </MediaQuery>
             <UnitConversionCanvas
               number={this.props.number}
@@ -1129,11 +1133,13 @@ class UnitConversionGameBoard extends React.Component {
       case GameState.NEW:
         return (
           <div className='container game-sheet' style={style}>
-            <div className='col-md-4' />
-            <div className='col-md-4 text-center'>
-              <span><h1 className='game-title'>Unit Conversion Game</h1></span>
-              <p><span>Beat a score of 2500 to unlock the next lesson. Wrong answers end the game.</span></p>
-              <button id='start' className='hover-button' onClick={this.props.start}>Start</button>
+            <div className='row'>
+              <div className='col-md-4' />
+              <div className='col-md-4 text-center'>
+                <span><h1 className='game-title'>Unit Conversion Game</h1></span>
+                <p><span>Beat a score of 2500 to unlock the next lesson. Wrong answers end the game.</span></p>
+                <button id='start' className='hover-button' onClick={this.props.start}>Start</button>
+              </div>
             </div>
           </div>
         )

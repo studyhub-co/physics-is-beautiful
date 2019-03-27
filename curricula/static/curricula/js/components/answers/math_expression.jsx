@@ -1,6 +1,9 @@
 import React from 'react'
-import RMathJax from 'react-mathjax'
-import ReactHover from 'react-hover'
+import PropTypes from 'prop-types'
+// import RMathJax from 'react-mathjax'
+import MathJax from 'react-mathjax'
+// import ReactHover from 'react-hover'
+
 import {DEFAULT_MATHJAX_OPTIONS} from '../../constants'
 
 /* global MathQuill */
@@ -116,7 +119,8 @@ export class MathematicalExpressionAnswer extends React.Component {
             style={{minHeight: '40px'}}
             onClick={this.insertLatex.bind(that, buttonsLst[i])}
           >
-            <RMathJax.Node inline>{buttonsLst[i]}</RMathJax.Node>
+            {/*<RMathJax.Node inline>{buttonsLst[i]}</RMathJax.Node>*/}
+            <MathJax inline>{buttonsLst[i]}</MathJax>
           </a>
         )
         buttons.push(button)
@@ -172,23 +176,26 @@ export class MathematicalExpressionAnswer extends React.Component {
     return (
       <div className='bounding-box'>
         <p style={{marginBottom: 5}}><span id='math-field-answer' style={mathFieldStyle} /></p>
-        <RMathJax.Context {...DEFAULT_MATHJAX_OPTIONS}>
+        <MathJax.Provider {...DEFAULT_MATHJAX_OPTIONS}>
           <div style={{marginBottom: 10}}>
             {buttons.map(function (button, index) {
               return <span key={index}>{ button }</span>
             })}
-            {/* {x}{y} */}
           </div>
-        </RMathJax.Context>
-        {/* <div className={'button-group' + (this.props.answer === null ? '' : ' hidden')} id='vectorButton' > */}
-        {/* <a className={'btn btn-primary' + disabled} id='checkAnswer' onClick={this.checkAnswer.bind(this)}>Check</a> */}
-        {/* </div> */}
+        </MathJax.Provider>
+        {/*<RMathJax.Provider {...DEFAULT_MATHJAX_OPTIONS}>*/}
+          {/*<div style={{marginBottom: 10}}>*/}
+            {/*{buttons.map(function (button, index) {*/}
+              {/*return <span key={index}>{ button }</span>*/}
+            {/*})}*/}
+            {/*/!* {x}{y} *!/*/}
+          {/*</div>*/}
+        {/*</RMathJax.Provider>*/}
         <p>{ this.props.question.is_correct }</p>
-        {/* <ContinueButton continueClick={this.props.continueAction} hidden={this.props.answer === null} /> */}
       </div>
     )
   }
 }
 MathematicalExpressionAnswer.propTypes = {
-  updateAnswer: React.PropTypes.func.isRequired
+  updateAnswer: PropTypes.func.isRequired
 }

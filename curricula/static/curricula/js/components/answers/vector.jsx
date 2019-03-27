@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import {VectorCanvas, CanvasVector, CanvasText} from 'vector_canvas'
 
 export class VectorAnswer extends React.Component {
@@ -99,5 +101,5 @@ export class VectorAnswer extends React.Component {
   }
 }
 VectorAnswer.propTypes = {
-  updateAnswer: React.PropTypes.func.isRequired
+  updateAnswer: PropTypes.func.isRequired
 }

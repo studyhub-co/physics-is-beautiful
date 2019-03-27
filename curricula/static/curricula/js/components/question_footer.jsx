@@ -1,13 +1,17 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Answer} from './answers/correct_answers/correct_answer'
 import {CheckContinueButton} from './utils/check_continue_button'
-import { relative } from 'path'
+
+// import { relative } from 'path'
 
 /* global MathJax */
 
 export class Footer extends React.Component {
   componentDidMount () {
+    // GLOBAL ( not react MathJax)
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
 
@@ -103,7 +107,7 @@ export class Footer extends React.Component {
   }
 }
 Footer.propTypes = {
-  continueAction: React.PropTypes.func.isRequired,
-  checkAction: React.PropTypes.func.isRequired,
-  disabledCheck: React.PropTypes.bool
+  continueAction: PropTypes.func.isRequired,
+  checkAction: PropTypes.func.isRequired,
+  disabledCheck: PropTypes.bool
 }
