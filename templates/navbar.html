@@ -121,7 +121,7 @@
                     <a href="{% url 'resources' %}">Resources</a>
                  </li>
                 </ul>
-                <il class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
+                <ul class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
                 {# TODO : replace with render #}
                         {% if user.is_authenticated %}
                             <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
@@ -145,7 +145,7 @@
                             <a class="nav-item" id="login-signup-link" data-toggle="modal" data-target="#signup-modal">Create a profile</a>
                         </li>
                     {% endif %}
-                </il>
+                </ul>
 
 {#                <ul class="nav navbar-nav nav-pills">#}
 {#                    <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}"><a href="{% url 'main_curricula:curriculum' %}">Home</a></li>#}
