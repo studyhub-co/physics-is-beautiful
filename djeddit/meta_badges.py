@@ -34,8 +34,10 @@ def send_notify(sender, user, badge, **kwargs):
     target = None
 
     if hasattr(sender, 'instance'):  # djeedit Post
-        target = sender.instance
+        target = sender.instance.thread
 
+    # Activity Streams Spec
+    # user (actor) earned the (verb) badge (action_object) on thread (target)
     notify.send(user, recipient=user,
                 verb='earned the',
                 target=target,

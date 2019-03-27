@@ -119,6 +119,13 @@ class NotificationsTabView extends React.Component {
     if (this.props.notifications) {
       for (var i = 0; i < this.state.notifications.length; i++) {
         var currentItem = this.state.notifications[i]
+        let that = this
+
+        let getMarkAsFunc = function (id) {
+          return function () {
+            that.markAs(id)
+          }
+        }
 
         items.push(
           <Row key={currentItem.id}>
@@ -148,7 +155,7 @@ class NotificationsTabView extends React.Component {
             </Col>
             <Col sm={1} md={1}>
               <FaCheck
-                onClick={() => this.markAs(currentItem.id)}
+                onClick={ getMarkAsFunc(currentItem.id) }
                 title={'Mark as ' + markAsTitle}
                 style={{fontSize: '1.5rem', cursor: 'pointer'}} />
             </Col>

@@ -15,7 +15,7 @@ module.exports = function (env) {
       // editor: './editor/static/editor/js/app',
       // classroom: './classroom/static/classroom/js/index',
       // resources: './resources/static/resources/js/index',
-      // homepage: './homepage/static/homepage/js/index'
+      homepage: './homepage/static/homepage/js/index'
     },
 
     output: {
