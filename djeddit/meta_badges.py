@@ -38,8 +38,8 @@ def send_notify(sender, user, badge, **kwargs):
 
     notify.send(user, recipient=user,
                 verb='earned the',
-                target=badge,
-                action_object=target)
+                target=target,
+                action_object=badge)
 
 
 

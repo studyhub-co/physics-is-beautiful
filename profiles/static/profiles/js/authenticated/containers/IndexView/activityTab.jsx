@@ -1,8 +1,6 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-// import { Route } from 'react-router'
-// import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Row from 'react-bootstrap/Row'
@@ -40,7 +38,7 @@ class ActivityTabView extends React.Component {
           </div>
         </Col>
       </Row>
-      <Row style={{paddingTop: '2rem'}}>
+      <Row>
         <Col sm={12} md={12}>
           {this.props.badges
             // TODO sort by level

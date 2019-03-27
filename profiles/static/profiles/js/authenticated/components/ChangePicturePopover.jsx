@@ -27,7 +27,7 @@ export default class ChangePicturePopover extends React.Component {
           {this.props.userAvatar ? <div><Row className={'pointer'} onClick={() => { this.props.selectAvatar('u') }}>
             <Col sm={3} md={3}>
               <Image
-                responsive
+                fluid
                 rounded
                 src={this.props.userAvatar} />
             </Col>
@@ -43,7 +43,7 @@ export default class ChangePicturePopover extends React.Component {
           {this.props.googleAvatarUrl ? <div><Row className={'pointer'} onClick={() => { this.props.selectAvatar('g')}}>
             <Col sm={3} md={3}>
               <Image
-                responsive
+                fluid
                 rounded
                 src={this.props.googleAvatarUrl} />
             </Col>
@@ -59,7 +59,7 @@ export default class ChangePicturePopover extends React.Component {
           {this.props.gravatarUrl ? <div><Row className={'pointer'} onClick={() => this.props.selectAvatar('a')}>
             <Col sm={3} md={3}>
               <Image
-                responsive
+                fluid
                 rounded
                 src={this.props.gravatarUrl}
               />

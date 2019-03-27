@@ -156,8 +156,8 @@
 
 .profile .base-circle-edit {
     position: absolute;
-    width: 4rem;
-    height: 4rem;
+    width: 2rem;
+    height: 2rem;
     text-align: center;
     vertical-align: middle;
     color: rgb(8, 209, 255);
@@ -165,6 +165,7 @@
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     cursor: pointer;
+    top: 0.5rem;
     /*z-index: 999;*/
 }
 
@@ -173,6 +174,7 @@
 }
 
 .profile .bottom-circle-edit {
+   top: unset;
    bottom: 1rem;
 }
 
@@ -390,7 +392,12 @@ div.pdf-ico {
 }
 
 .item-multiplier {
-    margin: 0 1rem 0 1rem;
+    margin: 0 0.5rem 0 0;
     color: #848d95;
-    font-size: 11px;
+    font-size: 0.75rem;
+}
+
+.item-multiplier-count {
+    color: #848d95;
+    font-size: 0.75rem;
 }

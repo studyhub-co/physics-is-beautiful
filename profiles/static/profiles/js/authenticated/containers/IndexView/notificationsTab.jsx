@@ -79,6 +79,11 @@ class NotificationsTabView extends React.Component {
   }
 
   onFilterClick (filter) {
+    if (this.props.cancelSource) {
+      // cancel prev request
+      this.props.cancelSource.cancel()
+    }
+
     if (filter === 'unread') {
       if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
         var unReadUrl = this.props.match.url.replace(/read\/$/, '');
@@ -146,11 +151,6 @@ class NotificationsTabView extends React.Component {
                 onClick={() => this.markAs(currentItem.id)}
                 title={'Mark as ' + markAsTitle}
                 style={{fontSize: '1.5rem', cursor: 'pointer'}} />
-              {/*<Glyphicon*/}
-              {/*glyph={'ok'}*/}
-              {/*onClick={() => this.markAs(currentItem.id)}*/}
-              {/*title={'Mark as ' + markAsTitle}*/}
-              {/*style={{fontSize: '1.5rem', cursor: 'pointer'}} />*/}
             </Col>
           </Row>
         )
@@ -161,8 +161,6 @@ class NotificationsTabView extends React.Component {
       <Container fluid>
         <Row style={{padding: '2rem 0 0 0'}}>
           <Col sm={2} md={2}>
-           {/*<Button>Unread</Button>*/}
-           {/*<Button>Read</Button>*/}
             <ListGroup>
               <ListGroupItem
                 onClick={() => this.onFilterClick('unread')}
@@ -218,9 +216,10 @@ NotificationsTabView.propTypes = {
     fetchNotifications: PropTypes.func.isRequired,
     markAsRead: PropTypes.func.isRequired
   }).isRequired,
-  profile: PropTypes.object,
-  profile_fetching: PropTypes.bool,
-  notifications: PropTypes.object
+  // profile: PropTypes.object,
+  // profile_fetching: PropTypes.bool,
+  notifications: PropTypes.object,
+  cancelSource: PropTypes.object
   // dispatch: PropTypes.func.isRequired
 }
 
@@ -229,6 +228,7 @@ const mapStateToProps = (state) => {
     // profile: state.profile.profile,
     // profile_fetching: state.profile.fetching
     notifications: state.notifications.notifications,
+    cancelSource: state.notifications.cancelSource
   }
 }
 
