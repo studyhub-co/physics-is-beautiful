@@ -3,22 +3,18 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Container, Row, Col, Button } from 'react-bootstrap'
+import { FaPlus } from 'react-icons/fa'
+
 import { Sheet } from '../../components/Sheet'
 import ResourceSearchView from './searchView'
-
-import Swiper from 'react-id-swiper'
-import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 
 // import { BASE_URL } from '../../utils/config'
 
 import Slider from 'react-slick'
 
 import {
-  // getParams,
-  // alreadyInSlides,
-  getPrefixFromSlidesName,
-  // updateSliderNavigation,
-  // updateSlidersNavigation
+  getPrefixFromSlidesName
 } from './sliderHelpers'
 
 import SearchRowView from './searchRow'
@@ -257,7 +253,7 @@ class IndexView extends React.Component {
 
     return (
       <Sheet>
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col sm={10} md={10}>
               <div className={'blue-title'} style={{lineHeight: '7rem'}}>
@@ -266,7 +262,8 @@ class IndexView extends React.Component {
             </Col>
             <Col sm={2} md={2}>
               <Button onClick={() => { this.onAddResourceClick(addResourceUrl) }} className={'common-button'}>
-                <Glyphicon glyph='plus' /> Add resource
+                {/*<Glyphicon glyph='plus' /> Add resource*/}
+                <FaPlus /> Add resource
               </Button>
             </Col>
           </Row>
@@ -277,14 +274,14 @@ class IndexView extends React.Component {
             clearSearchButtonClick={this.clearSearchButtonClick}
             searchString={this.state.searchString}
           />
-        </Grid>
+        </Container>
         { this.state.searchEnabeled
           ? <ResourceSearchView
             ref={(node) => { if (node) this.searchView = node }}
             resourceSearchString={this.state.searchString} /> : null
         }
         <div style={{ 'display': displyDashboard }}>
-          <Grid fluid>
+          <Container fluid>
             <Row>
               <Col sm={12} md={12}>
                 <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
@@ -318,7 +315,7 @@ class IndexView extends React.Component {
                 {/*</Swiper>*/}
               </Col>
             </Row>
-          </Grid>
+          </Container>
         </div>
       </Sheet>
     )

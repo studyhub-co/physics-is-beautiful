@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import InfiniteScroll from 'react-infinite-scroller'
 import { RingLoader } from 'react-spinners'
 
@@ -69,7 +69,7 @@ class ResourceSearchView extends React.Component {
       )
     })
 
-    return (<Grid fluid>{this.props.resourceSearchList
+    return (<Container fluid>{this.props.resourceSearchList
       ? <div>
         <InfiniteScroll
           pageStart={0}
@@ -93,7 +93,7 @@ class ResourceSearchView extends React.Component {
           </div>
         </Col>
       </Row> }
-    </Grid>
+    </Container>
     )
   }
 }

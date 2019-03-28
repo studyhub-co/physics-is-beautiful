@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 
 import { DragSource } from 'react-dnd'
 
-import { Glyphicon, Row, Col } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
+import { FaTimes } from 'react-icons/fa'
 
 import { EditableLabel } from '../../../utils/editableLabel'
 
@@ -50,7 +51,8 @@ let ProblemClass = class Problem extends React.Component {
                     title={'Remove the chapter'}
                   >
                     {/* remove chapter button */}
-                    <Glyphicon glyph='remove' />&nbsp;
+                    {/*<Glyphicon glyph='remove' />&nbsp;*/}
+                    <FaTimes />&nbsp;
                   </span>
                   <EditableLabel
                     value={this.props.problem.title}

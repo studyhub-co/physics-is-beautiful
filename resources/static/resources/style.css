@@ -1,3 +1,8 @@
+html {
+    font-family: "Museosansrounded", sans-serif;
+    font-size: 12px;
+}
+
 /* common with classroom, need to create common.css */
 
 .resources .blue-title {
@@ -109,7 +114,7 @@
     max-width: 25rem;
     min-width: 20rem;
     width: auto;
-    height: 30rem;
+    height: 25rem;
     /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
 }
 

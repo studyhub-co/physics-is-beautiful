@@ -4,8 +4,10 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Form } from 'react-bootstrap'
-import PDF from 'react-pdf-js'
+import { Container, Row, Col, Button, FormGroup, InputGroup, FormControl, Form } from 'react-bootstrap'
+import { FaPlus, FaMinus, FaChevronRight, FaChevronLeft, FaArrowUp, FaArrowDown } from 'react-icons/fa'
+
+import PDF from 'react-pdf-js/dist/index'
 
 import { Thread } from '../../components/reactDjeddit/thread'
 import history from '../../history'
@@ -163,7 +165,6 @@ class TextBookSolutionView extends React.Component {
 
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
-
       var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
       var problemTitle = this.props.problem.title
 
@@ -283,10 +284,12 @@ class TextBookSolutionView extends React.Component {
             </InputGroup>
             &nbsp;{nextButton}
             &nbsp;<Button onClick={() => { this.onZoomPdfClick(0.3) }} className={'common-button'}>
-              <Glyphicon glyph='plus' />
+              {/*<Glyphicon glyph='plus' />*/}
+              <FaPlus />
             </Button>
             &nbsp;<Button onClick={() => { this.onZoomPdfClick(-0.3) }} className={'common-button'}>
-              <Glyphicon glyph='minus' />
+              {/*<Glyphicon glyph='minus' />*/}
+              <FaMinus />
             </Button>
           </FormGroup>
         </Form>
@@ -345,20 +348,21 @@ class TextBookSolutionView extends React.Component {
 
     return (
       <Sheet>
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col sm={12} md={12}>
               <a
                 className={'back-button'}
                 onClick={() => { history.push(problemUrl) }} >
-                <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+                <FaChevronLeft />
                 All solutions
               </a>
             </Col>
           </Row>
-        </Grid>
+        </Container>
         { this.props.solution && this.props.problem && this.props.resource
-          ? <Grid fluid>
+          ? <Container fluid>
             <Row>
               <Col sm={12} md={12}>
                 <div className={'text-align-center blue-title'}>
@@ -376,19 +380,25 @@ class TextBookSolutionView extends React.Component {
             <Row className={'text-align-center'}>
               <Col sm={1} md={1}>
                 <div>
-                  <Glyphicon
-                    glyph='arrow-up'
+                  <FaArrowUp
                     style={{cursor: 'pointer'}}
                     onClick={() => this.upDownSolutionClick(this.props.solution.uuid, 1)} />
+                  {/*<Glyphicon*/}
+                    {/*glyph='arrow-up'*/}
+                    {/*style={{cursor: 'pointer'}}*/}
+                    {/*onClick={() => this.upDownSolutionClick(this.props.solution.uuid, 1)} />*/}
                 </div>
                 <div>
                   {this.props.solution.vote_score}
                 </div>
                 <div>
-                  <Glyphicon
-                    glyph='arrow-down'
+                  <FaArrowDown
                     style={{cursor: 'pointer'}}
                     onClick={() => this.upDownSolutionClick(this.props.solution.uuid, -1)} />
+                  {/*<Glyphicon*/}
+                    {/*glyph='arrow-down'*/}
+                    {/*style={{cursor: 'pointer'}}*/}
+                    {/*onClick={() => this.upDownSolutionClick(this.props.solution.uuid, -1)} />*/}
                 </div>
               </Col>
               <Col sm={1} md={1}>
@@ -415,7 +425,8 @@ class TextBookSolutionView extends React.Component {
                   disabled={prevSolutionDisabled === '' ? Boolean(false) : Boolean(true)}
                   style={{marginTop: 0}}
                 >
-                  <Glyphicon glyph='menu-left' /> Previous solution
+                  <FaChevronLeft /> Previous solution
+                  {/*<Glyphicon glyph='menu-left' /> Previous solution*/}
                 </button>
                 &nbsp;
                 <button
@@ -424,7 +435,8 @@ class TextBookSolutionView extends React.Component {
                   disabled={nextSolutionDisabled === '' ? Boolean(false) : Boolean(true)}
                   style={{marginTop: 0}}
                 >
-                  Next solution <Glyphicon glyph='menu-right' />
+                  {/*Next solution <Glyphicon glyph='menu-right' />*/}
+                  Next solution <FaChevronRight />
                 </button>
               </Col>
             </Row>
@@ -444,16 +456,17 @@ class TextBookSolutionView extends React.Component {
                       Click to load file from Google Drive
                     </Button> : null
                   }
-                  { pdfFile
-                    ? <PDF
-                    // ref={(el) => { this.pdfRef = el }}
-                    // fillWidth={Boolean(true)} // not supported anymore
-                      key={this.props.solution.pdf.id}
-                      file={pdfFile}
-                      onDocumentComplete={this.onDocumentComplete}
-                      page={this.state.currentPdfpage}
-                      scale={this.state.pdfScale}
-                    /> : null }
+                  {/* TODO fix it*/}
+                  {/*{ pdfFile*/}
+                    {/*? <PDF*/}
+                    {/*// ref={(el) => { this.pdfRef = el }}*/}
+                    {/*// fillWidth={Boolean(true)} // not supported anymore*/}
+                      {/*key={this.props.solution.pdf.id}*/}
+                      {/*file={pdfFile}*/}
+                      {/*onDocumentComplete={this.onDocumentComplete}*/}
+                      {/*page={this.state.currentPdfpage}*/}
+                      {/*scale={this.state.pdfScale}*/}
+                    {/*/> : null }*/}
                 </div>
               </Col>
             </Row>
@@ -483,7 +496,7 @@ class TextBookSolutionView extends React.Component {
                   /> : null }
               </Col>
             </Row>
-          </Grid>
+          </Container>
           : null }
       </Sheet>
     )
@@ -517,7 +530,7 @@ TextBookSolutionView.propTypes = {
   solution: PropTypes.object,
   thread: PropTypes.object,
   profile: PropTypes.object,
-  gapiInitState: PropTypes.bool
+  // gapiInitState: PropTypes.bool
 }
 
 const mapStateToProps = (state) => {

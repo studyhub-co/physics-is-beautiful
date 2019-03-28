@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import AdSense from 'react-adsense'
 
 import { DragSource } from 'react-dnd'
-import { Glyphicon } from 'react-bootstrap'
+import { FaTimes, FaPlus } from 'react-icons/fa'
 
 import { EditableLabel } from '../../../utils/editableLabel'
 import { DockableDropTarget, DragItemTypes } from '../../../dnd'
@@ -63,7 +63,8 @@ let ChapterClass = class Chapter extends React.Component {
               title={'Remove the chapter'}
             >
               {/* remove chapter button */}
-              <Glyphicon glyph='remove' />&nbsp;
+              {/*<Glyphicon glyph='remove' />&nbsp;*/}
+              <FaTimes />&nbsp;
             </span>
             : null }
           { this.props.resourceEditMode
@@ -134,7 +135,8 @@ let ChapterClass = class Chapter extends React.Component {
                 style={{paddingLeft: '3rem', cursor: 'pointer'}}
                 onClick={() => this.props.addProblemClick(this.props.chapter)}
                 className={'blue-text'}>
-                <Glyphicon glyph='plus' /> Add problem
+                {/*<Glyphicon glyph='plus' /> Add problem*/}
+                <FaPlus /> Add problem
               </div>
             </DockableDropTarget>
             : null

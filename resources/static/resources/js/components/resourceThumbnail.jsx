@@ -2,7 +2,8 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
-import { Image, Glyphicon } from 'react-bootstrap'
+import { Image } from 'react-bootstrap'
+import { FaImage } from 'react-icons/fa'
 import { BASE_URL } from '../utils/config'
 import { slugify } from '../utils/urls'
 
@@ -33,8 +34,9 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
           this.props.resource.metadata &&
           this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
           this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
-            ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
-            : <Glyphicon glyph='picture' /> }
+            ? <Image fluid src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
+            : <FaImage size={'10em'} /> }
+            {/*: <Glyphicon glyph='picture' /> }*/}
         </div>
         { this.props.resource.resource_type === 'TB' && this.props.resource.metadata
           ? <div>

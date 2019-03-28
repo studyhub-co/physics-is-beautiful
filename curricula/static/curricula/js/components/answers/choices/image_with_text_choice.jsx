@@ -95,7 +95,7 @@ export class ImageWithText extends React.Component {
         toReturn = <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
           <span style={style}>{this.props.index + 1}</span>
           <input id={'radio' + this.props.choice.uuid} value={this.props.choice.content.text} name='radio'
-            type='radio' checked={this.state.checked} style={hiddenCircle} />
+            type='radio' defaultChecked={this.state.checked} style={hiddenCircle} />
           {this.props.choice.content.text
             ? <label htmlFor={'radio' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
             : <label htmlFor={'radio' + this.props.choice.uuid} style={style} />

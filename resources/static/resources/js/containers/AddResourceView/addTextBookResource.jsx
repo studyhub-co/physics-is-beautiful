@@ -1,17 +1,13 @@
 import React from 'react'
 
-import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Sheet } from '../../components/Sheet'
 
 import * as resourcesCreators from '../../actions/resources'
+import { FaSearch, FaPlus } from 'react-icons/fa'
 
-import { Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
-
-import history from '../../history'
-import { BASE_URL } from '../../utils/config'
+import { Row, Col, Button, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 
 import * as googleCreators from '../../actions/google'
 
@@ -94,8 +90,6 @@ class AddTextBookResourceView extends React.Component {
 
   onFinish (chaptersList) {
     // create resource
-    // console.log(chaptersList);
-    // console.log(this.state.selectedGoogleBook);
     var textBookResource = {resource_type: 'TB',
       metadata: {data: this.state.selectedGoogleBook},
       sections: chaptersList
@@ -125,7 +119,8 @@ class AddTextBookResourceView extends React.Component {
                 <InputGroup.Button>
                   <Button
                     onClick={this.searchISBNClick}
-                  ><Glyphicon glyph='search' /></Button>
+                  ><FaSearch /></Button>
+                  {/*><Glyphicon glyph='search' /></Button>*/}
                 </InputGroup.Button>
               </InputGroup>
             </FormGroup>
@@ -142,7 +137,8 @@ class AddTextBookResourceView extends React.Component {
                       return <div key={book.id} style={{width: '20rem', paddingRight: '1rem'}}>
                         <GoogleBookThumbnail googleBook={book} />
                         <Button onClick={() => { this.onSelectBook(book) }} className={'common-button'}>
-                          <Glyphicon glyph='plus' /> Select
+                          {/*<Glyphicon glyph='plus' /> Select*/}
+                          <FaPlus /> Select
                         </Button>
                       </div>
                     }, this)

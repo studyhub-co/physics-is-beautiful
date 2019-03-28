@@ -4,7 +4,8 @@ import React from 'react'
 // import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
+import { Row, Col, Button } from 'react-bootstrap'
+import { FaChevronLeft, FaAsterisk, FaPlus } from 'react-icons/fa'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
@@ -74,7 +75,8 @@ export default class AddTextBookSolutionsView extends React.Component {
         <div className={'blue-title'}>
           <Button
             onClick={this.prevStepClick}
-          ><Glyphicon glyph='chevron-left' /> Previous</Button>
+          ><FaChevronLeft /> Previous</Button>
+          {/*><Glyphicon glyph='chevron-left' /> Previous</Button>*/}
           <span style={{padding: '0 2rem'}}>Third step</span>
           <Button
             disabled={!this.isOneSolutionInChapters()}
@@ -96,7 +98,8 @@ export default class AddTextBookSolutionsView extends React.Component {
                   ? <div style={{paddingLeft: '2rem'}}>
                     { chapter.problems.map(function (problem, i) {
                       return <div key={i}>
-                        <Glyphicon glyph='asterisk' />&nbsp;{problem.title}
+                        <FaAsterisk />&nbsp;{problem.title}
+                        {/*<Glyphicon glyph='asterisk' />&nbsp;{problem.title}*/}
                         { problem.hasOwnProperty('solutions') ? problem.solutions.map(function (solution, i) {
                           var filename = solution.pdf.file.replace(/^.*[\\\/]/, '')
                           return <span key={i} style={{paddingLeft: '2rem'}}>
@@ -104,7 +107,8 @@ export default class AddTextBookSolutionsView extends React.Component {
                           </span>
                         }) : null
                         }
-                        &nbsp;&nbsp;<Glyphicon glyph='plus' />&nbsp;add solution
+                        &nbsp;&nbsp;<FaPlus />&nbsp;add solution
+                        {/*&nbsp;&nbsp;<Glyphicon glyph='plus' />&nbsp;add solution*/}
                         <span
                           className={'blue-text selectable-file'}
                           style={{ paddingLeft: '2rem' }}

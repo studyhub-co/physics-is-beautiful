@@ -14,7 +14,7 @@ module.exports = function (env) {
       profile: './profiles/static/profiles/js/authenticated/index',
       // editor: './editor/static/editor/js/app',
       // classroom: './classroom/static/classroom/js/index',
-      // resources: './resources/static/resources/js/index',
+      resources: './resources/static/resources/js/index',
       homepage: './homepage/static/homepage/js/index'
     },
 

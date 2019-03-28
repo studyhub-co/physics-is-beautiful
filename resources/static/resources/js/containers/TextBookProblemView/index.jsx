@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Grid, Row, Col, Table, Button, Glyphicon, Modal, Dropdown, MenuItem } from 'react-bootstrap'
+import { Container, Row, Col, Table, Button, Modal, Dropdown, DropdownItem } from 'react-bootstrap'
+import { FaPlus, FaEllipsisH, FaChevronLeft, FaArrowDown, FaArrowUp, FaCommentAlt } from 'react-icons/fa'
 import AdSense from 'react-adsense'
 
 import history from '../../history'
@@ -37,11 +38,12 @@ class HorizontalOptionToggle extends React.Component {
 
   render () {
     return (
-      <span onClick={this.handleClick}>
-        <Glyphicon
-          glyph='option-horizontal'
-          style={{cursor: 'pointer'}}
-        />
+      <span onClick={this.handleClick} style={{cursor: 'pointer'}}>
+        <FaEllipsisH />
+        {/*<Glyphicon*/}
+          {/*glyph='option-horizontal'*/}
+          {/*style={{cursor: 'pointer'}}*/}
+        {/*/>*/}
       </span>
     )
   }
@@ -234,18 +236,19 @@ class TextBookProblemView extends React.Component {
 
     return (
       <Sheet>
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col sm={12} md={12}>
               <a className={'back-button'} onClick={() => { history.push(resourceUrl) }} >
-                <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+                <FaChevronLeft />
                 All problems
               </a>
             </Col>
           </Row>
-        </Grid>
+        </Container>
         { this.props.problem
-          ? <Grid fluid>
+          ? <Container fluid>
             <Row>
               <Col sm={12} md={12}>
                 <div className={'text-align-center blue-title'}>{this.props.resource && this.props.resource.metadata
@@ -266,15 +269,16 @@ class TextBookProblemView extends React.Component {
                     {this.state.ordering}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <MenuItem eventKey='Top'>Top</MenuItem>
-                    <MenuItem eventKey='New'>New</MenuItem>
+                    <DropdownItem eventKey='Top'>Top</DropdownItem>
+                    <DropdownItem eventKey='New'>New</DropdownItem>
                   </Dropdown.Menu>
                 </Dropdown>
               </Col>
               <Col sm={9} md={9} />
               <Col sm={2} md={2}>
                 <Button onClick={() => { this.onPostSolutionClick() }} className={'common-button'}>
-                  <Glyphicon glyph='plus' /> Post solution
+                  {/*<Glyphicon glyph='plus' /> Post solution*/}
+                  <FaPlus /> Post solution
                 </Button>
               </Col>
               <Modal
@@ -329,21 +333,28 @@ class TextBookProblemView extends React.Component {
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                <Table striped bordered condensed hover responsive>
+                <Table striped bordered size='sm' hover responsive>
                   <tbody>
                     { this.props.problem
                       ? this.props.problem.solutions.map(function (solution, i) { // ============ chapters
                         return <tr key={solution.uuid}>
                           <td>
-                            <Glyphicon
-                              glyph='arrow-down'
+                            <FaArrowDown
                               style={{cursor: 'pointer'}}
                               onClick={() => this.upDownSolutionClick(solution.uuid, -1)} />
                             &nbsp;{solution.vote_score}&nbsp;
-                            <Glyphicon
-                              glyph='arrow-up'
+                            <FaArrowUp
                               style={{cursor: 'pointer'}}
                               onClick={() => this.upDownSolutionClick(solution.uuid, 1)} />
+                            {/*<Glyphicon*/}
+                              {/*glyph='arrow-down'*/}
+                              {/*style={{cursor: 'pointer'}}*/}
+                              {/*onClick={() => this.upDownSolutionClick(solution.uuid, -1)} />*/}
+                            {/*&nbsp;{solution.vote_score}&nbsp;*/}
+                            {/*<Glyphicon*/}
+                              {/*glyph='arrow-up'*/}
+                              {/*style={{cursor: 'pointer'}}*/}
+                              {/*onClick={() => this.upDownSolutionClick(solution.uuid, 1)} />*/}
                           </td>
                           <td>{solution.pdf ? <div className={'pdf-ico'} /> : null}</td>
                           <td>
@@ -366,17 +377,19 @@ class TextBookProblemView extends React.Component {
                               </a>&nbsp;-&nbsp;
                               <Moment fromNow>{solution.created_on}</Moment></div>
                           </td>
-                          <td style={{textAlign: 'center'}}><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>
+                          {/*<td style={{textAlign: 'center'}}><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>*/}
+                          <td style={{textAlign: 'center'}}><FaCommentAlt />&nbsp;{solution.count_comments}</td>
                           { getHaveSolutionEditAccess(solution)
                             ? <td className={'solution-dropdown-menu'}>
                               <Dropdown
                                 onSelect={(val) => { this.handleSolutionMenuClick(val, solution) }}
                                 id={'dropdown-settings' + solution.uuid}
                               >
-                                <HorizontalOptionToggle bsRole='toggle' data-boundary='body' />
+                                {/*<HorizontalOptionToggle bsRole='toggle' data-boundary='body' />*/}
+                                <Dropdown.Toggle as={HorizontalOptionToggle} />
                                 <Dropdown.Menu>
-                                  <MenuItem eventKey='Edit'>Edit</MenuItem>
-                                  <MenuItem eventKey='Delete'>Delete</MenuItem>
+                                  <DropdownItem eventKey='Edit'>Edit</DropdownItem>
+                                  <DropdownItem eventKey='Delete'>Delete</DropdownItem>
                                 </Dropdown.Menu>
                               </Dropdown>
                             </td> : null }
@@ -405,7 +418,7 @@ class TextBookProblemView extends React.Component {
                   /> : null }
               </Col>
             </Row>
-          </Grid>
+          </Container>
           : null }
       </Sheet>
     )

@@ -7,7 +7,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import RMathJax from 'react-mathjax' // alias as RMathJax instead global MathJax
+// import RMathJax from 'react-mathjax' // alias as RMathJax instead global MathJax
 import MediaQuery from 'react-responsive'
 import {Prompt} from 'react-router-dom'
 import Draggable from 'react-draggable'

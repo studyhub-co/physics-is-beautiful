@@ -3,7 +3,8 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
+import { Container, Row, Col, Image } from 'react-bootstrap'
+import { FaPlus, FaImage } from 'react-icons/fa'
 
 import {DockableDropTarget, DragItemTypes} from '../../dnd'
 import Chapter from './Components/chapter'
@@ -195,7 +196,7 @@ class TextBookResourceView extends React.Component {
     }
 
     return (
-      <Grid fluid>
+      <Container fluid>
         <Row>
           <Col sm={12} md={12}>
             <span style={{position: 'relative', float: 'right', fontSize: 10}}>
@@ -263,7 +264,8 @@ class TextBookResourceView extends React.Component {
                   style={{cursor: 'pointer'}}
                   onClick={() => this.addChapterClick()}
                   className={'blue-text'}>
-                  <Glyphicon glyph='plus' /> Add chapter
+                  {/*<Glyphicon glyph='plus' /> Add chapter*/}
+                  <FaPlus /> Add chapter
                 </div>
                 {/* <div // Add google ads button */}
                 {/* style={{cursor: 'pointer'}} */}
@@ -284,7 +286,8 @@ class TextBookResourceView extends React.Component {
               this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
               this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
                 ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail.replace('http', 'https')} />
-                : <Glyphicon glyph='picture' /> }
+                : <FaImage /> }
+                {/*: <Glyphicon glyph='picture' /> }*/}
             </div>
             { this.props.resource.metadata
               ? <div style={{backgroundColor: '#EDEDED', padding: '1rem'}}>
@@ -360,7 +363,7 @@ class TextBookResourceView extends React.Component {
               /> : null }
           </Col>
         </Row>
-      </Grid>
+      </Container>
     )
   }
 }

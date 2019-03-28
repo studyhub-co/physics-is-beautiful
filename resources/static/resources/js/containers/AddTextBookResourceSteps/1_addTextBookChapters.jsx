@@ -4,7 +4,8 @@ import React from 'react'
 // import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Glyphicon, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
+import { Row, Col, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
+import { FaChevronRight } from 'react-icons/fa'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
@@ -57,7 +58,8 @@ export default class AddTextBookChaptersView extends React.Component {
                   <Button
                     disabled={!parseInt(this.state.numberOfChapters)}
                     onClick={this.addNumberOfChaptersClick}
-                  >Next <Glyphicon glyph='chevron-right' /></Button>
+                  >Next <FaChevronRight /></Button>
+                  {/*>Next <Glyphicon glyph='chevron-right' /></Button>*/}
                 </InputGroup.Button>
               </InputGroup>
             </FormGroup>
@@ -76,25 +78,3 @@ AddTextBookChaptersView.propTypes = {
   onAddNumberOfChapters: PropTypes.func.isRequired,
   numberOfChapters: PropTypes.number
 }
-
-// const mapStateToProps = (state) => {
-//   return {
-//     // gapiInitState: state.google.gapiInitState,
-//     // googleBooksList: state.google.googleBooksList,
-//     // resourceOptions: state.resources.resourceOptions,
-//   }
-// }
-//
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     dispatch,
-//     // googleActions: bindActionCreators(googleCreators, dispatch)
-//     //resourcesActions: bindActionCreators(resourcesCreators, dispatch)
-//     // tabActions: bindActionCreators(tabsCreators, dispatch),
-//     // classroomActions: bindActionCreators(classroomCreators, dispatch),
-//     // googleActions: bindActionCreators(googleCreators, dispatch),
-//   }
-// }
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(AddTextBookChaptersView)
-// export { AddTextBookChaptersView as AddTextBookChaptersViewNotConnected }

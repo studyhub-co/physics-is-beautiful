@@ -3,14 +3,13 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Container, Row, Col } from 'react-bootstrap'
+import { FaChevronLeft } from 'react-icons/fa'
+
 import { Sheet } from '../../components/Sheet'
-
-import * as resourcesCreators from '../../actions/resources'
-
-import { Grid, Row, Col } from 'react-bootstrap'
-
-import { BASE_URL } from '../../utils/config'
 import history from '../../history'
+import { BASE_URL } from '../../utils/config'
+import * as resourcesCreators from '../../actions/resources'
 
 import TextBookResourceView from './textBookResourceView'
 
@@ -24,16 +23,17 @@ class ResourceView extends React.Component {
   render () {
     return (
       <Sheet>
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col sm={12} md={12}>
               <a className={'back-button'} onClick={() => { history.push(BASE_URL) }} >
-                <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+                <FaChevronLeft />
                 All Resources
               </a>
             </Col>
           </Row>
-        </Grid>
+        </Container>
         { this.props.resource && this.props.resource.resource_type === 'TB'
           ? <TextBookResourceView resource={this.props.resource} />
           : null }
