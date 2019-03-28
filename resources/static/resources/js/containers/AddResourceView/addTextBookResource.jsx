@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import * as resourcesCreators from '../../actions/resources'
 import { FaSearch, FaPlus } from 'react-icons/fa'
 
-import { Row, Col, Button, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Row, Col, Button, Form, InputGroup } from 'react-bootstrap'
 
 import * as googleCreators from '../../actions/google'
 
@@ -106,9 +106,9 @@ class AddTextBookResourceView extends React.Component {
       toReturn = <div>
         <Row>
           <Col sm={12} md={12}>
-            <FormGroup>
+            <Form.Group>
               <InputGroup>
-                <FormControl
+                <Form.Control
                   type='text'
                   disabled={!this.props.gapiInitState}
                   value={this.state.ISBNString}
@@ -116,14 +116,14 @@ class AddTextBookResourceView extends React.Component {
                   onChange={this.handleISBNString}
                   onKeyUp={this.handleISBNInputKeyUp}
                 />
-                <InputGroup.Button>
+                <InputGroup.Append>
                   <Button
                     onClick={this.searchISBNClick}
                   ><FaSearch /></Button>
                   {/*><Glyphicon glyph='search' /></Button>*/}
-                </InputGroup.Button>
+                </InputGroup.Append>
               </InputGroup>
-            </FormGroup>
+            </Form.Group>
           </Col>
         </Row>
         <Row>

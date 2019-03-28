@@ -4,7 +4,7 @@ import React from 'react'
 // import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Row, Col, FormGroup, InputGroup, FormControl, Button } from 'react-bootstrap'
+import { Row, Col, InputGroup, Form, Button } from 'react-bootstrap'
 import { FaChevronRight } from 'react-icons/fa'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
@@ -44,9 +44,9 @@ export default class AddTextBookChaptersView extends React.Component {
         <div className={'blue-title'}>First step</div>
         <Row>
           <Col sm={8} md={8}>
-            <FormGroup>
+            <Form.Group>
               <InputGroup>
-                <FormControl
+                <Form.Control
                   type='text'
                   value={this.state.numberOfChapters}
                   placeholder='Enter number of chapters...'
@@ -54,15 +54,15 @@ export default class AddTextBookChaptersView extends React.Component {
                   onChange={this.handleNumberOfChapters}
                   onKeyUp={this.handleNumberOfChaptersInputKeyUp}
                 />
-                <InputGroup.Button>
+                <InputGroup.Append>
                   <Button
                     disabled={!parseInt(this.state.numberOfChapters)}
                     onClick={this.addNumberOfChaptersClick}
                   >Next <FaChevronRight /></Button>
                   {/*>Next <Glyphicon glyph='chevron-right' /></Button>*/}
-                </InputGroup.Button>
+                </InputGroup.Append>
               </InputGroup>
-            </FormGroup>
+            </Form.Group>
           </Col>
           <Col sm={4} md={4}>
             <GoogleBookThumbnail googleBook={this.props.googleBook} />

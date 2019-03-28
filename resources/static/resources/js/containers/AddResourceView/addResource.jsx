@@ -4,7 +4,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Container, Row, Col, FormGroup, FormControl } from 'react-bootstrap'
+import { Container, Row, Col, Form } from 'react-bootstrap'
 import { FaChevronLeft } from 'react-icons/fa'
 
 import { Sheet } from '../../components/Sheet'
@@ -79,7 +79,7 @@ class AddResourceView extends React.Component {
           </Row>
           <Row>
             <Col sm={12} md={12}>
-              <div className={'blue-title'} style={{lineHeight: '7rem'}}>
+              <div className={'blue-title'} style={{lineHeight: '5rem'}}>
                 Add resource
               </div>
               <hr />
@@ -87,15 +87,16 @@ class AddResourceView extends React.Component {
           </Row>
           { this.state.wizardStep < 1 ? <Row>
             <Col sm={12} md={12}>
-              <FormGroup controlId='resouresTypes'>
-                <FormControl
+              <Form.Group controlId='resouresTypes'>
+                <Form.Control
                   onChange={this.handleResouresTypesChange}
                   defaultValue={'select'}
-                  componentClass='select'
+                  type={'seleft'}
+                  as={'select'}
                   placeholder='Select resource type...'>
                   {resourceTypesOptions}
-                </FormControl>
-              </FormGroup>
+                </Form.Control>
+              </Form.Group>
             </Col>
           </Row>
             : null }
