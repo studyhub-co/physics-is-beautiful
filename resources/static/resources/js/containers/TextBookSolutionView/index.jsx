@@ -34,7 +34,9 @@ class TextBookSolutionView extends React.Component {
     super(props)
     this.state = {
       pdfScale: 1,
-      externalPdfUrlFile: null
+      externalPdfUrlFile: null,
+      pdfPages: 0,
+      currentPdfPage: 0
     }
 
     this.titleSet = false
@@ -268,7 +270,7 @@ class TextBookSolutionView extends React.Component {
 
     return (
       <div>
-        <Form inline>
+        <Form inline className={'justify-content-center'}>
           <FormGroup style={{marginBottom: 0}}>
             {previousButton}&nbsp;
             <InputGroup style={{maxWidth: 80}}>
@@ -278,9 +280,9 @@ class TextBookSolutionView extends React.Component {
                 onChange={this.handleChangeNumberOfPdfPage}
                 onKeyUp={this.handleChangeNumberOfPdfPageInputKeyUp}
               />
-              <InputGroup.Addon>
+              <InputGroup.Text>
                  / {pages}
-              </InputGroup.Addon>
+              </InputGroup.Text>
             </InputGroup>
             &nbsp;{nextButton}
             &nbsp;<Button onClick={() => { this.onZoomPdfClick(0.3) }} className={'common-button'}>
@@ -440,8 +442,8 @@ class TextBookSolutionView extends React.Component {
                 </button>
               </Col>
             </Row>
-            <Row>
-              <Col sm={12} md={12} className={'text-align-center'}>
+            <Row className={'justify-content-center'}>
+              <Col className={'text-center'}>
                 {pagination}
               </Col>
             </Row>
@@ -457,16 +459,16 @@ class TextBookSolutionView extends React.Component {
                     </Button> : null
                   }
                   {/* TODO fix it*/}
-                  {/*{ pdfFile*/}
-                    {/*? <PDF*/}
-                    {/*// ref={(el) => { this.pdfRef = el }}*/}
-                    {/*// fillWidth={Boolean(true)} // not supported anymore*/}
-                      {/*key={this.props.solution.pdf.id}*/}
-                      {/*file={pdfFile}*/}
-                      {/*onDocumentComplete={this.onDocumentComplete}*/}
-                      {/*page={this.state.currentPdfpage}*/}
-                      {/*scale={this.state.pdfScale}*/}
-                    {/*/> : null }*/}
+                  { pdfFile
+                    ? <PDF
+                    // ref={(el) => { this.pdfRef = el }}
+                    // fillWidth={Boolean(true)} // not supported anymore
+                      key={this.props.solution.pdf.id}
+                      file={pdfFile}
+                      onDocumentComplete={this.onDocumentComplete}
+                      page={this.state.currentPdfpage}
+                      scale={this.state.pdfScale}
+                    /> : null }
                 </div>
               </Col>
             </Row>
