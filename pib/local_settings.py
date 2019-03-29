@@ -42,8 +42,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 X_FRAME_OPTIONS = 'ALLOWALL'
 
 # uncomment for tests on a developer machine with prod base
-# django-s3-storage media
-AWS_S3_PUBLIC_URL = os.getenv('AWS_STORAGE_PUBLIC_URL')
-AWS_S3_BUCKET_AUTH = False
-# AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
+# # django-s3-storage media
+# AWS_S3_PUBLIC_URL = os.getenv('AWS_STORAGE_PUBLIC_URL')
+# AWS_S3_BUCKET_AUTH = False
+# # AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+# DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
