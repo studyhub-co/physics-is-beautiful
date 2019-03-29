@@ -246,7 +246,7 @@ html, body {
 }
 
 .section-thumbnail > img {
-    display: block;
+    /*display: block;*/
     height: 93px;
 }
 

@@ -111,7 +111,7 @@ export class MultipleAnswer extends React.Component {
     return (
       <div className='bounding-box'>
         <h1>Select answer below:</h1>
-        <div className={textOnlyMode ? 'button-group' : 'card-columns'}>
+        <div className={textOnlyMode ? 'button-group' : 'row'}>
           {choices}
         </div>
         <div style={{clear: 'both'}} />

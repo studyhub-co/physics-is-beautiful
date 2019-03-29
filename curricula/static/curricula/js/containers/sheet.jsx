@@ -1,5 +1,7 @@
 import React from 'react'
 import {Prompt, Link} from 'react-router-dom'
+import { FaChevronLeft } from 'react-icons/fa'
+
 import {Section} from '../navigation'
 import {Question} from '../components/question'
 import {Footer} from '../components/question_footer'
@@ -68,7 +70,7 @@ class QuestionSheet extends React.Component {
         questionShouldUpdate: false
       })
     } else {
-      if (this.state.disabledCheck == false) {
+      if (this.state.disabledCheck === false) {
         this.setState({
           disabledCheck: true,
           questionShouldUpdate: false
@@ -121,7 +123,8 @@ export class SectionSheet extends React.Component {
     if (this.props.backLink) {
       backLink = (
         <Link id='backToDashboard' to={this.props.backLink} replace={false} type='button' className='btn btn-default btn-sm'>
-          <span className='glyphicon glyphicon-chevron-left' style={{color: '#888'}} />
+          {/*<span className='glyphicon glyphicon-chevron-left' style={{color: '#888'}} />*/}
+          <FaChevronLeft style={{color: '#888'}} />
         </Link>
       )
     }

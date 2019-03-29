@@ -6,7 +6,7 @@ class LockedItem extends React.Component {
   render () {
     return (
       <div className='thumbnail-block'>
-        <div className='thumbnail section-thumbnail'>
+        <div className='thumbnail section-thumbnail text-center'>
           <img className='grayed-out-img img-fluid' src={this.props.item.image} />
         </div>
         <h4 className='module-locked thumbnail-title'>
@@ -31,7 +31,7 @@ class UnlockedItem extends React.Component {
     return (
       <Link to={this.props.item.href}>
         <div className='thumbnail-block module-accessible-block'>
-          <div className='thumbnail section-thumbnail'>
+          <div className='thumbnail section-thumbnail text-center'>
             <img className={'img-fluid'} src={this.props.item.image} />
           </div>
           <h4 className='module-accessible thumbnail-title'>
@@ -49,7 +49,7 @@ class CompleteItem extends React.Component {
     return (
       <Link to={this.props.item.href}>
         <div className='thumbnail-block module-completed'>
-          <div className='thumbnail section-thumbnail'>
+          <div className='thumbnail section-thumbnail text-center'>
             <img className={'img-fluid'} src={this.props.item.image} />
           </div>
           <h4 className={'thumbnail-title'}>

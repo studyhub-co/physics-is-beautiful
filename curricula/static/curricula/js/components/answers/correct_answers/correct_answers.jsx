@@ -52,7 +52,7 @@ export class DefaultAnswer extends React.Component {
     if (this.props.answer.content.text) {
       return <span>{ this.props.answer.content.text }</span>
     } else {
-      return <span>the highlighted green card</span>
+      return <span>the highlighted red card</span>
     }
   }
 }
