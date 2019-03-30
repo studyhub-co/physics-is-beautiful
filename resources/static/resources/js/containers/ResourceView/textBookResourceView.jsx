@@ -39,7 +39,12 @@ class TextBookResourceView extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.resource && !this.props.thread) {
+    // if (this.props.resource && !this.props.thread) {
+    if (
+      // we get resource via props!
+      (prevProps.resource !== this.props.resource && this.props.resource) || // reload
+      (this.props.resource && !this.props.thread) // new
+    ) {
       // reload thread
       this.props.djedditActions.fetchThread(this.props.resource.thread)
     }
