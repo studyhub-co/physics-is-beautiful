@@ -1,22 +1,14 @@
 import React from 'react'
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
+import { Col, Dropdown, DropdownItem } from 'react-bootstrap'
+import copy from 'copy-to-clipboard'
+import { FaEllipsisV, FaGraduationCap, FaInfoCircle, FaCodeBranch, FaShareAlt, FaMinus, FaPlus } from 'react-icons/fa'
 
 import { addCurriculum, addCurriculumToDashboard, removeCurriculumFromDashboard } from './../../actions'
-
 import { history } from '../../history'
-
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
-
-import copy from 'copy-to-clipboard'
-
 import { Thumbnail } from './../thumbnail'
-
 import { store } from '../../app'
-
-// import { Portal } from 'react-portal'
-// "react-portal": "^4.1.5",
 
 class CurriculumMenuToggle extends React.Component {
   constructor (props, context) {
@@ -30,10 +22,13 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
+    {/*<Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>*/}
+        {/*{this.props.children}*/}
+      {/*</Glyphicon>*/}
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
+      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
-      </Glyphicon>
+      </FaEllipsisV>
     )
   }
 }
@@ -129,13 +124,31 @@ export class CurriculumThumbnailPublic extends React.Component {
             <CurriculumMenuToggle bsRole='toggle' />
             {/*<CustomCurriculumMenu bsRole='menu'>*/}
             <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-              <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
-              <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
-              <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
-              <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
+              <DropdownItem onSelect={this.onLearnSelect} eventKey='1'>
+                {/*<Glyphicon glyph='education' /> Learn*/}
+                <FaGraduationCap /> Learn
+              </DropdownItem>
+              <DropdownItem onSelect={this.onViewProfileSelect} eventKey='2'>
+                {/*<Glyphicon glyph='info-sign' /> View profile*/}
+                <FaInfoCircle /> View profile
+              </DropdownItem>
+              <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
+                {/*<Glyphicon glyph='export' /> Fork to curriculum studio*/}
+                <FaCodeBranch /> Fork to curriculum studio
+              </DropdownItem>
+              <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
+                {/*<Glyphicon glyph='share-alt' /> Copy shareable link*/}
+                <FaShareAlt /> Copy shareable link
+              </DropdownItem>
               { this.props.slidesListName === 'recentSlides'
-                ? <MenuItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Remove from dashboard</MenuItem>
-                : <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
+                ? <DropdownItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'>
+                  {/*<Glyphicon glyph='plus' /> Remove from dashboard*/}
+                  <FaMinus /> Remove from dashboard
+                </DropdownItem>
+                : <DropdownItem onSelect={this.onAddToDashboardSelect} eventKey='5'>
+                  {/*<Glyphicon glyph='plus' /> Add to dashboard*/}
+                  <FaPlus /> Add to dashboard
+                </DropdownItem>
               }
             </Dropdown.Menu>
             {/*</CustomCurriculumMenu>*/}

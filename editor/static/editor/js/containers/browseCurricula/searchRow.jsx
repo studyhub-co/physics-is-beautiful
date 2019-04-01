@@ -1,8 +1,8 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-
-import { FormGroup, Row, Col, Button, Glyphicon, InputGroup, FormControl } from 'react-bootstrap'
+import { FormGroup, Row, Col, Button, InputGroup, FormControl } from 'react-bootstrap'
+import { FaSearch, FaTimes } from 'react-icons/fa'
 
 export default class SearchRowView extends React.Component {
   render () {
@@ -17,14 +17,16 @@ export default class SearchRowView extends React.Component {
               onChange={this.props.handleSearchString}
               onKeyUp={this.props.handleSearchInputKeyUp}
             />
-            <InputGroup.Button>
+            <InputGroup.Text>
               <Button
                 onClick={this.props.searchButtonClick}
-              ><Glyphicon glyph='search' /></Button>
+              ><FaSearch /></Button>
+              {/*><Glyphicon glyph='search' /></Button>*/}
               <Button
                 onClick={this.props.clearSearchButtonClick}
-              ><Glyphicon glyph='remove' /></Button>
-            </InputGroup.Button>
+              ><FaTimes /></Button>
+              {/*><Glyphicon glyph='remove' /></Button>*/}
+            </InputGroup.Text>
           </InputGroup>
         </FormGroup>
       </Col>

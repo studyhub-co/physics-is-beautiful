@@ -1,16 +1,14 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-
-import { Grid, Row, Col } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { Container, Row, Col } from 'react-bootstrap'
+import { RingLoader } from 'react-spinners'
 
 import InfiniteScroll from 'react-infinite-scroller'
 
-import { connect } from 'react-redux'
 import { loadSearchCurricula } from '../../../actions'
 import { CurriculumThumbnailPublic } from './../../../components/not_editor/curriculum_thumbnail_public'
-
-import { RingLoader } from 'react-spinners'
 
 class CurriculaSearchView extends React.Component {
   constructor (props) {
@@ -74,7 +72,7 @@ class CurriculaSearchView extends React.Component {
       )
     })
 
-    return (<Grid fluid>{this.props.curriculaSearchList
+    return (<Container fluid>{this.props.curriculaSearchList
       ? <div>
         <InfiniteScroll
           pageStart={0}
@@ -98,7 +96,7 @@ class CurriculaSearchView extends React.Component {
           </div>
         </Col>
       </Row> }
-    </Grid>
+    </Container>
     )
   }
 }

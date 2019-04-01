@@ -1,15 +1,14 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-
 import { connect } from 'react-redux'
-
 import copy from 'copy-to-clipboard'
+import { Dropdown, Image } from 'react-bootstrap'
+import { FaEllipsisV, FaGraduationCap, FaCodeBranch, FaShareAlt, FaPlus } from 'react-icons/fa'
 
-import { Dropdown, MenuItem, Glyphicon, Image } from 'react-bootstrap'
 import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadModuleIfNeeded } from '../../actions'
 
-export class DropdownThumbnail extends Dropdown {
+export class DropdownThumbnail extends React.Component {
   componentDidMount () {
     if (this.refs.inner) {
       this.refs.inner.handleClose = this.handleClose.bind(this)
@@ -38,10 +37,13 @@ class MenuToggle extends React.Component {
   }
 
   render () {
+      {/*<Glyphicon glyph={'option-vertical'} onClick={ this.handleClick } style={{fontSize: '2rem'}}>*/}
+        {/*{this.props.children}*/}
+      {/*</Glyphicon>*/}
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={ this.handleClick } style={{fontSize: '2rem'}}>
+      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
-      </Glyphicon>
+      </FaEllipsisV>
     )
   }
 }
@@ -50,7 +52,7 @@ MenuToggle.propTypes = {
   onClick: PropTypes.func
 }
 
-class ThumbnailMenu extends Dropdown.Menu {
+class ThumbnailMenu extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onTitleClick = this.onTitleClick.bind(this)
@@ -168,17 +170,23 @@ class ThumbnailMenu extends Dropdown.Menu {
         learnText = 'Learn lesson with the question'
         copyText = 'Copy link to lesson'
       }
-      menus.push(<MenuItem onSelect={this.onLearnSelect} key='1' eventKey='1'><Glyphicon glyph='education' />
-        &nbsp;{learnText}</MenuItem>)
-      menus.push(<MenuItem onSelect={this.onForkSelect} key='3' eventKey='3'><Glyphicon glyph='export' />
-        &nbsp;Fork to curriculum studio</MenuItem>)
-      menus.push(<MenuItem onSelect={this.onCopyShareableLink} key='4' eventKey='4'><Glyphicon glyph='share-alt' />
-        &nbsp;{copyText}</MenuItem>)
+      menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
+        {/*<Glyphicon glyph='education' />*/}
+        <FaGraduationCap />
+        &nbsp;{learnText}</Dropdown.Item>)
+      menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
+        {/*<Glyphicon glyph='export' />*/}
+        <FaCodeBranch />
+        &nbsp;Fork to curriculum studio</Dropdown.Item>)
+      menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
+        {/*<Glyphicon glyph='share-alt' />*/}
+        <FaShareAlt />
+        &nbsp;{copyText}</Dropdown.Item>)
     }
 
     // Curricula list
     if (this.state.level === 2) {
-      menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
+      menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
       // for (var i = 0; i < this.props.myCurricula.results.length; i++) {
       //   var curriculum = this.props.myCurricula.results[i]
 
@@ -189,19 +197,20 @@ class ThumbnailMenu extends Dropdown.Menu {
 
       for (let uuid in this.props.myCurricula) {
         var curriculum = this.props.myCurricula[uuid]
-        menus.push(<MenuItem
+        menus.push(<Dropdown.Item
           onSelect={this.onSelectCurriculum.bind(this, curriculum)}
           key={curriculum.uuid}>
           {curriculum.image
             ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={curriculum.image} />
             : null }
           {curriculum.name}{subMenu}
-        </MenuItem>)
+        </Dropdown.Item>)
       }
 
-      menus.push(<MenuItem onSelect={this.addElementToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
-        <Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum
-      </MenuItem>)
+      menus.push(<Dropdown.Item onSelect={this.addElementToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
+        {/*<Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum*/}
+        <FaPlus /> Add {this.state.baseName} to new curriculum
+      </Dropdown.Item>)
     }
 
     // Units list
@@ -211,19 +220,19 @@ class ThumbnailMenu extends Dropdown.Menu {
         subMenu = <span style={{float: 'right'}}>{'>'}</span>
       }
 
-      menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
+      menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
 
       for (let x = 0; x < this.state.selectedCurriculum.units.length; x++) {
         var unit = this.props.units[this.state.selectedCurriculum.units[x]]
 
-        menus.push(<MenuItem
+        menus.push(<Dropdown.Item
           onSelect={this.onSelectUnit.bind(this, unit)}
           key={unit.uuid}>
           {unit.image
             ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={unit.image} />
             : null }
           {unit.name}{subMenu}
-        </MenuItem>)
+        </Dropdown.Item>)
       }
     }
 
@@ -234,32 +243,32 @@ class ThumbnailMenu extends Dropdown.Menu {
         subMenu = <span style={{float: 'right'}}>{'>'}</span>
       }
 
-      menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
+      menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
 
       for (let x = 0; x < this.state.selectedUnit.modules.length; x++) {
         var module = this.props.modules[this.state.selectedUnit.modules[x]]
 
-        menus.push(<MenuItem
+        menus.push(<Dropdown.Item
           onSelect={this.onSelectModule.bind(this, module)}
           key={module.uuid}>
           {module.image
             ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={module.image} />
             : null }
           {module.name}{subMenu}
-        </MenuItem>)
+        </Dropdown.Item>)
       }
     }
 
     // lessons list
     if (this.state.level === 5) {
-      menus.push(<MenuItem onSelect={this.onBack} key={'21'}>{'< Back'}</MenuItem>)
+      menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
       var lessonsUuidsList = this.props.modules[this.state.selectedModule.uuid].lessons
 
       if (lessonsUuidsList) {
         for (let x = 0; x < lessonsUuidsList.length; x++) {
           var lesson = this.props.lessons[lessonsUuidsList[x]]
 
-          menus.push(<MenuItem
+          menus.push(<Dropdown.Item
             onSelect={this.onSelectLesson.bind(this, lesson)}
             key={lesson.uuid}>
             {lesson.image
@@ -268,7 +277,7 @@ class ThumbnailMenu extends Dropdown.Menu {
                 src={lesson.image} />
               : null}
             {lesson.name}
-          </MenuItem>)
+          </Dropdown.Item>)
         }
       }
     }

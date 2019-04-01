@@ -1,12 +1,10 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-
-import InfiniteScroll from 'react-infinite-scroller'
-
-import { Grid, Row, Col } from 'react-bootstrap'
-
 import { connect } from 'react-redux'
+import { Container, Row, Col } from 'react-bootstrap'
+// import InfiniteScroll from 'react-infinite-scroller'
+
 import { loadSearchUnits } from '../../../actions'
 import { UnitThumbnailPublic } from './../../../components/not_editor/unit_thumbnail_public'
 
@@ -73,16 +71,16 @@ class UnitsSearchView extends React.Component {
       )
     })
 
-    return (<Grid fluid>{this.props.unitsSearchList
+    return (<Container fluid>{this.props.unitsSearchList
       ? <div>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.loadNextPage}
-          hasMore={this.state.hasMoreItems}
-          loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
-        >
-          {items}
-        </InfiniteScroll>
+        {/*<InfiniteScroll*/}
+          {/*pageStart={0}*/}
+          {/*loadMore={this.loadNextPage}*/}
+          {/*hasMore={this.state.hasMoreItems}*/}
+          {/*loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845*/}
+        {/*>*/}
+          {/*{items}*/}
+        {/*</InfiniteScroll>*/}
         { this.props.unitsSearchList.results.length === 0 ? <h4>
         Sorry, we couldn't find any results for this query.
         </h4> : null }
@@ -90,14 +88,14 @@ class UnitsSearchView extends React.Component {
       : <Row>
         <Col sm={12} md={12}>
           <div style={{height: '10rem', marginLeft: '50%'}}>
-            <RingLoader
-              color={'#1caff6'}
-              loading={Boolean(true)}
-            />
+            {/*<RingLoader*/}
+              {/*color={'#1caff6'}*/}
+              {/*loading={Boolean(true)}*/}
+            {/*/>*/}
           </div>
         </Col>
       </Row> }
-    </Grid>
+    </Container>
     )
   }
 }

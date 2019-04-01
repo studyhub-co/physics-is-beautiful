@@ -3,15 +3,14 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 import { history } from './../history'
-
-import {Route} from 'react-router-dom'
+// import { Route } from 'react-router-dom'
+import { Route } from 'react-router'
+import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import { changeStudioSelectedTab, deleteCurriculum } from './../actions'
 import { Sheet } from './sheet'
 
-import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { CurriculaView } from '../containers/curriculumStudio/curricula'
-
 import EditCurriculumProfileView from '../containers/curriculumStudio/editProfile'
 import BrowseCurriculaView from '../containers/browseCurricula/index'
 
@@ -124,7 +123,7 @@ const mapStateToProps = function (store) {
   }
 }
 
-export let CurriculaDashboardApp = connect(
+let CurriculaDashboardApp = connect(
   mapStateToProps,
   dispatch => {
     return {
@@ -132,3 +131,5 @@ export let CurriculaDashboardApp = connect(
       deleteCurriculum: (uuid) => dispatch(deleteCurriculum(uuid))
     }
   })(CurriculaDashboard)
+
+export {CurriculaDashboardApp}

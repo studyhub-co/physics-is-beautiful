@@ -1,5 +1,7 @@
 import { combineReducers } from 'redux'
 import { routerReducer, LOCATION_CHANGE } from 'react-router-redux'
+import { connectRouter } from 'connected-react-router'
+import { history } from './history'
 
 import {ActionTypes} from './actions'
 
@@ -273,6 +275,7 @@ function studioTabs (state = {tab: null}, action) {
 }
 
 const combined = combineReducers({
+  router: connectRouter(history),
   search,
   curricula,
   units,
@@ -286,7 +289,7 @@ const combined = combineReducers({
   curriculum,
   studioTabs,
   users,
-  router: routerReducer
+  //router: routerReducer
 })
 
 export function editor(state={}, action){

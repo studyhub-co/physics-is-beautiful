@@ -1,29 +1,21 @@
 import React from 'react'
+
 // import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-
-import { history } from '../../history'
-
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
-
-import copy from 'copy-to-clipboard'
-
-import { Thumbnail } from './../thumbnail'
-
-import { store } from '../../app'
+import { Col, Image } from 'react-bootstrap'
 
 import ThumbnailMenu from './thumbnail_menu'
 import { DEFAULT_MATHJAX_OPTIONS } from '../label'
 
 export class QuestionThumbnailPublic extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-  }
+  // constructor (props, context) {
+  //   super(props, context)
+  // }
 
   componentDidMount () {
-    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
 
   render () {

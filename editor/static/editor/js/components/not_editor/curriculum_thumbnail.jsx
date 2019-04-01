@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { Col, Dropdown, DropdownItem } from 'react-bootstrap'
+import { FaEllipsisV, FaEdit, FaPen, FaCodeBranch, FaShareAlt, FaTrash } from 'react-icons/fa'
 
 import copy from 'copy-to-clipboard'
 
@@ -24,13 +25,13 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
-    {/*<div className='dotted-menu' onClick={this.handleClick}>*/}
-        {/*{this.props.children}*/}
-      {/*</div>*/}
+    {/*<Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>*/}
+      {/*{this.props.children}*/}
+    {/*</Glyphicon>*/}
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
+      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
-      </Glyphicon>
+      </FaEllipsisV>
     )
   }
 }
@@ -86,11 +87,26 @@ export class CurriculumThumbnail extends React.Component {
             id='dropdown-custom-menu'>
             <CurriculumMenuToggle bsRole='toggle' />
             <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-              <MenuItem onSelect={this.onEditContentSelect} eventKey='1'><Glyphicon glyph='edit' /> Edit content</MenuItem>
-              <MenuItem onSelect={this.onEditCurriculumSelect} eventKey='2'><Glyphicon glyph='pencil' /> Edit profile and settings</MenuItem>
-              <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork</MenuItem>
-              <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-              <MenuItem onSelect={this.onDeleteCurriculum} eventKey='5'><Glyphicon glyph='trash' /> Delete</MenuItem>
+              <DropdownItem onSelect={this.onEditContentSelect} eventKey='1'>
+                {/*<Glyphicon glyph='edit' /> Edit content*/}
+                <FaEdit /> Edit content
+              </DropdownItem>
+              <DropdownItem onSelect={this.onEditCurriculumSelect} eventKey='2'>
+                {/*<Glyphicon glyph='pencil' /> Edit profile and settings*/}
+                <FaPen /> Edit profile and settings
+              </DropdownItem>
+              <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
+                {/*<Glyphicon glyph='export' /> Fork*/}
+                <FaCodeBranch /> Fork
+              </DropdownItem>
+              <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
+                {/*<Glyphicon glyph='share-alt' /> Copy shareable link*/}
+                <FaShareAlt /> Copy shareable link
+              </DropdownItem>
+              <DropdownItem onSelect={this.onDeleteCurriculum} eventKey='5'>
+                {/*<Glyphicon glyph='trash' /> Delete*/}
+                <FaTrash /> Delete
+              </DropdownItem>
             </Dropdown.Menu>
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>

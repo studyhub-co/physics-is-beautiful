@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { history } from './../../history'
 
-import { Grid, Row } from 'react-bootstrap'
+import { Container, Row } from 'react-bootstrap'
 
 import { CurriculumThumbnail } from './../../components/not_editor/curriculum_thumbnail'
 import { AddCurriculumButton } from './../../components/add_curriculum_button'
@@ -62,12 +62,12 @@ class Curricula extends React.Component {
         {/*</select>*/}
         {/*<hr/>*/}
         <div className='row'>
-          <Grid fluid>
+          <Container fluid>
             <Row>
               {curricula}
               <AddCurriculumButton onClick={this.handleAddClick} />
             </Row>
-          </Grid>
+          </Container>
         </div>
       </div>
     )

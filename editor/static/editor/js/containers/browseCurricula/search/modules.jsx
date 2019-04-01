@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import InfiniteScroll from 'react-infinite-scroller'
 
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 
 import { connect } from 'react-redux'
 import { loadSearchModules } from '../../../actions'
@@ -74,7 +74,7 @@ class ModulesSearchView extends React.Component {
       )
     })
 
-    return (<Grid fluid>{this.props.modulesSearchList
+    return (<Container fluid>{this.props.modulesSearchList
       ? <div>
         <InfiniteScroll
           pageStart={0}
@@ -98,7 +98,7 @@ class ModulesSearchView extends React.Component {
           </div>
         </Col>
       </Row> }
-    </Grid>
+    </Container>
     )
   }
 }

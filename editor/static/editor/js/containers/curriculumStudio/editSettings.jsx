@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
-import { Grid, Row, Col, Modal, Button } from 'react-bootstrap'
+import { Container, Row, Col, Modal, Button } from 'react-bootstrap'
 
 // import { loadCurriculumIfNeeded } from '../../actions'
 
@@ -121,7 +121,7 @@ class EditCurriculumSettingsView extends React.Component {
 
   render () {
     return (
-      <Grid fluid>
+      <Container fluid>
         <Row>
           <Col sm={12} md={12}>
             <div className={'blue-title'}>
@@ -219,7 +219,7 @@ class EditCurriculumSettingsView extends React.Component {
             </a>
           </Col>
         </Row>
-      </Grid>
+      </Container>
     )
   }
 }

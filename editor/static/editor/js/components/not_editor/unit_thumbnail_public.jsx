@@ -1,16 +1,12 @@
 import React from 'react'
+
 // import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-
-import { history } from '../../history'
-
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { Col } from 'react-bootstrap'
 
 import { Thumbnail } from './../thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
-
-import { store } from '../../app'
 
 export class UnitThumbnailPublic extends React.Component {
   render () {

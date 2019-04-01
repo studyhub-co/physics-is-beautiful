@@ -1,15 +1,11 @@
 import React from 'react'
-import { connect } from 'react-redux'
+
 import PropTypes from 'prop-types'
-
-import { Image as ImageBs, FormGroup, Grid, Row, Col, Button, Glyphicon, InputGroup, FormControl } from 'react-bootstrap'
-
+import { connect } from 'react-redux'
+import { Container, Row, Col } from 'react-bootstrap'
 import Swiper from 'react-id-swiper'
 // import Swiper from 'swiper/dist/js/swiper.esm.bundle'
-
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-
-// import { SimpleSelect } from 'react-selectize'
 
 import { CurriculumThumbnailPublic } from './../../components/not_editor/curriculum_thumbnail_public'
 import CurriculaSearchView from './search/curricula'
@@ -300,7 +296,7 @@ class BrowseCurriculaView extends React.Component {
 
     return (
       <div>
-        <Grid fluid>
+        <Container fluid>
           <SearchRowView
             searchButtonClick={this.searchButtonClick}
             handleSearchString={this.handleSearchString}
@@ -308,7 +304,7 @@ class BrowseCurriculaView extends React.Component {
             clearSearchButtonClick={this.clearSearchButtonClick}
             searchString={this.state.searchString}
           />
-        </Grid>
+        </Container>
         <div className={'pop-up-window'}>
           <div className='tab-links'>
             <Tabs name='browseAppTabs'
@@ -329,7 +325,7 @@ class BrowseCurriculaView extends React.Component {
                       curriculaSearchString={this.state.searchString} /> : null
                   }
                   <div style={{ 'display': displyDashboard }}>
-                    <Grid fluid>
+                    <Container fluid>
                       <Row>
                         <Col sm={12} md={12}>
                           <div className={'blue-title'} style={{lineHeight: '7rem'}}>
@@ -355,7 +351,7 @@ class BrowseCurriculaView extends React.Component {
                           </Swiper>
                         </Col>
                       </Row>
-                    </Grid>
+                    </Container>
                   </div>
                 </TabContent>
                 <TabContent for='Units'>
@@ -428,7 +424,7 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(BrowseCurriculaView)
 export { BrowseCurriculaView as BrowseCurriculaViewNotConnected }
 
-{/*<Grid fluid>*/}
+{/*<Container fluid>*/}
                    {/*<Row>*/}
                      {/*<Col sm={12} md={12}>*/}
                        {/*<div className={'blue-title'} style={{lineHeight: '7rem'}}>*/}
@@ -483,4 +479,4 @@ export { BrowseCurriculaView as BrowseCurriculaViewNotConnected }
                        {/*</Swiper>*/}
                      {/*</Col>*/}
                    {/*</Row>*/}
-                 {/*</Grid>*/}
+                 {/*</Container>*/}

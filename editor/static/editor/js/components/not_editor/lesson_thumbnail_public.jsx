@@ -1,12 +1,7 @@
 import React from 'react'
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-
-import { history } from '../../history'
-
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
-
+import { Col } from 'react-bootstrap'
 import copy from 'copy-to-clipboard'
 
 import { Thumbnail } from './../thumbnail'

@@ -1,17 +1,17 @@
-import React from 'react';
-import { DropTarget } from 'react-dnd';
+import React from 'react'
+import { DropTarget } from 'react-dnd'
 
 export const DragItemTypes = {
   UNIT : 'unit',
   MODULE : 'module',
   LESSON : 'lesson',
-  QUESTION : 'question',
-};
+  QUESTION : 'question'
+}
 
 class DockableDropTarget extends React.Component {
   render () {
     let dockSite, isOver=this.props.dragOver && this.props.itemOver.uuid != this.props.selfUuid;
-    if (isOver){
+    if (isOver) {
       dockSite = <div className="dock-site"></div>;
     }
     return this.props.connectDropTarget(

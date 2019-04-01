@@ -2,7 +2,7 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 
 import InfiniteScroll from 'react-infinite-scroller'
 
@@ -74,7 +74,7 @@ class LessonsSearchView extends React.Component {
       )
     })
 
-    return (<Grid fluid>{this.props.lessonsSearchList
+    return (<Container fluid>{this.props.lessonsSearchList
       ? <div>
         <InfiniteScroll
           pageStart={0}
@@ -98,7 +98,7 @@ class LessonsSearchView extends React.Component {
           </div>
         </Col>
       </Row> }
-    </Grid>
+    </Container>
     )
   }
 }

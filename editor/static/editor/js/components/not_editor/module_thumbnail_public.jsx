@@ -1,45 +1,19 @@
 import React from 'react'
+
 // import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-
-import { history } from '../../history'
-
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
-
+import { Col } from 'react-bootstrap'
 import copy from 'copy-to-clipboard'
 
 import { Thumbnail } from './../thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
-
-import { store } from '../../app'
-
-// class ModuleMenuToggle extends React.Component {
-//   constructor (props, context) {
-//     super(props, context)
-//     this.handleClick = this.handleClick.bind(this)
-//   }
-//
-//   handleClick (e) {
-//     e.preventDefault()
-//     this.props.onClick(e)
-//   }
-//
-//   render () {
-//     return (
-//       <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
-//         {this.props.children}
-//       </Glyphicon>
-//     )
-//   }
-// }
 
 export class ModuleThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onTitleClick = this.onTitleClick.bind(this)
     this.onLearnSelect = this.onLearnSelect.bind(this)
-    this.onForkSelect = this.onForkSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
   }
 
@@ -53,10 +27,6 @@ export class ModuleThumbnailPublic extends React.Component {
 
   onCopyShareableLink (e) {
     copy(window.location.origin + '/curriculum/module/' + this.props.module.uuid + '/')
-  }
-
-  onForkSelect (e) {
-    // store.dispatch(addModule(this.props.module.uuid))
   }
 
   render () {

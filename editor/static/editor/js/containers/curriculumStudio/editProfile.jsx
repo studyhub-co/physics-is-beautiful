@@ -1,11 +1,13 @@
 import React from 'react'
+
+import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+import { FaPen } from 'react-icons/fa'
 
 import { history } from '../../history'
-import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Image as ImageBs, Container, Row, Col } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import {
@@ -86,10 +88,11 @@ class PencilImageUpload extends React.Component { // TODO move to utils
 
   render () {
     return <div className={'selectable-image'} style={{height: '100%'}}>
-      <Glyphicon
-        glyph={'pencil'}
-        // onClick={this.imageUpload}
-        style={{fontSize: '2rem', top: '1rem'}} />
+      {/*<Glyphicon*/}
+        {/*glyph={'pencil'}*/}
+        {/*// onClick={this.imageUpload}*/}
+        {/*style={{fontSize: '2rem', top: '1rem'}} />*/}
+      <FaPen style={{fontSize: '2rem', top: '1rem'}} />
       <input
         type='file' name='image' accept='image/*'
         onChange={this.handleChange}
@@ -266,7 +269,7 @@ class EditCurriculumProfileView extends React.Component {
           <div className='content'>
             <TabContent for='profile'>
               {/* Todo move the tab content to a new component */}
-              <Grid fluid>
+              <Container fluid>
                 <Row style={{padding: 0}}>
                   <Col sm={12} md={12}
                     style={{
@@ -338,8 +341,11 @@ class EditCurriculumProfileView extends React.Component {
                           />
                           <span style={{position: 'relative', paddingLeft: '1rem'}}>
                             <span className={'base-circle-edit'}>
-                              <Glyphicon
-                                glyph={'pencil'}
+                              {/*<Glyphicon*/}
+                                {/*glyph={'pencil'}*/}
+                                {/*onClick={this.editNameClick}*/}
+                                {/*style={{fontSize: '2rem'}} />*/}
+                              <FaPen
                                 onClick={this.editNameClick}
                                 style={{fontSize: '2rem'}} />
                             </span>
@@ -379,15 +385,18 @@ class EditCurriculumProfileView extends React.Component {
                     />
                     <span style={{position: 'relative', paddingLeft: '1rem'}}>
                       <span className={'base-circle-edit'}>
-                        <Glyphicon
-                          glyph={'pencil'}
+                        {/*<Glyphicon*/}
+                          {/*glyph={'pencil'}*/}
+                          {/*onClick={this.editDescriptionClick}*/}
+                          {/*style={{fontSize: '2rem', lineHeight: '2'}} />*/}
+                        <FaPen
                           onClick={this.editDescriptionClick}
                           style={{fontSize: '2rem', lineHeight: '2'}} />
                       </span>
                     </span>
                   </Col>
                 </Row>
-              </Grid>
+              </Container>
             </TabContent>
             <TabContent for='settings'>
               <EditCurriculumSettingsView curriculum={selectedCurriculum} />

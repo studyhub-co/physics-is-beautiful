@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { Row, Col, Image, FormGroup, InputGroup, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
-
 import PropTypes from 'prop-types'
+import { Row, Col, Image, FormGroup, InputGroup, DropdownButton, DropdownItem } from 'react-bootstrap'
+import { FaEdit } from 'react-icons/fa'
 
 export default class StaffUserRow extends React.Component {
-
   render () {
     return (
       <Row className={'staff-user-row'}>
@@ -30,9 +29,10 @@ export default class StaffUserRow extends React.Component {
                 <DropdownButton
                   componentClass={InputGroup.Button}
                   id='input-dropdown-addon'
-                  title={<Glyphicon glyph='edit' />}
+                  // title={<Glyphicon glyph='edit' />}
+                  title={<FaEdit />}
                 >
-                  <MenuItem key='e' onSelect={this.props.onRemoveFromCollaboratorsClick}>Remove from collaborators</MenuItem>
+                  <DropdownItem key='e' onSelect={this.props.onRemoveFromCollaboratorsClick}>Remove from collaborators</DropdownItem>
                 </DropdownButton>
               </InputGroup>
             </FormGroup> : null }
