@@ -1,0 +1,42 @@
+.tabs {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 2rem 0 2rem;
+}
+
+.tab-link {
+    font-size: 16px;
+    font-weight: 400 !important;
+    outline: 0 !important;
+    background-color: white;
+    border: none;
+}
+
+.tabs .tab-link {
+    padding: 0 3rem;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    height: 40px;
+    line-height: 41px;
+    top: 3px;
+    left: -1px;
+    border-bottom: solid #d8d8d8;
+    color: rgb(216, 216, 216);
+    transition: color 500ms, border-bottom 500ms;
+}
+
+.tabs .tab-link:hover {
+    border-bottom: solid #1caff6;
+    color: #1caff6;
+}
+
+.tabs .tab-link-active {
+    border-bottom: 3px solid #1caff6;
+    color: #1caff6;
+}
+
+.tabs .tab-links {
+    border-bottom: solid #d8d8d8;
+}

@@ -6,7 +6,7 @@ import { FaSearch, FaTimes } from 'react-icons/fa'
 
 export default class SearchRowView extends React.Component {
   render () {
-    return <Row style={{padding: 0}}>
+    return <Row style={{paddingTop: '2rem'}}>
       <Col sm={10} md={10}>
         <FormGroup>
           <InputGroup>
@@ -17,16 +17,18 @@ export default class SearchRowView extends React.Component {
               onChange={this.props.handleSearchString}
               onKeyUp={this.props.handleSearchInputKeyUp}
             />
-            <InputGroup.Text>
+            <InputGroup.Append>
               <Button
+                variant='light'
                 onClick={this.props.searchButtonClick}
               ><FaSearch /></Button>
               {/*><Glyphicon glyph='search' /></Button>*/}
               <Button
+                variant='light'
                 onClick={this.props.clearSearchButtonClick}
               ><FaTimes /></Button>
               {/*><Glyphicon glyph='remove' /></Button>*/}
-            </InputGroup.Text>
+            </InputGroup.Append>
           </InputGroup>
         </FormGroup>
       </Col>

@@ -8,22 +8,22 @@ import { FaEllipsisV, FaGraduationCap, FaCodeBranch, FaShareAlt, FaPlus } from '
 
 import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadModuleIfNeeded } from '../../actions'
 
-export class DropdownThumbnail extends React.Component {
-  componentDidMount () {
-    if (this.refs.inner) {
-      this.refs.inner.handleClose = this.handleClose.bind(this)
-    }
-  }
-
-  handleClose (event, eventDetails) {
-    if (!this.refs.inner.props.open) {
-      return
-    }
-    if (typeof event.isPropagationStopped !== 'function' || !event.isPropagationStopped()) {
-      this.refs.inner.toggleOpen(event, eventDetails)
-    }
-  }
-}
+// export class DropdownThumbnail extends Dropdown  {
+//   componentDidMount () {
+//     if (this.refs.inner) {
+//       this.refs.inner.handleClose = this.handleClose.bind(this)
+//     }
+//   }
+//
+//   handleClose (event, eventDetails) {
+//     if (!this.refs.inner.props.open) {
+//       return
+//     }
+//     if (typeof event.isPropagationStopped !== 'function' || !event.isPropagationStopped()) {
+//       this.refs.inner.toggleOpen(event, eventDetails)
+//     }
+//   }
+// }
 
 class MenuToggle extends React.Component {
   constructor (props, context) {
@@ -41,7 +41,7 @@ class MenuToggle extends React.Component {
         {/*{this.props.children}*/}
       {/*</Glyphicon>*/}
     return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
+      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '1.5rem'}}>
         {this.props.children}
       </FaEllipsisV>
     )
@@ -61,7 +61,9 @@ class ThumbnailMenu extends React.Component {
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onBack = this.onBack.bind(this)
     this.addElementToNewCurriculum = this.addElementToNewCurriculum.bind(this)
-    // this.onSelectCurriculum = this.onSelectCurriculum.bind(this)
+    this.onToggle = this.onToggle.bind(this)
+    // // this.onSelectCurriculum = this.onSelectCurriculum.bind(this)
+    // this._stayOpened = true
 
     var baseName = ''
     var uuid = ''
@@ -84,6 +86,7 @@ class ThumbnailMenu extends React.Component {
       level: 1,
       baseName: baseName,
       uuid: uuid,
+      menuOpen: false,
       selectedCurriculum: null,
       selectedUnit: null,
       selectedModule: null,
@@ -110,16 +113,16 @@ class ThumbnailMenu extends React.Component {
     } else {
       copy(window.location.origin + '/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/')
     }
+    this.setState({menuOpen: false})
   }
 
   onBack (e, event) {
     event.stopPropagation()
-    this.setState({level: this.state.level - 1})
+    this.setState({level: this.state.level - 1, menuOpen: true})
   }
 
   onForkSelect (e, event) {
-    event.stopPropagation()
-    this.setState({level: 2})
+    this.setState({level: 2, menuOpen: true})
   }
 
   onSelectCurriculum (curriculum, e, event) {
@@ -159,6 +162,14 @@ class ThumbnailMenu extends React.Component {
 
   addElementToNewCurriculum () {
     this.props.addToNewCurriculum(this.state.baseName, this.props[this.state.baseName])
+  }
+
+  onToggle (newValue, event, {source}) {
+    if (newValue) {
+      this.setState({menuOpen: true})
+    } else if (!event) {
+      this.setState({menuOpen: false})
+    }
   }
 
   render () {
@@ -283,15 +294,19 @@ class ThumbnailMenu extends React.Component {
     }
 
     return (
-      <DropdownThumbnail
+      <Dropdown
         style={{float: 'right', 'cursor': 'pointer'}}
         id={`dropdown-menu-` + this.props.uuid}
+        onToggle={this.onToggle}
+        show={this.state.menuOpen}
       >
-        <MenuToggle bsRole='toggle' />
-        <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
+        <Dropdown.Toggle as={MenuToggle} />
+        <Dropdown.Menu
+          // rootCloseEvent={'click'}
+        >
           {menus}
         </Dropdown.Menu>
-      </DropdownThumbnail>
+      </Dropdown>
     )
   }
 }
@@ -300,7 +315,7 @@ ThumbnailMenu.propTypes = {
   unit: PropTypes.object,
   lesson: PropTypes.object,
   module: PropTypes.object,
-  curricula: PropTypes.object,
+  // curricula: PropTypes.object,
   // uuid: PropTypes.string
 }
 

@@ -32,8 +32,11 @@ export class ModuleThumbnailPublic extends React.Component {
   render () {
     return (
       <Col
-        sm={2}
-        md={2}
+        xl={2}
+        lg={3}
+        md={4}
+        sm={6}
+        xs={12}
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
         <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>

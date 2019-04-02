@@ -1,8 +1,11 @@
 import React from 'react'
 
+import { Image } from 'react-bootstrap'
+
 export function Thumbnail (props) {
   if (props.image) {
-    return <img src={props.image} />
+    // return <img src={props.image} />
+    return <Image fluid src={props.image} />
   } else {
     return <span className='glyphicon glyphicon-picture' />
   }

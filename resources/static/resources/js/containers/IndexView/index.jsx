@@ -285,7 +285,7 @@ class IndexView extends React.Component {
           <Container fluid>
             <Row>
               <Col sm={12} md={12}>
-                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
                     My recently viewed
                 </div>
                 <div style={{}}>
@@ -296,7 +296,7 @@ class IndexView extends React.Component {
                 {/*<Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>*/}
                   {/*{this.state.recentSlides}*/}
                 {/*</Swiper>*/}
-                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
                     Popular
                 </div>
                 <Slider {...this.getSliderParams('popularSlides')}>
@@ -305,7 +305,7 @@ class IndexView extends React.Component {
                 {/*<Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>*/}
                   {/*{this.state.popularSlides}*/}
                 {/*</Swiper>*/}
-                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
                     New
                 </div>
                 <Slider {...this.getSliderParams('newSlides')}>

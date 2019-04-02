@@ -1,10 +1,17 @@
 @import "ReactCrop.css";
 @import "react-selectize.css";
 @import "swiper.min.css";
+@import "tabs.css";
 
-.editor{
+html {
     font-family: 'Museosansrounded', sans-serif;
+    font-size: 12px;
 }
+
+/*.editor	{*/
+    /*font-family: 'Museosansrounded', sans-serif;*/
+    /*font-size: 12px;*/
+/*}*/
 
 .editor	.col-md-1 {
 		margin-right: 0px !important;
@@ -137,57 +144,6 @@
 .editor .lesson-questions .btn-arrow { padding:22px 10px;}
 .editor .lesson-questions .btn-add { padding-top:16px; }
 
-
-.tabs {
-    width: 100%;
-    display: inline-block;
-    margin-right: 30px;
-    vertical-align: top;
-    padding-top: 2rem;
-    /*font-size: 3rem;*/
-}
-
-.tab-link {
-    font-size: 16px;
-    font-weight: normal;
-    outline:0
-}
-
-/*.tabs-1 .tab-links {*/
-    /*margin: 0;*/
-    /*padding-top: 0;*/
-    /*border: 1px solid #CCC;*/
-    /*border-bottom: 1px solid #868686;*/
-    /*border-top-left-radius: 5px;*/
-    /*border-top-right-radius: 5px;*/
-    /*height: 35px;*/
-    /*position: relative;*/
-    /*top: 5px;*/
-/*}*/
-
-.tabs .tab-link {
-    padding: 0 5rem;
-    cursor: pointer;
-    /*border: 1px solid transparent;*/
-    display: inline-block;
-    position: relative;
-    border-bottom: 3px solid rgb(216, 216, 216);
-    height: 40px;
-    line-height: 41px;
-    top: -6px;
-    left: -1px;
-    color: rgb(216, 216, 216);
-}
-
-.tabs .tab-link-active {
-    border-bottom: 3px solid #1caff6;
-    color: #1caff6;
-    font-weight: normal !important;
-}
-
-.tabs-1 .tabContent {}
-
-
 /* common (copy-paste from classroom */
 
 .editor  .back-button {
@@ -203,19 +159,6 @@
     color: #1caff6;
 }
 
-.editor .curriculum-card div img {
-    width: 100%;
-    display: block;
-    height: 20rem;
-}
-
-.editor .curriculum-card > div > span {
-    width: 100%;
-    display: block;
-    height: 20rem;
-    font-size: 20rem;
-}
-
 .editor .editor-common-button {
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
@@ -226,15 +169,16 @@
 }
 
 .editor .blue-title {
-    font-size: 3rem;
+    font-size: 2rem;
     color: rgb(8, 209, 255);
+    padding-bottom: 2rem;
 }
 
 .editor .blue-text {
-    color: rgb(8, 209, 255)
+    /*color: rgb(8, 209, 255)*/
+    color: #26a1ff;
 }
 
-/*.classroom .classroom-card {*/
 .editor .curriculum-card {
     /* todo move elements with this class to basic card */
     border-radius: 15px;
@@ -254,9 +198,21 @@
 
     /* new values */
     padding: 0;
-    width: 25rem;
-    height: 30rem;
-    /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
+    /*width: 18rem;*/
+    height: 22rem;
+}
+
+.editor .curriculum-card div img {
+    width: 100%;
+    display: block;
+    height: 12rem;
+}
+
+.editor .curriculum-card > div > span {
+    width: 100%;
+    display: block;
+    height: 12rem;
+    font-size: 20rem;
 }
 
 .editor .pop-up-window {

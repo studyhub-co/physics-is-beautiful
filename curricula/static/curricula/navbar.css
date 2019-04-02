@@ -89,6 +89,7 @@
 .nav.navbar-nav.nav-pills a:hover{
     background: #1493d1;
     color: white;
+    text-decoration: none;
 }
 .nav.navbar-nav.nav-pills .active a{
     background: #1493d1;
