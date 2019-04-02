@@ -9,6 +9,15 @@ import { Thumbnail } from './../thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
 
 export class UnitThumbnailPublic extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.onTitleClick = this.onTitleClick.bind(this)
+  }
+
+  onTitleClick () {
+    window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
+  }
+
   render () {
     return (
       <Col
