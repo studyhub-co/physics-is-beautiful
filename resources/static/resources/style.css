@@ -36,6 +36,7 @@ html {
     color: white;
     padding: 4px 12px 4px 12px;
     margin: 1rem 0 1rem 0;
+    border-color: #ccc;
 }
 
 .resources .pib-link {

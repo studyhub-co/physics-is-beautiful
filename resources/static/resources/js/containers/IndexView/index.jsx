@@ -144,6 +144,7 @@ class IndexView extends React.Component {
       initialSlide: 0,
       slidesToShow: 5,
       slidesToScroll: 5,
+      lazyLoad: true,
       arrows: true,
       beforeChange: (current, next) => this.loadNextSlides(next, slidesListName),
       responsive: [
