@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Image as ImageBs, Container, Row, Col } from 'react-bootstrap'
 import Moment from 'react-moment'
 import copy from 'copy-to-clipboard'
-import { FaCodeBranch, FaShareAlt } from 'react-icons/fa'
+import { FaCodeBranch, FaShareAlt, FaChevronLeft } from 'react-icons/fa'
 
 import { store } from '../../app'
 
@@ -51,7 +51,7 @@ class CurriculumProfileView extends React.Component {
             <Row style={{padding: 0}}>
               <Col sm={6} md={6}>
                 <a className={'back-button'} onClick={() => { history.push('/browse/') }} >
-                  <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                  <FaChevronLeft />
                   Curricula
                 </a>
               </Col>
@@ -69,6 +69,7 @@ class CurriculumProfileView extends React.Component {
               </Col>
             </Row>
           </Container>
+          <br />
           <div style={{height: '100%'}}>
             { selectedCurriculum
               ? <Container fluid>
@@ -91,7 +92,7 @@ class CurriculumProfileView extends React.Component {
                     >
                       <div style={{position: selectedCurriculum.cover_photo ? 'relative' : ''}}>
                         <div>{ selectedCurriculum.cover_photo
-                          ? <ImageBs src={selectedCurriculum.cover_photo} responsive />
+                          ? <ImageBs src={selectedCurriculum.cover_photo} fluid />
                           : <div style={{ height: '100%', width: '100%' }} /> }
                         </div>
                       </div>
@@ -104,7 +105,7 @@ class CurriculumProfileView extends React.Component {
                     <div style={{minHeight: '10rem'}}>
                       { selectedCurriculum.image ? <ImageBs
                         src={selectedCurriculum.image}
-                        responsive
+                        fluid
                       /> : null }
                     </div>
                   </Col>

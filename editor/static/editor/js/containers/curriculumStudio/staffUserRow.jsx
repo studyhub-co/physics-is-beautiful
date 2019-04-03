@@ -11,7 +11,7 @@ export default class StaffUserRow extends React.Component {
         <Col sm={2} md={2}>
           { this.props.staff.avatar_url
             ? <Image
-              responsive
+              fluid
               src={this.props.staff.avatar_url}
               rounded />
             : null}

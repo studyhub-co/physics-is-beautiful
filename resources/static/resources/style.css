@@ -54,13 +54,13 @@ html {
     border: none;
     font-size: 18px;
     cursor: pointer;
-    color: #d8d8d8;
+    color: #d8d8d8 !important;
     transition: color 300ms;
 }
 
 .resources .back-button:hover {
     text-decoration: none;
-    color: #1caff6;
+    color: #1caff6 !important;
 }
 
 .resources .red-text {

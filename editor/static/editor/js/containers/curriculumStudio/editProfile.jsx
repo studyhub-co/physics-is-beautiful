@@ -304,7 +304,7 @@ class EditCurriculumProfileView extends React.Component {
                               : null }
                           </div>
                           : <div>{ selectedCurriculum.cover_photo
-                            ? <ImageBs src={selectedCurriculum.cover_photo} responsive />
+                            ? <ImageBs src={selectedCurriculum.cover_photo} fluid />
                             : <div style={{ height: '100%', width: '100%' }} /> }
                           </div>
                         }
@@ -321,7 +321,7 @@ class EditCurriculumProfileView extends React.Component {
                     <div style={{minHeight: '10rem'}}>
                       { selectedCurriculum.image ? <ImageBs
                         src={selectedCurriculum.image}
-                        responsive
+                        fluid
                       /> : null }
                     </div>
                     <div
