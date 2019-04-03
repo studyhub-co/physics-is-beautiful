@@ -1,4 +1,6 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
+
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Col, Dropdown, DropdownItem } from 'react-bootstrap'
@@ -36,7 +38,6 @@ class CurriculumMenuToggle extends React.Component {
 CurriculumMenuToggle.propTypes = {
   onClick: PropTypes.func
 }
-
 
 // not works now
 // class CustomCurriculumMenu extends React.Component {
@@ -100,18 +101,34 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   render () {
-    // TODO neeed react >= 16
-    // const Menu = () =>
-    //   ReactDOM.createPortal(
-    //     <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-    //       <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
-    //       <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
-    //       <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
-    //       <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-    //       <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
-    //     </Dropdown.Menu>,
-    //     document.getElementById('root')
-    //   )
+    // neeed react >= 16
+    // fix issue https://github.com/akiran/react-slick/issues/757 by append Dropdown.Menu to the react app DOM element
+    const DropdownMenu = () =>
+      ReactDOM.createPortal(
+        <Dropdown.Menu>
+          <DropdownItem onSelect={this.onLearnSelect} eventKey='1'>
+            <FaGraduationCap /> Learn
+          </DropdownItem>
+          <DropdownItem onSelect={this.onViewProfileSelect} eventKey='2'>
+            <FaInfoCircle /> View profile
+          </DropdownItem>
+          <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
+            <FaCodeBranch /> Fork to curriculum studio
+          </DropdownItem>
+          <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
+            <FaShareAlt /> Copy shareable link
+          </DropdownItem>
+          { this.props.slidesListName === 'recentSlides'
+            ? <DropdownItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'>
+              <FaMinus /> Remove from dashboard
+            </DropdownItem>
+            : <DropdownItem onSelect={this.onAddToDashboardSelect} eventKey='5'>
+              <FaPlus /> Add to dashboard
+            </DropdownItem>
+          }
+        </Dropdown.Menu>,
+        document.getElementById('editor-app')
+      )
 
     return (
       <div
@@ -124,39 +141,8 @@ export class CurriculumThumbnailPublic extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            {/*<CurriculumMenuToggle bsRole='toggle' />*/}
             <Dropdown.Toggle as={CurriculumMenuToggle} />
-            {/*<CustomCurriculumMenu bsRole='menu'>*/}
-            {/*<Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>*/}
-            <Dropdown.Menu>
-              <DropdownItem onSelect={this.onLearnSelect} eventKey='1'>
-                {/*<Glyphicon glyph='education' /> Learn*/}
-                <FaGraduationCap /> Learn
-              </DropdownItem>
-              <DropdownItem onSelect={this.onViewProfileSelect} eventKey='2'>
-                {/*<Glyphicon glyph='info-sign' /> View profile*/}
-                <FaInfoCircle /> View profile
-              </DropdownItem>
-              <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
-                {/*<Glyphicon glyph='export' /> Fork to curriculum studio*/}
-                <FaCodeBranch /> Fork to curriculum studio
-              </DropdownItem>
-              <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
-                {/*<Glyphicon glyph='share-alt' /> Copy shareable link*/}
-                <FaShareAlt /> Copy shareable link
-              </DropdownItem>
-              { this.props.slidesListName === 'recentSlides'
-                ? <DropdownItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'>
-                  {/*<Glyphicon glyph='plus' /> Remove from dashboard*/}
-                  <FaMinus /> Remove from dashboard
-                </DropdownItem>
-                : <DropdownItem onSelect={this.onAddToDashboardSelect} eventKey='5'>
-                  {/*<Glyphicon glyph='plus' /> Add to dashboard*/}
-                  <FaPlus /> Add to dashboard
-                </DropdownItem>
-              }
-            </Dropdown.Menu>
-            {/*</CustomCurriculumMenu>*/}
+            <DropdownMenu />
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
             {this.props.curriculum.name}
