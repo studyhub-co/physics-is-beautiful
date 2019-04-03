@@ -41,14 +41,14 @@
 //   return swiperParams
 // }
 //
-// export function alreadyInSlides (slides, uuid) {
-//   for (var i = 0; i < slides.length; i++) {
-//     if (slides[i].props.curriculum.uuid === uuid) {
-//       return true
-//     }
-//   }
-//   return false
-// }
+export function alreadyInSlides (slides, uuid) {
+  for (var i = 0; i < slides.length; i++) {
+    if (slides[i].props.curriculum.uuid === uuid) {
+      return true
+    }
+  }
+  return false
+}
 //
 // export function updateSliderNavigation (slidesListName, componentInstance) {
 //   var swiper = componentInstance[slidesListName + 'Swiper']

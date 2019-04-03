@@ -15,7 +15,7 @@ import ModulesSearchView from './search/modules'
 import LessonsSearchView from './search/lessons'
 import QuestionsSearchView from './search/questions'
 // import { getParams, alreadyInSlides, updateSliderNavigation, getPrefixFromSlidesName, updateSlidersNavigation } from './sliderHelpers'
-import { getPrefixFromSlidesName } from './sliderHelpers'
+import { getPrefixFromSlidesName, alreadyInSlides } from './sliderHelpers'
 import SearchRowView from './searchRow'
 
 import { loadAllCurricula } from './../../actions'
@@ -74,9 +74,9 @@ class BrowseCurriculaView extends React.Component {
   //   return getParams(slidesListName, this, reachEndFunc)
   // }
   //
-  // alreadyInSlides (slides, uuid) {
-  //   return alreadyInSlides(slides, uuid)
-  // }
+  alreadyInSlides (slides, uuid) {
+    return alreadyInSlides(slides, uuid)
+  }
   //
   // updateSlidersNavigation () {
   //   return updateSlidersNavigation(slidesNames, this)

@@ -41,7 +41,7 @@ export class UnitThumbnailPublic extends React.Component {
               {/*{this.props.unit.author.display_name}*/}
             {/*</a> ∙ {this.props.unit.count_lessons } lessons ∙ { this.props.unit.number_of_learners } learners*/}
           {/*</div>*/}
-          <div style={{fontSize: '0.9rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.unit.created_on}
             </Moment> ∙ Last updated <Moment fromNow>
