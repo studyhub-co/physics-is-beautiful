@@ -3,7 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Container, Row, Col } from 'react-bootstrap'
-import Swiper from 'react-id-swiper'
+// import Swiper from 'react-id-swiper'
+import Slider from 'react-slick'
 // import Swiper from 'swiper/dist/js/swiper.esm.bundle'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
@@ -13,11 +14,11 @@ import UnitsSearchView from './search/units'
 import ModulesSearchView from './search/modules'
 import LessonsSearchView from './search/lessons'
 import QuestionsSearchView from './search/questions'
-import { getParams, alreadyInSlides, updateSliderNavigation, getPrefixFromSlidesName, updateSlidersNavigation } from './sliderHelpers'
+// import { getParams, alreadyInSlides, updateSliderNavigation, getPrefixFromSlidesName, updateSlidersNavigation } from './sliderHelpers'
+import { getPrefixFromSlidesName } from './sliderHelpers'
 import SearchRowView from './searchRow'
 
 import { loadAllCurricula } from './../../actions'
-// import { history } from '../../history'
 
 const slidesNames = ['newSlides', 'popularSlides', 'recentSlides']
 
@@ -34,16 +35,10 @@ class BrowseCurriculaView extends React.Component {
       recentSlides: [],
       recentNextPageUrl: null,
       newSlides: [],
-      newNextPageUrl: null,
-      virtualData: {
-        popularSlides: [],
-        recentSlides: [],
-        newSlides: []
-      }
+      newNextPageUrl: null
     }
     this.handleSelectTab = this.handleSelectTab.bind(this)
     this.handleSearchString = this.handleSearchString.bind(this)
-    this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
     this.searchButtonClick = this.searchButtonClick.bind(this)
     this.populateSlides = this.populateSlides.bind(this)
     this.onAddRemoveFromDashboardSildes = this.onAddRemoveFromDashboardSildes.bind(this)
@@ -58,102 +53,42 @@ class BrowseCurriculaView extends React.Component {
     this.props.loadNewCurricula()
   }
 
-  componentDidUpdate () {
-    this.updateSlidersNavigation()
-  }
+  // componentDidUpdate () {
+  //   this.updateSlidersNavigation()
+  // }
 
-  getParams (slidesListName) {
-    var self = this
-    var reachEndFunc = function () {
-      if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
-        self.props.loadPopularCurricula(self.state.popularNextPageUrl)
-      }
-      if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
-        self.props.loadRecentCurricula(self.state.recentNextPageUrl)
-      }
-      if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
-        self.props.loadNewCurricula(self.state.newNextPageUrl)
-      }
-    }
-
-    return getParams(slidesListName, this, reachEndFunc)
-  }
-
-  alreadyInSlides (slides, uuid) {
-    return alreadyInSlides(slides, uuid)
-  }
-
-  updateSlidersNavigation () {
-    return updateSlidersNavigation(slidesNames, this)
-  }
-
-  updateSliderNavigation (slidesListName) {
-    return updateSliderNavigation(slidesListName, this)
-  }
+  // getParams (slidesListName) {
+  //   var self = this
+  //   var reachEndFunc = function () {
+  //     if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+  //       self.props.loadPopularCurricula(self.state.popularNextPageUrl)
+  //     }
+  //     if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+  //       self.props.loadRecentCurricula(self.state.recentNextPageUrl)
+  //     }
+  //     if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
+  //       self.props.loadNewCurricula(self.state.newNextPageUrl)
+  //     }
+  //   }
+  //
+  //   return getParams(slidesListName, this, reachEndFunc)
+  // }
+  //
+  // alreadyInSlides (slides, uuid) {
+  //   return alreadyInSlides(slides, uuid)
+  // }
+  //
+  // updateSlidersNavigation () {
+  //   return updateSlidersNavigation(slidesNames, this)
+  // }
+  //
+  // updateSliderNavigation (slidesListName) {
+  //   return updateSliderNavigation(slidesListName, this)
+  // }
 
   getPrefixFromSlidesName (slidesName) {
     return getPrefixFromSlidesName(slidesName)
   }
-
-  // getParams (slidesListName) {
-  //   var self = this
-  //   // var activeSlideKey = 0
-  //
-  //   var swiper = self[slidesListName + 'Swiper']
-  //
-  //   if (swiper) {
-  //     // populate virtual.data with fake slidersList
-  //     var fakeSlides = []
-  //     // activeSlideKey = swiper.virtual.slides.length
-  //     for (var i = 0; i < this.state[slidesListName].length; i += 1) {
-  //       fakeSlides.push('')
-  //     }
-  //     swiper.virtual.slides = fakeSlides
-  //   }
-  //
-  //   var swiperParams = {
-  //     navigation: {
-  //       nextEl: '.swiper-button-next.pib-swiper-button',
-  //       prevEl: '.swiper-button-prev.pib-swiper-button'
-  //     },
-  //     // preventClicks: false,
-  //     spaceBetween: 0,
-  //     slidesPerView: 5, // must be more than API paginator page size!
-  //     // activeSlideKey: activeSlideKey,
-  //     // rebuildOnUpdate: true, // if we will update or rebuild we will lose navigation position
-  //     // shouldSwiperUpdate: true,
-  //     virtual: {
-  //       slides: self.state[slidesListName],
-  //       renderExternal: function (data) {
-  //         // empty function needs to disable internal rendering, more info http://idangero.us/swiper/api/#virtual
-  //         // if (swiper) { swiper.navigation.update() } // hack for update navigation buttons
-  //       }
-  //     },
-  //     on: {
-  //       reachEnd: function () {
-  //         if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
-  //           self.props.loadPopularCurricula(self.state.popularNextPageUrl)
-  //         }
-  //         if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
-  //           self.props.loadRecentCurricula(self.state.recentNextPageUrl)
-  //         }
-  //         if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
-  //           self.props.loadNewCurricula(self.state.newNextPageUrl)
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return swiperParams
-  // }
-
-  // alreadyInSlides (slides, uuid) {
-  //   for (var i = 0; i < slides.length; i++) {
-  //     if (slides[i].props.curriculum.uuid === uuid) {
-  //       return true
-  //     }
-  //   }
-  //   return false
-  // }
 
   onAddRemoveFromDashboardSildes (action, curriculum) {
     var newRecent = this.state['recentSlides']
@@ -201,26 +136,21 @@ class BrowseCurriculaView extends React.Component {
     }
 
     for (var index in curricula.results) {
-      if (!this.alreadyInSlides(slides, curricula.results[index].uuid)) {
-        slides.push(
-          <CurriculumThumbnailPublic
-            className='swiper-slide'
-            key={curricula.results[index].uuid}
-            onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
-            slidesListName={slidesListName}
-            curriculum={curricula.results[index]}
-          />/*{...curricula.results[index]}*/
-        )
-      }
+      //if (!this.alreadyInSlides(slides, curricula.results[index].uuid)) {
+      slides.push(
+        <CurriculumThumbnailPublic
+          className='swiper-slide'
+          key={curricula.results[index].uuid}
+          onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+          slidesListName={slidesListName}
+          curriculum={curricula.results[index]}
+        />
+      )
     }
     return slides
   }
 
   componentWillReceiveProps (props) {
-    // if (this.props.tab !== props.tab) {
-    this.updateSlidersNavigation()
-    // }
-
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
 
@@ -288,6 +218,76 @@ class BrowseCurriculaView extends React.Component {
     }
   }
 
+  loadNextSlides (next, slidesListName) {
+    var self = this
+
+    if (self.state.recentSlides.length <= next + 5 && self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+      self.props.loadRecentCurricula(self.state.recentNextPageUrl)
+    }
+    if (self.state.popularSlides.length <= next + 5 && self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+      self.props.loadPopularCurricula(self.state.popularNextPageUrl)
+    }
+    if (self.state.newSlides.length <= next + 5 && self.state.newNextPageUrl && slidesListName === 'newSlides') {
+      self.props.loadNewCurricula(self.state.newNextPageUrl)
+    }
+  }
+
+  // copy of resources/static/resources/js/containers/IndexView/index.jsx
+  getSliderParams (slidesListName) {
+    const sliderSettings = {
+      dots: false,
+      infinite: false,
+      speed: 500,
+      initialSlide: 0,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      lazyLoad: true,
+      arrows: true,
+      beforeChange: (current, next) => this.loadNextSlides(next, slidesListName),
+      responsive: [
+        {
+          breakpoint: 1800,
+          settings: {
+            slidesToShow: 5,
+            slidesToScroll: 5
+          }
+        },
+        {
+          breakpoint: 1500,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 4
+          }
+        },
+        {
+          breakpoint: 1356,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3
+          }
+        },
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            variableWidth: true
+          }
+        },
+        {
+          breakpoint: 512,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows: false,
+            variableWidth: true
+          }
+        }
+      ]
+    }
+    return sliderSettings
+  }
+
   render () {
     var displyDashboard = 'block'
     if (this.state.searchEnabeled) {
@@ -334,21 +334,30 @@ class BrowseCurriculaView extends React.Component {
                           <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
                                 My recently viewed
                           </div>
-                          <Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>
+                          {/*<Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>*/}
+                            {/*{this.state.recentSlides}*/}
+                          {/*</Swiper>*/}
+                          <Slider {...this.getSliderParams('recentSlides')}>
                             {this.state.recentSlides}
-                          </Swiper>
+                          </Slider>
                           <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
                                 Popular
                           </div>
-                          <Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>
+                          <Slider {...this.getSliderParams('popularSlides')}>
                             {this.state.popularSlides}
-                          </Swiper>
+                          </Slider>
+                          {/*<Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>*/}
+                            {/*{this.state.popularSlides}*/}
+                          {/*</Swiper>*/}
                           <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
                               New
                           </div>
-                          <Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>
+                          <Slider {...this.getSliderParams('newSlides')}>
                             {this.state.newSlides}
-                          </Swiper>
+                          </Slider>
+                          {/*<Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>*/}
+                            {/*{this.state.newSlides}*/}
+                          {/*</Swiper>*/}
                         </Col>
                       </Row>
                     </Container>
@@ -423,60 +432,3 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrowseCurriculaView)
 export { BrowseCurriculaView as BrowseCurriculaViewNotConnected }
-
-{/*<Container fluid>*/}
-                   {/*<Row>*/}
-                     {/*<Col sm={12} md={12}>*/}
-                       {/*<div className={'blue-title'} style={{lineHeight: '7rem'}}>*/}
-                             {/*Curriculum dashboard*/}
-                       {/*</div>*/}
-                     {/*</Col>*/}
-                   {/*</Row>*/}
-                   {/*<Row>*/}
-                     {/*<Col sm={12} md={12}>*/}
-                       {/*<div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>*/}
-                             {/*My recently viewed*/}
-                       {/*</div>*/}
-                     {/*</Col>*/}
-                   {/*</Row>*/}
-                   {/*<Row>*/}
-                     {/*<Col sm={12} md={12}>*/}
-                       {/*/!*<div className='swiper-container' id={'recent-swiper'}>*!/*/}
-                         {/*/!*<div className='swiper-wrapper'>*!/*/}
-                           {/*/!*{this.state.virtualData.recentSlides}*!/*/}
-                         {/*/!*</div>*!/*/}
-                       {/*/!*</div>*!/*/}
-                       {/*<Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>*/}
-                         {/*{this.state.recentSlides}*/}
-                       {/*</Swiper>*/}
-                     {/*</Col>*/}
-                   {/*</Row>*/}
-                   {/*<Row>*/}
-                     {/*<Col sm={12} md={12}>*/}
-                       {/*<div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>*/}
-                             {/*Popular*/}
-                       {/*</div>*/}
-                     {/*</Col>*/}
-                   {/*</Row>*/}
-                   {/*<Row>*/}
-                     {/*<Col sm={12} md={12}>*/}
-                       {/*<Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>*/}
-                         {/*{this.state.popularSlides}*/}
-                       {/*</Swiper>*/}
-                     {/*</Col>*/}
-                   {/*</Row>*/}
-                   {/*<Row>*/}
-                     {/*<Col sm={12} md={12}>*/}
-                       {/*<div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>*/}
-                           {/*New*/}
-                       {/*</div>*/}
-                     {/*</Col>*/}
-                   {/*</Row>*/}
-                   {/*<Row>*/}
-                     {/*<Col sm={12} md={12}>*/}
-                       {/*<Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>*/}
-                         {/*{this.state.newSlides}*/}
-                       {/*</Swiper>*/}
-                     {/*</Col>*/}
-                   {/*</Row>*/}
-                 {/*</Container>*/}

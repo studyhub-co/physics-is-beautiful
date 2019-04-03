@@ -9,8 +9,6 @@ import { FaPlus } from 'react-icons/fa'
 import { Sheet } from '../../components/Sheet'
 import ResourceSearchView from './searchView'
 
-// import { BASE_URL } from '../../utils/config'
-
 import Slider from 'react-slick'
 
 import {
@@ -39,9 +37,7 @@ class IndexView extends React.Component {
       newNextPageUrl: null
     }
     this.populateSlides = this.populateSlides.bind(this)
-
     this.handleSearchString = this.handleSearchString.bind(this)
-    // this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
     this.searchButtonClick = this.searchButtonClick.bind(this)
     this.populateSlides = this.populateSlides.bind(this)
     this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
@@ -94,13 +90,9 @@ class IndexView extends React.Component {
     if (self.state.newSlides.length <= next + 5 && self.state.newNextPageUrl && slidesListName === 'newSlides') {
       self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
     }
-
   }
 
   componentWillReceiveProps (props) {
-    // if (this.props.tab !== props.tab) {
-    // this.updateSlidersNavigation()
-    // }
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
 
@@ -118,24 +110,7 @@ class IndexView extends React.Component {
     history.push(addResourceUrl)
   }
 
-  // getParams (slidesListName) {
-  //   var self = this
-  //
-  //   var reachEndFunc = function () {
-  //     if (self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
-  //       self.props.resourcesActions.loadRecentResourcesList(self.state.recentNextPageUrl)
-  //     }
-  //     if (self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
-  //       self.props.resourcesActions.loadPopularResourcesList(self.state.popularNextPageUrl)
-  //     }
-  //     if (self.state.newNextPageUrl && slidesListName === 'newSlides') {
-  //       self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
-  //     }
-  //   }
-  //
-  //   return getParams(slidesListName, this, reachEndFunc)
-  // }
-
+  // copy of editor/static/editor/js/containers/browseCurricula/index.jsx
   getSliderParams (slidesListName) {
     const sliderSettings = {
       dots: false,
@@ -191,18 +166,6 @@ class IndexView extends React.Component {
     return sliderSettings
   }
 
-  // alreadyInSlides (slides, uuid) {
-  //   return alreadyInSlides(slides, uuid)
-  // }
-  //
-  // updateSlidersNavigation () {
-  //   return updateSlidersNavigation(slidesNames, this)
-  // }
-  //
-  // updateSliderNavigation (slidesListName) {
-  //   return updateSliderNavigation(slidesListName, this)
-  // }
-  //
   getPrefixFromSlidesName (slidesName) {
     return getPrefixFromSlidesName(slidesName)
   }
@@ -263,7 +226,6 @@ class IndexView extends React.Component {
             </Col>
             <Col sm={2} md={2}>
               <Button onClick={() => { this.onAddResourceClick(addResourceUrl) }} className={'common-button'}>
-                {/*<Glyphicon glyph='plus' /> Add resource*/}
                 <FaPlus /> Add resource
               </Button>
             </Col>
@@ -300,7 +262,7 @@ class IndexView extends React.Component {
                     Popular
                 </div>
                 <Slider {...this.getSliderParams('popularSlides')}>
-                    {this.state.popularSlides}
+                  {this.state.popularSlides}
                 </Slider>
                 {/*<Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>*/}
                   {/*{this.state.popularSlides}*/}
@@ -309,7 +271,7 @@ class IndexView extends React.Component {
                     New
                 </div>
                 <Slider {...this.getSliderParams('newSlides')}>
-                    {this.state.newSlides}
+                  {this.state.newSlides}
                 </Slider>
                 {/*<Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>*/}
                   {/*{this.state.newSlides}*/}

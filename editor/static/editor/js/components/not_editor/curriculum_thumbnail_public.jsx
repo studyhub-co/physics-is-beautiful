@@ -33,6 +33,11 @@ class CurriculumMenuToggle extends React.Component {
   }
 }
 
+CurriculumMenuToggle.propTypes = {
+  onClick: PropTypes.func
+}
+
+
 // not works now
 // class CustomCurriculumMenu extends React.Component {
 //   render () {
@@ -109,9 +114,7 @@ export class CurriculumThumbnailPublic extends React.Component {
     //   )
 
     return (
-      <Col
-        sm={2}
-        md={2}
+      <div
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
         <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
@@ -121,9 +124,11 @@ export class CurriculumThumbnailPublic extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            <CurriculumMenuToggle bsRole='toggle' />
+            {/*<CurriculumMenuToggle bsRole='toggle' />*/}
+            <Dropdown.Toggle as={CurriculumMenuToggle} />
             {/*<CustomCurriculumMenu bsRole='menu'>*/}
-            <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
+            {/*<Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>*/}
+            <Dropdown.Menu>
               <DropdownItem onSelect={this.onLearnSelect} eventKey='1'>
                 {/*<Glyphicon glyph='education' /> Learn*/}
                 <FaGraduationCap /> Learn
@@ -153,7 +158,7 @@ export class CurriculumThumbnailPublic extends React.Component {
             </Dropdown.Menu>
             {/*</CustomCurriculumMenu>*/}
           </Dropdown>
-          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
+          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
             {this.props.curriculum.name}
           </div>
           <div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
@@ -169,7 +174,7 @@ export class CurriculumThumbnailPublic extends React.Component {
             </Moment>
           </div>
         </div>
-      </Col>
+      </div>
     )
   }
 }
