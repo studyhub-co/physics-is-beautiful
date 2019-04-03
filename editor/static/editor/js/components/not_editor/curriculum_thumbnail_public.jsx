@@ -105,7 +105,7 @@ export class CurriculumThumbnailPublic extends React.Component {
     // fix issue https://github.com/akiran/react-slick/issues/757 by append Dropdown.Menu to the react app DOM element
     const DropdownMenu = () =>
       ReactDOM.createPortal(
-        <Dropdown.Menu>
+        <Dropdown.Menu rootCloseEvent={'mousedown'}>
           <DropdownItem onSelect={this.onLearnSelect} eventKey='1'>
             <FaGraduationCap /> Learn
           </DropdownItem>
@@ -172,6 +172,4 @@ CurriculumThumbnailPublic.propTypes = {
   curriculum: PropTypes.object.isRequired,
   slidesListName: PropTypes.string,
   onAddRemoveFromDashboardSildes: PropTypes.func
-  // onEditCurriculumProfileClick: PropTypes.func.isRequired,
-  // onDeleteCurriculumClick: PropTypes.func.isRequired
 }

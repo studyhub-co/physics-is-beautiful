@@ -136,16 +136,17 @@ class BrowseCurriculaView extends React.Component {
     }
 
     for (var index in curricula.results) {
-      //if (!this.alreadyInSlides(slides, curricula.results[index].uuid)) {
-      slides.push(
-        <CurriculumThumbnailPublic
-          className='swiper-slide'
-          key={curricula.results[index].uuid}
-          onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
-          slidesListName={slidesListName}
-          curriculum={curricula.results[index]}
-        />
-      )
+      if (!this.alreadyInSlides(slides, curricula.results[index].uuid)) {
+        slides.push(
+          <CurriculumThumbnailPublic
+            className='swiper-slide'
+            key={curricula.results[index].uuid}
+            onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+            slidesListName={slidesListName}
+            curriculum={curricula.results[index]}
+          />
+        )
+      }
     }
     return slides
   }

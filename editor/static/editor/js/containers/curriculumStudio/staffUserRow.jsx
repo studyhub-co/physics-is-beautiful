@@ -27,7 +27,7 @@ export default class StaffUserRow extends React.Component {
             ? <FormGroup>
               <InputGroup>
                 <DropdownButton
-                  componentClass={InputGroup.Button}
+                  // componentClass={InputGroup.Button}
                   id='input-dropdown-addon'
                   // title={<Glyphicon glyph='edit' />}
                   title={<FaEdit />}

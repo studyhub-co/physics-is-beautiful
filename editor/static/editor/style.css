@@ -197,7 +197,7 @@ html {
     vertical-align: top;
 
     max-width: 25rem;
-    min-width: 17rem;
+    /*min-width: 17rem;*/
 
     /* new values */
     padding: 0;
@@ -238,8 +238,8 @@ html {
 
 .editor .base-circle-edit {
     position: absolute;
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     text-align: center;
     vertical-align: middle;
     color: rgb(8, 209, 255);
@@ -247,7 +247,8 @@ html {
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     cursor: pointer;
-    z-index: 999;
+    top: 0.5rem;
+    /*z-index: 999;*/
 }
 
 .editor .right-circle-edit {
@@ -255,6 +256,7 @@ html {
 }
 
 .editor .bottom-circle-edit {
+    top: unset;
    bottom: 1rem;
 }
 

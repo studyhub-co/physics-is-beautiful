@@ -25,15 +25,16 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
-    {/*<Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>*/}
-      {/*{this.props.children}*/}
-    {/*</Glyphicon>*/}
     return (
       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
       </FaEllipsisV>
     )
   }
+}
+
+CurriculumMenuToggle.propTypes = {
+  onClick: PropTypes.func
 }
 
 export class CurriculumThumbnail extends React.Component {
@@ -85,8 +86,9 @@ export class CurriculumThumbnail extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            <CurriculumMenuToggle bsRole='toggle' />
-            <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
+            {/*<CurriculumMenuToggle bsRole='toggle' />*/}
+            <Dropdown.Toggle as={CurriculumMenuToggle} />
+            <Dropdown.Menu rootCloseEvent={'click'}>
               <DropdownItem onSelect={this.onEditContentSelect} eventKey='1'>
                 {/*<Glyphicon glyph='edit' /> Edit content*/}
                 <FaEdit /> Edit content
