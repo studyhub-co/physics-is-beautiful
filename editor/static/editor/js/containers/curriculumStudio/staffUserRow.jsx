@@ -17,7 +17,9 @@ export default class StaffUserRow extends React.Component {
             : null}
         </Col>
         <Col sm={6} md={6}>
-          {this.props.staff.display_name}
+          <a href={this.props.staff.get_absolute_url} target={'_blank'}>
+            {this.props.staff.display_name}
+          </a>
         </Col>
         <Col sm={2} md={2}>
           <span style={{textTransform: 'capitalize '}}>{this.props.post}</span>
@@ -30,6 +32,7 @@ export default class StaffUserRow extends React.Component {
                   // componentClass={InputGroup.Button}
                   id='input-dropdown-addon'
                   // title={<Glyphicon glyph='edit' />}
+                  variant='light'
                   title={<FaEdit />}
                 >
                   <DropdownItem key='e' onSelect={this.props.onRemoveFromCollaboratorsClick}>Remove from collaborators</DropdownItem>

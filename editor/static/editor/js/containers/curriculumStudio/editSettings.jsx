@@ -1,8 +1,7 @@
 import React from 'react'
 
-import { connect } from 'react-redux'
-
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Container, Row, Col, Modal, Button } from 'react-bootstrap'
 
 // import { loadCurriculumIfNeeded } from '../../actions'
@@ -206,7 +205,9 @@ class EditCurriculumSettingsView extends React.Component {
           <Modal.Footer>
             <button className={'editor-common-button'} onClick={this.deleteCurriculum}>Delete</button>
             &nbsp;
-            <Button onClick={this.handleDeleteCurriculumModal}>Close</Button>
+            <Button
+              variant='light'
+              onClick={this.handleDeleteCurriculumModal}>Close</Button>
           </Modal.Footer>
         </Modal>
         <Row>

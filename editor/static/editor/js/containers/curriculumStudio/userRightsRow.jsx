@@ -108,7 +108,11 @@ class UserRightsRow extends React.Component {
     }
 
     var uid = function (item) {
-      return item.id
+      if (item) {
+        return item.id
+      } else {
+        return null
+      }
     }
 
     var foundUsers = []
@@ -136,6 +140,7 @@ class UserRightsRow extends React.Component {
           <DropdownButton
             // componentClass={InputGroup.Button}
             id='input-dropdown-addon'
+            variant='light'
             title='Action'
           >
             <DropdownItem key='e' onSelect={this.onAddCollaboratorsClick}>Add collaborators</DropdownItem>
