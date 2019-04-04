@@ -92,7 +92,7 @@ class CurriculaDashboard extends React.Component {
             {this.state.showEditCurriculumProfile
               ? <Route path='/studio/profile/:uuid/' component={EditCurriculumProfileView} />
               : <div>
-                <div className={'lightgrey-round-background'}>Create a new curriculum from scratch below.
+                <div className={'lightgrey-round-background-studio'}>Create a new curriculum from scratch below.
                   Or, to add content from other courses or to fork a curriculum visit
                   the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.
                   Tutorial and additional help here

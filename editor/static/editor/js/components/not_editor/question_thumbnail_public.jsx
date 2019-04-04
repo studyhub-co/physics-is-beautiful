@@ -44,12 +44,12 @@ export class QuestionThumbnailPublic extends React.Component {
             <div style={{fontSize: '1.5rem', margin: '1rem 0 1rem 0'}} onClick={this.onTitleClick}>
               {this.props.question.lesson.name}
             </div>
-            {/*<div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
+            {/*<div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
               {/*<a href={this.props.question.author.get_absolute_url} target={'_blank'}>*/}
                 {/*{this.props.question.author.display_name}*/}
               {/*</a> ∙ {this.props.question.count_questions } questions ∙ { this.props.question.number_of_learners } learners*/}
             {/*</div>*/}
-            <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0'}}>
+            <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0'}}>
               Created <Moment fromNow>
                 {this.props.question.created_on}
               </Moment> ∙ Last updated <Moment fromNow>

@@ -707,13 +707,6 @@ img.grayed-out-img {
     text-decoration: none;
 }
 
-.lightgrey-round-background{
-    border-radius: 1rem;
-    background: #f7f7f7;
-    font-size: 2rem;
-    padding: 1rem;
-    margin: 1rem 0;
-}
 
 /* fix alignment of adjacent elements */
 /* FIXME not so good practice to change bootstrap row class */

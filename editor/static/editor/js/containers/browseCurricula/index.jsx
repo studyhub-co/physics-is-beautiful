@@ -254,34 +254,33 @@ class BrowseCurriculaView extends React.Component {
           }
         },
         {
-          breakpoint: 1500,
+          breakpoint: 1600,
           settings: {
             slidesToShow: 4,
             slidesToScroll: 4
           }
         },
         {
-          breakpoint: 1356,
+          breakpoint: 1400,
           settings: {
             slidesToShow: 3,
             slidesToScroll: 3
           }
         },
         {
-          breakpoint: 1024,
+          breakpoint: 1200,
           settings: {
             slidesToShow: 2,
-            slidesToScroll: 2,
-            variableWidth: true
+            slidesToScroll: 2
           }
         },
         {
-          breakpoint: 512,
+          breakpoint: 600,
           settings: {
             slidesToShow: 1,
             slidesToScroll: 1,
             arrows: false,
-            variableWidth: true
+            // variableWidth: true
           }
         }
       ]

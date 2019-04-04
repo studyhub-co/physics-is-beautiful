@@ -47,12 +47,12 @@ export class ModuleThumbnailPublic extends React.Component {
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.module.name}
           </div>
-          {/*<div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
+          {/*<div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
             {/*<a href={this.props.module.author.get_absolute_url} target={'_blank'}>*/}
               {/*{this.props.module.author.display_name}*/}
             {/*</a> ∙ {this.props.module.count_lessons } lessons ∙ { this.props.module.number_of_learners } learners*/}
           {/*</div>*/}
-          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+          <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.module.created_on}
             </Moment> ∙ Last updated <Moment fromNow>

@@ -15,7 +15,7 @@ export class AddCurriculumButton extends React.Component {
         <div style={{
           display: 'flex',
           justifyContent: 'center',
-          fontSize: '2rem',
+          fontSize: '1.7rem',
           color: 'gray',
           alignItems: 'center',
           height: '100%'}}>

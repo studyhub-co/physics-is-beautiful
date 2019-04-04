@@ -82,12 +82,12 @@ export class LessonThumbnailPublic extends React.Component {
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.lesson.name}
           </div>
-          {/*<div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
+          {/*<div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
             {/*<a href={this.props.lesson.author.get_absolute_url} target={'_blank'}>*/}
               {/*{this.props.lesson.author.display_name}*/}
             {/*</a> ∙ {this.props.lesson.count_lessons } lessons ∙ { this.props.lesson.number_of_learners } learners*/}
           {/*</div>*/}
-          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+          <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.lesson.created_on}
             </Moment> ∙ Last updated <Moment fromNow>

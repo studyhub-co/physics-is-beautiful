@@ -8,10 +8,9 @@ html {
     font-size: 12px;
 }
 
-/*.editor	{*/
-    /*font-family: 'Museosansrounded', sans-serif;*/
-    /*font-size: 12px;*/
-/*}*/
+.editor	{
+    font-family: 'Museosansrounded', sans-serif;
+}
 
 .editor	.col-md-1 {
 		margin-right: 0px !important;
@@ -23,8 +22,7 @@ html {
     border-style: solid;
     border-width: 2px;
     border-color: rgba(0, 0, 0, 0);
-    margin: 10px;
-    margin-right: 35px;
+    margin: 10px 35px 10px 10px;
     padding: 0px;
     display: inline-block;
     width: 150px;
@@ -187,22 +185,23 @@ html {
     border-width: 2px;
     border-style: solid;
     border-color: rgb(216, 216, 216);
-    margin: 0 1rem 1rem 0;
-    float: left;
+    margin: 1rem 1rem 1rem 0;
+    /*float: left;*/
     position: relative;
     text-align: center;
-    /*padding-top: 1rem;*/
-    margin-top: 1rem;
-
     vertical-align: top;
-
-    max-width: 25rem;
-    /*min-width: 17rem;*/
 
     /* new values */
     padding: 0;
+    max-width: 23rem;
+    min-width: 18rem;
     width: auto;
     height: 25rem;
+    /*padding: 0;*/
+    /*width: auto;*/
+    /*height: 22rem;*/
+    /*max-width: 20rem;*/
+    /*min-width: 16rem;*/
 }
 
 .editor .curriculum-card div img {
@@ -218,10 +217,14 @@ html {
     font-size: 20rem;
 }
 
+.editor .dropdown-item {
+    font-size: 1.2rem;
+}
+
 /*slick fix*/
 
 .slick-slide img {
-    display: inline-block !important;
+    /*display: inline-block !important;*/
 }
 
 .slick-next:before, .slick-prev:before {
@@ -293,3 +296,10 @@ html {
   /*}*/
 
 
+.lightgrey-round-background-studio {
+    border-radius: 1rem;
+    background: #f7f7f7;
+    font-size: 1.3rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}

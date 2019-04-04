@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
-import { FaPencilAlt } from 'react-icons/fa'
+import { FaPencilAlt, FaChevronLeft } from 'react-icons/fa'
 
 import { history } from '../../history'
 import { Image as ImageBs, Container, Row, Col } from 'react-bootstrap'
@@ -245,7 +245,8 @@ class EditCurriculumProfileView extends React.Component {
     return (
       <div className={'pop-up-window'}>
         <a className={'back-button'} onClick={() => { history.push('/studio/') }} >
-          <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+          {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+            <FaChevronLeft />
             My Curricula
         </a>
         <Tabs name='editCurriculumProfileTabs'
