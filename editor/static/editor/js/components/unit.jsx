@@ -1,4 +1,6 @@
-import React from 'react';
+import React from 'react'
+
+import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
 import {EditableLabel} from './label'
 import {EditableThumbnail} from './thumbnail'
@@ -34,16 +36,18 @@ class Unit extends React.Component {
               {this.props.connectDragSource(<span className="drag-handle"/>)}
               <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>          
               <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New unit"/>
-              <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
+              {/*<span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>*/}
+              <FaTimes onClick={this.handleDeleteClick} />
             </h2>
           
         </div>
         <div className="row">
           {modules}
           <DockableDropTarget onDrop={this.props.onModuleDroppedBefore.bind(null, null)} itemType={DragItemTypes.MODULE}>
-            <div className="col-md-1 module-accessible-block btn-add-module" onClick={this.props.onAddModuleClick}>
+            <div className="editor-col-md-1 module-accessible-block btn-add-module" onClick={this.props.onAddModuleClick}>
               <div className="thumbnail section-thumbnail">
-                <span className="glyphicon glyphicon-plus-sign"/>
+                {/*<span className="glyphicon glyphicon-plus-sign"/>*/}
+                <FaPlusCircle size={'5rem'} />
               </div>
               Add module
             </div>

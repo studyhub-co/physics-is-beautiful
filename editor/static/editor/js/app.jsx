@@ -2,8 +2,8 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 
 // import { Switch, Route } from 'react-router-dom'
+import { FaPlusCircle, FaBackward, FaForward } from 'react-icons/fa'
 import { Switch, Route } from 'react-router'
-//
 import { connect, Provider } from 'react-redux'
 import { compose, createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
@@ -28,6 +28,7 @@ import CurriculumProfileView from './containers/browseCurricula/curriculumProfil
 
 import { editor } from './reducers'
 import {
+  loadCurricula,
   loadModuleIfNeeded, loadLessonIfNeeded,
   loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion
 } from './actions'
@@ -115,6 +116,10 @@ import { CurriculaDashboardApp } from './apps/curricula_dashboard'
 //   })(Curricula);
 
 class CurriculumApp extends React.Component {
+  componentDidMount () {
+    this.props.dispatch(loadCurricula())
+  }
+
   render () {
     return (<Sheet>
       <BackButton link='/studio/' />
@@ -206,22 +211,28 @@ class LessonApp extends React.Component {
             <div className='lesson-questions'>
               <a
                 onClick={this.handlePreviousClick}
-                className={'btn btn-default btn-arrow' + (this.props.previousQuestion ? '' : ' disabled')}>
-                <span className='glyphicon glyphicon-backward' />
+                className={'btn btn-light btn-arrow' + (this.props.previousQuestion ? '' : ' disabled')}>
+                {/*<span className='glyphicon glyphicon-backward' />*/}
+                <FaBackward />
               </a>
               {questions}
               <DockableDropTarget
                 onDrop={this.handleQuestionDroppedBefore.bind(null, null)}
                 itemType={DragItemTypes.QUESTION}>
-                <a onClick={this.handleAddQuestionClick} className='btn btn-default btn-add'>
-                  <span className='glyphicon glyphicon-plus-sign' />
+                <a
+                  onClick={this.handleAddQuestionClick} className='btn btn-light btn-add'
+                  style={{cursor: 'pointer'}}
+                >
+                  {/*<span className='glyphicon glyphicon-plus-sign' />*/}
+                  <FaPlusCircle />
                   <br />Add question
                 </a>
               </DockableDropTarget>
               <a
                 onClick={this.handleNextClick}
-                className={'btn btn-default btn-arrow' + (this.props.nextQuestion ? '' : ' disabled')}>
-                <span className='glyphicon glyphicon-forward' />
+                className={'btn btn-light btn-arrow' + (this.props.nextQuestion ? '' : ' disabled')}>
+                {/*<span className='glyphicon glyphicon-forward' />*/}
+                <FaForward />
               </a>
             </div>}
           { this.props.lesson_type === 0 && this.props.currentQuestion &&

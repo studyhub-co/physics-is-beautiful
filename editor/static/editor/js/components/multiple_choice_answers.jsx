@@ -11,7 +11,7 @@ export class MultipleChoiceAnswers extends React.Component {
     }
     return <div>
       {answers}
-      <div className="col-md-1 module-accessible-block add-answer" onClick={e => {e.preventDefault();this.props.onAddAnswerClick()}}>
+      <div className="editor-col-md-1 module-accessible-block add-answer" onClick={e => {e.preventDefault();this.props.onAddAnswerClick()}}>
       + Add answer
       </div>    
     </div>;

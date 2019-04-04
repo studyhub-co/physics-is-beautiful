@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 
-import {Thumbnail} from './thumbnail';
+import { DragSource } from 'react-dnd'
+import { FaTimes } from 'react-icons/fa'
 
-import { DragSource } from 'react-dnd';
-
-import {DragItemTypes} from '../dnd';
+import {Thumbnail} from './thumbnail'
+import {DragItemTypes} from '../dnd'
 
 export const dragSource = {
   beginDrag(props) {
@@ -36,13 +36,16 @@ class QuestionThumbnail extends React.Component {
 
   render() {
     return this.props.connectDragPreview(
-      <div className={'question-thumbnail draggable' + (this.props.selected ? ' selected':'')} style={{display: this.props.isDragging ? 'none' : 'inline-block'}}
-           onClick={this.props.onClick}>
+      <div
+        className={'question-thumbnail draggable' + (this.props.selected ? ' selected':'')}
+        style={{display: this.props.isDragging ? 'none' : 'inline-block'}}
+        onClick={this.props.onClick}>
         <div className="question-thumbnail-inner">
           {this.props.connectDragSource(<span className="drag-handle"/>)}
           <span>{this.props.shortText}</span>
         </div>
-        <span className="glyphicon glyphicon-remove btn-delete" onClick={this.handleDeleteClick}/>
+        {/*<span className="glyphicon glyphicon-remove btn-delete" onClick={this.handleDeleteClick}/>*/}
+        <FaTimes className='btn-delete' onClick={this.handleDeleteClick} />
       </div>)    
   }
 }

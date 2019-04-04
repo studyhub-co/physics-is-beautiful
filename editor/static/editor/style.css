@@ -17,12 +17,12 @@ html {
 	}
 
 
-.editor .col-md-1 { /* not so good practice */
+.editor .editor-col-md-1 {
     border-radius: 5px;
     border-style: solid;
     border-width: 2px;
     border-color: rgba(0, 0, 0, 0);
-    margin: 10px 35px 10px 10px;
+    margin: 10px;
     padding: 0px;
     display: inline-block;
     width: 150px;
@@ -30,24 +30,28 @@ html {
     box-shadow: 0px 0px 10px #BBB;
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
 }
-.editor .col-md-1:hover {
+.editor .editor-col-md-1:hover {
     color: #1caff6;
     border-style: solid;
     border-color:#1caff6;
     box-shadow: 0px 0px 16px #BBB;
 }
 
-.editor .col-md-1.disabled {
+.editor .editor-col-md-1.disabled {
     pointer-events: none;
     opacity: 0.35;
     filter: alpha(opacity=40);
 }
 
-.section-sheet .thumbnail .glyphicon { font-size:60px; }
+/*.section-sheet .thumbnail .glyphicon { font-size:60px; }*/
 .editor .section-sheet .thumbnail img {
     max-width:100%; 
     display: block;
     height: 60px;
+
+    /*bootstrap 3*/
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .selectable-image { position:relative;  cursor:pointer;}
@@ -57,7 +61,7 @@ html {
 .editor .section-sheet h1>.glyphicon { font-size:24px; }
 .editor .section-sheet h1 .btn { vertical-align:middle; margin-left:20px; }
 
-.editor .btn-back { position:absolute; top:10px; left:10px; }
+.editor .btn-back { top:10px; left:10px; padding: 1rem; margin: 1rem }
 
 .editor h1 .selectable-image, .editor h2 .selectable-image { display:inline-block; border:1px solid #FAFAFA; margin:0 10px 0 0;}
 .editor h1 .selectable-image img, .editor h2 .selectable-image img { max-width:100px; }
@@ -65,7 +69,7 @@ html {
 .curriculum .drop-target .dock-site { height:60px; }
 .unit .drop-target .dock-site, .module .drop-target .dock-site { float:left; width:110px; height:150px; }
 .unit .drop-target, .module .drop-target { float:left; margin-left:-60px; padding-left:60px;}
-.editor .unit .btn-add-module, .editor .module .btn-add-lesson {text-align:center;}
+.editor .unit .btn-add-module, .editor .module .btn-add-lesson {text-align:center; padding:1rem; cursor: pointer;}
 
 .editor .question-image img { max-width:100%; }
 .editor .question-image .selectable-image { font-size:80px; }
@@ -295,11 +299,10 @@ html {
     /*opacity: 1;*/
   /*}*/
 
-
 .lightgrey-round-background-studio {
     border-radius: 1rem;
     background: #f7f7f7;
-    font-size: 1.3rem;
+    font-size: 1.7rem;
     padding: 1rem;
     margin: 1rem 0;
 }

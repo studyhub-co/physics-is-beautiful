@@ -1,10 +1,12 @@
-import React from 'react';
+import React from 'react'
 
-import {LessonThumbnailContainer} from '../containers/lesson_thumbnail';
-import {EditableThumbnail} from './thumbnail';
+import { FaTimes, FaPlusCircle } from 'react-icons/fa'
+
+import {LessonThumbnailContainer} from '../containers/lesson_thumbnail'
+import {EditableThumbnail} from './thumbnail'
 import {EditableLabel} from './label'
 import {BackButton} from './back_button'
-import {DockableDropTarget, DragItemTypes} from '../dnd';
+import {DockableDropTarget, DragItemTypes} from '../dnd'
 
 
 export class Module extends React.Component {
@@ -36,14 +38,16 @@ export class Module extends React.Component {
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
           <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue="New module"/>
-          <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>
+          {/*<span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/>*/}
+          <FaTimes onClick={this.handleDeleteClick} />
         </h1>
         <div className="row">
           {lessons}
           <DockableDropTarget onDrop={this.props.onLessonDroppedBefore.bind(null, null)} itemType={DragItemTypes.LESSON}>
-            <div className="col-md-1 module-accessible-block btn-add-lesson" onClick={this.props.onAddLessonClick}>
+            <div className="editor-col-md-1 module-accessible-block btn-add-lesson" onClick={this.props.onAddLessonClick}>
               <div className="thumbnail section-thumbnail">
-                <span className="glyphicon glyphicon-plus-sign"/>
+                {/*<span className="glyphicon glyphicon-plus-sign"/>*/}
+                <FaPlusCircle size={'5rem'} />
               </div>
               Add lesson
             </div>

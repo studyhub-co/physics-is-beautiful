@@ -1118,7 +1118,7 @@ export function goToQuestion(uuid){
 }
 
 export function addQuestion (lesson, question) {
-  var data = {text: 'New lesson', lesson: lesson}
+  var data = {text: 'New question', lesson: lesson}
   if (question) {
     data['prototype'] = question.uuid
   }

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { FaImage } from 'react-icons/fa'
 import { Image } from 'react-bootstrap'
 
 export function Thumbnail (props) {
@@ -7,7 +8,8 @@ export function Thumbnail (props) {
     // return <img src={props.image} />
     return <Image fluid src={props.image} />
   } else {
-    return <span className='glyphicon glyphicon-picture' />
+    // return <span className='glyphicon glyphicon-picture' />
+    return <FaImage size={'5rem'} />
   }
 }
 

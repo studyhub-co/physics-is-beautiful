@@ -1,4 +1,7 @@
-import React from 'react';
+import React from 'react'
+
+import { FaTimes } from 'react-icons/fa'
+
 import {VectorCanvas, CanvasVector, NullVector} from 'vector_canvas'
 
 const VECTOR_COLORS = [
@@ -31,7 +34,11 @@ export class QuestionVectors extends React.Component {
     
     return (
       <div className="question-vectors">
-        <a className="question-vectors-clear" onClick={e=>{e.preventDefault(); this.props.onClearClick()}}><span className="glyphicon glyphicon-remove"/> clear</a>
+        <a
+          className="question-vectors-clear"
+          onClick={e=>{e.preventDefault(); this.props.onClearClick()}}>
+          {/*<span className="glyphicon glyphicon-remove"/> clear</a>*/}
+          <FaTimes /> clear</a>
         <VectorCanvas
            clear={true}             
            objects={objects}

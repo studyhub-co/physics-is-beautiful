@@ -1,4 +1,6 @@
-import React from 'react';
+import React from 'react'
+
+import { FaPencilAlt } from 'react-icons/fa'
 
 var MQ = MathQuill.getInterface(2);
 
@@ -128,7 +130,8 @@ export class MQEditableLabel extends React.Component {
     var isEmpty = !this.props.value || (this.props.value.replace(/\\/g, '').trim().length == 0)
     return (<span className={'mq-editable-label' + (isEmpty ? ' empty' : '')}>
             <span onClick={this.handleEditClick} className={this.state.editing ? 'editing' : ''} ref={this.state.editing ? this.setEditorRef : this.setLabelRef} key={this.state.editing ? 'editing' : ''}>{this.props.value}</span>
-            {!this.state.editing && <span onClick={this.handleEditClick} className="glyphicon glyphicon-pencil"/>}
+            {/*{!this.state.editing && <span onClick={this.handleEditClick} className="glyphicon glyphicon-pencil"/>}*/}
+            {!this.state.editing && <FaPencilAlt onClick={this.handleEditClick} className={'glyphicon-pencil'} />}
             {buttons}
             </span>)
   }

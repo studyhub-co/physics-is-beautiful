@@ -1,4 +1,6 @@
-import React from 'react';
+import React from 'react'
+
+import { FaPencilAlt } from 'react-icons/fa'
 
 export const DEFAULT_MATHJAX_OPTIONS = {
   extensions: ['tex2jax.js'],
@@ -10,7 +12,6 @@ export const DEFAULT_MATHJAX_OPTIONS = {
   },
   'HTML-CSS': { availableFonts: ['TeX'] }
 }
-
 
 export class EditableLabel extends React.Component {
   constructor (props) {
@@ -87,10 +88,13 @@ export class EditableLabel extends React.Component {
               <input type='text' value={this.state.value} onChange={this.handleInputChange} onBlur={this.handleInputBlur} ref={this.setInputRef} onKeyUp={this.handleInputKeyUp}/>
               </form>)
     } else {
-      return (<span className={'editable-label' + (((this.props.value && this.props.value.trim()) || this.props.defaultValue)?'':' empty')} onClick={this.handleEditClick}>
-              <span>{this.props.value || this.props.defaultValue}</span>
-              <span  className='glyphicon glyphicon-pencil'/>              
-              </span>)
+      return (
+        <span className={'editable-label' + (((this.props.value && this.props.value.trim()) || this.props.defaultValue)?'':' empty')} onClick={this.handleEditClick}>
+          <span>{this.props.value || this.props.defaultValue}</span>
+           {/*<span className='glyphicon glyphicon-pencil'/>*/}
+          <FaPencilAlt className={'glyphicon-pencil'} />
+        </span>
+      )
     }
   }
 }

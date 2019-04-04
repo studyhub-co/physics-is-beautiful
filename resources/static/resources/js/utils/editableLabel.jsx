@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { FaPencilAlt } from 'react-icons/fa'
+
 // TODO Need to create lib js bundle and move EditableLabel into (it uses in classroom also).
 
 export const DEFAULT_MATHJAX_OPTIONS = {
@@ -113,7 +115,8 @@ export class EditableLabel extends React.Component {
             this.props.defaultValue) ? '' : ' empty')}
           onClick={this.handleEditClick}>
           <span>{this.props.value || this.props.defaultValue}</span>
-          <span className='glyphicon glyphicon-pencil' />
+          {/*<span className='glyphicon glyphicon-pencil' />*/}
+          <FaPencilAlt className={'glyphicon-pencil'} />
         </span>)
     }
   }
