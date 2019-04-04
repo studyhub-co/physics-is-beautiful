@@ -113,12 +113,12 @@ export class MathematicalExpressionAnswer extends React.Component {
       for (var i = 0; i < buttonsLst.length; i++) {
         var button = (
           <a
-            className={'btn btn-primary btn-lg mathClickEntryButton'}
+            className={'btn btn-light btn-lg mathClickEntryButton'}
             style={{minHeight: '40px'}}
             onClick={this.insertLatex.bind(that, buttonsLst[i])}
           >
             {/*<RMathJax.Node inline>{buttonsLst[i]}</RMathJax.Node>*/}
-            <RMathJax inline>{buttonsLst[i]}</RMathJax>
+            <RMathJax.Node inline formula={buttonsLst[i]} />
           </a>
         )
         buttons.push(button)

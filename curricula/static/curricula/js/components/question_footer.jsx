@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
+
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Answer} from './answers/correct_answers/correct_answer'
 import {CheckContinueButton} from './utils/check_continue_button'
@@ -32,11 +34,13 @@ export class Footer extends React.Component {
     var correctMessage = ''
     var backgroundColor = '#dbdbdb'
     if (this.props.correct === true) {
-      checkMarks = (<span id='correct' className='glyphicon glyphicon-ok-sign pull-right' style={{fontSize: '35px'}} />)
+      // checkMarks = (<span id='correct' className='glyphicon glyphicon-ok-sign pull-right' style={{fontSize: '35px'}} />)
+      checkMarks = (<FaCheckCircle id='correct' className='pull-right' style={{fontSize: '35px'}} />)
       correctMessage = 'Correct'
       backgroundColor = '#bff199'
     } else if (this.props.correct === false) {
-      checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right'style={{fontSize: '35px'}} />)
+      // checkMarks = (<span id='incorrect' className='glyphicon glyphicon-remove-sign pull-right'style={{fontSize: '35px'}} />)
+      checkMarks = (<FaTimesCircle id='incorrect' className='pull-right' style={{fontSize: '35px'}} />)
       backgroundColor = '#ffd3d1'
 
       if (Array.isArray(this.props.correct_answer)) {
