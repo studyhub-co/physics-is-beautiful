@@ -318,6 +318,7 @@ class ImageWTextAnswerInline(AnswerTabularInline):
     model = Answer
     form = ImageWTextAnswerForm
 
+
 class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     representation = forms.CharField(required=True, max_length=255, widget=MathConversionWidget())
 

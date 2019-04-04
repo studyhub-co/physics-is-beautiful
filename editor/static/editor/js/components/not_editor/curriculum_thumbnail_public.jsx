@@ -134,7 +134,10 @@ export class CurriculumThumbnailPublic extends React.Component {
       <div
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
-        <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+        <div
+          onClick={this.onTitleClick}
+          style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px', height: '13rem'}}
+        >
           <Thumbnail image={this.props.curriculum.image} />
         </div>
         <div>

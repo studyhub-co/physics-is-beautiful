@@ -127,7 +127,7 @@ export class ImageWithText extends React.Component {
           {/*</div>*/}
           <div className={'card-body'} style={{padding: '.5rem'}}>
             {this.props.type === 'RADIO_BUTTON'
-              ? <div className='pure-radiobutton' style={{float: 'left'}}>
+              ? <div className='pure-radiobutton' style={{float: 'left', width: '90%'}}>
                 <input
                   id={'radio' + this.props.choice.uuid}
                   value={this.props.choice.content.text}

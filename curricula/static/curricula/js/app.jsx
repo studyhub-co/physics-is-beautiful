@@ -69,7 +69,7 @@ class CurriculumInfoPanel extends React.Component {
                 {this.state.showMore
                   ? <Row>
                     <Col md={12}>
-                      {this.props.curriculum.image ? <img className={'img-responsive'} src={this.props.curriculum.image} /> : null}
+                      {this.props.curriculum.image ? <img className={'img-fluid'} src={this.props.curriculum.image} /> : null}
                     </Col>
                   </Row>
                   : null}

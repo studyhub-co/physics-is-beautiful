@@ -331,9 +331,10 @@ class BrowseCurriculaView extends React.Component {
                           <div className={'blue-title'} style={{lineHeight: '7rem'}}>
                                 Course dashboard
                           </div>
-                          <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
-                                My recently viewed
-                          </div>
+                          { this.state.recentSlides.length > 0
+                            ? <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '2rem'}}>
+                                My dashboard
+                            </div> : null }
                           {/*<Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>*/}
                             {/*{this.state.recentSlides}*/}
                           {/*</Swiper>*/}
