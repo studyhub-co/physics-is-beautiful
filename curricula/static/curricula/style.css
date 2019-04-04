@@ -612,6 +612,8 @@ img.grayed-out-img {
     border: .3rem solid green !important;
 }
 
+/* override bootsrap 4 card class  */
+
 .card {
     /* Add shadows to create the "card" effect */
     /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);*/
@@ -621,6 +623,11 @@ img.grayed-out-img {
     height: auto;
     border-radius: 1rem;
     border: 0.2rem solid #e3e3e3;
+}
+
+.card .card-img-top{
+    border-top-right-radius: 0.8rem;
+    border-top-left-radius: 0.8rem;
 }
 
 /* On mouse-over, add a deeper shadow */

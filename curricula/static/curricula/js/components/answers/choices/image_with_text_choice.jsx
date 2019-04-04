@@ -117,12 +117,15 @@ export class ImageWithText extends React.Component {
     } else {
       // IMAGE + TEXT RADIO + CHECKBOXES
       toReturn =
-        <div onClick={this.cardClick.bind(this)} className='card col-md-3 mx-2 mb-3' style={cardStyle} id={this.props.choice.uuid}>
-          <div className='wrapper'>
-            { image }
-          </div>
-
-          <div className={'card-block'} style={{padding: '.5rem'}}>
+        <div
+          onClick={this.cardClick.bind(this)} className='card mx-2 mb-3'
+          style={cardStyle} id={this.props.choice.uuid}
+        >
+          { image }
+          {/*<div className='wrapper'>*/}
+            {/*{ image }*/}
+          {/*</div>*/}
+          <div className={'card-body'} style={{padding: '.5rem'}}>
             {this.props.type === 'RADIO_BUTTON'
               ? <div className='pure-radiobutton' style={{float: 'left'}}>
                 <input
