@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import {Row, Col, Image} from 'react-bootstrap'
+import { FaCheck, FaCheckCircle, FaExclamationCircle, FaClock } from 'react-icons/fa'
+import { Row, Col, Image } from 'react-bootstrap'
 import * as assignmentCreators from '../actions/assignment'
 
 class AssignmentStudentRow extends React.Component {
@@ -76,7 +77,7 @@ class AssignmentStudentRow extends React.Component {
                 {this.props.assignment && this.props.assignment.image
                   ? <Image
                     style={{maxHeight: '4rem'}}
-                    responsive
+                    fluid
                     src={this.props.assignment.image}
                     rounded />
                   : null}
@@ -124,38 +125,44 @@ class AssignmentStudentRow extends React.Component {
             </Col>
             <Col sm={1} md={1} className={'vcenter'}>
               { textColorClassName === 'green-text'
-                ? <span className='glyphicon glyphicon-ok-sign' style={{color: 'green', fontSize: '3rem'}} /> : null }
+                // ? <span className='glyphicon glyphicon-ok-sign' style={{color: 'green', fontSize: '3rem'}} /> : null }
+                ? <FaCheckCircle style={{color: 'green', fontSize: '3rem'}} /> : null }
               { textColorClassName === 'red-text'
-                ? <span className='glyphicon glyphicon-exclamation-sign' style={{color: 'red', fontSize: '3rem'}} /> : null }
+                // ? <span className='glyphicon glyphicon-exclamation-sign' style={{color: 'red', fontSize: '3rem'}} /> : null }
+                ? <FaExclamationCircle style={{color: 'red', fontSize: '3rem'}} /> : null }
               { textColorClassName === 'yellow-text'
-                ? <span className='glyphicon glyphicon-time yellow-text' style={{fontSize: '3rem'}} /> : null }
+                // ? <span className='glyphicon glyphicon-time yellow-text' style={{fontSize: '3rem'}} /> : null }
+                ? <FaClock className='yellow-text' style={{fontSize: '3rem'}} /> : null }
             </Col>
           </Row>
           <Row>
             <Col sm={12} md={12}>
-              { assignmentStudentLessonsList && !this.state.hideLessons
-                ? assignmentStudentLessonsList.map(function (lesson, i) {
-                  return <span
-                    className={'col-md-1 lesson-card' + (lesson.status === 'completed' ? ' module-completed'
-                      : ' module-accessible-block')}
-                    // style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
-                    onClick={() => { this.onLessonClick(lesson) }} key={i}>
-                    <div className={'thumbnail section-thumbnail'}>
-                      <Image
-                        // responsive
-                        src={lesson.image}
-                        // width={'80%'}
-                        // rounded
-                        // style={{display: 'inline-block', top: '0', height: '80%'}}
-                      />
-                    </div>
-                    <div>
-                      {lesson.name}{lesson.status === 'completed'
-                        ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '0.3rem'}} />
-                        : null}
-                    </div>
-                  </span>
-                }, this) : null}
+              <Row>
+                { assignmentStudentLessonsList && !this.state.hideLessons
+                  ? assignmentStudentLessonsList.map(function (lesson, i) {
+                    return <span
+                      className={'col-md-2 lesson-card' + (lesson.status === 'completed' ? ' module-completed'
+                        : ' module-accessible-block')}
+                      // style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
+                      onClick={() => { this.onLessonClick(lesson) }} key={i}>
+                      <div className={'thumbnail section-thumbnail'}>
+                        <Image
+                          // fluid
+                          src={lesson.image}
+                          // width={'80%'}
+                          // rounded
+                          // style={{display: 'inline-block', top: '0', height: '80%'}}
+                        />
+                      </div>
+                      <div>
+                        {lesson.name}{lesson.status === 'completed'
+                          // ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '0.3rem'}} />
+                          ? <FaCheck style={{paddingLeft: '0.3rem'}} />
+                          : null}
+                      </div>
+                    </span>
+                  }, this) : null}
+              </Row>
             </Col>
           </Row>
         </Col>

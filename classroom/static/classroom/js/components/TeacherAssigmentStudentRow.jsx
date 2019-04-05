@@ -44,9 +44,9 @@ export class TeacherAssigmentStudentRow extends React.Component {
           <Col sm={1} md={1}>
             {this.props.student && this.props.student.avatar_url
               ? <Image
-                responsive
+                fluid
                 src={this.props.student.avatar_url}
-                circle />
+                roundedCircle />
               : null}
           </Col>
           <Col sm={6} md={6}>

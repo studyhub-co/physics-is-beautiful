@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import {Row, Col, Grid, Image} from 'react-bootstrap'
+import {Row, Col, Container, Image} from 'react-bootstrap'
 
 export class TeacherStudentCard extends React.Component {
   // Card to show user in classroom students list
@@ -10,14 +10,14 @@ export class TeacherStudentCard extends React.Component {
     var className = 'student-card pointer vcenter'
 
     return (
-      <Grid fluid style={{float: 'left', padding: '0'}}>
+      <Container fluid style={{float: 'left', padding: '0'}}>
         <Row className={className} onClick={() => this.props.onStudentClick()}>
           <Col sm={2} md={2}>
             {this.props.student.avatar_url
               ? <Image
-                responsive
+                fluid
                 src={this.props.student.avatar_url}
-                circle />
+                roundedCircle />
               : null}
           </Col>
           <Col sm={4} md={4}>
@@ -37,7 +37,7 @@ export class TeacherStudentCard extends React.Component {
             </div>
           </Col>
         </Row>
-      </Grid>
+      </Container>
     )
   }
 }

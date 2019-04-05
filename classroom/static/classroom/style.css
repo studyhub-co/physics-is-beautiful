@@ -1,3 +1,15 @@
+@import "tabs.css";
+@import "react-datepicker.css";
+
+html {
+    font-family: 'Museosansrounded', sans-serif;
+    font-size: 12px;
+}
+
+.editor	{
+    font-family: 'Museosansrounded', sans-serif;
+}
+
 /* reusable */
 
 .google-button {
@@ -153,49 +165,49 @@
     cursor: pointer;
 }
 
-/* tabs */
+/*!* tabs *!*/
 
-.classroom .tabs {
-    width: 100%;
-    display: inline-block;
-    vertical-align: top;
-    padding: 0 2rem 0 2rem;
-    font-weight: lighter;
-}
+/*.classroom .tabs {*/
+    /*width: 100%;*/
+    /*display: inline-block;*/
+    /*vertical-align: top;*/
+    /*padding: 0 2rem 0 2rem;*/
+    /*font-weight: lighter;*/
+/*}*/
 
-.classroom .tab-link{
-    font-size: 16px;
-    font-weight: lighter !important;
-    outline:0;
-}
+/*.classroom .tab-link{*/
+    /*font-size: 16px;*/
+    /*font-weight: lighter !important;*/
+    /*outline:0;*/
+/*}*/
 
-.classroom .tabs .tab-link {
-    padding: 0 3rem;
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    height: 40px;
-    line-height: 41px;
-    top: 3px;
-    left: -1px;
-    border-bottom: solid #d8d8d8;
-    color: rgb(216, 216, 216);
-    transition: color 500ms, border-bottom 500ms;
-}
+/*.classroom .tabs .tab-link {*/
+    /*padding: 0 3rem;*/
+    /*cursor: pointer;*/
+    /*display: inline-block;*/
+    /*position: relative;*/
+    /*height: 40px;*/
+    /*line-height: 41px;*/
+    /*top: 3px;*/
+    /*left: -1px;*/
+    /*border-bottom: solid #d8d8d8;*/
+    /*color: rgb(216, 216, 216);*/
+    /*transition: color 500ms, border-bottom 500ms;*/
+/*}*/
 
-.classroom .tabs .tab-link:hover {
-    border-bottom: solid #1caff6;
-    color: #1caff6;
-}
+/*.classroom .tabs .tab-link:hover {*/
+    /*border-bottom: solid #1caff6;*/
+    /*color: #1caff6;*/
+/*}*/
 
-.classroom .tabs .tab-link-active {
-    border-bottom: 3px solid #1caff6;
-    color: #1caff6;
-}
+/*.classroom .tabs .tab-link-active {*/
+    /*border-bottom: 3px solid #1caff6;*/
+    /*color: #1caff6;*/
+/*}*/
 
-.classroom .tabs .tab-links {
-    border-bottom: solid #d8d8d8;
-}
+/*.classroom .tabs .tab-links {*/
+    /*border-bottom: solid #d8d8d8;*/
+/*}*/
 
 .classroom .pop-up-window {
     border-radius: 15px;
@@ -226,8 +238,7 @@
     border-style: solid;
     border-width: 2px;
     border-color: rgba(0, 0, 0, 0);
-    margin: 10px;
-    margin-right: 35px;
+    margin: 10px 20px 10px 10px;
     padding: 0px;
     display: inline-block;
     width: 150px;
@@ -242,7 +253,7 @@
 .lesson-card div:nth-of-type(2) {
     padding: .8rem;
     font-family: 'Museosansrounded', sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     height: 4rem;
     font-weight: 500;
 }

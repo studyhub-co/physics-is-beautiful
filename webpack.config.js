@@ -13,7 +13,7 @@ module.exports = function (env) {
       profile_anonymous: './profiles/static/profiles/js/anonymous/profile_modal',
       profile: './profiles/static/profiles/js/authenticated/index',
       editor: './editor/static/editor/js/app',
-      // classroom: './classroom/static/classroom/js/index',
+      classroom: './classroom/static/classroom/js/index',
       resources: './resources/static/resources/js/index',
       homepage: './homepage/static/homepage/js/index'
     },

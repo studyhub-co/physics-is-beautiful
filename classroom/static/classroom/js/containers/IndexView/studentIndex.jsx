@@ -8,7 +8,7 @@ import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { Grid } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 
 import { JoinClassroomView, StudentClassroomView } from '../index'
 import { StudentClassroomRow } from '../../components/StudentClassroomRow'
@@ -39,14 +39,14 @@ class StudentIndexView extends React.Component {
 
     return <div>
       {this.props.location.pathname === '/classroom/student/' && this.props.classroomStudentList
-        ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
+        ? <Container fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
           return <StudentClassroomRow
             classroom={classroom}
             onAssignmentsClick={(url) => this.props.dispatch(push(url))}
             baseUrl={baseUrl}
             key={i} />
         }, this)}
-        </Grid> : null }
+        </Container> : null }
       <Route exact path={studentClassroomUrl} component={StudentClassroomView} />
       {/* TODO I think iti is better to move  join URL to routes.jsx */}
       <Route path={joinUrl} component={JoinClassroomView} />

@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { FaCog } from 'react-icons/fa'
+
+import { Row, Col, Image, Dropdown, DropdownItem } from 'react-bootstrap'
 
 export class AssignmentTeacherRow extends React.Component {
   handleSettingsClick (e) {
@@ -23,7 +25,7 @@ export class AssignmentTeacherRow extends React.Component {
             {this.props.assignment && this.props.assignment.image
               ? <Image
                 style={{maxHeight: '4rem'}}
-                responsive
+                fluid
                 src={this.props.assignment.image}
                 rounded />
               : null}
@@ -57,11 +59,12 @@ export class AssignmentTeacherRow extends React.Component {
         <Col sm={1} md={1}>
           <Dropdown onSelect={this.handleSettingsClick} id={'dropdown-settings'}>
             <Dropdown.Toggle className={'classroom-common-button'} style={{padding: '1rem'}}>
-              <Glyphicon glyph='cog' />&nbsp;
+              {/*<Glyphicon glyph='cog' />&nbsp;*/}
+              <FaCog />&nbsp;
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <MenuItem eventKey='delete'>Delete assignment</MenuItem>
-              <MenuItem eventKey='edit'>Edit assignment</MenuItem>
+              <DropdownItem eventKey='delete'>Delete assignment</DropdownItem>
+              <DropdownItem eventKey='edit'>Edit assignment</DropdownItem>
             </Dropdown.Menu>
           </Dropdown>
         </Col>

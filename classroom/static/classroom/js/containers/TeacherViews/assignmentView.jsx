@@ -11,7 +11,7 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 
 import { AssignmentEdit } from '../index'
-import { Grid, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { Container, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 import { TeacherAssigmentStudentRow } from '../../components/TeacherAssigmentStudentRow'
@@ -81,7 +81,7 @@ export class AssignmentView extends React.Component {
     }
     return (
       <div>
-        <Grid fluid>
+        <Container fluid>
           <Row id='all-assignments'>
             <Col md={12} style={{padding: 0}}>
               <a className={'back-button'} onClick={() => { history.push(BASE_URL + 'teacher/' + this.props.match.params['uuid'] + '/') }} >
@@ -119,8 +119,8 @@ export class AssignmentView extends React.Component {
               </Dropdown>
             </Col>
           </Row>
-        </Grid>
-        <Grid fluid>
+        </Container>
+        <Container fluid>
           <Row className={className}>
             <Col sm={1} md={1} style={{maxWidth: '35%'}}>
               {this.props.assignment && this.props.assignment.lessons[0].image
@@ -161,8 +161,8 @@ export class AssignmentView extends React.Component {
               </div>
             </Col>
           </Row>
-        </Grid>
-        <Grid fluid>
+        </Container>
+        <Container fluid>
           <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
             <Col sm={7} md={7}>
               <span className={'gray-text'}>Student</span>
@@ -174,9 +174,9 @@ export class AssignmentView extends React.Component {
               Completed on
             </Col>
           </Row>
-        </Grid>
+        </Container>
         <hr style={{margin: '0'}} />
-        <Grid fluid>
+        <Container fluid>
           <Row className={''}>
             <Col sm={12} md={12}>
               {this.props.assignment &&
@@ -195,7 +195,7 @@ export class AssignmentView extends React.Component {
                 }, this) : null}
             </Col>
           </Row>
-        </Grid>
+        </Container>
         { this.state.showEditAssigment
           ? <Modal
             show={this.state.showEditAssigment}

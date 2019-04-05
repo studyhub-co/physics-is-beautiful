@@ -12,7 +12,7 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 import * as assignmentCreators from '../../actions/assignment'
 
-import { Grid, Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { Container, Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 class StudentClassroomProfileView extends React.Component {
@@ -48,7 +48,7 @@ class StudentClassroomProfileView extends React.Component {
     var className = 'assignment-teacher-card'
     return (
       <div>
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col
               sm={6}
@@ -81,9 +81,9 @@ class StudentClassroomProfileView extends React.Component {
             <Col sm={1} md={1}>
               {this.props.studentClassroomProfile && this.props.studentClassroomProfile.avatar_url
                 ? <Image
-                  responsive
+                  fluid
                   src={this.props.studentClassroomProfile.avatar_url}
-                  circle />
+                  roundedCircle />
                 : null}
             </Col>
             <Col sm={8} md={8}>
@@ -112,8 +112,8 @@ class StudentClassroomProfileView extends React.Component {
               </div>
             </Col>
           </Row>
-        </Grid>
-        <Grid fluid>
+        </Container>
+        <Container fluid>
           <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
             <Col sm={6} md={6}>
               <span className={'gray-text'}>Assignment</span>
@@ -128,9 +128,9 @@ class StudentClassroomProfileView extends React.Component {
               Completed on
             </Col>
           </Row>
-        </Grid>
+        </Container>
         <hr style={{margin: '0'}} />
-        <Grid fluid>
+        <Container fluid>
           { this.props.studentAssignmentsList
             ? this.props.studentAssignmentsList.map(function (assignment, i) {
               return <TeacherStudentAssignmentRow
@@ -139,7 +139,7 @@ class StudentClassroomProfileView extends React.Component {
                 onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
                 key={i} />
             }, this) : null}
-        </Grid>
+        </Container>
       </div>
     )
   }

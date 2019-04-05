@@ -3,27 +3,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { Route } from 'react-router'
-
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { RingLoader } from 'react-spinners'
+import { Container, Row, Col, Modal } from 'react-bootstrap'
 
 import * as tabsCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
-
 // import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
-
 import SelectCurriculum from '../../components/SelectCurriculum'
-
 import { TeacherClassroomCard } from '../../components/TeacherClassroomCard'
 import { GoogleClassroomRow } from '../../components/GoogleClassroomRow'
-
 import { CreateClassroomView, TeacherClassroomView } from '../../containers/index'
-
-import { Grid, Row, Col, Modal } from 'react-bootstrap'
-
-import { RingLoader } from 'react-spinners'
 import * as googleCreators from '../../actions/google'
+import { endsWith } from '../../utils/strings'
 
 class TeacherIndexView extends React.Component {
   constructor (props) {
@@ -107,12 +101,13 @@ class TeacherIndexView extends React.Component {
 
     return <div>
       {this.props.location.pathname === '/classroom/teacher/'
-        ? <Grid fluid>
+        ? <Container fluid>
           <Row>
             <Col sm={6} md={6}>
               <h2>All classrooms</h2>
             </Col>
-            <Col sm={4} md={3} smOffset={2} mdOffset={3} style={{marginTop: 10}}>
+            {/*<Col sm={4} md={3} smOffset={2} mdOffset={3} style={{marginTop: 10}}>*/}
+            <Col sm={{ span: 4, offset: 2 }} md={{ span: 3, offset: 3 }} style={{marginTop: 10}}>
               <button
                 disabled={!this.props.gapiInitState}
                 onClick={this.getGoogleClassroomList}
@@ -133,7 +128,7 @@ class TeacherIndexView extends React.Component {
                     <Modal.Title>Please select the classes you want to import</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <Grid fluid>
+                    <Container fluid>
                       { this.props.googleClassroomsList
                         ? <div>{this.state.googleClassroomsImportStep === 1
                           ? this.props.googleClassroomsList.map(function (classroom, i) {
@@ -161,7 +156,7 @@ class TeacherIndexView extends React.Component {
                           </Col>
                         </Row>
                       }
-                    </Grid>
+                    </Container>
                   </Modal.Body>
                   <Modal.Footer>
                     {this.state.googleClassroomsImportStep === 1
@@ -204,12 +199,15 @@ class TeacherIndexView extends React.Component {
             </div>
             <div style={{'clear': 'both'}} />
             </div> : null }
-        </Grid>
+        </Container>
         : null
       }
-      <Route path={createUrl} component={CreateClassroomView} />
-      <Route path={editUrl} component={CreateClassroomView} />
-      <Route path={teacherUrl} component={TeacherClassroomView} />
+      <Route path={createUrl} exact component={CreateClassroomView} />
+      <Route path={editUrl} exact component={CreateClassroomView} />
+      { endsWith(window.location.pathname, 'teacher/create')
+        ? null
+        : <Route path={teacherUrl} component={TeacherClassroomView} />
+      }
     </div>
   }
 }

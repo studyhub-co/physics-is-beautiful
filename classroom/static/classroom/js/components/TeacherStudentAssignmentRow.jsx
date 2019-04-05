@@ -46,9 +46,9 @@ export class TeacherStudentAssignmentRow extends React.Component {
           <div className={'gray-text small-text'}>
             {this.props.assignment && this.props.assignment.image
               ? <Image
-                responsive
+                fluid
                 src={this.props.assignment.image}
-                circle />
+                roundedCircle />
               : null}
           </div>
         </Col>

@@ -246,7 +246,7 @@ class EditCurriculumProfileView extends React.Component {
       <div className={'pop-up-window'}>
         <a className={'back-button'} onClick={() => { history.push('/studio/') }} >
           {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
-            <FaChevronLeft />
+          <FaChevronLeft />
             My Curricula
         </a>
         <Tabs name='editCurriculumProfileTabs'

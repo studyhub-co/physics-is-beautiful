@@ -8,7 +8,7 @@ import AssignmentStudentRow from '../../components/AssignmentStudentRow'
 
 import { push } from 'connected-react-router'
 
-import { Grid, Row, Col, Modal, Button } from 'react-bootstrap'
+import { Container, Row, Col, Modal, Button } from 'react-bootstrap'
 
 import { BASE_URL } from '../../utils/config'
 
@@ -54,7 +54,7 @@ class StudentClassroomView extends React.Component {
 
   render () {
     return (
-      <Grid fluid>
+      <Container fluid>
         { this.props.classroomStudent
           ? <div className={'student-classroom-row'}>
             <Row>
@@ -95,7 +95,7 @@ class StudentClassroomView extends React.Component {
             </Row></div>
           : null }
 
-      </Grid>)
+      </Container>)
   }
 }
 
