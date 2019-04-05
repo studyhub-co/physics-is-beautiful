@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { FaCheckCircle, FaTimes, FaClock } from 'react-icons/fa'
 import { Row, Col, Image } from 'react-bootstrap'
 
 export class TeacherAssigmentStudentRow extends React.Component {
@@ -14,6 +15,7 @@ export class TeacherAssigmentStudentRow extends React.Component {
     var colorName = null
     var boxName = ''
     var glyphicon = ''
+    var faIcon = null
 
     if (this.props.student.completed_on) {
       completedOnDate = new Date(this.props.student.completed_on).toLocaleDateString() + ' ' +
@@ -21,19 +23,22 @@ export class TeacherAssigmentStudentRow extends React.Component {
       statusText = 'Completed'
       colorName = 'green'
       boxName = '-completed'
-      glyphicon = 'ok-sign'
+      // glyphicon = 'ok-sign'
+      faIcon = <FaCheckCircle />
     } else if (this.props.student.delayed_on) {
       delayedOnDate = new Date(this.props.student.delayed_on).toLocaleDateString() + ' ' +
         new Date(this.props.student.delayed_on).toLocaleTimeString()
       statusText = 'Completed late'
       colorName = 'yellow'
       boxName = '-delayed'
-      glyphicon = 'time'
+      // glyphicon = 'time'
+      faIcon = <FaClock />
     } else if (new Date(this.props.assignment.due_on) < new Date()) {
       statusText = 'Missed'
       colorName = 'red'
       boxName = '-missed'
-      glyphicon = 'remove'
+      // glyphicon = 'remove'
+      faIcon = <FaTimes />
     } else if (this.props.student.start_on) {
       statusText = 'Started'
     }
@@ -58,7 +63,8 @@ export class TeacherAssigmentStudentRow extends React.Component {
             { colorName
               ? <div className={colorName + '-text'}>
                 <span className={colorName + boxName + '-box'}>
-                  <span className={'glyphicon glyphicon-' + glyphicon} />&nbsp;{ statusText }
+                  {/*<span className={'glyphicon glyphicon-' + glyphicon} />&nbsp;{ statusText }*/}
+                  { faIcon }&nbsp;{ statusText }
                 </span>
               </div> : <span>{ statusText }</span>}
           </Col>

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { FaTimes, FaClock, FaCheck } from 'react-icons/fa'
 import {Row, Col, Container, Image} from 'react-bootstrap'
 
 export class TeacherStudentCard extends React.Component {
@@ -26,13 +27,16 @@ export class TeacherStudentCard extends React.Component {
           <Col sm={6} md={6}>
             <div className={'gray-text'}>
               <span className={'green-completed-box'}>
-                <span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp;{this.props.student.counts.num_completed_assignments}
+                <FaCheck title={'Completed'} />&nbsp;{this.props.student.counts.num_completed_assignments}
+                {/*<span title={'Completed'} className='glyphicon glyphicon-ok' />&nbsp;{this.props.student.counts.num_completed_assignments}*/}
               </span>
               <span className={'yellow-delayed-box'}>
-                <span title={'Completed late'} className='glyphicon glyphicon-time' />&nbsp;{this.props.student.counts.num_delayed_assignments}
+                {/*<span title={'Completed late'} className='glyphicon glyphicon-time' />&nbsp;{this.props.student.counts.num_delayed_assignments}*/}
+                <FaClock title={'Completed late'} />&nbsp;{this.props.student.counts.num_delayed_assignments}*/}
               </span>
               <span className={'red-missed-box'}>
-                <span title={'Missed'} className='glyphicon glyphicon-remove' />&nbsp;{this.props.student.counts.num_missed_assignments}
+                {/*<span title={'Missed'} className='glyphicon glyphicon-remove' />&nbsp;{this.props.student.counts.num_missed_assignments}*/}
+                <FaTimes title={'Missed'} />&nbsp;{this.props.student.counts.num_missed_assignments}
               </span>
             </div>
           </Col>

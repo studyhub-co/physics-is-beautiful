@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import history from '../../history'
 import { BASE_URL } from '../../utils/config'
 import { push } from 'connected-react-router'
 
@@ -12,7 +11,8 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 import * as assignmentCreators from '../../actions/assignment'
 
-import { Container, Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { FaTimes, FaClock, FaChevronLeft, FaCog, FaCheck } from 'react-icons/fa'
+import { Container, Row, Col, Image, Dropdown, DropdownItem } from 'react-bootstrap'
 import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 class StudentClassroomProfileView extends React.Component {
@@ -57,22 +57,24 @@ class StudentClassroomProfileView extends React.Component {
               <a
                 className={'back-button'}
                 onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/students/')) }} >
-                <span
-                  className='glyphicon glyphicon-menu-left'
-                  style={{fontSize: 16}} />
+                {/*<span*/}
+                  {/*className='glyphicon glyphicon-menu-left'*/}
+                  {/*style={{fontSize: 16}} />*/}
+                <FaChevronLeft />
                 All students
               </a>
             </Col>
             <Col sm={6} md={6} className={'text-right'}>
               {this.props.classroomTeacher && !this.props.classroomTeacher.external_classroom ? <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
                 <Dropdown.Toggle className={'classroom-common-button'}>
-                  <Glyphicon glyph='cog' />&nbsp;
+                  {/*<Glyphicon glyph='cog' />&nbsp;*/}
+                  <FaCog />&nbsp;
                 Manage student
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <MenuItem eventKey='remove'>Remove from class</MenuItem>
-                  {/* <MenuItem eventKey='send'>Send reminder</MenuItem> */}
-                  {/* <MenuItem eventKey='edit'>Move student</MenuItem> */}
+                  <DropdownItem eventKey='remove'>Remove from class</DropdownItem>
+                  {/* <DropdownItem eventKey='send'>Send reminder</DropdownItem> */}
+                  {/* <DropdownItem eventKey='edit'>Move student</DropdownItem> */}
                 </Dropdown.Menu>
               </Dropdown> : null}
             </Col>
@@ -95,19 +97,23 @@ class StudentClassroomProfileView extends React.Component {
             <Col sm={3} md={3} className={'vcenter'}>
               <div className={'gray-text'}>
                 <span className={'green-completed-box'}>
-                  <span title={'Completed'} className='glyphicon glyphicon-ok'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}
-                  </span>
+                  <FaCheck title={'Completed'} /> &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}
+                  {/*<span title={'Completed'} className='glyphicon glyphicon-ok'>*/}
+                    {/*&nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}*/}
+                  {/*</span>*/}
                 </span>
                 <span className={'yellow-delayed-box'}>
-                  <span title={'Completed late'} className='glyphicon glyphicon-time'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
-                  </span>
+                  <FaClock title={'Completed late'} />
+                  &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
+                  {/*<span title={'Completed late'} className='glyphicon glyphicon-time'>*/}
+                    {/*&nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}*/}
+                  {/*</span>*/}
                 </span>
                 <span className={'red-missed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-remove'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_missed_assignments : ''}
-                  </span>
+                  {/*<span title={'Missed'} className='glyphicon glyphicon-remove'>*/}
+                  <FaTimes title={'Missed'} />
+                  &nbsp;{ this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_missed_assignments : '' }
+                  {/*</span>*/}
                 </span>
               </div>
             </Col>

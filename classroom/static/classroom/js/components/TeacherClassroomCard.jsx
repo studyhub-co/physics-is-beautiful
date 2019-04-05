@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { FaUser } from 'react-icons/fa'
 import { Image } from 'react-bootstrap'
 
 export class TeacherClassroomCard extends React.Component {
@@ -29,13 +30,19 @@ export class TeacherClassroomCard extends React.Component {
                     onClick={() => { this.props.onTitleClick(studentsProfileUrlMask + student.username) }}
                     title={student.display_name}
                     style={{width: '4rem'}}>
-                    <span
-                      className='glyphicon glyphicon-user'
+                    <FaUser
                       style={{
-                        fontSize: '3rem',
-                        lineHeight: '0',
-                        top: '1rem'}}
+                      fontSize: '3rem',
+                      lineHeight: '0',
+                      top: '1rem'}}
                     />
+                    {/*<span*/}
+                      {/*className='glyphicon glyphicon-user'*/}
+                      {/*style={{*/}
+                        {/*fontSize: '3rem',*/}
+                        {/*lineHeight: '0',*/}
+                        {/*top: '1rem'}}*/}
+                    {/*/>*/}
                   </span>}
               </span>
             }, this)}

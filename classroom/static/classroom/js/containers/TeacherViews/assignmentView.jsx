@@ -3,15 +3,15 @@ import PropTypes from 'prop-types'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
 import { push } from 'connected-react-router'
+import { Container, Row, Col, Image, Modal, Dropdown, DropdownItem } from 'react-bootstrap'
+import { FaChevronLeft, FaCog, FaCheck, FaClock, FaTimes } from 'react-icons/fa'
 
 import * as assignmentCreators from '../../actions/assignment'
 import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 
 import { AssignmentEdit } from '../index'
-import { Container, Row, Col, Image, Modal, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 import { TeacherAssigmentStudentRow } from '../../components/TeacherAssigmentStudentRow'
@@ -85,7 +85,8 @@ export class AssignmentView extends React.Component {
           <Row id='all-assignments'>
             <Col md={12} style={{padding: 0}}>
               <a className={'back-button'} onClick={() => { history.push(BASE_URL + 'teacher/' + this.props.match.params['uuid'] + '/') }} >
-                <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+                <FaChevronLeft />
                 All assignments
               </a>
             </Col>
@@ -108,13 +109,14 @@ export class AssignmentView extends React.Component {
             <Col md={3} className={'vcenter'}>
               <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings' >
                 <Dropdown.Toggle className={'classroom-common-button'} style={{marginTop: 0}}>
-                  <Glyphicon glyph='cog' />&nbsp;
+                  {/*<Glyphicon glyph='cog' />&nbsp;*/}
+                  <FaCog />&nbsp;
                   Manage assignment
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <MenuItem eventKey='delete'>Delete assignment</MenuItem>
-                  {/*<MenuItem eventKey='send'>Send reminder</MenuItem>*/}
-                  <MenuItem eventKey='edit'>Edit assignment</MenuItem>
+                  <DropdownItem eventKey='delete'>Delete assignment</DropdownItem>
+                  {/*<DropdownItem eventKey='send'>Send reminder</DropdownItem>*/}
+                  <DropdownItem eventKey='edit'>Edit assignment</DropdownItem>
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
@@ -123,7 +125,9 @@ export class AssignmentView extends React.Component {
         <Container fluid>
           <Row className={className}>
             <Col sm={1} md={1} style={{maxWidth: '35%'}}>
-              {this.props.assignment && this.props.assignment.lessons[0].image
+              {this.props.assignment &&
+              this.props.assignment.lessons.length > 0 &&
+              this.props.assignment.lessons[0].image
                 ? <Image
                   className={'pointer'}
                   width={'100%'}
@@ -141,17 +145,20 @@ export class AssignmentView extends React.Component {
             <Col sm={5} md={5} className={'text-right'}>
               <div className={'gray-text'}>
                 <span className={'green-completed-box'}>
-                  <span title={'Completed'} className='glyphicon glyphicon-ok' />
+                  {/*<span title={'Completed'} className='glyphicon glyphicon-ok' />*/}
+                  <FaCheck title={'Completed'} />
                   &nbsp;{this.props.assignment ? this.props.assignment.count_students_completed_assingment : null}
                 </span>
                 &nbsp;
                 <span className={'yellow-delayed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-time' />
+                  {/*<span title={'Missed'} className='glyphicon glyphicon-time' />*/}
+                  <FaClock title={'Missed'} />
                   &nbsp;{this.props.assignment ? this.props.assignment.count_students_delayed_assingment : null}
                 </span>
                 &nbsp;
                 <span className={'red-missed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-remove' />
+                  {/*<span title={'Missed'} className='glyphicon glyphicon-remove' />*/}
+                  <FaTimes title={'Missed'} />
                   &nbsp;{this.props.assignment ? this.props.assignment.count_students_missed_assingment : null}
                 </span>
               </div>

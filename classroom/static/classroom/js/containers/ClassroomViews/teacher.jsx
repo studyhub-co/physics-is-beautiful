@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Route } from 'react-router'
 import { push } from 'connected-react-router'
-import { FaChevronLeft } from 'react-icons/fa'
+import { FaChevronLeft, FaCheck, FaTimes, FaClock, FaPencilAlt } from 'react-icons/fa'
 import Clipboard from 'react-clipboard.js'
 import { Container, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
@@ -150,7 +150,8 @@ class TeacherClassroomView extends React.Component {
                       text={this.props.classroomTeacher.name} />
                   </span>
                   &nbsp;
-                  <span className='glyphicon glyphicon-pencil' />
+                  {/*<span className='glyphicon glyphicon-pencil' />*/}
+                  <FaPencilAlt />
                 </span>
               </Col>
             </Row>
@@ -301,9 +302,12 @@ class TeacherClassroomView extends React.Component {
                       Due on
                     </Col>
                     <Col sm={2} md={2} className={'vcenter'}>
-                      <span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' />
-                      <span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' />
-                      <span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' />
+                      {/*<span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' />*/}
+                      <FaCheck title={'Completed'} style={{padding: '0 1rem'}} />
+                      {/*<span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' />*/}
+                      <FaClock title={'Completed late'} style={{padding: '0 1rem'}} />
+                      {/*<span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' />*/}
+                      <FaTimes title={'Missed'} style={{padding: '0 1rem'}} />
                     </Col>
                     <Col sm={1} md={1} />
                   </Row>

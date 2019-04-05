@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Image} from 'react-bootstrap'
+import { FaTimes, FaClock, FaCheckCircle } from 'react-icons/fa'
+import { Row, Col, Image } from 'react-bootstrap'
 
 export class TeacherStudentAssignmentRow extends React.Component {
   render () {
@@ -66,19 +67,22 @@ export class TeacherStudentAssignmentRow extends React.Component {
           { this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'green-completed-box'}>
-                <span className='glyphicon glyphicon-ok-sign' />&nbsp;Completed
+                <FaCheckCircle /> &nbsp;Completed
+                {/*<span className='glyphicon glyphicon-ok-sign' />&nbsp;Completed*/}
               </span>
             </div> : null }
           { this.props.assignment.delayed_on && !this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'yellow-delayed-box'}>
-                <span className='glyphicon glyphicon-time' />&nbsp;Completed late
+                {/*<span className='glyphicon glyphicon-time' />&nbsp;Completed late*/}
+                <FaClock title={'Completed late'} />&nbsp;Completed late
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && !this.props.assignment.delayed_on && new Date(this.props.assignment.due_on) < new Date()
             ? <div className={textColorClassName}>
               <span className={'red-missed-box'}>
-                <span className='glyphicon glyphicon-remove' />&nbsp;Missed
+                {/*<span className='glyphicon glyphicon-remove' />&nbsp;Missed*/}
+                <FaTimes title={'Missed'} />&nbsp;Missed
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && new Date(this.props.assignment.due_on) > new Date()
