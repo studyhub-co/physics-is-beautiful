@@ -204,7 +204,8 @@ class TeacherIndexView extends React.Component {
       }
       <Route path={createUrl} exact component={CreateClassroomView} />
       <Route path={editUrl} exact component={CreateClassroomView} />
-      { endsWith(window.location.pathname, 'teacher/create')
+      { endsWith(window.location.pathname, 'teacher/create') ||
+        endsWith(window.location.pathname, '/edit/')
         ? null
         : <Route path={teacherUrl} component={TeacherClassroomView} />
       }

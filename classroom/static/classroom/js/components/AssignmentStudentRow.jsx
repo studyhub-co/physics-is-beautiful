@@ -147,7 +147,7 @@ class AssignmentStudentRow extends React.Component {
                       onClick={() => { this.onLessonClick(lesson) }} key={i}>
                       <div className={'thumbnail section-thumbnail'}>
                         <Image
-                          // fluid
+                          fluid
                           src={lesson.image}
                           // width={'80%'}
                           // rounded
