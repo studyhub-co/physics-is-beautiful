@@ -209,6 +209,11 @@ html, body {
     #ajaxDiv {
         margin-top: 10px;
     }
+    #backToDashboard{
+        position: relative;
+        width: 2rem;
+        margin-bottom: 1rem;
+    }
 }
 
 .navbar-brand {
