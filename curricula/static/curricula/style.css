@@ -141,6 +141,10 @@ html, body {
     padding-bottom: 10px;
 }
 
+.continue-container {
+    padding-bottom: 15px !important;
+}
+
 .progress{
     background: rgba(255, 255, 255, 1);
     border: 1px solid rgba(214, 214, 214, 1);
