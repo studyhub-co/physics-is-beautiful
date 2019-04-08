@@ -24,6 +24,7 @@ p.justify{
 .container{
     position:relative;
     width:85%;
+    max-width:85%;
     margin-top: 10px;
     border-radius: 15px;
     padding: 60px;
@@ -85,6 +86,7 @@ p.justify{
     .container {
         margin: 0;
         width: 100%;
+        max-width: 100%;
         padding:20px;
     }
     .blog-title{
