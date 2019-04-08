@@ -32,7 +32,7 @@ export class TeacherStudentCard extends React.Component {
               </span>
               <span className={'yellow-delayed-box'}>
                 {/*<span title={'Completed late'} className='glyphicon glyphicon-time' />&nbsp;{this.props.student.counts.num_delayed_assignments}*/}
-                <FaClock title={'Completed late'} />&nbsp;{this.props.student.counts.num_delayed_assignments}*/}
+                <FaClock title={'Completed late'} />&nbsp;{this.props.student.counts.num_delayed_assignments}
               </span>
               <span className={'red-missed-box'}>
                 {/*<span title={'Missed'} className='glyphicon glyphicon-remove' />&nbsp;{this.props.student.counts.num_missed_assignments}*/}
