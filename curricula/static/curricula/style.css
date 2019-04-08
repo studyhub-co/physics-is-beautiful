@@ -155,7 +155,7 @@ html, body {
     /*bottom: 0;*/
     float: left;
     font-family: Museosansrounded;
-    padding-bottom: 6px;
+    /*padding-bottom: 6px;*/
     width: 90vw;
     bottom: 4px;
 }
@@ -171,7 +171,7 @@ html, body {
         /*height: calc(100% - 60px);*/
 		width: 100%;
 		padding: 0px;
-		margin-top: -15px;
+		/*margin-top: -15px;*/
 	}
 	.section-sheet {
 		width: 99%;
@@ -184,6 +184,7 @@ html, body {
 		padding: 20px;
 		margin-top: -15px;
 	}
+
     /*Do not override boostrap grid! */
     /* */
     /*.curriculum	.col-md-1 {*/
@@ -464,7 +465,7 @@ img.grayed-out-img {
     /* max-width:300px; */
     padding-right: 21px;
     text-align: center;
-    font-size:18;
+    /*font-size:18;*/
     font-family: Museosansrounded;
     padding-left: 10px;
 }
