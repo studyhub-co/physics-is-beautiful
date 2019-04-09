@@ -31,9 +31,11 @@
         enable_page_level_ads: true
       });
     </script>
-    <title>Physics is Beautiful</title>
+    <title>Physics is Beautiful{% block extratitle %}{% endblock %}</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'curricula/images/favicon/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'curricula/navbar.css' %}" />
+    {# We need curricula/style.css because there are many navbar styles #}
+    <link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" />
 
     {% if request.GET.pib_mobile %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/pib-mobile.css' %}" />

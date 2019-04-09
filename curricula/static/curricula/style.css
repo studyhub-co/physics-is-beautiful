@@ -53,7 +53,13 @@
 }
 
 html, body {
-    background-color: #f1f1f1;
+    /* TODO !important needs to replace with theme.css of bootstrap */
+    background-color: #f1f1f1 !important;
+    /*
+    curricula/static/curricula/style.css used with templates of site so we need to set default font-size
+     */
+    font-family: "Museosansrounded", sans-serif !important;
+    font-size: 12px !important;
 }
 
 #backToDashboard {
@@ -71,8 +77,8 @@ html, body {
 
 .section-sheet {
     position: relative;
-    width: 80%;
-    max-width: 80%;
+    width: 80% !important;;
+    max-width: 80% !important;
     margin-top: 20px;
     border-radius: 20px;
     padding: 30px 60px;
