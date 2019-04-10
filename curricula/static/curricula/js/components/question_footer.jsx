@@ -82,7 +82,7 @@ export class Footer extends React.Component {
             <div id='checkMarks'>{checkMarks}</div>
             <div id='correctMessage'>{correctMessage}</div>
           </div>
-          <div className='col-md-6 text-center'>
+          <div className='col-md-6 text-center continue-container'>
             <div id='checkContainer'>
               <CheckContinueButton
                 checkAction={this.props.checkAction}
