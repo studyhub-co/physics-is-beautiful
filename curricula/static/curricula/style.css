@@ -77,8 +77,8 @@ html, body {
 
 .section-sheet {
     position: relative;
-    width: 80% !important;;
-    max-width: 80% !important;
+    width: 80%;
+    max-width: 80%;
     margin-top: 20px;
     border-radius: 20px;
     padding: 30px 60px;
@@ -88,6 +88,14 @@ html, body {
     margin-bottom: 20px;
     height: auto;
 }
+
+@media (min-width: 1200px) {
+    .section-sheet {
+      width: 80% !important;
+      max-width: 80% !important;
+    }
+}
+
 .section-sheet h1 {font-size: 100%;}
 
 .problem-sheet{
