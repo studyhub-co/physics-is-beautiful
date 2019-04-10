@@ -126,6 +126,11 @@
                 <ul class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
                 {# TODO : replace with render #}
                         {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <div id="notifications-inbox-app" class="notifications-inbox">
+                                    {% render_bundle 'notifications_inbox' %}
+                                </div>
+                            </li>
                             <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
                                 <a data-reactroot=""
                                    class="settings"

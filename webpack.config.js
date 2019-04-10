@@ -1,4 +1,4 @@
-var path = require("path")
+var path = require('path')
 var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
 
@@ -15,7 +15,8 @@ module.exports = function (env) {
       editor: './editor/static/editor/js/app',
       classroom: './classroom/static/classroom/js/index',
       resources: './resources/static/resources/js/index',
-      homepage: './homepage/static/homepage/js/index'
+      homepage: './homepage/static/homepage/js/index',
+      notifications_inbox: './notifications/static/notifications_inbox/js/index'
     },
 
     output: {
