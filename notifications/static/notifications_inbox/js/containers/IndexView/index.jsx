@@ -57,8 +57,6 @@ class IndexView extends React.Component {
 }
 
 IndexView.propTypes = {
-  // actions
-  // data
 }
 
 const mapStateToProps = (state) => {
@@ -69,8 +67,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatch,
-    // resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+    dispatch
   }
 }
 

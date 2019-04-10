@@ -81,7 +81,7 @@ html, body {
     max-width: 80%;
     margin-top: 20px;
     border-radius: 20px;
-    padding: 30px 60px;
+    padding: 30px 60px !important;
     height: 80%;
     background-color: white;
     box-shadow: 0 0 5px #d8d8d8;
