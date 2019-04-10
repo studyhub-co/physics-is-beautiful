@@ -233,6 +233,7 @@ html, body {
 
 .navbar-brand {
     transition: filter .5s;
+    margin-top: 0.5rem;
 }
 
 .navbar-brand:hover {
@@ -808,6 +809,8 @@ img.grayed-out-img {
 #navTopOfScreen {
     margin: 0;
     border: none;
+    padding-bottom: 0;
+    padding-top: 0;
 }
 
 .homepage-wrapper {
