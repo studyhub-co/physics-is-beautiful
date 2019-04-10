@@ -35,7 +35,7 @@ class NotificationsListView extends React.Component {
 
   render () {
     return (
-      <Container fluid style={{width: '30rem'}}>
+      <Container style={{width: '30rem', maxWidth: '100vw'}}>
         <Row>
           <Col sm={12} md={12}>
             { this.props.notifications
@@ -57,7 +57,7 @@ class NotificationsListView extends React.Component {
                       : null
                     }
                     { notification['target'] && notification['target']['content_type'] === 'badge'
-                      ? <span>&nbsp; {notification['target'].title}</span>
+                      ? <span>&nbsp; {notification['target'].title} badge</span>
                       : null
                     }
                     <hr />
