@@ -196,7 +196,7 @@ html, body {
 	.game-sheet {
 		width: 99%;
 		padding: 20px;
-		margin-top: -15px;
+		/*margin-top: -15px;*/
 	}
 
     /*Do not override boostrap grid! */
