@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import permissions, status, mixins, filters
+from rest_framework import permissions, mixins
 from rest_framework.pagination import PageNumberPagination
 
 from .permissions import EditDeleteByOwnerOrStaff
@@ -7,6 +7,7 @@ from .models import Thread, Post
 from .serializers import ThreadSerializer, PostSerializer
 
 from notifications.signals import notify
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10  # TODO get it from the project settings

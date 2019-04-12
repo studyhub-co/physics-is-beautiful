@@ -42,13 +42,13 @@ class NotificationsListView extends React.Component {
               ? <div>
                 { this.props.notifications['results'].map(function (notification, i) {
                   return <div key={notification.id}>
-                    {notification['timesince']}
-                    &nbsp;
-                    ago
-                    &nbsp;
+                    {/*{notification['timesince']}*/}
+                    {/*&nbsp;*/}
+                    {/*ago*/}
+                    {/*&nbsp;*/}
                     {notification['recipient'].id !== notification['actor'].id
                       ? <span>{notification['actor'].display_name}</span>
-                      : <span>you've</span>
+                      : <span>You've</span>
                     }
                     &nbsp;
                     <span>{notification['verb']}</span>
