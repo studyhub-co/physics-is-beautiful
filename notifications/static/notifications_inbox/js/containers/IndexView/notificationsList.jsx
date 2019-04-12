@@ -40,6 +40,7 @@ class NotificationsListView extends React.Component {
           <Col sm={12} md={12}>
             { this.props.notifications
               ? <div>
+                { this.props.notifications['results'].length === 0 ? <span>No unseen notifications<hr /></span> : null }
                 { this.props.notifications['results'].map(function (notification, i) {
                   return <div key={notification.id}>
                     {/*{notification['timesince']}*/}
