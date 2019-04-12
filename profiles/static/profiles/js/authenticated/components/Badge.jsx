@@ -12,7 +12,7 @@ export default class Badge extends React.Component {
           style={{cursor: 'pointer'}}
           onClick={() => { history.push(this.props.badge.url) }} // TODO add badge histroty page
           title={this.props.badge.description}
-          className={'badge badge-dark'}>
+          className={'badge badge-dark profile-badge'}>
           <span className={'badge-dot badge-dot-color-' + this.props.badge.level} />
           {this.props.badge.title}</span>
         {this.props.badge.count > 1

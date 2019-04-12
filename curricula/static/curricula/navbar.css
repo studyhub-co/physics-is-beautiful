@@ -78,7 +78,7 @@
     transition: background 1s;
     border-radius: 98px;
     padding: 8px;
-    margin-top: 8px;
+    /*margin-top: 8px;*/
 }
 
 .nav.navbar-nav.nav-pills p {

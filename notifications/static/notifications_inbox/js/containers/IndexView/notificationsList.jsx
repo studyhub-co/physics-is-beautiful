@@ -29,7 +29,7 @@ class NotificationsListView extends React.Component {
 
     if (!this.props.notifications) {
       // load notifications list
-      this.props.notificationsActions.fetchNotifications()
+      this.props.notificationsActions.fetchNotifications(null, {'filter': 'unread'})
     }
   }
 
@@ -60,6 +60,10 @@ class NotificationsListView extends React.Component {
                       ? <span>&nbsp; {notification['target'].title} badge</span>
                       : null
                     }
+                    {/*&nbsp;*/}
+                    {/*{notification['timesince']}*/}
+                    {/*&nbsp;*/}
+                    {/*ago*/}
                     <hr />
                   </div>
                 }) }
@@ -74,7 +78,8 @@ class NotificationsListView extends React.Component {
                 <RingLoader
                   color={'#1caff6'}
                   loading={Boolean(true)}
-                />
+                >
+                </RingLoader>
               </div>
             }
           </Col>
@@ -92,7 +97,7 @@ NotificationsListView.propTypes = {
     fetchProfileMe: PropTypes.func.isRequired
   }),
   notifications: PropTypes.object,
-  profile: PropTypes.object,
+  profile: PropTypes.object
 }
 
 const mapStateToProps = (state) => {

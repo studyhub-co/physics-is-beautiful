@@ -6,9 +6,9 @@ import PropTypes from 'prop-types'
 class App extends React.Component {
   render () {
     return (
-      <div className='app'>
+      <span className='app'>
         {this.props.children}
-      </div>
+      </span>
     )
   }
 }

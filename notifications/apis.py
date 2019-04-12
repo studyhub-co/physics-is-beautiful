@@ -65,3 +65,10 @@ class NotificationViewSet(mixins.ListModelMixin,
         notification.mark_as_unread()
 
         return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(methods=['GET'],
+            detail=False,
+            permission_classes=[permissions.IsAuthenticated, AccessByOwnerOrStaff], )
+    def unread_count(self, request):
+        unread_count = self.get_queryset().unread().count()
+        return Response({'count': unread_count})

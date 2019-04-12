@@ -104,48 +104,55 @@
             <div id="pib-navbar" class="navbar-collapse collapse">
                  <ul class="nav navbar-nav nav-pills mr-auto mt-2 mt-lg-0">
                     <li class="nav-item{% current_url_starts_with 'main_curricula:curriculum' %}">
-                        <a href="{% url 'main_curricula:curriculum' %}">Home</a>
+                        <a class="nav-link" href="{% url 'main_curricula:curriculum' %}">Home</a>
                     </li>
                  <li class="nav-item{% current_url_starts_with 'discussion' %}">
-                    <a
+                    <a class="nav-link"
                        href="{% url 'discussion' %}">Discussion</a>
                  </li>
                  <li class="nav-item{% current_url_starts_with 'studio:editor' 'browse:editor' 'curriculum_profile:editor' %}">
-                    <a href="{% url 'browse:editor' %}">Courses</a>
+                    <a class="nav-link" href="{% url 'browse:editor' %}">Courses</a>
                  </li>
                  <li class="nav-item{% current_url_starts_with 'classroom' %}">
-                    <a href="{% url 'classroom' %}">Classroom</a>
+                    <a class="nav-link" href="{% url 'classroom' %}">Classroom</a>
                  </li>
                  <li class="nav-item{% current_url_starts_with 'blog:bloghomepage' %}">
-                    <a href="{% url 'blog:bloghomepage' %}">Blog</a>
+                    <a class="nav-link" href="{% url 'blog:bloghomepage' %}">Blog</a>
                  </li>
                  <li class="nav-item{% current_url_starts_with 'resources' %}" >
-                    <a href="{% url 'resources' %}">Resources</a>
+                    <a  class="nav-link" href="{% url 'resources' %}">Resources</a>
                  </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
                 {# TODO : replace with render #}
                         {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <div id="notifications-inbox-app" class="notifications-inbox">
-                                    {% render_bundle 'notifications_inbox' %}
-                                </div>
-                            </li>
                             <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
                                 <a data-reactroot=""
-                                   class="settings"
-                                   href="{% url 'user-profile' user.id %}">{{user.first_name}} {{user.last_name}}</a>
+                                   class="settings nav-link"
+                                   href="{% url 'user-profile' user.id %}">
+                                   <img src="{{ user.profile.get_avatar_url }}"
+                                        style='padding-right: 1rem; height: 2rem; width: 3rem;'
+                                        class="d-inline-block align-top"
+                                        alt="">{{user.first_name}} {{user.last_name}}
+                                </a>
+
+                            </li>
+                            <li class="nav-item">
+                                <a id="notifications-inbox-app"
+                                   class="notifications-inbox nav-link">
+                                    {% render_bundle 'notifications_inbox' %}
+                                </a>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a id="react-profile-modal" data-reactroot="">
+                                <a id="react-profile-modal" class="nav-link" data-reactroot="">
                                     {% render_bundle 'profile_anonymous' %}
                                 </a>
                             </li>
                         {% endif %}
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a id="logout-action" href="#">Logout</a>
+                            <a id="logout-action" class="nav-link" href="#">Logout</a>
                         </li>
                     {% else %}
                         <li class="nav-item">

@@ -5,8 +5,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { FaInbox } from 'react-icons/fa'
+import Badge from 'react-bootstrap/Badge'
 
 import NotificationsListView from './notificationsList'
+import * as notificationsCreators from '../../actions/notifications'
 
 class CustomToggle extends React.Component {
   constructor (props, context) {
@@ -21,9 +23,17 @@ class CustomToggle extends React.Component {
   }
 
   render () {
+    let unReadCount = null
+    if (this.props.unReadCount && this.props.unReadCount['count']) {
+      if (this.props.unReadCount['count'] > 99) {
+        unReadCount = '99+'
+      } else {
+        unReadCount = '' + this.props.unReadCount['count']
+      }
+    }
+
     return (
-      <a
-        href=''
+      <span
         onClick={this.handleClick}
         style={{
           padding: '1rem',
@@ -32,20 +42,31 @@ class CustomToggle extends React.Component {
         <FaInbox
           title={''}
           style={{fontSize: '2rem'}} />
-      </a>
+        { unReadCount
+          ? <Badge
+            variant='danger'
+            style={{left: '2rem', position: 'absolute'}}
+          >{unReadCount}</Badge>
+          : null }
+      </span>
     )
   }
 }
 
 CustomToggle.propTypes = {
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  unReadCount: PropTypes.object
 }
 
 class IndexView extends React.Component {
+  componentWillMount () {
+    this.props.notificationsActions.fetchUnReadCount()
+  }
+
   render () {
     return (
       <Dropdown>
-        <Dropdown.Toggle as={CustomToggle} id='dropdown-custom-components'>
+        <Dropdown.Toggle unReadCount={this.props.unReadCount} as={CustomToggle} id='dropdown-custom-components'>
         Custom toggle
         </Dropdown.Toggle>
         <Dropdown.Menu alignRight>
@@ -57,17 +78,22 @@ class IndexView extends React.Component {
 }
 
 IndexView.propTypes = {
+  notificationsActions: PropTypes.shape({
+    fetchUnReadCount: PropTypes.func.isRequired
+  }).isRequired,
+  unReadCount: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
-    // newResourcesList: state.resources.newResourcesList
+    unReadCount: state.notifications.unReadCount
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatch
+    dispatch,
+    notificationsActions: bindActionCreators(notificationsCreators, dispatch)
   }
 }
 

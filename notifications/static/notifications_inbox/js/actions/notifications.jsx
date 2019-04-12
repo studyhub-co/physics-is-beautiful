@@ -1,6 +1,8 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_NOTIFICATIONS_PREFIX } from '../utils/config'
-import { NOTIFICATIONS_RECEIVE_NOTIFICATIONS, NOTIFICATIONS_SET_CANCEL_SOURCE } from '../constants'
+import {
+  NOTIFICATIONS_RECEIVE_NOTIFICATIONS, NOTIFICATIONS_SET_CANCEL_SOURCE, NOTIFICATIONS_RECEIVE_UNREAD_COUNT
+} from '../constants'
 
 import { dictToURI } from '../utils/urls'
 
@@ -18,6 +20,15 @@ export function setCancelSource (cancelSource) {
     type: NOTIFICATIONS_SET_CANCEL_SOURCE,
     payload: {
       cancelSource
+    }
+  }
+}
+
+export function receiveUnreadCount (unReadCount) {
+  return {
+    type: NOTIFICATIONS_RECEIVE_UNREAD_COUNT,
+    payload: {
+      unReadCount
     }
   }
 }
@@ -66,6 +77,17 @@ export function markAsRead (notification, markState) {
       .post(API_NOTIFICATIONS_PREFIX + notification.id + '/mark_as_' + markState + '/')
       .then(checkHttpStatus)
       .then((response) => {
+      })
+  }
+}
+
+export function fetchUnReadCount () {
+  return (dispatch, state) => {
+    return getAxios()
+      .get(API_NOTIFICATIONS_PREFIX + 'unread_count/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveUnreadCount(response.data))
       })
   }
 }
