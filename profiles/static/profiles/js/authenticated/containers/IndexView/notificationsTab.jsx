@@ -130,20 +130,25 @@ class NotificationsTabView extends React.Component {
         items.push(
           <Row key={currentItem.id}>
             <Col sm={2} md={2}>
+            {/*<Col sm={2} md={2}>*/}
               {/*<Moment fromNow>*/}
               {currentItem['timesince']}
               {/*</Moment>*/}
+            {/*</Col>*/}
+            {/*<Col sm={2} md={2}>*/}
             </Col>
-            <Col sm={2} md={2}>
+            <Col sm={8} md={8}>
               {currentItem['recipient'].id !== currentItem['actor'].id
                 ? <Profile profile={currentItem['actor']} />
                 : <span>You've</span>
               }
-            </Col>
-            <Col sm={3} md={3}>
+            {/*</Col>*/}
+            {/*<Col sm={3} md={3}>*/}
+            &nbsp;
               <span>{currentItem['verb']}</span>
-            </Col>
-            <Col sm={3} md={3}>
+            &nbsp;
+            {/*</Col>*/}
+            {/*<Col sm={3} md={3}>*/}
               { currentItem['target'] && currentItem['target']['content_type'] === 'thread'
                 ? <Thread thread={currentItem['target']} />
                 : null
@@ -153,7 +158,7 @@ class NotificationsTabView extends React.Component {
                 : null
               }
             </Col>
-            <Col sm={1} md={1}>
+            <Col sm={2} md={2}>
               <FaCheck
                 onClick={getMarkAsFunc(currentItem.id)}
                 title={'Mark as ' + markAsTitle}
