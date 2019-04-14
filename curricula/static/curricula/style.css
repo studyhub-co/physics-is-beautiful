@@ -96,8 +96,6 @@ html, body {
     }
 }
 
-.section-sheet h1 {font-size: 100%;}
-
 .problem-sheet{
     padding: 0 !important;
     position:relative;
@@ -109,7 +107,6 @@ html, body {
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
 }
-.problem-sheet h1 {font-size: 120%;}
 
 .game-sheet {
     position: relative;
@@ -123,7 +120,6 @@ html, body {
     margin-bottom: 60px;
     height: auto;
 }
-.section-sheet h1 {font-size: 100%;}
 
 .bounding-box{
     border-radius: 25px;
@@ -168,7 +164,7 @@ html, body {
     height: 12px;
 }
 .progress-bottom-container{
-    position: absolute;   
+    position: absolute;
     display: inline-block;
     /*bottom: 0;*/
     float: left;
@@ -225,9 +221,7 @@ html, body {
     .curriculum-display-wrap {
         padding-top: 10px;
     }
-    #ajaxDiv {
-        margin-top: 10px;
-    }
+
     #backToDashboard{
         position: relative;
         width: 2rem;

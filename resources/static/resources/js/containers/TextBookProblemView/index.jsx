@@ -14,6 +14,7 @@ import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
 import { slugify } from '../../utils/urls'
 import { Thread } from '../../components/reactDjeddit/thread'
+import { AdblockDetect } from '../../utils/adblockDetect'
 
 import {
   handleFileChange,
@@ -236,6 +237,7 @@ class TextBookProblemView extends React.Component {
 
     return (
       <Sheet>
+        <AdblockDetect>You are using adblock</AdblockDetect>
         <Container fluid>
           <Row>
             <Col sm={12} md={12}>

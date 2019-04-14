@@ -22,6 +22,7 @@
     border: 1px solid white;
     border-radius: 7px;
     cursor: pointer;
+    font-size: 1.25em;
 }
 
 .resources .problem-row:hover {
@@ -274,7 +275,7 @@ div.pdf-ico {
         padding-right: 0;
     }
     .resources .problem-row {
-        font-size: 24px;
+        font-size: 2em;
     }
     .resources .blue-title {
         font-size: 30px;
@@ -294,4 +295,3 @@ div.pdf-ico {
 .slick-next:before, .slick-prev:before {
     color: #000 !important;
 }
-

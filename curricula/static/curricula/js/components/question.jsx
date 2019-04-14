@@ -270,7 +270,10 @@ export class Question extends React.Component {
         <div className='row'>
           <div className='col-md-6 text-center'>
             <div className='bounding-box'>
-              <h1 id='ajaxDiv' dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
+              <p
+                style={{marginTop: 10, fontSize: 16}}
+                dangerouslySetInnerHTML={createMarkup(this.props.question.text)}
+              />
               {hint}
               {image}
               {vector}

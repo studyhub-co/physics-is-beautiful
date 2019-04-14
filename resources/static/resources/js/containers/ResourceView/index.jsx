@@ -10,6 +10,7 @@ import { Sheet } from '../../components/Sheet'
 import history from '../../history'
 import { BASE_URL } from '../../utils/config'
 import * as resourcesCreators from '../../actions/resources'
+import { AdblockDetect } from '../../utils/adblockDetect'
 
 import TextBookResourceView from './textBookResourceView'
 
@@ -23,6 +24,7 @@ class ResourceView extends React.Component {
   render () {
     return (
       <Sheet>
+        <AdblockDetect />
         <Container fluid>
           <Row>
             <Col sm={12} md={12}>
