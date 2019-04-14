@@ -86,7 +86,7 @@ html, body {
 .problem-sheet{
     padding: 0 !important;
     position:relative;
-    min-width: 80vw;
+    /* min-width: 80vw; */
     margin-top: 1%;
     margin-bottom: 80px;
     border-radius: 25px;
@@ -258,6 +258,7 @@ html, body {
 }
 
 .question-thumbnail > img {
+    max-width: 100%;
     display: block;
     max-height: 43vh;
 }
