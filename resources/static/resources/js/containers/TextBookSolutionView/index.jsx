@@ -212,9 +212,10 @@ class TextBookSolutionView extends React.Component {
 
   onDocumentComplete (pages) {
     this.setState({ currentPdfpage: 1, pdfPages: pages })
-    if (window.innerWidth < 595) {
-      this.setState({pdfScale: window.innerWidth / 1000})
-    }
+    // if (window.innerWidth < 595) {
+    //   this.setState({pdfScale: window.innerWidth / 1000})
+    // } else {
+    // }
   }
 
   handlePrevious () {
