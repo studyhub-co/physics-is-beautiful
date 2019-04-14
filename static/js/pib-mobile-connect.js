@@ -108,6 +108,8 @@ window.updateCanGoBack = function (canGoBack) {
   }
 }
 
+window.IS_IOS = navigator.platform.match(/iPhone|iPod|iPad/)
+
 // All credit to https://stackoverflow.com/a/11654596/
 function UpdateQueryString (key, value, url) {
   if (!url) url = window.location.href

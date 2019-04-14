@@ -36,7 +36,10 @@ class LessonComplete extends React.Component {
 class LessonCompleteSheet extends React.Component {
   render () {
     return (
-      <div className='container problem-sheet' style={window.IS_MOBILE_APP ? {top: '2rem'} : {top: '0px'}}>
+      <div className='container problem-sheet' style={{
+        top: window.IS_MOBILE_APP ? '2rem' : '0px',
+        minWidth: window.IS_IOS ? 'auto' : '80vw'}
+      }>
         <LessonComplete lesson={this.props.question.lesson} />
         {/* <div></div> */}
       </div>

@@ -70,7 +70,7 @@ export class Footer extends React.Component {
 
     return (
       <div id='footer' style={{backgroundColor: backgroundColor,
-        position: (navigator.platform.match(/iPhone|iPod|iPad/) && window.IS_MOBILE_APP) ? 'relative' : 'fixed'}}>
+        position: (window.IS_IOS && window.IS_MOBILE_APP) ? 'relative' : 'fixed'}}>
         <div className='row'>
           <div className='col-md-6 text-center' style={{
             minHeight: (checkMarks ? '50px' : '1px'),
