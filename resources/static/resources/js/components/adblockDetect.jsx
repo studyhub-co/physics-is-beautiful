@@ -6,7 +6,8 @@ export class AdblockDetect extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      usingAdblock: false
+      usingAdblock: false,
+      path: window.location.pathname
     }
   }
 
@@ -16,7 +17,7 @@ export class AdblockDetect extends React.Component {
 
   render () {
     if (this.state.usingAdblock === true) {
-      history.push(BASE_URL + 'adblock/')
+      history.push(BASE_URL + 'adblock/', { prevPath: this.state.path })
     }
 
     return (
