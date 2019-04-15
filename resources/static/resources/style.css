@@ -278,13 +278,13 @@ div.pdf-ico {
         font-size: 2em;
     }
     .resources .blue-title {
-        font-size: 30px;
-    }
-    .resources .blue-title {
-        font-size: 30px;
+        font-size: 2.25em;
     }
     .navbar.navbar-default a {
         margin-left: 15px
+    }
+    .resources .textbook-title {
+        font-size: 2.25rem;
     }
 }
 

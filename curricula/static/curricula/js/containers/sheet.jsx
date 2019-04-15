@@ -5,6 +5,7 @@ import { FaChevronLeft } from 'react-icons/fa'
 import {Section} from '../navigation'
 import {Question} from '../components/question'
 import {Footer} from '../components/question_footer'
+import {Col, Container, Row} from 'react-bootstrap'
 
 /* global playAudio */
 
@@ -122,13 +123,19 @@ class QuestionSheet extends React.Component {
 
 export class SectionSheet extends React.Component {
   render () {
-    var backLink = ''
+    let backLink = ''
     if (this.props.backLink) {
       backLink = (
-        <Link id='backToDashboard' to={this.props.backLink} replace={false} type='button' className='btn btn-default btn-sm'>
-          {/*<span className='glyphicon glyphicon-chevron-left' style={{color: '#888'}} />*/}
-          <FaChevronLeft style={{color: '#888'}} />
-        </Link>
+        <Container fluid>
+          <Row>
+            <Col sm={12} md={12}>
+              <a className={'back-button'} href={this.props.backLink} >
+                <FaChevronLeft />
+                Course home
+              </a>
+            </Col>
+          </Row>
+        </Container>
       )
     }
     var sections = []

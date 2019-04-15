@@ -28,6 +28,7 @@ import { BASE_URL } from '../../utils/config'
 import * as googleCreators from '../../actions/google'
 import AdSense from 'react-adsense'
 import { slugify } from '../../utils/urls'
+import {AdblockDetect} from '../../components/adblockDetect'
 
 class TextBookSolutionView extends React.Component {
   constructor (props) {
@@ -351,6 +352,7 @@ class TextBookSolutionView extends React.Component {
 
     return (
       <Sheet>
+        <AdblockDetect />
         <Container fluid>
           <Row>
             <Col sm={12} md={12}>
