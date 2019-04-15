@@ -1,6 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import { FaExclamationCircle, FaLock, FaCheck } from 'react-icons/fa'
+import { Container, Row, Col } from 'react-bootstrap'
 
 class LockedItem extends React.Component {
   render () {
@@ -82,12 +83,16 @@ export class Section extends React.Component {
       items.push(<Item key={el.uuid} item={el} />)
     })
     return (
-      <div>
-        <div className='section-title'><h4>{this.props.name}</h4></div>
-        <div className='row'>
+      <Container>
+        <Row>
+          <Col className='section-title'>
+            <h2>{this.props.name}</h2>
+          </Col>
+        </Row>
+        <Row>
           {items}
-        </div>
-      </div>
+        </Row>
+      </Container>
     )
   }
 }

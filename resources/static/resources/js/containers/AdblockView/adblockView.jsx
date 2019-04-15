@@ -17,7 +17,7 @@ class AdblockView extends React.Component {
                   <br/>
                   We can make the resources free only by serving some ads, is that fair?
                   <br/>
-                  If so, please set your adblocker to "Don't run on pages on this site."
+                  If so, please set your adblocker to <b>"Don't run on pages on this site."</b>
                   <br/>
                   Please let us know in the comments if you feel we have too many ads. We're trying to find the sweet spot.
                 </p>

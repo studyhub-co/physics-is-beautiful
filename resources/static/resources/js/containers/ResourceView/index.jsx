@@ -10,7 +10,7 @@ import { Sheet } from '../../components/Sheet'
 import history from '../../history'
 import { BASE_URL } from '../../utils/config'
 import * as resourcesCreators from '../../actions/resources'
-import { AdblockDetect } from '../../utils/adblockDetect'
+import { AdblockDetect } from '../../components/adblockDetect'
 
 import TextBookResourceView from './textBookResourceView'
 
