@@ -336,6 +336,7 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
                         title = '{}'.format('Unknown resource')
 
                     new_thread = Thread.objects.create(title=title[:199], topic=resource_topic, op=resource_post)
+                    instance.thread = new_thread
 
         # refresh user last date access
         if request.user.is_authenticated:

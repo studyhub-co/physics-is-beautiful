@@ -183,7 +183,10 @@ class Post(MPTTModel, NamedModel):
         post = self
         while post.parent:
             post = post.parent
-        return Thread.objects.get(op=post)
+            try:
+                return Thread.objects.get(op=post)
+            except Thread.DoesNotExist:
+                return None
 
     @property
     def score(self):
