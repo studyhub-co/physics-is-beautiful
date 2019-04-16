@@ -47,9 +47,7 @@ class TextBookSolutionView extends React.Component {
     this.onDocumentComplete = this.onDocumentComplete.bind(this)
     this.handleChangeNumberOfPdfPage = this.handleChangeNumberOfPdfPage.bind(this)
     this.onZoomPdfClick = this.onZoomPdfClick.bind(this)
-    // this.onSubmitPost = this.onSubmitPost.bind(this)
-    // this.onEditPost = this.onEditPost.bind(this)
-    // this.onDeletePost = this.onDeletePost.bind(this)
+    this.onScaleUpdated = this.onScaleUpdated.bind(this)
 
     // !=== part of google proxy pdf viewer
     // this.loadExternalGooglePdf = this.loadExternalGooglePdf.bind(this)
@@ -236,6 +234,10 @@ class TextBookSolutionView extends React.Component {
 
   onZoomPdfClick (val) {
     this.setState({ pdfScale: this.state.pdfScale + val })
+  }
+
+  onScaleUpdated (scale) {
+    this.setState({pdfScale: scale})
   }
 
   handleChangeNumberOfPdfPageInputKeyUp (e) {
@@ -471,6 +473,7 @@ class TextBookSolutionView extends React.Component {
                       onDocumentComplete={this.onDocumentComplete}
                       page={this.state.currentPdfpage}
                       scale={this.state.pdfScale}
+                      onScaleUpdated={this.onScaleUpdated}
                     /> : null }
                 </div>
               </Col>
