@@ -37,7 +37,9 @@ class TextBookSolutionView extends React.Component {
       pdfScale: 1,
       externalPdfUrlFile: null,
       pdfPages: 0,
-      currentPdfPage: 0
+      currentPdfPage: 0,
+      zoomInButtonDisabled: false,
+      zoomOutButtonDisabled: false
     }
 
     this.titleSet = false
@@ -195,13 +197,6 @@ class TextBookSolutionView extends React.Component {
                 slugify(problemTitle) + '/solutions/' +
                 slugify(this.props.problem.solutions[x - 1].title) + '/' + this.props.problem.solutions[x - 1].uuid + '/'
               )
-
-            //   history.push(BASE_URL +
-            //     this.props.resource.uuid +
-            //     '/problems/' +
-            //     this.props.problem.uuid +
-            //     '/solutions/' +
-            //     this.props.problem.solutions[x - 1].uuid)
             }
           }
         }
@@ -233,11 +228,11 @@ class TextBookSolutionView extends React.Component {
   }
 
   onZoomPdfClick (val) {
-    this.setState({ pdfScale: this.state.pdfScale + val })
+    this.setState({ pdfScale: this.state.pdfScale + val, zoomInButtonDisabled: false, zoomOutButtonDisabled: false })
   }
 
-  onScaleUpdated (scale) {
-    this.setState({pdfScale: scale})
+  onScaleUpdated (scale, zoomInButtonDisabled, zoomOutButtonDisabled) {
+    this.setState({ pdfScale: scale, zoomInButtonDisabled, zoomOutButtonDisabled })
   }
 
   handleChangeNumberOfPdfPageInputKeyUp (e) {
@@ -289,12 +284,19 @@ class TextBookSolutionView extends React.Component {
               </InputGroup.Text>
             </InputGroup>
             &nbsp;{nextButton}
-            &nbsp;<Button onClick={() => { this.onZoomPdfClick(0.3) }} className={'common-button'}>
-              {/*<Glyphicon glyph='plus' />*/}
+            &nbsp;
+            <Button
+              onClick={() => { this.onZoomPdfClick(0.3) }}
+              className={'common-button' + (this.state.zoomInButtonDisabled ? ' disabled-button' : '')}
+              disabled={this.state.zoomInButtonDisabled}>
               <FaPlus />
             </Button>
-            &nbsp;<Button onClick={() => { this.onZoomPdfClick(-0.3) }} className={'common-button'}>
-              {/*<Glyphicon glyph='minus' />*/}
+            &nbsp;
+            <Button
+              onClick={() => { this.onZoomPdfClick(-0.3) }}
+              className={'common-button' + (this.state.zoomOutButtonDisabled ? ' disabled-button' : '')}
+              disabled={this.state.zoomOutButtonDisabled}
+            >
               <FaMinus />
             </Button>
           </FormGroup>
