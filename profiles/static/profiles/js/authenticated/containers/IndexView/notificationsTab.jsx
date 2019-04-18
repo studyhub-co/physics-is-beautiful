@@ -26,6 +26,7 @@ import * as notificationsCreators from '../../actions/notifications'
 import Profile from '../../components/NotificationsDeserializers/profile'
 import Thread from '../../components/NotificationsDeserializers/thread'
 import Badge from '../../components/NotificationsDeserializers/badge'
+import Lesson from '../../components/NotificationsDeserializers/lesson'
 
 class NotificationsTabView extends React.Component {
   constructor (props) {
@@ -109,6 +110,29 @@ class NotificationsTabView extends React.Component {
     }
   }
 
+  getNotificationStringFromOjbect (notification, type) {
+    return <span>
+      { notification[type] && notification[type]['content_type'] === 'thread'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Thread thread={notification[type]} />&nbsp;
+        </span>
+        : null
+      }
+      { notification[type] && notification[type]['content_type'] === 'badge'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Badge badge={notification[type]} user={notification['recipient']} />&nbsp;
+        </span>
+        : null
+      }
+      { notification[type] && notification[type]['content_type'] === 'lesson'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Lesson lesson={notification[type]} />&nbsp;
+        </span>
+        : null
+      }
+    </span>
+  }
+
   render () {
     var items = []
     var markAsTitle = 'read'
@@ -118,7 +142,7 @@ class NotificationsTabView extends React.Component {
 
     if (this.props.notifications) {
       for (var i = 0; i < this.state.notifications.length; i++) {
-        var currentItem = this.state.notifications[i]
+        var notification = this.state.notifications[i]
         let that = this
 
         let getMarkAsFunc = function (id) {
@@ -127,40 +151,45 @@ class NotificationsTabView extends React.Component {
           }
         }
 
+        var actionString = this.getNotificationStringFromOjbect(notification, 'action_object')
+        var targetString = this.getNotificationStringFromOjbect(notification, 'target')
+
         items.push(
-          <Row key={currentItem.id}>
+          <Row key={notification.id}>
             <Col sm={2} md={2}>
             {/*<Col sm={2} md={2}>*/}
               {/*<Moment fromNow>*/}
-              {currentItem['timesince']}
+              {notification['timesince']}
               {/*</Moment>*/}
             {/*</Col>*/}
             {/*<Col sm={2} md={2}>*/}
             </Col>
             <Col sm={8} md={8}>
-              {currentItem['recipient'].id !== currentItem['actor'].id
-                ? <Profile profile={currentItem['actor']} />
+              {notification['recipient'].id !== notification['actor'].id
+                ? <Profile profile={notification['actor']} />
                 : <span>You've</span>
               }
             {/*</Col>*/}
             {/*<Col sm={3} md={3}>*/}
             &nbsp;
-              <span>{currentItem['verb']}</span>
+              <span>{notification['verb']}</span>
             &nbsp;
             {/*</Col>*/}
             {/*<Col sm={3} md={3}>*/}
-              { currentItem['target'] && currentItem['target']['content_type'] === 'thread'
-                ? <Thread thread={currentItem['target']} />
-                : null
-              }
-              { currentItem['target'] && currentItem['target']['content_type'] === 'badge'
-                ? <Badge badge={currentItem['target']} user={currentItem['recipient']} />
-                : null
-              }
+              { actionString }
+              { targetString }
+              {/*{ notification[type] && notification[type]['content_type'] === 'thread'*/}
+                {/*? <Thread thread={notification[type]} />*/}
+                {/*: null*/}
+              {/*}*/}
+              {/*{ notification[type] && notification[type]['content_type'] === 'badge'*/}
+                {/*? <Badge badge={notification[type]} user={notification['recipient']} />*/}
+                {/*: null*/}
+              {/*}*/}
             </Col>
             <Col sm={2} md={2}>
               <FaCheck
-                onClick={getMarkAsFunc(currentItem.id)}
+                onClick={getMarkAsFunc(notification.id)}
                 title={'Mark as ' + markAsTitle}
                 style={{fontSize: '1.5rem', cursor: 'pointer'}} />
             </Col>

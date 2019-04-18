@@ -112,7 +112,8 @@ class Thread(NamedModel):
     # topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     topic = models.ForeignKey(Topic, related_name='thread', on_delete=models.CASCADE)
     # op - this is first Post in thread
-    op = models.ForeignKey('Post', related_name='+', on_delete=models.CASCADE)
+    # op = models.ForeignKey('Post', related_name='+', on_delete=models.CASCADE)
+    op = models.ForeignKey('Post', related_name='related_threads', on_delete=models.CASCADE)
     locked = models.BooleanField(blank=True, default=False)
     is_stickied = models.BooleanField(default=False)
 
@@ -181,12 +182,14 @@ class Post(MPTTModel, NamedModel):
     @property
     def thread(self):  # TODO: thread should be stored in Post
         post = self
+
         while post.parent:
             post = post.parent
-            try:
-                return Thread.objects.get(op=post)
-            except Thread.DoesNotExist:
-                return None
+
+        try:
+            return Thread.objects.get(op=post)
+        except Thread.DoesNotExist:
+            return None
 
     @property
     def score(self):

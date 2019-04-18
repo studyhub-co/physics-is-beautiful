@@ -52,7 +52,7 @@ class NotificationsListView extends React.Component {
                       : <span>You've</span>
                     }
                     {/* -------------- action_object */}
-                    <span>{notification['verb']}</span>
+                    &nbsp;<span>{notification['verb']}</span>
                     { notification['action_object'] && notification['action_object']['content_type'] === 'thread'
                       ? <span>&nbsp;{notification['action_object'].title}</span>
                       : null

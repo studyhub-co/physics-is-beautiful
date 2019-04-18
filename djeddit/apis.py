@@ -34,7 +34,7 @@ class PostViewSet(mixins.CreateModelMixin,
         if post.parent and post.parent.level > 0:
             if self.request.user != post.parent.created_by:
                 notify.send(self.request.user, recipient=post.parent.created_by,
-                            verb='replied to your comment in thread',
+                            verb='replied to your comment',
                             target=post.parent.thread, action_object=post)
 
 

@@ -334,7 +334,7 @@ def replyPost(request, post_uid=''):
             repliedPost.children.add(post)
 
             if request.user != repliedPost.created_by:
-                notify.send(request.user, recipient=repliedPost.created_by, verb='replied to your comment in thread',
+                notify.send(request.user, recipient=repliedPost.created_by, verb='replied to your comment',
                             target=thread, action_object=post)
 
         url = thread.relativeUrl
@@ -477,9 +477,10 @@ def userSummary(request, pk):
         .annotate(downvotes_sum=Sum('op___downvotes')) \
         .annotate(tPoints=F('upvotes_sum') - F('downvotes_sum'))
 
+    #
     replies = Post.objects.\
         filter(created_by=user).exclude(parent=None).order_by('-modified_on', '-created_on') \
-        .prefetch_related('thread', 'thread__topic') \
+        .prefetch_related('related_threads', 'related_threads__op', 'related_threads__topic') \
         .annotate(upvotes_sum=Sum('_upvotes')) \
         .annotate(downvotes_sum=Sum('_downvotes')) \
         .annotate(rPoints=F('upvotes_sum') - F('downvotes_sum'))
