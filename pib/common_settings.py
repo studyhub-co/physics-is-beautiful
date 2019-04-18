@@ -64,6 +64,9 @@ INSTALLED_APPS = [
     'vote',
     'reversion',
     'notifications',
+    'admin_reorder',
+    'crispy_forms',
+    'mptt',
     # pib apps
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
@@ -72,12 +75,9 @@ INSTALLED_APPS = [
     # lib
     'piblib',
     # blog
+    'user_reputation.apps.UserReputationConfig',
     'blog',
-    'admin_reorder',
     'editor',
-    # discussion
-    'crispy_forms',
-    'mptt',
     'djeddit',
     'badges',
     'meta',
