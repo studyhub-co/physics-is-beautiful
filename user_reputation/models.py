@@ -23,7 +23,7 @@ class ReputationManager(models.Manager):
 
     def user_reputation(self, user):
         try:
-            reputation_object = user.reputation_set.first()
+            reputation_object = user.reputation_set.get()
         except ObjectDoesNotExist:
             reputation_object = Reputation(user=user)
             reputation_object.save()
@@ -40,19 +40,36 @@ class ReputationManager(models.Manager):
             reputation.reputation = value
             reputation.save()
 
-    def add_reputation_action(self, user, action_value, target_object):
+    def add_reputation_action(self, user, action_value, target_object, callback=None):
         content_type_object = ContentType.objects.get_for_model(
             target_object.__class__
         )
         object_id = target_object.id
 
-        reputation_action = ReputationAction(
-            user=user,
-            content_type=content_type_object,
-            object_id=object_id,
-            value=action_value
-        )
-        reputation_action.save()
+        try:
+            ReputationAction.objects.get(
+                user=user,
+                content_type=content_type_object,
+                object_id=object_id)
+        except ReputationAction.MultipleObjectsReturned:
+            last = ReputationAction.objects.filter(
+                user=user,
+                content_type=content_type_object,
+                object_id=object_id
+            ).last()
+            ReputationAction.objects.exclude(pk=last.pk).delete()
+        except ReputationAction.DoesNotExist:
+            reputation_action = ReputationAction(
+                user=user,
+                content_type=content_type_object,
+                object_id=object_id,
+                value=action_value
+            )
+            reputation_action.save()
+
+            # send notification
+            if callback:
+                callback(user, action_value, target_object)
 
 
 class Reputation(TimeStampedModel):
@@ -88,9 +105,9 @@ class ReputationAction(TimeStampedModel):
 
 
 @receiver(models.signals.post_save, sender=ReputationAction)
-def save_title(sender, instance, *args, **kwargs):
+def recalculate_user_reputation(sender, instance, *args, **kwargs):
     """ recacculate user's reputation """
     reputation = Reputation.objects.user_reputation(instance.user)
-    # TODO
+    # TODO calculate
     reputation.reputation = 20
     reputation.save()

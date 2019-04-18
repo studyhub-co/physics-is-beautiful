@@ -2,13 +2,14 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-from profiles.serializers import PublicProfileSerializer
-from .models import Notification
-
 from djeddit.models import Thread, Post
-
+from profiles.serializers import PublicProfileSerializer
 from badges.models import Badge
 from badges.serializers import BadgeSerializer
+from curricula.models import Lesson
+from curricula.serializers import LessonSerializer
+
+from .models import Notification
 
 
 class MiniThreadSerializer(serializers.ModelSerializer):
@@ -41,6 +42,10 @@ class BaseObjectRelatedField(serializers.RelatedField):
         if isinstance(value, Badge):
             data = BadgeSerializer(value).data
             data['content_type'] = 'badge'
+            return data
+        if isinstance(value, Lesson):
+            data = LessonSerializer(value).data
+            data['content_type'] = 'lesson'
             return data
         if isinstance(value, get_user_model()):
             data = PublicProfileSerializer(value.profile).data

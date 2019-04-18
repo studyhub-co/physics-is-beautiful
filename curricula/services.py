@@ -1,5 +1,8 @@
 from django.utils.functional import cached_property
 
+from user_reputation.models import Reputation
+from notifications.signals import notify
+
 from .models import LessonProgress
 from .serializers import LessonProgressSerializer, UserResponseSerializer
 
@@ -103,6 +106,16 @@ class ProgressServiceBase(object):
             self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
             if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
                 self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
+
+                # sedn notification callback
+                def send_notification(user, action_value, lesson):
+                    notify.send(user, recipient=user,
+                                verb='got {} to completed lesson'.format(action_value),
+                                action_object=lesson)
+
+                # add reputation lesson points TODO set points number in a settings
+                Reputation.objects.add_reputation_action(self.user, 5, self.current_lesson, send_notification)
+
                 # unlock the next lesson!
                 next_lesson = self.current_lesson.get_next_lesson()
                 if next_lesson:

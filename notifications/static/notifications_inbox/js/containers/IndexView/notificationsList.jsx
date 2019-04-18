@@ -51,16 +51,33 @@ class NotificationsListView extends React.Component {
                       ? <span>{notification['actor'].display_name}</span>
                       : <span>You've</span>
                     }
-                    &nbsp;
+                    {/* -------------- action_object */}
                     <span>{notification['verb']}</span>
+                    { notification['action_object'] && notification['action_object']['content_type'] === 'thread'
+                      ? <span>&nbsp;{notification['action_object'].title}</span>
+                      : null
+                    }
+                    { notification['action_object'] && notification['action_object']['content_type'] === 'badge'
+                      ? <span>&nbsp;{notification['action_object'].title} badge</span>
+                      : null
+                    }
+                    { notification['action_object'] && notification['action_object']['content_type'] === 'lesson'
+                      ? <span>&nbsp;{notification['action_object'].name}</span>
+                      : null
+                    }
+                    {/*  --------------- target */}
                     { notification['target'] && notification['target']['content_type'] === 'thread'
-                      ? <span>&nbsp; {notification['target'].title}</span>
+                      ? <span>&nbsp;on&nbsp;{notification['target'].title}</span>
                       : null
                     }
                     { notification['target'] && notification['target']['content_type'] === 'badge'
-                      ? <span>&nbsp; {notification['target'].title} badge</span>
+                      ? <span>&nbsp;on&nbsp;{notification['target'].title} badge</span>
                       : null
                     }
+                    { notification['target'] && notification['target']['content_type'] === 'lesson'
+                      ? <span>&nbsp;on&nbsp;{notification['target'].name}</span>
+                      : null
+                    } &nbsp;
                     {/*&nbsp;*/}
                     {/*{notification['timesince']}*/}
                     {/*&nbsp;*/}
