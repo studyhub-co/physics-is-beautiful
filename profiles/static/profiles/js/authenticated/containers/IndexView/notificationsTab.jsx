@@ -27,6 +27,7 @@ import Profile from '../../components/NotificationsDeserializers/profile'
 import Thread from '../../components/NotificationsDeserializers/thread'
 import Badge from '../../components/NotificationsDeserializers/badge'
 import Lesson from '../../components/NotificationsDeserializers/lesson'
+import Module from '../../components/NotificationsDeserializers/module'
 
 class NotificationsTabView extends React.Component {
   constructor (props) {
@@ -127,6 +128,12 @@ class NotificationsTabView extends React.Component {
       { notification[type] && notification[type]['content_type'] === 'lesson'
         ? <span>
           { type === 'target' ? 'on ' : null }<Lesson lesson={notification[type]} />&nbsp;
+        </span>
+        : null
+      }
+      { notification[type] && notification[type]['content_type'] === 'module'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Module module={notification[type]} />&nbsp;
         </span>
         : null
       }

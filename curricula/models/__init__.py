@@ -5,7 +5,7 @@ from .answers import Answer, MathematicalExpression, Vector, UnitConversion, Ima
 from .user_response import UserResponse
 from .lesson_progress import LessonProgress
 from .user_related import CurriculumUserDashboard
-from .badges import ModuleBadges, LessonBadges
+from .badges import ModuleAwards, LessonAwards
 
 __all__ = ["get_earliest_gap", "BaseModel",
            "Curriculum", "Unit", "Module", "Lesson", "Game",
@@ -13,7 +13,7 @@ __all__ = ["get_earliest_gap", "BaseModel",
            "UserResponse",
            "LessonProgress",
            "CurriculumUserDashboard",
-           "ModuleBadges", "LessonBadges"
+           "ModuleAwards", "LessonAwards"
            ]
 
 from ..meta_badges import *

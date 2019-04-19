@@ -61,7 +61,7 @@ class NotificationsListView extends React.Component {
                       ? <span>&nbsp;{notification['action_object'].title} badge</span>
                       : null
                     }
-                    { notification['action_object'] && notification['action_object']['content_type'] === 'lesson'
+                    { notification['action_object'] && notification['action_object']['content_type'] === ('lesson' || 'module')
                       ? <span>&nbsp;{notification['action_object'].name}</span>
                       : null
                     }
@@ -74,7 +74,7 @@ class NotificationsListView extends React.Component {
                       ? <span>&nbsp;on&nbsp;{notification['target'].title} badge</span>
                       : null
                     }
-                    { notification['target'] && notification['target']['content_type'] === 'lesson'
+                    { notification['target'] && notification['target']['content_type'] === ('lesson' || 'module')
                       ? <span>&nbsp;on&nbsp;{notification['target'].name}</span>
                       : null
                     } &nbsp;

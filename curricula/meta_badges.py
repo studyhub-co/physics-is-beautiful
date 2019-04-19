@@ -1,6 +1,12 @@
-from badges.utils import MetaBadge
+from notifications.signals import notify
 
-from .models import LessonProgress, ModuleBadges, LessonBadges
+from django.conf import settings
+
+from user_reputation.models import Reputation
+from badges.utils import MetaBadge
+from badges.models import BadgeToUser
+
+from .models import LessonProgress, ModuleAwards, LessonAwards
 
 
 class ModuleFinished(MetaBadge):
@@ -23,17 +29,37 @@ class ModuleFinished(MetaBadge):
         lessons_completed_count = \
             LessonProgress.objects.filter(profile=instance.profile,
                                           status=LessonProgress.Status.COMPLETE,
-                                          lesson=instance.lesson
+                                          lesson__in=instance.lesson.module.lessons.all()
                                           )\
             .count()
 
-        try:
-            ModuleBadges.objects.get(user=instance.profile.user, module=instance.lesson.module)
+        if lessons_count == lessons_completed_count:
+
+            module_award, created = ModuleAwards.objects.get_or_create(user=instance.profile.user,
+                                                                       module=instance.lesson.module)
+
+            if not module_award.module_completed_award:
+                # 1. award reputation
+                def send_notification(user, action_value, lesson):
+                    notify.send(user, recipient=user,
+                                verb='got {} to completed module'.format(action_value),
+                                action_object=lesson)
+
+                # add reputation lesson points
+                Reputation.objects.add_reputation_action(instance.profile.user,
+                                                         settings.REPUTATION_STAGE_1_POINTS,
+                                                         instance.lesson.module,
+                                                         send_notification)
+
+                module_award.module_completed_award = True
+                module_award.save()
+
+            if not module_award.module_finished_badge:
+                module_award.module_finished_badge = True
+                module_award.save()
+                return True
+        else:
             return False
-        except ModuleBadges.DoesNotExist:
-            if lessons_count == lessons_completed_count:
-                ModuleBadges.objects.create(user=instance.profile.user, module=instance.lesson.module)
-            return lessons_count == lessons_completed_count
 
     def get_user(self, instance):
         return instance.profile.user
@@ -42,7 +68,7 @@ class ModuleFinished(MetaBadge):
 class LessonFinished(MetaBadge):
     id = "lesson-finished﻿"
     model = LessonProgress
-    one_time_only = False
+    one_time_only = False  # False because we need to award points for each lesson
 
     title = "Lesson Finished"
     description = "Finishes a lesson"
@@ -53,13 +79,42 @@ class LessonFinished(MetaBadge):
     # ("4", "Diamond"),
 
     def check_lesson_finished(self, instance):
-        try:
-            LessonBadges.objects.get(user=instance.profile.user, lesson=instance.lesson)
-            return False
-        except LessonBadges.DoesNotExist:
-            if instance.status == LessonProgress.Status.COMPLETE:
-                LessonBadges.objects.create(user=instance.profile.user, lesson=instance.lesson)
-            return instance.status == LessonProgress.Status.COMPLETE
+        if instance.status == LessonProgress.Status.COMPLETE:
+
+            lesson_award, created = LessonAwards.objects.get_or_create(user=instance.profile.user,
+                                                                       lesson=instance.lesson)
+
+            # 1. award reputation
+            if not lesson_award.lesson_completed_award:
+                # send notification callback
+                def send_notification(user, action_value, lesson):
+                    notify.send(user, recipient=user,
+                                verb='got {} to completed lesson'.format(action_value),
+                                action_object=lesson)
+
+                # add reputation lesson points
+                Reputation.objects.add_reputation_action(instance.profile.user, settings.REPUTATION_STAGE_1_POINTS,
+                                                         instance.lesson, send_notification)
+
+                lesson_award.lesson_completed_award = True
+                lesson_award.save()
+
+            # 2. award badge for first lesson
+            try:
+                BadgeToUser.objects.get(badge__id=self.id, user=instance.profile.user)
+            except BadgeToUser.MultipleObjectsReturned:
+                # remove all badges, we need to save only one (first lesson)
+                last = BadgeToUser.objects.filter(badge__id=self.id, user=instance.profile.user).last()
+                BadgeToUser.objects.exclude(pk=last.pk).delete()
+            except BadgeToUser.DoesNotExist:
+                return True
+
+            # award badge for each lesson
+            # if not lesson_award.lesson_finished_badge:
+            #     lesson_award.lesson_finished_badge = True
+            #     return True
+
+        return False
 
     def get_user(self, instance):
         return instance.profile.user
