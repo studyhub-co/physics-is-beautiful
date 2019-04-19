@@ -14,7 +14,7 @@ class ModuleFinished(MetaBadge):
     model = LessonProgress
     one_time_only = False
 
-    title = "Module Finished"
+    title = "Module finished"
     description = "Finishes a module"
     level = "1"
     # ("1", "Bronze"),
@@ -70,8 +70,8 @@ class LessonFinished(MetaBadge):
     model = LessonProgress
     one_time_only = False  # False because we need to award points for each lesson
 
-    title = "Lesson Finished"
-    description = "Finishes a lesson"
+    title = "First lesson finished"
+    description = "Finishes a first lesson"
     level = "1"
     # ("1", "Bronze"),
     # ("2", "Silver"),
