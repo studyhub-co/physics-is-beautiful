@@ -6,7 +6,7 @@ from user_reputation.models import Reputation
 from badges.utils import MetaBadge
 from badges.models import BadgeToUser
 
-from .models import LessonProgress, ModuleAwards, LessonAwards
+from .models import LessonProgress, ModuleAwards, LessonAwards, Curriculum
 
 
 class ModuleFinished(MetaBadge):
@@ -118,3 +118,27 @@ class LessonFinished(MetaBadge):
 
     def get_user(self, instance):
         return instance.profile.user
+
+
+class CurriculumFinished(MetaBadge):
+    id = "first-course﻿﻿"
+    model = Curriculum
+    one_time_only = True
+
+    title = "Teacher"
+    description = "Creates first course from scratch"
+    level = "1"
+    # ("1", "Bronze"),
+    # ("2", "Silver"),
+    # ("3", "Gold"),
+    # ("4", "Diamond"),
+
+    def check_first_course(self, instance):
+        # check that course is new
+        if instance.name == 'New curriculum' and instance.units.count() == 0:
+            return True
+        else:
+            return False
+
+    def get_user(self, instance):
+        return instance.author
