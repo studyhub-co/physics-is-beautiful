@@ -126,20 +126,32 @@
                 <ul class="nav navbar-nav navbar-right nav-pills my-2 my-lg-0">
                 {# TODO : replace with render #}
                         {% if user.is_authenticated %}
-                             <li class="nav-item dropdown{% current_url_starts_with 'user-profile' pk=user.id %}">
+                            <li class="nav-item">
+                                <a id="notifications-inbox-app"
+                                   class="notifications-inbox nav-link">
+                                    {% render_bundle 'notifications_inbox' %}
+                                </a>
+                            </li>
+                             <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
+                                 <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                     <img src="{{ user.profile.get_avatar_url }}"
+                                                style='padding-right: 1rem; height: 2rem; width: 3rem;'
+                                                class="d-inline-block align-top"
+                                                alt="">{{user.first_name}} {{user.last_name}}
+                                 </a>
+                             </li>
+                             </li>
+                             <li class="nav-item">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                   <img src="{{ user.profile.get_avatar_url }}"
-                                        style='padding-right: 1rem; height: 2rem; width: 3rem;'
-                                        class="d-inline-block align-top"
-                                        alt="">{{user.first_name}} {{user.last_name}}
+
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                   <a data-reactroot=""
                                    class="settings dropdown-item"
                                    {# navbar css fix #}
                                    style="color: black; border-radius: 0px; margin: 0px; background-color: white"
-                                   href="{% url 'user-profile' user.id %}">
-                                      Profile
+                                   href="{% url 'user-profile' user.id %}settings/">
+                                      Settings
                                   </a>
                                   <div class="dropdown-divider"></div>
                                   <a id="logout-action"
@@ -159,12 +171,6 @@
 {#                                </a>#}
 {##}
 {#                            </li>#}
-                            <li class="nav-item">
-                                <a id="notifications-inbox-app"
-                                   class="notifications-inbox nav-link">
-                                    {% render_bundle 'notifications_inbox' %}
-                                </a>
-                            </li>
                         {% else %}
                             <li class="nav-item">
                                 <a id="react-profile-modal" class="nav-link" data-reactroot="">
