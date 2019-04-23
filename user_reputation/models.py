@@ -106,7 +106,7 @@ class ReputationAction(TimeStampedModel):
 
 @receiver(models.signals.post_save, sender=ReputationAction)
 def recalculate_user_reputation(sender, instance, *args, **kwargs):
-    """ recacculate user's reputation """
+    """ recalculate user's reputation """
     reputation = Reputation.objects.user_reputation(instance.user)
     # TODO calculate
     reputation.reputation = 20

@@ -132,6 +132,12 @@
                                     {% render_bundle 'notifications_inbox' %}
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a id="trophy-inbox-app"
+                                   class="notifications-inbox nav-link">
+                                    {% render_bundle 'trophy_inbox' %}
+                                </a>
+                            </li>
                              <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
                                  <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                      <img src="{{ user.profile.get_avatar_url }}"
