@@ -465,7 +465,6 @@ class TextBookSolutionView extends React.Component {
                       Click to load file from Google Drive
                     </Button> : null
                   }
-                  {/* TODO fix it*/}
                   { pdfFile
                     ? <PDF
                     // ref={(el) => { this.pdfRef = el }}
@@ -475,6 +474,7 @@ class TextBookSolutionView extends React.Component {
                       onDocumentComplete={this.onDocumentComplete}
                       page={this.state.currentPdfpage}
                       scale={this.state.pdfScale}
+                      maxWidth={200}
                       onScaleUpdated={this.onScaleUpdated}
                     /> : null }
                 </div>
