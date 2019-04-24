@@ -1,6 +1,6 @@
 from django.contrib import sitemaps
 
-from .models import Resource, TextBookProblem, TextBookSolution
+from .models import Resource, ResourceProblem, TextBookSolution
 
 
 class ResourcesViewSitemap(sitemaps.Sitemap):
@@ -19,7 +19,7 @@ class TextBookProblemsViewSitemap(sitemaps.Sitemap):
     changefreq = 'daily'
 
     def items(self):
-        return TextBookProblem.objects.select_related('textbook_section__resource__metadata').all()
+        return ResourceProblem.objects.select_related('textbook_section__resource__metadata').all()
 
     def location(self, item):
         return item.get_frontend_url()

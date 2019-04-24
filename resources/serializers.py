@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from profiles.serializers import PublicProfileSerializer
 
-from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, TextBookProblem, TextBookSolution
+from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, ResourceProblem, TextBookSolution
 
 
 class ResourceMetaDataSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
                                                 write_only=True,
                                                 required=False  # we can set existing pdf solution
                                                 )
-    textbook_problem_uuid = serializers.SlugRelatedField(queryset=TextBookProblem.objects.all(),
+    textbook_problem_uuid = serializers.SlugRelatedField(queryset=ResourceProblem.objects.all(),
                                                          source='textbook_problem',
                                                          slug_field='uuid',
                                                          many=False,
@@ -71,7 +71,7 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
         # extra_kwargs = {'textbook_problem_uuid': {'write_only': True}, 'pdf_id': {'write_only': True}}
 
 
-class FullTextBookProblemSerializer(serializers.ModelSerializer):
+class FullResourceProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
     # # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
     # #                                                      source='textbook_section',
@@ -88,12 +88,12 @@ class FullTextBookProblemSerializer(serializers.ModelSerializer):
     #                                                          )
 
     class Meta:
-        model = TextBookProblem
+        model = ResourceProblem
         fields = ['title', 'position', 'uuid', 'solutions', 'textbook_section_id']
         extra_kwargs = {'position': {'required': False}}
 
 
-class TextBookProblemSerializer(serializers.ModelSerializer):
+class ResourceProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
     count_solutions = serializers.SerializerMethodField()
     resource_uuid = serializers.SerializerMethodField()
@@ -105,13 +105,13 @@ class TextBookProblemSerializer(serializers.ModelSerializer):
         return obj.textbook_section.resource.uuid  # TODO check optimization
 
     class Meta:
-        model = TextBookProblem
+        model = ResourceProblem
         fields = ['title', 'solutions', 'position', 'uuid', 'count_solutions', 'resource_uuid', 'thread']
         read_only_fields = ['thread', ]
 
 
 class TextBookChapterSerializer(serializers.ModelSerializer):
-    problems = TextBookProblemSerializer(many=True, required=False)
+    problems = ResourceProblemSerializer(many=True, required=False)
 
     class Meta:
         model = TextBookChapter
@@ -155,10 +155,10 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
                     problems_objects = []
                     for i, problem in enumerate(section_data['problems']):
                         problems_objects.append(
-                            TextBookProblem(textbook_section=saved_section, title=problem['title'], position=i)
+                            ResourceProblem(textbook_section=saved_section, title=problem['title'], position=i)
                         )
                     # save problems
-                    saved_problems = TextBookProblem.objects.bulk_create(problems_objects)
+                    saved_problems = ResourceProblem.objects.bulk_create(problems_objects)
 
                     for saved_problem in saved_problems:
                         problem_data = section_data['problems'][saved_problem.position]
@@ -180,7 +180,8 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Resource
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner', 'thread']
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner',
+                  'thread']
         read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views', 'thread')
 
 

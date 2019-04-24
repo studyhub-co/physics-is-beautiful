@@ -27,10 +27,10 @@ from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, Separ
 from editor.apis_public import get_search_mixin
 
 from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
-from .models import Resource, TextBookSolutionPDF, RecentUserResource, TextBookProblem, TextBookSolution, TextBookChapter
+from .models import Resource, TextBookSolutionPDF, RecentUserResource, ResourceProblem, TextBookSolution, TextBookChapter
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
-    FullTextBookProblemSerializer, TextBookSolutionSerializer, TextBookProblemSerializer
-from .serializers_flat import TextBookChapterSerializerFlat, TextBookProblemSerializerFlat
+    FullResourceProblemSerializer, TextBookSolutionSerializer, ResourceProblemSerializer
+from .serializers_flat import TextBookChapterSerializerFlat, ResourceProblemSerializerFlat
 from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID, TEXTBOOK_PROBLEMS_TOPIC_ID, \
     TEXTBOOK_RESOURCES_TOPIC_ID
 
@@ -65,16 +65,16 @@ class TextBookChaptersViewSet(# mixins.RetrieveModelMixin,
         serializer.save(posted_by=self.request.user.profile)
 
 
-class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
+class ResourceProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
                               mixins.RetrieveModelMixin,
                               mixins.CreateModelMixin,
                               mixins.UpdateModelMixin,
                               mixins.DestroyModelMixin,
                               GenericViewSet):
     permission_classes = (IsStaffOrReadOnly, )
-    serializer_class_flat = TextBookProblemSerializerFlat  # we use flat only with post & patch
-    serializer_class = TextBookProblemSerializer
-    queryset = TextBookProblem.objects.\
+    serializer_class_flat = ResourceProblemSerializerFlat  # we use flat only with post & patch
+    serializer_class = ResourceProblemSerializer
+    queryset = ResourceProblem.objects.\
         prefetch_related('solutions', 'solutions__posted_by', 'solutions__pdf', 'solutions__thread').\
         all()
 
@@ -117,17 +117,17 @@ class TextBookProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
             # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
             if new_thread:
                 # save new thread in probllem
-                TextBookProblem.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread=new_thread)
+                ResourceProblem.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread=new_thread)
             else:
-                TextBookProblem.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+                ResourceProblem.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
 
-        return super(TextBookProblemsViewSet, self).retrieve(request, *args, **kwargs)
+        return super(ResourceProblemsViewSet, self).retrieve(request, *args, **kwargs)
 
     def get_queryset(self):
         if 'ordering' in self.request.query_params and self.request.query_params['ordering'] == '-solutions__created_on':
             # it seems drf do not work with reverse foreign related ordering, need to investigate
-            # or replace TextBookProblem solutions list with a separate API query
-            qs = TextBookProblem.objects.prefetch_related(
+            # or replace ResourceProblem solutions list with a separate API query
+            qs = ResourceProblem.objects.prefetch_related(
               Prefetch(
                 'solutions',
                 queryset=TextBookSolution.objects.all().order_by('-created_on'),
@@ -236,7 +236,7 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
         order_by('-created_on').\
         select_related('metadata', 'owner'). \
         prefetch_related(Prefetch('sections__problems',
-                         queryset=TextBookProblem.objects.
+                         queryset=ResourceProblem.objects.
                                   annotate(count_solutions=Count('solutions', distinct=True)))
                          )\
         .prefetch_related('sections__problems__solutions__posted_by__user')\

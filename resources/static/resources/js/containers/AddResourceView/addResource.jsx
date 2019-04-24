@@ -12,6 +12,7 @@ import * as resourcesCreators from '../../actions/resources'
 import history from '../../history'
 import { BASE_URL } from '../../utils/config'
 import AddTextBookResourceView from './addTextBookResource'
+import AddStandardizedTestResourceView from './addStandardizedTestResource'
 
 class AddResourceView extends React.Component {
   constructor (props) {
@@ -104,6 +105,10 @@ class AddResourceView extends React.Component {
             <Col sm={12} md={12}>
               { this.state.resouresTypeValue === 'TB'
                 ? <AddTextBookResourceView onStepUpdated={this.onAddResourceStepUpdated} />
+                : null
+              }
+              { this.state.resouresTypeValue === 'TS'
+                ? <AddStandardizedTestResourceView onStepUpdated={this.onAddResourceStepUpdated} />
                 : null
               }
             </Col>

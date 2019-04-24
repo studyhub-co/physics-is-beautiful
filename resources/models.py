@@ -3,19 +3,19 @@ import os
 from django.db import models
 from django.dispatch import receiver
 # from django.utils.text import slugify
-from slugify import Slugify
 
+from django.core.validators import MinValueValidator
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 
+from slugify import Slugify
 from shortuuidfield import ShortUUIDField
 
 from vote.models import VoteModel
-
 from profiles.models import Profile
 from djeddit.models import Thread
 
-from .validators import validate_pdf_extension
+from .validators import validate_pdf_extension, max_value_current_year
 
 # from moderation.db import ModeratedModel
 # from django.contrib.contenttypes.fields import GenericForeignKey
@@ -24,6 +24,7 @@ from django.contrib.contenttypes.models import ContentType
 slugify = Slugify()
 slugify.safe_chars = '.'
 slugify.to_lower = True
+
 
 # class Resource(ModeratedModel):
 class Resource(models.Model):
@@ -35,7 +36,7 @@ class Resource(models.Model):
     RESOURCE_TYPE_CHOICES = (
         (TEXTBOOK, 'textbook'),
         # (ONLINE, 'online learning resource'),
-        # (TEST, 'standardized test'),
+        (TEST, 'standardized test'),
         # (COURSE, 'course')
     )
 
@@ -80,6 +81,42 @@ def save_title(sender, instance, *args, **kwargs):
 # TODO signal for remove djedit Topic onDelete resource
 
 
+# class StandardizedTestResource(models.Model):
+#     resource = models.OneToOneField(Resource, related_name='standardized_test_info')
+#     test_number = models.PositiveIntegerField()
+#     test_year = models.PositiveIntegerField(validators=[MinValueValidator(1900), max_value_current_year])
+#     pdf_of_exam = models.FileField(upload_to="resources/standardized_test/%Y/%m/%d", validators=[validate_pdf_extension])
+
+
+# class ProblemBase(models.Model):
+#     uuid = ShortUUIDField(unique=True)
+#     title = models.CharField(max_length=400)
+#     position = models.PositiveSmallIntegerField("Position")
+#     posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
+#     count_views = models.IntegerField(default=0)
+#     thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
+#
+#     class Meta:
+#         abstract = True
+#         ordering = ['position']
+#
+#
+# class StandardizedTestProblem(ProblemBase):
+#     resource = models.ForeignKey(Resource, related_name='standardized_test_problems')
+#
+#     def get_frontend_url(self):
+#         try:
+#             return '/resources/{}/problems/{}/{}/'.format(
+#                 slugify(self.reource.standardized_test_info.test_number),
+#                 slugify(self.title),
+#                 self.uuid)
+#         except (KeyError, ResourceMetaData.DoesNotExist):
+#             return '/resources/{}/problems/{}/{}/'.format(
+#                 'unknown-resource',
+#                 slugify(self.title),
+#                 self.uuid)
+
+
 class RecentUserResource(models.Model):
     user = models.ForeignKey(Profile, related_name='recent_resources')
     resource = models.ForeignKey(Resource, related_name='user_recent_list')
@@ -102,7 +139,8 @@ class TextBookChapter(models.Model):
         ordering = ['position']
 
 
-class TextBookProblem(models.Model):
+# class TextBookProblem(models.Model):
+class ResourceProblem(models.Model):
     uuid = ShortUUIDField(unique=True)
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
@@ -110,6 +148,8 @@ class TextBookProblem(models.Model):
     posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
     count_views = models.IntegerField(default=0)
     thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
+    # resource used in StandardizedTestResource
+    # resource = models.ForeignKey(Resource, related_name='problems')
 
     def get_frontend_url(self):
         # return '/resources/{}/problems/{}/{}/'.format(
@@ -126,9 +166,6 @@ class TextBookProblem(models.Model):
                 'unknown-resource',
                 slugify(self.title),
                 self.uuid)
-
-    class Meta:
-        ordering = ['position']
 
 
 class TextBookSolutionPDF(models.Model):
@@ -150,7 +187,7 @@ class TextBookSolution(VoteModel, models.Model):
     pdf = models.OneToOneField(TextBookSolutionPDF, related_name='solution')
     _title = models.CharField(max_length=400, blank=True, default='', db_column='title')
     position = models.PositiveSmallIntegerField("Position")
-    textbook_problem = models.ForeignKey(TextBookProblem, related_name='solutions')
+    textbook_problem = models.ForeignKey(ResourceProblem, related_name='solutions')
     posted_by = models.ForeignKey(Profile, related_name='resources_solutions')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)

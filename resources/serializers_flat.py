@@ -2,7 +2,7 @@ from django.db.models import F
 
 from rest_framework import serializers
 
-from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, TextBookProblem, TextBookSolution
+from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, ResourceProblem, TextBookSolution
 
 
 class TextBookChapterSerializerFlat(serializers.ModelSerializer):
@@ -49,7 +49,7 @@ class TextBookChapterSerializerFlat(serializers.ModelSerializer):
         extra_kwargs = {'position': {'required': False}}
 
 
-class TextBookProblemSerializerFlat(serializers.ModelSerializer):
+class ResourceProblemSerializerFlat(serializers.ModelSerializer):
     # FIXME need to think about adding uuid to textbook_section (chapter)
     # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
     #                                                      source='textbook_section',
@@ -76,7 +76,7 @@ class TextBookProblemSerializerFlat(serializers.ModelSerializer):
             textbook_section_id = self.instance.textbook_section_id
 
         if 'position' not in data:  # default last position
-            last = TextBookProblem.objects.filter(
+            last = ResourceProblem.objects.filter(
                 textbook_section_id=textbook_section_id
             ).last()
             if last:
@@ -90,12 +90,12 @@ class TextBookProblemSerializerFlat(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # refresh positions for problems gt than current
         if 'position' in validated_data and instance.position != validated_data['position']:
-            TextBookProblem.objects.filter(position__gte=validated_data['position'],
+            ResourceProblem.objects.filter(position__gte=validated_data['position'],
                                            textbook_section=validated_data.get('textbook_section', instance.textbook_section))\
                 .update(position=F('position')+1)
         return super().update(instance, validated_data)
 
     class Meta:
-        model = TextBookProblem
+        model = ResourceProblem
         fields = ['title', 'position', 'uuid', 'textbook_section_id']
         extra_kwargs = {'position': {'required': False}}
