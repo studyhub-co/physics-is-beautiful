@@ -45,7 +45,7 @@ class Classroom(models.Model):
 class ExternalClassroom(models.Model):
     GOOGLE_CLASSROOM = 'GC'
     EXTERNAL_PROVIDER_CHOICES = (
-        (GOOGLE_CLASSROOM, 'google classrrrom'),
+        (GOOGLE_CLASSROOM, 'google classroom'),
     )
 
     external_id = models.CharField(max_length=400)

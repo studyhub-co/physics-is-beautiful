@@ -51,7 +51,7 @@ class Profile(BaseModel):
         return reverse('user-profile', kwargs={"pk": self.user.id})
 
     def __str__(self):
-        return 'Profile: {}'.format(self.user.email)  # todo seems we need swith to username here
+        return 'Profile: {}'.format(self.user.email)  # todo seems we need switch to username here
 
 
 @receiver(pre_save, sender=Profile)
