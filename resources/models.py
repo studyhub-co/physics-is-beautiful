@@ -81,40 +81,11 @@ def save_title(sender, instance, *args, **kwargs):
 # TODO signal for remove djedit Topic onDelete resource
 
 
-# class StandardizedTestResource(models.Model):
-#     resource = models.OneToOneField(Resource, related_name='standardized_test_info')
-#     test_number = models.PositiveIntegerField()
-#     test_year = models.PositiveIntegerField(validators=[MinValueValidator(1900), max_value_current_year])
-#     pdf_of_exam = models.FileField(upload_to="resources/standardized_test/%Y/%m/%d", validators=[validate_pdf_extension])
-
-
-# class ProblemBase(models.Model):
-#     uuid = ShortUUIDField(unique=True)
-#     title = models.CharField(max_length=400)
-#     position = models.PositiveSmallIntegerField("Position")
-#     posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
-#     count_views = models.IntegerField(default=0)
-#     thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
-#
-#     class Meta:
-#         abstract = True
-#         ordering = ['position']
-#
-#
-# class StandardizedTestProblem(ProblemBase):
-#     resource = models.ForeignKey(Resource, related_name='standardized_test_problems')
-#
-#     def get_frontend_url(self):
-#         try:
-#             return '/resources/{}/problems/{}/{}/'.format(
-#                 slugify(self.reource.standardized_test_info.test_number),
-#                 slugify(self.title),
-#                 self.uuid)
-#         except (KeyError, ResourceMetaData.DoesNotExist):
-#             return '/resources/{}/problems/{}/{}/'.format(
-#                 'unknown-resource',
-#                 slugify(self.title),
-#                 self.uuid)
+class StandardizedTestResource(models.Model):
+    resource = models.OneToOneField(Resource, related_name='standardized_test_info')
+    test_number = models.PositiveIntegerField()
+    test_year = models.PositiveIntegerField(validators=[MinValueValidator(1900), max_value_current_year])
+    pdf_of_exam = models.FileField(upload_to="resources/standardized_test/%Y/%m/%d", validators=[validate_pdf_extension])
 
 
 class RecentUserResource(models.Model):
@@ -144,7 +115,8 @@ class ResourceProblem(models.Model):
     uuid = ShortUUIDField(unique=True)
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
-    textbook_section = models.ForeignKey(TextBookChapter, related_name='problems')
+    textbook_section = models.ForeignKey(TextBookChapter, related_name='problems', null=True)
+    resource = models.ForeignKey(Resource, related_name='problems', null=True)
     posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
     count_views = models.IntegerField(default=0)
     thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
@@ -156,6 +128,7 @@ class ResourceProblem(models.Model):
         #     slugify(self.textbook_section.resource.title),
         #     slugify(self.title),
         #     self.uuid)
+        # TODO check resource type
         try:
             return '/resources/{}/problems/{}/{}/'.format(
                 slugify(self.textbook_section.resource.metadata.data['volumeInfo']['title']),

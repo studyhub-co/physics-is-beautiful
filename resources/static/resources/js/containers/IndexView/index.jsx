@@ -255,27 +255,18 @@ class IndexView extends React.Component {
                     {this.state.recentSlides}
                   </Slider>
                 </div>
-                {/*<Swiper {...this.getParams('recentSlides')} ref={(node) => { if (node) this.recentSlidesSwiper = node.swiper }}>*/}
-                  {/*{this.state.recentSlides}*/}
-                {/*</Swiper>*/}
                 <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
                     Popular
                 </div>
                 <Slider {...this.getSliderParams('popularSlides')}>
                   {this.state.popularSlides}
                 </Slider>
-                {/*<Swiper {...this.getParams('popularSlides')} ref={(node) => { if (node) this.popularSlidesSwiper = node.swiper }}>*/}
-                  {/*{this.state.popularSlides}*/}
-                {/*</Swiper>*/}
                 <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
                     New
                 </div>
                 <Slider {...this.getSliderParams('newSlides')}>
                   {this.state.newSlides}
                 </Slider>
-                {/*<Swiper {...this.getParams('newSlides')} ref={(node) => { if (node) this.newSlidesSwiper = node.swiper }}>*/}
-                  {/*{this.state.newSlides}*/}
-                {/*</Swiper>*/}
               </Col>
             </Row>
           </Container>
