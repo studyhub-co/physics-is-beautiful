@@ -53,7 +53,8 @@ export class CurriculumThumbnail extends React.Component {
   }
 
   onTitleClick () {
-    window.open('/curriculum/' + this.props.uuid + '/', '_blank')
+    this.props.onClick()
+    // window.open('/curriculum/' + this.props.uuid + '/', '_blank')
   }
 
   onCopyShareableLink (e) {
