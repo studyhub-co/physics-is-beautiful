@@ -18,9 +18,10 @@ import { Row, Col, Button, Form, InputGroup } from 'react-bootstrap'
 
 import AddNumberOfProblemsView from '../AddStandardizedTestResourceSteps/1_addResourceProblems'
 import AddResourceProblemsView from '../AddStandardizedTestResourceSteps/2_addResourceProblems'
-import { handleFileChange } from '../AddTextBookResourceSteps/lib'
-import { checkHttpStatus, getAxios } from '../../utils'
-import { API_PREFIX } from '../../utils/config'
+import AddResourceSolutionsView from '../AddStandardizedTestResourceSteps/3_addResourceSolutions'
+// import { checkHttpStatus, getAxios } from '../../utils'
+// import { API_PREFIX } from '../../utils/config'
+import * as googleCreators from '../../actions/google'
 
 class AddStandardizedTestResourceView extends React.Component {
 
@@ -31,6 +32,7 @@ class AddStandardizedTestResourceView extends React.Component {
       testYear: '',
       numberOfProblems: 0,
       problemsList: null,
+      pdfFile: '',
       validForm: '',
       step: 0
     }
@@ -43,6 +45,11 @@ class AddStandardizedTestResourceView extends React.Component {
     this.handleTestNumber = this.handleTestNumber.bind(this)
     this.onAddResource = this.onAddResource.bind(this)
     this.validateForm = this.validateForm.bind(this)
+    this.handleTestYear = this.handleTestYear.bind(this)
+  }
+
+  componentWillMount () {
+    this.props.googleActions.gapiInitialize()
   }
 
   componentWillUpdate (nextProps, nextState) {
@@ -94,31 +101,37 @@ class AddStandardizedTestResourceView extends React.Component {
   validateForm () {
     if (this.state.testYear > 1900 &&
       this.state.testYear <= new Date().getFullYear() &&
-      this.state.testNumber > 0) {
+      this.state.testNumber > 0 &&
+      this.state.pdfFile
+    ) {
       this.setState({validForm: true})
     } else {
       this.setState({validForm: false})
     }
   }
 
-  handleFileChange (file, filename, callback) {
-  // Seems we don't need to use global state
-    if (!file || file.target.files.length === 0) {
+  handleFileChange (event, callback) {
+    if (!event || event.target.files.length === 0) {
       return
     }
 
-    var formData = new FormData()
-    if (filename) {
-      formData.append('file', file.target.files[0], filename)
-    } else {
-      formData.append('file', file.target.files[0])
-    }
+    this.setState(
+      {pdfFile: event.target.files[0]},
+      this.validateForm
+    )
 
-    getAxios().post(API_PREFIX + 'upload_solution_pdf/', formData)
-      .then(checkHttpStatus)
-      .then((response) => {
-        callback(response.data)
-      })
+    // var formData = new FormData()
+    // if (filename) {
+    //   formData.append('file', file.target.files[0], filename)
+    // } else {
+    //   formData.append('file', file.target.files[0])
+    // }
+
+    // getAxios().post(API_PREFIX + 'upload_exam_pdf/', formData)
+    //   .then(checkHttpStatus)
+    //   .then((response) => {
+    //     callback(response.data)
+    //   })
   }
 
   onAddResource () {
@@ -154,7 +167,9 @@ class AddStandardizedTestResourceView extends React.Component {
                   // onKeyUp={this.handleISBNInputKeyUp}
                 />
               </InputGroup>
+              <br />
               <InputGroup>
+                { this.state.pdfFile ? <span>{this.state.pdfFile.name}&nbsp;</span> : null }
                 <span
                   className={'blue-text selectable-file'}
                 >
@@ -163,15 +178,14 @@ class AddStandardizedTestResourceView extends React.Component {
                     name='pdf'
                     id={'pdf-of-the-exam'}
                     accept='application/pdf'
-                    onChange={(file) => { handleFileChange(file, null, (...args) => { this.addExamPdfFile(...args) }) }}
+                    onChange={(event) => { this.handleFileChange(event, (...args) => { this.addExamPdfFile(...args) }) }}
                     style={{fontSize: '1px'}} />
                   <label htmlFor={'pdf-of-the-exam'} style={{cursor: 'pointer'}}>
-                    pdf
+                    Attach pdf of the exam...
                   </label>
                 </span>
               </InputGroup>
             </Form.Group>
-
           </Col>
         </Row>
         <Row>
@@ -197,14 +211,13 @@ class AddStandardizedTestResourceView extends React.Component {
         onPrevStep={this.onPrevStep}
       />
     } else if (this.state.step === 3) {
-      // toReturn = <AddTextBookSolutionsView
-      //   googleBook={this.state.selectedGoogleBook}
-      //   numberOfChapters={this.state.numberOfChapters}
-      //   chaptersList={this.state.chaptersList}
-      //   onPrevStep={this.onPrevStep}
-      //   onFinish={this.onFinish}
-      //   gapiInitState={this.props.gapiInitState}
-      // />
+      toReturn = <AddResourceSolutionsView
+        numberOfProblems={numberOfProblems}
+        problemsList={this.state.problemsList}
+        onPrevStep={this.onPrevStep}
+        onFinish={this.onFinish}
+        gapiInitState={this.props.gapiInitState}
+      />
     }
 
     return (
@@ -214,6 +227,10 @@ class AddStandardizedTestResourceView extends React.Component {
 }
 
 AddStandardizedTestResourceView.propTypes = {
+  googleActions: PropTypes.shape({
+    gapiInitialize: PropTypes.func.isRequired,
+  }).isRequired,
+  gapiInitState: PropTypes.bool,
   onStepUpdated: PropTypes.func,
   resourcesActions: PropTypes.shape({
     createResource: PropTypes.func.isRequired
@@ -222,13 +239,14 @@ AddStandardizedTestResourceView.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    // resourceOptions: state.resources.resourceOptions,
+    gapiInitState: state.google.gapiInitState
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
+    googleActions: bindActionCreators(googleCreators, dispatch),
     resourcesActions: bindActionCreators(resourcesCreators, dispatch)
   }
 }

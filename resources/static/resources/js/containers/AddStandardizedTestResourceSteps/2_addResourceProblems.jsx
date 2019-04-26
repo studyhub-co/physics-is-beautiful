@@ -11,7 +11,7 @@ import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 
 // import { EditableExternalEventLabel, EditableLabel } from '../../components/label'
-import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableLabel'
+import { EditableExternalEventLabel } from '../../utils/editableLabel'
 
 export default class AddResourceProblemsView extends React.Component {
   constructor (props) {
@@ -40,10 +40,8 @@ export default class AddResourceProblemsView extends React.Component {
     //   chaptersList = this.generateChaptersList(props.numberOfChapters)
     // }
 
-    console.log(props.numberOfProblems);
-    
     var problemsList = this.generateProblemsList(props.numberOfProblems)
-    
+
     this.state = {
       problemsList: problemsList,
       lastAddedProblem: null // need to enable edit mode after adding a problem
@@ -64,45 +62,32 @@ export default class AddResourceProblemsView extends React.Component {
     return problemsList
   }
 
-  isOneProblemInResource () {}
+  isOneProblemInResource () {
+    var problemsList = this.state.problemsList
 
-  // isOneProblemInChapters () {
-  //   var chaptersList = this.state.chaptersList
-  //   for (var x = 0; x < chaptersList.length; x++) {
-  //     if (chaptersList[x].hasOwnProperty('problems')) {
-  //       if (chaptersList[x].problems.length > 0) {
-  //         return true
-  //       }
-  //     }
-  //   }
-  //   return false
-  // }
+    if (problemsList.length > 0) {
+      return true
+    }
 
-  addProblemClick (chapter) {
-    // var chaptersList = this.state.chaptersList
-    // for (var x = 0; x < chaptersList.length; x++) {
-    //   if (chapter.position === chaptersList[x].position) {
-    //     if (!chaptersList[x].hasOwnProperty('problems')) {
-    //       chaptersList[x].problems = []
-    //     }
-    //     var problemPosition = chaptersList[x].problems.length
-    //     chaptersList[x].problems.push({
-    //       title: '' + (chaptersList[x].problems.length + 1),
-    //       position: problemPosition
-    //     })
-    //     var lastAddedProblem = {chapter: chapter, position: problemPosition}
-    //     this.setState({chaptersList: chaptersList, lastAddedProblem: lastAddedProblem})
-    //     break
-    //   }
-    // }
+    return false
+  }
+
+  addProblemClick () {
+    var problemsList = this.state.problemsList
+    problemsList.push({
+      title: 'Problem ' + (problemsList.length + 1),
+      position: problemsList.length
+    })
+
+    this.setState({problemsList: problemsList})
   }
 
   nextStepClick () {
-    this.props.onNextStep(this.state.chaptersList)
+    this.props.onNextStep(this.state.problemsList)
   }
 
   prevStepClick () {
-    this.props.onPrevStep(this.state.chaptersList)
+    this.props.onPrevStep(this.state.problemsList)
   }
 
   onChangeProblemTitle (newTitle, chapter, position) {
@@ -120,7 +105,17 @@ export default class AddResourceProblemsView extends React.Component {
     // }
   }
 
-  removeProblemClick (chapter, problem) {
+  removeProblemClick (problem) {
+    var problemsList = this.state.problemsList
+    problemsList.splice(problem.position, 1)
+
+    // recalculate problems positions
+    for (var y = 0; y < problemsList.length; y++) {
+      problemsList[y].position--
+    }
+
+    this.setState({problemsList: problemsList})
+
     // var chaptersList = this.state.chaptersList
     // for (var x = 0; x < chaptersList.length; x++) {
     //   if (chapter.position === chaptersList[x].position) {

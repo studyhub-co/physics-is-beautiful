@@ -279,4 +279,3 @@ AddTextBookProblemsView.propTypes = {
   onNextStep: PropTypes.func.isRequired,
   onPrevStep: PropTypes.func.isRequired
 }
-
