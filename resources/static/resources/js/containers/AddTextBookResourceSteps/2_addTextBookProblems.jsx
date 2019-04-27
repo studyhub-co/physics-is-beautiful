@@ -21,7 +21,7 @@ export default class AddTextBookProblemsView extends React.Component {
     // calculate number of chapters
     var chaptersList = null
     if (props.chaptersList) {
-      if (props.chaptersList.length < props.numberOfChapters) {
+      if (props.chaptersList.length <= props.numberOfChapters) {
         var a = props.chaptersList
         var b = this.generateChaptersList(props.numberOfChapters)
 
@@ -36,7 +36,7 @@ export default class AddTextBookProblemsView extends React.Component {
         var onlyInB = b.filter(diffFunc(a))
         chaptersList = props.chaptersList.concat(onlyInB)
       } else { // if new numberOfChapters < props.chaptersList
-        chaptersList = props.chaptersList.slice(0, props.numberOfChapters - 1)
+        chaptersList = props.chaptersList.slice(0, props.numberOfChapters)
       }
     } else {
       chaptersList = this.generateChaptersList(props.numberOfChapters)

@@ -81,11 +81,19 @@ class AddTextBookResourceView extends React.Component {
   }
 
   onNextStep (chaptersList) {
-    this.setState({chaptersList: chaptersList, step: this.state.step + 1})
+    this.setState({
+      chaptersList: chaptersList,
+      step: this.state.step + 1,
+      numberOfChapters: chaptersList.length
+    })
   }
 
   onPrevStep (chaptersList) {
-    this.setState({chaptersList: chaptersList, step: this.state.step - 1})
+    this.setState({
+      chaptersList: chaptersList,
+      step: this.state.step - 1,
+      numberOfChapters: chaptersList.length
+    })
   }
 
   onFinish (chaptersList) {

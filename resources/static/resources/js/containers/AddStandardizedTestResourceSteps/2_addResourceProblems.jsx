@@ -40,7 +40,31 @@ export default class AddResourceProblemsView extends React.Component {
     //   chaptersList = this.generateChaptersList(props.numberOfChapters)
     // }
 
-    var problemsList = this.generateProblemsList(props.numberOfProblems)
+    var problemsList = null
+
+    if (props.problemsList) {
+      if (props.problemsList.length < props.numberOfProblems) {
+        var a = props.problemsList
+        var b = this.generateProblemsList(props.numberOfProblems)
+
+        // TODO move to lib
+        var diffFunc = function comparer (otherArray) {
+          return function (current) {
+            return otherArray.filter(function (other) {
+              return other.position === current.position
+            }).length === 0
+          }
+        }
+
+        var onlyInB = b.filter(diffFunc(a))
+        problemsList = props.problemsList.concat(onlyInB)
+      } else { // if new numberOfProblems < props.problemsList
+        problemsList = props.problemsList.slice(0, props.numberOfProblems)
+        // problemsList = props.problemsList
+      }
+    } else {
+      problemsList = this.generateProblemsList(props.numberOfProblems)
+    }
 
     this.state = {
       problemsList: problemsList,

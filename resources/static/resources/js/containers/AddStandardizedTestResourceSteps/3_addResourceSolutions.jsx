@@ -18,22 +18,17 @@ export default class AddResourceSolutionsView extends React.Component {
       problemsList: props.problemsList
     }
 
-    this.isOneSolutionInChapters = this.isOneSolutionInChapters.bind(this)
+    this.isOneSolutionInProblems = this.isOneSolutionInProblems.bind(this)
     this.prevStepClick = this.prevStepClick.bind(this)
+    this.addSolution = this.addSolution.bind(this)
   }
 
-  isOneSolutionInChapters () {
+  isOneSolutionInProblems () {
     var problemsList = this.state.problemsList
     for (var x = 0; x < problemsList.length; x++) {
-      if (problemsList[x].hasOwnProperty('problems')) {
-        if (problemsList[x].problems.length > 0) {
-          for (var y = 0; y < problemsList[x].problems.length; y++) {
-            if (problemsList[x].problems[y].hasOwnProperty('solutions')) {
-              if (problemsList[x].problems[y].solutions.length > 0) {
-                return true
-              }
-            }
-          }
+      if (problemsList[x].hasOwnProperty('solutions')) {
+        if (problemsList[x].solutions.length > 0) {
+          return true
         }
       }
     }
@@ -67,11 +62,11 @@ export default class AddResourceSolutionsView extends React.Component {
           ><FaChevronLeft /> Previous</Button>
           <span style={{padding: '0 2rem'}}>Third step</span>
           <Button
-            disabled={!this.isOneSolutionInChapters()}
+            disabled={!this.isOneSolutionInProblems()}
             onClick={() => { this.props.onFinish(this.state.problemsList) }}
           >Create Resource!</Button>
         </div>
-        <div className={'gray-text'}>3. Add at least one solution (.pdf) </div>
+        <div className={'gray-text'}>Add at least one solution (.pdf) </div>
         <br />
         <Row>
           <Col sm={12} md={12}>
@@ -121,8 +116,7 @@ export default class AddResourceSolutionsView extends React.Component {
                   </b>
                 </span>
               </div>
-            }
-            )}
+            }, this)}
           </Col>
         </Row>
       </div>

@@ -83,7 +83,7 @@ export default class AddTextBookSolutionsView extends React.Component {
             onClick={() => { this.props.onFinish(this.state.chaptersList) }}
           >Create Resource!</Button>
         </div>
-        <div className={'gray-text'}>3. Add at least one solution (.pdf) </div>
+        <div className={'gray-text'}>Add at least one solution (.pdf) </div>
         <br />
         <Row>
           <Col sm={8} md={8}>

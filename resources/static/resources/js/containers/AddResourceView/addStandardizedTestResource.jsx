@@ -59,21 +59,36 @@ class AddStandardizedTestResourceView extends React.Component {
   }
 
   onAddNumberOfProblems (number) {
-    this.setState({numberOfProblems: parseInt(number), step: 2})
+    this.setState({
+      numberOfProblems: parseInt(number),
+      step: 2
+    })
   }
 
   onNextStep (problemsList) {
-    this.setState({problemsList: problemsList, step: this.state.step + 1})
+    this.setState({
+      problemsList: problemsList,
+      step: this.state.step + 1,
+      numberOfProblems: problemsList.length
+    })
   }
 
   onPrevStep (problemsList) {
-    this.setState({problemsList: problemsList, step: this.state.step - 1})
+    this.setState({
+      problemsList: problemsList,
+      step: this.state.step - 1,
+      numberOfProblems: problemsList.length
+    })
   }
 
   onFinish (problemsList) {
     // create resource
-    var standardizedTestResource = {resource_type: 'TS',
-      problems: problemsList
+    var standardizedTestResource = {
+      resource_type: 'TS',
+      problems: problemsList,
+      standardized_test_info: {
+        // test_number:
+      }
     }
 
     this.props.resourcesActions.createResource(standardizedTestResource)
