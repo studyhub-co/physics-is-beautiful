@@ -42,7 +42,7 @@ class ModuleFinished(MetaBadge):
                 # 1. award reputation
                 def send_notification(user, action_value, lesson):
                     notify.send(user, recipient=user,
-                                verb='got {} to completed module'.format(action_value),
+                                verb='earned {} points for completing a module!'.format(action_value),
                                 action_object=lesson)
 
                 # add reputation lesson points
@@ -89,7 +89,7 @@ class LessonFinished(MetaBadge):
                 # send notification callback
                 def send_notification(user, action_value, lesson):
                     notify.send(user, recipient=user,
-                                verb='got {} to completed lesson'.format(action_value),
+                                verb='earned {} points for completing a lesson!'.format(action_value),
                                 action_object=lesson)
 
                 # add reputation lesson points
