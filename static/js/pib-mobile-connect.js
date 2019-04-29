@@ -110,6 +110,10 @@ window.updateCanGoBack = function (canGoBack) {
 
 window.IS_IOS = navigator.platform.match(/iPhone|iPod|iPad/)
 
+if (window.IS_MOBILE_APP && window.IS_IOS) {
+  document.body.style.width = '100vw'
+}
+
 // All credit to https://stackoverflow.com/a/11654596/
 function UpdateQueryString (key, value, url) {
   if (!url) url = window.location.href
