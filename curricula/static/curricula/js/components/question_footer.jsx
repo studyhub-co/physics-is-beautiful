@@ -12,7 +12,12 @@ export class Footer extends React.Component {
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
 
     let problemSheet = document.querySelectorAll('.problem-sheet')[0]
-    problemSheet.style.marginBottom = document.getElementById('footer').clientHeight + 'px'
+
+    if (window.IS_IOS) {
+      problemSheet.style.marginBottom = '20px'
+    } else {
+      problemSheet.style.marginBottom = document.getElementById('footer').clientHeight + 'px'
+    }
   }
 
   componentDidUpdate () {
