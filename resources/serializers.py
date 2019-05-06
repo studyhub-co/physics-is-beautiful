@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 
 from profiles.serializers import PublicProfileSerializer
 
@@ -73,13 +73,6 @@ class TextBookSolutionSerializer(serializers.ModelSerializer):
 
 class FullResourceProblemSerializer(serializers.ModelSerializer):
     solutions = TextBookSolutionSerializer(many=True, required=False)
-    # # textbook_section_uuid = serializers.SlugRelatedField(queryset=TextBookChapter.objects.all(),
-    # #                                                      source='textbook_section',
-    # #                                                      slug_field='uuid',
-    # #                                                      many=False,
-    # #                                                      write_only=True,
-    # #                                                      required=False  # we can set existing
-    # #                                                      )
     # textbook_section_id = serializers.PrimaryKeyRelatedField(queryset=TextBookChapter.objects.all(),
     #                                                          source='textbook_section',
     #                                                          many=False,
@@ -121,13 +114,53 @@ class TextBookChapterSerializer(serializers.ModelSerializer):
 class ResourceBaseSerializer(serializers.ModelSerializer):
 
     metadata = ResourceMetaDataSerializer(many=False, required=False)
-    sections = TextBookChapterSerializer(many=True)
+    sections = TextBookChapterSerializer(many=True, required=False)
     owner = PublicProfileSerializer(read_only=True)
 
-    def create(self, validated_data):
-        metadata_data = validated_data.pop('metadata')
+    def save_problems(self, problems_list, textbook_section, resource, posted_by):
+        problems_objects = []
+        for i, problem in enumerate(problems_list):
+            problems_objects.append(
+                ResourceProblem(textbook_section=textbook_section,
+                                title=problem['title'],
+                                resource=resource,
+                                position=i)
+            )
+        # save problems
+        saved_problems = ResourceProblem.objects.bulk_create(problems_objects)
 
-        sections = validated_data.pop('sections')
+        for saved_problem in saved_problems:
+            problem_data = problems_list[saved_problem.position]
+            if 'solutions' in problem_data:
+                solutions_objects = []
+                for y, solution in enumerate(problem_data['solutions']):
+                    solutions_objects.append(
+                        TextBookSolution(pdf_id=solution['pdf']['id'],
+                                         position=y,
+                                         textbook_problem=saved_problem,
+                                         posted_by=posted_by)
+                    )
+                # save solutions
+                TextBookSolution.objects.bulk_create(solutions_objects)
+
+    def check_solution_in_problems(self, problems_list):
+        for problem in problems_list:
+            if 'solutions' in problem and len(problem['solutions']) > 0:
+                return True
+        return False
+
+    def create(self, validated_data):
+        metadata_data = {}
+        if 'metadata' in validated_data:
+            metadata_data = validated_data.pop('metadata')
+
+        sections = []
+        if 'sections' in validated_data:
+            sections = validated_data.pop('sections')
+
+        problems = []
+        if 'problems' in validated_data:
+            problems = validated_data.pop('problems')
 
         if metadata_data:
             try:
@@ -137,9 +170,24 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
         instance = super(ResourceBaseSerializer, self).create(validated_data)
 
-        # TODO need to check that at least one solution exists
+        # add TextBook Resource type
         if instance.resource_type == 'TB':
-            # add TextBook Resource type sections
+            if len(sections) == 0:
+                instance.delete()
+                raise exceptions.ValidationError({"sections": ["This field is required."]})
+
+            # check that at least one solution exists
+            def check_solution(_sections):
+                for _section in _sections:
+                    if 'problems' in section:
+                        return self.check_solution_in_problems(_section['problems'])
+                    #     for problem in section['problems']:
+                    #         if 'solutions' in problem and len(problem['solutions']) > 0:
+                    #             return True
+
+            if not check_solution(sections):
+                instance.delete()
+                raise exceptions.ValidationError({"sections": ["At least one solution required."]})
 
             sections_objects = []
             for i, section in enumerate(sections):
@@ -152,29 +200,53 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
             for saved_section in saved_sections:
                 section_data = sections[saved_section.position]
                 if 'problems' in section_data:
-                    problems_objects = []
-                    for i, problem in enumerate(section_data['problems']):
-                        problems_objects.append(
-                            ResourceProblem(textbook_section=saved_section, title=problem['title'], position=i)
-                        )
-                    # save problems
-                    saved_problems = ResourceProblem.objects.bulk_create(problems_objects)
+                    self.save_problems(problems_list=section_data['problems'],
+                                       textbook_section=saved_section,
+                                       # resourse=instance,
+                                       resourse=None,
+                                       posted_by=validated_data['owner']
+                                       )
 
-                    for saved_problem in saved_problems:
-                        problem_data = section_data['problems'][saved_problem.position]
-                        if 'solutions' in problem_data:
-                            solutions_objects = []
-                            for y, solution in enumerate(problem_data['solutions']):
-                                solutions_objects.append(
-                                    TextBookSolution(pdf_id=solution['pdf']['id'],
-                                                     position=y,
-                                                     textbook_problem=saved_problem,
-                                                     posted_by=validated_data['owner'])
-                                )
-                            # save solutions
-                            TextBookSolution.objects.bulk_create(solutions_objects)
+                    # problems_objects = []
+                    # for i, problem in enumerate(section_data['problems']):
+                    #     problems_objects.append(
+                    #         ResourceProblem(textbook_section=saved_section, title=problem['title'], position=i)
+                    #     )
+                    # # save problems
+                    # saved_problems = ResourceProblem.objects.bulk_create(problems_objects)
+                    #
+                    # for saved_problem in saved_problems:
+                    #     problem_data = section_data['problems'][saved_problem.position]
+                    #     if 'solutions' in problem_data:
+                    #         solutions_objects = []
+                    #         for y, solution in enumerate(problem_data['solutions']):
+                    #             solutions_objects.append(
+                    #                 TextBookSolution(pdf_id=solution['pdf']['id'],
+                    #                                  position=y,
+                    #                                  textbook_problem=saved_problem,
+                    #                                  posted_by=validated_data['owner'])
+                    #             )
+                    #         # save solutions
+                    #         TextBookSolution.objects.bulk_create(solutions_objects)
+        elif instance.resource_type == 'TS':
+            # save standartized test
+            if len(sections) == 0:
+                instance.delete()
+                raise exceptions.ValidationError({"problems": ["This field is required."]})
 
-        ResourceMetaData.objects.create(resource=instance, **metadata_data)
+            if not self.check_solution_in_problems(problems):
+                instance.delete()
+                raise exceptions.ValidationError({"problems": ["At least one solution required."]})
+
+            self.save_problems(problems_list=problems,
+                               textbook_section=None,
+                               resourse=instance,
+                               # resourse=None,
+                               posted_by=validated_data['owner']
+                               )
+
+        if metadata_data:
+            ResourceMetaData.objects.create(resource=instance, **metadata_data)
 
         return instance
 
