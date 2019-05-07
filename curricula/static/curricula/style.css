@@ -601,7 +601,7 @@ img.grayed-out-img {
 /* On mouse-over, add a deeper shadow */
 .card:hover {
     /*box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
-    border: 0.2rem solid #1caff6;
+    border: 2px solid #1caff6;
     color: #1caff6;
 }
 

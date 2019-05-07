@@ -49,7 +49,7 @@ export class ImageWithText extends React.Component {
   }
 
   render () {
-    var cardStyle = {}
+    var cardStyle = {width: '13rem', borderStyle: 'solid', borderWidth:2, borderRadius: 10, padding: 1}
     var buttonStyle = {}
     var hiddenCircle = {}
     hiddenCircle['visibility'] = 'hidden'
@@ -76,8 +76,8 @@ export class ImageWithText extends React.Component {
     if (this.state.checked) {
       cardStyle['backgroundColor'] = '#eafcff'
       buttonStyle['backgroundColor'] = '#eafcff'
-      cardStyle['border'] = '.2rem solid #1caff6'
-      buttonStyle['border'] = '.2rem solid #1caff6'
+      cardStyle['border'] = '2px solid #1caff6'
+      buttonStyle['border'] = '2px solid #1caff6'
     }
 
     var toReturn
@@ -118,13 +118,12 @@ export class ImageWithText extends React.Component {
       // IMAGE + TEXT RADIO + CHECKBOXES
       toReturn =
         <div
-          onClick={this.cardClick.bind(this)} className='card mx-2 mb-3'
-          style={cardStyle} id={this.props.choice.uuid}
+          onClick={this.cardClick.bind(this)}
+          className='card mx-2 mb-3'
+          style={cardStyle}
+          id={this.props.choice.uuid}
         >
           { image }
-          {/*<div className='wrapper'>*/}
-            {/*{ image }*/}
-          {/*</div>*/}
           <div className={'card-body'} style={{padding: '.5rem'}}>
             {this.props.type === 'RADIO_BUTTON'
               ? <div className='pure-radiobutton' style={{float: 'left', width: '90%'}}>
