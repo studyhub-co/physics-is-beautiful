@@ -48,8 +48,12 @@ module.exports = function (env) {
           exclude: /node_modules/,
           query: {
             presets: [
-              'react',
-              ['env', { 'targets': { 'chrome': 41 } }]
+              ['env', {
+                'targets': { 'chrome': 41 },
+                'uglify': true,
+                'useBuiltIns': false
+              }],
+              'react'
             ]
           }
         },

@@ -114,19 +114,19 @@ export default class AddResourceProblemsView extends React.Component {
     this.props.onPrevStep(this.state.problemsList)
   }
 
-  onChangeProblemTitle (newTitle, chapter, position) {
-    // if (!newTitle) { return }
-    // var chaptersList = this.state.chaptersList
-    // for (var x = 0; x < chaptersList.length; x++) {
-    //   if (chapter.position === chaptersList[x].position) {
-    //     chaptersList[x].problems[position].title = newTitle
-    //     this.setState({
-    //       chaptersList: chaptersList,
-    //       lastAddedProblem: null
-    //     })
-    //     break
-    //   }
-    // }
+  onChangeProblemTitle (newTitle, position) {
+    if (!newTitle) { return }
+    var problemsList = this.state.problemsList
+    for (var x = 0; x < problemsList.length; x++) {
+      if (position === problemsList[x].position) {
+        problemsList[x].title = newTitle
+        this.setState({
+          problemsList: problemsList,
+          lastAddedProblem: null
+        })
+        break
+      }
+    }
   }
 
   removeProblemClick (problem) {
@@ -134,7 +134,7 @@ export default class AddResourceProblemsView extends React.Component {
     problemsList.splice(problem.position, 1)
 
     // recalculate problems positions
-    for (var y = 0; y < problemsList.length; y++) {
+    for (var y = problem.position; y < problemsList.length; y++) {
       problemsList[y].position--
     }
 

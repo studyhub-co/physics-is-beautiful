@@ -22,6 +22,8 @@ import AddResourceSolutionsView from '../AddStandardizedTestResourceSteps/3_addR
 // import { checkHttpStatus, getAxios } from '../../utils'
 // import { API_PREFIX } from '../../utils/config'
 import * as googleCreators from '../../actions/google'
+import { checkHttpStatus, getAxios } from '../../utils'
+import { API_PREFIX } from '../../utils/config'
 
 class AddStandardizedTestResourceView extends React.Component {
 
@@ -92,8 +94,14 @@ class AddStandardizedTestResourceView extends React.Component {
       }
     }
 
-    this.props.resourcesActions.createResource(standardizedTestResource)
-    // { resource_type: 'TB', metadata: {data: json(this.props.selectedGoogleBook), sections: chaptersList} }
+    const uploadExamPdf = (resource) => {
+      const formData = new FormData()
+      formData.append('file', this.state.pdfFile, this.state.pdfFile.name)
+      formData.append('resourceUuid', resource.uuid)
+      getAxios().post(API_PREFIX + 'upload_exam_pdf/', formData)
+    }
+
+    this.props.resourcesActions.createResource(standardizedTestResource, uploadExamPdf)
   }
 
   handleTestNumber (e) {

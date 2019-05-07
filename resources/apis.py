@@ -8,7 +8,7 @@ from django.db.models import F, Count, Prefetch, Max
 from django.db import transaction
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import permissions, status, mixins, filters
+from rest_framework import permissions, status, mixins, filters, serializers
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
@@ -27,9 +27,11 @@ from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, Separ
 from editor.apis_public import get_search_mixin
 
 from .permissions import IsStaffOrReadOnly, EditDeleteByOwnerOrStaff
-from .models import Resource, TextBookSolutionPDF, RecentUserResource, ResourceProblem, TextBookSolution, TextBookChapter
+from .models import Resource, TextBookSolutionPDF, RecentUserResource, ResourceProblem, TextBookSolution, \
+    TextBookChapter, StandardizedTestResource
 from .serializers import ResourceBaseSerializer, ResourceListSerializer, TextBookSolutionPDFSerializer, \
-    FullResourceProblemSerializer, TextBookSolutionSerializer, ResourceProblemSerializer
+    FullResourceProblemSerializer, TextBookSolutionSerializer, ResourceProblemSerializer, \
+    StandardizedTestInfoSerializer
 from .serializers_flat import TextBookChapterSerializerFlat, ResourceProblemSerializerFlat
 from .settings import TEXTBOOK_PROBLEMS_SOLUTIONS_TOPIC_ID, SYSTEM_USER_ID, TEXTBOOK_PROBLEMS_TOPIC_ID, \
     TEXTBOOK_RESOURCES_TOPIC_ID
@@ -232,15 +234,21 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
     serializer_class = ResourceBaseSerializer
     list_serializer_class = ResourceListSerializer
     pagination_class = StandardResultsSetPagination
-    queryset = Resource.objects.all().\
-        order_by('-created_on').\
-        select_related('metadata', 'owner'). \
-        prefetch_related(Prefetch('sections__problems',
-                         queryset=ResourceProblem.objects.
-                                  annotate(count_solutions=Count('solutions', distinct=True)))
-                         )\
-        .prefetch_related('sections__problems__solutions__posted_by__user')\
-        .prefetch_related('sections__problems__solutions__pdf')
+    queryset = Resource.objects.all() \
+        .order_by('-created_on') \
+        .select_related('metadata', 'owner') \
+        .prefetch_related(Prefetch('sections__problems',
+                          queryset=ResourceProblem.objects.
+                                   annotate(count_solutions=Count('solutions', distinct=True)))
+                          ) \
+        .prefetch_related(Prefetch('problems',
+                                   queryset=ResourceProblem.objects.
+                                   annotate(count_solutions=Count('solutions', distinct=True)))
+                          ) \
+        .prefetch_related('sections__problems__solutions__posted_by__user') \
+        .prefetch_related('sections__problems__solutions__pdf') \
+        .prefetch_related('problems__solutions__posted_by__user') \
+        .prefetch_related('problems__solutions__pdf')
     filter_backends = (filters.OrderingFilter, RecentlyFilterBackend)  # DjangoFilterBackend,
     lookup_field = 'uuid'
     # search_fields = ['title', ] # title is in metadata
@@ -256,6 +264,32 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
                 select_related('metadata', 'owner')
 
         return queryset
+
+    @action(methods=['POST'],
+            detail=False,
+            permission_classes=[permissions.IsAuthenticated, ],
+            parser_classes=(FormParser, MultiPartParser, FileUploadParser))
+    def upload_exam_pdf(self, request):
+
+        data = request.data
+        if 'resourceUuid' not in data:
+            raise ValidationError('resourceUuid not found')
+        resource_uuid = data.pop('resourceUuid')[0]
+
+        try:
+            standardized_test_info = StandardizedTestResource.objects.get(resource__uuid=resource_uuid)
+        except StandardizedTestResource.DoesNotExist:
+            raise ValidationError('resource not found')
+
+        serializer = StandardizedTestInfoSerializer(standardized_test_info,
+                                                    data={'pdf_of_exam': data['file']},
+                                                    partial=True
+                                                    )
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+        return Response(serializer.data)
 
     @action(methods=['POST'],
             detail=False,
@@ -336,7 +370,8 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
                         if hasattr(instance, 'standardized_test_info'):
                             # Physics GRE 2008 - test 9677
                             title = 'Physics GRE {} - test {}' \
-                                .format(instance.standardized_test_info.test_year, instance.test_number.test_year)
+                                .format(instance.standardized_test_info.test_year,
+                                        instance.standardized_test_info.test_year)
 
                     new_thread = Thread.objects.create(title=title[:199], topic=resource_topic, op=resource_post)
                     instance.thread = new_thread

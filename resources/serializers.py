@@ -2,7 +2,8 @@ from rest_framework import serializers, exceptions
 
 from profiles.serializers import PublicProfileSerializer
 
-from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, ResourceProblem, TextBookSolution
+from .models import Resource, TextBookSolutionPDF, ResourceMetaData, TextBookChapter, ResourceProblem, \
+    TextBookSolution, StandardizedTestResource
 
 
 class ResourceMetaDataSerializer(serializers.ModelSerializer):
@@ -95,7 +96,12 @@ class ResourceProblemSerializer(serializers.ModelSerializer):
         return obj.count_solutions if hasattr(obj, 'count_solutions') else 0
 
     def get_resource_uuid(self, obj):
-        return obj.textbook_section.resource.uuid  # TODO check optimization
+        if obj.textbook_section:
+            return obj.textbook_section.resource.uuid  # TODO check optimization
+        elif obj.resource:
+            return obj.resource.uuid
+        else:
+            return None
 
     class Meta:
         model = ResourceProblem
@@ -111,10 +117,19 @@ class TextBookChapterSerializer(serializers.ModelSerializer):
         fields = ['title', 'problems', 'position', 'id', 'show_ad']
 
 
+class StandardizedTestInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StandardizedTestResource
+        fields = '__all__'
+        read_only_fields = ['resource', ]
+
+
 class ResourceBaseSerializer(serializers.ModelSerializer):
 
     metadata = ResourceMetaDataSerializer(many=False, required=False)
+    standardized_test_info = StandardizedTestInfoSerializer(many=False, required=False)
     sections = TextBookChapterSerializer(many=True, required=False)
+    problems = ResourceProblemSerializer(many=True, required=False)
     owner = PublicProfileSerializer(read_only=True)
 
     def save_problems(self, problems_list, textbook_section, resource, posted_by):
@@ -141,6 +156,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
                                          posted_by=posted_by)
                     )
                 # save solutions
+                # TODO ignore_conflicts https://docs.djangoproject.com/en/2.2/ref/models/querysets/#bulk-create
                 TextBookSolution.objects.bulk_create(solutions_objects)
 
     def check_solution_in_problems(self, problems_list):
@@ -153,6 +169,9 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
         metadata_data = {}
         if 'metadata' in validated_data:
             metadata_data = validated_data.pop('metadata')
+
+        if 'standardized_test_info' in validated_data:
+            standardized_test_info = validated_data.pop('standardized_test_info')
 
         sections = []
         if 'sections' in validated_data:
@@ -179,11 +198,8 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
             # check that at least one solution exists
             def check_solution(_sections):
                 for _section in _sections:
-                    if 'problems' in section:
+                    if 'problems' in _section:
                         return self.check_solution_in_problems(_section['problems'])
-                    #     for problem in section['problems']:
-                    #         if 'solutions' in problem and len(problem['solutions']) > 0:
-                    #             return True
 
             if not check_solution(sections):
                 instance.delete()
@@ -203,7 +219,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
                     self.save_problems(problems_list=section_data['problems'],
                                        textbook_section=saved_section,
                                        # resourse=instance,
-                                       resourse=None,
+                                       resource=None,
                                        posted_by=validated_data['owner']
                                        )
 
@@ -230,7 +246,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
                     #         TextBookSolution.objects.bulk_create(solutions_objects)
         elif instance.resource_type == 'TS':
             # save standartized test
-            if len(sections) == 0:
+            if len(problems) == 0:
                 instance.delete()
                 raise exceptions.ValidationError({"problems": ["This field is required."]})
 
@@ -240,12 +256,25 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
             self.save_problems(problems_list=problems,
                                textbook_section=None,
-                               resourse=instance,
+                               resource=instance,
                                # resourse=None,
                                posted_by=validated_data['owner']
                                )
 
+            # save test info
+            standardized_test_info['resource'] = instance
+            standardized_test_info_serializer = \
+                StandardizedTestInfoSerializer(data=standardized_test_info)
+
+            if standardized_test_info_serializer.is_valid():
+                StandardizedTestResource.objects.create(resource=instance,
+                                                        **standardized_test_info_serializer.validated_data)
+            else:
+                instance.delete()
+                raise serializers.ValidationError(standardized_test_info_serializer.errors)
+
         if metadata_data:
+            # todo validate by serializer (see upper)
             ResourceMetaData.objects.create(resource=instance, **metadata_data)
 
         return instance
@@ -253,7 +282,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
         fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner',
-                  'thread']
+                  'thread', 'problems', 'standardized_test_info']
         read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views', 'thread')
 
 
