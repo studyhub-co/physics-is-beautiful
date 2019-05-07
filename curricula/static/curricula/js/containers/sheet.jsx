@@ -38,6 +38,7 @@ class LessonCompleteSheet extends React.Component {
   render () {
     return (
       <div className='container problem-sheet' style={{
+        height: window.IS_MOBILE_APP ? 'auto !important' : 'calc(100% - 60px)',
         top: window.IS_MOBILE_APP ? '2rem' : '0px',
         minWidth: window.IS_IOS ? 'auto' : '80vw'}
       }>
@@ -97,7 +98,11 @@ class QuestionSheet extends React.Component {
 
   render () {
     return (
-      <div className='container problem-sheet' style={window.IS_MOBILE_APP ? {top: '2rem'} : {top: '0px'}}>
+      <div className='container problem-sheet' style={{
+        height: window.IS_MOBILE_APP ? 'auto !important' : 'calc(100% - 60px)',
+        top: window.IS_MOBILE_APP ? '2rem' : '0px',
+        minWidth: window.IS_IOS ? 'auto' : '80vw'}
+      }>
         <Prompt message='Changes you made may not be saved.' />
         <Question
           question={this.props.question}
