@@ -83,11 +83,12 @@ class AddStandardizedTestResourceView extends React.Component {
 
   onFinish (problemsList) {
     // create resource
-    var standardizedTestResource = {
+    const standardizedTestResource = {
       resource_type: 'TS',
       problems: problemsList,
       standardized_test_info: {
-        // test_number:
+        test_number: this.state.testNumber,
+        test_year: this.state.testYear
       }
     }
 
@@ -156,7 +157,7 @@ class AddStandardizedTestResourceView extends React.Component {
   render () {
     var toReturn
 
-    var numberOfProblems = this.state.numberOfProblems
+    const numberOfProblems = this.state.numberOfProblems
 
     if (this.state.step === 0) {
       toReturn = <div>

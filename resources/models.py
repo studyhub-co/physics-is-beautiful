@@ -74,9 +74,15 @@ class Resource(models.Model):
 @receiver(models.signals.post_save, sender=Resource)
 def save_title(sender, instance, *args, **kwargs):
     """ add denorm title field """
-    if not instance.title and hasattr(instance, 'metadata'):
-        instance.title = instance.metadata.data['volumeInfo']['title']
-        instance.save()
+    if not instance.title:
+        if instance.resource_type == Resource.TEXTBOOK and hasattr(instance, 'metadata'):
+            instance.title = instance.metadata.data['volumeInfo']['title']
+            instance.save()
+        elif instance.resource_type == Resource.TEST and hasattr(instance, 'standardized_test_info'):
+            # Physics GRE 2008 - test 9677
+            instance.title = 'Physics GRE {} - test {}'\
+                .format(instance.standardized_test_info.test_year, instance.test_number.test_year)
+            instance.save()
 
 # TODO signal for remove djedit Topic onDelete resource
 

@@ -43,11 +43,14 @@ module.exports = function (env) {
     module: {
       loaders: [
         {
-          test: /\.jsx?$/,
+          test: /\.(js|jsx)$/,
           loader: 'babel-loader',
           exclude: /node_modules/,
           query: {
-            presets: ['es2015', 'react']
+            presets: [
+              'react',
+              ['env', { 'targets': { 'chrome': 41 } }]
+            ]
           }
         },
         {
