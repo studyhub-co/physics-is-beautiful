@@ -13,6 +13,7 @@ import * as resourcesCreators from '../../actions/resources'
 import { AdblockDetect } from '../../components/adblockDetect'
 
 import TextBookResourceView from './textBookResourceView'
+import StandardizedTestResourceView from './standardizedTestResourceView'
 
 class ResourceView extends React.Component {
   componentDidMount () {
@@ -38,6 +39,9 @@ class ResourceView extends React.Component {
         </Container>
         { this.props.resource && this.props.resource.resource_type === 'TB'
           ? <TextBookResourceView resource={this.props.resource} />
+          : null }
+        { this.props.resource && this.props.resource.resource_type === 'TS'
+          ? <StandardizedTestResourceView resource={this.props.resource} />
           : null }
       </Sheet>
     )

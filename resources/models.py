@@ -81,7 +81,7 @@ def save_title(sender, instance, *args, **kwargs):
         elif instance.resource_type == Resource.TEST and hasattr(instance, 'standardized_test_info'):
             # Physics GRE 2008 - test 9677
             instance.title = 'Physics GRE {} - test {}'\
-                .format(instance.standardized_test_info.test_year, instance.test_number.test_year)
+                .format(instance.standardized_test_info.test_year, instance.test_number.test_number)
             instance.save()
 
 # TODO signal for remove djedit Topic onDelete resource
@@ -133,10 +133,6 @@ class ResourceProblem(models.Model):
     # resource = models.ForeignKey(Resource, related_name='problems')
 
     def get_frontend_url(self):
-        # return '/resources/{}/problems/{}/{}/'.format(
-        #     slugify(self.textbook_section.resource.title),
-        #     slugify(self.title),
-        #     self.uuid)
         # TODO check resource type
         try:
             return '/resources/{}/problems/{}/{}/'.format(

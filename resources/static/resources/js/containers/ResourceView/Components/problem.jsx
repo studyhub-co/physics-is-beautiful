@@ -20,7 +20,18 @@ let ProblemClass = class Problem extends React.Component {
     var problemViewUrl = null
 
     if (this.props.resource && this.props.problem) {
-      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      let resourceTitle = this.props.resource.title
+      // TODO refactor this
+      if (!resourceTitle && this.props.resource.metadata) {
+        try {
+          resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+        } catch (e) {
+          if (e instanceof TypeError) {
+            resourceTitle = 'Unknown resource'
+          } else throw e
+        }
+      }
+
       var problemTitle = this.props.problem.title
 
       problemViewUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +

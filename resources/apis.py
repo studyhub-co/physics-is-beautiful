@@ -361,19 +361,19 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
 
                 with transaction.atomic():
                     resource_post = Post.objects.create(created_by_id=SYSTEM_USER_ID)
-                    title = '{}'.format('Unknown resource')
+                    thread_title = '{}'.format('Unknown resource')
                     if instance.resource_type == Resource.TEXTBOOK:
                         # get resourse title from metadata
                         if hasattr(instance, 'metadata') and 'title' in instance.metadata.data['volumeInfo']:
-                            title = '{}'.format(instance.metadata.data['volumeInfo']['title'])
+                            thread_title = '{}'.format(instance.metadata.data['volumeInfo']['title'])
                     elif instance.resource_type == Resource.TEST:
                         if hasattr(instance, 'standardized_test_info'):
                             # Physics GRE 2008 - test 9677
-                            title = 'Physics GRE {} - test {}' \
+                            thread_title = 'Physics GRE {} - test {}' \
                                 .format(instance.standardized_test_info.test_year,
                                         instance.standardized_test_info.test_year)
 
-                    new_thread = Thread.objects.create(title=title[:199], topic=resource_topic, op=resource_post)
+                    new_thread = Thread.objects.create(title=thread_title[:199], topic=resource_topic, op=resource_post)
                     instance.thread = new_thread
 
         # refresh user last date access

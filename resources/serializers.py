@@ -169,9 +169,15 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
         metadata_data = {}
         if 'metadata' in validated_data:
             metadata_data = validated_data.pop('metadata')
+            try:
+                validated_data['title'] = metadata_data['data']['volumeInfo']['title']
+            except KeyError:
+                validated_data['title'] = 'Unknown resource'
 
         if 'standardized_test_info' in validated_data:
             standardized_test_info = validated_data.pop('standardized_test_info')
+            validated_data['title'] = 'Physics GRE {} - test {}'\
+                .format(standardized_test_info.get('test_year', ''), standardized_test_info.get('test_number', ''))
 
         sections = []
         if 'sections' in validated_data:
@@ -180,12 +186,6 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
         problems = []
         if 'problems' in validated_data:
             problems = validated_data.pop('problems')
-
-        if metadata_data:
-            try:
-                validated_data['title'] = metadata_data['data']['volumeInfo']['title']
-            except:
-                pass
 
         instance = super(ResourceBaseSerializer, self).create(validated_data)
 
@@ -244,8 +244,8 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
                     #             )
                     #         # save solutions
                     #         TextBookSolution.objects.bulk_create(solutions_objects)
+        # add standartized test resource
         elif instance.resource_type == 'TS':
-            # save standartized test
             if len(problems) == 0:
                 instance.delete()
                 raise exceptions.ValidationError({"problems": ["This field is required."]})
@@ -282,7 +282,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
         fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'sections', 'count_views', 'owner',
-                  'thread', 'problems', 'standardized_test_info']
+                  'thread', 'problems', 'standardized_test_info', 'title']
         read_only_fields = ('uuid',  'created_on', 'updated_on', 'count_views', 'thread')
 
 
@@ -295,7 +295,7 @@ class ResourceListSerializer(ResourceBaseSerializer):
     #     return serializer.data
 
     class Meta(ResourceBaseSerializer.Meta):
-        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'count_views']
+        fields = ['uuid', 'created_on', 'updated_on', 'resource_type', 'metadata', 'count_views', 'title']
 
 
 class TextBookSolutionPDFSerializer(serializers.ModelSerializer):
