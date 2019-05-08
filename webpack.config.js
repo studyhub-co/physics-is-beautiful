@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = function (env) {
   const MODE = (env && 'NODE_ENV' in env) ? env.NODE_ENV : 'production'
@@ -33,7 +34,7 @@ module.exports = function (env) {
           'NODE_ENV': JSON.stringify(MODE)
         }
       }),
-      // new webpack.optimize.UglifyJsPlugin(), // minify everything
+      new UglifyJsPlugin(), // minify everything
       new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
     ]
       : [
