@@ -99,21 +99,26 @@ class ResourceProblemsViewSet(SeparateFlatCreateUpdateObjectSerializerMixin,
                 except Topic.DoesNotExist:
                     problems_topic = Topic.objects.create(title='Textbook problems', id=TEXTBOOK_PROBLEMS_TOPIC_ID)
 
+                # Problem title
                 with transaction.atomic():
                     problem_post = Post.objects.create(created_by_id=SYSTEM_USER_ID)
-                    title = ''
-                    if instance.textbook_section.resource.resource_type == 'TB':
+                    thread_title = ''
+                    if instance.textbook_section and \
+                            instance.textbook_section.resource.resource_type == 'TB':
                         # get resourse title from metadata
                         if 'title' in instance.textbook_section.resource.metadata.data['volumeInfo']:
-                            title = '{}'.format(instance.textbook_section.resource.metadata.data['volumeInfo']['title'])
+                            thread_title = '{}'.format(instance.textbook_section.resource.metadata.data['volumeInfo']['title'])
+                    elif instance.resource and \
+                            instance.resource.resource_type == 'TS':
+                        thread_title = '{}'.format(instance.resource.title)
                     else:
-                        title = '{}'.format('Unknown resource')
+                        thread_title = '{}'.format('Unknown resource')
 
-                    title = '{} / {}'.format(title, instance.textbook_section.title)
-                    title = '{} / {}'.format(title, instance.title)
-                    # title = '{} / {}'.format(title, instance.title)
+                    if instance.textbook_section:
+                        thread_title = '{} / {}'.format(thread_title, instance.textbook_section.title)
+                    thread_title = '{} / {}'.format(thread_title, instance.title)
 
-                    new_thread = Thread.objects.create(title=title[:199], topic=problems_topic, op=problem_post)
+                    new_thread = Thread.objects.create(title=thread_title[:199], topic=problems_topic, op=problem_post)
 
             # increment view count
             # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
@@ -196,19 +201,24 @@ class TextBookSolutionsViewSet(mixins.RetrieveModelMixin,
             if not instance.thread:
                 with transaction.atomic():
                     solutions_post = Post.objects.create(created_by_id=SYSTEM_USER_ID)
-                    title = ''
-                    if instance.textbook_problem.textbook_section.resource.resource_type == 'TB':
+                    thread_title = ''
+                    if instance.textbook_problem.textbook_section and \
+                            instance.textbook_problem.textbook_section.resource.resource_type == 'TB':
                         # get resourse title from metadata
                         if 'title' in instance.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']:
-                            title = '{}'.format(instance.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']['title'])
+                            thread_title = '{}'.format(instance.textbook_problem.textbook_section.resource.metadata.data['volumeInfo']['title'])
+                    elif instance.textbook_problem.resource and \
+                            instance.textbook_problem.resource.resource_type == 'TS':
+                        thread_title = '{}'.format(instance.textbook_problem.resource.title)
                     else:
-                        title = '{}'.format('Unknown resource')
+                        thread_title = '{}'.format('Unknown resource')
 
-                    title = '{} / {}'.format(title, instance.textbook_problem.textbook_section.title)
-                    title = '{} / {}'.format(title, instance.textbook_problem.title)
-                    title = '{} / {}'.format(title, instance.title)
+                    if instance.textbook_problem.textbook_section:
+                        thread_title = '{} / {}'.format(thread_title, instance.textbook_problem.textbook_section.title)
+                    thread_title = '{} / {}'.format(thread_title, instance.textbook_problem.title)
+                    thread_title = '{} / {}'.format(thread_title, instance.title)
 
-                    new_thread = Thread.objects.create(title=title[:199], topic=solutions_topic, op=solutions_post)
+                    new_thread = Thread.objects.create(title=thread_title[:199], topic=solutions_topic, op=solutions_post)
 
             # increment view count
             # Resource.unmoderated_objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)

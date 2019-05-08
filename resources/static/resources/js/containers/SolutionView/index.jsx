@@ -29,8 +29,9 @@ import * as googleCreators from '../../actions/google'
 import AdSense from 'react-adsense'
 import { slugify } from '../../utils/urls'
 import {AdblockDetect} from '../../components/adblockDetect'
+import { checkNestedProp } from '../../utils'
 
-class TextBookSolutionView extends React.Component {
+class SolutionView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -50,6 +51,7 @@ class TextBookSolutionView extends React.Component {
     this.handleChangeNumberOfPdfPage = this.handleChangeNumberOfPdfPage.bind(this)
     this.onZoomPdfClick = this.onZoomPdfClick.bind(this)
     this.onScaleUpdated = this.onScaleUpdated.bind(this)
+    this.getResourceTitle = this.getResourceTitle.bind(this)
 
     // !=== part of google proxy pdf viewer
     // this.loadExternalGooglePdf = this.loadExternalGooglePdf.bind(this)
@@ -78,6 +80,22 @@ class TextBookSolutionView extends React.Component {
     }
   }
 
+  getResourceTitle () {
+    if (!this.props.resource) return
+
+    let resourceTitle = this.props.resource.title
+
+    if (!resourceTitle) {
+      if (this.props.resource.metadata) {
+        resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      } else {
+        resourceTitle = 'Unknown resource'
+      }
+    }
+
+    return resourceTitle
+  }
+
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.solution !== this.props.solution) {
       // reload thread
@@ -98,13 +116,7 @@ class TextBookSolutionView extends React.Component {
       (!this.titleSet ||
         prevProps.problem.uuid !== this.props.problem.uuid ||
         prevProps.solution.uuid !== this.props.solution.uuid)) {
-      var resourceTitle
-
-      if (this.props.resource.metadata) {
-        resourceTitle = this.props.resource.metadata.data.volumeInfo.title
-      } else {
-        resourceTitle = 'Unknown resource'
-      }
+      let resourceTitle = this.getResourceTitle()
 
       // Principles of Quantum Mechanics: 1.11 Solution - Physics is Beautiful
       document.title = resourceTitle + ': ' + this.props.problem.title + ': ' + this.props.solution.title +
@@ -114,7 +126,7 @@ class TextBookSolutionView extends React.Component {
 
       // authors
       var authorsStr
-      if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+      if (checkNestedProp(this.props, ...'resource.metadata.data.volumeInfo.authors'.split('.'))) {
         authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
           return author
         }).join(', ')
@@ -168,8 +180,9 @@ class TextBookSolutionView extends React.Component {
 
   onPrevNextSolutionClick (value) {
     if (this.props.solution && this.props.problem) {
-      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
-      var problemTitle = this.props.problem.title
+      // var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      let resourceTitle = this.getResourceTitle()
+      let problemTitle = this.props.problem.title
 
       for (let x = 0; x < this.props.problem.solutions.length; x++) {
         if (this.props.problem.solutions[x].uuid === this.props.solution.uuid) {
@@ -345,8 +358,9 @@ class TextBookSolutionView extends React.Component {
     var problemUrl = null
 
     if (this.props.resource && this.props.problem.title) {
-      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
-      var problemTitle = this.props.problem.title
+      // var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      let resourceTitle = this.getResourceTitle()
+      let problemTitle = this.props.problem.title
 
       problemUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +
         slugify(problemTitle) + '/' + this.props.problem.uuid + '/'
@@ -375,9 +389,7 @@ class TextBookSolutionView extends React.Component {
             <Row>
               <Col sm={12} md={12}>
                 <div className={'text-align-center blue-title'}>
-                  { this.props.resource.metadata
-                    ? this.props.resource.metadata.data.volumeInfo.title
-                    : 'Unknown resource' }
+                  { this.getResourceTitle() }
                 </div>
               </Col>
             </Row>
@@ -513,7 +525,7 @@ class TextBookSolutionView extends React.Component {
   }
 }
 
-TextBookSolutionView.propTypes = {
+SolutionView.propTypes = {
   // actions
   resourcesActions: PropTypes.shape({
     fetchProblem: PropTypes.func.isRequired,
@@ -564,5 +576,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TextBookSolutionView)
-export { TextBookSolutionView as TextBookSolutionViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(SolutionView)
+export { SolutionView as TextBookSolutionViewNotConnected }

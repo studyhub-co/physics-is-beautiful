@@ -16,6 +16,8 @@ import { slugify } from '../../utils/urls'
 import { Thread } from '../../components/reactDjeddit/thread'
 import { AdblockDetect } from '../../components/adblockDetect'
 
+import { checkNestedProp } from '../../utils/index'
+
 import {
   handleFileChange,
   onChangeExternalUrl
@@ -50,7 +52,7 @@ class HorizontalOptionToggle extends React.Component {
   }
 }
 
-class TextBookProblemView extends React.Component {
+class ProblemView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -63,6 +65,7 @@ class TextBookProblemView extends React.Component {
     this.addSolution = this.addSolution.bind(this)
     this.handleOrderSelect = this.handleOrderSelect.bind(this)
     this.onChangeSolutionTitle = this.onChangeSolutionTitle.bind(this)
+    this.getResourceTitle = this.getResourceTitle.bind(this)
   }
 
   componentDidMount () {
@@ -82,6 +85,22 @@ class TextBookProblemView extends React.Component {
     }
   }
 
+  getResourceTitle () {
+    if (!this.props.resource) return
+
+    let resourceTitle = this.props.resource.title
+
+    if (!resourceTitle) {
+      if (this.props.resource.metadata) {
+        resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      } else {
+        resourceTitle = 'Unknown resource'
+      }
+    }
+
+    return resourceTitle
+  }
+
   componentDidUpdate (prevProps) {
     if (prevProps.problem !== this.props.problem) {
       // reload thread
@@ -91,27 +110,30 @@ class TextBookProblemView extends React.Component {
     // Title / tags
     if (this.props.resource && this.props.problem &&
       (!this.titleSet || prevProps.problem.uuid !== this.props.problem.uuid)) {
-      var resourceTitle
-
-      if (this.props.resource.metadata) {
-        resourceTitle = this.props.resource.metadata.data.volumeInfo.title
-      } else {
-        resourceTitle = 'Unknown resource'
-      }
 
       var description
 
       // authors
       var authorsStr
-      if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+
+      if (checkNestedProp(this.props, ...'resource.metadata.data.volumeInfo.authors'.split('.'))) {
         authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
           return author
         }).join(', ')
       }
+
+      // if (this.props.resource.metadata &&
+      //   this.props.resource.metadata.data &&
+      //   this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+      //   authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
+      //     return author
+      //   }).join(', ')
+      // }
+
       // Principles of Quantum Mechanics 1.11 Solutions - Physics is Beautiful
-      document.title = authorsStr + ' ' + resourceTitle + ' ' + this.props.problem.title + ' Solution - Physics is Beautiful'
+      document.title = authorsStr + ' ' + this.getResourceTitle() + ' ' + this.props.problem.title + ' Solution - Physics is Beautiful'
       // Problem 1.11 PDF solutions from Principles of Quantum Mechanics by R. Shankar
-      description = 'Problem ' + this.props.problem.title + ' PDF solution from ' + resourceTitle + ' by ' + authorsStr
+      description = 'Problem ' + this.props.problem.title + ' PDF solution from ' + this.getResourceTitle() + ' by ' + authorsStr
 
       var meta = document.createElement('meta')
       meta.name = 'description'
@@ -163,7 +185,7 @@ class TextBookProblemView extends React.Component {
 
     if (this.props.resource && this.props.problem) {
       //path={BASE_URL + ':resource_title([A-Za-z0-9_-]+)/problems/:problem_title([A-Za-z0-9_-]+)/solutions/:solution_title([A-Za-z0-9_-]+)/:uuid'}
-      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      var resourceTitle = this.getResourceTitle()
       var problemTitle = this.props.problem.title
 
       history.push(BASE_URL +
@@ -230,7 +252,7 @@ class TextBookProblemView extends React.Component {
     }
 
     if (this.props.resource) {
-      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      let resourceTitle = this.getResourceTitle()
       var resourceUrl = BASE_URL + slugify(resourceTitle) + '/' + this.props.resource.uuid + '/'
       //history.push(BASE_URL + this.props.match.params['resource_uuid'])
     }
@@ -253,9 +275,8 @@ class TextBookProblemView extends React.Component {
           ? <Container fluid>
             <Row>
               <Col sm={12} md={12}>
-                <div className={'text-align-center blue-title'}>{this.props.resource && this.props.resource.metadata
-                  ? this.props.resource.metadata.data.volumeInfo.title
-                  : 'Unknown resource'}
+                <div className={'text-align-center blue-title'}>
+                  {this.getResourceTitle()}
                 </div>
               </Col>
             </Row>
@@ -279,7 +300,6 @@ class TextBookProblemView extends React.Component {
               <Col sm={9} md={9} />
               <Col sm={2} md={2}>
                 <Button onClick={() => { this.onPostSolutionClick() }} className={'common-button'}>
-                  {/*<Glyphicon glyph='plus' /> Post solution*/}
                   <FaPlus /> Post solution
                 </Button>
               </Col>
@@ -379,7 +399,6 @@ class TextBookProblemView extends React.Component {
                               </a>&nbsp;-&nbsp;
                               <Moment fromNow>{solution.created_on}</Moment></div>
                           </td>
-                          {/*<td style={{textAlign: 'center'}}><Glyphicon glyph='comment' />&nbsp;{solution.count_comments}</td>*/}
                           <td style={{textAlign: 'center'}}><FaCommentAlt />&nbsp;{solution.count_comments}</td>
                           { getHaveSolutionEditAccess(solution)
                             ? <td className={'solution-dropdown-menu'}>
@@ -427,7 +446,7 @@ class TextBookProblemView extends React.Component {
   }
 }
 
-TextBookProblemView.propTypes = {
+ProblemView.propTypes = {
   // actions
   resourcesActions: PropTypes.shape({
     fetchProblem: PropTypes.func.isRequired,
@@ -477,5 +496,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TextBookProblemView)
-export { TextBookProblemView as TextBookProblemViewNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(ProblemView)
+export { ProblemView as TextBookProblemViewNotConnected }

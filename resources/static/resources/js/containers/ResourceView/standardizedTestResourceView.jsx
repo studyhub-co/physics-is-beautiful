@@ -12,6 +12,7 @@ import { Thread } from '../../components/reactDjeddit/thread'
 import * as resourcesCreators from '../../actions/resources'
 import * as profileCreators from '../../actions/profile'
 import * as djedditCreators from '../../actions/djeddit'
+import { checkNestedProp } from '../../utils'
 
 class StandardizedTestResourceView extends React.Component {
   constructor (props) {
@@ -63,9 +64,7 @@ class StandardizedTestResourceView extends React.Component {
 
       // authors
       let authorsStr = ''
-      if (this.props.resource.metadata &&
-        this.props.resource.metadata.data &&
-        this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+      if (checkNestedProp(this.props, ...'resource.metadata.data.volumeInfo.authors'.split('.'))) {
         authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
           return author
         }).join(' ')
@@ -176,17 +175,16 @@ class StandardizedTestResourceView extends React.Component {
 
     let title = this.props.resource.title
 
-      // TODO refactor this
-      if (!title && this.props.resource.metadata) {
-        try {
-          title = this.props.resource.metadata.data.volumeInfo.title
-        } catch (e) {
-          if (e instanceof TypeError) {
-            title = 'Unknown resource'
-          } else throw e
-        }
+    // TODO refactor this
+    if (!title && this.props.resource.metadata) {
+      try {
+        title = this.props.resource.metadata.data.volumeInfo.title
+      } catch (e) {
+        if (e instanceof TypeError) {
+          title = 'Unknown resource'
+        } else throw e
       }
-
+    }
 
     return (
       <Container fluid>

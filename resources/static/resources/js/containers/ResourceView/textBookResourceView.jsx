@@ -12,6 +12,7 @@ import { Thread } from '../../components/reactDjeddit/thread'
 import * as resourcesCreators from '../../actions/resources'
 import * as profileCreators from '../../actions/profile'
 import * as djedditCreators from '../../actions/djeddit'
+import { checkNestedProp } from '../../utils'
 
 class TextBookResourceView extends React.Component {
   constructor (props) {
@@ -60,7 +61,7 @@ class TextBookResourceView extends React.Component {
       }
       // authors
       var authorsStr
-      if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+      if (checkNestedProp(this.props, ...'resource.metadata.data.volumeInfo.authors'.split('.'))) {
         authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
           return author
         }).join(' ')
@@ -301,7 +302,7 @@ class TextBookResourceView extends React.Component {
                     <b>Author:</b>
                   </Col>
                   <Col sm={8} md={8}>
-                    { this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')
+                    { checkNestedProp(this.props, ...'resource.metadata.data.volumeInfo.authors'.split('.'))
                       ? <div>{this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
                         return <span key={author} style={{paddingRight: '1rem'}}>
                           {author}
