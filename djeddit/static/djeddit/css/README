@@ -1,4 +1,0 @@
-Note: Do NOT edit any files in this folder. Your changes will be overwritten by sass. 
-
-Instead, edit the sass files in `../sass/`
-From the parent directory, you can run `sass --watch sass:css` to generate the css files in this folder.
