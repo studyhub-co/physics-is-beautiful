@@ -4,6 +4,7 @@ import { MathematicalExpressionAnswer } from './math_expression'
 import { UnitConversionAnswer } from './unit_conversion'
 import { MultipleAnswer } from './multiple'
 import { MultiSelectAnswer } from './multiselect'
+import { Text } from './text'
 
 export class Answer extends React.Component {
   render () {
@@ -27,6 +28,9 @@ export class Answer extends React.Component {
         break
       case 'MULTIPLE_CHOICE':
         Component = MultipleAnswer
+        break
+      case 'TEXT':
+        Component = Text
         break
 
       default:

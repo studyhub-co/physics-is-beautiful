@@ -38,7 +38,7 @@ class Answer(BaseModel):
 
     class CloneMeta:
         parent_field = 'question'
-        
+
     objects = AnswerQuerySet.as_manager()
 
     uuid = ShortUUIDField()
@@ -56,9 +56,11 @@ class Answer(BaseModel):
             return self.content.matches(answer)
 
     def save(self, *args, **kwargs):
-        # if self.question and self.question.question_type == Question.QuestionType.SINGLE_ANSWER:
-        if self.question and self.question.answer_type != Question.AnswerType.MULTISELECT_CHOICE and \
-                self.question.answer_type != Question.AnswerType.MULTIPLE_CHOICE:
+        if self.question and self.question.answer_type not in [
+            Question.AnswerType.MULTISELECT_CHOICE,
+            Question.AnswerType.MULTIPLE_CHOICE,
+            Question.AnswerType.TEXT,
+        ]:
             self.is_correct = True
         super(Answer, self).save(*args, **kwargs)
 
@@ -112,22 +114,12 @@ class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
 
         return self.match_math(self.representation, obj.representation)
 
-        # # parse latex into sympy and then compare (use `.expand`, `simplify`
-        # # and `trigsimp` to get to a canonical form)
-        # try:
-        #     left_side = process_sympy(self.representation)
-        #     right_side = process_sympy(obj.representation)
-        # except Exception:
-        #     # if we fail to parse it, then it's not valid
-        #     return False
-        # return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
-
     def convert_to_vector(self):
         """
         For now we assume that the vector must come in the format:
             A\hat{x|i} ± B\hat{y|j}
         where A and B are the x and y components of the
-        vector, respsectively.
+        vector, respectively.
         Note that each space specified in the typing is escaped by the `\`
         character, so we must account for those as well.
         """
@@ -270,7 +262,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
         left_si = q.to_base_units().magnitude
         right_si = Q_(str(self.answer_number) + ' ' + self.answer_unit).to_base_units().magnitude
         return self.match_math(str(left_si), str(right_si))
-    
+
     def __str__(self):
         return 'UnitConversion: {}'.format(self.answer)
 
@@ -295,11 +287,6 @@ class ImageWText(BaseModel):
             self.image = ''
         super(ImageWText, self).save(*args, **kwargs)
 
-    # def matches(self, obj):
-    #     if isinstance(obj, Answer):
-    #         return self.matches(obj.content)
-    #     raise ValidationError('It does not make sense to try to compare 2 images.')
-
     def matches(self, obj):
         if isinstance(obj, Answer):
             return self.matches(obj.content)
@@ -310,6 +297,21 @@ class ImageWText(BaseModel):
 
     def __str__(self):
         return 'Image: {}, Text: {}'.format(self.image, self.text)
+
+
+class Text(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_text'
+
+    text = models.TextField(blank=True)
+
+    def matches(self, obj):
+        print(self.text.lower(), obj.text.lower())
+        return self.text.lower() == obj.text.lower()
+
+    def __str__(self):
+        return self.text
 
 
 class Vector(BaseModel):

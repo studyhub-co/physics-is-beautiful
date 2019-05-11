@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, MathematicalExpression,
-    UnitConversion, ImageWText
+    UnitConversion, ImageWText, Text
 )
 
 
@@ -25,7 +25,9 @@ class BaseSerializer(serializers.ModelSerializer):
         self.lookup_field = getattr(self.Meta, 'lookup_field', 'pk')
 
     def to_internal_value(self, data):
+        print(data)
         if isinstance(data, str):
+            print(self.Meta.model.objects.get(**{self.lookup_field: data}))
             return self.Meta.model.objects.get(**{self.lookup_field: data})
         else:
             return super(BaseSerializer, self).to_internal_value(data)
@@ -65,6 +67,13 @@ class ImageWithTextSerializer(BaseSerializer):
         fields = ['text', 'image']
 
 
+class TextSerializer(BaseSerializer):
+
+    class Meta:
+        model = Text
+        fields = ['text']
+
+
 class AnswerSerializer(BaseSerializer):
 
     CONTENT_SERIALIZER_MAP = {
@@ -72,6 +81,7 @@ class AnswerSerializer(BaseSerializer):
         MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
         UnitConversion.__name__.lower(): UnitConversionSerializer,
         ImageWText.__name__.lower(): ImageWithTextSerializer,
+        Text.__name__.lower(): TextSerializer,
     }
 
     class Meta:
@@ -94,7 +104,7 @@ class UserResponseSerializer(BaseSerializer):
     class Meta:
         model = UserResponse
         fields = [
-            'question', 'vector',  'mathematical_expression', 'unit_conversion',  # 'text', 'image',
+            'question', 'vector',  'mathematical_expression', 'unit_conversion', 'text',
             'profile',
             'answer', 'answers_list',
             'answered_on'
@@ -103,6 +113,7 @@ class UserResponseSerializer(BaseSerializer):
 
     vector = VectorSerializer(required=False)
     mathematical_expression = MathematicalExpressionSerializer(required=False)
+    text = TextSerializer(required=False)
     # multiple or multi select field
     answer = AnswerSerializer(required=False)
     answers_list = AnswerSerializer(required=False, many=True)
@@ -112,10 +123,14 @@ class UserResponseSerializer(BaseSerializer):
         return Answer.objects.get(uuid=value['uuid'])
 
     def validate(self, data):
+        # fields is the list of fields from above, with values as serializers, eg. {'vector': VectorSerializer()... }
         fields = set(self.fields.keys()) - {'question', 'profile', 'answered_on'}
-        provided_fields = fields & set(data.keys())
+        # Filter the provided fields (data.keys()) by unioning with the allowed fields (fields) to get, e.g. {'answer'}
+        provided_fields = set(data.keys()) & fields
+        # Only one answer type (provided field) should be specified. E.g. can't have both a vector and unit conversion
         if len(provided_fields) != 1:
             raise ValidationError('Must specify exactly one of ({})'.format(', '.join(fields)))
+        # Define a new property called field_name why?
         self.field_name = provided_fields.pop()
         return data
 
@@ -300,60 +315,3 @@ class SimpleCurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Curriculum
         fields = ['uuid', 'name', 'description', 'image', 'cover_photo']
-
-
-
-# class LessonProgressSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = LessonProgress
-#         fields = ['score']
-#
-#
-# class TextSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Text
-#         fields = ['text']
-#
-#
-# class MathematicalExpressionSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = MathematicalExpression
-#         fields = ['representation']
-#
-#
-# class VectorSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Vector
-#         fields = ['magnitude', 'angle', 'x_component', 'y_component']
-#
-#
-# class AnswerSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Answer
-#         fields = ['uuid']
-#
-#     uuid = serializers.CharField()
-#
-#
-# class UserResponseSerializer(serializers.ModelSerializer):
-#
-#     CONTENT_SERIALIZER_MAP = {
-#         Text.__name__.lower(): TextSerializer,
-#         Vector.__name__.lower(): VectorSerializer,
-#         Answer.__name__.lower(): AnswerSerializer,
-#         MathematicalExpression.__name__.lower(): MathematicalExpressionSerializer,
-#     }
-#
-#     class Meta:
-#         model = UserResponse
-#         fields = ['question', 'content_type', 'content', 'is_correct', 'answered_on']
-#
-#     content = serializers.SerializerMethodField()
-#
-#     def get_content(self, obj):
-#         return self.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data

@@ -9,7 +9,7 @@ from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionSt
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, Vector, MathematicalExpression,
-    UnitConversion, ImageWText
+    UnitConversion, ImageWText, Text
 )
 
 from .models.answers import MathematicalExpressionMixin
@@ -311,12 +311,38 @@ class ImageWTextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
                 "At least one of text field or image field required"
             )
 
-
 @create_fields_funcs(ImageWTextAnswerForm)
 class ImageWTextAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Image with Text Answers'
     model = Answer
     form = ImageWTextAnswerForm
+
+
+class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['text']
+    SPECIAL_MODEL = Text
+
+    class Meta:
+        model = Answer
+        fields = ['text', 'is_correct'] # 'position'
+
+    text = forms.CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        text = cleaned_data.get("text")
+
+        if not text:
+            raise forms.ValidationError(
+                "Text field required"
+            )
+
+@create_fields_funcs(TextAnswerForm)
+class TextAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Text Answer'
+    model = Answer
+    form = TextAnswerForm
 
 
 class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
@@ -549,7 +575,7 @@ class QuestionAdmin(NestedModelAdmin):
 
     inlines = [
         VectorQuestionsInline, VectorAnswerInline,
-        MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline
+        MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline, TextAnswerInline
     ]
     fields = [
         'lesson', _backlink_to_lesson, 'text',
@@ -565,7 +591,8 @@ class QuestionAdmin(NestedModelAdmin):
         # Question.AnswerType.IMAGE_WITH_TEXT: [ImageWTextAnswerInline]
         # Question.AnswerType.SINGLE_ANSWER: [ImageWTextAnswerInline],
         Question.AnswerType.MULTIPLE_CHOICE: [ImageWTextAnswerInline],
-        Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline]
+        Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline],
+        Question.AnswerType.TEXT: [TextAnswerInline]
     }
 
     def response_change(self, request, obj):

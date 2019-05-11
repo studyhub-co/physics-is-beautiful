@@ -44,7 +44,7 @@ class QuestionViewSet(ModelViewSet):
     lookup_field = 'uuid'
 
     def user_response(self, request, uuid):
-        question = self.get_object()
+        question = self.get_object()  # self is an instance of the question with the matching uuid
         data = {'question': question.pk, 'answered_on': timezone.now()}
         data.update(request.data)
         sr = UserResponseSerializer(data=data)

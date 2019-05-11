@@ -193,37 +193,7 @@ export class Question extends React.Component {
     var hint = ''
     if (this.props.question.hint) {
       hint = <Hint hint={this.props.question.hint} hintCollapsed={this.props.question.hintCollapsed} onClick={this.props.hintClick} />
-      // { /* <div className = 'hintDiv'> */ }
-      // { /* <div className='hintButton'> */ }
-      // { /* <a href='#demo' data-toggle='collapse'>hint</a> */ }
-      // { /* </div> */ }
-      // { /* <div id='demo' className='collapse'> */ }
-      // { /* {this.props.question.hint} */ }
-      // { /* </div> */ }
-      // { /* </div>; */ }
     }
-    // var answerField = ''
-    // if (this.props.question.answer_type == 'MULTIPLE_CHOICE') {
-    //   answerField =
-    //     <MultipleAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       // continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
-    // else if (this.props.question.answer_type == 'MULTISELECT_CHOICE') {
-    //   answerField =
-    //     <MultiSelectAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
-    // else { //default
     var answerField =
       <Answer
         question={this.props.question}
@@ -232,36 +202,7 @@ export class Question extends React.Component {
         updateAnswer={this.props.updateAnswer}
         correct={this.props.correct}
       />
-    // }
-    // if (this.props.question.question_type == 'SINGLE_ANSWER') {
-    //   answerField =
-    //     <SingleAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       // continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // } else if (this.props.question.question_type == 'MULTIPLE_CHOICE') {
-    //   answerField =
-    //     <MultipleAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       // continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
-    // else if (this.props.question.question_type == 'MULTISELECT_CHOICE') {
-    //   answerField =
-    //     <MultiSelectAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
+
     function createMarkup (text) {
       return {__html: text}
     }

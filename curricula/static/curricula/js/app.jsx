@@ -284,13 +284,6 @@ class UnitsApp extends React.Component {
     this.unit = null
   }
 
-  // componentDidMount () {
-  //   window.parent.postMessage({
-  //     'message': 'canGoBack',
-  //     'data': true
-  //   }, '*')
-  // }
-
   load () {
     if (!this.unit) {
       return
@@ -367,12 +360,11 @@ export class Expression {
   }
 }
 
-// export class Text {
-//   constructor (text, uuid) {
-//     this.text = text
-//     this.uuid = uuid
-//   }
-// }
+export class Text {
+  constructor (text) {
+    this.text = text
+  }
+}
 
 class LessonsApp extends React.Component {
   constructor (obj) {
@@ -430,8 +422,7 @@ class LessonsApp extends React.Component {
               )
               break
             case 'text':
-              // this.correct_answer = new Text(data.correct_answer.content.text);
-              this.correct_answer = new Text(data.correct_answer.content.text, data.correct_answer.uuid)
+              this.correct_answer = new Text(data.correct_answer.content.text)
               break
             case 'mathematicalexpression':
               this.correct_answer = new Expression(data.correct_answer.content.representation)
@@ -446,14 +437,6 @@ class LessonsApp extends React.Component {
           playAudio('incorrect')
         }
         this.load()
-        if (data.was_correct) {
-          // setTimeout(
-          //     function() {
-          //         this.fetchState(this.state.currentId);
-          //     }.bind(this),
-          //     500
-          // );
-        }
       }
     })
   }
@@ -518,20 +501,6 @@ class GamesApp extends React.Component {
       slug: obj.match.params.slug
     }
   }
-
-  // gameWon () { // todo remove
-  //   $.ajax({
-  //     async: true,
-  //     // url: '/api/v1/curricula/games/' + this.state.slug + '/success',
-  //     url: '/api/v1/curricula/games/' + this.state.uuid + '/success',
-  //     context: this,
-  //     type: 'POST',
-  //     data: {},
-  //     success: function (data, status, jqXHR) {
-  //
-  //     }
-  //   });
-  // }
 
   render () {
     var Game

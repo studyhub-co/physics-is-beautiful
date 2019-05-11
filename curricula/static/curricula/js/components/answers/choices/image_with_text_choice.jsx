@@ -28,7 +28,7 @@ export class ImageWithText extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (typeof (nextProps.checked) !== 'undefinded' && nextProps.checked != this.state.checked) {
+    if (typeof (nextProps.checked) !== 'undefined' && nextProps.checked != this.state.checked) {
       this.setState({checked: nextProps.checked})
     }
   }

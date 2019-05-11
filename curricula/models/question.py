@@ -18,16 +18,7 @@ class Question(BaseModel):
         parent_field = 'lesson'
         children_field = 'answers'
 
-    
-    # class QuestionType(enum.Enum):
-    #     UNDEFINED = 0
-    #     SINGLE_ANSWER = 10
-    #     MULTIPLE_CHOICE = 20
-    #     MULTISELECT_CHOICE = 40
-
     class AnswerType(enum.Enum):
-        UNDEFINED = 0  # FIXME we really need this?
-        # SINGLE_ANSWER = 90
         MULTIPLE_CHOICE = 100
         MULTISELECT_CHOICE = 110
         VECTOR = 20
@@ -35,35 +26,21 @@ class Question(BaseModel):
         MATHEMATICAL_EXPRESSION = 50
         VECTOR_COMPONENTS = 60
         UNIT_CONVERSION = 70
-        # IMAGE_WITH_TEXT = 80
+        TEXT = 80
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
-    text = models.CharField(max_length=255, db_index=True)
-    # additional_text = models.CharField(max_length=255,
-    #                                    db_index=True,
-    #                                    null=True,
-    #                                    blank=True,
-    #                                    help_text="Not used field")
+    text = models.CharField(max_length=2048, db_index=True)
     hint = models.CharField(max_length=1024, blank=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
-    # question_type = enum.EnumField(QuestionType, null=True, blank=True)
     answer_type = enum.EnumField(AnswerType)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     vectors = models.ManyToManyField('Vector', related_name='questions')
 
-    # @property
-    # def question_type_name(self):
-    #     return self.QuestionType.get_name(self.question_type)
-
     @property
     def answer_type_name(self):
         return self.AnswerType.get_name(self.answer_type)
-
-    # @property
-    # def is_choice_question(self):
-    #     return self.question_type in {self.QuestionType.MULTIPLE_CHOICE}
 
     @cached_property
     def correct_answer(self):
@@ -79,7 +56,7 @@ class Question(BaseModel):
         elif self.answer_type == self.AnswerType.UNIT_CONVERSION:
             Answer.objects.create(question=self, content=UnitConversion.objects.create())
 
-    
+
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -93,7 +70,7 @@ class Question(BaseModel):
                 if db_instance.answer_type == self.AnswerType.VECTOR_COMPONENTS:
                     self.vectors.all().delete()
                 self._create_default_answer()
-                
+
             # if (db_instance.question_type != self.question_type and
             #         self.question_type == self.QuestionType.SINGLE_ANSWER):
             if db_instance.answer_type != self.answer_type:
@@ -108,13 +85,13 @@ class Question(BaseModel):
 
     def clone(self, to_parent):
         copy = super().clone(to_parent)
-        copy.vectors.clear()        
+        copy.vectors.clear()
         for v in self.vectors.all():
             v.id = None
             v.save()
-            copy.vectors.add(v)            
+            copy.vectors.add(v)
         return copy
 
-        
+
     def __str__(self):
         return 'Question: {}'.format(self.text)

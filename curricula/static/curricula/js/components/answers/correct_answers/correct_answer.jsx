@@ -3,6 +3,7 @@ import {VectorAnswer, TextAnswer, UnitConversionAnswer,
   MathematicalExpressionAnswer, DefaultAnswer,
   UnitConversion } from './correct_answers'
 import {Expression} from '../../../app' // TODO move to correct_answers.jsx
+import {Text} from '../../../app' // TODO move to correct_answers.jsx
 import {Vector} from 'vector_canvas'
 
 export class Answer extends React.Component {
@@ -12,13 +13,14 @@ export class Answer extends React.Component {
       case Vector:
         Component = VectorAnswer
         break
-        // case Text:
-        //   Component = TextAnswer // Todo remove
       case Expression:
         Component = MathematicalExpressionAnswer
         break
       case UnitConversion:
         Component = UnitConversionAnswer
+        break
+      case Text:
+        Component = TextAnswer
         break
       default:
         Component = DefaultAnswer

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 
 export class CheckContinueButton extends React.Component {
   keydown (e) {
-    // console.log(e.code);
     if (e.code === 'Enter') {
       if (this.props.isCheck) {
         this.props.checkAction()
