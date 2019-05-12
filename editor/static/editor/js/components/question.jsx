@@ -6,6 +6,7 @@ import {AnswerTypes, AnswerTypeLabels} from '../constants';
 
 import {MultipleChoiceAnswers} from './multiple_choice_answers';
 import {MathematicalExpressionAnswerContainer} from '../containers/mathematical_expression_answer';
+import {TextAnswerContainer} from '../containers/text_answer';
 import {VectorAnswerContainer} from '../containers/vector_answer';
 import {UnitConversionAnswerContainer} from '../containers/unit_conversion_answer'
 import {VectorComponentsAnswerContainer} from '../containers/vector_components_answer'
@@ -34,7 +35,7 @@ export class Question extends React.Component {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
     MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
   }
-  
+
   render() {
     if (this.props.loading) {
       return <div>Loading...</div>
@@ -48,14 +49,16 @@ export class Question extends React.Component {
                                              exclusive={this.props.answer_type === AnswerTypes.MULTIPLE_CHOICE} hasPictures={this.props.hasPictures}/>
     } else if (this.props.answer_type === AnswerTypes.MATHEMATICAL_EXPRESSION) {
       answersEditor = <MathematicalExpressionAnswerContainer uuid={this.props.answers[0]}/>
+    } else if (this.props.answer_type === AnswerTypes.TEXT) {
+      answersEditor = <TextAnswerContainer uuid={this.props.answers[0]}/>
     } else if (this.props.answer_type === AnswerTypes.VECTOR || this.props.answer_type === AnswerTypes.NULLABLE_VECTOR) {
       answersEditor = <VectorAnswerContainer uuid={this.props.answers[0]} allowNull={this.props.answer_type === AnswerTypes.NULLABLE_VECTOR}/>
     } else if (this.props.answer_type === AnswerTypes.UNIT_CONVERSION)
       answersEditor = <UnitConversionAnswerContainer uuid={this.props.answers[0]}/>
       else if (this.props.answer_type === AnswerTypes.VECTOR_COMPONENTS)
         answersEditor = <VectorComponentsAnswerContainer uuid={this.props.answers[0]}/>
-        
-    
+
+
     return (
       <div className="question">
         <div className="row">
@@ -69,7 +72,7 @@ export class Question extends React.Component {
                   <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
                   }
                   {this.props.answer_type === AnswerTypes.VECTOR_COMPONENTS &&
-                    <QuestionVectorsContainer uuid={this.props.uuid}/> 
+                    <QuestionVectorsContainer uuid={this.props.uuid}/>
                   }
               </div>
               Hint: <EditableLabel value={this.props.hint} onChange={this.props.onHintChange}/>

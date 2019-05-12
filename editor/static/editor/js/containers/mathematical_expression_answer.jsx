@@ -8,7 +8,7 @@ import {MathematicalExpressionAnswer} from '../components/mathematical_expressio
 const mapStateToProps = (state, ownProps) => {
   var ans = state.answers[ownProps.uuid];
   return {
-    representation : ans.representation
+    representation: ans.representation
   }
 }
 
@@ -18,6 +18,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
- 
 export const MathematicalExpressionAnswerContainer = connect(
   mapStateToProps, mapDispatchToProps)(MathematicalExpressionAnswer);

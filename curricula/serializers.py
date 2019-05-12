@@ -25,7 +25,6 @@ class BaseSerializer(serializers.ModelSerializer):
         self.lookup_field = getattr(self.Meta, 'lookup_field', 'pk')
 
     def to_internal_value(self, data):
-        print(data)
         if isinstance(data, str):
             print(self.Meta.model.objects.get(**{self.lookup_field: data}))
             return self.Meta.model.objects.get(**{self.lookup_field: data})

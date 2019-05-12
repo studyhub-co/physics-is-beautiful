@@ -54,13 +54,6 @@ class Curricula extends React.Component {
 
     return (
       <div>
-        {/*<a onClick={this.handleAddClick} className="btn btn-primary">Create curriculum</a>*/}
-        {/*<span> based on </span>*/}
-        {/*<select onChange={this.handlePrototypeChoiceChange} >*/}
-          {/*<option value={null}>None - start from scratch</option>*/}
-          {/*{prototypeChoices}*/}
-        {/*</select>*/}
-        {/*<hr/>*/}
         <div className='row'>
           <Container fluid>
             <Row>

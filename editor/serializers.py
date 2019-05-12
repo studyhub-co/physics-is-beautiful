@@ -10,7 +10,7 @@ from rest_framework.fields import empty
 from expander import ExpanderSerializerMixin
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Game, Question, Answer
-from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion
+from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion, Text
 
 from curricula.serializers import BaseSerializer, UserSerializer
 
@@ -28,11 +28,11 @@ class DictSerializer(serializers.ListSerializer):
     def data(self):
         return super(serializers.ListSerializer, self).data
 
-        
+
 class SimpleModuleSerializer(BaseSerializer):
 
     unit = serializers.CharField(source='unit.uuid')
-    
+
     class Meta:
         model = Module
         list_serializer_class = DictSerializer
@@ -55,18 +55,18 @@ class AnswerContentField(serializers.Field):
 class AnswerSerializer(BaseSerializer):
 
     question = serializers.CharField(source='question.uuid')
-    
+
     def __init__(self, *args, **kwargs):
         self.answer_type = kwargs.pop('answer_type', None)
         super().__init__(*args, **kwargs)
-    
+
     def validate_question(self, value):
         return Question.objects.get(uuid=value)
 
     def _fix_question(self, validated_data):
         if 'question' in validated_data and isinstance(validated_data['question'], dict):
             validated_data['question'] = validated_data['question']['uuid']
-    
+
     def update(self, instance, validated_data):
         self._fix_question(validated_data)
         content_data = validated_data.pop('content', None)
@@ -78,7 +78,7 @@ class AnswerSerializer(BaseSerializer):
         ret = super().update(instance, validated_data)
         if ret.question and ret.question.answer_type == Question.AnswerType.MULTIPLE_CHOICE and ret.is_correct:
             ret.question.answers.exclude(id=ret.id).update(is_correct=False)
-       
+
         return ret
 
     def create(self, validated_data):
@@ -89,12 +89,14 @@ class AnswerSerializer(BaseSerializer):
                 validated_data['content'] = ImageWText.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION:
                 validated_data['content'] = MathematicalExpression.objects.create(**validated_data['content'])
+            elif self.answer_type == Question.AnswerType.TEXT:
+                validated_data['content'] = Text.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR:
                 validated_data['content'] = Vector.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.UNIT_CONVERSION:
                 validated_data['content'] = UnitConversion.objects.create(**validated_data['content'])
         elif self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
-            validated_data['content'] = ImageWText.objects.create()            
+            validated_data['content'] = ImageWText.objects.create()
         ret =  super().create(validated_data)
         if hasattr(self, '_fields'):
             del self._fields
@@ -109,6 +111,9 @@ class AnswerSerializer(BaseSerializer):
         elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MathematicalExpression)):
             fields['representation'] = serializers.CharField(source='content.representation')
+        elif self.answer_type == Question.AnswerType.TEXT or \
+        (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Text)):
+            fields['text'] = serializers.CharField(source='content.text', allow_blank=True)
         elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR or \
         self.answer_type == Question.AnswerType.VECTOR_COMPONENTS or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Vector)):
@@ -126,9 +131,9 @@ class AnswerSerializer(BaseSerializer):
             fields['answer_unit'] = serializers.CharField(source='content.answer_unit', max_length=100)
             fields['conversion_steps'] = serializers.JSONField(source='content.conversion_steps')
             fields['is_consistent'] = serializers.BooleanField(source='content.is_consistent', read_only=True)
-            
+
         return fields
-    
+
     class Meta:
         model = Answer
         list_serializer_class = DictSerializer
@@ -142,7 +147,7 @@ class VectorListSerializer(serializers.ListSerializer):
         else:
             return super().get_value(dictionary)
 
-                  
+
 class VectorSerializer(BaseSerializer):
 
     class Meta:
@@ -154,18 +159,18 @@ class VectorSerializer(BaseSerializer):
 class AnswersField(serializers.Field):
     def get_attribute(self, obj):
         return obj
-    
+
     def to_representation(self, obj):
         s = AnswerSerializer(many=True, answer_type=obj.answer_type)
         return s.to_representation(obj.answers.all())
-    
+
     def to_internal_value(self, data):
         return Answer.objects.filter(uuid__in=json.loads(data), question__isnull=True)
 
 
 class QuestionSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
-    
+
     answers = AnswersField(required=False)
     vectors = VectorSerializer(many=True, required=False)
 
@@ -178,15 +183,15 @@ class QuestionSerializer(BaseSerializer):
 
         if 'position' in validated_data and instance.position != validated_data['position']:
             Question.objects.filter(position__gte=validated_data['position'],
-                                    lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)           
+                                    lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
         if 'vectors' in validated_data:
             instance.vectors.all().delete()
-            for v in validated_data['vectors']:                
+            for v in validated_data['vectors']:
                 instance.vectors.add(Vector.objects.create(**v))
-            del validated_data['vectors']            
+            del validated_data['vectors']
 
         new_answers = validated_data.pop('answers', None)
-                                
+
         updated = super().update(instance, validated_data)
         if new_answers:
             updated.answers.all().delete()
@@ -206,7 +211,7 @@ class QuestionSerializer(BaseSerializer):
         fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers', 'vectors']
         list_serializer_class = DictSerializer
 
-        
+
 class LessonSerializer(BaseSerializer):
 
     module = serializers.CharField(source='module.uuid')
@@ -214,7 +219,7 @@ class LessonSerializer(BaseSerializer):
     questions = QuestionSerializer(many=True, read_only=True)
 
     game_type = serializers.CharField(source='game.slug', required=False)
-    
+
     def validate_module(self, value):
         return Module.objects.get(uuid=value)
 
@@ -225,12 +230,12 @@ class LessonSerializer(BaseSerializer):
             Lesson.objects.filter(position__gte=validated_data['position'],
                                   module=validated_data.get('module', instance.module)).update(position=F('position')+1)
         if 'lesson_type' in validated_data and validated_data['lesson_type'] == Lesson.LessonType.GAME:
-            Game.objects.get_or_create(lesson=instance, defaults={'slug' : 'unit-conversion'})
+            Game.objects.get_or_create(lesson=instance, defaults={'slug': 'unit-conversion'})
         if 'game' in validated_data:
             for k,v in validated_data.pop('game').items():
                 setattr(instance.game, k, v)
                 instance.game.save()
-            
+
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
@@ -259,7 +264,7 @@ class ModuleSerializer(BaseSerializer):
 
     unit = serializers.CharField(source='unit.uuid')
     curriculum = serializers.CharField(source='unit.curriculum.uuid', read_only=True)
-    
+
     def validate_unit(self, value):
         return Unit.objects.get(uuid=value)
 
@@ -288,7 +293,7 @@ class ModuleSerializer(BaseSerializer):
 
 class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
     modules = SimpleModuleSerializer(many=True, read_only=True)
-    
+
     curriculum = serializers.CharField(source='curriculum.uuid')
 
     def validate_curriculum(self, value):
@@ -300,18 +305,18 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         if 'position' in validated_data and instance.position != validated_data['position']:
             Unit.objects.filter(position__gte=validated_data['position'],
                                 curriculum=validated_data.get('curriculum', instance.curriculum)).update(position=F('position')+1)
-            
+
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
         validated_data['curriculum'] = validated_data['curriculum']['uuid']
         return super().create(validated_data)
-    
+
     class Meta:
         model = Unit
         list_serializer_class = DictSerializer
         fields = ['uuid', 'name', 'image', 'position', 'url', 'curriculum', 'modules']
-        read_only_fields = ('uuid', 'modules')        
+        read_only_fields = ('uuid', 'modules')
         expandable_fields = {
             'modules': (ModuleSerializer, (), {'many': True}),
         }
@@ -351,7 +356,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         if 'name' in validated_data and self.instance.name == Curriculum.Name.DEFAULT:
             del validated_data['name']
         return super().update(instance, validated_data)
-    
+
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
