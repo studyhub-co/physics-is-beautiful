@@ -91,7 +91,9 @@ class LessonViewSet(ModelViewSet):
             prototype = Lesson.objects.get(uuid=self.request.data['prototype'])
             copied_lesson = prototype.clone(Module.objects.get(uuid=self.request.data['module']))
 
-            return Response(LessonSerializer(copied_lesson, context={'request': request}).data, status=status.HTTP_201_CREATED)
+            return Response(
+                LessonSerializer(copied_lesson, context={'request': request}).data, status=status.HTTP_201_CREATED
+            )
         else:
             return super().create(request, *args, **kwargs)
 

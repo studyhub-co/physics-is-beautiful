@@ -19,6 +19,7 @@ class Question(BaseModel):
         children_field = 'answers'
 
     class AnswerType(enum.Enum):
+        UNDEFINED = 0  # we need this for editor's 'new question'
         MULTIPLE_CHOICE = 100
         MULTISELECT_CHOICE = 110
         VECTOR = 20

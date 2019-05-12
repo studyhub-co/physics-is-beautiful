@@ -69,6 +69,7 @@ class TextBookResourceView extends React.Component {
 
       document.title = authorsStr + ' ' + title + ' Solutions - Physics is Beautiful'
 
+      // TODO replace with https://github.com/nfl/react-helmet
       var meta = document.createElement('meta')
       meta.name = 'description'
       meta.content = authorsStr + ' ' + title + ' textbook solutions or solutions manual for all problems and chapters.'

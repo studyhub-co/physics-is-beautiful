@@ -35,16 +35,6 @@ import {
 import { Sheet } from './apps/sheet'
 import { CurriculaDashboardApp } from './apps/curricula_dashboard'
 
-// function Sheet(props) {
-//   var className = 'container ' + (props.type || 'section') + '-sheet';
-//   return (<div className={className}>
-//           <h1 style={{'color': '#08d1ff'}}>Curricula</h1>
-//           {props.children}
-//
-//           </div>
-//          );
-// }
-
 // class Curricula extends React.Component {
 //   constructor(props) {
 //     super(props)
