@@ -1,14 +1,14 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
-import {changeAnswerText} from '../actions'
+import { changeAnswerText } from '../actions'
 
-import {TextAnswer} from '../components/text_answer'
+import { TextAnswer } from '../components/text_answer'
 
 const mapStateToProps = (state, ownProps) => {
   var ans = state.answers[ownProps.uuid]
   return {
-    text: ans.text
+    text: ans.text,
   }
 }
 
@@ -19,4 +19,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 export const TextAnswerContainer = connect(
-  mapStateToProps, mapDispatchToProps)(TextAnswer)
+  mapStateToProps,
+  mapDispatchToProps,
+)(TextAnswer)

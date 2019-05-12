@@ -210,7 +210,8 @@ class LessonApp extends React.Component {
                 onDrop={this.handleQuestionDroppedBefore.bind(null, null)}
                 itemType={DragItemTypes.QUESTION}>
                 <a
-                  onClick={this.handleAddQuestionClick} className='btn btn-light btn-add'
+                  onClick={this.handleAddQuestionClick}
+                  className='btn btn-light btn-add'
                   style={{cursor: 'pointer'}}
                 >
                   {/*<span className='glyphicon glyphicon-plus-sign' />*/}

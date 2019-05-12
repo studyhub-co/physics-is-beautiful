@@ -950,7 +950,7 @@ export function loadLessonIfNeeded (uuid) {
         success: function (data, status, jqXHR) {
           dispatch(lessonLoaded(data))
           if (data.questions.length > 0) {
-            dispatch(loadQuestionIfNeeded(data.questions[0]))
+            dispatch(loadQuestionIfNeeded(data.questions[0])) // WHAT is this?
           }
         }
       })
@@ -1105,9 +1105,7 @@ export function changeQuestionText (uuid, newText) {
         dispatch(questionLoaded(data))
       }
     })
-
   }
-
 }
 
 export function preserveAnswers (questionUuid) {
@@ -1120,7 +1118,7 @@ export function preserveAnswers (questionUuid) {
 export function changeQuestionType (uuid, newType) {
   return function (dispatch, getState) {
     var state = getState()
-    var oldAnswerIds
+    // var oldAnswerIds
     var data = {answer_type: newType}
     if (state.preservedAnswers[uuid]) {
       data['answers'] = JSON.stringify(state.preservedAnswers[uuid][newType])
@@ -1381,7 +1379,6 @@ export function changeAnswerRepresentation (answerUuid, newRepresentation) {
         dispatch(answerLoaded(data))
       }
     })
-
   }
 }
 

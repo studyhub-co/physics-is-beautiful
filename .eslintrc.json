@@ -1,5 +1,6 @@
 {
-  "extends": ["standard", "standard-react"],
+  "extends": ["standard", "standard-react",  "prettier/react"],
+  "plugins": ["prettier"],
   "env": {
     "jquery": true
   }

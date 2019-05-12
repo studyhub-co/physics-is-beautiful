@@ -48,7 +48,7 @@ class Question(BaseModel):
         return self.answers.get_correct()
 
     def _create_default_answer(self):
-        from .answers import Answer, MathematicalExpression, Vector, UnitConversion
+        from .answers import Answer, MathematicalExpression, Vector, UnitConversion, Text
         if self.answer_type == self.AnswerType.MATHEMATICAL_EXPRESSION:
             Answer.objects.create(question=self, content=MathematicalExpression.objects.create())
         elif self.answer_type == self.AnswerType.VECTOR or self.answer_type == self.AnswerType.NULLABLE_VECTOR \
@@ -56,7 +56,8 @@ class Question(BaseModel):
             Answer.objects.create(question=self, content=Vector.objects.create())
         elif self.answer_type == self.AnswerType.UNIT_CONVERSION:
             Answer.objects.create(question=self, content=UnitConversion.objects.create())
-
+        elif self.answer_type == self.AnswerType.TEXT:
+            Answer.objects.create(question=self, content=Text.objects.create())
 
     def save(self, *args, **kwargs):
         if self.position is None:
