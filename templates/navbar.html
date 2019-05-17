@@ -147,7 +147,7 @@ mixpanel.init("9e791cd977fa18d9229af0e05ab31436");
                                 </a>
                             </li>
                              <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
-                                 <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                 <a class="nav-link" href="{{ user.get_absolute_url }}" role="button" >
                                      <img src="{{ user.profile.get_avatar_url }}"
                                                 style='padding-right: 1rem; height: 2rem; width: 3rem;'
                                                 class="d-inline-block align-top"
@@ -156,8 +156,8 @@ mixpanel.init("9e791cd977fa18d9229af0e05ab31436");
                              </li>
                              </li>
                              <li class="nav-item">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                   <a data-reactroot=""
