@@ -286,7 +286,7 @@ class TextBookResourceView extends React.Component {
           <Col sm={3} md={3}>
             <div
               style={{paddingBottom: '1rem',
-                fontSize: '20rem',
+                fontSize: '10rem',
                 overflow: 'hidden',
                 textAlign: 'center'}}>
               { this.props.resource.metadata &&

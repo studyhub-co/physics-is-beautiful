@@ -1,18 +1,18 @@
 import React from 'react'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import { Container, Row, Col, Image } from 'react-bootstrap'
-import { FaPlus, FaImage } from 'react-icons/fa'
+import {Container, Row, Col, Image} from 'react-bootstrap'
+import {FaPlus, FaImage} from 'react-icons/fa'
 
 import {DockableDropTarget, DragItemTypes} from '../../dnd'
 import Problem from './Components/problem'
-import { Thread } from '../../components/reactDjeddit/thread'
+import {Thread} from '../../components/reactDjeddit/thread'
 import * as resourcesCreators from '../../actions/resources'
 import * as profileCreators from '../../actions/profile'
 import * as djedditCreators from '../../actions/djeddit'
-import { checkNestedProp } from '../../utils'
+import {checkNestedProp} from '../../utils'
 
 class StandardizedTestResourceView extends React.Component {
   constructor (props) {
@@ -58,7 +58,9 @@ class StandardizedTestResourceView extends React.Component {
         } catch (e) {
           if (e instanceof TypeError) {
             title = 'Unknown resource'
-          } else throw e
+          } else {
+            throw e
+          }
         }
       }
 
@@ -168,8 +170,8 @@ class StandardizedTestResourceView extends React.Component {
   render () {
     var haveEditAccess = false
     if (this.props.profile &&
-        this.props.profile.is_anonymous !== true &&
-        this.props.profile.is_staff === true) {
+      this.props.profile.is_anonymous !== true &&
+      this.props.profile.is_staff === true) {
       haveEditAccess = true
     }
 
@@ -182,7 +184,9 @@ class StandardizedTestResourceView extends React.Component {
       } catch (e) {
         if (e instanceof TypeError) {
           title = 'Unknown resource'
-        } else throw e
+        } else {
+          throw e
+        }
       }
     }
 
@@ -191,18 +195,18 @@ class StandardizedTestResourceView extends React.Component {
         <Row>
           <Col sm={12} md={12}>
             <span style={{position: 'relative', float: 'right', fontSize: 10}}>
-              { haveEditAccess
+              {haveEditAccess
                 ? <span className={'base-circle-edit'}>
                   [<span
-                    onClick={() => this.editResourceClick()}
-                    className={'blue-text'}
-                    style={{cursor: 'pointer'}}>
+                  onClick={() => this.editResourceClick()}
+                  className={'blue-text'}
+                  style={{cursor: 'pointer'}}>
                     {this.state.resourceEditMode
                       ? 'View'
                       : 'Edit'}
                   </span>]
                 </span>
-                : null }
+                : null}
             </span>
             <h1 className={'textbook-title text-align-center'}>
               {title} Solutions
@@ -210,34 +214,38 @@ class StandardizedTestResourceView extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={12} md={12}>
+          <Col sm={9} md={9}>
             {this.props.resource.problems ? this.props.resource.problems.map(function (problem, i) { // ============ problems
-              return <Row key={problem.uuid}>
-                <Col sm={12} md={12}>
-                  <DockableDropTarget
-                    key={problem.id}
-                    onDrop={(droppedChapter) => { this.onProblemDroppedBefore(problem, droppedChapter) }}
-                    itemType={DragItemTypes.CHAPTER}
-                    self={problem}
-                    idAttr={'id'}
-                  >
-                    <Problem
-                      resource={this.props.resource}
-                      resourceEditMode={this.state.resourceEditMode}
-                      onChangeProblemTitle={this.onChangeProblemTitle}
-                      onRemoveProblem={this.onRemoveProblem}
-                      key={problem.uuid}
-                      problem={problem}
-                    />
-                  </DockableDropTarget>
-                </Col>
-              </Row>
-            }, this)
+                return <Row key={problem.uuid}>
+                  <Col sm={12} md={12}>
+                    <DockableDropTarget
+                      key={problem.id}
+                      onDrop={(droppedChapter) => {
+                        this.onProblemDroppedBefore(problem, droppedChapter)
+                      }}
+                      itemType={DragItemTypes.CHAPTER}
+                      self={problem}
+                      idAttr={'id'}
+                    >
+                      <Problem
+                        resource={this.props.resource}
+                        resourceEditMode={this.state.resourceEditMode}
+                        onChangeProblemTitle={this.onChangeProblemTitle}
+                        onRemoveProblem={this.onRemoveProblem}
+                        key={problem.uuid}
+                        problem={problem}
+                      />
+                    </DockableDropTarget>
+                  </Col>
+                </Row>
+              }, this)
               : null
             }
             {this.state.resourceEditMode
               ? <DockableDropTarget
-                onDrop={(droppedChapter) => { this.onChapterDroppedBefore(null, droppedChapter) }}
+                onDrop={(droppedChapter) => {
+                  this.onChapterDroppedBefore(null, droppedChapter)
+                }}
                 itemType={DragItemTypes.CHAPTER}
                 self={null}
                 idAttr={'id'}
@@ -246,7 +254,7 @@ class StandardizedTestResourceView extends React.Component {
                   style={{cursor: 'pointer'}}
                   onClick={() => this.addChapterClick()}
                   className={'blue-text'}>
-                  <FaPlus /> Add chapter
+                  <FaPlus/> Add chapter
                 </div>
                 {/* <div // Add google ads button */}
                 {/* style={{cursor: 'pointer'}} */}
@@ -257,18 +265,66 @@ class StandardizedTestResourceView extends React.Component {
               </DockableDropTarget> : null
             }
           </Col>
+          <Col sm={3} md={3}>
+            <div
+              style={{
+                paddingBottom: '1rem',
+                fontSize: '10rem',
+                overflow: 'hidden',
+                textAlign: 'center'
+              }}>
+              {this.props.resource.metadata &&
+              this.props.resource.metadata.data.volumeInfo &&
+              this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
+              this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
+                ? <Image
+                  src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail.replace('http', 'https')}/>
+                : <FaImage/>}
+              {/*: <Glyphicon glyph='picture' /> }*/}
+            </div>
+            {this.props.resource.metadata
+              ? <div style={{backgroundColor: '#EDEDED', padding: '1rem'}}>
+                {/*<Row>*/}
+                  {/*<Col>*/}
+                    {/*<a href={}>Click to view the test</>*/}
+                  {/*</Col>*/}
+                {/*</Row>*/}
+                <Row>
+                  <Col>
+                    <b>Test number:</b>
+                    {this.props.resource.standardized_test_info.test_number
+                      ? <span> {this.props.resource.standardized_test_info.test_number}</span>
+                      : null}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <b>Test year:</b>
+                    {this.props.resource.standardized_test_info.test_year
+                      ? <span> {this.props.resource.standardized_test_info.test_year}</span>
+                      : null}
+                  </Col>
+                </Row>
+              </div> : 'Book data not found'}
+          </Col>
         </Row>
         <Row>
           <Col sm={12} md={12}>
-            { this.props.thread
+            {this.props.thread
               ? <Thread
                 thread={this.props.thread}
                 currentProfile={this.props.profile}
-                onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread) }}
-                onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}
-                onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread) }}
+                onSubmitPost={(post) => {
+                  this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread)
+                }}
+                onSubmitEditPost={(post) => {
+                  this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread)
+                }}
+                onDeletePost={(post) => {
+                  this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread)
+                }}
                 changePostVote={this.props.djedditActions.changePostVote}
-              /> : null }
+              /> : null}
           </Col>
         </Row>
       </Container>
@@ -318,4 +374,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StandardizedTestResourceView)
-export { StandardizedTestResourceView as StandardizedTestResourceViewNotConnected }
+export {StandardizedTestResourceView as StandardizedTestResourceViewNotConnected}

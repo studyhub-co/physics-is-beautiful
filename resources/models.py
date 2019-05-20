@@ -89,7 +89,7 @@ def save_title(sender, instance, *args, **kwargs):
 
 class StandardizedTestResource(models.Model):
     resource = models.OneToOneField(Resource, related_name='standardized_test_info')
-    test_number = models.PositiveIntegerField()
+    test_number = models.CharField(max_length=100)
     test_year = models.PositiveIntegerField(validators=[MinValueValidator(1900), max_value_current_year])
     pdf_of_exam = models.FileField(upload_to="resources/standardized_test/%Y/%m/%d",
                                    validators=[validate_pdf_extension],

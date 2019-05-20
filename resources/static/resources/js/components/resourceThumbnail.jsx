@@ -46,13 +46,12 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
             overflow: 'hidden',
             borderRadius: '15px',
             cursor: 'pointer'}}>
-          { this.props.resource.resource_type === 'TB' &&
-          this.props.resource.metadata &&
+          { this.props.resource.metadata &&
+            this.props.resource.metadata.data.hasOwnProperty('volumeInfo') &&
           this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
           this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
             ? <Image fluid src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
             : <FaImage size={'10em'} /> }
-            {/*: <Glyphicon glyph='picture' /> }*/}
         </div>
         <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.5rem', cursor: 'pointer'}}>
           {/*<div>{*/}

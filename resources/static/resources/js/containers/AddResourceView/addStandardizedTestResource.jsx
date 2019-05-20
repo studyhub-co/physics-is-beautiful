@@ -125,7 +125,6 @@ class AddStandardizedTestResourceView extends React.Component {
   validateForm () {
     if (this.state.testYear > 1900 &&
       this.state.testYear <= new Date().getFullYear() &&
-      this.state.testNumber > 0 &&
       this.state.pdfFile
     ) {
       this.setState({validForm: true})
@@ -174,7 +173,7 @@ class AddStandardizedTestResourceView extends React.Component {
             <Form.Group>
               <InputGroup>
                 <Form.Control
-                  type='number'
+                  type='text'
                   value={this.state.testNumber}
                   placeholder='Enter test number'
                   onChange={this.handleTestNumber}

@@ -176,7 +176,7 @@ class ResourceBaseSerializer(serializers.ModelSerializer):
 
         if 'standardized_test_info' in validated_data:
             standardized_test_info = validated_data.pop('standardized_test_info')
-            validated_data['title'] = 'Physics GRE {} - test {}'\
+            validated_data['title'] = 'Physics GRE {} - Test {}'\
                 .format(standardized_test_info.get('test_year', ''), standardized_test_info.get('test_number', ''))
 
         sections = []
