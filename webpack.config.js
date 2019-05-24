@@ -18,7 +18,8 @@ module.exports = function (env) {
       resources: './resources/static/resources/js/index',
       homepage: './homepage/static/homepage/js/index',
       notifications_inbox: './notifications/static/notifications_inbox/js/index',
-      trophy_inbox: './user_reputation/static/trophy_inbox/js/index'
+      trophy_inbox: './user_reputation/static/trophy_inbox/js/index',
+      react_djeedit: './node_modules/@vermus/django-react-djeddit-client/main.js'
     },
 
     output: {

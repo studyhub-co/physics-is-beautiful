@@ -1,0 +1,7 @@
+{% extends BASE_TEMPLATE %}
+{% load render_bundle from webpack_loader %}
+{% block content %}
+    <div id="app">
+        {% render_bundle 'react_djeedit' %}
+    </div>
+{% endblock %}
