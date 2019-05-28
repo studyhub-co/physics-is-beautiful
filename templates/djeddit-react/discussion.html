@@ -6,7 +6,9 @@
           var DJEDDIT_CONFIG = {
             API_PROFILE_URL: '/api/v1/profiles/me/',
             EMBEDDED_MODE: true,
-            ROOT_URL: 'discussion1'
+            ROOT_URL: 'discussion1',
+            API_URL_POSTFIX: 'djeddit',
+            USERNAME_FIELD: 'display_name',
           }
         </script>
         {% render_bundle 'react_djeedit' %}

@@ -20,6 +20,7 @@ module.exports = function (env) {
       notifications_inbox: './notifications/static/notifications_inbox/js/index',
       trophy_inbox: './user_reputation/static/trophy_inbox/js/index',
       react_djeedit: './node_modules/@vermus/django-react-djeddit-client/main.js'
+      // react_djeedit: '../django-react-djeddit/frontend/django-react-djeddit-client/dist/main.js' // debug
     },
 
     output: {
@@ -47,7 +48,7 @@ module.exports = function (env) {
         {
           test: /\.(js|jsx)$/,
           loader: 'babel-loader',
-          exclude: /node_modules/,
+          exclude: [/node_modules/, path.resolve(__dirname, '../django-react-djeddit/frontend/django-react-djeddit-client/dist/')],
           query: {
             presets: [
               ['env', {
