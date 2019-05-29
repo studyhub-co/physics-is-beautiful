@@ -35,7 +35,7 @@
     "redux-logger": "^3.0.6"
   },
   "dependencies": {
-    "@vermus/django-react-djeddit-client": "^1.0.7",
+    "@vermus/django-react-djeddit-client": "^1.0.9",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^6.4.1",
