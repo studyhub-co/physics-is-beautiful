@@ -6,6 +6,10 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 module.exports = function (env) {
   const MODE = (env && 'NODE_ENV' in env) ? env.NODE_ENV : 'production'
 
+  const outputPath = MODE === 'production'
+    ? ('./static/js/bundles/')
+    : ('./static/bundles/')
+
   return {
     context: __dirname,
 
@@ -24,8 +28,9 @@ module.exports = function (env) {
     },
 
     output: {
-      path: path.resolve('./static/bundles/'),
-      filename: '[name]-[hash].js',
+      // path: path.resolve('./static/bundles/'),
+      path: path.resolve(outputPath),
+      filename: '[name]-[hash].js'
       // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
     },
 

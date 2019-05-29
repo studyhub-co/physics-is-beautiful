@@ -98,9 +98,9 @@ media/
 node_modules/
 
 # webpack
-webpack-stats.json
+# webpack-stats.json
 
-# bundles
+# dev bundles
 static/bundles/
 
 # Elastic Beanstalk Files

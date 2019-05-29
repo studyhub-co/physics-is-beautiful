@@ -47,3 +47,10 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 # AWS_S3_BUCKET_AUTH = False
 # # AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 # DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
+
+# WEBPACK_LOADER = {
+#     'DEFAULT': {
+#         'BUNDLE_DIR_NAME': 'js/bundles/',
+#         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+#     }
+# }
