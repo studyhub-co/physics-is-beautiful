@@ -1,16 +1,18 @@
-{% extends BASE_TEMPLATE %}
+{% extends 'navbar.html' %}
 {% load render_bundle from webpack_loader %}
-{% block content %}
-    <div id="app">
-        <script type="text/javascript">
-          var DJEDDIT_CONFIG = {
-            API_PROFILE_URL: '/api/v1/profiles/me/',
-            EMBEDDED_MODE: true,
-            ROOT_URL: 'discussion1',
-            API_URL_POSTFIX: 'djeddit/',
-            USERNAME_FIELD: 'display_name',
-          }
-        </script>
-        {% render_bundle 'react_djeedit' %}
+{% block body_content %}
+    <div class="container section-sheet">
+        <div id="app">
+            <script type="text/javascript">
+              var DJEDDIT_CONFIG = {
+                API_PROFILE_URL: '/api/v1/profiles/me/',
+                EMBEDDED_MODE: true,
+                ROOT_URL: 'discussion1',
+                API_URL_POSTFIX: 'djeddit/',
+                USERNAME_FIELD: 'display_name',
+              }
+            </script>
+            {% render_bundle 'react_djeedit' %}
+        </div>
     </div>
 {% endblock %}
