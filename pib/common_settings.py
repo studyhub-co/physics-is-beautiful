@@ -264,4 +264,14 @@ WEBPACK_LOADER = {
 REPUTATION_STAGE_1_POINTS = 5
 REPUTATION_STAGE_2_POINTS = 10
 
+
 DJEDDIT_USER_FIELDS = ['display_name', ]
+
+# We don't want to use Django generic relations due we lose the consistency and integrity of database
+# and count of sql queries will be increases
+DJEDDIT_RELATED_FIELDS = {
+    'textbook_resource': 'textbook_resource',
+    'textbook_problem': 'textbook_problem',
+    'textbook_solution': 'textbook_solution'
+}
+

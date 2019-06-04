@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 import { Container, Row, Col } from 'react-bootstrap'
 import { FaChevronLeft } from 'react-icons/fa'
 
+// import { ThreadPage } from '@vermus/django-react-djeddit-client/dist/index.js'
+
 import { Sheet } from '../../components/Sheet'
 import history from '../../history'
 import { BASE_URL } from '../../utils/config'

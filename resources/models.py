@@ -1,12 +1,14 @@
 import os
 
 from django.db import models
+from django.conf import settings
 from django.dispatch import receiver
 # from django.utils.text import slugify
 
 from django.core.validators import MinValueValidator
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.exceptions import ImproperlyConfigured
 
 from slugify import Slugify
 from shortuuidfield import ShortUUIDField
@@ -24,6 +26,21 @@ from django.contrib.contenttypes.models import ContentType
 slugify = Slugify()
 slugify.safe_chars = '.'
 slugify.to_lower = True
+
+try:
+    textbook_resource_thread_related_name = settings.DJEDDIT_RELATED_FIELDS['textbook_resource']
+except (KeyError, AttributeError):
+    raise ImproperlyConfigured("Can't find settings.DJEDDIT_RELATED_FIELDS['textbook_resource'] settings")
+
+try:
+    textbook_problem_thread_related_name = settings.DJEDDIT_RELATED_FIELDS['textbook_problem']
+except (KeyError, AttributeError):
+    raise ImproperlyConfigured("Can't find settings.DJEDDIT_RELATED_FIELDS['textbook_problem'] settings")
+
+try:
+    textbook_solution_thread_related_name = settings.DJEDDIT_RELATED_FIELDS['textbook_solution']
+except (KeyError, AttributeError):
+    raise ImproperlyConfigured("Can't find settings.DJEDDIT_RELATED_FIELDS['textbook_solution'] settings")
 
 
 # class Resource(ModeratedModel):
@@ -48,7 +65,7 @@ class Resource(models.Model):
     resource_type = models.CharField(max_length=2, choices=RESOURCE_TYPE_CHOICES, default=TEXTBOOK)
     owner = models.ForeignKey(Profile, related_name='resources')
     count_views = models.IntegerField(default=0)
-    thread = models.OneToOneField(Thread, related_name='textbook_resource', null=True)
+    thread = models.OneToOneField(Thread, related_name=textbook_resource_thread_related_name, null=True)
     title = models.CharField(max_length=512, blank=True, null=True, help_text='title in the admin site')
 
     def __str__(self):
@@ -128,7 +145,7 @@ class ResourceProblem(models.Model):
     resource = models.ForeignKey(Resource, related_name='problems', null=True)
     posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
     count_views = models.IntegerField(default=0)
-    thread = models.OneToOneField(Thread, related_name='textbook_problem', null=True)
+    thread = models.OneToOneField(Thread, related_name=textbook_problem_thread_related_name, null=True)
     # resource used in StandardizedTestResource
     # resource = models.ForeignKey(Resource, related_name='problems')
 
@@ -170,7 +187,7 @@ class TextBookSolution(VoteModel, models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     count_views = models.IntegerField(default=0)
-    thread = models.OneToOneField(Thread, related_name='textbook_solution', null=True)
+    thread = models.OneToOneField(Thread, related_name=textbook_solution_thread_related_name, null=True)
 
     @property
     def title(self):
