@@ -6,8 +6,7 @@ import PropTypes from 'prop-types'
 import { Container, Row, Col } from 'react-bootstrap'
 import { FaChevronLeft } from 'react-icons/fa'
 
-// import { ThreadPage } from '@vermus/django-react-djeddit-client/lib/index.js'
-// import { ThreadPage } from '../../../../../../../django-react-djeddit/frontend/django-react-djeddit-client/lib/index.js'
+import { ThreadComponent } from '@vermus/django-react-djeddit-client/lib/index.js'
 
 import { Sheet } from '../../components/Sheet'
 import history from '../../history'
@@ -33,7 +32,7 @@ class ResourceView extends React.Component {
           <Row>
             <Col sm={12} md={12}>
               <a className={'back-button'} onClick={() => { history.push(BASE_URL) }} >
-                {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+                {/* <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} /> */}
                 <FaChevronLeft />
                 All Resources
               </a>
@@ -46,6 +45,15 @@ class ResourceView extends React.Component {
         { this.props.resource && this.props.resource.resource_type === 'TS'
           ? <StandardizedTestResourceView resource={this.props.resource} />
           : null }
+        <Row>
+          <Col sm={12} md={12}>
+            {this.props.resource && this.props.resource.thread
+              ? <ThreadComponent
+                threadId={this.props.resource.thread}
+              />
+              : null}
+          </Col>
+        </Row>
       </Sheet>
     )
   }

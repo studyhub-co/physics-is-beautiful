@@ -33,6 +33,14 @@
 {% endblock extrahead %}
 
 {% block body_content %}
+ <script type="text/javascript">
+      var DJEDDIT_CONFIG = {
+        API_PROFILE_URL: '/api/v1/profiles/me/',
+        EMBEDDED_MODE: true,
+        API_URL_POSTFIX: 'djeddit/',
+        USERNAME_FIELD: 'display_name',
+      }
+</script>
 <div id="react-app" class="resources">
     {% render_bundle 'resources' %}
 </div>

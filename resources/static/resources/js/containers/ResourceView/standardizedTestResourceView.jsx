@@ -101,7 +101,7 @@ class StandardizedTestResourceView extends React.Component {
   componentWillUnmount () {
     // clear titile
     document.title = 'Physics is Beautiful'
-    // remove meta // TODO refactir this
+    // remove meta // TODO refactor this
     let element = document.getElementsByTagName('meta')['description']
     if (element && element.hasOwnProperty('parentNode')) {
       element.parentNode.removeChild(element)
@@ -308,25 +308,25 @@ class StandardizedTestResourceView extends React.Component {
               </div> : 'Book data not found'}
           </Col>
         </Row>
-        <Row>
-          <Col sm={12} md={12}>
-            {this.props.thread
-              ? <Thread
-                thread={this.props.thread}
-                currentProfile={this.props.profile}
-                onSubmitPost={(post) => {
-                  this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread)
-                }}
-                onSubmitEditPost={(post) => {
-                  this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread)
-                }}
-                onDeletePost={(post) => {
-                  this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread)
-                }}
-                changePostVote={this.props.djedditActions.changePostVote}
-              /> : null}
-          </Col>
-        </Row>
+        {/*<Row>*/}
+          {/*<Col sm={12} md={12}>*/}
+            {/*{this.props.thread*/}
+              {/*? <Thread*/}
+                {/*thread={this.props.thread}*/}
+                {/*currentProfile={this.props.profile}*/}
+                {/*onSubmitPost={(post) => {*/}
+                  {/*this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread)*/}
+                {/*}}*/}
+                {/*onSubmitEditPost={(post) => {*/}
+                  {/*this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread)*/}
+                {/*}}*/}
+                {/*onDeletePost={(post) => {*/}
+                  {/*this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread)*/}
+                {/*}}*/}
+                {/*changePostVote={this.props.djedditActions.changePostVote}*/}
+              {/*/> : null}*/}
+          {/*</Col>*/}
+        {/*</Row>*/}
       </Container>
     )
   }
