@@ -49,8 +49,8 @@ urlpatterns = [
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
-    url(r'^discussion/', include('djeddit.urls')),
-    url(r'^discussion1/', discussion_app, name='discussion_app'),
+    url(r'^discussion1/', include('djeddit.urls')),
+    url(r'^discussion/', discussion_app, name='discussion_app'),
     # due https://github.com/encode/django-rest-framework/issues/2760 namespace do not work
     # url(r'^api/v1/', include('pib.urls_api', namespace='api')),
     url(r'^api/v1/', include('pib.urls_api')),
