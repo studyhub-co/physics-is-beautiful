@@ -13,6 +13,8 @@ import { Thread } from '../../components/reactDjeddit/thread'
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 
+import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
+
 // import { Document } from 'react-pdf' // https://github.com/wojtekmaj/react-pdf/issues/52
 // import { Document, setOptions } from 'react-pdf/dist/entry.webpack'
 // setOptions({ workerSrc: 'react-pdf/dist/pdf.worker.min.js' })
@@ -504,18 +506,23 @@ class SolutionView extends React.Component {
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                { this.props.thread
-                  ? <Thread
-                    thread={this.props.thread}
-                    currentProfile={this.props.profile}
-                    // onSubmitPost={this.onSubmitPost}
-                    // onSubmitEditPost={this.onEditPost}
-                    // onDeletePost={this.onDeletePost}
-                    onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread) }}
-                    onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}
-                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread) }}
-                    changePostVote={this.props.djedditActions.changePostVote}
-                  /> : null }
+                { this.props.thread &&
+                  <ThreadComponent
+                    threadId={this.props.thread.id}
+                  />
+                }
+                {/*{ this.props.thread*/}
+                  {/*? <Thread*/}
+                    {/*thread={this.props.thread}*/}
+                    {/*currentProfile={this.props.profile}*/}
+                    {/*// onSubmitPost={this.onSubmitPost}*/}
+                    {/*// onSubmitEditPost={this.onEditPost}*/}
+                    {/*// onDeletePost={this.onDeletePost}*/}
+                    {/*onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread) }}*/}
+                    {/*onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}*/}
+                    {/*onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread) }}*/}
+                    {/*changePostVote={this.props.djedditActions.changePostVote}*/}
+                  {/*/> : null }*/}
               </Col>
             </Row>
           </Container>

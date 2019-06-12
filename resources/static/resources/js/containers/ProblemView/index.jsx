@@ -27,6 +27,7 @@ import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableL
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
 import * as djedditCreators from '../../actions/djeddit'
+import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
 
 class HorizontalOptionToggle extends React.Component {
   constructor (props, context) {
@@ -43,10 +44,10 @@ class HorizontalOptionToggle extends React.Component {
     return (
       <span onClick={this.handleClick} style={{cursor: 'pointer'}}>
         <FaEllipsisH />
-        {/*<Glyphicon*/}
-          {/*glyph='option-horizontal'*/}
-          {/*style={{cursor: 'pointer'}}*/}
-        {/*/>*/}
+        {/* <Glyphicon */}
+        {/* glyph='option-horizontal' */}
+        {/* style={{cursor: 'pointer'}} */}
+        {/* /> */}
       </span>
     )
   }
@@ -110,7 +111,6 @@ class ProblemView extends React.Component {
     // Title / tags
     if (this.props.resource && this.props.problem &&
       (!this.titleSet || prevProps.problem.uuid !== this.props.problem.uuid)) {
-
       var description
 
       // authors
@@ -184,7 +184,7 @@ class ProblemView extends React.Component {
     // history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
 
     if (this.props.resource && this.props.problem) {
-      //path={BASE_URL + ':resource_title([A-Za-z0-9_-]+)/problems/:problem_title([A-Za-z0-9_-]+)/solutions/:solution_title([A-Za-z0-9_-]+)/:uuid'}
+      // path={BASE_URL + ':resource_title([A-Za-z0-9_-]+)/problems/:problem_title([A-Za-z0-9_-]+)/solutions/:solution_title([A-Za-z0-9_-]+)/:uuid'}
       var resourceTitle = this.getResourceTitle()
       var problemTitle = this.props.problem.title
 
@@ -242,7 +242,6 @@ class ProblemView extends React.Component {
   render () {
     var self = this
     let getHaveSolutionEditAccess = function (solution) {
-
       if (self.props.profile &&
           self.props.profile.is_anonymous !== true &&
          (self.props.profile.is_staff === true || self.props.profile.id === solution.posted_by.id)) {
@@ -254,7 +253,7 @@ class ProblemView extends React.Component {
     if (this.props.resource) {
       let resourceTitle = this.getResourceTitle()
       var resourceUrl = BASE_URL + slugify(resourceTitle) + '/' + this.props.resource.uuid + '/'
-      //history.push(BASE_URL + this.props.match.params['resource_uuid'])
+      // history.push(BASE_URL + this.props.match.params['resource_uuid'])
     }
 
     return (
@@ -264,7 +263,7 @@ class ProblemView extends React.Component {
           <Row>
             <Col sm={12} md={12}>
               <a className={'back-button'} onClick={() => { history.push(resourceUrl) }} >
-                {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+                {/* <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} /> */}
                 <FaChevronLeft />
                 All problems
               </a>
@@ -368,15 +367,15 @@ class ProblemView extends React.Component {
                             <FaArrowUp
                               style={{cursor: 'pointer'}}
                               onClick={() => this.upDownSolutionClick(solution.uuid, 1)} />
-                            {/*<Glyphicon*/}
-                              {/*glyph='arrow-down'*/}
-                              {/*style={{cursor: 'pointer'}}*/}
-                              {/*onClick={() => this.upDownSolutionClick(solution.uuid, -1)} />*/}
-                            {/*&nbsp;{solution.vote_score}&nbsp;*/}
-                            {/*<Glyphicon*/}
-                              {/*glyph='arrow-up'*/}
-                              {/*style={{cursor: 'pointer'}}*/}
-                              {/*onClick={() => this.upDownSolutionClick(solution.uuid, 1)} />*/}
+                            {/* <Glyphicon */}
+                            {/* glyph='arrow-down' */}
+                            {/* style={{cursor: 'pointer'}} */}
+                            {/* onClick={() => this.upDownSolutionClick(solution.uuid, -1)} /> */}
+                            {/* &nbsp;{solution.vote_score}&nbsp; */}
+                            {/* <Glyphicon */}
+                            {/* glyph='arrow-up' */}
+                            {/* style={{cursor: 'pointer'}} */}
+                            {/* onClick={() => this.upDownSolutionClick(solution.uuid, 1)} /> */}
                           </td>
                           <td>{solution.pdf ? <div className={'pdf-ico'} /> : null}</td>
                           <td>
@@ -391,7 +390,7 @@ class ProblemView extends React.Component {
                                 onChange={(value) => { this.onChangeSolutionTitle(value, solution) }}
                                 editMode={this.state.solutionEditModeUuid === solution.uuid}
                               />
-                              {/*{solution.title}*/}
+                              {/* {solution.title} */}
                             </div>
                             <div className={'small-text gray-text'}>
                               Posted by <a href={solution.posted_by.get_absolute_url} target={'_blank'}>
@@ -406,7 +405,7 @@ class ProblemView extends React.Component {
                                 onSelect={(val) => { this.handleSolutionMenuClick(val, solution) }}
                                 id={'dropdown-settings' + solution.uuid}
                               >
-                                {/*<HorizontalOptionToggle bsRole='toggle' data-boundary='body' />*/}
+                                {/* <HorizontalOptionToggle bsRole='toggle' data-boundary='body' /> */}
                                 <Dropdown.Toggle as={HorizontalOptionToggle} />
                                 <Dropdown.Menu>
                                   <DropdownItem eventKey='Edit'>Edit</DropdownItem>
@@ -428,15 +427,20 @@ class ProblemView extends React.Component {
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                { this.props.thread
-                  ? <Thread
-                    thread={this.props.thread}
-                    currentProfile={this.props.profile}
-                    onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.problem.thread) }}
-                    onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}
-                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.problem.thread) }}
-                    changePostVote={this.props.djedditActions.changePostVote}
-                  /> : null }
+                { this.props.thread &&
+                  <ThreadComponent
+                    threadId={this.props.thread.id}
+                  />
+                }
+                {/*{ this.props.thread*/}
+                  {/*? <Thread*/}
+                    {/*thread={this.props.thread}*/}
+                    {/*currentProfile={this.props.profile}*/}
+                    {/*onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.problem.thread) }}*/}
+                    {/*onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}*/}
+                    {/*onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.problem.thread) }}*/}
+                    {/*changePostVote={this.props.djedditActions.changePostVote}*/}
+                  {/*/> : null }*/}
               </Col>
             </Row>
           </Container>
