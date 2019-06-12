@@ -605,6 +605,15 @@ img.grayed-out-img {
     color: #1caff6;
 }
 
+/* START bootsrap 4 additional classes */
+
+.modal-90w {
+    width: 90%!important;
+    max-width: none!important;
+}
+
+/* END bootsrap 4 additional classes */
+
 .wrapper {
   position: relative;
   overflow: hidden;

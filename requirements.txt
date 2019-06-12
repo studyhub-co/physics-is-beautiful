@@ -59,4 +59,4 @@ django-cors-headers==2.4.0
 django-model-utils==3.1.2
 django-user_agents==0.3.2
 future==0.17.1
--e git+https://github.com/physics-is-beautiful/django-react-djeddit.git@d11308905dc11b4c867e9323a2abcaba5b5ac576#egg=django-react-djeddit
+-e git+https://github.com/physics-is-beautiful/django-react-djeddit.git@657daefedb8b4254970f5a76f7ac9468105b4549#egg=django-react-djeddit

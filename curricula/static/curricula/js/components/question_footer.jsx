@@ -1,7 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
+
+import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
 
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Answer} from './answers/correct_answers/correct_answer'
@@ -10,6 +17,20 @@ import {CheckContinueButton} from './utils/check_continue_button'
 /* global MathJax */
 
 export class Footer extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+
+    this.state = {
+      showCommentsModal: false
+    }
+
+    this.handleShowComments = this.handleShowComments.bind(this)
+  }
+
+  handleShowComments () {
+    this.setState({ showCommentsModal: !this.state.showCommentsModal })
+  }
+
   componentDidMount () {
     // GLOBAL ( not react MathJax)
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
@@ -33,6 +54,25 @@ export class Footer extends React.Component {
     var checkMarks = ''
     var correctMessage = ''
     var backgroundColor = '#dbdbdb'
+    var commentsButtonCol = null
+
+    if (typeof this.props.correct !== 'undefined') {
+      commentsButtonCol =
+        <Col md={6} style={{
+          alignItems: 'center', justifyContent: 'center', display: 'flex'
+        }}>
+          <Button
+            onClick={this.handleShowComments}
+            style={{
+              backgroundColor: '#8d33d9',
+              borderColor: '#8d33d9',
+              borderBottomColor: '#8d33d9',
+              padding: '0.5rem 2rem',
+              borderRadius: '12rem'}}
+          >Comments</Button>
+        </Col>
+    }
+
     if (this.props.correct === true) {
       checkMarks = (<FaCheckCircle id='correct' className='pull-right' style={{fontSize: '35px'}} />)
       correctMessage = 'Correct'
@@ -40,7 +80,6 @@ export class Footer extends React.Component {
     } else if (this.props.correct === false) {
       checkMarks = (<FaTimesCircle id='incorrect' className='pull-right' style={{fontSize: '35px'}} />)
       backgroundColor = '#ffd3d1'
-
       if (Array.isArray(this.props.correct_answer)) {
         var message = 'Incorrect, the correct answers are:'
         if (this.props.correct_answer.length == 1) {
@@ -61,6 +100,26 @@ export class Footer extends React.Component {
       }
     }
 
+    var commentsModal =
+      <Modal
+        show={this.state.showCommentsModal}
+        onHide={this.handleShowComments}
+        dialogClassName='modal-90w'
+        aria-labelledby='example-custom-modal-styling-title'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id='example-custom-modal-styling-title'>
+            Discussion
+            {/* TODO set title in editor */}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ThreadComponent
+            threadId={this.props.thread}
+          />
+        </Modal.Body>
+      </Modal>
+
     return (
       <div id='footer' style={{backgroundColor: backgroundColor,
         position: (window.IS_IOS && window.IS_MOBILE_APP) ? 'relative' : 'fixed'}}>
@@ -71,11 +130,14 @@ export class Footer extends React.Component {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'}}>
-
             <div id='checkMarks'>{checkMarks}</div>
             <div id='correctMessage'>{correctMessage}</div>
           </div>
-          <div className='col-md-6 text-center continue-container'>
+          {commentsButtonCol}
+          {commentsModal}
+        </div>
+        <Row>
+          <div className='col-md-12 text-center continue-container'>
             <div id='checkContainer'>
               <CheckContinueButton
                 checkAction={this.props.checkAction}
@@ -84,7 +146,7 @@ export class Footer extends React.Component {
                 disabledCheck={this.props.disabledCheck} />
             </div>
           </div>
-        </div>
+        </Row>
         <div className='progress-bottom-container'>
           <div className='progress'>
             <div
@@ -106,5 +168,6 @@ export class Footer extends React.Component {
 Footer.propTypes = {
   continueAction: PropTypes.func.isRequired,
   checkAction: PropTypes.func.isRequired,
-  disabledCheck: PropTypes.bool
+  disabledCheck: PropTypes.bool,
+  thread: PropTypes.number
 }

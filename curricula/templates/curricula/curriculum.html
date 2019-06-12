@@ -11,9 +11,24 @@
 <script src="{% static 'curricula/mathquill-0.10.1/mathquill.js' %}"></script>
 <script type="text/javascript" src="{% static 'curricula/Fabric/fabric.min.js' %}"></script>
 
+{# djeedit #}
+<link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">
+<link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+
 {% endblock %}
 
 {% block body_content %}
+<script type="text/javascript">
+{# TODO move to json file #}
+  var DJEDDIT_CONFIG = {
+    API_PROFILE_URL: '/api/v1/profiles/me/',
+    EMBEDDED_MODE: true,
+    API_URL_POSTFIX: 'djeddit/',
+    USERNAME_FIELD: 'display_name',
+  }
+</script>
 <div id="react-app" class="curriculum">
     {% render_bundle 'curriculum' %}
 </div>
