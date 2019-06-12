@@ -3,6 +3,7 @@ import datetime
 from django.utils import timezone
 
 # from django.db.models import Q
+from django.db.models import F
 
 from rest_framework import serializers, status, permissions, mixins
 from rest_framework.response import Response
@@ -23,6 +24,8 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
 
 # from .search_indexes import CurriculumIndex
 
+from .djeddit import create_thread
+
 # from profiles.serializers import PublicProfileSerializer
 # from pib_auth.models import User
 
@@ -42,6 +45,22 @@ class QuestionViewSet(ModelViewSet):
     queryset = Question.objects.all()
     permission_classes = []
     lookup_field = 'uuid'
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # see also LessonViewSet.get_next_question
+        new_thread = create_thread(instance)
+        if new_thread:
+            Question.objects.filter(pk=instance.pk).update(thread=new_thread)
+
+        # increment view count TODO
+        # if new_thread:
+        #     # save new thread in probllem
+        #     Question.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread=new_thread)
+        # else:
+        #     Question.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+
+        return super(QuestionViewSet, self).retrieve(request, *args, **kwargs)
 
     def user_response(self, request, uuid):
         question = self.get_object()  # self is an instance of the question with the matching uuid
@@ -95,9 +114,13 @@ class LessonViewSet(ModelViewSet):
         except LessonLocked as e:
             raise serializers.ValidationError(e)
         if question:
+            new_thread = create_thread(question)
+            if new_thread:
+                Question.objects.filter(pk=question.pk).update(thread=new_thread)
+                question.thread = new_thread
             data = QuestionSerializer(question, context={'progress_service': service}).data
             # TODO: it might make more sense for these fields to be on the
-            # lesson. Or a separate lesson_profress object.
+            # lesson. Or a separate lesson_progress object.
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)

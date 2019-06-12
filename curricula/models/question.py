@@ -1,11 +1,20 @@
 from django.db import models
 from django.utils.functional import cached_property
+from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
+
+from djeddit.models import Thread
 
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
 
 from . import BaseModel, get_earliest_gap
 from . import Lesson
+
+try:
+    course_question_thread_related_name = settings.DJEDDIT_RELATED_FIELDS['course_question']
+except (KeyError, AttributeError):
+    raise ImproperlyConfigured("Can't find settings.DJEDDIT_RELATED_FIELDS['course_question'] settings")
 
 
 class Question(BaseModel):
@@ -38,6 +47,7 @@ class Question(BaseModel):
     answer_type = enum.EnumField(AnswerType)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     vectors = models.ManyToManyField('Vector', related_name='questions')
+    thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True)
 
     @property
     def answer_type_name(self):
@@ -93,7 +103,6 @@ class Question(BaseModel):
             v.save()
             copy.vectors.add(v)
         return copy
-
 
     def __str__(self):
         return 'Question: {}'.format(self.text)

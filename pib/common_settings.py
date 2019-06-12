@@ -272,6 +272,9 @@ DJEDDIT_USER_FIELDS = ['display_name', ]
 DJEDDIT_RELATED_FIELDS = {
     'textbook_resource': 'textbook_resource',
     'textbook_problem': 'textbook_problem',
-    'textbook_solution': 'textbook_solution'
+    'textbook_solution': 'textbook_solution',
+    'course_question': 'course_question'
 }
+
+SYSTEM_USER_ID = 2
 

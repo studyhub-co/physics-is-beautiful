@@ -224,8 +224,9 @@ class QuestionSerializer(BaseSerializer):
         model = Question
         fields = [
             'uuid', 'text', 'hint', 'image', 'vectors', 'answer_type', 'choices', # 'question_type',
-            'lesson', 'unit_conversion'
+            'lesson', 'unit_conversion', 'thread'
         ]
+        read_only_fields = ('thread',)
 
 
 class ProfileUserField(serializers.RelatedField):
