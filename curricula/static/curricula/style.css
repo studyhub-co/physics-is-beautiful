@@ -428,7 +428,7 @@ img.grayed-out-img {
 #correctMessage{
     display: inline-block;
     /* max-width:300px; */
-    padding-right: 21px;
+    /*padding-right: 21px;*/
     text-align: center;
     /*font-size:18;*/
     font-family: Museosansrounded;
@@ -611,6 +611,11 @@ img.grayed-out-img {
     width: 90%!important;
     max-width: none!important;
 }
+
+.modal-dialog {
+    margin: 1.75rem auto!important;
+}
+
 
 /* END bootsrap 4 additional classes */
 

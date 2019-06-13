@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
 
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 
@@ -58,7 +59,7 @@ export class Footer extends React.Component {
 
     if (typeof this.props.correct !== 'undefined') {
       commentsButtonCol =
-        <Col md={6} style={{
+        <Col xs={5} md={6} style={{
           alignItems: 'center', justifyContent: 'center', display: 'flex'
         }}>
           <Button
@@ -123,30 +124,32 @@ export class Footer extends React.Component {
     return (
       <div id='footer' style={{backgroundColor: backgroundColor,
         position: (window.IS_IOS && window.IS_MOBILE_APP) ? 'relative' : 'fixed'}}>
-        <div className='row'>
-          <div className='col-md-6 text-center' style={{
-            minHeight: (checkMarks ? '50px' : '1px'),
-            height: (checkMarks ? 'none' : 0),
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'}}>
-            <div id='checkMarks'>{checkMarks}</div>
-            <div id='correctMessage'>{correctMessage}</div>
-          </div>
-          {commentsButtonCol}
-          {commentsModal}
-        </div>
-        <Row>
-          <div className='col-md-12 text-center continue-container'>
-            <div id='checkContainer'>
-              <CheckContinueButton
-                checkAction={this.props.checkAction}
-                continueAction={this.props.continueAction}
-                isCheck={typeof this.props.correct === 'undefined'}
-                disabledCheck={this.props.disabledCheck} />
+        <Container fluid>
+          <div className='row'>
+            <div className='col-5 col-md-6 text-center' style={{
+              minHeight: (checkMarks ? '50px' : '1px'),
+              height: (checkMarks ? 'none' : 0),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'}}>
+              <div id='checkMarks'>{checkMarks}</div>
+              <div id='correctMessage'>{correctMessage}</div>
             </div>
+            {commentsButtonCol}
           </div>
-        </Row>
+          {commentsModal}
+          <Row>
+            <div className='offset-md-3 col-md-6 text-center continue-container'>
+              <div id='checkContainer'>
+                <CheckContinueButton
+                  checkAction={this.props.checkAction}
+                  continueAction={this.props.continueAction}
+                  isCheck={typeof this.props.correct === 'undefined'}
+                  disabledCheck={this.props.disabledCheck} />
+              </div>
+            </div>
+          </Row>
+        </Container>
         <div className='progress-bottom-container'>
           <div className='progress'>
             <div
