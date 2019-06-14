@@ -112,13 +112,13 @@ export class Footer extends React.Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id='example-custom-modal-styling-title'>
-            {this.props.solutionText
-              ? <MarkdownMathRender source={this.props.solutionText} />
-              : 'Discussion'
-            }
+            Discussion
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {this.props.solutionText &&
+              <MarkdownMathRender source={this.props.solutionText} />
+          }
           <ThreadComponent
             threadId={this.props.thread}
           />
