@@ -83,10 +83,10 @@ export class UnitConversionAnswer extends React.Component {
         }
       }
       data += ' = ' + answer.answer_number + '\\ ' + answer.answer_unit
-      component = <RMathJax.Node>{data}</RMathJax.Node>
+      component = <RMathJax.Node formula={data} />
     }
     if (answer.unit_conversion_type === '20') {
-      component = <RMathJax.Node>{answer.answer_number + '\\ ' + answer.answer_unit}</RMathJax.Node>
+      component = <RMathJax.Node formula={answer.answer_number + '\\ ' + answer.answer_unit} />
     }
 
     return (
