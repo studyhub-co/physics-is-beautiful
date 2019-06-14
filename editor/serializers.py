@@ -208,7 +208,8 @@ class QuestionSerializer(BaseSerializer):
 
     class Meta:
         model = Question
-        fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers', 'vectors']
+        fields = ['uuid', 'lesson', 'text', 'solution_text', 'hint', 'image', 'position', 'answer_type', 'answers',
+                  'vectors']
         list_serializer_class = DictSerializer
 
 

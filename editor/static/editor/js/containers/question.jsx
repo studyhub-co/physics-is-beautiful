@@ -5,6 +5,7 @@ import { Question } from '../components/question'
 
 import {
   changeQuestionText,
+  changeQuestionSolutionText,
   changeQuestionImage,
   changeQuestionHint,
   changeQuestionType,
@@ -24,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
       loading: false,
       text: q.text,
+      solution_text: q.solution_text,
       image: q.image,
       hint: q.hint,
       answers: q.answers,
@@ -37,6 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onImageChange: image => dispatch(changeQuestionImage(ownProps.uuid, image)),
     onTextChange: name => dispatch(changeQuestionText(ownProps.uuid, name)),
+    onChangeSolutionText: text => dispatch(changeQuestionSolutionText(ownProps.uuid, text)),
     onHintChange: hint => dispatch(changeQuestionHint(ownProps.uuid, hint)),
     onTypeChange: e =>
       dispatch(changeQuestionType(ownProps.uuid, e.target.value)),

@@ -223,7 +223,7 @@ class QuestionSerializer(BaseSerializer):
     class Meta:
         model = Question
         fields = [
-            'uuid', 'text', 'hint', 'image', 'vectors', 'answer_type', 'choices', # 'question_type',
+            'uuid', 'text', 'solution_text', 'hint', 'image', 'vectors', 'answer_type', 'choices',  # 'question_type',
             'lesson', 'unit_conversion', 'thread'
         ]
         read_only_fields = ('thread',)

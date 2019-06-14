@@ -15,6 +15,8 @@ import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Answer} from './answers/correct_answers/correct_answer'
 import {CheckContinueButton} from './utils/check_continue_button'
 
+import { MarkdownMathRender } from './utils/render'
+
 /* global MathJax */
 
 export class Footer extends React.Component {
@@ -110,8 +112,10 @@ export class Footer extends React.Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id='example-custom-modal-styling-title'>
-            Discussion
-            {/* TODO set title in editor */}
+            {this.props.solutionText
+              ? <MarkdownMathRender source={this.props.solutionText} />
+              : 'Discussion'
+            }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -172,5 +176,6 @@ Footer.propTypes = {
   continueAction: PropTypes.func.isRequired,
   checkAction: PropTypes.func.isRequired,
   disabledCheck: PropTypes.bool,
+  solutionText: PropTypes.string,
   thread: PropTypes.number
 }

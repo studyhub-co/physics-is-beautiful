@@ -1108,6 +1108,19 @@ export function changeQuestionText (uuid, newText) {
   }
 }
 
+export function changeQuestionSolutionText (uuid, newSolutionText) {
+  return function (dispatch) {
+    $.ajax({
+      url: API_PREFIX + 'questions/' + uuid + '/',
+      type: 'PATCH',
+      data: {solution_text: newSolutionText},
+      success: function (data, status, jqXHR) {
+        dispatch(questionLoaded(data))
+      }
+    })
+  }
+}
+
 export function preserveAnswers (questionUuid) {
   return {
     type: ActionTypes.PRESERVE_ANSWERS,

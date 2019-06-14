@@ -117,6 +117,7 @@ class QuestionSheet extends React.Component {
           progress={this.props.progress}
           correct={this.props.question.is_correct}
           thread={this.props.question.thread}
+          solutionText={this.props.question.solution_text}
           correct_answer={this.props.correct_answer}
           continueAction={this.clearAnswerContinue.bind(this)}
           checkAction={this.checkAnswer}

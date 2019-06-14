@@ -41,6 +41,7 @@ class Question(BaseModel):
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
     text = models.CharField(max_length=2048, db_index=True)
+    solution_text = models.CharField(max_length=2048, db_index=True, null=True, blank=True)
     hint = models.CharField(max_length=1024, blank=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
