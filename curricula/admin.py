@@ -9,7 +9,7 @@ from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionSt
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, Vector, MathematicalExpression,
-    UnitConversion, ImageWText, Text
+    UnitConversion, ImageWText, Text, MySQL
 )
 
 from .models.answers import MathematicalExpressionMixin
@@ -338,11 +338,34 @@ class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
                 "Text field required"
             )
 
+
 @create_fields_funcs(TextAnswerForm)
 class TextAnswerInline(AnswerTabularInline):
     verbose_name_plural = 'Edit Text Answer'
     model = Answer
     form = TextAnswerForm
+
+
+class MySQLAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['']
+    SPECIAL_MODEL = MySQL
+
+    class Meta:
+        model = Answer
+        fields = ['text', 'is_correct', 'schema_SQL', 'query_SQL']  # 'position'
+
+    text = forms.CharField(required=True)  # expected_output
+    schema_SQL = forms.CharField(required=True)
+    query_SQL = forms.CharField(required=True)
+
+
+@create_fields_funcs(MySQLAnswerForm)
+class MySQLAnswerInline(AnswerTabularInline):
+    # TODO it is bett fo lock MySQLAnswer edition
+    verbose_name_plural = 'Edit MySQL Answer'
+    model = MySQL
+    form = MySQLAnswerForm
 
 
 class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
@@ -592,7 +615,8 @@ class QuestionAdmin(NestedModelAdmin):
         # Question.AnswerType.SINGLE_ANSWER: [ImageWTextAnswerInline],
         Question.AnswerType.MULTIPLE_CHOICE: [ImageWTextAnswerInline],
         Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline],
-        Question.AnswerType.TEXT: [TextAnswerInline]
+        Question.AnswerType.TEXT: [TextAnswerInline],
+        Question.AnswerType.MYSQL: [MySQLAnswerInline]
     }
 
     def response_change(self, request, obj):

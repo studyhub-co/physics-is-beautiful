@@ -37,6 +37,7 @@ class Question(BaseModel):
         VECTOR_COMPONENTS = 60
         UNIT_CONVERSION = 70
         TEXT = 80
+        MYSQL = 90
 
     uuid = ShortUUIDField()
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
@@ -59,7 +60,7 @@ class Question(BaseModel):
         return self.answers.get_correct()
 
     def _create_default_answer(self):
-        from .answers import Answer, MathematicalExpression, Vector, UnitConversion, Text
+        from .answers import Answer, MathematicalExpression, Vector, UnitConversion, Text, MySQL
         if self.answer_type == self.AnswerType.MATHEMATICAL_EXPRESSION:
             Answer.objects.create(question=self, content=MathematicalExpression.objects.create())
         elif self.answer_type == self.AnswerType.VECTOR or self.answer_type == self.AnswerType.NULLABLE_VECTOR \
@@ -69,6 +70,8 @@ class Question(BaseModel):
             Answer.objects.create(question=self, content=UnitConversion.objects.create())
         elif self.answer_type == self.AnswerType.TEXT:
             Answer.objects.create(question=self, content=Text.objects.create())
+        elif self.answer_type == self.AnswerType.MYSQL:
+            Answer.objects.create(question=self, content=MySQL.objects.create())
 
     def save(self, *args, **kwargs):
         if self.position is None:

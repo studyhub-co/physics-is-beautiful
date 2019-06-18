@@ -7,9 +7,11 @@ export const AnswerTypes = Object.freeze({
   MATHEMATICAL_EXPRESSION: 50,
   VECTOR_COMPONENTS: 60,
   UNIT_CONVERSION: 70,
-  TEXT: 80
+  TEXT: 80,
+  MYSQL: 90
 })
 
+// TODO We need to get this via OPTIONS request
 export const AnswerTypeLabels = Object.freeze({
   [AnswerTypes.UNDEFINED]: 'Please select',
   [AnswerTypes.MULTIPLE_CHOICE]: 'Multiple choices',
@@ -19,7 +21,8 @@ export const AnswerTypeLabels = Object.freeze({
   [AnswerTypes.MATHEMATICAL_EXPRESSION]: 'Mathematical expression',
   [AnswerTypes.VECTOR_COMPONENTS]: 'Vector components',
   [AnswerTypes.UNIT_CONVERSION]: 'Unit conversion',
-  [AnswerTypes.TEXT]: 'Text'
+  [AnswerTypes.TEXT]: 'Text',
+  [AnswerTypes.MYSQL]: 'MySQL'
 })
 
 export const UnitConversionTypes = Object.freeze({

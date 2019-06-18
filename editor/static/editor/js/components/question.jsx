@@ -11,6 +11,7 @@ import { AnswerTypes, AnswerTypeLabels } from '../constants'
 import { MultipleChoiceAnswers } from './multiple_choice_answers'
 import { MathematicalExpressionAnswerContainer } from '../containers/mathematical_expression_answer'
 import { TextAnswerContainer } from '../containers/text_answer'
+import { MySQLAnswerContainer } from '../containers/mysql_answer'
 import { VectorAnswerContainer } from '../containers/vector_answer'
 import { UnitConversionAnswerContainer } from '../containers/unit_conversion_answer'
 import { VectorComponentsAnswerContainer } from '../containers/vector_components_answer'
@@ -113,6 +114,8 @@ export class Question extends React.Component {
       )
     } else if (this.props.answer_type === AnswerTypes.TEXT) {
       answersEditor = <TextAnswerContainer uuid={this.props.answers[0]} />
+    } else if (this.props.answer_type === AnswerTypes.MYSQL) {
+      answersEditor = <MySQLAnswerContainer uuid={this.props.answers[0]} />
     } else if (
       this.props.answer_type === AnswerTypes.VECTOR ||
       this.props.answer_type === AnswerTypes.NULLABLE_VECTOR

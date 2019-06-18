@@ -439,3 +439,34 @@ class Vector(BaseModel):
         return 'Vector: {}x + {}y ({}, {}°)'.format(
             self.x_component, self.y_component, self.magnitude, self.angle
         )
+
+
+class MySQL(BaseModel):
+
+    text = models.TextField()  # expected_output
+    schema_SQL = models.TextField()
+    query_SQL = models.TextField()
+
+    def proccess_creation(self, new_data):
+        new_data
+        # TODO :
+        #  1 if schema_SQL exist in new_data
+        #  1.1 Create MYSQL schema(database) with user_id name
+        #  1.2 Check for only DDL and DML statements
+        #  1.3. Try to build tables with schema_SQL query
+        #  1.4. Save schema_SQL if OK (remove data from query_SQL and text fields)
+        #  2. Try to run query_SQL if exist in new_data
+        #  2.1 Save query_SQL if OK
+        #  2.2 Save (rewrite) text (expected_output) if OK
+        #  3. DROP MYSQL schema(database)
+        pass
+
+    def matches(self, obj):
+        # print(self.text.lower(), obj.text.lower())
+        return self.text.lower() == obj.text.lower()
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        db_table = 'curricula_mysql'

@@ -10,7 +10,7 @@ from rest_framework.fields import empty
 from expander import ExpanderSerializerMixin
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Game, Question, Answer
-from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion, Text
+from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion, Text, MySQL
 
 from curricula.serializers import BaseSerializer, UserSerializer
 
@@ -71,10 +71,14 @@ class AnswerSerializer(BaseSerializer):
         self._fix_question(validated_data)
         content_data = validated_data.pop('content', None)
         if content_data:
-            content = instance.content
-            for k, v in content_data.items():
-                setattr(instance.content, k, v)
-            content.save()
+            if instance.question.answer_type == Question.AnswerType.MYSQL:
+                # run MYSQL problem type proccess
+                instance.content.proccess_creation(content_data)
+            else:
+                content = instance.content
+                for k, v in content_data.items():
+                    setattr(instance.content, k, v)
+                content.save()
         ret = super().update(instance, validated_data)
         if ret.question and ret.question.answer_type == Question.AnswerType.MULTIPLE_CHOICE and ret.is_correct:
             ret.question.answers.exclude(id=ret.id).update(is_correct=False)
@@ -91,13 +95,15 @@ class AnswerSerializer(BaseSerializer):
                 validated_data['content'] = MathematicalExpression.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.TEXT:
                 validated_data['content'] = Text.objects.create(**validated_data['content'])
+            elif self.answer_type == Question.AnswerType.MYSQL:
+                validated_data['content'] = MySQL.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR:
                 validated_data['content'] = Vector.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.UNIT_CONVERSION:
                 validated_data['content'] = UnitConversion.objects.create(**validated_data['content'])
         elif self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
             validated_data['content'] = ImageWText.objects.create()
-        ret =  super().create(validated_data)
+        ret = super().create(validated_data)
         if hasattr(self, '_fields'):
             del self._fields
         return ret
@@ -114,6 +120,11 @@ class AnswerSerializer(BaseSerializer):
         elif self.answer_type == Question.AnswerType.TEXT or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Text)):
             fields['text'] = serializers.CharField(source='content.text', allow_blank=True)
+        elif self.answer_type == Question.AnswerType.MYSQL or \
+        (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MySQL)):
+            fields['text'] = serializers.CharField(source='content.text', allow_blank=False)
+            fields['schema_SQL'] = serializers.CharField(source='content.schema_SQL', allow_blank=False)
+            fields['query_SQL'] = serializers.CharField(source='content.query_SQL', allow_blank=False)
         elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR or \
         self.answer_type == Question.AnswerType.VECTOR_COMPONENTS or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Vector)):

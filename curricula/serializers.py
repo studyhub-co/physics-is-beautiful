@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, UserResponse, LessonProgress, Vector, MathematicalExpression,
-    UnitConversion, ImageWText, Text
+    UnitConversion, ImageWText, Text, MySQL
 )
 
 
@@ -73,6 +73,13 @@ class TextSerializer(BaseSerializer):
         fields = ['text']
 
 
+class MySQLSerializer(BaseSerializer):
+
+    class Meta:
+        model = MySQL
+        fields = ['text']
+
+
 class AnswerSerializer(BaseSerializer):
 
     CONTENT_SERIALIZER_MAP = {
@@ -81,6 +88,7 @@ class AnswerSerializer(BaseSerializer):
         UnitConversion.__name__.lower(): UnitConversionSerializer,
         ImageWText.__name__.lower(): ImageWithTextSerializer,
         Text.__name__.lower(): TextSerializer,
+        MySQL.__name__.lower(): MySQLSerializer,
     }
 
     class Meta:
@@ -103,7 +111,7 @@ class UserResponseSerializer(BaseSerializer):
     class Meta:
         model = UserResponse
         fields = [
-            'question', 'vector',  'mathematical_expression', 'unit_conversion', 'text',
+            'question', 'vector',  'mathematical_expression', 'unit_conversion', 'text', 'my_sql',
             'profile',
             'answer', 'answers_list',
             'answered_on'
@@ -113,6 +121,7 @@ class UserResponseSerializer(BaseSerializer):
     vector = VectorSerializer(required=False)
     mathematical_expression = MathematicalExpressionSerializer(required=False)
     text = TextSerializer(required=False)
+    my_sql = MySQLSerializer(required=False)
     # multiple or multi select field
     answer = AnswerSerializer(required=False)
     answers_list = AnswerSerializer(required=False, many=True)

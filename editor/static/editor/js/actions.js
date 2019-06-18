@@ -1276,7 +1276,6 @@ export function deleteQuestion (uuid) {
       }
     })
   }
-
 }
 
 export function answerLoaded (data) {
@@ -1294,6 +1293,20 @@ export function changeAnswerText (uuid, newText) {
       data: {text: newText},
       success: function (data, status, jqXHR) {
         dispatch(answerLoaded(data))
+      }
+    })
+  }
+}
+
+export function changeAnswerSchemaSQL (uuid, schemaSQL) {
+  return function (dispatch) {
+    $.ajax({
+      url: API_PREFIX + 'answers/' + uuid + '/',
+      type: 'PATCH',
+      data: {schema_SQL: schemaSQL},
+      success: function (data, status, jqXHR) {
+        console.log(data);
+        // dispatch(answerLoaded(data))
       }
     })
   }
