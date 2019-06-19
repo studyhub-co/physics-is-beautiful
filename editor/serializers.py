@@ -71,14 +71,25 @@ class AnswerSerializer(BaseSerializer):
         self._fix_question(validated_data)
         content_data = validated_data.pop('content', None)
         if content_data:
+            # if instance.question.answer_type == Question.AnswerType.MYSQL:
+            #     # run MYSQL problem type proccess
+            #     instance.content.proccess_creation(content_data)
+            # else:
+            #     content = instance.content
+            #     for k, v in content_data.items():
+            #         setattr(instance.content, k, v)
+            #     content.save()
+            content = instance.content
+            for k, v in content_data.items():
+                setattr(instance.content, k, v)
             if instance.question.answer_type == Question.AnswerType.MYSQL:
-                # run MYSQL problem type proccess
-                instance.content.proccess_creation(content_data)
-            else:
-                content = instance.content
-                for k, v in content_data.items():
-                    setattr(instance.content, k, v)
-                content.save()
+                # model level validation
+                from django.core.exceptions import ValidationError
+                try:
+                    content.clean()
+                except ValidationError as e:
+                    raise serializers.ValidationError(e.message_dict)
+            content.save()
         ret = super().update(instance, validated_data)
         if ret.question and ret.question.answer_type == Question.AnswerType.MULTIPLE_CHOICE and ret.is_correct:
             ret.question.answers.exclude(id=ret.id).update(is_correct=False)

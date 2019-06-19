@@ -447,10 +447,19 @@ class MySQL(BaseModel):
     schema_SQL = models.TextField()
     query_SQL = models.TextField()
 
-    def proccess_creation(self, new_data):
-        new_data
-        # TODO :
-        #  1 if schema_SQL exist in new_data
+    def clean(self):
+        if not self.pk:
+            return
+
+        from ..helpers.mysql_problem_type import clean_my_sql_problem_type
+        clean_my_sql_problem_type(self)
+
+    # def proccess_creation(self, new_data):
+    #     new_data
+    #     #  1 if schema_SQL exist in new_data
+    #     schema_SQL = getattr(new_data, 'schema_SQL', None)
+    #     if not schema_SQL:
+    #         pass
         #  1.1 Create MYSQL schema(database) with user_id name
         #  1.2 Check for only DDL and DML statements
         #  1.3. Try to build tables with schema_SQL query
@@ -459,7 +468,6 @@ class MySQL(BaseModel):
         #  2.1 Save query_SQL if OK
         #  2.2 Save (rewrite) text (expected_output) if OK
         #  3. DROP MYSQL schema(database)
-        pass
 
     def matches(self, obj):
         # print(self.text.lower(), obj.text.lower())

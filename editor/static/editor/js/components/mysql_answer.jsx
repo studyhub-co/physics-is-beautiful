@@ -1,6 +1,13 @@
 import React from 'react'
+
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+
+import AceEditor from 'react-ace'
+import brace from 'brace'
+
+import 'brace/mode/mysql'
+import 'brace/theme/textmate'
 
 export class MySQLAnswer extends React.Component {
   constructor (props) {
@@ -47,13 +54,23 @@ export class MySQLAnswer extends React.Component {
 
     return (
       <Form.Group>
-        <Form.Control
-          as='textarea'
-          rows='5'
-          value={this.state.schema_SQL}
-          onChange={this.changeSchemaSQL}
+        <AceEditor
           placeholder={schemaPlaceHolder}
+          onChange={this.changeSchemaSQL}
+          value={this.state.schema_SQL}
+          showPrintMargin
+          showGutter
+          mode='mysql'
+          theme='textmate'
+          height={'20rem'}
         />
+        {/*<Form.Control*/}
+          {/*as='textarea'*/}
+          {/*rows='5'*/}
+          {/*value={this.state.schema_SQL}*/}
+          {/*onChange={this.changeSchemaSQL}*/}
+          {/*placeholder={schemaPlaceHolder}*/}
+        {/*/>*/}
         <br />
         <Button
           variant='primary'
