@@ -1,39 +1,11 @@
 import hashlib
 import MySQLdb
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
+
+from prettytable import from_db_cursor
 
 from ..settings import MY_SQL_PROBLEM_TYPE_HOST, MY_SQL_PROBLEM_TYPE_USER, MY_SQL_PROBLEM_TYPE_USER_PASSWORD
-
-
-# pretty print fetchall
-def pp(cursor, data=None, rowlens=0):
-    d = cursor.description
-    if not d:
-        return "#### NO RESULTS ###"
-    names = []
-    lengths = []
-    rules = []
-    if not data:
-        data = cursor.fetchall()
-    for dd in d:    # iterate over description
-        l = dd[1]
-        if not l:
-            l = 12             # or default arg ...
-        l = max(l, len(dd[0])) # Handle long names
-        names.append(dd[0])
-        lengths.append(l)
-    for col in range(len(lengths)):
-        if rowlens:
-            rls = [len(row[col]) for row in data if row[col]]
-            lengths[col] = max([lengths[col]]+rls)
-        rules.append("-"*lengths[col])
-    format = " ".join(["%%-%ss" % l for l in lengths])
-    result = [format % tuple(names)]
-    result.append(format % tuple(rules))
-    for row in data:
-        result.append(format % row)
-    return "\n".join(result)
 
 
 def clean_my_sql_problem_type(my_SQL_instance):
@@ -47,7 +19,9 @@ def clean_my_sql_problem_type(my_SQL_instance):
     # TODO add try catch for all connections
     root_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
                                            user=MY_SQL_PROBLEM_TYPE_USER,
-                                           passwd=MY_SQL_PROBLEM_TYPE_USER_PASSWORD)
+                                           passwd=MY_SQL_PROBLEM_TYPE_USER_PASSWORD,
+                                           autocommit=True
+                                           )
 
     root_user_cursor = root_user_connection.cursor()
 
@@ -67,16 +41,23 @@ def clean_my_sql_problem_type(my_SQL_instance):
     # Not so good, need to think.
     db_user_password = hashlib.md5(database_name.encode('utf-8')).hexdigest()
 
-    # db_user_sql = "DROP USER IF EXISTS {0}@'{2}';" \
-    #               "CREATE USER '{0}'@'{2}' IDENTIFIED WITH mysql_native_password BY '{3}';" \
-    #               "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`@`{2}`;" \
-    #     .format(database_user_name, database_name, MY_SQL_PROBLEM_TYPE_HOST, db_user_password)
-    #
-    # root_user_cursor.execute(db_user_sql)
+    db_user_sql = "DROP USER IF EXISTS {0}@'{2}';" \
+                  "CREATE USER '{0}'@'{2}' IDENTIFIED WITH mysql_native_password BY '{3}';" \
+                  "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`@`{2}`;" \
+        .format(database_user_name, database_name, MY_SQL_PROBLEM_TYPE_HOST, db_user_password)
 
-    db_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
-                                         user=database_user_name,
-                                         passwd=db_user_password)
+    root_user_cursor.execute(db_user_sql)
+    root_user_cursor.close()
+
+    try:
+        db_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
+                                             user=database_user_name,
+                                             passwd=db_user_password,
+                                             db=database_name,
+                                             autocommit=True
+                                             )
+    except MySQLdb.Error as e:
+        raise PermissionDenied('Can\'t connect to MYSQL database')
 
     # CREATE TABLES AND ADD DATA (SCHEMA PANEL)
     # TODO 1.2 Check schema_SQL for only DDL and DML statements
@@ -84,7 +65,7 @@ def clean_my_sql_problem_type(my_SQL_instance):
 
         db_user_cursor = db_user_connection.cursor()
         # schema_SQL = db_user_connection.escape_string(schema_SQL)
-        db_user_cursor.execute('USE {0}; {1};'.format(database_name, schema_SQL), multi=True)
+        db_user_cursor.execute('{1}'.format(database_name, schema_SQL))
         db_user_cursor.close()
         my_SQL_instance.schema_is_valid = True
     except MySQLdb.Error as e:
@@ -100,9 +81,9 @@ def clean_my_sql_problem_type(my_SQL_instance):
         try:
             db_user_cursor = db_user_connection.cursor()
             # schema_SQL = db_user_connection.escape_string(schema_SQL)
-            db_user_cursor.execute('USE {0}; {1};'.format(database_name, query_SQL))
-            query_rows = db_user_cursor.fetchall()
-            my_SQL_instance.text = pp(db_user_cursor, query_rows, rowlens=1)
+            db_user_cursor.execute('{1}'.format(database_name, query_SQL))
+            # query_rows = db_user_cursor.fetchall()
+            my_SQL_instance.text = from_db_cursor(db_user_cursor).get_string()
             db_user_cursor.close()
             # save
         except MySQLdb.Error as e:

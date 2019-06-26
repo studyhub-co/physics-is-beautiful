@@ -110,6 +110,15 @@ export class MySQLAnswer extends React.Component {
         >
           Generate output & save answer
         </Button>
+        {this.props && this.props.text
+          ? <div>
+            <br />
+            <h3>Expected output</h3>
+            <pre>{this.props.text}</pre>
+          </div>
+          : null
+
+        }
       </Form.Group>
     )
   }
