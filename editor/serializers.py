@@ -71,14 +71,6 @@ class AnswerSerializer(BaseSerializer):
         self._fix_question(validated_data)
         content_data = validated_data.pop('content', None)
         if content_data:
-            # if instance.question.answer_type == Question.AnswerType.MYSQL:
-            #     # run MYSQL problem type proccess
-            #     instance.content.proccess_creation(content_data)
-            # else:
-            #     content = instance.content
-            #     for k, v in content_data.items():
-            #         setattr(instance.content, k, v)
-            #     content.save()
             content = instance.content
             for k, v in content_data.items():
                 setattr(instance.content, k, v)
@@ -135,7 +127,8 @@ class AnswerSerializer(BaseSerializer):
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MySQL)):
             fields['text'] = serializers.CharField(source='content.text', allow_blank=False)
             fields['schema_SQL'] = serializers.CharField(source='content.schema_SQL', allow_blank=False)
-            fields['query_SQL'] = serializers.CharField(source='content.query_SQL', allow_blank=False)
+            fields['query_SQL'] = serializers.CharField(source='content.query_SQL', allow_blank=True)
+            fields['schema_is_valid'] = serializers.BooleanField(source='content.schema_is_valid', read_only=True)
         elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR or \
         self.answer_type == Question.AnswerType.VECTOR_COMPONENTS or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Vector)):

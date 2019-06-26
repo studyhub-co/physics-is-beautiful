@@ -12,35 +12,40 @@ import 'brace/theme/textmate'
 export class MySQLAnswer extends React.Component {
   constructor (props) {
     super(props)
-    // this.changeText = this.changeText.bind(this)
-    this.handleClickBuldSchemaSQL = this.handleClickBuldSchemaSQL.bind(this)
+    this.handleClickBuildSchemaSQL = this.handleClickBuildSchemaSQL.bind(this)
+    this.generateOutputAndSave = this.generateOutputAndSave.bind(this)
     this.changeSchemaSQL = this.changeSchemaSQL.bind(this)
+    this.changeQuerySQL = this.changeQuerySQL.bind(this)
+
     this.state = {
       schema_SQL: props.schema_SQL,
       query_SQL: props.query_SQL,
-      text: props.text,
-      schemaIsOk: false
+      text: props.text
     }
   }
 
-  changeSchemaSQL (event) {
+  changeSchemaSQL (value) {
     this.setState({
-      schema_SQL: event.target.value
+      schema_SQL: value
     })
   }
 
-  handleClickBuldSchemaSQL () {
-    if (this.state.schema_SQL) {
-      this.props.onChangeSchemaSQL(this.state.schema_SQL)
-    }
+  changeQuerySQL (value) {
+    this.setState({
+      query_SQL: value
+    })
+  }
 
-    // if (this.timeout) clearTimeout(this.timeout)
-    // this.setState({
-    //   text: event.target.value
-    // })
-    // this.timeout = setTimeout(() => {
-    //   this.props.onTextChange(this.state.text)
-    // }, 500)
+  handleClickBuildSchemaSQL () {
+    if (this.state.schema_SQL) {
+      this.props.onChangeMySQL(this.state.schema_SQL, null)
+    }
+  }
+
+  generateOutputAndSave () {
+    if (this.state.query_SQL) {
+      this.props.onChangeMySQL(this.state.schema_SQL, this.state.query_SQL)
+    }
   }
 
   render () {
@@ -63,35 +68,45 @@ export class MySQLAnswer extends React.Component {
           mode='mysql'
           theme='textmate'
           height={'20rem'}
+          setOptions={{
+            enableBasicAutocompletion: false,
+            enableLiveAutocompletion: false,
+            enableSnippets: false,
+            showLineNumbers: true,
+            tabSize: 2
+          }}
         />
-        {/*<Form.Control*/}
-          {/*as='textarea'*/}
-          {/*rows='5'*/}
-          {/*value={this.state.schema_SQL}*/}
-          {/*onChange={this.changeSchemaSQL}*/}
-          {/*placeholder={schemaPlaceHolder}*/}
-        {/*/>*/}
         <br />
         <Button
           variant='primary'
-          onClick={this.handleClickBuldSchemaSQL}
+          onClick={this.handleClickBuildSchemaSQL}
         >
           Build Schema
         </Button>
         <br /><br />
-        <Form.Control
-          disabled={!this.schemaIsOk}
-          as='textarea'
-          rows='5'
-          value={this.state.query_SQL }
-          // onChange={this.changeText}
+        <AceEditor
           placeholder={sqlQueryPlaceHolder}
+          onChange={this.changeQuerySQL}
+          value={this.state.query_SQL}
+          showPrintMargin
+          showGutter
+          readOnly={this.props && !this.props.schema_is_valid}
+          mode='mysql'
+          theme='textmate'
+          height={'20rem'}
+          setOptions={{
+            enableBasicAutocompletion: false,
+            enableLiveAutocompletion: false,
+            enableSnippets: false,
+            showLineNumbers: true,
+            tabSize: 2
+          }}
         />
         <br />
         <Button
-          disabled={!this.schemaIsOk}
+          disabled={this.props && !this.props.schema_is_valid}
           variant='primary'
-          onClick={this.handleClick}
+          onClick={this.generateOutputAndSave}
         >
           Generate output & save answer
         </Button>

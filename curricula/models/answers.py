@@ -445,21 +445,16 @@ class MySQL(BaseModel):
 
     text = models.TextField()  # expected_output
     schema_SQL = models.TextField()
+    schema_is_valid = models.BooleanField(default=False)
     query_SQL = models.TextField()
 
     def clean(self):
-        if not self.pk:
+        if not self.pk:  # do not validate if new empty answer
             return
 
         from ..helpers.mysql_problem_type import clean_my_sql_problem_type
         clean_my_sql_problem_type(self)
 
-    # def proccess_creation(self, new_data):
-    #     new_data
-    #     #  1 if schema_SQL exist in new_data
-    #     schema_SQL = getattr(new_data, 'schema_SQL', None)
-    #     if not schema_SQL:
-    #         pass
         #  1.1 Create MYSQL schema(database) with user_id name
         #  1.2 Check for only DDL and DML statements
         #  1.3. Try to build tables with schema_SQL query

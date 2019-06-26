@@ -167,7 +167,7 @@ export function loadMyCurricula () {
         dispatch((data) => {
           return {
             type: ActionTypes.CURRICULA_LOADED,
-            curricula: data,
+            curricula: data
           }
         })
       }
@@ -236,7 +236,6 @@ function curriculaSearchLoaded (data) {
 }
 
 export function loadSearchCurricula (searchString, nextPageUrl) {
-
   var url = API_PREFIX + 'public/curricula/' // all units
 
   if (searchString) {
@@ -404,7 +403,6 @@ export function renameCurriculum (uuid, newName) {
         dispatch(curriculumLoaded(data))
       }
     })
-
   }
 }
 
@@ -519,10 +517,9 @@ export function deleteCurriculum (uuid) {
       method: 'DELETE',
       success: function (data, status, jqXHR) {
         history.push('/studio/')
-        //TODO: reload all curricula
+        // TODO: reload all curricula
       }
     })
-
   }
 }
 
@@ -549,7 +546,7 @@ export function addUnit (curriculumUuid, unit) {
       method: 'POST',
       data: data,
       success: function (data, status, jqXHR) {
-        //dispatch(unitAdded(curriculumUuid, data))
+        // dispatch(unitAdded(curriculumUuid, data))
         // reload expanded
         loadCurriculum(curriculumUuid, dispatch)
         history.push('/studio/editor/curricula/' + curriculumUuid + '/')
@@ -565,7 +562,7 @@ export function addToNewCurriculum (type, value) {
       url: API_PREFIX + 'curricula/',
       method: 'POST',
       data: {
-        name: 'New curriculum',
+        name: 'New curriculum'
       },
       success: function (data, status, jqXHR) {
         var unitData = {name: 'New unit', curriculum: data.uuid}
@@ -582,7 +579,7 @@ export function addToNewCurriculum (type, value) {
           data: unitData,
           success: function (data, status, jqXHR) {
             if (type === 'unit') {
-              //dispatch(unitAdded(unitData.curriculum, data))
+              // dispatch(unitAdded(unitData.curriculum, data))
               loadCurriculum(unitData.curriculum, dispatch)
               history.push('/studio/editor/curricula/' + unitData.curriculum + '/')
             } else {
@@ -693,7 +690,6 @@ export function renameUnit (uuid, newName) {
         dispatch(unitLoaded(data))
       }
     })
-
   }
 }
 
@@ -750,7 +746,6 @@ export function moduleAdded (data) {
     module: data,
     lessons: extract(data, 'lessons')
   }
-
 }
 
 export function addModule (unitUuid, module) {
@@ -792,7 +787,6 @@ export function renameModule (uuid, newName) {
         dispatch(moduleLoaded(data))
       }
     })
-
   }
 }
 
@@ -852,7 +846,6 @@ export function moveModule (uuid, toUnitUuid, beforeUuid) {
               dispatch(unitLoaded(data))
             }
           })
-
         }
       }
     })
@@ -970,7 +963,6 @@ export function renameLesson (uuid, newName) {
         dispatch(lessonLoaded(data))
       }
     })
-
   }
 }
 
@@ -1001,7 +993,6 @@ export function changeLessonType (uuid, newType) {
         dispatch(lessonLoaded(data))
       }
     })
-
   }
 }
 
@@ -1015,7 +1006,6 @@ export function changeLessonGameType (uuid, newType) {
         dispatch(lessonLoaded(data))
       }
     })
-
   }
 }
 
@@ -1164,7 +1154,6 @@ export function changeQuestionImage (uuid, image) {
       }
     })
   }
-
 }
 
 export function changeQuestionHint (uuid, newHint) {
@@ -1177,9 +1166,7 @@ export function changeQuestionHint (uuid, newHint) {
         dispatch(questionLoaded(data))
       }
     })
-
   }
-
 }
 
 export function goToQuestion (uuid) {
@@ -1285,6 +1272,18 @@ export function answerLoaded (data) {
   }
 }
 
+export function loadAnswer (uuid) {
+  return function (dispatch) {
+    $.ajax({
+      url: API_PREFIX + 'answers/' + uuid + '/',
+      type: 'GET',
+      success: function (data, status, jqXHR) {
+        dispatch(answerLoaded(data))
+      }
+    })
+  }
+}
+
 export function changeAnswerText (uuid, newText) {
   return function (dispatch) {
     $.ajax({
@@ -1298,15 +1297,28 @@ export function changeAnswerText (uuid, newText) {
   }
 }
 
-export function changeAnswerSchemaSQL (uuid, schemaSQL) {
+export function changeAnswerMYSQL (uuid, schemaSQL, querySQL) {
   return function (dispatch) {
     $.ajax({
       url: API_PREFIX + 'answers/' + uuid + '/',
       type: 'PATCH',
-      data: {schema_SQL: schemaSQL},
+      data: {schema_SQL: schemaSQL, query_SQL: querySQL},
       success: function (data, status, jqXHR) {
-        console.log(data);
-        // dispatch(answerLoaded(data))
+        dispatch(answerLoaded(data))
+      },
+      error: function (data) {
+        if (data.status === 400) {
+          // TODO rewrite with embededd message
+          let errorMessage = null
+          if (data.responseJSON.hasOwnProperty('schema_SQL')) {
+            errorMessage = data.responseJSON.schema_SQL
+          } else if (data.responseJSON.hasOwnProperty('query_SQL')) {
+            errorMessage = data.responseJSON.query_SQL
+          }
+          if (errorMessage) { alert(errorMessage) }
+          // reload answer due validation error
+          dispatch(loadAnswer(uuid))
+        }
       }
     })
   }
@@ -1323,7 +1335,7 @@ export function changeAnswerImage (uuid, image) {
       contentType: false,
       data: formData,
       success: function (data) {
-        dispatch(answerLoaded(data))
+        // dispatch(answerLoaded(data))
       }
     })
   }
@@ -1421,7 +1433,9 @@ export function updateVectorAnswerComponents (answerUuid, x_component, y_compone
     } else if (ans.magnitude != null) {
       update = {
         magnitude: Math.sqrt(x_component * x_component + y_component * y_component),
-        angle: null, x_component: null, y_component: null
+        angle: null,
+        x_component: null,
+        y_component: null
       }
     } else {
       update = {
@@ -1438,7 +1452,6 @@ export function updateVectorAnswerComponents (answerUuid, x_component, y_compone
         dispatch(answerLoaded(data))
       }
     })
-
   }
 }
 
@@ -1448,9 +1461,10 @@ export function updateVectorCheckType (answerUuid, newType) {
     var ans = getState().answers[answerUuid]
     if (newType === 'angle') {
       update = {
-        x_component: null, y_component: null,
+        x_component: null,
+        y_component: null,
         angle: ans.angle || vectorToAngle(ans.x_component, ans.y_component) || 0,
-        magnitude: null,
+        magnitude: null
       }
     } else if (newType === 'full') {
       var x, y
@@ -1464,7 +1478,7 @@ export function updateVectorCheckType (answerUuid, newType) {
         x_component: ans.x_component || x,
         y_component: ans.y_component || y,
         angle: null,
-        magnitude: null,
+        magnitude: null
       }
     } else if (newType === 'magnitude') {
       var magnitude = 1
@@ -1593,7 +1607,6 @@ export function removeConversionStep (answerUuid) {
       }
     })
   }
-
 }
 
 export function clearQuestionVectors (uuid) {
@@ -1607,7 +1620,6 @@ export function clearQuestionVectors (uuid) {
       }
     })
   }
-
 }
 
 export function addQuestionVector (uuid, x_component, y_component) {
@@ -1629,7 +1641,6 @@ export function addQuestionVector (uuid, x_component, y_component) {
       }
     })
   }
-
 }
 
 export function foundUsersLoaded (data) {
