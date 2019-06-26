@@ -7,6 +7,7 @@ import { VectorCanvas, CanvasVector, CanvasText } from 'vector_canvas'
 import { DEFAULT_MATHJAX_OPTIONS } from '../constants'
 import { Hint } from './utils/hint'
 import { Answer } from './answers/answer'
+import { QuestionMysql } from './question_mysql'
 
 /* global MathJax */
 
@@ -190,6 +191,14 @@ export class Question extends React.Component {
         <VectorCanvas objects={vectors} />
       )
     }
+    var my_sql = ''
+    if (this.props.question.my_sql) {
+      my_sql = (
+        <div className='thumbnail question-thumbnail'>
+          <QuestionMysql question={this.props.question} />
+        </div>
+      )
+    }
     var hint = ''
     if (this.props.question.hint) {
       hint = <Hint hint={this.props.question.hint} hintCollapsed={this.props.question.hintCollapsed} onClick={this.props.hintClick} />
@@ -218,6 +227,7 @@ export class Question extends React.Component {
               {hint}
               {image}
               {vector}
+              {my_sql}
             </div>
           </div>
           {answerField}

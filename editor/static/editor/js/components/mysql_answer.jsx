@@ -24,6 +24,12 @@ export class MySQLAnswer extends React.Component {
     }
   }
 
+  componentWillReceiveProps (nextProps, nextContext) {
+    if (nextProps !== this.props) {
+      this.setState(nextProps)
+    }
+  }
+
   changeSchemaSQL (value) {
     this.setState({
       schema_SQL: value
@@ -38,12 +44,12 @@ export class MySQLAnswer extends React.Component {
 
   handleClickBuildSchemaSQL () {
     if (this.state.schema_SQL) {
-      this.props.onChangeMySQL(this.state.schema_SQL, null)
+      this.props.onChangeMySQL(this.state.schema_SQL, this.state.query_SQL)
     }
   }
 
   generateOutputAndSave () {
-    if (this.state.query_SQL) {
+    if (this.state.schema_SQL && this.state.query_SQL) {
       this.props.onChangeMySQL(this.state.schema_SQL, this.state.query_SQL)
     }
   }

@@ -80,13 +80,12 @@ def clean_my_sql_problem_type(my_SQL_instance):
     if query_SQL:
         try:
             db_user_cursor = db_user_connection.cursor()
-            # schema_SQL = db_user_connection.escape_string(schema_SQL)
             db_user_cursor.execute('{1}'.format(database_name, query_SQL))
-            # query_rows = db_user_cursor.fetchall()
             my_SQL_instance.text = from_db_cursor(db_user_cursor).get_string()
             db_user_cursor.close()
-            # save
         except MySQLdb.Error as e:
+            my_SQL_instance.text = ''
+            my_SQL_instance.save()
             raise ValidationError({'schema_SQL': 'Invalid query SQL'})
 
     # DROP SCHEMA AND USER

@@ -8,6 +8,12 @@ export class TextAnswer extends React.Component {
     this.state = {text: props.text}
   }
 
+  componentWillReceiveProps (nextProps, nextContext) {
+    if (nextProps.text !== this.props.text) {
+      this.setState({text: nextProps.text})
+    }
+  }
+
   changeText (event) {
     if (this.timeout) clearTimeout(this.timeout)
     this.setState({

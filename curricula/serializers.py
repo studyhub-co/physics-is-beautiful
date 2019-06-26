@@ -73,8 +73,14 @@ class TextSerializer(BaseSerializer):
         fields = ['text']
 
 
-class MySQLSerializer(BaseSerializer):
+class MySQLQuestionSerializer(BaseSerializer):
 
+    class Meta:
+        model = MySQL
+        fields = ['schema_SQL']
+
+
+class MySQLAnswerSerializer(BaseSerializer):
     class Meta:
         model = MySQL
         fields = ['text']
@@ -88,7 +94,7 @@ class AnswerSerializer(BaseSerializer):
         UnitConversion.__name__.lower(): UnitConversionSerializer,
         ImageWText.__name__.lower(): ImageWithTextSerializer,
         Text.__name__.lower(): TextSerializer,
-        MySQL.__name__.lower(): MySQLSerializer,
+        MySQL.__name__.lower(): MySQLAnswerSerializer,
     }
 
     class Meta:
@@ -121,7 +127,7 @@ class UserResponseSerializer(BaseSerializer):
     vector = VectorSerializer(required=False)
     mathematical_expression = MathematicalExpressionSerializer(required=False)
     text = TextSerializer(required=False)
-    my_sql = MySQLSerializer(required=False)
+    my_sql = MySQLAnswerSerializer(required=False)
     # multiple or multi select field
     answer = AnswerSerializer(required=False)
     answers_list = AnswerSerializer(required=False, many=True)
@@ -211,6 +217,7 @@ class QuestionSerializer(BaseSerializer):
     unit_conversion = serializers.SerializerMethodField()
     lesson = LessonSerializer()
     vectors = VectorSerializer(many=True)
+    my_sql = serializers.SerializerMethodField()
 
     def get_unit_conversion(self, obj):
         if obj.answer_type == Question.AnswerType.UNIT_CONVERSION:
@@ -224,6 +231,19 @@ class QuestionSerializer(BaseSerializer):
 
         return None
 
+    def get_my_sql(self, obj):
+        if obj.answer_type == Question.AnswerType.MYSQL:
+            try:
+                answer = obj.answers.all()[0]
+            except IndexError:
+                return None
+
+            if type(answer.content) == MySQL:
+                    return MySQLQuestionSerializer(answer.content).data
+
+            return None
+
+
     def get_choices(self, obj):
         if obj.answer_type == Question.AnswerType.MULTIPLE_CHOICE \
                 or obj.answer_type == Question.AnswerType.MULTISELECT_CHOICE:
@@ -233,7 +253,7 @@ class QuestionSerializer(BaseSerializer):
         model = Question
         fields = [
             'uuid', 'text', 'solution_text', 'hint', 'image', 'vectors', 'answer_type', 'choices',  # 'question_type',
-            'lesson', 'unit_conversion', 'thread'
+            'lesson', 'unit_conversion', 'thread', 'my_sql'
         ]
         read_only_fields = ('thread',)
 
