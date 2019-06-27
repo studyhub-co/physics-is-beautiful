@@ -803,3 +803,9 @@ img.grayed-out-img {
     border: white;
     box-shadow: 0 2px 2px rgba(0,0,0,.5);
 }
+
+.curriculum .pib-link {
+    color: rgb(8, 209, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}

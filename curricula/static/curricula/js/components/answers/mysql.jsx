@@ -12,7 +12,10 @@ import 'brace/theme/textmate'
 export class MYSQLAnswer extends React.Component {
   constructor (props) {
     super(props)
-    // this.handleInputChange = this.handleInputChange.bind(this)
+    this.changeQuerySQL = this.changeQuerySQL.bind(this)
+    this.state = {
+      query_SQL: ''
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -23,22 +26,34 @@ export class MYSQLAnswer extends React.Component {
   }
 
   reset () {
-    this.setState({text: null})
+    this.setState({QuerySQL: ''})
+  }
+
+  changeQuerySQL (value) {
+    this.props.updateAnswer([this.props.question.uuid, {
+      my_sql: {
+        query_SQL: value
+      }}])
+    this.setState({QuerySQL: value})
   }
 
   render () {
+    var hasAnswer = false // user gave answer
+    if (this.props.answer || this.props.question.is_correct) {
+      hasAnswer = true
+    }
+
     const sqlQueryPlaceHolder = 'Query Panel\n' +
       'Use this panel to create SQL query for SELECT from database'
 
-    // console.log(this.props);
-    
     return (
       <div className='bounding-box'>
         <Form.Group>
           <AceEditor
             placeholder={sqlQueryPlaceHolder}
             onChange={this.changeQuerySQL}
-            value={this.props.query_SQL}
+            value={this.state.QuerySQL}
+            readOnly={hasAnswer}
             showPrintMargin
             showGutter
             mode='mysql'
@@ -57,11 +72,10 @@ export class MYSQLAnswer extends React.Component {
           {this.props && this.props.text
             ? <div>
               <br />
-              <h3>Expected output</h3>
+              <h3>You output</h3>
               <pre>{this.props.text}</pre>
             </div>
             : null
-
           }
         </Form.Group>
       </div>

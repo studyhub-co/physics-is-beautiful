@@ -465,8 +465,8 @@ class MySQL(BaseModel):
         #  3. DROP MYSQL schema(database)
 
     def matches(self, obj):
-        # print(self.text.lower(), obj.text.lower())
-        return self.text.lower() == obj.text.lower()
+        from ..helpers.mysql_problem_type import clean_my_sql_problem_type
+        return clean_my_sql_problem_type(self, obj.query_SQL)
 
     def __str__(self):
         return self.text

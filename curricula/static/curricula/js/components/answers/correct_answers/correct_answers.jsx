@@ -1,6 +1,8 @@
 import React from 'react'
 import RMathJax from 'react-mathjax'
 
+import Modal from 'react-bootstrap/Modal'
+
 export class VectorAnswer extends React.Component {
   render () {
     if (this.props.answer.x === 0 && this.props.answer.y === 0) {
@@ -38,6 +40,45 @@ export class VectorAnswer extends React.Component {
 export class TextAnswer extends React.Component {
   render () {
     return <span>{this.props.answer.text}</span>
+  }
+}
+
+export class MySQL {
+  constructor (answer) {
+    // this.query_SQL = answer.query_SQL
+    this.text = answer.text
+  }
+}
+
+export class MySQLAnswer extends React.Component {
+  constructor (answer) {
+    super()
+    this.handleShow = this.handleShow.bind(this)
+
+    this.state = {
+      show: false
+    }
+  }
+
+  handleShow () {
+    this.setState({ show: !this.state.show })
+  }
+
+  render () {
+    return <span>
+      <span
+        className={'pib-link'}
+        onClick={this.handleShow}
+      >Click to view</span>
+      <Modal show={this.state.show} onHide={this.handleShow}>
+        <Modal.Header closeButton>
+          <Modal.Title>Correct output</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <pre>{this.props.answer.text}</pre>
+        </Modal.Body>
+      </Modal>
+    </span>
   }
 }
 

@@ -9,7 +9,8 @@ from prettytable import from_db_cursor
 from ..settings import MY_SQL_PROBLEM_TYPE_HOST, MY_SQL_PROBLEM_TYPE_USER, MY_SQL_PROBLEM_TYPE_USER_PASSWORD
 
 
-def clean_my_sql_problem_type(my_SQL_instance):
+def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
+    # if check_query_SQL is not none - validate output
 
     schema_SQL = getattr(my_SQL_instance, 'schema_SQL', None)
     if not schema_SQL:
@@ -90,18 +91,30 @@ def clean_my_sql_problem_type(my_SQL_instance):
 
         #  2. Try to run query_SQL if exist
         # TODO 2 Check schema_SQL for only SELECT query
-        query_SQL = getattr(my_SQL_instance, 'query_SQL', None)
+        if not check_query_SQL:
+            # save output
+            query_SQL = getattr(my_SQL_instance, 'query_SQL', None)
 
-        if query_SQL:
+            if query_SQL:
+                try:
+                    db_user_cursor = db_user_connection.cursor()
+                    db_user_cursor.execute('{1}'.format(database_name, query_SQL))
+                    my_SQL_instance.text = from_db_cursor(db_user_cursor).get_string()
+                    db_user_cursor.close()
+                except MySQLdb.Error as e:
+                    my_SQL_instance.text = ''
+                    my_SQL_instance.save()
+                    raise ValidationError({'schema_SQL': 'Invalid query SQL'})
+        else:
+            # validate output!
             try:
                 db_user_cursor = db_user_connection.cursor()
-                db_user_cursor.execute('{1}'.format(database_name, query_SQL))
-                my_SQL_instance.text = from_db_cursor(db_user_cursor).get_string()
+                db_user_cursor.execute('{1}'.format(database_name, check_query_SQL))
+                checked_query_SQL_string = from_db_cursor(db_user_cursor).get_string()
                 db_user_cursor.close()
+                return my_SQL_instance.text == checked_query_SQL_string
             except MySQLdb.Error as e:
-                my_SQL_instance.text = ''
-                my_SQL_instance.save()
-                raise ValidationError({'schema_SQL': 'Invalid query SQL'})
+                return False
 
     # DROP SCHEMA AND USER
     finally:
@@ -111,3 +124,4 @@ def clean_my_sql_problem_type(my_SQL_instance):
                                                                           MY_SQL_PROBLEM_TYPE_HOST))
 
         root_user_cursor.close()
+

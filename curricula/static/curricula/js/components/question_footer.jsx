@@ -58,6 +58,8 @@ export class Footer extends React.Component {
     var correctMessage = ''
     var backgroundColor = '#dbdbdb'
     var commentsButtonCol = null
+    
+    // console.log(this.props.correct_answer);
 
     if (typeof this.props.correct !== 'undefined') {
       commentsButtonCol =

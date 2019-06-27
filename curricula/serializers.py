@@ -83,6 +83,12 @@ class MySQLQuestionSerializer(BaseSerializer):
 class MySQLAnswerSerializer(BaseSerializer):
     class Meta:
         model = MySQL
+        fields = ['query_SQL']
+
+
+class MySQLAnswerRetturnedSerializer(BaseSerializer):
+    class Meta:
+        model = MySQL
         fields = ['text']
 
 
@@ -94,7 +100,7 @@ class AnswerSerializer(BaseSerializer):
         UnitConversion.__name__.lower(): UnitConversionSerializer,
         ImageWText.__name__.lower(): ImageWithTextSerializer,
         Text.__name__.lower(): TextSerializer,
-        MySQL.__name__.lower(): MySQLAnswerSerializer,
+        MySQL.__name__.lower(): MySQLAnswerRetturnedSerializer,
     }
 
     class Meta:
@@ -172,7 +178,7 @@ class UserResponseSerializer(BaseSerializer):
 
             for answer_data in sr.validated_data:
                 answers_uuids.append(answer_data.get('uuid', 0))
-            answers_list = Answer.objects.filter(uuid__in = answers_uuids)
+            answers_list = Answer.objects.filter(uuid__in=answers_uuids)
 
         self.validated_data['content'] = content
         self.validated_data.update(kwargs)
@@ -242,7 +248,6 @@ class QuestionSerializer(BaseSerializer):
                     return MySQLQuestionSerializer(answer.content).data
 
             return None
-
 
     def get_choices(self, obj):
         if obj.answer_type == Question.AnswerType.MULTIPLE_CHOICE \

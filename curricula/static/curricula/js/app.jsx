@@ -4,7 +4,7 @@ import {SectionSheet, Sheet} from './containers/sheet'
 import {VectorGame} from './games/vector'
 import {UnitConversionGame} from './games/unit_conversion'
 import {Vector} from 'vector_canvas'
-import {UnitConversion} from './components/answers/correct_answers/correct_answers'
+import { MySQL, UnitConversion } from './components/answers/correct_answers/correct_answers'
 import { Container, Row, Col } from 'react-bootstrap'
 import { RingLoader } from 'react-spinners'
 
@@ -429,6 +429,9 @@ class LessonsApp extends React.Component {
               break
             case 'unitconversion':
               this.correct_answer = new UnitConversion(data.correct_answer.content, this.question)
+              break
+            case 'mysql':
+              this.correct_answer = new MySQL(data.correct_answer.content, this.question)
               break
             default:
               this.correct_answer = data.correct_answer
