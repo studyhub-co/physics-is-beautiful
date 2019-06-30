@@ -51,7 +51,7 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
             #               "CREATE USER '{0}'@'{2}' IDENTIFIED WITH mysql_native_password BY '{3}';" \
             #               "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`@`{2}`;" \
             db_user_sql = "CREATE USER '{0}'@'%' IDENTIFIED WITH mysql_native_password BY '{2}';" \
-                          "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`%`;" \
+                          "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`@`%`;" \
                 .format(database_user_name, database_name, db_user_password)
 
             try:
