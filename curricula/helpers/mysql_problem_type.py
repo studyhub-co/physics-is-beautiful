@@ -2,7 +2,7 @@ import random
 import hashlib
 import MySQLdb
 
-from django.core.exceptions import ValidationError, PermissionDenied
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 
 from prettytable import from_db_cursor
 
@@ -50,9 +50,9 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
             # db_user_sql = "DROP USER IF EXISTS {0}@'{2}';" \
             #               "CREATE USER '{0}'@'{2}' IDENTIFIED WITH mysql_native_password BY '{3}';" \
             #               "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`@`{2}`;" \
-            db_user_sql = "CREATE USER '{0}'@'{2}' IDENTIFIED WITH mysql_native_password BY '{3}';" \
-                          "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`@`{2}`;" \
-                .format(database_user_name, database_name, MY_SQL_PROBLEM_TYPE_HOST, db_user_password)
+            db_user_sql = "CREATE USER '{0}'@'%' IDENTIFIED WITH mysql_native_password BY '{2}';" \
+                          "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`%`;" \
+                .format(database_user_name, database_name, db_user_password)
 
             try:
                 root_user_cursor.execute(database_sql)
@@ -63,8 +63,7 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                 if e.args[0] == 1007:  # DB exist
                     pass
                 else:
-                    raise e
-                    # raise PermissionDenied('Can\'t create MYSQL database')
+                    raise ImproperlyConfigured('Can\'t create MYSQL schema')
 
         try:
             db_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
@@ -74,8 +73,7 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                                                  autocommit=True
                                                  )
         except MySQLdb.Error as e:
-            raise e
-            # raise PermissionDenied('Can\'t connect to MYSQL database')
+            raise ImproperlyConfigured('Can\'t connect to MYSQL database')
 
         # CREATE TABLES AND ADD DATA (SCHEMA PANEL)
         # TODO 1.2 Check schema_SQL for only DDL and DML statements
