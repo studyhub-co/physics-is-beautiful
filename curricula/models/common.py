@@ -38,6 +38,7 @@ class BaseModel(models.Model):
         copy = self.__class__.objects.get(id=self.id)
         copy.id = None
         copy.uuid = None
+        copy.thread_id = None
         setattr(copy, self.CloneMeta.parent_field, to_parent)
         copy.save()
         self.clone_children(copy)
