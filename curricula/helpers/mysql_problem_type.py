@@ -4,9 +4,19 @@ import MySQLdb
 
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 
-from prettytable import from_db_cursor
+# from prettytable import from_db_cursor
 
 from ..settings import MY_SQL_PROBLEM_TYPE_HOST, MY_SQL_PROBLEM_TYPE_USER, MY_SQL_PROBLEM_TYPE_USER_PASSWORD
+
+
+def from_db_cursor(cursor):
+    field_names = [col[0] for col in cursor.description]
+    rows = cursor.fetchall()
+    result_string = ' '.join(field_names)
+    for row in rows:
+        result_string += '\n'
+        result_string += ' '.join(str(x) for x in row)
+    return result_string
 
 
 def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
@@ -99,7 +109,8 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                 try:
                     db_user_cursor = db_user_connection.cursor()
                     db_user_cursor.execute('{1}'.format(database_name, query_SQL))
-                    my_SQL_instance.text = from_db_cursor(db_user_cursor).get_string()
+                    my_SQL_instance.text = from_db_cursor(db_user_cursor)\
+                        # .get_string()
                     db_user_cursor.close()
                 except MySQLdb.Error as e:
                     my_SQL_instance.text = ''
@@ -110,7 +121,8 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
             try:
                 db_user_cursor = db_user_connection.cursor()
                 db_user_cursor.execute('{1}'.format(database_name, check_query_SQL))
-                checked_query_SQL_string = from_db_cursor(db_user_cursor).get_string()
+                checked_query_SQL_string = from_db_cursor(db_user_cursor)\
+                    # .get_string()
                 db_user_cursor.close()
                 return my_SQL_instance.text == checked_query_SQL_string
             except MySQLdb.Error as e:
