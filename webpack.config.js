@@ -23,19 +23,24 @@ module.exports = function (env) {
       homepage: './homepage/static/homepage/js/index',
       notifications_inbox: './notifications/static/notifications_inbox/js/index',
       trophy_inbox: './user_reputation/static/trophy_inbox/js/index',
-      react_djeedit: './node_modules/@vermus/django-react-djeddit-client/dist/',
-      //react_djeedit: '../django-react-djeddit/frontend/django-react-djeddit-client/dist/' // debug
+      react_djeedit: './node_modules/@vermus/django-react-djeddit-client/dist/'
+      // react_djeedit: '../django-react-djeddit/frontend/django-react-djeddit-client/dist/' // debug
     },
 
     output: {
       // path: path.resolve('./static/bundles/'),
       path: path.resolve(outputPath),
-      filename: '[name]-[hash].js'
+      filename: '[name]-[hash].js',
+      chunkFilename: '[name]-chunk.js'
       // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
     },
 
     plugins: MODE === 'production' ? [
       new BundleTracker({filename: './webpack-stats.json'}),
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendors',
+        minChunks: 2 // used at least in 2 modules
+      }),
       new webpack.DefinePlugin({
         'process.env': {
           'NODE_ENV': JSON.stringify(MODE)
@@ -45,7 +50,11 @@ module.exports = function (env) {
       new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
     ]
       : [
-        new BundleTracker({filename: './webpack-stats.json'})
+        new BundleTracker({filename: './webpack-stats.json'}),
+        new webpack.optimize.CommonsChunkPlugin({
+          name: 'vendors',
+          minChunks: 2 // used at least in 2 modules
+        })
       ],
 
     module: {
@@ -53,7 +62,8 @@ module.exports = function (env) {
         {
           test: /\.(js|jsx)$/,
           loader: 'babel-loader',
-          exclude: [/node_modules/, path.resolve(__dirname, '../django-react-djeddit/frontend/django-react-djeddit-client/dist/')],
+          exclude: [/node_modules/,
+            path.resolve(__dirname, '../django-react-djeddit/frontend/django-react-djeddit-client/dist/')],
           query: {
             presets: [
               ['env', {
