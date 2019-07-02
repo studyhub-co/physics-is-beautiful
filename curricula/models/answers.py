@@ -9,6 +9,7 @@ from django.db import models
 from django.core.exceptions import ValidationError, MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.postgres.fields import JSONField
 
 from jsonfield import JSONField
 
@@ -442,9 +443,10 @@ class Vector(BaseModel):
 
 
 class MySQL(BaseModel):
-
-    text = models.TextField()  # expected_output
+    text = models.TextField()  # expected_output as string
+    expected_output_json = JSONField(default=None)  # expected_output as json
     schema_SQL = models.TextField()
+    schema_SQL_json = JSONField(default=None)  # database as JSON
     schema_is_valid = models.BooleanField(default=False)
     query_SQL = models.TextField()
 
@@ -454,15 +456,6 @@ class MySQL(BaseModel):
 
         from ..helpers.mysql_problem_type import clean_my_sql_problem_type
         clean_my_sql_problem_type(self)
-
-        #  1.1 Create MYSQL schema(database) with user_id name
-        #  1.2 Check for only DDL and DML statements
-        #  1.3. Try to build tables with schema_SQL query
-        #  1.4. Save schema_SQL if OK (remove data from query_SQL and text fields)
-        #  2. Try to run query_SQL if exist in new_data
-        #  2.1 Save query_SQL if OK
-        #  2.2 Save (rewrite) text (expected_output) if OK
-        #  3. DROP MYSQL schema(database)
 
     def matches(self, obj):
         from ..helpers.mysql_problem_type import clean_my_sql_problem_type

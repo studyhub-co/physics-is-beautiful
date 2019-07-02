@@ -1,3 +1,4 @@
+import simplejson
 import random
 import hashlib
 import MySQLdb
@@ -75,6 +76,8 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                 else:
                     raise ImproperlyConfigured('Can\'t create MYSQL schema')
 
+
+
         try:
             db_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
                                                  user=database_user_name,
@@ -88,7 +91,6 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
         # CREATE TABLES AND ADD DATA (SCHEMA PANEL)
         # TODO 1.2 Check schema_SQL for only DDL and DML statements
         try:
-
             db_user_cursor = db_user_connection.cursor()
             # schema_SQL = db_user_connection.escape_string(schema_SQL)
             db_user_cursor.execute('{1}'.format(database_name, schema_SQL))
@@ -98,6 +100,30 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
             my_SQL_instance.schema_is_valid = False
             my_SQL_instance.save()  # wee need to save wrong Invalid schema to allow user edit in the future
             raise ValidationError({'schema_SQL': 'Invalid schema SQL'})
+
+        # get schema and data, save schema_SQL_json
+        try:
+            db_user_cursor = db_user_connection.cursor()
+            # get all tables names
+            db_user_cursor.execute(
+                'SELECT table_name FROM information_schema.tables where table_schema=%s;',
+                [database_name]
+            )
+            json_schema = []
+            for table_row in db_user_cursor:
+                db_table_cursor = db_user_connection.cursor()
+                db_table_cursor.execute('SELECT * FROM {};'.format(table_row[0]))
+                json_schema.append({
+                    table_row[0]: {
+                        'columns': [i[0] for i in db_table_cursor.description],
+                        'data': db_table_cursor.fetchall()
+                    }
+                })
+                # for table_row in db_table_cursor.fetchall():
+                #     json_schema[table_name].append(table_row)
+            my_SQL_instance.schema_SQL_json = simplejson.dumps(json_schema)
+        except MySQLdb.Error as e:
+            pass
 
         #  2. Try to run query_SQL if exist
         # TODO 2 Check schema_SQL for only SELECT query

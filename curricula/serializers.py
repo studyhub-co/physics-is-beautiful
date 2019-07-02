@@ -77,16 +77,16 @@ class MySQLQuestionSerializer(BaseSerializer):
 
     class Meta:
         model = MySQL
-        fields = ['schema_SQL']
+        fields = ['schema_SQL', 'schema_SQL_json']
 
 
 class MySQLAnswerSerializer(BaseSerializer):
     class Meta:
         model = MySQL
-        fields = ['query_SQL']
+        fields = ['query_SQL', 'schema_SQL_json',]
 
 
-class MySQLAnswerRetturnedSerializer(BaseSerializer):
+class MySQLAnswerReturnedSerializer(BaseSerializer):
     class Meta:
         model = MySQL
         fields = ['text']
@@ -100,7 +100,7 @@ class AnswerSerializer(BaseSerializer):
         UnitConversion.__name__.lower(): UnitConversionSerializer,
         ImageWText.__name__.lower(): ImageWithTextSerializer,
         Text.__name__.lower(): TextSerializer,
-        MySQL.__name__.lower(): MySQLAnswerRetturnedSerializer,
+        MySQL.__name__.lower(): MySQLAnswerReturnedSerializer,
     }
 
     class Meta:
