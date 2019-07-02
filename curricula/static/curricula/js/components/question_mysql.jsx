@@ -36,7 +36,8 @@ export class QuestionMysql extends React.Component {
         columnList.map((column, index) => {
           reactDataColumns.push({
             name: column,
-            selector: '' + index
+            selector: '' + index,
+            sortable: true
           })
         })
 
@@ -61,14 +62,14 @@ export class QuestionMysql extends React.Component {
         {reactDataTables.map(
           (table, i) => {
             const tableName = Object.keys(table)[0]
-            console.log(table[tableName].columns);
             return (
-              <DataTable
-                key={i}
-                title={tableName}
-                columns={table[tableName].columns}
-                data={table[tableName].data}
-              />
+              <div key={i} style={{textAlign: 'left'}}>
+                <DataTable
+                  title={tableName}
+                  columns={table[tableName].columns}
+                  data={table[tableName].data}
+                />
+              </div>
             )
           })}
         {/* <h3>SQL Schema</h3> */}
