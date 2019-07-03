@@ -9,7 +9,7 @@ from rest_framework import serializers, status, permissions, mixins
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 # from drf_haystack.serializers import HaystackSerializer
@@ -89,6 +89,23 @@ class QuestionViewSet(ModelViewSet):
             elif user_response.answers_list:
                 data['correct_answer'] = AnswerSerializer(user_response.get_correct_answer(), many=True).data
         return Response(data)
+
+    # @renderer_classes((JSONRenderer,))
+    def service_request(self, request, uuid):
+        if 'type' in request.query_params and request.query_params['type'] == 'execute_mysql':
+            question = self.get_object()
+            if question.answer_type != Question.AnswerType.MYSQL or 'value' not in request.data:
+                raise ValidationError({'error': 'Initial data validation error'})
+            answer = question.answers.first()
+            try:
+                return Response({
+                    'json_mysql_result': answer.content.get_json_from_sql(str(request.data['value']))
+                })
+            except Exception as e:
+                raise ValidationError({'error': '{}'.format(e)})
+
+        else:
+            raise NotFound
 
 
 class LessonViewSet(ModelViewSet):

@@ -6,8 +6,8 @@ import DataTable from 'react-data-table-component'
 // import AceEditor from 'react-ace'
 // import brace from 'brace'
 
-import 'brace/mode/mysql'
-import 'brace/theme/textmate'
+// import 'brace/mode/mysql'
+// import 'brace/theme/textmate'
 
 export class QuestionMysql extends React.Component {
   constructor () {

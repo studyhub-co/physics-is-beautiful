@@ -14,10 +14,11 @@ def from_db_cursor(cursor):
     field_names = [col[0] for col in cursor.description]
     rows = cursor.fetchall()
     result_string = ' '.join(field_names)
+    result_json = {'columns': [i[0] for i in cursor.description], 'data': rows}
     for row in rows:
         result_string += '\n'
         result_string += ' '.join(str(x) for x in row)
-    return result_string
+    return result_string, simplejson.dumps(result_json)
 
 
 def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
@@ -76,8 +77,6 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                 else:
                     raise ImproperlyConfigured('Can\'t create MYSQL schema')
 
-
-
         try:
             db_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
                                                  user=database_user_name,
@@ -135,7 +134,8 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                 try:
                     db_user_cursor = db_user_connection.cursor()
                     db_user_cursor.execute('{1}'.format(database_name, query_SQL))
-                    my_SQL_instance.text = from_db_cursor(db_user_cursor)\
+                    my_SQL_instance.text, my_SQL_instance.expected_output_json \
+                        = from_db_cursor(db_user_cursor)
                         # .get_string()
                     db_user_cursor.close()
                 except MySQLdb.Error as e:
@@ -147,11 +147,12 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
             try:
                 db_user_cursor = db_user_connection.cursor()
                 db_user_cursor.execute('{1}'.format(database_name, check_query_SQL))
-                checked_query_SQL_string = from_db_cursor(db_user_cursor)\
+                checked_query_SQL_string, checked_query_SQL_json = from_db_cursor(db_user_cursor)
                     # .get_string()
                 db_user_cursor.close()
                 return my_SQL_instance.text == checked_query_SQL_string
             except MySQLdb.Error as e:
+                # TODO return error
                 return False
 
     # DROP SCHEMA AND USER
@@ -163,3 +164,84 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
 
         root_user_cursor.close()
 
+
+# TODO refactor this (much duplicate code)
+def get_json_result_from_sql(my_SQL_instance, query_sql):
+    schema_SQL = getattr(my_SQL_instance, 'schema_SQL', None)
+    if not schema_SQL:
+        my_SQL_instance.schema_SQL = ''
+        my_SQL_instance.save()
+        raise ValidationError({'schema_SQL': 'Missing schema SQL'})
+
+    # add try catch for all connections
+    try:
+        root_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
+                                               user=MY_SQL_PROBLEM_TYPE_USER,
+                                               passwd=MY_SQL_PROBLEM_TYPE_USER_PASSWORD,
+                                               autocommit=True
+                                               )
+
+        root_user_cursor = root_user_connection.cursor()
+
+        db_schema_created = False
+
+        while not db_schema_created:
+            # 1.1 Create MYSQL schema(database) with MySQL name
+            _hash = random.getrandbits(63)
+            database_name = 's{0}'.format(_hash)
+            database_user_name = 'u{0}'.format(_hash)
+            db_user_password = hashlib.md5(database_name.encode('utf-8')).hexdigest()
+
+            database_sql = "CREATE SCHEMA {0};".format(database_name)
+
+            db_user_sql = "CREATE USER '{0}'@'%' IDENTIFIED WITH mysql_native_password BY '{2}';" \
+                          "GRANT ALL PRIVILEGES ON {1}.* TO `{0}`@`%`;" \
+                .format(database_user_name, database_name, db_user_password)
+
+            try:
+                root_user_cursor.execute(database_sql)
+                root_user_cursor.execute(db_user_sql)
+                root_user_cursor.close()
+                db_schema_created = True
+            except MySQLdb.Error as e:
+                if e.args[0] == 1007:  # DB exist
+                    pass
+                else:
+                    raise ImproperlyConfigured('Can\'t create MYSQL schema')
+
+        try:
+            db_user_connection = MySQLdb.connect(host=MY_SQL_PROBLEM_TYPE_HOST,
+                                                 user=database_user_name,
+                                                 passwd=db_user_password,
+                                                 db=database_name,
+                                                 autocommit=True
+                                                 )
+        except MySQLdb.Error as e:
+            raise ImproperlyConfigured('Can\'t connect to MYSQL database')
+
+        try:
+            db_user_cursor = db_user_connection.cursor()
+            db_user_cursor.execute('{1}'.format(database_name, schema_SQL))
+            db_user_cursor.close()
+        except MySQLdb.Error as e:
+            raise e
+
+        # generate output!
+        try:
+            db_user_cursor = db_user_connection.cursor()
+            db_user_cursor.execute('{1}'.format(database_name, query_sql))
+            checked_query_SQL_string, checked_query_SQL_json = from_db_cursor(db_user_cursor)
+            # .get_string()
+            db_user_cursor.close()
+            return checked_query_SQL_json
+        except MySQLdb.Error as e:
+            raise e
+
+    # DROP SCHEMA AND USER
+    finally:
+        root_user_cursor = root_user_connection.cursor()
+        root_user_cursor.execute('DROP SCHEMA IF EXISTS {0}; '.format(database_name))
+        root_user_cursor.execute('DROP USER IF EXISTS {0}@\'{1}\''.format(database_user_name,
+                                                                          MY_SQL_PROBLEM_TYPE_HOST))
+
+        root_user_cursor.close()

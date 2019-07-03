@@ -461,6 +461,10 @@ class MySQL(BaseModel):
         from ..helpers.mysql_problem_type import clean_my_sql_problem_type
         return clean_my_sql_problem_type(self, obj.query_SQL)
 
+    def get_json_from_sql(self, query_sql):
+        from ..helpers.mysql_problem_type import get_json_result_from_sql
+        return get_json_result_from_sql(self, query_sql)
+
     def __str__(self):
         return self.text
 
