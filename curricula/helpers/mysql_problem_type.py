@@ -1,9 +1,12 @@
-import simplejson
+# import simplejson as json
+import json
 import random
 import hashlib
 import MySQLdb
 
 from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 # from prettytable import from_db_cursor
 
@@ -18,7 +21,7 @@ def from_db_cursor(cursor):
     for row in rows:
         result_string += '\n'
         result_string += ' '.join(str(x) for x in row)
-    return result_string, simplejson.dumps(result_json)
+    return result_string, json.dumps(result_json, cls=DjangoJSONEncoder)
 
 
 def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
@@ -120,7 +123,7 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                 })
                 # for table_row in db_table_cursor.fetchall():
                 #     json_schema[table_name].append(table_row)
-            my_SQL_instance.schema_SQL_json = simplejson.dumps(json_schema)
+            my_SQL_instance.schema_SQL_json = json.dumps(json_schema, cls=DjangoJSONEncoder)
         except MySQLdb.Error as e:
             pass
 
