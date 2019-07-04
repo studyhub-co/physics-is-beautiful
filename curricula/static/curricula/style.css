@@ -810,3 +810,8 @@ img.grayed-out-img {
     cursor: pointer;
     text-decoration: underline;
 }
+
+
+.rdt_TableHeader > div {
+    font-size: 1.2rem !important;
+}
