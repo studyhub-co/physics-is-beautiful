@@ -58,8 +58,6 @@ export class Footer extends React.Component {
     var correctMessage = ''
     var backgroundColor = '#dbdbdb'
     var commentsButtonCol = null
-    
-    // console.log(this.props.correct_answer);
 
     if (typeof this.props.correct !== 'undefined') {
       commentsButtonCol =
@@ -99,8 +97,9 @@ export class Footer extends React.Component {
         </div>
       } else {
         correctMessage = <div>
-          <span>Incorrect, the correct answer is: <br /></span>
-          <Answer ckey={1} answer={this.props.correct_answer} />
+          {/*<span>Incorrect, the correct answer is: <br /></span>*/}
+          <div>Incorrect</div>
+          {/*<Answer ckey={1} answer={this.props.correct_answer} />*/}
         </div>
       }
     }
@@ -121,6 +120,7 @@ export class Footer extends React.Component {
           {this.props.solutionText &&
               <MarkdownMathRender source={this.props.solutionText} />
           }
+          <Answer ckey={1} answer={this.props.correct_answer} />
           <ThreadComponent
             threadId={this.props.thread}
           />

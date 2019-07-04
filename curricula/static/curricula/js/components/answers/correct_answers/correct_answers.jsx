@@ -1,7 +1,8 @@
 import React from 'react'
 import RMathJax from 'react-mathjax'
 
-import Modal from 'react-bootstrap/Modal'
+import AceEditor from 'react-ace'
+import DataTable from 'react-data-table-component'
 
 export class VectorAnswer extends React.Component {
   render () {
@@ -45,8 +46,8 @@ export class TextAnswer extends React.Component {
 
 export class MySQL {
   constructor (answer) {
-    // this.query_SQL = answer.query_SQL
-    this.text = answer.text
+    this.query_SQL = answer.query_SQL
+    this.expected_output_json = answer.expected_output_json
   }
 }
 
@@ -65,26 +66,72 @@ export class MySQLAnswer extends React.Component {
   }
 
   render () {
-    return <span>
-      <span
-        className={'pib-link'}
-        onClick={this.handleShow}
-      >Click to view</span>
-      <Modal show={this.state.show} onHide={this.handleShow}>
-        <Modal.Header closeButton>
-          <Modal.Title>Correct output</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <pre>{this.props.answer.text}</pre>
-        </Modal.Body>
-      </Modal>
-    </span>
+    const reactDataData = []
+    const reactDataColumns = []
+
+    if (this.props.answer.expected_output_json) {
+      const dataDict = JSON.parse(this.props.answer.expected_output_json)
+
+      // populate columns
+      dataDict.columns.map((column, index) => {
+        reactDataColumns.push({
+          name: column,
+          selector: '' + index,
+          sortable: true
+        })
+      })
+
+      // populate data
+      dataDict.data.map((row, index) => {
+        let reactDataRow = {}
+        for (let i = 0; i < row.length; i++) {
+          reactDataRow[i] = row[i]
+        }
+        reactDataData.push(reactDataRow)
+      })
+    }
+
+    return <div>
+      <AceEditor
+        value={this.props.answer.query_SQL}
+        readOnly={Boolean(true)}
+        showPrintMargin
+        showGutter
+        mode='mysql'
+        theme='textmate'
+        height={'5rem'}
+        width={'100%'}
+        setOptions={{
+          enableBasicAutocompletion: false,
+          enableLiveAutocompletion: false,
+          enableSnippets: false,
+          showLineNumbers: true,
+          tabSize: 2
+        }}
+      />
+      {reactDataColumns.length > 0
+        ? <div>
+          {reactDataColumns.length > 0 &&
+            <DataTable
+              noHeader
+              pagination={Boolean(true)}
+              paginationPerPage={3}
+              columns={reactDataColumns}
+              data={reactDataData}
+            />
+          }
+        </div> : null }
+    </div>
   }
 }
 
 export class MathematicalExpressionAnswer extends React.Component {
   render () {
-    return <div><RMathJax.Provider><div><RMathJax.Node formula={this.props.answer.expression} /></div></RMathJax.Provider></div>
+    return <div><RMathJax.Provider>
+      <div>
+        <RMathJax.Node formula={this.props.answer.expression} />
+      </div>
+    </RMathJax.Provider></div>
   }
 }
 

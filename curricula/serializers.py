@@ -89,7 +89,7 @@ class MySQLAnswerSerializer(BaseSerializer):
 class MySQLAnswerReturnedSerializer(BaseSerializer):
     class Meta:
         model = MySQL
-        fields = ['text']
+        fields = ['query_SQL', 'expected_output_json']
 
 
 class AnswerSerializer(BaseSerializer):

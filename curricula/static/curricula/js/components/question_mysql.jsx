@@ -65,6 +65,8 @@ export class QuestionMysql extends React.Component {
             return (
               <div key={i} style={{textAlign: 'left'}}>
                 <DataTable
+                  pagination={Boolean(true)}
+                  paginationPerPage={3}
                   title={tableName}
                   columns={table[tableName].columns}
                   data={table[tableName].data}
