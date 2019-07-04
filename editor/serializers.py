@@ -127,6 +127,7 @@ class AnswerSerializer(BaseSerializer):
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MySQL)):
             fields['text'] = serializers.CharField(source='content.text', allow_blank=False)
             fields['schema_SQL'] = serializers.CharField(source='content.schema_SQL', allow_blank=False)
+            # TODO we need to hide query_SQL info for non author of the course/curriculum
             fields['query_SQL'] = serializers.CharField(source='content.query_SQL', allow_blank=True)
             fields['schema_is_valid'] = serializers.BooleanField(source='content.schema_is_valid', read_only=True)
         elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR or \
