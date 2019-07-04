@@ -101,7 +101,7 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
         except MySQLdb.Error as e:
             my_SQL_instance.schema_is_valid = False
             my_SQL_instance.save()  # wee need to save wrong Invalid schema to allow user edit in the future
-            raise ValidationError({'schema_SQL': 'Invalid schema SQL'})
+            raise ValidationError({'schema_SQL': 'Invalid schema SQL: {}'.format(e)})
 
         # get schema and data, save schema_SQL_json
         try:
