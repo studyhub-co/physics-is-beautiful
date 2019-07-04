@@ -133,6 +133,7 @@ html, body {
     padding-left: 5vw;
     padding-right: 5vw;
     min-height: 75px;
+    z-index: 5;
 }
 
 #footer .row {
