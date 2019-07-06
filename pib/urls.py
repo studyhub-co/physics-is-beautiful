@@ -35,12 +35,12 @@ sitemaps = {
 urlpatterns = [
     url(r'^', include('homepage.urls')),
 
-    url(r'^curriculum/profile/', include('editor.urls', namespace='curriculum_profile')),  # must be upper curriculum/
+    url(r'^curriculum/profile/', include(('editor.urls', 'editor'), namespace='curriculum_profile')),  # must be upper curriculum/
     # namespase is a fix for api/v1/editor/curricula url (drf router)
     url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
     # url(r'^editor/', include('editor.urls')),
-    url(r'^studio/', include('editor.urls', namespace='studio')),
-    url(r'^browse/', include('editor.urls', namespace='browse')),
+    url(r'^studio/', include(('editor.urls', 'studio'), namespace='studio')),
+    url(r'^browse/', include(('editor.urls', 'browse'), namespace='browse')),
     url(r'^classroom/', include('classroom.urls')),
     url(r'^resources/', include('resources.urls')),
     url(r'^admin/', admin.site.urls),

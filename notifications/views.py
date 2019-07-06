@@ -125,7 +125,7 @@ def delete(request, slug=None):
 
 def live_unread_notification_count(request):
     try:
-        user_is_authenticated = request.user.is_authenticated()
+        user_is_authenticated = request.user.is_authenticated
     except TypeError:  # Django >= 1.11
         user_is_authenticated = request.user.is_authenticated
 
@@ -143,7 +143,7 @@ def live_unread_notification_count(request):
 def live_unread_notification_list(request):
     ''' Return a json with a unread notification list '''
     try:
-        user_is_authenticated = request.user.is_authenticated()
+        user_is_authenticated = request.user.is_authenticated
     except TypeError:  # Django >= 1.11
         user_is_authenticated = request.user.is_authenticated
 
@@ -190,7 +190,7 @@ def live_unread_notification_list(request):
 def live_all_notification_list(request):
     ''' Return a json with a unread notification list '''
     try:
-        user_is_authenticated = request.user.is_authenticated()
+        user_is_authenticated = request.user.is_authenticated
     except TypeError:  # Django >= 1.11
         user_is_authenticated = request.user.is_authenticated
 
@@ -236,7 +236,7 @@ def live_all_notification_list(request):
 
 def live_all_notification_count(request):
     try:
-        user_is_authenticated = request.user.is_authenticated()
+        user_is_authenticated = request.user.is_authenticated
     except TypeError:  # Django >= 1.11
         user_is_authenticated = request.user.is_authenticated
 

@@ -24,6 +24,7 @@ import * as tabsCreators from '../../actions/tab'
 import * as googleCreators from '../../actions/google'
 
 class TeacherClassroomView extends React.Component {
+  // componentDidUpdate () { # TODO rewrite with
   componentWillMount () {
     // tabs
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
@@ -34,9 +35,11 @@ class TeacherClassroomView extends React.Component {
       this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
     }
     // data
-    this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
-    this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
-    this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
+    if (this.props.match.params['uuid'] !== 'create') {
+      this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
+      this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
+      this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
+    }
   }
 
   constructor (props) {
@@ -134,7 +137,7 @@ class TeacherClassroomView extends React.Component {
             <Row style={{padding: 0}}>
               <Col sm={12} md={12} style={{textAlign: 'left', padding: 0}} >
                 <a className={'back-button'} onClick={() => { history.push(BASE_URL + 'teacher/') }} >
-                  {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+                  {/* <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} /> */}
                   <FaChevronLeft />
                   All Classrooms
                 </a>
@@ -150,7 +153,7 @@ class TeacherClassroomView extends React.Component {
                       text={this.props.classroomTeacher.name} />
                   </span>
                   &nbsp;
-                  {/*<span className='glyphicon glyphicon-pencil' />*/}
+                  {/* <span className='glyphicon glyphicon-pencil' /> */}
                   <FaPencilAlt />
                 </span>
               </Col>
@@ -302,11 +305,11 @@ class TeacherClassroomView extends React.Component {
                       Due on
                     </Col>
                     <Col sm={2} md={2} className={'vcenter'}>
-                      {/*<span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' />*/}
+                      {/* <span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' /> */}
                       <FaCheck title={'Completed'} style={{padding: '0 1rem'}} />
-                      {/*<span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' />*/}
+                      {/* <span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' /> */}
                       <FaClock title={'Completed late'} style={{padding: '0 1rem'}} />
-                      {/*<span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' />*/}
+                      {/* <span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' /> */}
                       <FaTimes title={'Missed'} style={{padding: '0 1rem'}} />
                     </Col>
                     <Col sm={1} md={1} />

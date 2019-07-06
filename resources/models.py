@@ -63,9 +63,10 @@ class Resource(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     resource_type = models.CharField(max_length=2, choices=RESOURCE_TYPE_CHOICES, default=TEXTBOOK)
-    owner = models.ForeignKey(Profile, related_name='resources')
+    owner = models.ForeignKey(Profile, related_name='resources', on_delete=models.CASCADE)
     count_views = models.IntegerField(default=0)
-    thread = models.OneToOneField(Thread, related_name=textbook_resource_thread_related_name, null=True)
+    thread = models.OneToOneField(Thread, related_name=textbook_resource_thread_related_name, null=True,
+                                  on_delete=models.CASCADE)
     title = models.CharField(max_length=512, blank=True, null=True, help_text='title in the admin site')
 
     def __str__(self):
@@ -105,7 +106,7 @@ def save_title(sender, instance, *args, **kwargs):
 
 
 class StandardizedTestResource(models.Model):
-    resource = models.OneToOneField(Resource, related_name='standardized_test_info')
+    resource = models.OneToOneField(Resource, related_name='standardized_test_info', on_delete=models.CASCADE)
     test_number = models.CharField(max_length=100)
     test_year = models.PositiveIntegerField(validators=[MinValueValidator(1900), max_value_current_year])
     pdf_of_exam = models.FileField(upload_to="resources/standardized_test/%Y/%m/%d",
@@ -115,21 +116,21 @@ class StandardizedTestResource(models.Model):
 
 
 class RecentUserResource(models.Model):
-    user = models.ForeignKey(Profile, related_name='recent_resources')
-    resource = models.ForeignKey(Resource, related_name='user_recent_list')
+    user = models.ForeignKey(Profile, related_name='recent_resources', on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, related_name='user_recent_list', on_delete=models.CASCADE)
     last_access_date = models.DateTimeField(auto_now=True)
 
 
 class ResourceMetaData(models.Model):
-    resource = models.OneToOneField(Resource, related_name='metadata')
+    resource = models.OneToOneField(Resource, related_name='metadata', on_delete=models.CASCADE)
     data = JSONField(encoder=DjangoJSONEncoder)
 
 
 class TextBookChapter(models.Model):
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
-    resource = models.ForeignKey(Resource, related_name='sections')
-    posted_by = models.ForeignKey(Profile, related_name='resources_chapter', null=True)
+    resource = models.ForeignKey(Resource, related_name='sections', on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(Profile, related_name='resources_chapter', null=True, on_delete=models.CASCADE)
     show_ad = models.NullBooleanField()
 
     class Meta:
@@ -141,11 +142,12 @@ class ResourceProblem(models.Model):
     uuid = ShortUUIDField(unique=True)
     title = models.CharField(max_length=400)
     position = models.PositiveSmallIntegerField("Position")
-    textbook_section = models.ForeignKey(TextBookChapter, related_name='problems', null=True)
-    resource = models.ForeignKey(Resource, related_name='problems', null=True)
-    posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True)
+    textbook_section = models.ForeignKey(TextBookChapter, related_name='problems', null=True, on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, related_name='problems', null=True, on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(Profile, related_name='resources_problems', null=True, on_delete=models.CASCADE)
     count_views = models.IntegerField(default=0)
-    thread = models.OneToOneField(Thread, related_name=textbook_problem_thread_related_name, null=True)
+    thread = models.OneToOneField(Thread, related_name=textbook_problem_thread_related_name, null=True,
+                                  on_delete=models.CASCADE)
     # resource used in StandardizedTestResource
     # resource = models.ForeignKey(Resource, related_name='problems')
 
@@ -179,15 +181,16 @@ def delete_file(sender, instance, *args, **kwargs):
 
 class TextBookSolution(VoteModel, models.Model):
     uuid = ShortUUIDField(unique=True)
-    pdf = models.OneToOneField(TextBookSolutionPDF, related_name='solution')
+    pdf = models.OneToOneField(TextBookSolutionPDF, related_name='solution', on_delete=models.CASCADE)
     _title = models.CharField(max_length=400, blank=True, default='', db_column='title')
     position = models.PositiveSmallIntegerField("Position")
-    textbook_problem = models.ForeignKey(ResourceProblem, related_name='solutions')
-    posted_by = models.ForeignKey(Profile, related_name='resources_solutions')
+    textbook_problem = models.ForeignKey(ResourceProblem, related_name='solutions', on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(Profile, related_name='resources_solutions', on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     count_views = models.IntegerField(default=0)
-    thread = models.OneToOneField(Thread, related_name=textbook_solution_thread_related_name, null=True)
+    thread = models.OneToOneField(Thread, related_name=textbook_solution_thread_related_name, null=True,
+                                  on_delete=models.CASCADE)
 
     @property
     def title(self):

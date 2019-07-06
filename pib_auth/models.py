@@ -1,5 +1,5 @@
 from django.db import models
-from django.core import urlresolvers
+# from django.core import urlresolvers # django 1.11.20
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.contenttypes.models import ContentType
@@ -76,7 +76,8 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
-        return urlresolvers.reverse(
+        # return urlresolvers.reverse( # django 1.11.20
+        return reverse(
             'admin:{}_{}_change'.format(
                 content_type.app_label,
                 content_type.model

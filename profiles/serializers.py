@@ -84,7 +84,7 @@ class ProfileSerializer(BaseSerializer):
 
     def save(self):
         request = self.context['request']
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return super(ProfileSerializer, self).save()
         else:
             request.session['sound'] = self.validated_data['sound_enabled']

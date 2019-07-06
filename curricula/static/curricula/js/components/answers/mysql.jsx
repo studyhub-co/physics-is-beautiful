@@ -153,6 +153,7 @@ export class MYSQLAnswer extends React.Component {
             <span style={{'color': 'red'}}>{this.state.executedMysqlError}</span>
             {reactDataColumns.length > 0 &&
             <DataTable
+              noHeader
               pagination={Boolean(true)}
               paginationPerPage={3}
               columns={reactDataColumns}

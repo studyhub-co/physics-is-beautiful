@@ -49,7 +49,8 @@ class Question(BaseModel):
     answer_type = enum.EnumField(AnswerType)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     vectors = models.ManyToManyField('Vector', related_name='questions')
-    thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True)
+    thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True,
+                                  on_delete=models.CASCADE)
 
     @property
     def answer_type_name(self):

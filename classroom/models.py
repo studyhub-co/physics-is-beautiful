@@ -32,10 +32,10 @@ class Classroom(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
 
-    teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms')
+    teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms', on_delete=models.CASCADE)
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
-    curriculum = models.ForeignKey(Curriculum)
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
     code = models.CharField(unique=True, max_length=6)
 
     def __str__(self):
@@ -53,7 +53,8 @@ class ExternalClassroom(models.Model):
     teacher_id = models.CharField(max_length=400)
     code = models.CharField(max_length=400)
     provider = models.CharField(max_length=2, choices=EXTERNAL_PROVIDER_CHOICES, default=GOOGLE_CLASSROOM)
-    classroom = models.OneToOneField(Classroom, related_name='external_classroom', blank=True, null=True)
+    classroom = models.OneToOneField(Classroom, related_name='external_classroom', blank=True, null=True,
+                                     on_delete=models.CASCADE)
     alternate_link = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
@@ -63,8 +64,8 @@ class ExternalClassroom(models.Model):
 class ClassroomStudent(models.Model):
     code_entered_on = models.DateTimeField(blank=True, null=True)
     # leave_on = models.DateTimeField(blank=True, null=True)
-    student = models.ForeignKey(Profile)
-    classroom = models.ForeignKey(Classroom)
+    student = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (("student", "classroom"),)
@@ -94,7 +95,7 @@ class Assignment(models.Model):
     start_on = models.DateTimeField()
     due_on = models.DateTimeField()
     name = models.CharField(max_length=200)
-    classroom = models.ForeignKey(Classroom, related_name='assignments')
+    classroom = models.ForeignKey(Classroom, related_name='assignments', on_delete=models.CASCADE)
     denormalized_image = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
@@ -132,8 +133,8 @@ class AssignmentProgressManager(models.Manager):
                 assignment_progress.delayed_on = None
 
             # save all lessons completed in Curriculum into classroom progress
-            assignment_progress.completed_lessons = student_completed_lessons.filter(
-                id__in=assignment_progress.assignment.lessons.all())
+            assignment_progress.completed_lessons.set(student_completed_lessons.filter(
+                id__in=assignment_progress.assignment.lessons.all()))
 
             assignment_progress.save()
 
@@ -181,7 +182,7 @@ class AssignmentProgressManager(models.Manager):
 
 
 class AssignmentProgress(models.Model):
-    assignment = models.ForeignKey(Assignment, related_name='assignment_progress')
+    assignment = models.ForeignKey(Assignment, related_name='assignment_progress', on_delete=models.CASCADE)
     uuid = ShortUUIDField(unique=True)
     completed_lessons = models.ManyToManyField(Lesson, related_name='assignment_progress_completed_lessons')
     updated_on = models.DateTimeField(auto_now=True)
@@ -189,7 +190,7 @@ class AssignmentProgress(models.Model):
     start_on = models.DateTimeField(blank=True, null=True)  # 1st lesson has been requested by student
     completed_on = models.DateTimeField(blank=True, null=True)
     delayed_on = models.DateTimeField(blank=True, null=True)  # Assignment completed but after due_on datetime
-    student = models.ForeignKey(Profile, related_name='as_students_assignment_progress')
+    student = models.ForeignKey(Profile, related_name='as_students_assignment_progress', on_delete=models.CASCADE)
 
     objects = AssignmentProgressManager()
 

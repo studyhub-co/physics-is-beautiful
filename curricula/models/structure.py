@@ -40,7 +40,7 @@ class Curriculum(BaseModel):
     description = models.TextField(blank=True, null=True, default='')
     number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     collaborators = models.ManyToManyField(Profile, related_name='coauthored_curricula')
 
     # settings
@@ -209,7 +209,7 @@ class Game(BaseModel):
         db_table = 'curricula_games'
 
     uuid = ShortUUIDField()
-    lesson = models.OneToOneField(Lesson, related_name='game')
+    lesson = models.OneToOneField(Lesson, related_name='game', on_delete=models.CASCADE)
     slug = models.SlugField(null=True, blank=True)
 
     def __str__(self):

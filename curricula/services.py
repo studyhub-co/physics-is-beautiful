@@ -14,7 +14,7 @@ class LessonLocked(Exception):
 
 
 def get_progress_service(request, current_lesson=None):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return ProgressService(request, current_lesson=current_lesson)
     else:
         return AnonymousProgressService(

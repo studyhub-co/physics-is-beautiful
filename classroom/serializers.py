@@ -246,7 +246,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
         lessons = validated_data.pop('lessons')
         with transaction.atomic():
             assignment = Assignment.objects.create(**validated_data)
-            assignment.lessons = lessons
+            assignment.lessons.set(lessons)
             assignment.save()
         return assignment
 

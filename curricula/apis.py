@@ -69,7 +69,7 @@ class QuestionViewSet(ModelViewSet):
         sr = UserResponseSerializer(data=data)
         sr.is_valid(raise_exception=True)
         kwargs = {}
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             kwargs['profile'] = request.user.profile
         user_response = sr.get_response(**kwargs)
         service = get_progress_service(request, question.lesson)
@@ -256,7 +256,7 @@ class CurriculaViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         filter_by = self.request.query_params.get('filter', None)
-        if filter_by and self.request.user.is_authenticated():
+        if filter_by and self.request.user.is_authenticated:
             if filter_by == 'my':
                 # todo do we need to get curricula of user classrooms?
                 queryset = queryset.filter(author=self.request.user)

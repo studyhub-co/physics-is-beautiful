@@ -36,7 +36,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         filter_by = self.request.query_params.get('filter', None)
 
-        if filter_by in ('as_student', 'as_teacher') and self.request.user.is_authenticated():
+        if filter_by in ('as_student', 'as_teacher') and self.request.user.is_authenticated:
             if filter_by == 'as_student':
                 queryset = queryset.filter(students=self.request.user.profile)
             elif filter_by == 'as_teacher':

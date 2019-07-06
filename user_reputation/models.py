@@ -77,7 +77,7 @@ class Reputation(TimeStampedModel):
     Model for storing a "User" object's reputation in an IntegerField.
     """
     reputation = models.IntegerField(default=0)
-    user = models.ForeignKey(get_user_model(), related_name='reputation_set')
+    user = models.ForeignKey(get_user_model(), related_name='reputation_set', on_delete=models.CASCADE)
     dimension = models.CharField(max_length=2, blank=True, null=True)
 
     objects = ReputationManager()
@@ -92,7 +92,7 @@ class ReputationAction(TimeStampedModel):
     reputation.
     """
 
-    user = models.ForeignKey(get_user_model(), related_name='reputation_actions')
+    user = models.ForeignKey(get_user_model(), related_name='reputation_actions', on_delete=models.CASCADE)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
