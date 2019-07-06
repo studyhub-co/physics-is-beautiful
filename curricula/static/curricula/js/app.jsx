@@ -437,7 +437,7 @@ class LessonsApp extends React.Component {
               this.correct_answer = data.correct_answer
               break
           }
-          playAudio('incorrect')
+          window.playAudio('incorrect')
         }
         this.load()
       }

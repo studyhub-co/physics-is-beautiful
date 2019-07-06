@@ -76,9 +76,11 @@ var postProfile = function () {
         'message': 'loginInfo',
         'data': xmlHttp.responseText
       }, '*')
+
+      window.SoundSingleton.soundEnabled = JSON.parse(xmlHttp.responseText)['sound_enabled']
     }
   }
-  xmlHttp.open('GET', '/api/v1/profiles/me', true)
+  xmlHttp.open('GET', '/api/v1/profiles/me/', true)
   xmlHttp.send(null)
 }
 
