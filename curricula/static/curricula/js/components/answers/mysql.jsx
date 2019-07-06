@@ -130,15 +130,15 @@ export class MYSQLAnswer extends React.Component {
           />
           <Container>
             <Row>
-              <Col md={6} />
-              <Col md={3} >
+              <Col md={4} sm={0} />
+              <Col md={4} sm={6} xs={6} >
                 <Button
                   onClick={this.executeSQL}
                   disabled={!this.state.querySQL || hasAnswer}>
                 Run
                 </Button>
               </Col>
-              <Col md={3} >
+              <Col md={4} sm={6} xs={6}>
                 <Button
                   disabled={hasAnswer}
                   onClick={this.reset}>

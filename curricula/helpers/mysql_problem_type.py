@@ -153,7 +153,7 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
                 checked_query_SQL_string, checked_query_SQL_json = from_db_cursor(db_user_cursor)
                     # .get_string()
                 db_user_cursor.close()
-                return my_SQL_instance.text == checked_query_SQL_string
+                return my_SQL_instance.text.lower() == checked_query_SQL_string.lower()
             except MySQLdb.Error as e:
                 # TODO return error
                 return False
