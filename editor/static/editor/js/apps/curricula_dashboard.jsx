@@ -81,8 +81,8 @@ class CurriculaDashboard extends React.Component {
         selectedTab={this.props.tab}
       >
         <div className='tab-links'>
-          <TabLink to='browse'>Browse curricula</TabLink>
-          <TabLink to='studio'>Curriculum studio</TabLink>
+          <TabLink to='browse'>Browse Courses</TabLink>
+          <TabLink to='studio'>Course studio</TabLink>
         </div>
 
         <div className='content'>
@@ -94,8 +94,8 @@ class CurriculaDashboard extends React.Component {
               ? <Route path='/studio/profile/:uuid/' component={EditCurriculumProfileView} />
               : <div>
                 <div className={'lightgrey-round-background'}>Create a new curriculum from scratch below.
-                  Or, to add content from other curricula or to fork a curriculum visit
-                  the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse curricula</a> tab.
+                  Or, to add content from other courses or to fork a curriculum visit
+                  the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.
                   Tutorial and additional help here
                 </div>
                 <CurriculaView

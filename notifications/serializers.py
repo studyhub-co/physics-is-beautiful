@@ -7,6 +7,9 @@ from .models import Notification
 
 from djeddit.models import Thread, Post
 
+from badges.models import Badge
+from badges.serializers import BadgeSerializer
+
 
 class MiniThreadSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
@@ -25,44 +28,47 @@ class MiniPostSerializer(serializers.ModelSerializer):
         model = Post
 
 
-class NotificationActorRelatedField(serializers.RelatedField):
-    """
-    A custom field to use for the `actor` generic relationship.
-    """
-
-    def to_representation(self, value):
-        if isinstance(value, get_user_model()):
-            data = PublicProfileSerializer(value.profile).data
-            data['content_type'] = 'profile'
-            return data
-        raise Exception('Unexpected type of tagged object')
-
-
-class NotificationActionObjectRelatedField(serializers.RelatedField):
-    """
-    A custom field to use for the `actor` generic relationship.
-    """
+class BaseObjectRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         if isinstance(value, Post):
             data = MiniPostSerializer(value).data
             data['content_type'] = 'post'
             return data
-        # if isinstance(value, BaseItem):
-        #     return MiniItemSerializer(value).data
-        raise Exception('Unexpected type of action object')
-
-
-class NotificationTargetRelatedField(serializers.RelatedField):
-    """
-    A custom field to use for the `target` generic relationship.
-    """
-
-    def to_representation(self, value):
         if isinstance(value, Thread):
             data = MiniThreadSerializer(value).data
             data['content_type'] = 'thread'
             return data
+        if isinstance(value, Badge):
+            data = BadgeSerializer(value).data
+            data['content_type'] = 'badge'
+            return data
+        if isinstance(value, get_user_model()):
+            data = PublicProfileSerializer(value.profile).data
+            data['content_type'] = 'profile'
+            return data
         raise Exception('Unexpected type of target object')
+
+
+class NotificationActorRelatedField(BaseObjectRelatedField):
+    """
+    A custom field to use for the `actor` generic relationship.
+    """
+
+    pass
+
+
+class NotificationActionObjectRelatedField(BaseObjectRelatedField):
+    """
+    A custom field to use for the `actor` generic relationship.
+    """
+    pass
+
+
+class NotificationTargetRelatedField(BaseObjectRelatedField):
+    """
+    A custom field to use for the `target` generic relationship.
+    """
+    pass
 
 
 class NotificationSerializer(serializers.ModelSerializer):
