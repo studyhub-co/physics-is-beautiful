@@ -347,7 +347,9 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
     author = UserSerializer(read_only=True)
     collaborators = PublicProfileSerializer(many=True, read_only=True)
     collaborators_ids = serializers.SlugRelatedField(queryset=Profile.objects.all(), source='collaborators',
-                                                     slug_field='id', many=True, write_only=True)
+                                                     slug_field='id', many=True, write_only=True,
+                                                     style={'base_template': 'input.html'}
+                                                     )
     count_lessons = serializers.IntegerField(read_only=True)
     number_of_learners = serializers.IntegerField(read_only=True, source='number_of_learners_denormalized')
 

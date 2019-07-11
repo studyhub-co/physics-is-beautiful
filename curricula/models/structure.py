@@ -1,3 +1,5 @@
+from builtins import setattr
+
 from django.db import models
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
@@ -58,9 +60,38 @@ class Curriculum(BaseModel):
         self.save(update_fields=['number_of_learners_denormalized'])
 
     def clone(self, to_curriculum):
-        for unit in self.units.all():
-            unit.clone(to_curriculum)
-    
+        # copy name, image, description, cover_photo from self to to_curriculum
+        for attr in ('name', 'image', 'description', 'cover_photo'):
+            setattr(to_curriculum, attr, getattr(self, attr))
+        to_curriculum.save()
+
+        from django.db import connection
+        # from django.db import transaction
+        # with transaction.atomic():
+        #     for unit in self.units.all():
+        #         unit.clone(to_curriculum)
+
+        # copy units with one query
+        # FIXME:
+        # 1. DOCS for an only posgresql support for now
+        # 2. Create a test for check this query will be correct with added/removed fields to models
+        with connection.cursor() as cursor:
+            cursor.execute("""
+             insert into public.curricula_units (created_on, updated_on, uuid, 
+             "name", image, "position", curriculum_id)
+             SELECT NOW(), NOW(), 
+             SUBSTRING(REPLACE(uuid_generate_v1()::text, '-', '') for 22), 
+             "name", image, "position", %s
+             FROM public.curricula_units
+             WHERE curriculum_id=%s;
+            """, [to_curriculum.id, self.id])
+
+        # TODO add modules, lesson, etc copying functional
+
+        # from django.db import connections
+        # qs = connections['default'].queries
+        # pass
+
     def __str__(self):
         return 'Curriculum: {}'.format(self.name)
 

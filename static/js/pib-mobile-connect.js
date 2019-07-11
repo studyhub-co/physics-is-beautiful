@@ -77,7 +77,13 @@ var postProfile = function () {
         'data': xmlHttp.responseText
       }, '*')
 
-      window.SoundSingleton.soundEnabled = JSON.parse(xmlHttp.responseText)['sound_enabled']
+      var userProfile = JSON.parse(xmlHttp.responseText)
+
+      if (userProfile.hasOwnProperty('sound_enabled') &&
+        window.hasOwnProperty('SoundSingleton')
+      ) {
+        window.SoundSingleton.soundEnabled = JSON.parse(xmlHttp.responseText)['sound_enabled']
+      }
     }
   }
   xmlHttp.open('GET', '/api/v1/profiles/me/', true)
