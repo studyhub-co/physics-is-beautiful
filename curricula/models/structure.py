@@ -77,9 +77,43 @@ class Curriculum(BaseModel):
         # 2. Create a test for check this query will be correct with added/removed fields to models
         # 3. Add checking that uuid is unique
         # 4. Use ClonMeta fields (add copied fields list)
+        # 5. Remove drop / add "create if not exists" (we will remove func from prod db if we want to refresh func)
         with connection.cursor() as cursor:
             cursor.execute("""
                 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+                
+                -- clone questions
+                DROP FUNCTION IF EXISTS clone_questions;
+                CREATE function clone_questions(IN lesson_id_from int, IN lesson_id_to int) 
+                    RETURNS TABLE (
+                      question_id_to INT, 
+                      question_id_from INT
+                )
+                AS $body$
+                begin
+                
+                RETURN QUERY
+                WITH sel AS (
+                   SELECT id, "text", hint, image, solution_text, "position", uuid, answer_type, row_number() OVER (ORDER BY id) AS rn
+                   FROM public.curricula_questions
+                   WHERE lesson_id=lesson_id_from
+                   ORDER BY id
+                   )
+                   , ins AS (
+                   INSERT INTO public.curricula_questions (created_on, updated_on, uuid, "text", hint, image, 
+                                                           "position", lesson_id, answer_type, solution_text)
+                   SELECT NOW(), NOW(), SUBSTRING(REPLACE(uuid_generate_v4()::text, '-', '') for 22), 
+                       "text", hint, image, "position", lesson_id_to, answer_type, solution_text
+                   FROM sel ORDER BY id
+                   RETURNING id, uuid
+                )
+                SELECT i.id AS question_id_to, s.id AS question_id_from
+                FROM (SELECT id, row_number() OVER (ORDER BY id) AS rn FROM ins) i
+                JOIN sel s USING (rn);
+                
+                end;
+                $body$
+                language plpgsql;
                 
                 -- clone lessons
                 DROP FUNCTION IF EXISTS clone_lessons;
@@ -112,6 +146,7 @@ class Curriculum(BaseModel):
                 end;
                 $body$
                 language plpgsql;
+                
                 
                 -- clone modules
                 DROP FUNCTION IF EXISTS clone_modules;
@@ -174,11 +209,12 @@ class Curriculum(BaseModel):
                 END;
                 $body$
                 language plpgsql;
-                
+               
                 DO $$
                 DECLARE 
                     unit_row record;
                     module_row record;
+                    lesson_row record;
                 BEGIN
                 RAISE NOTICE 'Start forking...';
                 FOR unit_row IN
@@ -187,7 +223,11 @@ class Curriculum(BaseModel):
                     FOR module_row IN
                         SELECT * FROM "clone_modules"(unit_row.unit_id_from, unit_row.unit_id_to)
                     LOOP
-                        PERFORM "clone_lessons"(module_row.module_id_from, module_row.module_id_to);
+                        FOR lesson_row IN
+                            SELECT * FROM "clone_lessons"(module_row.module_id_from, module_row.module_id_to)
+                        LOOP
+                            PERFORM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                        END LOOP;
                     END LOOP;
                 END LOOP;
                 END $$;

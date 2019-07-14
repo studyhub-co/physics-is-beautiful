@@ -9,7 +9,7 @@ from django.db import models
 from django.core.exceptions import ValidationError, MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.postgres.fields import JSONField
+# from django.contrib.postgres.fields import JSONField
 
 from jsonfield import JSONField
 
@@ -200,10 +200,13 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
     )
 
     # conversion_steps = [{"numerator":"", "denominator":""},  {"numerator":"", "denominator":""}, ...]
-    conversion_steps = JSONField(blank=True, null=True, default=[{'numerator':'','denominator':''}], help_text="Numerator/Denominator steps")
+    conversion_steps = JSONField(blank=True, null=True,
+                                 default=[{'numerator': '', 'denominator': ''}],
+                                 help_text="Numerator/Denominator steps")
 
     question_number = models.FloatField(blank=True, null=True)
-    question_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
+    question_unit = models.CharField(blank=True, null=True, max_length=100,
+                                     help_text="Correct unit: m, s, kg, m/s, etc")
     answer_number = models.FloatField(blank=True, null=True)
     answer_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
 
