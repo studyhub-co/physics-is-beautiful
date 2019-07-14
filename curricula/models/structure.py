@@ -81,8 +81,36 @@ class Curriculum(BaseModel):
         with connection.cursor() as cursor:
             cursor.execute("""
                 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+                -- clone question vectors
+                DROP FUNCTION IF EXISTS clone_quesion_vectors;
+                CREATE FUNCTION clone_quesion_vectors(IN question_from_id int, 
+                                                     IN question_to_id int
+                                                     )
+                    RETURNS void
+                AS $body$
+                begin
+                WITH ins_vector AS (
+                    INSERT INTO public.curricula_vectors (created_on, updated_on, 
+                                                          angle, magnitude,
+                                                          x_component, y_component) 
+                    SELECT NOW(), NOW(), curricula_vectors.angle, curricula_vectors.magnitude,
+                    curricula_vectors.x_component, curricula_vectors.y_component
+                    FROM public.curricula_vectors
+                    LEFT JOIN public.curricula_questions_vectors 
+                    ON public.curricula_questions_vectors.vector_id=public.curricula_vectors.id
+                    WHERE curricula_questions_vectors.question_id=question_from_id
+                    RETURNING id 
+                )
+                INSERT INTO public.curricula_questions_vectors(vector_id, question_id) 
+                select id, question_to_id 
+                from ins_vector;
                 
-                -- copy content answer type func
+                end;
+                $body$
+                language plpgsql;
+                
+                -- clone content answer type func
                 DROP FUNCTION IF EXISTS clone_answer_content;
                 CREATE FUNCTION clone_answer_content(IN content_type_id int, 
                                                      IN content_object_id int
@@ -309,6 +337,8 @@ class Curriculum(BaseModel):
                 $body$
                 language plpgsql;
                 
+                -- SELECT * FROM "clone_units"(1, 180);
+                
                 DO $$
                 DECLARE 
                     unit_row record;
@@ -329,6 +359,8 @@ class Curriculum(BaseModel):
                             FOR question_row IN
                                 SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
                             LOOP
+                                -- clone quesion vectors
+                                PERFORM "clone_quesion_vectors"(question_row.question_id_from, question_row.question_id_to);
                                 PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
                             END LOOP;
                         END LOOP;
