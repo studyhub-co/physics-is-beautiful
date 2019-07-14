@@ -77,30 +77,69 @@ class Curriculum(BaseModel):
         # 2. Create a test for check this query will be correct with added/removed fields to models
         # 3. Add checking that uuid is unique
         # 4. Use ClonMeta fields (add copied fields list)
-        # with connection.cursor() as cursor:
-        #         #     # units
-        #         #     cursor.execute("""
-        #         #      insert into public.curricula_units (created_on, updated_on, uuid,
-        #         #      "name", image, "position", curriculum_id)
-        #         #      SELECT NOW(), NOW(),
-        #         #      SUBSTRING(REPLACE(uuid_generate_v4()::text, '-', '') for 22),
-        #         #      "name", image, "position", %s
-        #         #      FROM public.curricula_units
-        #         #      WHERE curriculum_id=%s;
-        #         #     """, [to_curriculum.id, self.id])
-
         with connection.cursor() as cursor:
             cursor.execute("""
                 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-        
-                -- clone modules
-                DROP FUNCTION IF EXISTS clone_modules;
-                CREATE function clone_modules(IN unit_uuid_from varchar, IN unit_uuid_to varchar) 
-                    RETURNS void
+                
+                -- clone lessons
+                DROP FUNCTION IF EXISTS clone_lessons;
+                CREATE function clone_lessons(IN module_id_from int, IN module_id_to int) 
+                    RETURNS TABLE (
+                      lesson_id_to INT, 
+                      lesson_id_from INT
+                )
                 AS $body$
                 begin
-                RAISE NOTICE 'Hello from void function';
-                RETURN;
+                
+                RETURN QUERY
+                WITH sel AS (
+                   SELECT id, "name", image, "position", uuid, lesson_type, row_number() OVER (ORDER BY id) AS rn
+                   FROM public.curricula_lessons
+                   WHERE module_id=module_id_from
+                   ORDER BY id
+                   )
+                   , ins AS (
+                   INSERT INTO public.curricula_lessons (created_on, updated_on, uuid, "name", image, "position", module_id, lesson_type)
+                   SELECT NOW(), NOW(), SUBSTRING(REPLACE(uuid_generate_v4()::text, '-', '') for 22), 
+                       "name", image, "position", module_id_to, lesson_type
+                   FROM sel ORDER BY id
+                   RETURNING id, uuid
+                )
+                SELECT i.id AS lesson_id_to, s.id AS lesson_id_from
+                FROM (SELECT id, row_number() OVER (ORDER BY id) AS rn FROM ins) i
+                JOIN sel s USING (rn);
+                
+                end;
+                $body$
+                language plpgsql;
+                
+                -- clone modules
+                DROP FUNCTION IF EXISTS clone_modules;
+                CREATE function clone_modules(IN unit_id_from int, IN unit_id_to int) 
+                    RETURNS TABLE (
+                      module_id_to INT, 
+                      module_id_from INT
+                )
+                AS $body$
+                begin
+                
+                RETURN QUERY
+                WITH sel AS (
+                   SELECT id, "name", image, "position", uuid, row_number() OVER (ORDER BY id) AS rn
+                   FROM public.curricula_modules
+                   WHERE unit_id=unit_id_from
+                   ORDER BY id
+                   )
+                   , ins AS (
+                   INSERT INTO public.curricula_modules (created_on, updated_on, uuid, "name", image, "position", unit_id)
+                   SELECT NOW(), NOW(), SUBSTRING(REPLACE(uuid_generate_v4()::text, '-', '') for 22), "name", image, "position", unit_id_to
+                   FROM sel ORDER BY id
+                   RETURNING id, uuid
+                )
+                SELECT i.id AS module_id_to, s.id AS module_id_from
+                FROM (SELECT id, row_number() OVER (ORDER BY id) AS rn FROM ins) i
+                JOIN sel s USING (rn);
+                
                 end;
                 $body$
                 language plpgsql;
@@ -109,11 +148,12 @@ class Curriculum(BaseModel):
                 DROP FUNCTION IF EXISTS clone_units;
                 CREATE FUNCTION clone_units(IN curr_id_from INT, IN curr_id_to INT) 
                 RETURNS TABLE (
-                      unit_uuid_from VARCHAR,
-                      unit_uuid_to VARCHAR
+                      unit_id_to INT,
+                      unit_id_from INT
                 ) 
                 AS $body$
                 BEGIN
+                
                 RETURN QUERY
                 WITH sel AS (
                    SELECT id, "name", image, "position", uuid, row_number() OVER (ORDER BY id) AS rn
@@ -122,16 +162,13 @@ class Curriculum(BaseModel):
                    ORDER BY id
                    )
                    , ins AS (
-                   INSERT INTO public.curricula_units 
-                    (created_on, updated_on, uuid, "name", image, "position", curriculum_id)
-                   SELECT 
-                    NOW(), NOW(), SUBSTRING(REPLACE(uuid_generate_v4()::text, '-', '') for 22), 
-                    "name", image, "position", curr_id_to
+                   INSERT INTO public.curricula_units (created_on, updated_on, uuid, "name", image, "position", curriculum_id)
+                   SELECT NOW(), NOW(), SUBSTRING(REPLACE(uuid_generate_v4()::text, '-', '') for 22), "name", image, "position", curr_id_to
                    FROM sel ORDER BY id
                    RETURNING id, uuid
                 )
-                SELECT i.uuid AS unit_uuid_from, s.uuid AS unit_uuid_to
-                FROM (SELECT uuid, row_number() OVER (ORDER BY id) AS rn FROM ins) i
+                SELECT i.id AS unit_id_to, s.id AS unit_id_from
+                FROM (SELECT id, row_number() OVER (ORDER BY id) AS rn FROM ins) i
                 JOIN sel s USING (rn);
                 
                 END;
@@ -141,18 +178,22 @@ class Curriculum(BaseModel):
                 DO $$
                 DECLARE 
                     unit_row record;
+                    module_row record;
                 BEGIN
                 RAISE NOTICE 'Start forking...';
                 FOR unit_row IN
                     SELECT * FROM "clone_units"(%s, %s)
                 LOOP
-                -- 	SELECT * FROM "clone_modules"(unit_row.unit_uuid_from, unit_row.unit_uuid_to);
-                    PERFORM "clone_modules"(unit_row.unit_uuid_from, unit_row.unit_uuid_to);
+                    FOR module_row IN
+                        SELECT * FROM "clone_modules"(unit_row.unit_id_from, unit_row.unit_id_to)
+                    LOOP
+                        PERFORM "clone_lessons"(module_row.module_id_from, module_row.module_id_to);
+                    END LOOP;
                 END LOOP;
                 END $$;
                 """, [self.id, to_curriculum.id])
 
-        # TODO add lesson, etc copying functional
+        # TODO add questions, etc copying functional
 
         # from django.db import connections
         # qs = connections['default'].queries
