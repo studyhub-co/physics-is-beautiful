@@ -82,7 +82,106 @@ class Curriculum(BaseModel):
             cursor.execute("""
                 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
                 
-                -- clone questions
+                -- copy content answer type func
+                DROP FUNCTION IF EXISTS clone_answer_content;
+                CREATE FUNCTION clone_answer_content(IN content_type_id int, 
+                                                     IN content_object_id int
+                                                     )
+                    RETURNS INT
+                AS $body$
+                DECLARE
+                content_type character varying(100);
+                new_content_object_id int;
+                begin
+                
+                -- 1. Get original content type
+                SELECT model INTO content_type FROM public.django_content_type WHERE id=content_type_id AND app_label='curricula';
+                -- 2. Get original content object answer
+                CASE content_type
+                    WHEN 'text' THEN 
+                        INSERT INTO public.curricula_text (created_on, updated_on, text) 
+                        SELECT NOW(), NOW(), text 
+                        FROM public.curricula_text WHERE id=content_object_id
+                        RETURNING id INTO new_content_object_id;
+                    WHEN 'vector' THEN 
+                        INSERT INTO public.curricula_vectors (created_on, updated_on, magnitude, angle, x_component, y_component) 
+                        SELECT NOW(), NOW(), magnitude, angle, x_component, y_component 
+                        FROM public.curricula_vectors WHERE id=content_object_id
+                        RETURNING id INTO new_content_object_id;
+                    WHEN 'mathematicalexpression' THEN 
+                        INSERT INTO public.curricula_mathematical_expressions (created_on, updated_on, representation) 
+                        SELECT NOW(), NOW(), representation
+                        FROM public.curricula_mathematical_expressions WHERE id=content_object_id
+                        RETURNING id INTO new_content_object_id;
+                    WHEN 'unitconversion' THEN 
+                        INSERT INTO public.curricula_unitconversion (created_on, updated_on, answer_number, 
+                                                                     answer_unit, conversion_steps, numerator,
+                                                                     denominator, question_number, question_unit, 
+                                                                     show_answer, unit_conversion_type													 
+                                                                    ) 
+                        SELECT NOW(), NOW(), answer_number, 
+                                                                     answer_unit, conversion_steps, numerator,
+                                                                     denominator, question_number, question_unit, 
+                                                                     show_answer, unit_conversion_type
+                        FROM public.curricula_unitconversion WHERE id=content_object_id
+                        RETURNING id INTO new_content_object_id;
+                    WHEN 'imagewtext' THEN 
+                        INSERT INTO public.curricula_image_w_text (created_on, updated_on, "text", image) 
+                        SELECT NOW(), NOW(), "text", image
+                        FROM public.curricula_image_w_text WHERE id=content_object_id
+                        RETURNING id INTO new_content_object_id;
+                    WHEN 'mysql' THEN 
+                        INSERT INTO public.curricula_mysql (created_on, updated_on, "query_SQL", "schema_SQL", 
+                                                            "schema_SQL_json", "text", expected_output_json, schema_is_valid) 
+                        SELECT NOW(), NOW(), "query_SQL", "schema_SQL", 
+                                                            "schema_SQL_json", "text", expected_output_json, schema_is_valid
+                        FROM public.curricula_mysql WHERE id=content_object_id
+                        RETURNING id INTO new_content_object_id;		
+                    ELSE
+                        new_content_object_id := 0;
+                END CASE;
+                
+                RETURN new_content_object_id;
+                
+                end;
+                $body$
+                language plpgsql;
+                
+                
+                -- clone answers func
+                DROP FUNCTION IF EXISTS clone_answers;
+                CREATE function clone_answers(IN quesion_id_from int, IN question_id_to int) 
+                    RETURNS TABLE (
+                      answer_id_to INT, 
+                      answer_id_from INT
+                )
+                AS $body$
+                declare new_content_object_id int;
+                begin
+                RETURN QUERY
+                WITH sel AS (
+                    SELECT id, object_id, content_type_id, "position", uuid, is_correct, row_number() OVER (ORDER BY id) AS rn
+                    FROM public.curricula_answers
+                    WHERE question_id=quesion_id_from
+                    ORDER BY id
+                   )
+                   , ins AS (
+                    INSERT INTO public.curricula_answers (created_on, updated_on, uuid, "position", question_id, 
+                                                          content_type_id, is_correct, object_id)
+                    SELECT NOW(), NOW(), SUBSTRING(REPLACE(uuid_generate_v4()::text, '-', '') for 22),  "position", 
+                       question_id_to, content_type_id, is_correct, clone_answer_content(content_type_id, object_id)
+                    FROM sel ORDER BY id
+                    RETURNING id, uuid
+                )
+                SELECT i.id AS answer_id_to, s.id AS answer_id_from
+                FROM (SELECT id, row_number() OVER (ORDER BY id) AS rn FROM ins) i
+                JOIN sel s USING (rn);
+                
+                end;
+                $body$
+                language plpgsql;
+                
+                -- clone questions func
                 DROP FUNCTION IF EXISTS clone_questions;
                 CREATE function clone_questions(IN lesson_id_from int, IN lesson_id_to int) 
                     RETURNS TABLE (
@@ -91,7 +190,7 @@ class Curriculum(BaseModel):
                 )
                 AS $body$
                 begin
-                
+                -- TODO copy question vectors
                 RETURN QUERY
                 WITH sel AS (
                    SELECT id, "text", hint, image, solution_text, "position", uuid, answer_type, row_number() OVER (ORDER BY id) AS rn
@@ -115,7 +214,7 @@ class Curriculum(BaseModel):
                 $body$
                 language plpgsql;
                 
-                -- clone lessons
+                -- clone lessons func
                 DROP FUNCTION IF EXISTS clone_lessons;
                 CREATE function clone_lessons(IN module_id_from int, IN module_id_to int) 
                     RETURNS TABLE (
@@ -146,9 +245,9 @@ class Curriculum(BaseModel):
                 end;
                 $body$
                 language plpgsql;
+                                
                 
-                
-                -- clone modules
+                -- clone modules func
                 DROP FUNCTION IF EXISTS clone_modules;
                 CREATE function clone_modules(IN unit_id_from int, IN unit_id_to int) 
                     RETURNS TABLE (
@@ -209,12 +308,13 @@ class Curriculum(BaseModel):
                 END;
                 $body$
                 language plpgsql;
-               
+                
                 DO $$
                 DECLARE 
                     unit_row record;
                     module_row record;
                     lesson_row record;
+                    question_row record;
                 BEGIN
                 RAISE NOTICE 'Start forking...';
                 FOR unit_row IN
@@ -226,7 +326,11 @@ class Curriculum(BaseModel):
                         FOR lesson_row IN
                             SELECT * FROM "clone_lessons"(module_row.module_id_from, module_row.module_id_to)
                         LOOP
-                            PERFORM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                            FOR question_row IN
+                                SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
+                            LOOP
+                                PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+                            END LOOP;
                         END LOOP;
                     END LOOP;
                 END LOOP;
