@@ -71,13 +71,15 @@ class Curriculum(BaseModel):
         #     for unit in self.units.all():
         #         unit.clone(to_curriculum)
 
-        # copy units with one query
         # FIXME:
         # 1. DOCS for an only posgresql support for now
-        # 2. Create a test for check this query will be correct with added/removed fields to models
+        # 2. Create a test for check that this query will be correct with added/removed fields in models
         # 3. Add checking that uuid is unique
-        # 4. Use ClonMeta fields (add copied fields list)
-        # 5. Remove drop / add "create if not exists" (we will remove func from prod db if we want to refresh func)
+        # 4. Use ClonMeta fields (add copied fields list) / we can make this script more dynamic (dynamic fields, etc)
+        # 5. Remove drop funcs commans /
+        #    add "create if not exists" (we will remove func from prod db if we want to refresh func)
+        # 6. User should be superuser of db to first create uuid-ossp extension (or superuser should run command
+        #    before user will be use this sript)
         with connection.cursor() as cursor:
             cursor.execute("""
                 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -175,7 +177,6 @@ class Curriculum(BaseModel):
                 $body$
                 language plpgsql;
                 
-                
                 -- clone answers func
                 DROP FUNCTION IF EXISTS clone_answers;
                 CREATE function clone_answers(IN quesion_id_from int, IN question_id_to int) 
@@ -218,7 +219,6 @@ class Curriculum(BaseModel):
                 )
                 AS $body$
                 begin
-                -- TODO copy question vectors
                 RETURN QUERY
                 WITH sel AS (
                    SELECT id, "text", hint, image, solution_text, "position", uuid, answer_type, row_number() OVER (ORDER BY id) AS rn
@@ -274,7 +274,6 @@ class Curriculum(BaseModel):
                 $body$
                 language plpgsql;
                                 
-                
                 -- clone modules func
                 DROP FUNCTION IF EXISTS clone_modules;
                 CREATE function clone_modules(IN unit_id_from int, IN unit_id_to int) 
@@ -337,8 +336,6 @@ class Curriculum(BaseModel):
                 $body$
                 language plpgsql;
                 
-                -- SELECT * FROM "clone_units"(1, 180);
-                
                 DO $$
                 DECLARE 
                     unit_row record;
@@ -368,12 +365,6 @@ class Curriculum(BaseModel):
                 END LOOP;
                 END $$;
                 """, [self.id, to_curriculum.id])
-
-        # TODO add questions, etc copying functional
-
-        # from django.db import connections
-        # qs = connections['default'].queries
-        # pass
 
     def __str__(self):
         return 'Curriculum: {}'.format(self.name)
