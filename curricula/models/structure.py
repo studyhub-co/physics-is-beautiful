@@ -61,7 +61,8 @@ class Curriculum(BaseModel):
 
     def clone(self, to_curriculum):
         # copy name, image, description, cover_photo from self to to_curriculum
-        for attr in ('name', 'image', 'description', 'cover_photo'):
+        for attr in ('image', 'description', 'cover_photo'):
+            # 'name', don't copy name due default issue
             setattr(to_curriculum, attr, getattr(self, attr))
         to_curriculum.save()
 
