@@ -7,6 +7,8 @@ import { Dropdown, Image } from 'react-bootstrap'
 import { FaEllipsisV, FaGraduationCap, FaCodeBranch, FaShareAlt, FaPlus } from 'react-icons/fa'
 
 import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadModuleIfNeeded } from '../../actions'
+import { Overlay } from '../fullscreen_overlay'
+import { RingLoader } from 'react-spinners'
 
 // export class DropdownThumbnail extends Dropdown  {
 //   componentDidMount () {
@@ -90,7 +92,8 @@ class ThumbnailMenu extends React.Component {
       selectedCurriculum: null,
       selectedUnit: null,
       selectedModule: null,
-      selectedLesson: null
+      selectedLesson: null,
+      showSpinnerOverlay: false
     }
   }
 
@@ -127,6 +130,7 @@ class ThumbnailMenu extends React.Component {
 
   onSelectCurriculum (curriculum, e, event) {
     if (this.state.baseName === 'unit') {
+      this.setState({showSpinnerOverlay: true})
       this.props.addUnit(curriculum.uuid, this.props.unit)
     } else { // move to next level
       event.stopPropagation()
@@ -136,6 +140,7 @@ class ThumbnailMenu extends React.Component {
 
   onSelectUnit (unit, e, event) {
     if (this.state.baseName === 'module') {
+      this.setState({showSpinnerOverlay: true})
       this.props.addModule(unit.uuid, this.props.module)
     } else { // move to next level
       event.stopPropagation()
@@ -145,6 +150,7 @@ class ThumbnailMenu extends React.Component {
 
   onSelectModule (module, e, event) {
     if (this.state.baseName === 'lesson') {
+      this.setState({showSpinnerOverlay: true})
       this.props.addLesson(module.uuid, this.props.lesson)
     } else { // move to next level
       event.stopPropagation()
@@ -156,6 +162,7 @@ class ThumbnailMenu extends React.Component {
 
   onSelectLesson (lesson, e, event) {
     if (this.state.baseName === 'question') {
+      this.setState({showSpinnerOverlay: true})
       this.props.addQuestion(lesson.uuid, this.props.question)
     }
   }
@@ -173,6 +180,18 @@ class ThumbnailMenu extends React.Component {
   }
 
   render () {
+    // set spinner
+    const spinner = <Overlay>
+      <div className='overlay-wrapper'>
+        <div className='overlay-inner'>
+          <RingLoader
+            color={'#1caff6'}
+            loading={Boolean(true)}
+          />
+        </div>
+      </div>
+    </Overlay>
+
     var menus = []
     if (this.state.level === 1) {
       var learnText = 'Learn'
@@ -306,6 +325,7 @@ class ThumbnailMenu extends React.Component {
         >
           {menus}
         </Dropdown.Menu>
+        {this.state.showSpinnerOverlay && spinner}
       </Dropdown>
     )
   }

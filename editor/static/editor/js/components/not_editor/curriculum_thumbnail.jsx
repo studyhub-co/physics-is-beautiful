@@ -10,8 +10,10 @@ import copy from 'copy-to-clipboard'
 import { addCurriculum } from './../../actions'
 
 import { Thumbnail } from './../thumbnail'
+import { Overlay } from '../fullscreen_overlay'
 
 import { store } from '../../app'
+import { RingLoader } from 'react-spinners'
 
 class CurriculumMenuToggle extends React.Component {
   constructor (props, context) {
@@ -46,6 +48,7 @@ export class CurriculumThumbnail extends React.Component {
     this.onEditContentSelect = this.onEditContentSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
+    this.state = {showSpinnerOverlay: false}
   }
 
   onEditContentSelect (e) {
@@ -70,16 +73,29 @@ export class CurriculumThumbnail extends React.Component {
   }
 
   onForkSelect (e) {
+    this.setState({showSpinnerOverlay: true})
     store.dispatch(addCurriculum(this.props.uuid))
   }
 
   render () {
+    const spinner = <Overlay>
+      <div className='overlay-wrapper'>
+        <div className='overlay-inner'>
+          <RingLoader
+            color={'#1caff6'}
+            loading={Boolean(true)}
+          />
+        </div>
+      </div>
+    </Overlay>
+
     return (
       <Col
         sm={2}
         md={2}
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
+        {this.state.showSpinnerOverlay && spinner}
         <div
           onClick={this.onTitleClick}
           style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px', height: '13rem'}}

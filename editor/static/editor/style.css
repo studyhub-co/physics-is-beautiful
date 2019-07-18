@@ -306,3 +306,24 @@ html {
     padding: 1rem;
     margin: 1rem 0;
 }
+
+
+.overlay-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  height: 100vh;
+  width: 100vw;
+  z-index: 1001;
+}
+
+.overlay-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}

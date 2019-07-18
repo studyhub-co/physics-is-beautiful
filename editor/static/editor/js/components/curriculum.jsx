@@ -16,7 +16,7 @@ export class Curriculum extends React.Component {
   handleDeleteClick (e) {
     e.preventDefault()
     if (confirm('This will permanently delete curricilum "' + this.props.name + '" with all its materials. Are you sure?')){
-      this.props.onDeleteClick();
+      this.props.onDeleteClick()
     }
   }
 

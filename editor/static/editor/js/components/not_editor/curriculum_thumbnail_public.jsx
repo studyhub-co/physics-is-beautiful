@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'
 
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Col, Dropdown, DropdownItem } from 'react-bootstrap'
+import { Dropdown, DropdownItem } from 'react-bootstrap'
+import { RingLoader } from 'react-spinners'
 import copy from 'copy-to-clipboard'
 import { FaEllipsisV, FaGraduationCap, FaInfoCircle, FaCodeBranch, FaShareAlt, FaMinus, FaPlus } from 'react-icons/fa'
 
@@ -11,6 +12,7 @@ import { addCurriculum, addCurriculumToDashboard, removeCurriculumFromDashboard 
 import { history } from '../../history'
 import { Thumbnail } from './../thumbnail'
 import { store } from '../../app'
+import { Overlay } from '../fullscreen_overlay'
 
 class CurriculumMenuToggle extends React.Component {
   constructor (props, context) {
@@ -24,9 +26,9 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
-    {/*<Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>*/}
-        {/*{this.props.children}*/}
-      {/*</Glyphicon>*/}
+    { /* <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}> */ }
+    { /* {this.props.children} */ }
+    { /* </Glyphicon> */ }
     return (
       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
@@ -39,21 +41,6 @@ CurriculumMenuToggle.propTypes = {
   onClick: PropTypes.func
 }
 
-// not works now
-// class CustomCurriculumMenu extends React.Component {
-//   render () {
-//     const { children } = this.props
-//
-//     return (
-//       <Portal>
-//         <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-//           {children}
-//         </Dropdown.Menu>
-//       </Portal>
-//     )
-//   }
-// }
-
 export class CurriculumThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -64,6 +51,7 @@ export class CurriculumThumbnailPublic extends React.Component {
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onAddToDashboardSelect = this.onAddToDashboardSelect.bind(this)
     this.onRemoveFromDashboardSelect = this.onRemoveFromDashboardSelect.bind(this)
+    this.state = {showSpinnerOverlay: false}
   }
 
   onLearnSelect () {
@@ -97,10 +85,23 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   onForkSelect (e) {
+    this.setState({showSpinnerOverlay: true})
     store.dispatch(addCurriculum(this.props.curriculum.uuid))
   }
 
   render () {
+    // set spinner
+    const spinner = <Overlay>
+      <div className='overlay-wrapper'>
+        <div className='overlay-inner'>
+          <RingLoader
+            color={'#1caff6'}
+            loading={Boolean(true)}
+          />
+        </div>
+      </div>
+    </Overlay>
+
     // neeed react >= 16
     // fix issue https://github.com/akiran/react-slick/issues/757 by append Dropdown.Menu to the react app DOM element
     const DropdownMenu = () =>
@@ -134,6 +135,7 @@ export class CurriculumThumbnailPublic extends React.Component {
       <div
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
+        {this.state.showSpinnerOverlay && spinner}
         <div
           onClick={this.onTitleClick}
           style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px', height: '13rem'}}
