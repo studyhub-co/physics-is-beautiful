@@ -1,10 +1,13 @@
 import {history} from './history'
 
-import {angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit} from './utils'
+import {
+  angleToVector, vectorToAngle, validateQuantityUnit, splitQuantityUnit
+} from './utils'
+import request from './request'// TODO replace jQuery ajax with request
 
 const API_PREFIX = '/api/v1/editor/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
-const API_CURRICULA_PREFIX = '/api/v1/curricula/'
+// const API_CURRICULA_PREFIX = '/api/v1/curricula/'
 
 export const ActionTypes = Object.freeze({
   REQUEST_ADD_CURRICULUM: 'REQUEST_ADD_CURRICULUM',
@@ -64,6 +67,36 @@ export function changeStudioSelectedTab (selectedTab, tabNamespace) {
     type: ActionTypes.STUDIO_TAB_CHANGED,
     tab: selectedTab,
     namespace: tabNamespace
+  }
+}
+
+export function addCurriculumTag (uuid, tag) {
+  return function (dispatch) {
+    request(API_PREFIX + 'curricula/' + uuid + '/tags/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ tag: tag.text })
+    })
+  }
+}
+
+export function deleteCurriculumTag (uuid, tag) {
+  return function (dispatch) {
+    request(API_PREFIX + 'curricula/' + uuid + '/tags/', {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ tag: tag.text })
+    })
   }
 }
 

@@ -82,6 +82,7 @@
     "react-slick": "^0.23.2",
     "react-spinners": "^0.3.3",
     "react-tabs-redux": "^4.0.0",
+    "react-tag-input": "^6.4.0",
     "react-transition-group": "^1.2.1",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",

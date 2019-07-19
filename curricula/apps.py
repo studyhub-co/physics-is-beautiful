@@ -10,7 +10,7 @@ class CurriculaConfig(AppConfig):
     def ready(self):
         import curricula.receivers
 
-        # recreate posgres sql clone functions
+        # recreate postgres sql clone functions
         with connection.cursor() as cursor:
             cursor.execute("""
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

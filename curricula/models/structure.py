@@ -3,6 +3,9 @@ from builtins import setattr
 from django.db import models, connection
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
+# from tagging.registry import register as tags_register
+from taggit.managers import TaggableManager
+
 
 from pib_auth.models import User
 from profiles.models import Profile
@@ -50,6 +53,8 @@ class Curriculum(BaseModel):
     setting_modules_unlocked = models.BooleanField(default=False, blank=True)
     setting_lessons_unlocked = models.BooleanField(default=False, blank=True)
     setting_publically = models.BooleanField(default=False, blank=True)
+
+    tags = TaggableManager()
 
     def count_number_of_learners(self, LessonProgressClass):
         lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
@@ -134,6 +139,8 @@ class Unit(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
+    tags = TaggableManager()
+
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -191,6 +198,8 @@ class Module(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
+    tags = TaggableManager()
+
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -247,6 +256,8 @@ class Lesson(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
     lesson_type = enum.EnumField(LessonType)
+
+    tags = TaggableManager()
 
     @property
     def is_start(self):
@@ -332,3 +343,9 @@ class Game(BaseModel):
 
     def __str__(self):
         return 'Game: {}'.format(self.slug)
+
+
+# tags_register(Curriculum)
+# tags_register(Unit)
+# tags_register(Module)
+# tags_register(Lesson)

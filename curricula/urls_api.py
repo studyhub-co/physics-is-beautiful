@@ -2,7 +2,6 @@ from django.conf.urls import url
 
 from . import apis
 
-
 app_name = 'curricula'
 
 urlpatterns = [

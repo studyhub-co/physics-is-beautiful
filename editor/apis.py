@@ -2,14 +2,14 @@ from django.db.models import Q, Count, Max, F
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status, generics
+from rest_framework.decorators import action
 from rest_framework.response import Response
 # from rest_framework.pagination import PageNumberPagination
 # from rest_framework.decorators import action
-# from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import ValidationError
 # from rest_framework import filters
-#
 # from django_filters.rest_framework import DjangoFilterBackend
-
+# from tagging.models import Tag
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, CurriculumUserDashboard
 
@@ -31,6 +31,7 @@ class CurriculumViewSet(ModelViewSet):
                                          | Q(classroom__students__user=self.request.user)).\
                select_related('author').\
                annotate(count_lessons=Count('units__modules__lessons', distinct=True))
+               # !TODO: modules, units, tags genereate too many sql queries
 
     def perform_create(self, serializer):
         new_curriculum = serializer.save(author=self.request.user)
@@ -38,6 +39,24 @@ class CurriculumViewSet(ModelViewSet):
         if 'prototype' in self.request.data and self.request.data['prototype']:
             prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
             prototype.clone(new_curriculum)
+
+    # @action(methods=['POST', 'DELETE', 'GET'],
+    #         detail=True,
+    #         permission_classes=[IsOwnerOrCollaboratorBase, ],)
+    # def tags(self, request, uuid):
+    #     course = self.get_object()
+    #     if request.method == 'POST':
+    #         # create tag
+    #         new_tag = request.data.get('tag', None)
+    #         if not new_tag:
+    #             raise ValidationError('tag is not present')
+    #         Tag.objects.add_tag(course, new_tag)
+    #         return Response({'tag': new_tag}, status=status.HTTP_201_CREATED)
+    #     if request.method == 'DELETE':
+    #         to_delete_tag = request.data.get('tag', None)
+    #         if not to_delete_tag:
+    #             Tag.objects.add_tag(course, to_delete_tag)
+    #         return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
 
     class Meta:
         ordering = ['-published_on']

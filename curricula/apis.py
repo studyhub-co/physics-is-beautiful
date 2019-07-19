@@ -8,7 +8,7 @@ from django.db.models import F
 from rest_framework import serializers, status, permissions, mixins
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -282,6 +282,7 @@ class CurriculaViewSet(ModelViewSet):
         return super(CurriculaViewSet, self).get_object()
 
 
+
 # # Postgresql FTS Search
 # from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 #
@@ -346,6 +347,4 @@ class CurriculaViewSet(ModelViewSet):
 #     permission_classes = [IsAuthenticated]
 #     index_models = [Curriculum]
 #     serializer_class = CurriculumSearchSerializer
-
-
 

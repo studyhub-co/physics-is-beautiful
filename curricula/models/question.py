@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
+# from tagging.registry import register as tags_register
+from taggit.managers import TaggableManager
 
 from djeddit.models import Thread
 
@@ -51,6 +53,8 @@ class Question(BaseModel):
     vectors = models.ManyToManyField('Vector', related_name='questions')
     thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True,
                                   on_delete=models.CASCADE)
+
+    tags = TaggableManager()
 
     @property
     def answer_type_name(self):
@@ -111,3 +115,6 @@ class Question(BaseModel):
 
     def __str__(self):
         return 'Question: {}'.format(self.text)
+
+
+# tags_register(Question)

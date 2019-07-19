@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     'notifications',
     'admin_reorder',
     'crispy_forms',
+    'taggit',
+    'taggit_serializer',
     'mptt',
     # pib apps
     'pib_auth.apps.PibAuthConfig',

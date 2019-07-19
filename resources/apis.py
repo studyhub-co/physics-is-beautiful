@@ -407,6 +407,3 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
         # return super(ResourceViewSet, self).retrieve(request, *args, **kwargs)
-
-
-

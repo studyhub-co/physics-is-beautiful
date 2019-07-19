@@ -3,20 +3,20 @@ import json
 from collections import OrderedDict
 
 from django.db.models import F
+from django.core.files.images import get_image_dimensions
 
 from rest_framework import serializers
 from rest_framework.fields import empty
+
+# from tagging.models import Tag
 
 from expander import ExpanderSerializerMixin
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Game, Question, Answer
 from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion, Text, MySQL
-
 from curricula.serializers import BaseSerializer, UserSerializer
 
 from profiles.serializers import PublicProfileSerializer
-from django.core.files.images import get_image_dimensions
-
 from profiles.models import Profile
 
 
@@ -342,8 +342,20 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         }
 
 
-class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
+# class TagSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Tag
+#         fields = ['name']
+
+from taggit_serializer.serializers import (TagListSerializerField,
+                                           TaggitSerializer)
+
+
+class CurriculumSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
+    # tags = TagSerializer(many=True, read_only=True)
+    tags = TagListSerializerField()
     author = UserSerializer(read_only=True)
     collaborators = PublicProfileSerializer(many=True, read_only=True)
     collaborators_ids = serializers.SlugRelatedField(queryset=Profile.objects.all(), source='collaborators',
@@ -382,7 +394,7 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         fields = ['uuid', 'name', 'image', 'url', 'units', 'created_on', 'updated_on', 'count_lessons', 'author',
                   'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids',
                   'setting_units_unlocked', 'setting_modules_unlocked', 'setting_lessons_unlocked',
-                  'setting_publically'
+                  'setting_publically', 'tags'
                   ]
         read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {
