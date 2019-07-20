@@ -22,6 +22,8 @@ class Unit extends React.Component {
           return { id: tag, text: tag }
         })
       }
+    } else {
+      this.state = {tags: []}
     }
   }
 
@@ -44,7 +46,6 @@ class Unit extends React.Component {
       this.props.onDeleteClick()
     }
   }
-
   componentWillUpdate (nextProps, nextState, nextContext) {
     if (nextProps.tags && nextProps.tags !== this.props.tags) {
       const tags = nextProps.tags.map((tag) => {

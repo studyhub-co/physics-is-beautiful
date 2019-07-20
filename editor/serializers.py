@@ -278,8 +278,9 @@ class MiniLessonSerializer(LessonSerializer):
         self.fields.pop('questions')
 
 
-class ModuleSerializer(BaseSerializer):
+class ModuleSerializer(TaggitSerializer, BaseSerializer):
     lessons = MiniLessonSerializer(many=True, read_only=True)
+    tags = TagListSerializerField(read_only=True)
 
     unit = serializers.CharField(source='unit.uuid')
     curriculum = serializers.CharField(source='unit.curriculum.uuid', read_only=True)
@@ -303,7 +304,7 @@ class ModuleSerializer(BaseSerializer):
 
     class Meta:
         model = Module
-        fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons'] #, 'curriculum']
+        fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons', 'tags'] #, 'curriculum']
         read_only_fields = ('uuid', )
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
