@@ -10,7 +10,7 @@ import {
   moveLesson,
   addLesson,
   addModuleTag,
-  deleteModuleTag,
+  deleteModuleTag
 } from '../actions'
 
 const mapStateToProps = (state, ownProps) => {
