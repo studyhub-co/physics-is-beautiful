@@ -8,13 +8,7 @@ import {EditableThumbnail} from './thumbnail'
 import {UnitContainer} from '../containers/unit'
 import {EditableLabel} from './label'
 import {DockableDropTarget, DragItemTypes} from '../dnd'
-
-const KeyCodes = {
-  comma: 188,
-  enter: 13
-}
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter]
+import {tagDelimiters} from '../utils'
 
 export class Curriculum extends React.Component {
   constructor (props) {
@@ -22,11 +16,7 @@ export class Curriculum extends React.Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleTagDelete = this.handleTagDelete.bind(this)
     this.handleTagAddition = this.handleTagAddition.bind(this)
-    this.state = {
-      tags: [
-        // { id: 'Thailand', text: 'Thailand' },
-        // { id: 'India', text: 'India' }
-      ]}
+    this.state = {tags: []}
   }
 
   handleDeleteClick (e) {
@@ -99,7 +89,7 @@ export class Curriculum extends React.Component {
           handleDelete={this.handleTagDelete}
           handleAddition={this.handleTagAddition}
           allowDragDrop={Boolean(false)}
-          delimiters={delimiters} />
+          delimiters={tagDelimiters} />
         {units}
         <DockableDropTarget onDrop={this.props.onUnitDroppedBefore.bind(null, null)} itemType={DragItemTypes.UNIT}>
           <a onClick={this.props.onAddUnitClick} className='btn btn-primary'>Add Unit</a>

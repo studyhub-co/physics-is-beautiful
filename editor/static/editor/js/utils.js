@@ -29,3 +29,10 @@ export function splitQuantityUnit (value) {
   var match = value.match(quantityUnitRe)
   return match.slice(1, 3)
 }
+
+const KeyCodes = {
+  comma: 188,
+  enter: 13
+}
+
+export const tagDelimiters = [KeyCodes.comma, KeyCodes.enter]

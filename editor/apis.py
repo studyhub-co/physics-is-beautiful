@@ -20,7 +20,28 @@ from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollabora
     IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
 
 
-class CurriculumViewSet(ModelViewSet):
+class TagAddRemoveViewMixin(object):
+    # @action(methods=['POST', 'DELETE'],
+    #         detail=True,
+    #         permission_classes=[IsOwnerOrCollaboratorBase, ], )
+    def tags(self, request, *args, **kwargs):
+        tagret_object = self.get_object()
+        if request.method == 'POST':
+            # create tag
+            new_tag = request.data.get('tag', None)
+            if not new_tag:
+                raise ValidationError('tag is not present')
+            tagret_object.tags.add(new_tag)
+            return Response({'tag': new_tag}, status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
+            to_delete_tag = request.data.get('tag', None)
+            if not to_delete_tag:
+                raise ValidationError('tag is not present')
+            tagret_object.tags.remove(to_delete_tag)
+            return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
+
+
+class CurriculumViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCollaboratorBase)    
     serializer_class = CurriculumSerializer
     lookup_field = 'uuid'
@@ -42,28 +63,15 @@ class CurriculumViewSet(ModelViewSet):
 
     @action(methods=['POST', 'DELETE'],
             detail=True,
-            permission_classes=[IsOwnerOrCollaboratorBase, ],)
-    def tags(self, request, uuid):
-        course = self.get_object()
-        if request.method == 'POST':
-            # create tag
-            new_tag = request.data.get('tag', None)
-            if not new_tag:
-                raise ValidationError('tag is not present')
-            course.tags.add(new_tag)
-            return Response({'tag': new_tag}, status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            to_delete_tag = request.data.get('tag', None)
-            if not to_delete_tag:
-                raise ValidationError('tag is not present')
-            course.tags.remove(to_delete_tag)
-            return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
+            permission_classes=[IsOwnerOrCollaboratorBase, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(CurriculumViewSet, self).tags(request, args, kwargs)
 
     class Meta:
         ordering = ['-published_on']
 
     
-class UnitViewSet(ModelViewSet):
+class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsUnitOwnerOrCollaborator)
     serializer_class = UnitSerializer
     lookup_field = 'uuid'
@@ -77,12 +85,18 @@ class UnitViewSet(ModelViewSet):
         else:
             return super().create(request, *args, **kwargs)
 
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsUnitOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(UnitViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Unit.objects.filter(Q(curriculum__author=self.request.user) |
                                    Q(curriculum__collaborators=self.request.user.profile)).distinct()
 
     
-class ModuleViewSet(ModelViewSet):
+class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsModuleOwnerOrCollaborator)
     serializer_class = ModuleSerializer
     lookup_field = 'uuid'
@@ -96,12 +110,18 @@ class ModuleViewSet(ModelViewSet):
         else:
             return super().create(request, *args, **kwargs)
 
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsModuleOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(ModuleViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
                                      Q(unit__curriculum__collaborators=self.request.user.profile)).distinct()
 
     
-class LessonViewSet(ModelViewSet):
+class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsLessonOwnerOrCollaborator)
     serializer_class = LessonSerializer
     lookup_field = 'uuid'
@@ -117,12 +137,18 @@ class LessonViewSet(ModelViewSet):
         else:
             return super().create(request, *args, **kwargs)
 
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsLessonOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(LessonViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
                                      Q(module__unit__curriculum__collaborators=self.request.user.profile)).distinct()
 
 
-class QuestionViewSet(ModelViewSet):
+class QuestionViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsQuestionOwnerOrCollaborator)
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
@@ -136,7 +162,13 @@ class QuestionViewSet(ModelViewSet):
                             status=status.HTTP_201_CREATED)
         else:
             return super().create(request, *args, **kwargs)
-    
+
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsQuestionOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(QuestionViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Question.objects.filter(Q(lesson__module__unit__curriculum__author=self.request.user) |
                                        Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile)).\

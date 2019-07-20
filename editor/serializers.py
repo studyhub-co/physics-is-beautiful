@@ -9,6 +9,8 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 
 # from tagging.models import Tag
+from taggit_serializer.serializers import (TagListSerializerField,
+                                           TaggitSerializer)
 
 from expander import ExpanderSerializerMixin
 
@@ -308,8 +310,9 @@ class ModuleSerializer(BaseSerializer):
         }
 
 
-class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
+class UnitSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
     modules = SimpleModuleSerializer(many=True, read_only=True)
+    tags = TagListSerializerField(read_only=True)
 
     curriculum = serializers.CharField(source='curriculum.uuid')
 
@@ -320,8 +323,10 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         if 'curriculum' in validated_data:
             validated_data['curriculum'] = validated_data['curriculum']['uuid']
         if 'position' in validated_data and instance.position != validated_data['position']:
-            Unit.objects.filter(position__gte=validated_data['position'],
-                                curriculum=validated_data.get('curriculum', instance.curriculum)).update(position=F('position')+1)
+            Unit.objects.filter(
+                position__gte=validated_data['position'],
+                curriculum=validated_data.get('curriculum', instance.curriculum)
+            ).update(position=F('position')+1)
 
         return super().update(instance, validated_data)
 
@@ -332,7 +337,7 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
     class Meta:
         model = Unit
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'position', 'url', 'curriculum', 'modules']
+        fields = ['uuid', 'name', 'image', 'position', 'url', 'curriculum', 'modules', 'tags']
         read_only_fields = ('uuid', 'modules')
         expandable_fields = {
             'modules': (ModuleSerializer, (), {'many': True}),
@@ -347,10 +352,6 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
 #     class Meta:
 #         model = Tag
 #         fields = ['name']
-
-from taggit_serializer.serializers import (TagListSerializerField,
-                                           TaggitSerializer)
-
 
 class CurriculumSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)

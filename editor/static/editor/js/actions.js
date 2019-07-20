@@ -100,6 +100,36 @@ export function deleteCurriculumTag (uuid, tag) {
   }
 }
 
+export function addUnitTag (uuid, tag) {
+  return function (dispatch) {
+    request(API_PREFIX + 'units/' + uuid + '/tags/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ tag: tag.text })
+    })
+  }
+}
+
+export function deleteUnitTag (uuid, tag) {
+  return function (dispatch) {
+    request(API_PREFIX + 'units/' + uuid + '/tags/', {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ tag: tag.text })
+    })
+  }
+}
+
 export function addCurriculum (prototype) {
   return function (dispatch) {
     //	dispatch(requestAddCurriculum());
