@@ -355,7 +355,7 @@ from taggit_serializer.serializers import (TagListSerializerField,
 class CurriculumSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
     # tags = TagSerializer(many=True, read_only=True)
-    tags = TagListSerializerField()
+    tags = TagListSerializerField(read_only=True)
     author = UserSerializer(read_only=True)
     collaborators = PublicProfileSerializer(many=True, read_only=True)
     collaborators_ids = serializers.SlugRelatedField(queryset=Profile.objects.all(), source='collaborators',

@@ -38,10 +38,10 @@ export class Curriculum extends React.Component {
 
   handleTagDelete (i) {
     const { tags } = this.state
+    this.props.onDeleteTag(tags[i])
     this.setState({
       tags: tags.filter((tag, index) => index !== i)
     })
-    this.props.onDeleteTag(tag)
   }
 
   handleTagAddition (tag) {
@@ -51,8 +51,8 @@ export class Curriculum extends React.Component {
 
   componentWillUpdate (nextProps, nextState, nextContext) {
     if (nextProps.tags && nextProps.tags !== this.props.tags) {
-      const tags = nextProps.tags.map((tagObj) => {
-        return {id: tagObj.name, text: tagObj.name}
+      const tags = nextProps.tags.map((tag) => {
+        return {id: tag, text: tag}
       })
       this.setState({tags: tags})
     }

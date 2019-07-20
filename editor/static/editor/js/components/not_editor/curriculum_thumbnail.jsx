@@ -106,27 +106,27 @@ export class CurriculumThumbnail extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            {/*<CurriculumMenuToggle bsRole='toggle' />*/}
+            {/* <CurriculumMenuToggle bsRole='toggle' /> */}
             <Dropdown.Toggle as={CurriculumMenuToggle} />
             <Dropdown.Menu rootCloseEvent={'click'}>
               <DropdownItem onSelect={this.onEditContentSelect} eventKey='1'>
-                {/*<Glyphicon glyph='edit' /> Edit content*/}
+                {/* <Glyphicon glyph='edit' /> Edit content */}
                 <FaEdit /> Edit content
               </DropdownItem>
               <DropdownItem onSelect={this.onEditCurriculumSelect} eventKey='2'>
-                {/*<Glyphicon glyph='pencil' /> Edit profile and settings*/}
+                {/* <Glyphicon glyph='pencil' /> Edit profile and settings */}
                 <FaPen /> Edit profile and settings
               </DropdownItem>
               <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
-                {/*<Glyphicon glyph='export' /> Fork*/}
+                {/* <Glyphicon glyph='export' /> Fork */}
                 <FaCodeBranch /> Fork
               </DropdownItem>
               <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
-                {/*<Glyphicon glyph='share-alt' /> Copy shareable link*/}
+                {/* <Glyphicon glyph='share-alt' /> Copy shareable link */}
                 <FaShareAlt /> Copy shareable link
               </DropdownItem>
               <DropdownItem onSelect={this.onDeleteCurriculum} eventKey='5'>
-                {/*<Glyphicon glyph='trash' /> Delete*/}
+                {/* <Glyphicon glyph='trash' /> Delete */}
                 <FaTrash /> Delete
               </DropdownItem>
             </Dropdown.Menu>
@@ -145,6 +145,18 @@ export class CurriculumThumbnail extends React.Component {
             </Moment> ∙ Last updated <Moment fromNow>
               {this.props.updated_on}
             </Moment>
+          </div>
+          <div style={{textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+            <div className='ReactTags__tags react-tags-wrapper'>
+              <div className='ReactTags__selected'>
+                {this.props.tags.map((tag, i) => {
+                  return <span key={i} className='tag-wrapper ReactTags__tag' style={{ opacity: 1, cursor: 'auto' }}>
+                    {tag}
+                  </span>
+                })
+                }
+              </div>
+            </div>
           </div>
         </div>
       </Col>

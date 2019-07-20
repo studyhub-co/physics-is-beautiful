@@ -40,23 +40,24 @@ class CurriculumViewSet(ModelViewSet):
             prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
             prototype.clone(new_curriculum)
 
-    # @action(methods=['POST', 'DELETE', 'GET'],
-    #         detail=True,
-    #         permission_classes=[IsOwnerOrCollaboratorBase, ],)
-    # def tags(self, request, uuid):
-    #     course = self.get_object()
-    #     if request.method == 'POST':
-    #         # create tag
-    #         new_tag = request.data.get('tag', None)
-    #         if not new_tag:
-    #             raise ValidationError('tag is not present')
-    #         Tag.objects.add_tag(course, new_tag)
-    #         return Response({'tag': new_tag}, status=status.HTTP_201_CREATED)
-    #     if request.method == 'DELETE':
-    #         to_delete_tag = request.data.get('tag', None)
-    #         if not to_delete_tag:
-    #             Tag.objects.add_tag(course, to_delete_tag)
-    #         return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsOwnerOrCollaboratorBase, ],)
+    def tags(self, request, uuid):
+        course = self.get_object()
+        if request.method == 'POST':
+            # create tag
+            new_tag = request.data.get('tag', None)
+            if not new_tag:
+                raise ValidationError('tag is not present')
+            course.tags.add(new_tag)
+            return Response({'tag': new_tag}, status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
+            to_delete_tag = request.data.get('tag', None)
+            if not to_delete_tag:
+                raise ValidationError('tag is not present')
+            course.tags.remove(to_delete_tag)
+            return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
 
     class Meta:
         ordering = ['-published_on']
