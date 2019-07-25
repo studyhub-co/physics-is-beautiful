@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Checkbox } from 'react-bootstrap'
+import { Row, Col, InputGroup } from 'react-bootstrap'
 
 export class GoogleClassroomRow extends React.Component {
   handleChange (classroom) {
@@ -27,7 +27,7 @@ export class GoogleClassroomRow extends React.Component {
       <div className={className}>
         <Row>
           <Col sm={1} md={1}>
-            <Checkbox
+            <InputGroup.Checkbox
               disabled={disabled}
               onChange={() => this.handleChange(this.props.classroom)}
               {...opts}

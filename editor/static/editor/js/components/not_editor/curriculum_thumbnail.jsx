@@ -146,18 +146,19 @@ export class CurriculumThumbnail extends React.Component {
               {this.props.updated_on}
             </Moment>
           </div>
-          <div style={{textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            <div className='ReactTags__tags react-tags-wrapper'>
-              <div className='ReactTags__selected'>
-                {this.props.tags.map((tag, i) => {
-                  return <span key={i} className='tag-wrapper ReactTags__tag' style={{ opacity: 1, cursor: 'auto' }}>
-                    {tag}
-                  </span>
-                })
-                }
-              </div>
-            </div>
-          </div>
+          {/* tags that can be use in the future */}
+          {/*<div style={{textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
+            {/*<div className='ReactTags__tags react-tags-wrapper'>*/}
+              {/*<div className='ReactTags__selected'>*/}
+                {/*{this.props.tags.map((tag, i) => {*/}
+                  {/*return <span key={i} className='tag-wrapper ReactTags__tag' style={{ opacity: 1, cursor: 'auto' }}>*/}
+                    {/*{tag}*/}
+                  {/*</span>*/}
+                {/*})*/}
+                {/*}*/}
+              {/*</div>*/}
+            {/*</div>*/}
+          {/*</div>*/}
         </div>
       </Col>
     )

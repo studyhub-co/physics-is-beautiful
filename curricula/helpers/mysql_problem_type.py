@@ -160,12 +160,13 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
 
     # DROP SCHEMA AND USER
     finally:
-        root_user_cursor = root_user_connection.cursor()
-        root_user_cursor.execute('DROP SCHEMA IF EXISTS {0}; '.format(database_name))
-        root_user_cursor.execute('DROP USER IF EXISTS {0}@\'{1}\''.format(database_user_name,
-                                                                          MY_SQL_PROBLEM_TYPE_HOST))
+        if root_user_connection:
+            root_user_cursor = root_user_connection.cursor()
+            root_user_cursor.execute('DROP SCHEMA IF EXISTS {0}; '.format(database_name))
+            root_user_cursor.execute('DROP USER IF EXISTS {0}@\'{1}\''.format(database_user_name,
+                                                                              MY_SQL_PROBLEM_TYPE_HOST))
 
-        root_user_cursor.close()
+            root_user_cursor.close()
 
 
 # TODO refactor this (much duplicate code)
