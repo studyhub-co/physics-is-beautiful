@@ -16,7 +16,7 @@ export class Module extends React.Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleTagDelete = this.handleTagDelete.bind(this)
     this.handleTagAddition = this.handleTagAddition.bind(this)
-    if (props.hasOwnProperty('tags')) {
+    if (props.hasOwnProperty('tags') && props.tags) {
       this.state = {
         tags: props.tags.map((tag) => {
           return { id: tag, text: tag }
