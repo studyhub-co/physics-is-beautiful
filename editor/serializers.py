@@ -191,6 +191,7 @@ class QuestionSerializer(BaseSerializer):
 
     answers = AnswersField(required=False)
     vectors = VectorSerializer(many=True, required=False)
+    tags = TagListSerializerField(read_only=True)
 
     def validate_lesson(self, value):
         return Lesson.objects.get(uuid=value)
@@ -227,7 +228,7 @@ class QuestionSerializer(BaseSerializer):
     class Meta:
         model = Question
         fields = ['uuid', 'lesson', 'text', 'solution_text', 'hint', 'image', 'position', 'answer_type', 'answers',
-                  'vectors']
+                  'vectors', 'tags']
         list_serializer_class = DictSerializer
 
 

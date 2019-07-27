@@ -160,6 +160,53 @@ export function deleteModuleTag (uuid, tag) {
   }
 }
 
+export function addQuestionTag (uuid, tag) {
+  return function (dispatch) {
+    const respone = request(API_PREFIX + 'questions/' + uuid + '/tags/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ tag: tag.text })
+    }).then((value) => {
+      $.ajax({
+        async: true,
+        url: API_PREFIX + 'questions/' + uuid + '/',
+        success: function (data, status, jqXHR) {
+          dispatch(questionLoaded(data))
+        }
+      })
+    }
+    )
+  }
+}
+
+export function deleteQuestionTag (uuid, tag) {
+  return function (dispatch) {
+    request(API_PREFIX + 'questions/' + uuid + '/tags/', {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ tag: tag.text })
+    }).then((value) => {
+      $.ajax({
+        async: true,
+        url: API_PREFIX + 'questions/' + uuid + '/',
+        success: function (data, status, jqXHR) {
+          dispatch(questionLoaded(data))
+        }
+      })
+    })
+  }
+}
+
 export function addCurriculum (prototype) {
   return function (dispatch) {
     //	dispatch(requestAddCurriculum());

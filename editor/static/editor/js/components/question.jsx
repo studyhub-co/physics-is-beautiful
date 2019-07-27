@@ -1,13 +1,13 @@
 import React from 'react'
 
 import ReactMde from 'react-mde'
-// import * as Showdown from 'showdown'
 import Showdown from 'showdown'
+import { FaChevronLeft } from 'react-icons/fa'
+import { WithOutContext as ReactTags } from 'react-tag-input'
 
 import { EditableThumbnail } from './thumbnail'
 import { EditableLabel } from './label'
 import { AnswerTypes, AnswerTypeLabels } from '../constants'
-
 import { MultipleChoiceAnswers } from './multiple_choice_answers'
 import { MathematicalExpressionAnswerContainer } from '../containers/mathematical_expression_answer'
 import { TextAnswerContainer } from '../containers/text_answer'
@@ -16,7 +16,7 @@ import { VectorAnswerContainer } from '../containers/vector_answer'
 import { UnitConversionAnswerContainer } from '../containers/unit_conversion_answer'
 import { VectorComponentsAnswerContainer } from '../containers/vector_components_answer'
 import { QuestionVectorsContainer } from '../containers/question_vectors'
-import { FaChevronLeft } from 'react-icons/fa'
+import { tagDelimiters } from '../utils'
 
 export const DEFAULT_MATHJAX_OPTIONS = {
   extensions: ['tex2jax.js'],
@@ -36,12 +36,35 @@ export class Question extends React.Component {
     this.handleChangeSolutionContent = this.handleChangeSolutionContent.bind(this)
     this.onSolutionContentSave = this.onSolutionContentSave.bind(this)
     this.handleTabChange = this.handleTabChange.bind(this)
+    this.handleTagDelete = this.handleTagDelete.bind(this)
+    this.handleTagAddition = this.handleTagAddition.bind(this)
+
+    let tags = []
+    if (props.hasOwnProperty('tags') && props.tags) {
+      tags = props.tags.map((tag) => {
+        return { id: tag, text: tag }
+      })
+    }
 
     this.state = {
       showSolutionEditor: false,
       solutionText: props.solution_text || '',
-      mdeTab: 'write'
+      mdeTab: 'write',
+      tags: tags
     }
+  }
+
+  handleTagDelete (i) {
+    const { tags } = this.state
+    this.props.onDeleteTag(tags[i])
+    this.setState({
+      tags: tags.filter((tag, index) => index !== i)
+    })
+  }
+
+  handleTagAddition (tag) {
+    this.setState(state => ({ tags: [...state.tags, tag] }))
+    this.props.onAddTag(tag)
   }
 
   handleShowSolutionEditor () {
@@ -79,6 +102,15 @@ export class Question extends React.Component {
       } else {
         this.setState({ solutionText: nextProps.solution_text })
       }
+    }
+  }
+
+  componentWillUpdate (nextProps, nextState, nextContext) {
+    if (nextProps.tags && nextProps.tags !== this.props.tags) {
+      const tags = nextProps.tags.map((tag) => {
+        return {id: tag, text: tag}
+      })
+      this.setState({tags: tags})
     }
   }
 
@@ -162,6 +194,17 @@ export class Question extends React.Component {
 
     return (
       <div className='question'>
+        <div className='row' style={{paddingLeft: '1rem'}}>
+          <ReactTags
+            tags={this.state.tags}
+            placeholder={'Add new question tag'}
+            // suggestions={suggestions}
+            inputFieldPosition='inline'
+            handleDelete={this.handleTagDelete}
+            handleAddition={this.handleTagAddition}
+            allowDragDrop={Boolean(false)}
+            delimiters={tagDelimiters} />
+        </div>
         {this.state.showSolutionEditor
           ? solutionEditor
           : <div>

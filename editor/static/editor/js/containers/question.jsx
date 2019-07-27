@@ -10,6 +10,8 @@ import {
   changeQuestionHint,
   changeQuestionType,
   addAnswer,
+  addQuestionTag,
+  deleteQuestionTag
 } from '../actions'
 
 const mapStateToProps = (state, ownProps) => {
@@ -28,6 +30,7 @@ const mapStateToProps = (state, ownProps) => {
       solution_text: q.solution_text,
       image: q.image,
       hint: q.hint,
+      tags: q.tags,
       answers: q.answers,
       hasPictures: hasPictures,
       answer_type: q.answer_type,
@@ -40,6 +43,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onImageChange: image => dispatch(changeQuestionImage(ownProps.uuid, image)),
     onTextChange: name => dispatch(changeQuestionText(ownProps.uuid, name)),
     onChangeSolutionText: text => dispatch(changeQuestionSolutionText(ownProps.uuid, text)),
+    onAddTag: tag => dispatch(addQuestionTag(ownProps.uuid, tag)),
+    onDeleteTag: tag => dispatch(deleteQuestionTag(ownProps.uuid, tag)),
     onHintChange: hint => dispatch(changeQuestionHint(ownProps.uuid, hint)),
     onTypeChange: e =>
       dispatch(changeQuestionType(ownProps.uuid, e.target.value)),
