@@ -24,6 +24,7 @@ from profiles.models import Profile
 
 class DictSerializer(serializers.ListSerializer):
     def to_representation(self, data):
+        # FIXME bad approach, can't use prefetch_related with it
         return OrderedDict([(d['uuid'], d) for d in super().to_representation(data)])
 
     @property
@@ -269,7 +270,7 @@ class LessonSerializer(BaseSerializer):
         list_serializer_class = DictSerializer
         fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'game_type', 'url', 'questions']
         extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }
 
 

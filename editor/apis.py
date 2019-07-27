@@ -19,6 +19,8 @@ from editor.serializers import CurriculumSerializer, UnitSerializer, \
 from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
     IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
 
+# TODO add pagiantion to api views! or block load listview for Units/Lessons at least
+
 
 class TagAddRemoveViewMixin(object):
     # @action(methods=['POST', 'DELETE'],
@@ -50,9 +52,9 @@ class CurriculumViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return Curriculum.objects.filter(Q(author=self.request.user)
                                          | Q(collaborators=self.request.user.profile)
                                          | Q(classroom__students__user=self.request.user)).\
-               select_related('author').\
+               select_related('author'). \
+               prefetch_related('units__modules', 'units__tags').\
                annotate(count_lessons=Count('units__modules__lessons', distinct=True))
-               # !TODO: modules, units, tags genereate too many sql queries
 
     def perform_create(self, serializer):
         new_curriculum = serializer.save(author=self.request.user)
@@ -93,7 +95,9 @@ class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
 
     def get_queryset(self):
         return Unit.objects.filter(Q(curriculum__author=self.request.user) |
-                                   Q(curriculum__collaborators=self.request.user.profile)).distinct()
+                                   Q(curriculum__collaborators=self.request.user.profile)). \
+                                   prefetch_related('tags').\
+                                   distinct()
 
     
 class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
@@ -118,7 +122,9 @@ class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
 
     def get_queryset(self):
         return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
-                                     Q(unit__curriculum__collaborators=self.request.user.profile)).distinct()
+                                     Q(unit__curriculum__collaborators=self.request.user.profile)).\
+                                     prefetch_related('tags', 'lessons').\
+                                     distinct()
 
     
 class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
@@ -145,7 +151,9 @@ class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
 
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
-                                     Q(module__unit__curriculum__collaborators=self.request.user.profile)).distinct()
+                                     Q(module__unit__curriculum__collaborators=self.request.user.profile))\
+            .prefetch_related('questions__tags', 'questions__vectors')\
+            .distinct()
 
 
 class QuestionViewSet(ModelViewSet, TagAddRemoveViewMixin):
