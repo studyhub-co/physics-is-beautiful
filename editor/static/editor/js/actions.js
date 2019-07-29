@@ -162,7 +162,7 @@ export function deleteModuleTag (uuid, tag) {
 
 export function addQuestionTag (uuid, tag) {
   return function (dispatch) {
-    const respone = request(API_PREFIX + 'questions/' + uuid + '/tags/', {
+    request(API_PREFIX + 'questions/' + uuid + '/tags/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
