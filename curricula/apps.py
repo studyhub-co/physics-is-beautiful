@@ -13,11 +13,31 @@ class CurriculaConfig(AppConfig):
         # recreate postgres sql clone functions
         with connection.cursor() as cursor:
             cursor.execute("""
-            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+                CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+                
+                -- clone tags
+                DROP FUNCTION IF EXISTS clone_tags;
+                CREATE FUNCTION clone_tags(IN content_type varchar, 
+                                           IN old_object_id int,
+                                           IN new_object_id int
+                                         )
+                    RETURNS void
+                AS $body$
+                DECLARE
+                need_content_type_id int;
+                begin
+                
+                SELECT id INTO need_content_type_id FROM public.django_content_type WHERE model=content_type AND app_label='curricula';
+                INSERT INTO public.taggit_taggeditem (object_id, content_type_id, tag_id)
+                SELECT new_object_id, need_content_type_id, tag_id FROM public.taggit_taggeditem WHERE object_id=old_object_id;
+                end;
+                $body$
+                language plpgsql;
+            
 
                 -- clone question vectors
-                DROP FUNCTION IF EXISTS clone_quesion_vectors;
-                CREATE FUNCTION clone_quesion_vectors(IN question_from_id int, 
+                DROP FUNCTION IF EXISTS clone_question_vectors;
+                CREATE FUNCTION clone_question_vectors(IN question_from_id int, 
                                                      IN question_to_id int
                                                      )
                     RETURNS void
