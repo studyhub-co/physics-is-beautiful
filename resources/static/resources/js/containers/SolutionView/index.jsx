@@ -509,6 +509,7 @@ class SolutionView extends React.Component {
                 { this.props.thread &&
                   <ThreadComponent
                     threadId={this.props.thread.id}
+                    anonAsUserObject={Boolean(true)}
                   />
                 }
                 {/*{ this.props.thread*/}

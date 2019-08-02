@@ -50,6 +50,7 @@ class ResourceView extends React.Component {
             {this.props.resource && this.props.resource.thread
               ? <ThreadComponent
                 threadId={this.props.resource.thread}
+                anonAsUserObject={Boolean(true)}
               />
               : null}
           </Col>

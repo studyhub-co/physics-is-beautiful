@@ -132,6 +132,7 @@ export class Footer extends React.Component {
           }
           {correctAnswer}
           <ThreadComponent
+            anonAsUserObject={Boolean(true)}
             threadId={this.props.thread}
           />
         </Modal.Body>
