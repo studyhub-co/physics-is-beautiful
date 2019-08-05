@@ -35,6 +35,8 @@ module.exports = function (env) {
       // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
     },
 
+    devtool: 'source-map',
+
     plugins: MODE === 'production' ? [
       new BundleTracker({filename: './webpack-stats.json'}),
       new webpack.optimize.CommonsChunkPlugin({
