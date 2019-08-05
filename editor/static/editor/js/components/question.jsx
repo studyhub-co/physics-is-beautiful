@@ -2,7 +2,7 @@ import React from 'react'
 
 import ReactMde from 'react-mde'
 import Showdown from 'showdown'
-import { FaChevronLeft } from 'react-icons/fa'
+import { FaChevronLeft, FaPen, FaCodeBranch } from 'react-icons/fa'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 
 import { EditableThumbnail } from './thumbnail'
@@ -17,6 +17,7 @@ import { UnitConversionAnswerContainer } from '../containers/unit_conversion_ans
 import { VectorComponentsAnswerContainer } from '../containers/vector_components_answer'
 import { QuestionVectorsContainer } from '../containers/question_vectors'
 import { tagDelimiters } from '../utils'
+import ForkMenu from './fork_menu'
 
 export const DEFAULT_MATHJAX_OPTIONS = {
   extensions: ['tex2jax.js'],
@@ -209,10 +210,15 @@ export class Question extends React.Component {
           ? solutionEditor
           : <div>
             <div className={'curriculum-title'} style={{textAlign: 'right'}}>
-              <a
+              <div><FaPen /> <a
                 style={{cursor: 'pointer'}}
                 onClick={this.handleShowSolutionEditor}
-              >Edit solution</a>
+              >Edit solution</a></div>
+              <div><FaCodeBranch />
+                <ForkMenu question={{uuid: this.props.uuid}}>
+                  Fork this problem
+                </ForkMenu>
+              </div>
             </div>
             <div className='row'>
               <div className='col-md-6 text-center'>

@@ -9,7 +9,7 @@ import { FaPlus, FaMinus, FaChevronRight, FaChevronLeft, FaArrowUp, FaArrowDown 
 
 import PDF from 'react-pdf-js/dist/index'
 
-import { Thread } from '../../components/reactDjeddit/thread'
+// import { Thread } from '../../components/reactDjeddit/thread'
 import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 

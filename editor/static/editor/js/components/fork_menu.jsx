@@ -2,30 +2,21 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import copy from 'copy-to-clipboard'
+// import copy from 'copy-to-clipboard'
 import { Dropdown, Image } from 'react-bootstrap'
 import { FaEllipsisV, FaGraduationCap, FaCodeBranch, FaShareAlt, FaPlus } from 'react-icons/fa'
 
-import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadModuleIfNeeded } from '../../actions'
-import { Overlay } from '../fullscreen_overlay'
+import {
+  addUnit,
+  addToNewCurriculum,
+  addModule,
+  addLesson,
+  addQuestion,
+  loadModuleIfNeeded,
+  loadCurricula,
+} from '../actions'
+import { Overlay } from './fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
-
-// export class DropdownThumbnail extends Dropdown  {
-//   componentDidMount () {
-//     if (this.refs.inner) {
-//       this.refs.inner.handleClose = this.handleClose.bind(this)
-//     }
-//   }
-//
-//   handleClose (event, eventDetails) {
-//     if (!this.refs.inner.props.open) {
-//       return
-//     }
-//     if (typeof event.isPropagationStopped !== 'function' || !event.isPropagationStopped()) {
-//       this.refs.inner.toggleOpen(event, eventDetails)
-//     }
-//   }
-// }
 
 class MenuToggle extends React.Component {
   constructor (props, context) {
@@ -39,13 +30,8 @@ class MenuToggle extends React.Component {
   }
 
   render () {
-      {/*<Glyphicon glyph={'option-vertical'} onClick={ this.handleClick } style={{fontSize: '2rem'}}>*/}
-        {/*{this.props.children}*/}
-      {/*</Glyphicon>*/}
     return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '1.5rem'}}>
-        {this.props.children}
-      </FaEllipsisV>
+      <div onClick={this.handleClick}>{this.props.children}</div>
     )
   }
 }
@@ -54,18 +40,13 @@ MenuToggle.propTypes = {
   onClick: PropTypes.func
 }
 
-class ThumbnailMenu extends React.Component {
+class ForkMenu extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // this.onTitleClick = this.onTitleClick.bind(this)
-    this.onLearnSelect = this.onLearnSelect.bind(this)
     this.onForkSelect = this.onForkSelect.bind(this)
-    this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onBack = this.onBack.bind(this)
     this.addElementToNewCurriculum = this.addElementToNewCurriculum.bind(this)
     this.onToggle = this.onToggle.bind(this)
-    // // this.onSelectCurriculum = this.onSelectCurriculum.bind(this)
-    // this._stayOpened = true
 
     var baseName = ''
     var uuid = ''
@@ -85,7 +66,7 @@ class ThumbnailMenu extends React.Component {
     }
 
     this.state = {
-      level: 1,
+      level: 2, // start from 2, (based on editor/static/editor/js/components/not_editor/thumbnail_menu.jsx)
       baseName: baseName,
       uuid: uuid,
       menuOpen: false,
@@ -97,26 +78,16 @@ class ThumbnailMenu extends React.Component {
     }
   }
 
-  onLearnSelect () {
-    //window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
-    if (this.state.baseName === 'question') { // open lesson view
-      window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_blank')
-    } else {
-      window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
-    }
-  }
-
-  // onTitleClick () {
-  //   window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+  // onLearnSelect () {
+  //   if (this.state.baseName === 'question') { // open lesson view
+  //     window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_blank')
+  //   } else {
+  //     window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+  //   }
   // }
 
-  onCopyShareableLink (e) {
-    if (this.state.baseName === 'question') { // copy lesson view
-      copy(window.location.origin + '/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/')
-    } else {
-      copy(window.location.origin + '/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/')
-    }
-    this.setState({menuOpen: false})
+  componentDidMount () {
+    this.props.loadCurricula() // load my courses
   }
 
   onBack (e, event) {
@@ -192,33 +163,33 @@ class ThumbnailMenu extends React.Component {
       </div>
     </Overlay>
 
+    // var menus = []
+    // if (this.state.level === 1) {
+    //   var learnText = 'Learn'
+    //   var copyText = 'Copy shareable link'
+    //   if (this.state.baseName === 'question') {
+    //     learnText = 'Learn lesson with the question'
+    //     copyText = 'Copy link to lesson'
+    //   }
+    //   menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
+    //     {/*<Glyphicon glyph='education' />*/}
+    //     <FaGraduationCap />
+    //     &nbsp;{learnText}</Dropdown.Item>)
+    //   menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
+    //     {/*<Glyphicon glyph='export' />*/}
+    //     <FaCodeBranch />
+    //     &nbsp;Fork to curriculum studio</Dropdown.Item>)
+    //   menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
+    //     {/*<Glyphicon glyph='share-alt' />*/}
+    //     <FaShareAlt />
+    //     &nbsp;{copyText}</Dropdown.Item>)
+    // }
+
     var menus = []
-    if (this.state.level === 1) {
-      var learnText = 'Learn'
-      var copyText = 'Copy shareable link'
-      if (this.state.baseName === 'question') {
-        learnText = 'Learn lesson with the question'
-        copyText = 'Copy link to lesson'
-      }
-      menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
-        {/*<Glyphicon glyph='education' />*/}
-        <FaGraduationCap />
-        &nbsp;{learnText}</Dropdown.Item>)
-      menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
-        {/*<Glyphicon glyph='export' />*/}
-        <FaCodeBranch />
-        &nbsp;Fork to curriculum studio</Dropdown.Item>)
-      menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
-        {/*<Glyphicon glyph='share-alt' />*/}
-        <FaShareAlt />
-        &nbsp;{copyText}</Dropdown.Item>)
-    }
 
     // Curricula list
     if (this.state.level === 2) {
-      menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
-      // for (var i = 0; i < this.props.myCurricula.results.length; i++) {
-      //   var curriculum = this.props.myCurricula.results[i]
+      // menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
 
       let subMenu = ''
       if (this.state.baseName !== 'unit') {
@@ -319,7 +290,9 @@ class ThumbnailMenu extends React.Component {
         onToggle={this.onToggle}
         show={this.state.menuOpen}
       >
-        <Dropdown.Toggle as={MenuToggle} />
+        <Dropdown.Toggle as={MenuToggle}>
+          {this.props.children}
+        </Dropdown.Toggle>
         <Dropdown.Menu
           // rootCloseEvent={'click'}
         >
@@ -331,7 +304,7 @@ class ThumbnailMenu extends React.Component {
   }
 }
 
-ThumbnailMenu.propTypes = {
+ForkMenu.propTypes = {
   unit: PropTypes.object,
   lesson: PropTypes.object,
   module: PropTypes.object,
@@ -356,9 +329,10 @@ const mapDispatchToProps = (dispatch) => {
     addLesson: (moduleUuid, lesson) => dispatch(addLesson(moduleUuid, lesson)),
     addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),
     loadModuleIfNeeded: (moduleUuid) => dispatch(loadModuleIfNeeded(moduleUuid)),
-    addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value))
+    addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value)),
+    loadCurricula: () => dispatch(loadCurricula())
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ThumbnailMenu)
-export { ThumbnailMenu as ThumbnailMenuNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(ForkMenu)
+export { ForkMenu as ThumbnailMenuNotConnected }
