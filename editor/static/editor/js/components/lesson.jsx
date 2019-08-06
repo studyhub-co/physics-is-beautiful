@@ -11,6 +11,7 @@ export class Lesson extends React.Component {
     super(props)
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
   }
+
   handleDeleteClick (e) {
     e.preventDefault()
     if (
@@ -23,6 +24,7 @@ export class Lesson extends React.Component {
       this.props.onDeleteClick()
     }
   }
+
   render () {
     if (this.props.loading) {
       return <div>Loading...</div>

@@ -164,6 +164,10 @@ class LessonApp extends React.Component {
     this.props.dispatch(loadLessonIfNeeded(this.props.match.params.uuid))
   }
 
+  componentDidUpdate (prevProps, prevState, snapshot) {
+    this.props.dispatch(loadLessonIfNeeded(this.props.match.params.uuid))
+  }
+
   handleQuestionDroppedBefore (beforeQuestionUuid, question) {
     this.props.dispatch(moveQuestion(question.uuid, beforeQuestionUuid))
   }

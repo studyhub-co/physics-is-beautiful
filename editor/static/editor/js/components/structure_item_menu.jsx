@@ -12,8 +12,8 @@ import {
   addModule,
   addLesson,
   addQuestion,
-  loadModuleIfNeeded,
-  loadCurricula,
+  loadNavigationCourses,
+  loadNavigationModule
 } from '../actions'
 import { Overlay } from './fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
@@ -40,7 +40,7 @@ MenuToggle.propTypes = {
   onClick: PropTypes.func
 }
 
-class ForkMenu extends React.Component {
+class StructureItemMenu extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onForkSelect = this.onForkSelect.bind(this)
@@ -65,8 +65,14 @@ class ForkMenu extends React.Component {
       uuid = props.question.uuid
     }
 
+    let level = 1
+
+    if (props.preSelectMenuItem && props.preSelectMenuItem === 'fork') {
+      level = 2
+    }
+
     this.state = {
-      level: 2, // start from 2, (based on editor/static/editor/js/components/not_editor/thumbnail_menu.jsx)
+      level: level,
       baseName: baseName,
       uuid: uuid,
       menuOpen: false,
@@ -87,7 +93,7 @@ class ForkMenu extends React.Component {
   // }
 
   componentDidMount () {
-    this.props.loadCurricula() // load my courses
+    this.props.loadNavigationCourses() // load my courses
   }
 
   onBack (e, event) {
@@ -124,10 +130,9 @@ class ForkMenu extends React.Component {
       this.setState({showSpinnerOverlay: true})
       this.props.addLesson(module.uuid, this.props.lesson)
     } else { // move to next level
+      this.props.loadNavigationModule(module.uuid)
       event.stopPropagation()
-      this.props.loadModuleIfNeeded(module.uuid)
       this.setState({level: this.state.level + 1, selectedModule: module})
-      // TODO load lesson of the module
     }
   }
 
@@ -163,41 +168,42 @@ class ForkMenu extends React.Component {
       </div>
     </Overlay>
 
-    // var menus = []
-    // if (this.state.level === 1) {
-    //   var learnText = 'Learn'
-    //   var copyText = 'Copy shareable link'
-    //   if (this.state.baseName === 'question') {
-    //     learnText = 'Learn lesson with the question'
-    //     copyText = 'Copy link to lesson'
-    //   }
-    //   menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
-    //     {/*<Glyphicon glyph='education' />*/}
-    //     <FaGraduationCap />
-    //     &nbsp;{learnText}</Dropdown.Item>)
-    //   menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
-    //     {/*<Glyphicon glyph='export' />*/}
-    //     <FaCodeBranch />
-    //     &nbsp;Fork to curriculum studio</Dropdown.Item>)
-    //   menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
-    //     {/*<Glyphicon glyph='share-alt' />*/}
-    //     <FaShareAlt />
-    //     &nbsp;{copyText}</Dropdown.Item>)
-    // }
-
     var menus = []
+
+    // 1st level - main items, 2nd and more - fork levels
+    if (this.state.level === 1) {
+      var learnText = 'Learn'
+      var copyText = 'Copy shareable link'
+      if (this.state.baseName === 'question') {
+        learnText = 'Learn lesson with the question'
+        copyText = 'Copy link to lesson'
+      }
+      menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
+        {/* <Glyphicon glyph='education' /> */}
+        <FaGraduationCap />
+        &nbsp;{learnText}</Dropdown.Item>)
+      menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
+        {/* <Glyphicon glyph='export' /> */}
+        <FaCodeBranch />
+        &nbsp;Fork to curriculum studio</Dropdown.Item>)
+      menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
+        {/* <Glyphicon glyph='share-alt' /> */}
+        <FaShareAlt />
+        &nbsp;{copyText}</Dropdown.Item>)
+    }
 
     // Curricula list
     if (this.state.level === 2) {
-      // menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
-
+      if (!this.props.preSelectMenuItem) {
+        menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
+      }
       let subMenu = ''
       if (this.state.baseName !== 'unit') {
         subMenu = <span style={{float: 'right'}}>{'>'}</span>
       }
 
-      for (let uuid in this.props.myCurricula) {
-        var curriculum = this.props.myCurricula[uuid]
+      for (let uuid in this.props.courses) {
+        var curriculum = this.props.courses[uuid]
         menus.push(<Dropdown.Item
           onSelect={this.onSelectCurriculum.bind(this, curriculum)}
           key={curriculum.uuid}>
@@ -209,7 +215,7 @@ class ForkMenu extends React.Component {
       }
 
       menus.push(<Dropdown.Item onSelect={this.addElementToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
-        {/*<Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum*/}
+        {/* <Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum */}
         <FaPlus /> Add {this.state.baseName} to new curriculum
       </Dropdown.Item>)
     }
@@ -304,20 +310,21 @@ class ForkMenu extends React.Component {
   }
 }
 
-ForkMenu.propTypes = {
+StructureItemMenu.propTypes = {
   unit: PropTypes.object,
   lesson: PropTypes.object,
   module: PropTypes.object,
+  preSelectMenuItem: PropTypes.string
   // curricula: PropTypes.object,
   // uuid: PropTypes.string
 }
 
 const mapStateToProps = (state) => {
   return {
-    myCurricula: state.curricula, // myCurricula
-    units: state.units,
-    modules: state.modules,
-    lessons: state.lessons
+    courses: state.courseNavigation.courses, // myCourses
+    units: state.courseNavigation.units,
+    modules: state.courseNavigation.modules,
+    lessons: state.courseNavigation.lessons
   }
 }
 
@@ -328,11 +335,11 @@ const mapDispatchToProps = (dispatch) => {
     addModule: (unitUuid, module) => dispatch(addModule(unitUuid, module)),
     addLesson: (moduleUuid, lesson) => dispatch(addLesson(moduleUuid, lesson)),
     addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),
-    loadModuleIfNeeded: (moduleUuid) => dispatch(loadModuleIfNeeded(moduleUuid)),
     addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value)),
-    loadCurricula: () => dispatch(loadCurricula())
+    loadNavigationCourses: () => dispatch(loadNavigationCourses()),
+    loadNavigationModule: (uuid) => dispatch(loadNavigationModule(uuid))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForkMenu)
-export { ForkMenu as ThumbnailMenuNotConnected }
+export default connect(mapStateToProps, mapDispatchToProps)(StructureItemMenu)
+export { StructureItemMenu as ThumbnailMenuNotConnected }

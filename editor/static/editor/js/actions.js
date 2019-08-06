@@ -50,7 +50,11 @@ export const ActionTypes = Object.freeze({
   SET_ANSWER_IS_CORRECT: 'SET_ANSWER_IS_CORRECT',
   STUDIO_TAB_CHANGED: 'STUDIO_TAB_CHANGED',
   FOUND_USERS_LOADED: 'FOUND_USERS_LOADED',
-  FOUND_USERS_REQUEST: 'FOUND_USERS_REQUEST'
+  FOUND_USERS_REQUEST: 'FOUND_USERS_REQUEST',
+  COURSE_NAVIGATION_COURSES_LOADED: 'COURSE_NAVIGATION_COURSES_LOADED',
+  COURSE_NAVIGATION_UNITS_LOADED: 'COURSE_NAVIGATION_UNITS_LOADED',
+  COURSE_NAVIGATION_MODULES_LOADED: 'COURSE_NAVIGATION_MODULES_LOADED',
+  COURSE_NAVIGATION_LESSONS_LOADED: 'COURSE_NAVIGATION_LESSONS_LOADED'
 })
 
 /*
@@ -1806,6 +1810,67 @@ export function findUsers (searchString) {
       success: function (data, status, jqXHR) {
         dispatch(foundUsersLoaded(data))
         dispatch(findUserRequest(false))
+      }
+    })
+  }
+}
+
+export function coursesNavigationLoaded (data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_COURSES_LOADED,
+    courses: data
+  }
+}
+
+export function unitsNavigationLoaded (data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_UNITS_LOADED,
+    units: data
+  }
+}
+
+export function modulesNavigationLoaded (data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_MODULES_LOADED,
+    modules: data
+  }
+}
+
+export function moduleNavigationLoaded (data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_LESSONS_LOADED,
+    lessons: extract(data, 'lessons')
+  }
+}
+
+export function loadNavigationCourses () {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'curricula/',
+      context: this,
+      success: function (data, status, jqXHR) {
+        dispatch(coursesNavigationLoaded(data))
+
+        // extract all units from all courses, not so good.
+        const units = extractAll(data, 'units')
+        dispatch(unitsNavigationLoaded(units))
+
+        // extract all modules from all units, not so good.
+        var modules = extractAll(units, 'modules')
+        dispatch(modulesNavigationLoaded(modules))
+      }
+    })
+  }
+}
+
+export function loadNavigationModule (uuid) {
+  return function (dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'modules/' + uuid + '/',
+      success: function (data, status, jqXHR) {
+        dispatch(moduleNavigationLoaded(data))
       }
     })
   }

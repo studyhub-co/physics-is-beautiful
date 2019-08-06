@@ -5,13 +5,13 @@ import { history } from './history'
 
 import { ActionTypes } from './actions'
 
-function curricula(state = {}, action) {
+function curricula (state = {}, action) {
   switch (action.type) {
     case ActionTypes.CURRICULA_LOADED:
       return action.curricula
     case ActionTypes.CURRICULUM_LOADED:
       return Object.assign({}, state, {
-        [action.curriculum.uuid]: action.curriculum,
+        [action.curriculum.uuid]: action.curriculum
       })
     case ActionTypes.DELETE_CURRICULUM:
       var ret = Object.assign({}, state)
@@ -25,7 +25,7 @@ function curricula(state = {}, action) {
       var ret = Object.assign({}, state)
       ret[action.curriculumUuid].units.splice(
         ret[action.curriculumUuid].units.indexOf(action.uuid),
-        1,
+        1
       )
       return ret
     default:
@@ -33,7 +33,7 @@ function curricula(state = {}, action) {
   }
 }
 
-function search(state = {}, action) {
+function search (state = {}, action) {
   switch (action.type) {
     case ActionTypes.SEARCH_CURRICULA_LOADED:
       return Object.assign({}, state, { curricula: action.curriculaSearchList })
@@ -50,7 +50,7 @@ function search(state = {}, action) {
   }
 }
 
-function units(state = {}, action) {
+function units (state = {}, action) {
   switch (action.type) {
     case ActionTypes.CURRICULA_LOADED:
       return action.units
@@ -69,18 +69,19 @@ function units(state = {}, action) {
       return ret
     case ActionTypes.DELETE_MODULE:
       var ret = Object.assign({}, state)
-      if (action.unitUuid in ret)
+      if (action.unitUuid in ret) {
         ret[action.unitUuid].modules.splice(
           ret[action.unitUuid].modules.indexOf(action.uuid),
-          1,
+          1
         )
+      }
       return ret
     default:
       return state
   }
 }
 
-function modules(state = {}, action) {
+function modules (state = {}, action) {
   switch (action.type) {
     case ActionTypes.UNIT_LOADED:
     case ActionTypes.UNIT_ADDED:
@@ -137,7 +138,7 @@ function lessons (state = {}, action) {
       ret[action.lesson].questions = ret[action.lesson].questions.slice()
       ret[action.lesson].questions.splice(
         ret[action.lesson].questions.indexOf(action.question),
-        1,
+        1
       )
       return ret
     case ActionTypes.QUESTION_MOVED:
@@ -145,9 +146,7 @@ function lessons (state = {}, action) {
       var les = Object.assign({}, ret[action.lessonUuid])
       var qs = les.questions.slice()
       qs.splice(qs.indexOf(action.uuid), 1)
-      if (action.beforeUuid)
-        qs.splice(qs.indexOf(action.beforeUuid), 0, action.uuid)
-      else qs.push(action.uuid)
+      if (action.beforeUuid) { qs.splice(qs.indexOf(action.beforeUuid), 0, action.uuid) } else qs.push(action.uuid)
       les.questions = qs
       ret[action.lessonUuid] = les
       return ret
@@ -162,7 +161,7 @@ function questions (state = {}, action) {
     case ActionTypes.QUESTION_LOADED:
     case ActionTypes.QUESTION_ADDED:
       return Object.assign({}, state, {
-        [action.question.uuid]: action.question,
+        [action.question.uuid]: action.question
       })
     case ActionTypes.ANSWER_ADDED:
       var ret = Object.assign({}, state)
@@ -188,6 +187,7 @@ function questions (state = {}, action) {
       return state
   }
 }
+
 function answers (state = {}, action) {
   switch (action.type) {
     case ActionTypes.QUESTION_LOADED:
@@ -203,8 +203,7 @@ function answers (state = {}, action) {
     case ActionTypes.SET_ANSWER_EXCLUSIVELY_CORRECT:
       var ret = Object.assign({}, state)
       for (var a in ret) {
-        if (ret[a].question === state[action.answer].question)
-          ret[a].is_correct = a === action.answer
+        if (ret[a].question === state[action.answer].question) { ret[a].is_correct = a === action.answer }
       }
       return ret
     case ActionTypes.SET_ANSWER_IS_CORRECT:
@@ -220,7 +219,7 @@ function answers (state = {}, action) {
   }
 }
 
-function currentQuestion(state = null, action) {
+function currentQuestion (state = null, action) {
   switch (action.type) {
     case ActionTypes.LESSON_LOADED:
     case ActionTypes.LESSON_AVAILABLE:
@@ -239,13 +238,13 @@ function currentQuestion(state = null, action) {
   }
 }
 
-function allCurricula(state = {}, action) {
+function allCurricula (state = {}, action) {
   if (action.type === ActionTypes.ALL_CURRICULA_LOADED) {
     return action.curricula
   } else return state
 }
 
-function filteredCurricula(state = {}, action) {
+function filteredCurricula (state = {}, action) {
   if (action.type === ActionTypes.RECENT_CURRICULA_LOADED) {
     return Object.assign({}, state, { recentCurricula: action.curricula })
   } else if (action.type === ActionTypes.NEW_CURRICULA_LOADED) {
@@ -255,32 +254,57 @@ function filteredCurricula(state = {}, action) {
   } else return state
 }
 
-function curriculum(state = {}, action) {
+function curriculum (state = {}, action) {
   if (action.type === ActionTypes.PUBLIC_CURRICULUM_LOADED) {
     return Object.assign({}, state, {
-      publicCurriculum: action.publicCurriculum,
+      publicCurriculum: action.publicCurriculum
     })
   }
   return state
 }
 
-function users(state = {}, action) {
+function users (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FOUND_USERS_LOADED:
       return Object.assign({}, state, { foundUsers: action.foundUsers })
     case ActionTypes.FOUND_USERS_REQUEST:
       return Object.assign({}, state, {
-        findUserRequest: action.findUserRequest,
+        findUserRequest: action.findUserRequest
       })
     default:
       return state
   }
 }
 
-function studioTabs(state = { tab: null }, action) {
+function studioTabs (state = { tab: null }, action) {
   switch (action.type) {
     case ActionTypes.STUDIO_TAB_CHANGED:
       return Object.assign({}, state, { [action.namespace]: action.tab })
+    default:
+      return state
+  }
+}
+
+const DEFAULT_NAVIGATION_STATE = {courses: [], units: [], modules: [], lessons: []}
+
+function courseNavigation (state = DEFAULT_NAVIGATION_STATE, action) {
+  switch (action.type) {
+    case ActionTypes.COURSE_NAVIGATION_COURSES_LOADED:
+      return Object.assign({}, state, {
+        courses: action.courses
+      })
+    case ActionTypes.COURSE_NAVIGATION_UNITS_LOADED:
+      return Object.assign({}, state, {
+        units: action.units
+      })
+    case ActionTypes.COURSE_NAVIGATION_MODULES_LOADED:
+      return Object.assign({}, state, {
+        modules: action.modules
+      })
+    case ActionTypes.COURSE_NAVIGATION_LESSONS_LOADED:
+      return Object.assign({}, state, {
+        lessons: action.lessons
+      })
     default:
       return state
   }
@@ -301,17 +325,18 @@ const combined = combineReducers({
   curriculum,
   studioTabs,
   users,
-  //router: routerReducer
+  courseNavigation
+  // router: routerReducer
 })
 
-export function editor(state = {}, action) {
+export function editor (state = {}, action) {
   var newState = combined(state, action)
   if (action.type === ActionTypes.PRESERVE_ANSWERS) {
     newState.preservedAnswers = Object.assign({}, state.preservedAnswers || {})
     var q = state.questions[action.question]
     var qpa = Object.assign(
       {},
-      newState.preservedAnswers[action.question] || {},
+      newState.preservedAnswers[action.question] || {}
     )
     qpa[q.answer_type] = q.answers
     newState.preservedAnswers[action.question] = qpa

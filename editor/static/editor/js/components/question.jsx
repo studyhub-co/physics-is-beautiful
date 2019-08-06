@@ -17,7 +17,7 @@ import { UnitConversionAnswerContainer } from '../containers/unit_conversion_ans
 import { VectorComponentsAnswerContainer } from '../containers/vector_components_answer'
 import { QuestionVectorsContainer } from '../containers/question_vectors'
 import { tagDelimiters } from '../utils'
-import ForkMenu from './fork_menu'
+import StructureItemMenu from './structure_item_menu'
 
 export const DEFAULT_MATHJAX_OPTIONS = {
   extensions: ['tex2jax.js'],
@@ -215,9 +215,9 @@ export class Question extends React.Component {
                 onClick={this.handleShowSolutionEditor}
               >Edit solution</a></div>
               <div><FaCodeBranch />
-                <ForkMenu question={{uuid: this.props.uuid}}>
+                <StructureItemMenu preSelectMenuItem={'fork'} question={{uuid: this.props.uuid}}>
                   Fork this problem
-                </ForkMenu>
+                </StructureItemMenu>
               </div>
             </div>
             <div className='row'>
