@@ -13,7 +13,7 @@ import {
   addLesson,
   addQuestion,
   loadNavigationCourses,
-  loadNavigationModule,
+  loadNavigationModule
 } from '../actions'
 import { Overlay } from './fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
@@ -26,6 +26,7 @@ class MenuToggle extends React.Component {
 
   handleClick (e) {
     e.preventDefault()
+    e.stopPropagation() // stop parents onClicks if exist
     this.props.onClick(e)
   }
 
@@ -44,6 +45,7 @@ class StructureItemMenu extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onForkSelect = this.onForkSelect.bind(this)
+    this.onLearnSelect = this.onLearnSelect.bind(this)
     this.onBack = this.onBack.bind(this)
     this.addElementToNewCurriculum = this.addElementToNewCurriculum.bind(this)
     this.onToggle = this.onToggle.bind(this)
@@ -84,13 +86,14 @@ class StructureItemMenu extends React.Component {
     }
   }
 
-  // onLearnSelect () {
-  //   if (this.state.baseName === 'question') { // open lesson view
-  //     window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_blank')
-  //   } else {
-  //     window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
-  //   }
-  // }
+  onLearnSelect (e, event) {
+    event.stopPropagation() // stop parents onClicks if exist
+    if (this.state.baseName === 'question') { // open lesson view
+      window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_blank')
+    } else {
+      window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+    }
+  }
 
   componentDidMount () {
     this.props.loadNavigationCourses() // load my courses
@@ -102,36 +105,37 @@ class StructureItemMenu extends React.Component {
   }
 
   onForkSelect (e, event) {
+    event.stopPropagation() // stop parents onClicks if exist
     this.setState({level: 2, menuOpen: true})
   }
 
   onSelectCurriculum (curriculum, e, event) {
+    event.stopPropagation()
     if (this.state.baseName === 'unit') {
       this.setState({showSpinnerOverlay: true})
       this.props.addUnit(curriculum.uuid, this.props.unit)
     } else { // move to next level
-      event.stopPropagation()
       this.setState({level: this.state.level + 1, selectedCurriculum: curriculum})
     }
   }
 
   onSelectUnit (unit, e, event) {
+    event.stopPropagation()
     if (this.state.baseName === 'module') {
       this.setState({showSpinnerOverlay: true})
       this.props.addModule(unit.uuid, this.props.module)
     } else { // move to next level
-      event.stopPropagation()
       this.setState({level: this.state.level + 1, selectedUnit: unit})
     }
   }
 
   onSelectModule (module, e, event) {
+    event.stopPropagation()
     if (this.state.baseName === 'lesson') {
       this.setState({showSpinnerOverlay: true})
       this.props.addLesson(module.uuid, this.props.lesson)
     } else { // move to next level
       this.props.loadNavigationModule(module.uuid)
-      event.stopPropagation()
       this.setState({level: this.state.level + 1, selectedModule: module})
     }
   }
@@ -185,11 +189,11 @@ class StructureItemMenu extends React.Component {
       menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
         {/* <Glyphicon glyph='export' /> */}
         <FaCodeBranch />
-        &nbsp;Fork to curriculum studio</Dropdown.Item>)
-      menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
-        {/* <Glyphicon glyph='share-alt' /> */}
-        <FaShareAlt />
-        &nbsp;{copyText}</Dropdown.Item>)
+        &nbsp;Fork</Dropdown.Item>)
+      // menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
+      //   {/* <Glyphicon glyph='share-alt' /> */}
+      //   <FaShareAlt />
+      //   &nbsp;{copyText}</Dropdown.Item>)
     }
 
     // Curricula list
@@ -339,7 +343,7 @@ const mapDispatchToProps = (dispatch) => {
     addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),
     addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value)),
     loadNavigationCourses: () => dispatch(loadNavigationCourses()),
-    loadNavigationModule: (uuid) => dispatch(loadNavigationModule(uuid)),
+    loadNavigationModule: (uuid) => dispatch(loadNavigationModule(uuid))
   }
 }
 
