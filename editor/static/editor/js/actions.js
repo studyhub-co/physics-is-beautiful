@@ -1097,6 +1097,20 @@ export function loadLessonIfNeeded (uuid) {
   }
 }
 
+export function loadLesson (uuid) {
+  return (dispatch, getState) => {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'lessons/' + uuid + '/',
+      success: function (data, status, jqXHR) {
+        dispatch(lessonLoaded(data))
+        if (data.questions.length > 0) {
+          dispatch(loadQuestionIfNeeded(data.questions[0])) // WHAT is this?
+        }
+      }})
+  }
+}
+
 export function renameLesson (uuid, newName) {
   return function (dispatch) {
     $.ajax({
@@ -1338,6 +1352,8 @@ export function addQuestion (lesson, question) {
       success: function (data, status, jqXHR) {
         if (question) {
           history.push('/studio/editor/lessons/' + lesson + '/')
+          // reload lesson
+          dispatch(loadLesson(lesson))
         } else {
           dispatch(
             {

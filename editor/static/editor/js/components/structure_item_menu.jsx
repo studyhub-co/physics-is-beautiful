@@ -13,7 +13,7 @@ import {
   addLesson,
   addQuestion,
   loadNavigationCourses,
-  loadNavigationModule
+  loadNavigationModule,
 } from '../actions'
 import { Overlay } from './fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
@@ -73,7 +73,7 @@ class StructureItemMenu extends React.Component {
 
     this.state = {
       level: level,
-      baseName: baseName,
+      baseName: baseName, // type of original item
       uuid: uuid,
       menuOpen: false,
       selectedCurriculum: null,
@@ -269,24 +269,26 @@ class StructureItemMenu extends React.Component {
     // lessons list
     if (this.state.level === 5) {
       menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
-      var lessonsUuidsList = this.props.modules[this.state.selectedModule.uuid].lessons
+      // var lessonsUuidsList = this.props.modules[this.state.selectedModule.uuid].lessons
+      // if (lessonsUuidsList) {
 
-      if (lessonsUuidsList) {
-        for (let x = 0; x < lessonsUuidsList.length; x++) {
-          var lesson = this.props.lessons[lessonsUuidsList[x]]
+      //   for (let x = 0; x < lessonsUuidsList.length; x++) {
 
-          menus.push(<Dropdown.Item
-            onSelect={this.onSelectLesson.bind(this, lesson)}
-            key={lesson.uuid}>
-            {lesson.image
-              ? <Image
-                style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}}
-                src={lesson.image} />
-              : null}
-            {lesson.name}
-          </Dropdown.Item>)
-        }
+      Object.keys(this.props.lessons).forEach((lessonUuid) => {
+        var lesson = this.props.lessons[lessonUuid]
+        menus.push(<Dropdown.Item
+          onSelect={this.onSelectLesson.bind(this, lesson)}
+          key={lesson.uuid}>
+          {lesson.image
+            ? <Image
+              style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}}
+              src={lesson.image} />
+            : null}
+          {lesson.name}
+        </Dropdown.Item>)
       }
+      )
+      // }
     }
 
     return (
@@ -337,7 +339,7 @@ const mapDispatchToProps = (dispatch) => {
     addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),
     addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value)),
     loadNavigationCourses: () => dispatch(loadNavigationCourses()),
-    loadNavigationModule: (uuid) => dispatch(loadNavigationModule(uuid))
+    loadNavigationModule: (uuid) => dispatch(loadNavigationModule(uuid)),
   }
 }
 

@@ -10,23 +10,6 @@ import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadMod
 import { Overlay } from '../fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
 
-// export class DropdownThumbnail extends Dropdown  {
-//   componentDidMount () {
-//     if (this.refs.inner) {
-//       this.refs.inner.handleClose = this.handleClose.bind(this)
-//     }
-//   }
-//
-//   handleClose (event, eventDetails) {
-//     if (!this.refs.inner.props.open) {
-//       return
-//     }
-//     if (typeof event.isPropagationStopped !== 'function' || !event.isPropagationStopped()) {
-//       this.refs.inner.toggleOpen(event, eventDetails)
-//     }
-//   }
-// }
-
 class MenuToggle extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -39,9 +22,6 @@ class MenuToggle extends React.Component {
   }
 
   render () {
-      {/*<Glyphicon glyph={'option-vertical'} onClick={ this.handleClick } style={{fontSize: '2rem'}}>*/}
-        {/*{this.props.children}*/}
-      {/*</Glyphicon>*/}
     return (
       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '1.5rem'}}>
         {this.props.children}
@@ -53,6 +33,8 @@ class MenuToggle extends React.Component {
 MenuToggle.propTypes = {
   onClick: PropTypes.func
 }
+
+// TODO replace action and redux store with courseNavigation
 
 class ThumbnailMenu extends React.Component {
   constructor (props, context) {

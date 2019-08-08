@@ -164,10 +164,6 @@ class LessonApp extends React.Component {
     this.props.dispatch(loadLessonIfNeeded(this.props.match.params.uuid))
   }
 
-  componentDidUpdate (prevProps, prevState, snapshot) {
-    this.props.dispatch(loadLessonIfNeeded(this.props.match.params.uuid))
-  }
-
   handleQuestionDroppedBefore (beforeQuestionUuid, question) {
     this.props.dispatch(moveQuestion(question.uuid, beforeQuestionUuid))
   }
@@ -206,7 +202,7 @@ class LessonApp extends React.Component {
               <a
                 onClick={this.handlePreviousClick}
                 className={'btn btn-light btn-arrow' + (this.props.previousQuestion ? '' : ' disabled')}>
-                {/*<span className='glyphicon glyphicon-backward' />*/}
+                {/* <span className='glyphicon glyphicon-backward' /> */}
                 <FaBackward />
               </a>
               {questions}
@@ -218,7 +214,7 @@ class LessonApp extends React.Component {
                   className='btn btn-light btn-add'
                   style={{cursor: 'pointer'}}
                 >
-                  {/*<span className='glyphicon glyphicon-plus-sign' />*/}
+                  {/* <span className='glyphicon glyphicon-plus-sign' /> */}
                   <FaPlusCircle />
                   <br />Add question
                 </a>
@@ -226,7 +222,7 @@ class LessonApp extends React.Component {
               <a
                 onClick={this.handleNextClick}
                 className={'btn btn-light btn-arrow' + (this.props.nextQuestion ? '' : ' disabled')}>
-                {/*<span className='glyphicon glyphicon-forward' />*/}
+                {/* <span className='glyphicon glyphicon-forward' /> */}
                 <FaForward />
               </a>
             </div>}
@@ -289,7 +285,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 export const store = createStore(connectRouter(history)(editor),
   composeEnhancers(
     applyMiddleware(thunkMiddleware, routerMiddleware(history))
-  ),
+  )
 ) // add  loggerMiddleware for logging
 
 // const store = createStore(editor,
