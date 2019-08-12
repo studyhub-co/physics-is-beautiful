@@ -36,7 +36,7 @@
     "redux-logger": "^3.0.6"
   },
   "dependencies": {
-    "@vermus/django-react-djeddit-client": "^1.0.40",
+    "@vermus/django-react-djeddit-client": "^1.0.41",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^6.4.1",
@@ -73,7 +73,7 @@
     "react-mathjax": "^1.0.1",
     "react-mathjax2": "0.0.2",
     "react-moment": "^0.7.9",
-    "react-pdf-js": "github:physics-is-beautiful/react-pdf-js#0.6",
+    "react-pdf-js": "github:physics-is-beautiful/react-pdf-js#0.7",
     "react-redux": "^5.0.7",
     "react-responsive": "^1.3.0",
     "react-router-dom": "^5.0.0",
