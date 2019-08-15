@@ -268,6 +268,7 @@ REPUTATION_STAGE_2_POINTS = 10
 
 
 DJEDDIT_USER_FIELDS = ['display_name', ]
+DJEDDIT_DISPLAY_USERNAME_FIELD = 'display_name'
 
 # We don't want to use Django generic relations due we lose the consistency and integrity of database
 # and count of sql queries will be increases
