@@ -6,14 +6,7 @@ import { push } from 'connected-react-router'
 import PropTypes from 'prop-types'
 
 class App extends React.Component {
-  // goToIndex () {
-  //   this.props.dispatch(push('/'))
-  // }
-
   render () {
-    // const homeClass = classNames({
-    //     active: this.props.location && this.props.location.pathname === '/'
-    // })
     return (
       <div className='app'>
         <div>
