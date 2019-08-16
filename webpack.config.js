@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = function (env) {
   const MODE = (env && 'NODE_ENV' in env) ? env.NODE_ENV : 'production'
@@ -36,7 +36,7 @@ module.exports = function (env) {
     optimization: {
       // runtimeChunk: 'single',
       splitChunks: {
-        minChunks: 2, // used at least in 2 modules
+        minChunks: 1, // used at least in 2 modules
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
@@ -44,7 +44,15 @@ module.exports = function (env) {
             chunks: 'all'
           }
         }
-      }
+      },
+      minimizer: [
+        new TerserPlugin({
+          parallel: true,
+          terserOptions: {
+            ecma: 6
+          }
+        })
+      ]
     },
 
     // additional loading on babel, enable if needed js debug mode
