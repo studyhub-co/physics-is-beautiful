@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var BundleTracker = require('webpack-bundle-tracker')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = function (env) {
   const MODE = (env && 'NODE_ENV' in env) ? env.NODE_ENV : 'production'
@@ -51,17 +51,20 @@ module.exports = function (env) {
     // devtool: 'source-map',
 
     plugins: MODE === 'production' ? [
-      new BundleTracker({filename: './webpack-stats.json'}),
+      new BundleTracker({path: '', filename: './webpack-stats.json'}),
       new webpack.DefinePlugin({
         'process.env': {
           'NODE_ENV': JSON.stringify(MODE)
         }
       }),
-      new UglifyJsPlugin({
-        // uglifyOptions: {
-        //   keep_fnames: true
-        // }
-      }), // minify everything
+      // webpack 4 have Uglify js in production by default
+      // new UglifyJsPlugin({
+      //   uglifyOptions: {
+      //     compress: {
+      //       inline: false
+      //     }
+      //   }
+      // }), // minify everything
       new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
     ]
       : [
