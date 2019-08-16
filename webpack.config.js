@@ -58,9 +58,9 @@ module.exports = function (env) {
         }
       }),
       new UglifyJsPlugin({
-        uglifyOptions: {
-          keep_fnames: true
-        }
+        // uglifyOptions: {
+        //   keep_fnames: true
+        // }
       }), // minify everything
       new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
     ]
@@ -86,7 +86,7 @@ module.exports = function (env) {
           //     'react'
           //   ]
           // }
-        },
+        }
         // {
         //   test: /\.jpe?g$|\.gif$|\.png$/,
         //   options: {

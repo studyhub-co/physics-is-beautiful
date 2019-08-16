@@ -4,7 +4,7 @@
   "description": "## Installation",
   "main": "index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack --config webpack.config.js --watch --env.NODE_ENV=development --mode development",
+    "dev": "rimraf ./static/bundles/* && ./node_modules/.bin/webpack --config webpack.config.js --watch --env.NODE_ENV=development --mode development",
     "clear": "rimraf ./static/js/bundles/*",
     "prod": "rimraf ./static/js/bundles/* && \"./node_modules/.bin/webpack\" --config webpack.config.js --env.NODE_ENV=production --mode production"
   },
@@ -44,7 +44,7 @@
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
-    "@vermus/django-react-djeddit-client": "^1.0.48",
+    "@vermus/django-react-djeddit-client": "^1.0.49",
     "axios": "^0.17.1",
     "connected-react-router": "^4.5.0",
     "copy-to-clipboard": "^3.0.8",
