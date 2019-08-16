@@ -57,7 +57,11 @@ module.exports = function (env) {
           'NODE_ENV': JSON.stringify(MODE)
         }
       }),
-      new UglifyJsPlugin(), // minify everything
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          keep_fnames: true
+        }
+      }), // minify everything
       new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
     ]
       : [
