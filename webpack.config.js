@@ -28,21 +28,30 @@ module.exports = function (env) {
     },
 
     output: {
-      // path: path.resolve('./static/bundles/'),
       path: path.resolve(outputPath),
       filename: '[name]-[hash].js',
-      chunkFilename: '[name]-chunk.js'
-      // publicPath: (env && 'NODE_ENV' in env && env.NODE_ENV === 'production') ? '/' : '/static/bundles/'
+      chunkFilename: '[name]-[hash].js'
     },
 
-    devtool: 'source-map',
+    optimization: {
+      // runtimeChunk: 'single',
+      splitChunks: {
+        minChunks: 2, // used at least in 2 modules
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all'
+          }
+        }
+      }
+    },
+
+    // additional loading on babel, enable if needed js debug mode
+    // devtool: 'source-map',
 
     plugins: MODE === 'production' ? [
       new BundleTracker({filename: './webpack-stats.json'}),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendors',
-        minChunks: 2 // used at least in 2 modules
-      }),
       new webpack.DefinePlugin({
         'process.env': {
           'NODE_ENV': JSON.stringify(MODE)
@@ -52,38 +61,35 @@ module.exports = function (env) {
       new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
     ]
       : [
-        new BundleTracker({filename: './webpack-stats.json'}),
-        new webpack.optimize.CommonsChunkPlugin({
-          name: 'vendors',
-          minChunks: 2 // used at least in 2 modules
-        })
+        new BundleTracker({filename: './webpack-stats.json'})
       ],
 
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.(js|jsx)$/,
           loader: 'babel-loader',
           exclude: [/node_modules/,
-            path.resolve(__dirname, '../django-react-djeddit/frontend/django-react-djeddit-client/dist/')],
-          query: {
-            presets: [
-              ['env', {
-                'targets': { 'chrome': 41 },
-                'uglify': true,
-                'useBuiltIns': false
-              }],
-              'react'
-            ]
-          }
+            path.resolve(__dirname, '../django-react-djeddit/frontend/django-react-djeddit-client/dist/')]
+          // moved to .babelrc conf
+          // query: {
+          //   presets: [
+          //     ['env', {
+          //       'targets': { 'chrome': 41 },
+          //       'uglify': true,
+          //       'useBuiltIns': false
+          //     }],
+          //     'react'
+          //   ]
+          // }
         },
-        {
-          test: /\.jpe?g$|\.gif$|\.png$/,
-          options: {
-            name: '[name].[ext]?[hash]'
-          },
-          loader: 'file-loader'
-        }
+        // {
+        //   test: /\.jpe?g$|\.gif$|\.png$/,
+        //   options: {
+        //     name: '[name].[ext]?[hash]'
+        //   },
+        //   loader: 'file-loader'
+        // }
       ]
     },
     resolve: {

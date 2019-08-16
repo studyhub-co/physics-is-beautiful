@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Modal, Popover, OverlayTrigger, Button, OverlayMixin, FormGroup,
-  ControlLabel, Checkbox, FormControl, Image, Container, Row, Col, Overlay } from 'react-bootstrap'
+import { Form, Image, Container, Row, Col, Overlay } from 'react-bootstrap'
 
 import { getAxios, API_PREFIX } from './utils'
 
@@ -26,7 +25,7 @@ function ChangePicturePopover (props) {
     >
       <h4>Change your picture</h4>
       <Container fluid style={{padding: 0}}>
-        {/*TODO create component frow avatar row*/}
+        {/* TODO create component frow avatar row */}
         { props.userAvatar ? <div><Row className={'pointer'} onClick={() => { props.selectAvatar('u') }}>
           <Col sm={3} md={3}>
             <Image
@@ -41,7 +40,7 @@ function ChangePicturePopover (props) {
             { props.selectedAvatar === 'u' ? <span className='glyphicon glyphicon-ok' /> : null }
           </Col>
         </Row><hr /></div> : null }
-        { props.googleAvatarUrl ? <div><Row className={'pointer'} onClick={() => { props.selectAvatar('g')}}>
+        { props.googleAvatarUrl ? <div><Row className={'pointer'} onClick={() => { props.selectAvatar('g') }}>
           <Col sm={3} md={3}>
             <Image
               responsive
@@ -131,37 +130,39 @@ export default class LoggedInForm extends React.Component {
               </Overlay>
             </Col>
             <Col sm={9} md={9}>
-              <FormGroup>
-                <ControlLabel>First Name</ControlLabel>
-                <FormControl
-                  type='text'
-                  value={this.props.firstName}
-                  placeholder='First'
-                  onChange={this.props.firstNameChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Last Name</ControlLabel>
-                <FormControl
-                  type='text'
-                  value={this.props.lastName}
-                  placeholder='Last'
-                  onChange={this.props.lastNameChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Display Name</ControlLabel>
-                <FormControl
-                  type='text'
-                  value={this.props.displayName}
-                  placeholder='Display'
-                  onChange={this.props.displayNameChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Sound Enabled</ControlLabel>
-                <Checkbox checked={this.props.soundEnabled} onChange={this.props.toggleSound}/>
-              </FormGroup>
+              <Form>
+                <Form.Group>
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type='text'
+                    value={this.props.firstName}
+                    placeholder='First'
+                    onChange={this.props.firstNameChange}
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type='text'
+                    value={this.props.lastName}
+                    placeholder='Last'
+                    onChange={this.props.lastNameChange}
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Display Name</Form.Label>
+                  <Form.Control
+                    type='text'
+                    value={this.props.displayName}
+                    placeholder='Display'
+                    onChange={this.props.displayNameChange}
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Sound Enabled</Form.Label>
+                  <Form.Check checked={this.props.soundEnabled} onChange={this.props.toggleSound}/>
+                </Form.Group>
+              </Form>
             </Col>
           </Row>
         </Container>

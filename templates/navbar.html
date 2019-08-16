@@ -135,16 +135,20 @@ mixpanel.init("9e791cd977fa18d9229af0e05ab31436");
                 {# TODO : replace with render #}
                         {% if user.is_authenticated %}
                             <li class="nav-item">
-                                <a id="notifications-inbox-app"
-                                   class="notifications-inbox nav-link">
+                                <span id="notifications-inbox-app"
+                                    class="notifications-inbox nav-link"
+                                    style="color: white;"
+                                >
                                     {% render_bundle 'notifications_inbox' %}
-                                </a>
+                                </span>
                             </li>
                             <li class="nav-item">
-                                <a id="trophy-inbox-app"
-                                   class="notifications-inbox nav-link">
+                                <span id="trophy-inbox-app"
+                                    class="notifications-inbox nav-link"
+                                    style="color: white;"
+                                >
                                     {% render_bundle 'trophy_inbox' %}
-                                </a>
+                                </span>
                             </li>
                              <li class="nav-item{% current_url_starts_with 'user-profile' pk=user.id %}">
                                  <a class="nav-link" href="{{ user.get_absolute_url }}" role="button" >
