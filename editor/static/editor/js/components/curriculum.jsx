@@ -2,6 +2,7 @@ import React from 'react'
 
 import { WithOutContext as ReactTags } from 'react-tag-input'
 
+
 import { FaTimes, FaExternalLinkAlt } from 'react-icons/fa'
 
 import {EditableThumbnail} from './thumbnail'

@@ -36,7 +36,7 @@ module.exports = function (env) {
     optimization: {
       // runtimeChunk: 'single',
       splitChunks: {
-        minChunks: 1, // used at least in 2 modules
+        minChunks: 2, // used at least in 2 modules
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
@@ -56,10 +56,13 @@ module.exports = function (env) {
     },
 
     // additional loading on babel, enable if needed js debug mode
-    // devtool: 'source-map',
+    devtool: 'source-map',
+
+    // enable to showw all messages from webpack
+    // stats: 'verbose',
 
     plugins: MODE === 'production' ? [
-      new BundleTracker({path: '', filename: './webpack-stats.json'}),
+      new BundleTracker({filename: './webpack-stats.json'}),
       new webpack.DefinePlugin({
         'process.env': {
           'NODE_ENV': JSON.stringify(MODE)

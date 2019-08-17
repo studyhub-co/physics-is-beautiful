@@ -125,5 +125,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(ResourceSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(ResourceSearchView)
 export { ResourceSearchView as ResourceSearchViewNotConnected }

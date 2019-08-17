@@ -6,5 +6,10 @@ module.exports = {
       'debug': true
     }],
     '@babel/react'
+  ],
+  'plugins': [
+    [
+      '@babel/plugin-proposal-class-properties'
+    ]
   ]
 }

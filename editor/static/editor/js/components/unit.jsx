@@ -4,6 +4,7 @@ import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 import { DragSource } from 'react-dnd'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 
+
 import {EditableLabel} from './label'
 import {EditableThumbnail} from './thumbnail'
 import {ModuleThumbnailContainer} from '../containers/module_thumbnail'

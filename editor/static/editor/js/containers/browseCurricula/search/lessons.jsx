@@ -128,5 +128,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(LessonsSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(LessonsSearchView)
 export { LessonsSearchView as LessonsSearchViewNotConnected }

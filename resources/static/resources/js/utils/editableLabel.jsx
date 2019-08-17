@@ -72,7 +72,7 @@ export class EditableLabel extends React.Component {
   }
 
   handleInputKeyUp (e) {
-    if (e.which === 27){
+    if (e.which === 27) {
       this.setState({
         editing: false
       })
@@ -91,22 +91,26 @@ export class EditableLabel extends React.Component {
   }
 
   componentDidMount () {
-    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
   componentDidUpdate () {
-    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS);
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
+    MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
 
   render () {
-    if (this.state.editing){
+    const InputWithRef = React.forwardRef((props, ref) => (
+      <input
+        type='text' value={this.state.value}
+        onChange={this.handleInputChange} onBlur={this.handleInputBlur}
+        ref={ref} onKeyUp={this.handleInputKeyUp} />
+    ))
+
+    if (this.state.editing) {
       return (
         <form onSubmit={this.handleFormSubmit} style={{display: 'inline'}}>
-          <input
-            type='text' value={this.state.value}
-            onChange={this.handleInputChange} onBlur={this.handleInputBlur}
-            ref={this.setInputRef} onKeyUp={this.handleInputKeyUp} />
+          <InputWithRef ref={this.setInputRef} />
         </form>)
     } else {
       return (
@@ -115,7 +119,7 @@ export class EditableLabel extends React.Component {
             this.props.defaultValue) ? '' : ' empty')}
           onClick={this.handleEditClick}>
           <span>{this.props.value || this.props.defaultValue}</span>
-          {/*<span className='glyphicon glyphicon-pencil' />*/}
+          {/* <span className='glyphicon glyphicon-pencil' /> */}
           <FaPencilAlt className={'glyphicon-pencil'} />
         </span>)
     }

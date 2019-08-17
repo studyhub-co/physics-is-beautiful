@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { DragDropContext } from 'react-dnd'
+// import DragDropContext from 'react-dnd/lib/cjs/DragDropContext.js'
+import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
 import PropTypes from 'prop-types'
@@ -34,7 +35,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(App))
+export default DndProvider(HTML5Backend)(connect(mapStateToProps)(App))
 export { App as AppNotConnected }
 
 // chrome 41 fix

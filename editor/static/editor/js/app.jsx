@@ -12,7 +12,8 @@ import { ConnectedRouter, routerMiddleware, connectRouter } from 'connected-reac
 
 // import { createLogger } from 'redux-logger'
 import { DockableDropTarget, DragItemTypes } from './dnd'
-import { DragDropContext } from 'react-dnd'
+// import DragDropContext from 'react-dnd/lib/cjs/DragDropContext.js'
+import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
 import { history } from './history'
@@ -276,8 +277,7 @@ class EditorRouter extends React.Component {
   }
 }
 
-EditorRouter = DragDropContext(HTML5Backend)(EditorRouter)
-
+// EditorRouter = DragDropContext(HTML5Backend)(EditorRouter)
 // const loggerMiddleware = createLogger()
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -292,4 +292,7 @@ export const store = createStore(connectRouter(history)(editor),
 //   applyMiddleware(thunkMiddleware, routerMiddleware(history)),
 //   ) // add  loggerMiddleware for logging
 
-ReactDOM.render(<Provider store={store}><EditorRouter /></Provider>, document.getElementById('editor-app'))
+// ReactDOM.render(<Provider store={store}><EditorRouter /></Provider>, document.getElementById('editor-app'))
+ReactDOM.render(<Provider store={store}>
+  <DndProvider backend={HTML5Backend}><EditorRouter/></DndProvider>
+</Provider>, document.getElementById('editor-app'))
