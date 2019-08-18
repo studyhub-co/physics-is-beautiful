@@ -100,8 +100,8 @@ node_modules/
 # webpack
 # webpack-stats.json
 
-# dev bundles
-static/bundles/
+# js bundles
+# static/js/bundles
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

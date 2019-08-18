@@ -76,7 +76,8 @@ module.exports = function (env) {
       //     }
       //   }
       // }), // minify everything
-      new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
+      // new webpack.optimize.AggressiveMergingPlugin() // Merge chunks
+      // new webpack.optimize.MergeDuplicateChunksPlugin()
     ]
       : [
         new BundleTracker({filename: './webpack-stats.json'})
