@@ -1,3 +1,9 @@
+# js bundles
+static/js/bundles
+
+
+static_dev/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -99,9 +105,6 @@ node_modules/
 
 # webpack
 # webpack-stats.json
-
-# js bundles
-# static/js/bundles
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

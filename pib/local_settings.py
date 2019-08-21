@@ -17,7 +17,7 @@ INSTALLED_APPS.append('debug_toolbar')
 MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 INTERNAL_IPS = ALLOWED_HOSTS
 
-# STATIC_ROOT = 'static/'
+STATIC_ROOT = 'static_dev/'
 MEDIA_ROOT = 'media/'
 
 # email

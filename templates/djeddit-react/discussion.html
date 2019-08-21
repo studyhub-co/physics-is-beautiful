@@ -1,8 +1,8 @@
 {% extends 'navbar.html' %}
-{% load render_bundle from webpack_loader %}
+{#{% load render_bundle from webpack_loader %}#}
 {% block body_content %}
     <div class="container section-sheet">
-        <div id="app">
+        <div>
             <script type="text/javascript">
               var DJEDDIT_CONFIG = {
                 API_PROFILE_URL: '/api/v1/profiles/me/',
@@ -13,7 +13,8 @@
                 ANON_AS_USER_OBJECT: true
               }
             </script>
-            {% render_bundle 'react_djeedit' %}
+{#            {% render_bundle 'react_djeddit' %}#}
+            {% include 'react_reddit_django_embed.html' %}
         </div>
     </div>
 {% endblock %}

@@ -118,7 +118,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'templates', 'allauth'),  # not sure that we need it
+            os.path.join(BASE_DIR, 'node_modules', '@vermus', 'django-react-djeddit-client', 'dist'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -247,9 +249,23 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
+STATICFILES_FINDERS = [
+    # by default
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'npm.finders.NpmFinder'
+    # 'piblib.finders.NpmFinder'
+]
+
+NPM_ROOT_PATH = BASE_DIR
+NPM_STATIC_FILES_PREFIX = os.path.join('js', 'npm')
+NPM_FILE_PATTERNS = {
+    os.path.join('@vermus', 'django-react-djeddit-client'): [os.path.join('dist', '*')]
+}
+
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
+        'BUNDLE_DIR_NAME': 'js/bundles/',
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
     }
 }
@@ -278,6 +294,8 @@ DJEDDIT_RELATED_FIELDS = {
     'textbook_solution': 'textbook_solution',
     'course_question': 'course_question'
 }
+
+DJEDDIT_STATIC_FILES_URL_PREFIX = 'js/npm/@vermus/django-react-djeddit-client/dist'
 
 SYSTEM_USER_ID = 2
 
