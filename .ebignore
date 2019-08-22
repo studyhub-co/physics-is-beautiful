@@ -1,5 +1,6 @@
 # This file should the same as .gitignore except js bundles dir
 # /static/js/bundles
+.git
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

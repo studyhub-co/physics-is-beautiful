@@ -59,7 +59,8 @@ class ProgressServiceBase(object):
 
     def unlock_lesson(self, lesson):
         lesson_progress = self.get_lesson_progress(lesson)
-        if lesson_progress.status != LessonProgress.Status.UNLOCKED:
+        if lesson_progress.status != LessonProgress.Status.UNLOCKED and \
+                lesson_progress.status != LessonProgress.Status.COMPLETE:  # no need to change status for completed
             lesson_progress.status = LessonProgress.Status.UNLOCKED
             self._dirty_lesson_progresses[str(lesson.pk)] = lesson_progress
         return lesson_progress
