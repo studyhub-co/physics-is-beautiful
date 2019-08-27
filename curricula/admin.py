@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.utils.html import escape, format_html
+from django.utils.safestring import mark_safe
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
@@ -19,21 +20,23 @@ admin.AdminSite.site_header = 'Physics is Beautiful Admin'
 admin.AdminSite.site_title = admin.AdminSite.site_header
 
 
+@mark_safe
 def link_to_obj(name):
     def link(obj):
         return format_html('<a href="{}">{}</a>', obj.get_admin_url(), str(obj))
         # return '<a href="{}">{}</a>'.format(obj.get_admin_url(), str(obj))
-    link.allow_tags = True  # depricated
+    # link.allow_tags = True  # depricated
     link.short_description = name
     return link
 
 
+@mark_safe
 def link_to_field(field_name):
     def link(obj):
         field = getattr(obj, field_name)
         return format_html('<a href="{}">{}</a>', field.get_admin_url(), escape(field))
         # return '<a href="{}">{}</a>'.format(field.get_admin_url(), escape(field))
-    link.allow_tags = True # depricated
+    # link.allow_tags = True  # depricated
     link.short_description = field_name
     return link
 
@@ -532,10 +535,11 @@ class LessonForm(forms.ModelForm):
 _backlink_to_lesson = link_to_field('lesson')
 
 
+@mark_safe
 def popup_question(name):
     def iframe(obj):
         return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">Question</a>'.format(obj.get_admin_url(), str(obj))
-    iframe.allow_tags = True
+    # iframe.allow_tags = True
     iframe.short_description = name
     return iframe
 
@@ -543,12 +547,13 @@ def popup_question(name):
 _popup_to_question = popup_question('Question')
 
 
+@mark_safe
 def toggle_answers_list(name):
     def link(obj):
         return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}"' \
                ' href="javascript:showQuestionIframe({}, \'{}\');">Toggle answer details</a>' \
                .format(obj.pk, obj.pk, obj.get_admin_url(), obj.pk, obj.get_admin_url())
-    link.allow_tags = True
+    # link.allow_tags = True
     link.short_description = name
     return link
 
