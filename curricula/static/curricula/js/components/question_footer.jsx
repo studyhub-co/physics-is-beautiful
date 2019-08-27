@@ -167,10 +167,11 @@ export class Footer extends React.Component {
             </div>
           </Row>
         </Container>
+        {/* TODO replace with bootrap-react */}
         <div className='progress-bottom-container'>
           <div className='progress'>
             <div
-              className='progress-bar progress-bar-info progress-bar-striped'
+              className='progress-bar progress-bar-info'
               id='progressbar'
               role='progressbar'
               aria-valuenow='0'
