@@ -71,6 +71,7 @@ class StructureItemMenu extends React.Component {
 
     if (props.preSelectMenuItem && props.preSelectMenuItem === 'fork') {
       level = 2
+      this.props.loadNavigationCourses() // load my courses
     }
 
     this.state = {
@@ -95,9 +96,9 @@ class StructureItemMenu extends React.Component {
     }
   }
 
-  componentDidMount () {
-    this.props.loadNavigationCourses() // load my courses
-  }
+  // componentDidMount () {
+  //   this.props.loadNavigationCourses() // load my courses
+  // }
 
   onBack (e, event) {
     event.stopPropagation()
@@ -154,6 +155,7 @@ class StructureItemMenu extends React.Component {
   onToggle (newValue, event, {source}) {
     if (newValue) {
       this.setState({menuOpen: true})
+      this.props.loadNavigationCourses()
     } else if (!event) {
       this.setState({menuOpen: false})
     }

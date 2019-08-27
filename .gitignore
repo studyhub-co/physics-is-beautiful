@@ -126,3 +126,5 @@ sh.exe.stackdump
 .vscode/settings.json
 /whoosh_index/
 pip-selfcheck.json
+
+webpack-stats.json

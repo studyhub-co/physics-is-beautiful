@@ -44,7 +44,7 @@ export class MQEditableLabel extends React.Component {
   setEditorRef (element) {
     this._editor = element
     if (this._editor == null && this._editorMQ) {
-      this._editorMQ.revert()
+      if (this._editorMQ.hasOwnProperty('revert')) { this._editorMQ.revert() }
       this.detachBlurHandlers()
     }
   }
@@ -97,11 +97,6 @@ export class MQEditableLabel extends React.Component {
     }
   }
 
-  setInputRef (ref) {
-    this._editorMQ = ref
-    if (ref && this.state.editing) { this.focus() }
-  }
-
   handleButtonClick (i, e) {
     e.preventDefault()
     e.stopPropagation()
@@ -116,6 +111,11 @@ export class MQEditableLabel extends React.Component {
 
   componentDidUpdate () {
     this.enableMQ()
+  }
+
+  componentDidCatch (error, errorInfo) {
+    // You can also log the error to an error reporting service
+    console.log(error, errorInfo)
   }
 
   render () {
