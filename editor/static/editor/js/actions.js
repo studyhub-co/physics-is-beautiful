@@ -213,7 +213,6 @@ export function deleteQuestionTag (uuid, tag) {
 
 export function addCurriculum (prototype) {
   return function (dispatch) {
-    //	dispatch(requestAddCurriculum());
     $.ajax({
       async: true,
       url: API_PREFIX + 'curricula/',
@@ -225,6 +224,11 @@ export function addCurriculum (prototype) {
       success: function (data, status, jqXHR) {
         dispatch(curriculumLoaded(data))
         history.push('/studio/editor/curricula/' + data.uuid + '/')
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        if (xhr.status === 403) {
+          document.location.href = '/accounts/login/?next=/browse/'
+        }
       }
     })
   }
@@ -237,6 +241,12 @@ export function addCurriculumToDashboard (uuid) {
       url: API_PREFIX + 'public/curricula/' + uuid + '/add_to_dashboard/',
       method: 'POST',
       success: function (data, status, jqXHR) {
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        if (xhr.status === 403) {
+          // TODO implement with pop up messages/alerts
+          alert('Please login or sign up to use your dashboard')
+        }
       }
     })
   }
@@ -694,6 +704,11 @@ export function addUnit (curriculumUuid, unit) {
         // reload expanded
         loadCurriculum(curriculumUuid, dispatch)
         history.push('/studio/editor/curricula/' + curriculumUuid + '/')
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        if (xhr.status === 403) {
+          document.location.href = '/accounts/login/?next=/browse/'
+        }
       }
     })
   }
@@ -801,6 +816,11 @@ export function addToNewCurriculum (type, value) {
             }
           }
         })
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        if (xhr.status === 403) {
+          document.location.href = '/accounts/login/?next=/browse/'
+        }
       }
     })
   }
