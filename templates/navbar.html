@@ -1,10 +1,9 @@
-<!doctype html class="async-hide">
-
 {% load render_bundle from webpack_loader %}
 {% load static %}
 {% load auth_tags %}
 {% load urls_tags %}
-
+<!doctype html>
+<html class="async-hide">
 <head>
     <!-- Anti-flicker snippet (recommended)  -->
     <style>.async-hide { opacity: 0 !important} </style>
@@ -252,3 +251,4 @@ mixpanel.init("9e791cd977fa18d9229af0e05ab31436");
 <script type="text/javascript" src="{% static 'js/pib-mobile-connect.js' %}"></script>
 
 </body>
+</html>
