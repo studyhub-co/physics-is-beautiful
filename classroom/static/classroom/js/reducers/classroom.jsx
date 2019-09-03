@@ -1,6 +1,7 @@
 import {
   CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
   CLASSROOM_RECEIVE_TEACHER_CLASSROOM, CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
+  CLASSROOM_JOIN_STUDENT_CLASSROOM_REQUEST,
   CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
   CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM
 } from '../constants'
@@ -27,6 +28,10 @@ export default function classroomReducer (state = initialState, action) {
     case CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS:
       return Object.assign({}, state, {
         classroomTeacherClassroom: action.payload.classroomTeacher
+      })
+    case CLASSROOM_JOIN_STUDENT_CLASSROOM_REQUEST:
+      return Object.assign({}, state, {
+        joinClassRoomRequest: action.payload.joinClassRoomRequest
       })
     case CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS:
       return Object.assign({}, state, {

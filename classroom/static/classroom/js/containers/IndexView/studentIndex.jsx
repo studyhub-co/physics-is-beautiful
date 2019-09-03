@@ -17,25 +17,26 @@ import * as tabsCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
 
 class StudentIndexView extends React.Component {
-
   componentWillMount () {
     this.props.classroomActions.classroomFetchStudentClassroomsList()
     this.props.tabActions.changeSelectedTab('student', 'tab', true)
   }
 
-  render () {
-    var baseUrl =  this.props.match.url.replace(/\/$/, '')
-    var studentClassroomUrl = baseUrl + '/:uuid/'
-
-    var joinUrl = baseUrl + '/new/join'
-
-    if (this.props.match.params && this.props.match.params.joinCode) {
+  componentWillReceiveProps (nextProps, nextContext) {
+    if (nextProps.match.params && nextProps.match.params.joinCode) {
       var joinCode = this.props.match.params.joinCode
       // join to classroom and redirect to classroom student view
       if (joinCode) {
         this.props.classroomActions.classroomJoinClassroom(joinCode)
       }
     }
+  }
+
+  render () {
+    var baseUrl = this.props.match.url.replace(/\/$/, '')
+    var joinUrl = baseUrl + '/new/join'
+
+    var studentClassroomUrl = baseUrl + '/:uuid/'
 
     return <div>
       {this.props.location.pathname === '/classroom/student/' && this.props.classroomStudentList
@@ -90,7 +91,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
-    classroomActions: bindActionCreators(classroomCreators, dispatch),
+    classroomActions: bindActionCreators(classroomCreators, dispatch)
   }
 }
 
