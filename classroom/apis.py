@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import transaction, IntegrityError
 
 from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField, Value, CharField
 
@@ -59,10 +59,14 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         # TODO limit max number of students in a classroom (999)
         # check that user not if classrom
-        if ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).count() == 0:
-            # add current user to classroom as student
-            ClassroomStudent.objects.create(student=request.user.profile, classroom=classroom)
-        else:
+        try:
+            with transaction.atomic():
+                if not ClassroomStudent.objects.filter(student=request.user.profile, classroom=classroom).exists():
+                    # add current user to classroom as student
+                    ClassroomStudent.objects.create(student=request.user.profile, classroom=classroom)
+                else:
+                    raise NotFound()
+        except IntegrityError:  # postgres combine atomic transactions
             raise NotFound()
 
         serializer = ClassroomSerializer(classroom)
@@ -197,7 +201,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             ap = assignment.assignment_progress.get(student__user=request.user)
             completed_lessons = ap.completed_lessons.all()
             for lesson in assignment.lessons.all():
-                if completed_lessons.count() == 0:
+                if not completed_lessons.exist():
                     first_uncompleted_lesson = lesson
                 else:
                     if lesson not in completed_lessons:
