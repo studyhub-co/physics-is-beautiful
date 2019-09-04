@@ -1,11 +1,12 @@
 import React from 'react'
 import {Prompt, Link} from 'react-router-dom'
-import { FaChevronLeft } from 'react-icons/fa'
+import {FaChevronLeft} from 'react-icons/fa'
 
 import {Section} from '../navigation'
 import {Question} from '../components/question'
 import {Footer} from '../components/question_footer'
 import {Col, Container, Row} from 'react-bootstrap'
+import AdSense from 'react-adsense'
 
 /* global playAudio */
 
@@ -18,17 +19,21 @@ class LessonComplete extends React.Component {
   render () {
     return (
       <div className='question' id='ajaxDiv'>
-        <div style={{height: '15px'}} />
+        <div style={{height: '15px'}}/>
         <div className='jumbotron'>
           <h2 className='animated rubberBand' style={{color: '#33A', textAlign: 'center'}}>
-              You rock! Lesson complete!
+            You rock! Lesson complete!
           </h2>
         </div>
         <a className='btn btn-primary btn-lg btn-block' onClick={
           () => window.history.back()} href='javascript:void(0)'>
 
-            Proceed to next level
+          Proceed to next level
         </a>
+        <AdSense.Google
+          client='ca-pub-1780955227395785'
+          slot='4334626488'
+        />
       </div>
     )
   }
