@@ -49,7 +49,7 @@ class StudentIndexView extends React.Component {
         }, this)}
         </Container> : null }
       <Route exact path={studentClassroomUrl} component={StudentClassroomView} />
-      {/* TODO I think iti is better to move  join URL to routes.jsx */}
+      {/* TODO it is better to move join URL to routes.jsx */}
       <Route path={joinUrl} component={JoinClassroomView} />
       {/* if classrooms list and not empty */}
       {this.props.classroomStudentList && this.props.classroomStudentList.length > 0

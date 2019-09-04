@@ -80,7 +80,7 @@ class StudentClassroomProfileView extends React.Component {
             </Col>
           </Row>
           <Row className={className}>
-            <Col sm={1} md={1}>
+            <Col sm={2} md={1} xs={2}>
               {this.props.studentClassroomProfile && this.props.studentClassroomProfile.avatar_url
                 ? <Image
                   fluid
@@ -88,32 +88,24 @@ class StudentClassroomProfileView extends React.Component {
                   roundedCircle />
                 : null}
             </Col>
-            <Col sm={8} md={8}>
+            <Col sm={6} md={7} xs={8}>
               { this.props.studentClassroomProfile ? <div>
                 <div className={'title'}>{this.props.studentClassroomProfile.display_name}</div>
                 <div className={'deep-gray-text'}>{this.props.studentClassroomProfile.username}</div></div>
                 : null }
             </Col>
-            <Col sm={3} md={3} className={'vcenter'}>
-              <div className={'gray-text'}>
+            <Col sm={5} md={4} xs={12} className={'vcenter'}>
+              <div style={{whiteSpace: 'nowrap', marginTop: '2rem'}}>
                 <span className={'green-completed-box'}>
                   <FaCheck title={'Completed'} /> &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}
-                  {/*<span title={'Completed'} className='glyphicon glyphicon-ok'>*/}
-                    {/*&nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}*/}
-                  {/*</span>*/}
                 </span>
                 <span className={'yellow-delayed-box'}>
                   <FaClock title={'Completed late'} />
                   &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
-                  {/*<span title={'Completed late'} className='glyphicon glyphicon-time'>*/}
-                    {/*&nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}*/}
-                  {/*</span>*/}
                 </span>
                 <span className={'red-missed-box'}>
-                  {/*<span title={'Missed'} className='glyphicon glyphicon-remove'>*/}
                   <FaTimes title={'Missed'} />
                   &nbsp;{ this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_missed_assignments : '' }
-                  {/*</span>*/}
                 </span>
               </div>
             </Col>
@@ -121,13 +113,13 @@ class StudentClassroomProfileView extends React.Component {
         </Container>
         <Container fluid>
           <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-            <Col sm={6} md={6}>
+            <Col sm={5} md={5}>
               <span className={'gray-text'}>Assignment</span>
             </Col>
             <Col sm={2} md={2} className={'vcenter'}>
               Assigned on
             </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
+            <Col sm={3} md={3} className={'vcenter'}>
               Status
             </Col>
             <Col sm={2} md={2} className={'vcenter'}>

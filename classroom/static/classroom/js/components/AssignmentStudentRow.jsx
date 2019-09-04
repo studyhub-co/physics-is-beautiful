@@ -17,11 +17,24 @@ class AssignmentStudentRow extends React.Component {
   }
 
   onLessonClick (lesson) {
-    if (lesson.lesson_type === 'GAME') {
-      window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
-    } else {
-      window.location.href = '/curriculum/lessons/' + lesson.uuid
-    }
+    // if (lesson.lesson_type === 'GAME') {
+    //   window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
+    // } else {
+    //   window.location.href = '/curriculum/lessons/' + lesson.uuid
+    // }
+
+    // Need to save start_on date of Assignment Proccess
+    this.props.assignmentActions.assignmentFetchFirstUncompletedLesson(
+      this.props.classroomUuid,
+      this.props.assignment.uuid,
+      () => {
+        if (lesson.lesson_type === 'GAME') {
+          window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
+        } else {
+          window.location.href = '/curriculum/lessons/' + lesson.uuid
+        }
+      }
+    )
   }
 
   onShowLessonsClick () {
@@ -87,7 +100,7 @@ class AssignmentStudentRow extends React.Component {
               { this.props.assignment.completed_on || this.props.assignment.delayed_on // TODO check start date
                 ? <div className={'blue-title'}>{this.props.assignment.name}</div>
                 : <div
-                  title={'Perfom the assignment'}
+                  title={'Perform the assignment'}
                   className={'blue-title pointer'}
                   onClick={this.props.onTitleClick}>
                   {this.props.assignment.name}
@@ -120,7 +133,7 @@ class AssignmentStudentRow extends React.Component {
             </Col>
             <Col sm={2} md={2} className={'vcenter'}>
               <div className={textColorClassName}>
-                {this.props.assignment.count_completed_lessons} / {this.props.assignment.count_lessons}
+                {this.props.assignment.count_completed_lessons} of {this.props.assignment.count_lessons} completed
               </div>
             </Col>
             <Col sm={1} md={1} className={'vcenter'}>
@@ -175,10 +188,11 @@ AssignmentStudentRow.propTypes = {
   assignment: PropTypes.object.isRequired,
   onTitleClick: PropTypes.func,
   // assignmentsStudentLessonsList: PropTypes.object,
-  classrroom_uuid: PropTypes.string.isRequired,
+  classroomUuid: PropTypes.string.isRequired,
   assignmentActions: PropTypes.shape({
-    assignmentFetchStudentLessonsList: PropTypes.func.isRequired
-  }).isRequired
+    assignmentFetchStudentLessonsList: PropTypes.func.isRequired,
+    assignmentFetchFirstUncompletedLesson: PropTypes.func.isRequired
+  }).isRequired,
 }
 
 const mapStateToProps = (state, ownProps) => {

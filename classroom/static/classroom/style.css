@@ -96,6 +96,13 @@ html {
     font-size: 16px;
 }
 
+@media all and (max-width: 1280px) {
+    .classroom {
+        font-size: 12px;
+    }
+}
+
+
 .classrroom button:focus {
     outline: 0;
 }
@@ -125,15 +132,15 @@ html {
 }
 
 .classroom .title {
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .classroom .small-text {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .classroom .blue-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: rgb(8, 209, 255);
 }
 

@@ -39,7 +39,10 @@ class StudentProfileSerializer(PublicProfileSerializer):
         fields = PublicProfileSerializer.Meta.fields + ['counts']
 
 
-class StudentAssignmentSerializer(PublicProfileSerializer):
+class AssignmentStudentsSerializer(PublicProfileSerializer):
+    """
+    Student Profiles For Assignment serializer
+    """
     completed_on = serializers.SerializerMethodField()
     delayed_on = serializers.SerializerMethodField()
     start_on = serializers.SerializerMethodField()
@@ -140,7 +143,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     count_students_missed_assingment = serializers.SerializerMethodField(read_only=True)
     count_students_delayed_assingment = serializers.SerializerMethodField(read_only=True)
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
-    assigned_on = serializers.SerializerMethodField(read_only=True)
+    # assigned_on = serializers.SerializerMethodField(read_only=True)
 
     # current user (request.user) completed lessons
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
@@ -212,12 +215,12 @@ class AssignmentListSerializer(serializers.ModelSerializer):
         else:
             return 0
 
-    # assigned_on to user
-    def get_assigned_on(self, obj):
-        if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
-            return obj.assignment_student_progress[0].start_on  # start date of assignment
-        else:
-            return None
+    # # assigned_on to user
+    # def get_assigned_on(self, obj):
+    #     if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
+    #         return obj.assignment_student_progress[0].start_on  # start date of assignment
+    #     else:
+    #         return None
 
     def get_completed_on(self, obj):
         if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
@@ -258,14 +261,15 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
         with transaction.atomic():
             instance.lessons.clear()
-            instance.lessons = lessons
+            instance.lessons.set(lessons)
             instance.save()
         return instance
 
     class Meta:
         model = Assignment
         fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on', 'classroom_uuid', 'lessons_uuids',
-                  'count_lessons', 'completed_on', 'delayed_on', 'assigned_on',
+                  'count_lessons', 'completed_on', 'delayed_on',
+                  # 'assigned_on',
                   'count_students_completed_assingment', 'count_students_missed_assingment',
                   'count_students_delayed_assingment',
                   'count_completed_lessons', 'image', 'send_email']
@@ -279,4 +283,29 @@ class AssignmentSerializer(AssignmentListSerializer):
         fields = AssignmentListSerializer.Meta.fields + ['lessons']
 
 
+class StudentAssignmentsSerializer(AssignmentListSerializer):
+    """
+    Assignments For Student Profile serializer
+    """
+    completed_on = serializers.SerializerMethodField()
+    delayed_on = serializers.SerializerMethodField()
+    start_on = serializers.SerializerMethodField()
+
+    def get_completed_on(self, obj):
+        return obj.assignment_student_progress[0].completed_on\
+            if hasattr(obj, 'assignment_student_progress') else None
+
+    def get_delayed_on(self, obj):
+        return obj.assignment_student_progress[0].delayed_on\
+            if hasattr(obj, 'assignment_student_progress') else None
+
+    # !!! Warning: we ovverride start_on date of Assignment with start_on date os user Assignment proccess
+    def get_start_on(self, obj):
+        return obj.assignment_student_progress[0].start_on\
+            if hasattr(obj, 'assignment_student_progress') else None
+
+    class Meta:
+        model = AssignmentListSerializer.Meta.model
+        fields = AssignmentListSerializer.Meta.fields + ['completed_on', 'delayed_on', 'start_on']
+        # fields = PublicProfileSerializer.Meta.fields + ['completed_on', 'delayed_on', 'start_on']
 

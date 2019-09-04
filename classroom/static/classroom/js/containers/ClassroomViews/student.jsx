@@ -31,18 +31,28 @@ class StudentClassroomView extends React.Component {
 
   onAssignmentTitleClick (assignment) {
     // redirect to first uncompleted lesson
-    this.props.assignmentActions.assignmentFetchFirstUncompletedLesson(this.props.match.params['uuid'], assignment.uuid)
+    this.props.assignmentActions.assignmentFetchFirstUncompletedLesson(
+      this.props.match.params['uuid'],
+      assignment.uuid,
+      (uncompletedLesson) => {
+        if (uncompletedLesson.lesson_type === 'GAME') {
+          window.location.href = '/curriculum/games/' + uncompletedLesson.uuid + '/' + uncompletedLesson.game_slug
+        } else {
+          window.location.href = '/curriculum/lessons/' + uncompletedLesson.uuid
+        }
+      }
+    )
   }
 
-  componentWillReceiveProps (props) {
-    if (!this.props.uncompletedLesson && props.uncompletedLesson) {
-      if (props.uncompletedLesson.lesson_type === 'GAME') {
-        window.location.href = '/curriculum/games/' + props.uncompletedLesson.uuid + '/' + props.uncompletedLesson.game_slug
-      } else {
-        window.location.href = '/curriculum/lessons/' + props.uncompletedLesson.uuid
-      }
-    }
-  }
+  // componentWillReceiveProps (props) {
+  //   if (!this.props.uncompletedLesson && props.uncompletedLesson) {
+  //     if (props.uncompletedLesson.lesson_type === 'GAME') {
+  //       window.location.href = '/curriculum/games/' + props.uncompletedLesson.uuid + '/' + props.uncompletedLesson.game_slug
+  //     } else {
+  //       window.location.href = '/curriculum/lessons/' + props.uncompletedLesson.uuid
+  //     }
+  //   }
+  // }
 
   leaveClassroom () {
     this.props.classroomActions.classroomLeaveStudentClassroom(this.props.classroomStudent)
@@ -82,7 +92,7 @@ class StudentClassroomView extends React.Component {
               ? this.props.assignmentsList.map(function (assignment, i) {
                 return <AssignmentStudentRow
                   // isTeacher={Boolean(false)}
-                  classrroom_uuid={this.props.match.params['uuid']}
+                  classroomUuid={this.props.match.params['uuid']}
                   assignment={assignment}
                   onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
                   key={i} />
@@ -109,15 +119,15 @@ StudentClassroomView.propTypes = {
     assignmentFetchFirstUncompletedLesson: PropTypes.func.isRequired
   }).isRequired,
   // classroom: PropTypes.object,
-  assignmentsList: PropTypes.array,
-  uncompletedLesson: PropTypes.object
+  assignmentsList: PropTypes.array
+  // uncompletedLesson: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
     classroomStudent: state.classroom.classroomStudentClassroom,
-    assignmentsList: state.assignment.assignmentsList,
-    uncompletedLesson: state.assignment.uncompletedLesson
+    assignmentsList: state.assignment.assignmentsList
+    // uncompletedLesson: state.assignment.uncompletedLesson
   }
 }
 

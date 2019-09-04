@@ -1,12 +1,12 @@
 from django.db import transaction, IntegrityError
 
-from django.db.models import Q, F, Count, Prefetch, Case, When, Sum, IntegerField, Value, CharField
+from django.db.models import Q, F, Count, Prefetch, Case, When, IntegerField, Value, CharField
 
 from django.utils import timezone
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAcceptable
 
@@ -19,7 +19,7 @@ from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 from .models import Classroom, Assignment, ClassroomStudent, AssignmentProgress
 from .permissions import IsClassroomTeacherOrStudentReadonly, IsAssignmentClassroomTeacherOrStudentReadonly
 from .serializers import ClassroomSerializer, AssignmentSerializer, AssignmentListSerializer, ClassroomListSerializer,\
-    StudentProfileSerializer, StudentAssignmentSerializer
+    StudentProfileSerializer, AssignmentStudentsSerializer, StudentAssignmentsSerializer
 
 
 class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
@@ -201,7 +201,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             ap = assignment.assignment_progress.get(student__user=request.user)
             completed_lessons = ap.completed_lessons.all()
             for lesson in assignment.lessons.all():
-                if not completed_lessons.exist():
+                if not completed_lessons.exists():
                     first_uncompleted_lesson = lesson
                 else:
                     if lesson not in completed_lessons:
@@ -334,8 +334,6 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         serializer.save()
 
-
-
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def students(self, request, classroom_uuid, uuid):
         # /api/v1/classroom/classroomuuid/assignment/uuid/students/
@@ -351,7 +349,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         students_list = qs.filter(as_students_assignment_progress__in=assignment.assignment_progress.all())
 
-        serializer = StudentAssignmentSerializer(students_list, many=True)
+        serializer = AssignmentStudentsSerializer(students_list, many=True)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
@@ -492,7 +490,7 @@ class StudentProfileViewSet(GenericViewSet):
 
         # TODO add support for pagination
 
-        serializer = AssignmentListSerializer(assignments, many=True)
+        serializer = StudentAssignmentsSerializer(assignments, many=True)
         return Response(serializer.data)
 
     def destroy(self, request, classroom_uuid, *args, **kwargs):
