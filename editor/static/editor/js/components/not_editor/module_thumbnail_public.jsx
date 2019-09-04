@@ -18,11 +18,11 @@ export class ModuleThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open('/curriculum/modules/' + this.props.module.uuid + '/', '_blank')
+    window.open('/curriculum/modules/' + this.props.module.uuid + '/', '_self')
   }
 
   onTitleClick () {
-    window.open('/curriculum/modules/' + this.props.module.uuid + '/', '_blank')
+    window.open('/curriculum/modules/' + this.props.module.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {

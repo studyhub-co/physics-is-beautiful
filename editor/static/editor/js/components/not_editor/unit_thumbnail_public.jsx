@@ -15,7 +15,7 @@ export class UnitThumbnailPublic extends React.Component {
   }
 
   onTitleClick () {
-    window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
+    window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_self')
   }
 
   render () {

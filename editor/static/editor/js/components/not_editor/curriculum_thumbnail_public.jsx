@@ -55,7 +55,7 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_self')
   }
 
   onViewProfileSelect () {
@@ -63,7 +63,7 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   onTitleClick () {
-    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {
@@ -153,7 +153,7 @@ export class CurriculumThumbnailPublic extends React.Component {
             {this.props.curriculum.name}
           </div>
           <div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            <a href={this.props.curriculum.author.get_absolute_url} target={'_blank'}>
+            <a href={this.props.curriculum.author.get_absolute_url}>
               {this.props.curriculum.author.display_name}
             </a> ∙ {this.props.curriculum.count_lessons } lessons ∙ { this.props.curriculum.number_of_learners } learners
           </div>

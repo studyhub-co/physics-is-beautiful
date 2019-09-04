@@ -90,9 +90,9 @@ class StructureItemMenu extends React.Component {
   onLearnSelect (e, event) {
     event.stopPropagation() // stop parents onClicks if exist
     if (this.state.baseName === 'question') { // open lesson view
-      window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_blank')
+      window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
     } else {
-      window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+      window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
     }
   }
 

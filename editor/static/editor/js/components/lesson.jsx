@@ -76,7 +76,6 @@ export class Lesson extends React.Component {
         )}
         <a
           href={'/curriculum/lessons/' + this.props.uuid}
-          target='_blank'
           className='btn btn-light'
         >
           <FaExternalLinkAlt /> Open student view

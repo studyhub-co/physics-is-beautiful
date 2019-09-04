@@ -78,7 +78,7 @@ export class Curriculum extends React.Component {
           {nameLabel}
           {/* <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/> */}
           <FaTimes onClick={this.handleDeleteClick} />
-          <a href={'/curriculum/' + this.props.uuid + '/'} className='btn btn-light' target='_blank'>
+          <a href={'/curriculum/' + this.props.uuid + '/'} className='btn btn-light'>
             {/* <span className="glyphicon glyphicon-new-window" /> Open student view */}
             <FaExternalLinkAlt /> Open student view
           </a>

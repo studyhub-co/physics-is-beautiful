@@ -37,11 +37,11 @@ export class LessonThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_blank')
+    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
   onTitleClick () {
-    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_blank')
+    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {
