@@ -295,16 +295,16 @@ class TeacherClassroomView extends React.Component {
               {this.props.assignmentsList && isExactUrl
                 ? <Container fluid>
                   <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-                    <Col sm={5} md={5}>
+                    <Col sm={5} md={5} xs={5}>
                       <span className={'gray-text'}>Active assignments</span>
                     </Col>
-                    <Col sm={2} md={2} className={'vcenter'}>
+                    <Col sm={2} md={2} xs={2} className={'vcenter'}>
                         Start on
                     </Col>
-                    <Col sm={2} md={2} className={'vcenter'}>
+                    <Col sm={2} md={2} xs={2} className={'vcenter'}>
                       Due on
                     </Col>
-                    <Col sm={2} md={2} className={'vcenter'}>
+                    <Col sm={2} md={2} xs={6} className={'vcenter'}>
                       {/* <span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' /> */}
                       <FaCheck title={'Completed'} style={{padding: '0 1rem'}} />
                       {/* <span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' /> */}
@@ -312,7 +312,7 @@ class TeacherClassroomView extends React.Component {
                       {/* <span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' /> */}
                       <FaTimes title={'Missed'} style={{padding: '0 1rem'}} />
                     </Col>
-                    <Col sm={1} md={1} />
+                    <Col sm={1} md={1} xs={6} />
                   </Row>
                   <hr style={{margin: '0'}} />
                   { this.props.assignmentsList.map(function (assignment, i) {

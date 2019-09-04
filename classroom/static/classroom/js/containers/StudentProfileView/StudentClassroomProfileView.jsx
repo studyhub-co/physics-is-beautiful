@@ -113,16 +113,16 @@ class StudentClassroomProfileView extends React.Component {
         </Container>
         <Container fluid>
           <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-            <Col sm={5} md={5}>
+            <Col sm={5} md={5} xs={5}>
               <span className={'gray-text'}>Assignment</span>
             </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
+            <Col sm={2} md={2} xs={2} className={'vcenter'}>
               Assigned on
             </Col>
-            <Col sm={3} md={3} className={'vcenter'}>
+            <Col sm={3} md={3} xs={3} className={'vcenter'}>
               Status
             </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
+            <Col sm={2} md={2} xs={2} className={'vcenter'}>
               Completed on
             </Col>
           </Row>

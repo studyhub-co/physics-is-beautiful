@@ -47,7 +47,7 @@ export class TeacherStudentAssignmentRow extends React.Component {
 
     return (
       <Row className={className}>
-        <Col sm={1} md={1}>
+        <Col sm={1} md={1} xs={12}>
           <div className={'gray-text small-text'}>
             {this.props.assignment && this.props.assignment.image
               ? <Image
@@ -57,17 +57,17 @@ export class TeacherStudentAssignmentRow extends React.Component {
               : null}
           </div>
         </Col>
-        <Col sm={4} md={4}>
+        <Col sm={4} md={4} xs={4}>
           { !this.props.isTeacher && textColorClassName !== 'gray-text' // TODO check start date
             ? <div className={'blue-title'}>{this.props.assignment.name}</div>
             : <div className={'blue-title pointer'} onClick={this.props.onTitleClick}>{this.props.assignment.name}</div>
           }
           <div className={'gray-text small-text'}>{this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}</div>
         </Col>
-        <Col sm={2} md={2} className={'vcenter'}>
+        <Col sm={2} md={2} xs={2} className={'vcenter'}>
           { assignedOnDate ? <div> { assignedOnDate } </div> : null }
         </Col>
-        <Col sm={3} md={3} className={'vcenter'}>
+        <Col sm={3} md={3} xs={3} className={'vcenter'}>
           { this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'green-completed-box'} style={{whiteSpace: 'nowrap'}}>
@@ -92,7 +92,7 @@ export class TeacherStudentAssignmentRow extends React.Component {
           { !this.props.assignment.completed_on && new Date(this.props.assignment.due_on) > new Date()
             ? <span>{this.props.assignment.start_on ? <span>Started</span> : <span>Not started</span>}</span> : null}
         </Col>
-        <Col sm={2} md={2} className={'vcenter'}>
+        <Col sm={2} md={2} xs={2} className={'vcenter'}>
           { completedOnDate ? <div> { completedOnDate } </div>
             : <div>Completed {this.props.assignment.count_completed_lessons} of {this.props.assignment.count_lessons}
             </div> }

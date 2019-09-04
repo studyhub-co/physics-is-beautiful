@@ -13,7 +13,7 @@ export class TeacherStudentCard extends React.Component {
     return (
       <Container fluid style={{float: 'left', padding: '0'}}>
         <Row className={className} onClick={() => this.props.onStudentClick()}>
-          <Col sm={2} md={2}>
+          <Col sm={2} md={2} xs={2}>
             {this.props.student.avatar_url
               ? <Image
                 fluid
@@ -21,10 +21,10 @@ export class TeacherStudentCard extends React.Component {
                 roundedCircle />
               : null}
           </Col>
-          <Col sm={4} md={4}>
+          <Col sm={4} md={4} xs={4}>
             <span className={'title'}>{this.props.student.display_name}</span>
           </Col>
-          <Col sm={6} md={6}>
+          <Col sm={6} md={6} xs={6}>
             <div className={'gray-text'}>
               <span className={'green-completed-box'}>
                 <FaCheck title={'Completed'} />&nbsp;{this.props.student.counts.num_completed_assignments}
