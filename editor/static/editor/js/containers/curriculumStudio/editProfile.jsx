@@ -155,7 +155,7 @@ class EditCurriculumProfileView extends React.Component {
   }
 
   startCurriculum () {
-    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_self')
   }
 
   // ==== description

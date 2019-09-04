@@ -29,7 +29,7 @@ class CurriculumProfileView extends React.Component {
   }
 
   startCurriculum () {
-    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_self')
   }
 
   onForkSelect (e) {

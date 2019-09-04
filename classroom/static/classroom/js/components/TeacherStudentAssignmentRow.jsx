@@ -72,20 +72,20 @@ export class TeacherStudentAssignmentRow extends React.Component {
             ? <div className={textColorClassName}>
               <span className={'green-completed-box'} style={{whiteSpace: 'nowrap'}}>
                 <FaCheckCircle /> &nbsp;Completed
-                {/*<span className='glyphicon glyphicon-ok-sign' />&nbsp;Completed*/}
+                {/* <span className='glyphicon glyphicon-ok-sign' />&nbsp;Completed */}
               </span>
             </div> : null }
           { this.props.assignment.delayed_on && !this.props.assignment.completed_on
             ? <div className={textColorClassName}>
               <span className={'yellow-delayed-box'} style={{whiteSpace: 'nowrap'}}>
-                {/*<span className='glyphicon glyphicon-time' />&nbsp;Completed late*/}
+                {/* <span className='glyphicon glyphicon-time' />&nbsp;Completed late */}
                 <FaClock title={'Completed late'} />&nbsp;Completed late
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && !this.props.assignment.delayed_on && new Date(this.props.assignment.due_on) < new Date()
             ? <div className={textColorClassName} style={{whiteSpace: 'nowrap'}}>
               <span className={'red-missed-box'}>
-                {/*<span className='glyphicon glyphicon-remove' />&nbsp;Missed*/}
+                {/* <span className='glyphicon glyphicon-remove' />&nbsp;Missed */}
                 <FaTimes title={'Missed'} />&nbsp;Missed
               </span>
             </div> : null }
@@ -93,7 +93,9 @@ export class TeacherStudentAssignmentRow extends React.Component {
             ? <span>{this.props.assignment.start_on ? <span>Started</span> : <span>Not started</span>}</span> : null}
         </Col>
         <Col sm={2} md={2} className={'vcenter'}>
-          { completedOnDate ? <div> { completedOnDate } </div> : null }
+          { completedOnDate ? <div> { completedOnDate } </div>
+            : <div>Completed {this.props.assignment.count_completed_lessons} of {this.props.assignment.count_lessons}
+            </div> }
         </Col>
       </Row>
     )

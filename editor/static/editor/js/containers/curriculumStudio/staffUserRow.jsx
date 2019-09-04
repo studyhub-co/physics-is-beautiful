@@ -17,7 +17,7 @@ export default class StaffUserRow extends React.Component {
             : null}
         </Col>
         <Col sm={6} md={6}>
-          <a href={this.props.staff.get_absolute_url} target={'_blank'}>
+          <a href={this.props.staff.get_absolute_url}>
             {this.props.staff.display_name}
           </a>
         </Col>
