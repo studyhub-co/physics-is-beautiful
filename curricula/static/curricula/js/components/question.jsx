@@ -35,6 +35,12 @@ export class Question extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    if (!window.IS_MOBILE_APP) {
+      window.onbeforeunload = null
+    }
+  }
+
   componentDidMount () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])

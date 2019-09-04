@@ -141,7 +141,10 @@ export class SectionSheet extends React.Component {
         <Container fluid>
           <Row>
             <Col sm={12} md={12}>
-              <a className={'back-button'} href={this.props.backLink} >
+              {/* TODO replace href with history support https://github.com/ReactTraining/history#readme */}
+              {/* to make it work as SPA app */}
+              {/* It seems window.history is not enough for this link */}
+              <a className={'back-button'} href={this.props.backLink}>
                 <FaChevronLeft />
                 Course home
               </a>
