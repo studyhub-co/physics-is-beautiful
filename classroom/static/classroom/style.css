@@ -96,13 +96,6 @@ html {
     font-size: 16px;
 }
 
-@media all and (max-width: 1280px) {
-    .classroom {
-        font-size: 12px;
-    }
-}
-
-
 .classrroom button:focus {
     outline: 0;
 }
@@ -290,7 +283,6 @@ html {
     width: 45rem;
     max-width: 100%;
     height: 10rem;
-
 }
 
 /* classroom card*/
@@ -529,7 +521,18 @@ label {
     padding: 10px 0 0 0;
 }
 
+@media all and (max-width: 1280px) {
+    .classroom {
+        font-size: 12px;
+    }
+}
+
 @media all and (max-width: 770px) {  /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
+
+    .classroom {
+        font-size: 10px;
+    }
+
     .section-sheet {
         padding: 5px;
     }

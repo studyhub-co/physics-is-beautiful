@@ -63,7 +63,6 @@ export class TeacherAssigmentStudentRow extends React.Component {
             { colorName
               ? <div className={colorName + '-text'}>
                 <span className={colorName + boxName + '-box'}>
-                  {/*<span className={'glyphicon glyphicon-' + glyphicon} />&nbsp;{ statusText }*/}
                   { faIcon }&nbsp;{ statusText }
                 </span>
               </div> : <span>{ statusText }</span>}
@@ -71,6 +70,9 @@ export class TeacherAssigmentStudentRow extends React.Component {
           <Col sm={2} md={2} className={'vcenter'}>
             { completedOnDate ? <span>{completedOnDate}</span> : null}
             { delayedOnDate ? <span>{delayedOnDate}</span> : null}
+            { delayedOnDate || completedOnDate ? null
+              : <span>Completed&nbsp;{this.props.student.count_completed_lessons}&nbsp;of&nbsp;{this.props.assignment.count_lessons}</span>
+            }
           </Col>
           <Col sm={1} md={1} />
         </Row>

@@ -342,6 +342,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         except Assignment.DoesNotExist:
             raise NotFound('Can\'t find the assignment')
 
+        # TODO ADD annotate for completed_lessons
         qs = Profile.objects.prefetch_related(Prefetch('as_students_assignment_progress',
                                               queryset=AssignmentProgress.objects.filter(assignment=assignment).
                                                        select_related('assignment'),

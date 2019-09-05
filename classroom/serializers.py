@@ -46,6 +46,7 @@ class AssignmentStudentsSerializer(PublicProfileSerializer):
     completed_on = serializers.SerializerMethodField()
     delayed_on = serializers.SerializerMethodField()
     start_on = serializers.SerializerMethodField()
+    count_completed_lessons = serializers.SerializerMethodField(read_only=True)
 
     def get_completed_on(self, obj):
         return obj.as_students_current_assignment_progress[0].completed_on\
@@ -59,9 +60,16 @@ class AssignmentStudentsSerializer(PublicProfileSerializer):
         return obj.as_students_current_assignment_progress[0].start_on\
             if hasattr(obj, 'as_students_current_assignment_progress') else None
 
+    def get_count_completed_lessons(self, obj):
+        if hasattr(obj, 'as_students_current_assignment_progress') and len(obj.as_students_current_assignment_progress) > 0:
+            return obj.as_students_current_assignment_progress[0].completed_lessons.count()
+        else:
+            return 0
+
     class Meta:
         model = PublicProfileSerializer.Meta.model
-        fields = PublicProfileSerializer.Meta.fields + ['completed_on', 'delayed_on', 'start_on']
+        fields = PublicProfileSerializer.Meta.fields + \
+                 ['completed_on', 'delayed_on', 'start_on', 'count_completed_lessons']
 
 
 class ExternalClassroomSerializer(serializers.ModelSerializer):
@@ -144,9 +152,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
     count_students_delayed_assingment = serializers.SerializerMethodField(read_only=True)
     count_completed_lessons = serializers.SerializerMethodField(read_only=True)
     # assigned_on = serializers.SerializerMethodField(read_only=True)
-
     # current user (request.user) completed lessons
-    count_completed_lessons = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(read_only=True)
 
     def send_emails(sender, instance, *args, **kwargs):

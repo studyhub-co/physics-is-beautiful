@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import Draggable from 'react-draggable'
+
 import { BASE_URL } from '../../utils/config'
 import { push } from 'connected-react-router'
 
@@ -53,21 +55,19 @@ class StudentClassroomProfileView extends React.Component {
             <Col
               sm={6}
               md={6}
+              xs={12}
               style={{textAlign: 'left', paddingTop: '1rem'}} >
               <a
                 className={'back-button'}
                 onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/students/')) }} >
-                {/*<span*/}
-                  {/*className='glyphicon glyphicon-menu-left'*/}
-                  {/*style={{fontSize: 16}} />*/}
                 <FaChevronLeft />
                 All students
               </a>
             </Col>
-            <Col sm={6} md={6} className={'text-right'}>
+            <Col sm={6} md={6} xs={12} className={'text-right'}>
               {this.props.classroomTeacher && !this.props.classroomTeacher.external_classroom ? <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
                 <Dropdown.Toggle className={'classroom-common-button'}>
-                  {/*<Glyphicon glyph='cog' />&nbsp;*/}
+                  {/* <Glyphicon glyph='cog' />&nbsp; */}
                   <FaCog />&nbsp;
                 Manage student
                 </Dropdown.Toggle>
@@ -111,33 +111,41 @@ class StudentClassroomProfileView extends React.Component {
             </Col>
           </Row>
         </Container>
-        <Container fluid>
-          <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-            <Col sm={5} md={5} xs={5}>
-              <span className={'gray-text'}>Assignment</span>
-            </Col>
-            <Col sm={2} md={2} xs={2} className={'vcenter'}>
+        <Draggable
+          disabled={screen.width > 770}
+          axis='x'
+          bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}}
+        >
+          <div style={{minWidth: '500px'}}>
+            <Container fluid>
+              <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
+                <Col sm={5} md={5} xs={4}>
+                  <span className={'gray-text'}>Assignment</span>
+                </Col>
+                <Col sm={2} md={2} xs={2} className={'vcenter'}>
               Assigned on
-            </Col>
-            <Col sm={3} md={3} xs={3} className={'vcenter'}>
+                </Col>
+                <Col sm={3} md={3} xs={3} className={'vcenter'}>
               Status
-            </Col>
-            <Col sm={2} md={2} xs={2} className={'vcenter'}>
+                </Col>
+                <Col sm={2} md={2} xs={2} className={'vcenter'}>
               Completed on
-            </Col>
-          </Row>
-        </Container>
-        <hr style={{margin: '0'}} />
-        <Container fluid>
-          { this.props.studentAssignmentsList
-            ? this.props.studentAssignmentsList.map(function (assignment, i) {
-              return <TeacherStudentAssignmentRow
-                isTeacher={Boolean(true)}
-                assignment={assignment}
-                onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
-                key={i} />
-            }, this) : null}
-        </Container>
+                </Col>
+              </Row>
+            </Container>
+            <hr style={{margin: '0'}} />
+            <Container fluid>
+              { this.props.studentAssignmentsList
+                ? this.props.studentAssignmentsList.map(function (assignment, i) {
+                  return <TeacherStudentAssignmentRow
+                    isTeacher={Boolean(true)}
+                    assignment={assignment}
+                    onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
+                    key={i} />
+                }, this) : null}
+            </Container>
+          </div>
+        </Draggable>
       </div>
     )
   }
