@@ -28,13 +28,9 @@ export class TeacherStudentAssignmentRow extends React.Component {
     // dueDateTime = new Date(this.props.assignment.due_on).toLocaleDateString() + ' ' +
     //   new Date(this.props.assignment.due_on).toLocaleTimeString()
 
-    // if (this.props.assignment.assigned_on) {
-    //   assignedOnDate = new Date(this.props.assignment.assigned_on).toLocaleDateString() + ' ' +
-    //     new Date(this.props.assignment.assigned_on).toLocaleTimeString()
-    // }
-    if (this.props.assignment.start_on) {
-      assignedOnDate = new Date(this.props.assignment.start_on).toLocaleDateString() + ' ' +
-        new Date(this.props.assignment.start_on).toLocaleTimeString()
+    if (this.props.assignment.assigned_on) {
+      assignedOnDate = new Date(this.props.assignment.assigned_on).toLocaleDateString() + ' ' +
+        new Date(this.props.assignment.assigned_on).toLocaleTimeString()
     }
     if (this.props.assignment.completed_on) {
       completedOnDate = new Date(this.props.assignment.completed_on).toLocaleDateString() + ' ' +
