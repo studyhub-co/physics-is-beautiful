@@ -1515,7 +1515,7 @@ export function changeAnswerImage (uuid, image) {
       contentType: false,
       data: formData,
       success: function (data) {
-        // dispatch(answerLoaded(data))
+        dispatch(answerLoaded(data))
       }
     })
   }
