@@ -38,7 +38,7 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
 
     # @action(methods=['GET'], detail=False)
     # def me(self, request):
-    #     if request.user.is_authenticated():
+    #     if request.user.is_authenticated:
     #         return request.user.profile
     #     return request.user
     def retrieve(self, request, *args, **kwargs):
@@ -88,7 +88,7 @@ class ProfileViewSetMe(ModelViewSet):
     permission_classes = []
 
     def get_object(self):
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             return self.request.user.profile
         return self.request.user
 

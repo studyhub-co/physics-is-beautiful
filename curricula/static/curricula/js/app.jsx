@@ -1,11 +1,11 @@
 import React from 'react'
-import {BrowserRouter, Switch, Route} from 'react-router-dom'
-import {SectionSheet, Sheet} from './containers/sheet'
-import {VectorGame} from './games/vector'
-import {UnitConversionGame} from './games/unit_conversion'
-import {Vector} from 'vector_canvas'
-import {UnitConversion} from './components/answers/correct_answers/correct_answers'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { SectionSheet, Sheet } from './containers/sheet'
+import { VectorGame } from './games/vector'
+import { UnitConversionGame } from './games/unit_conversion'
+import { Vector } from 'vector_canvas'
+import { MySQL, UnitConversion } from './components/answers/correct_answers/correct_answers'
+import { Container, Row, Col } from 'react-bootstrap'
 import { RingLoader } from 'react-spinners'
 
 class CurriculumInfoPanel extends React.Component {
@@ -26,7 +26,7 @@ class CurriculumInfoPanel extends React.Component {
     return (<div className='container section-sheet curriculum-panel-font'>
       <div className='curriculum-display-wrap'>
         {this.props.curriculum
-          ? <Grid fluid>
+          ? <Container fluid>
             {/* title */}
             <Row>
               <Col md={10} xs={8} >
@@ -69,13 +69,13 @@ class CurriculumInfoPanel extends React.Component {
                 {this.state.showMore
                   ? <Row>
                     <Col md={12}>
-                      {this.props.curriculum.image ? <img className={'img-responsive'} src={this.props.curriculum.image} /> : null}
+                      {this.props.curriculum.image ? <img className={'img-fluid'} src={this.props.curriculum.image} /> : null}
                     </Col>
                   </Row>
                   : null}
               </Col>
             </Row>
-          </Grid>
+          </Container>
           : null}
       </div>
     </div>)
@@ -284,13 +284,6 @@ class UnitsApp extends React.Component {
     this.unit = null
   }
 
-  // componentDidMount () {
-  //   window.parent.postMessage({
-  //     'message': 'canGoBack',
-  //     'data': true
-  //   }, '*')
-  // }
-
   load () {
     if (!this.unit) {
       return
@@ -367,12 +360,11 @@ export class Expression {
   }
 }
 
-// export class Text {
-//   constructor (text, uuid) {
-//     this.text = text
-//     this.uuid = uuid
-//   }
-// }
+export class Text {
+  constructor (text) {
+    this.text = text
+  }
+}
 
 class LessonsApp extends React.Component {
   constructor (obj) {
@@ -430,8 +422,7 @@ class LessonsApp extends React.Component {
               )
               break
             case 'text':
-              // this.correct_answer = new Text(data.correct_answer.content.text);
-              this.correct_answer = new Text(data.correct_answer.content.text, data.correct_answer.uuid)
+              this.correct_answer = new Text(data.correct_answer.content.text)
               break
             case 'mathematicalexpression':
               this.correct_answer = new Expression(data.correct_answer.content.representation)
@@ -439,21 +430,16 @@ class LessonsApp extends React.Component {
             case 'unitconversion':
               this.correct_answer = new UnitConversion(data.correct_answer.content, this.question)
               break
+            case 'mysql':
+              this.correct_answer = new MySQL(data.correct_answer.content, this.question)
+              break
             default:
               this.correct_answer = data.correct_answer
               break
           }
-          playAudio('incorrect')
+          window.playAudio('incorrect')
         }
         this.load()
-        if (data.was_correct) {
-          // setTimeout(
-          //     function() {
-          //         this.fetchState(this.state.currentId);
-          //     }.bind(this),
-          //     500
-          // );
-        }
       }
     })
   }
@@ -518,20 +504,6 @@ class GamesApp extends React.Component {
       slug: obj.match.params.slug
     }
   }
-
-  // gameWon () { // todo remove
-  //   $.ajax({
-  //     async: true,
-  //     // url: '/api/v1/curricula/games/' + this.state.slug + '/success',
-  //     url: '/api/v1/curricula/games/' + this.state.uuid + '/success',
-  //     context: this,
-  //     type: 'POST',
-  //     data: {},
-  //     success: function (data, status, jqXHR) {
-  //
-  //     }
-  //   });
-  // }
 
   render () {
     var Game

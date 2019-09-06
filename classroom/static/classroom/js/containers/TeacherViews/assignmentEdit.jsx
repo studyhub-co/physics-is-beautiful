@@ -8,12 +8,15 @@ import { RingLoader } from 'react-spinners'
 
 // import { push } from 'connected-react-router'
 
-import DatePicker from 'react-bootstrap-date-picker'
-import TimePicker from 'react-bootstrap-time-picker'
+// TODO not work witn bs4
+// import DatePicker from 'react-bootstrap-date-picker'
+// import TimePicker from 'react-bootstrap-time-picker'
+
+import DatePicker from 'react-datepicker'
 
 import DropdownTreeSelect from 'react-dropdown-tree-select'
 
-import { Grid, Row, Col, FormControl, Checkbox } from 'react-bootstrap'
+import { Container, Row, Col, FormControl, FormCheck } from 'react-bootstrap'
 
 import * as assignmentCreators from '../../actions/assignment'
 import * as curriculaCreators from '../../actions/curricula'
@@ -26,8 +29,10 @@ const DEFAULT_STATE = {
   startDate: null,
   _ispopulated: false,
   dueDate: null,
-  startTime: 36000,
-  dueTime: 36000,
+  startTime: null,
+  dueTime: null,
+  // startTime: 36000,
+  // dueTime: 36000,
   sendEmail: false,
   assignmentIsValid: false,
   assignmentName: ''
@@ -46,7 +51,9 @@ class AssignmentEdit extends React.Component {
     this.handleSendEmailChange = this.handleSendEmailChange.bind(this)
 
     this.state = Object.assign({}, DEFAULT_STATE)
+  }
 
+  componentDidMount () {
     this.props.curriculaActions.curriculaFetchExpandedCurriculum(this.props.classroomTeacher.curriculum.uuid)
   }
 
@@ -82,11 +89,15 @@ class AssignmentEdit extends React.Component {
       var dueDate = new Date(this.props.assignment.due_on)
 
       this.setState({
-        startDate: this.props.assignment.start_on,
-        startTime: startDate.getHours() * 60 * 60,
-        dueDate: this.props.assignment.due_on,
+        // startDate: this.props.assignment.start_on,
+        startDate: startDate,
+        startTime: startDate,
+        // startTime: startDate.getHours() * 60 * 60,
+        // dueDate: this.props.assignment.due_on,
+        dueTime: dueDate,
+        dueDate: dueDate,
         sendEmail: this.props.assignment.send_email,
-        dueTime: dueDate.getHours() * 60 * 60,
+        // dueTime: dueDate.getHours() * 60 * 60,
         assignmentName: this.props.assignment.name
       }, this.copyNodesFromAssignmentValidate) // copy selected lessons from assignment
     }
@@ -185,11 +196,10 @@ class AssignmentEdit extends React.Component {
     }
 
     var startDateTime = new Date(this.state.startDate)
-    startDateTime.setHours(0, 0, 0, 0)
-    startDateTime.setSeconds(startDateTime.getSeconds() + this.state.startTime)
+    startDateTime.setHours(this.state.startTime.getHours(), this.state.startTime.getMinutes())
+
     var dueDateTime = new Date(this.state.dueDate)
-    dueDateTime.setHours(0, 0, 0, 0)
-    dueDateTime.setSeconds(dueDateTime.getSeconds() + this.state.dueTime)
+    dueDateTime.setHours(this.state.dueTime.getHours(), this.state.dueTime.getMinutes())
 
     var assignmentJson = {
       name: this.state.assignmentName,
@@ -250,7 +260,7 @@ class AssignmentEdit extends React.Component {
   render () {
     return (
       <div>{ this.state._ispopulated
-        ? <Grid fluid>
+        ? <Container fluid>
           <Row className={'vcenter'}>
             <Col sm={3} md={3} className={'text-right'}>
               Name
@@ -270,7 +280,10 @@ class AssignmentEdit extends React.Component {
               Assignment
             </Col>
             <Col sm={9} md={9}>
-              <DropdownTreeSelect onChange={this.onLessonTreeChange} data={this.state.lessonsTreeData} placeholderText={'Pick a goal skill'} />
+              <DropdownTreeSelect
+                onChange={this.onLessonTreeChange}
+                data={this.state.lessonsTreeData}
+                placeholderText={'Pick a goal skill'} />
             </Col>
           </Row>
           <br />
@@ -279,15 +292,27 @@ class AssignmentEdit extends React.Component {
               Start on
             </Col>
             <Col sm={6} md={6}>
-              <DatePicker onChange={this.handleStartOn} value={this.state.startDate} />
+              {/*<DatePicker onChange={this.handleStartOn} value={this.state.startDate} />*/}
+              <DatePicker className='form-control' onChange={this.handleStartOn} selected={this.state.startDate} />
             </Col>
             <Col sm={3} md={3}>
-              <TimePicker
+              {/*<TimePicker*/}
+                {/*onChange={this.handleStartTimeChange}*/}
+                {/*start='01:00'*/}
+                {/*end='24:00'*/}
+                {/*step={60}*/}
+                {/*value={this.state.startTime} />*/}
+              <DatePicker
+                className='form-control'
+                selected={this.state.startTime}
                 onChange={this.handleStartTimeChange}
-                start='01:00'
-                end='24:00'
-                step={60}
-                value={this.state.startTime} />
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={60}
+                dateFormat='HH:mm'
+                timeFormat='HH:mm'
+                timeCaption='Time'
+              />
             </Col>
           </Row>
           <br />
@@ -296,26 +321,44 @@ class AssignmentEdit extends React.Component {
               Due on
             </Col>
             <Col sm={6} md={6}>
-              <DatePicker onChange={this.handleDueOn} value={this.state.dueDate} />
+              {/*<DatePicker onChange={this.handleDueOn} value={this.state.dueDate} />*/}
+              <DatePicker className='form-control' onChange={this.handleDueOn} selected={this.state.dueDate} />
             </Col>
             <Col sm={3} md={3}>
-              <TimePicker
+              {/*<TimePicker*/}
+                {/*onChange={this.handleDueTimeChange}*/}
+                {/*start='01:00'*/}
+                {/*end='24:00'*/}
+                {/*step={60}*/}
+                {/*value={this.state.dueTime} />*/}
+              <DatePicker
+                className='form-control'
+                selected={this.state.dueTime}
                 onChange={this.handleDueTimeChange}
-                start='01:00'
-                end='24:00'
-                step={60}
-                value={this.state.dueTime} />
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={60}
+                dateFormat='HH:mm'
+                timeFormat='HH:mm'
+                timeCaption='Time'
+              />
             </Col>
           </Row>
+          <br />
           <Row className={'vcenter'}>
             <Col sm={3} md={3} className={'text-right'}>
               Email
             </Col>
             <Col sm={9} md={9}>
-              <Checkbox
-                defaultChecked={this.state.sendEmail}
-                onClick={this.handleSendEmailChange}
-              > Send email notification</Checkbox>
+              <FormCheck>
+                <FormCheck.Input
+                  onClick={this.handleSendEmailChange}
+                  type={'checkbox'}
+                  defaultChecked={this.state.sendEmail}
+                />
+                <FormCheck.Label>
+                  Send email notification</FormCheck.Label>
+              </FormCheck>
             </Col>
           </Row>
           <br />
@@ -329,19 +372,19 @@ class AssignmentEdit extends React.Component {
               </button>
             </Col>
           </Row>
-        </Grid>
-        : <Grid fluid>
-          <Row style={{height: '10rem'}}>
-            <Col sm={12} md={12}>
-              <div className='sweet-loading'>
-                <RingLoader
-                  color={'#1caff6'}
-                  loading={this.state.loading}
-                />
-              </div>
+        </Container>
+        : <Container fluid>
+          <Row>
+            <Col sm={12} md={12} style={{margin: '0 40% 0 40%'}}>
+              {/*<div className='sweet-loading'>*/}
+              <RingLoader
+                color={'#1caff6'}
+                loading={this.state.loading}
+              />
+              {/*</div>*/}
             </Col>
           </Row>
-        </Grid>}
+        </Container>}
       </div>
     )
   }

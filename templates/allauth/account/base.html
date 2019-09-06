@@ -1,5 +1,6 @@
 {% load static %}
-
+<!doctype html>
+<html>
 <head>
     <title>{% block head_title %} {% endblock %}</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'blog/images/favicon/favicon.ico' %}"/>
@@ -65,3 +66,4 @@
 {% block content %} {% endblock %}
 </div>
 <script type="text/javascript" src="{% static 'js/pib-mobile-connect.js' %}"></script>
+</html>

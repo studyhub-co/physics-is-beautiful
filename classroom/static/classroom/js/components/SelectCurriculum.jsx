@@ -34,7 +34,7 @@ class SelectCurriculum extends React.Component {
           </div>
         }, this)}
         </div> : null }
-        <div className={'create-curriculum-button curriculum-card'} onClick={() => { window.open('/editor/', '_blank') }}>+ Create new curriculum</div>
+        <div className={'create-curriculum-button curriculum-card'} onClick={() => { window.open('/studio/editor/', '_blank') }}>+ Create new curriculum</div>
         <div className={'blue-text'}>Physics is Beautiful curricula:</div>
         {this.props.curriculaOtherList ? <div>{ this.props.curriculaOtherList.map(function (curriculum, i) {
           return <div key={i} onClick={() => { this.selectCurriculumUuid(curriculum) }}>

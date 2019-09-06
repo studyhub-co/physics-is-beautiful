@@ -1,24 +1,25 @@
 import React from 'react'
 
-import { Row, Col, Image, FormGroup, InputGroup, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap'
-
 import PropTypes from 'prop-types'
+import { Row, Col, Image, FormGroup, InputGroup, DropdownButton, DropdownItem } from 'react-bootstrap'
+import { FaEdit } from 'react-icons/fa'
 
 export default class StaffUserRow extends React.Component {
-
   render () {
     return (
       <Row className={'staff-user-row'}>
         <Col sm={2} md={2}>
           { this.props.staff.avatar_url
             ? <Image
-              responsive
+              fluid
               src={this.props.staff.avatar_url}
               rounded />
             : null}
         </Col>
         <Col sm={6} md={6}>
-          {this.props.staff.display_name}
+          <a href={this.props.staff.get_absolute_url}>
+            {this.props.staff.display_name}
+          </a>
         </Col>
         <Col sm={2} md={2}>
           <span style={{textTransform: 'capitalize '}}>{this.props.post}</span>
@@ -28,11 +29,13 @@ export default class StaffUserRow extends React.Component {
             ? <FormGroup>
               <InputGroup>
                 <DropdownButton
-                  componentClass={InputGroup.Button}
+                  // componentClass={InputGroup.Button}
                   id='input-dropdown-addon'
-                  title={<Glyphicon glyph='edit' />}
+                  // title={<Glyphicon glyph='edit' />}
+                  variant='light'
+                  title={<FaEdit />}
                 >
-                  <MenuItem key='e' onSelect={this.props.onRemoveFromCollaboratorsClick}>Remove from collaborators</MenuItem>
+                  <DropdownItem key='e' onSelect={this.props.onRemoveFromCollaboratorsClick}>Remove from collaborators</DropdownItem>
                 </DropdownButton>
               </InputGroup>
             </FormGroup> : null }

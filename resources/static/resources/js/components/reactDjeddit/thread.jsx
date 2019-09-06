@@ -4,8 +4,6 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
-import { Grid, Row, Col, FormControl, Checkbox, Form, Button } from 'react-bootstrap'
-
 import { Post } from './post'
 import { ReplyForm } from './replyForm'
 
@@ -17,7 +15,7 @@ export class Thread extends React.Component {
 
     return <div key={post.uid} style={{paddingLeft: widthRem}}>
       <div style={{width: widthRem, display: 'inline-block', height: '100%', boxSizing: 'border-box'}}>
-        {/* TODO: add threadline if needed*/}
+        {/* TODO: add threadline if needed */}
       </div>
       <div style={{position: 'relative'}}>
         <Post

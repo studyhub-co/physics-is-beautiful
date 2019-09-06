@@ -27,7 +27,7 @@ class Profile(BaseModel):
         ('a', 'Gravatar')
     ]
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     sound_enabled = models.BooleanField(default=True)
     all_lessons_unlocked = models.BooleanField(default=False)
     user_avatar = models.ImageField(null=True, blank=True)
@@ -51,7 +51,7 @@ class Profile(BaseModel):
         return reverse('user-profile', kwargs={"pk": self.user.id})
 
     def __str__(self):
-        return 'Profile: {}'.format(self.user.email)  # todo seems we need swith to username here
+        return 'Profile: {}'.format(self.user.email)  # todo seems we need switch to username here
 
 
 @receiver(pre_save, sender=Profile)

@@ -29,7 +29,7 @@ class IndexView extends React.Component {
     var profileActivityUrl = '/:id/activity/'
 
     return (
-      <Sheet type={'problem'}>
+      <Sheet>
         <Tabs name='profileTab'
           className='tabs'
           handleSelect={

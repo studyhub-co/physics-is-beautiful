@@ -4,6 +4,7 @@ import { checkHttpStatus, getAxios } from '../utils'
 import {
   CLASSROOM_RECEIVE_TEACHER_CLASSROOMS_LIST, CLASSROOM_CREATE_TEACHER_CLASSROOM_SUCCESS,
   CLASSROOM_RECEIVE_TEACHER_CLASSROOM, CLASSROOM_UPDATE_TEACHER_CLASSROOM_SUCCESS,
+  CLASSROOM_JOIN_STUDENT_CLASSROOM_REQUEST,
   CLASSROOM_JOIN_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOMS_LIST,
   CLASSROOM_LEAVE_STUDENT_CLASSROOM_SUCCESS, CLASSROOM_RECEIVE_STUDENT_CLASSROOM } from '../constants'
 
@@ -135,23 +136,34 @@ export function joinClassroomSuccess (classroomStudent) {
   }
 }
 
+export function joinClassroomRequest (joinClassRoomRequest) {
+  return {
+    type: CLASSROOM_JOIN_STUDENT_CLASSROOM_REQUEST,
+    payload: {
+      joinClassRoomRequest
+    }
+  }
+}
+
 export function classroomJoinClassroom (classroomCode) {
   return (dispatch, state) => {
+    if (!state().classroom.joinClassRoomRequest) {
+      dispatch(joinClassroomRequest(true))
+      getAxios().post(API_PREFIX + 'join/', { code: classroomCode })
+        .then((response) => {
+          dispatch(joinClassroomRequest(false))
+          dispatch(joinClassroomSuccess(response.data))
 
-    return getAxios().post(API_PREFIX + 'join/', {code: classroomCode})
-      .then((response) => {
-        dispatch(joinClassroomSuccess(response.data))
+          // filter classroom to list
+          dispatch(classroomFetchStudentClassroomsList())
 
-        // filter classroom to list
-        dispatch(classroomFetchStudentClassroomsList())
-
-        // move to classroom page
-        dispatch(push(BASE_URL + 'student/' + response.data['uuid'] + '/'))
-      })
-      .catch(error => {
-        dispatch(joinClassroomSuccess(null))
-        // console.log(error.response)
-      })
+          // move to classroom page
+          dispatch(push(BASE_URL + 'student/' + response.data['uuid'] + '/'))
+        })
+        .catch(error => {
+          dispatch(joinClassroomSuccess(null))
+        })
+    }
   }
 }
 

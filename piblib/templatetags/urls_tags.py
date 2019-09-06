@@ -5,11 +5,11 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def current_url_starts_with(context, *args):
+def current_url_starts_with(context, *args, **kwargs):
     """ Check if the browse is currently at this supplied url"""
     for url in args:
         current_url = context['request'].path
-        supplied_url = reverse(url)
+        supplied_url = reverse(url, kwargs=kwargs)
 
         # fix for /curriculum/* (curricula application) and /curriculum/profile/* (editor application)
         if url == 'main_curricula:curriculum' and current_url.startswith('/curriculum/profile/'):

@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Image} from 'react-bootstrap'
+import { FaTimes, FaClock, FaCheckCircle } from 'react-icons/fa'
+import { Row, Col, Image } from 'react-bootstrap'
 
 export class TeacherStudentAssignmentRow extends React.Component {
   render () {
@@ -42,50 +43,55 @@ export class TeacherStudentAssignmentRow extends React.Component {
 
     return (
       <Row className={className}>
-        <Col sm={1} md={1}>
+        <Col sm={1} md={1} xs={12}>
           <div className={'gray-text small-text'}>
             {this.props.assignment && this.props.assignment.image
               ? <Image
-                responsive
+                fluid
                 src={this.props.assignment.image}
-                circle />
+                roundedCircle />
               : null}
           </div>
         </Col>
-        <Col sm={5} md={5}>
+        <Col sm={4} md={4} xs={4}>
           { !this.props.isTeacher && textColorClassName !== 'gray-text' // TODO check start date
             ? <div className={'blue-title'}>{this.props.assignment.name}</div>
             : <div className={'blue-title pointer'} onClick={this.props.onTitleClick}>{this.props.assignment.name}</div>
           }
           <div className={'gray-text small-text'}>{this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}</div>
         </Col>
-        <Col sm={2} md={2} className={'vcenter'}>
+        <Col sm={2} md={2} xs={2} className={'vcenter'}>
           { assignedOnDate ? <div> { assignedOnDate } </div> : null }
         </Col>
-        <Col sm={2} md={2} className={'vcenter'}>
+        <Col sm={3} md={3} xs={3} className={'vcenter'}>
           { this.props.assignment.completed_on
             ? <div className={textColorClassName}>
-              <span className={'green-completed-box'}>
-                <span className='glyphicon glyphicon-ok-sign' />&nbsp;Completed
+              <span className={'green-completed-box'} style={{whiteSpace: 'nowrap'}}>
+                <FaCheckCircle /> &nbsp;Completed
+                {/* <span className='glyphicon glyphicon-ok-sign' />&nbsp;Completed */}
               </span>
             </div> : null }
           { this.props.assignment.delayed_on && !this.props.assignment.completed_on
             ? <div className={textColorClassName}>
-              <span className={'yellow-delayed-box'}>
-                <span className='glyphicon glyphicon-time' />&nbsp;Completed late
+              <span className={'yellow-delayed-box'} style={{whiteSpace: 'nowrap'}}>
+                {/* <span className='glyphicon glyphicon-time' />&nbsp;Completed late */}
+                <FaClock title={'Completed late'} />&nbsp;Completed late
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && !this.props.assignment.delayed_on && new Date(this.props.assignment.due_on) < new Date()
-            ? <div className={textColorClassName}>
+            ? <div className={textColorClassName} style={{whiteSpace: 'nowrap'}}>
               <span className={'red-missed-box'}>
-                <span className='glyphicon glyphicon-remove' />&nbsp;Missed
+                {/* <span className='glyphicon glyphicon-remove' />&nbsp;Missed */}
+                <FaTimes title={'Missed'} />&nbsp;Missed
               </span>
             </div> : null }
           { !this.props.assignment.completed_on && new Date(this.props.assignment.due_on) > new Date()
             ? <span>{this.props.assignment.start_on ? <span>Started</span> : <span>Not started</span>}</span> : null}
         </Col>
-        <Col sm={2} md={2} className={'vcenter'}>
-          { completedOnDate ? <div> { completedOnDate } </div> : null }
+        <Col sm={2} md={2} xs={2} className={'vcenter'}>
+          { completedOnDate ? <div> { completedOnDate } </div>
+            : <div>Completed {this.props.assignment.count_completed_lessons} of {this.props.assignment.count_lessons}
+            </div> }
         </Col>
       </Row>
     )

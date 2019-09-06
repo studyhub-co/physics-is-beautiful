@@ -3,6 +3,7 @@
 }
 .react-selectize.root-node {
   position: relative;
+  width: 80%;
 }
 .react-selectize.root-node.disabled {
   pointer-events: none;
@@ -457,4 +458,10 @@
 }
 .simple-select.react-selectize.material.root-node .simple-value {
   margin: 4px 3px 3px 2px;
+}
+
+ /*bootstrap 3 part*/
+
+.open>.dropdown-menu {
+    display: block;
 }

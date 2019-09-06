@@ -1,11 +1,12 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-import { Route } from 'react-router'
-import { push } from 'connected-react-router'
+// import { Route } from 'react-router'
+// import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Grid, Row, Col, Button, Glyphicon, Overlay, Image, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import { Container, Row, Col, Overlay, Image, FormGroup } from 'react-bootstrap'
+import { FaPencilAlt, FaUser, FaEye, FaClock } from 'react-icons/fa'
 import { RingLoader } from 'react-spinners'
 import Moment from 'react-moment'
 
@@ -29,16 +30,19 @@ class ProfileTabView extends React.Component {
     this.selectAvatar = this.selectAvatar.bind(this)
     this.onFirstNameChanged = this.onFirstNameChanged.bind(this)
     this.onLastNameChanged = this.onLastNameChanged.bind(this)
-    this.onDisplayNameChanged = this.onDisplayNameChanged .bind(this)
+    this.onDisplayNameChanged = this.onDisplayNameChanged.bind(this)
     this.editFirstNameClick = this.editFirstNameClick.bind(this)
     this.editLastNameClick = this.editLastNameClick.bind(this)
     this.editDisplayNameClick = this.editDisplayNameClick.bind(this)
+
+    this.onEditHover = this.onEditHover.bind(this)
 
     this.state = {
       showChangeImagePanel: false,
       firstNameEditMode: false,
       lastNameEditMode: false,
-      displayNameEditMode: false
+      displayNameEditMode: false,
+      hoverEditOn: null
     }
   }
 
@@ -115,38 +119,45 @@ class ProfileTabView extends React.Component {
     })
   }
 
+  onEditHover (item) {
+    this.setState({
+      hoverEditOn: item
+    })
+    if (!item) {
+      // hide overlay avatar image panel
+      this.setState({
+        showChangeImagePanel: false
+      })
+    }
+  }
+
   render () {
     return <div>
       {this.props.profile
-        ? <Grid fluid>
+        ? <Container fluid>
           <Row style={{paddingTop: '2rem'}}>
-            <Col sm={2} md={2}>
+            {/* AVATAR */}
+            <Col sm={2} md={2}
+              onMouseOver={() => this.onEditHover('avatar')}
+              onMouseLeave={() => this.onEditHover(null)}
+            >
               { this.props.profile.avatar_url ? <FormGroup>
                 <Image
-                  responsive
+                  fluid
                   src={this.props.profile.avatar_url}
                   rounded /></FormGroup>
                 : null }
-              {this.props.profile.is_current_user_profile
+              { this.props.profile.is_current_user_profile && this.state.hoverEditOn === 'avatar'
                 ? <div>
-                  {/*<div*/}
-                    {/*ref={(node) => { this._changeImageButton = node }}*/}
-                    {/*style={{*/}
-                      {/*fontSize: '1.3rem',*/}
-                      {/*textAlign: 'center',*/}
-                      {/*cursor: 'pointer'}}*/}
-                    {/*onClick={this.onChangeAvatarClick}>*/}
-                    {/*Change picture*/}
-                  {/*</div>*/}
                   <div
                     title={'Change avatar'}
                     className={'base-circle-edit bottom-circle-edit'}
                     onClick={this.onChangeAvatarClick}
                     ref={(node) => { this._changeImageButton = node }}
                   >
-                    <Glyphicon
-                      glyph={'pencil'}
-                      style={{fontSize: '2rem', top: '1rem'}} />
+                    <FaPencilAlt
+                      style={{fontSize: '1rem', position: 'relative'}}
+                    />
                   </div>
                   <Overlay
                     rootClose={Boolean(true)}
@@ -168,63 +179,78 @@ class ProfileTabView extends React.Component {
             </Col>
             <Col sm={5} md={5}>
               <Row>
+                {/* DISPLAY NAME */}
                 <Col sm={12} md={12}>
                   {!this.props.profile.is_current_user_profile
                     ? <h2>{this.props.profile.display_name}</h2>
-                    : <h2><EditableExternalEventLabel
-                      value={this.props.profile.display_name}
-                      onChange={this.onDisplayNameChanged}
-                      editMode={this.state.displayNameEditMode}
-                    />
-                    <span style={{position: 'relative', paddingLeft: '1rem'}}>
-                      <span className={'base-circle-edit'}>
-                        <Glyphicon
-                          glyph={'pencil'}
-                          onClick={this.editDisplayNameClick}
-                          style={{fontSize: '2rem'}} />
-                      </span>
-                    </span>
+                    : <h2
+                      onMouseOver={() => this.onEditHover('display_name')}
+                      onMouseLeave={() => this.onEditHover(null)}
+                    >
+                      <EditableExternalEventLabel
+                        value={this.props.profile.display_name}
+                        onChange={this.onDisplayNameChanged}
+                        editMode={this.state.displayNameEditMode}
+                      />
+                      { this.state.hoverEditOn === 'display_name'
+                        ? <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                          <span className={'base-circle-edit'}>
+                            <FaPencilAlt
+                              style={{fontSize: '1rem', position: 'relative', top: '-0.5rem'}}
+                              onClick={this.editDisplayNameClick}
+                            />
+                          </span>
+                        </span> : null}
                     </h2> }
                 </Col>
               </Row>
               <Row style={{fontSize: '2rem'}}>
+                {/* FIRST NAME */}
                 <Col sm={6} md={6} xs={12}>
                   {!this.props.profile.is_current_user_profile
                     ? null
-                    : <span>
+                    : <span
+                      onMouseOver={() => this.onEditHover('first_name')}
+                      onMouseLeave={() => this.onEditHover(null)}
+                    >
                       <EditableExternalEventLabel
                         value={this.props.profile.first_name}
                         onChange={this.onFirstNameChanged}
                         editMode={this.state.firstNameEditMode}
                       />
-                      <span style={{position: 'relative', paddingLeft: '1rem'}}>
-                        <span className={'base-circle-edit'}>
-                          <Glyphicon
-                            glyph={'pencil'}
-                            onClick={this.editFirstNameClick}
-                            style={{fontSize: '2rem', top: '1rem'}} />
-                        </span>
-                      </span>
+                      { this.state.hoverEditOn === 'first_name'
+                        ? <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                          <span className={'base-circle-edit'}>
+                            <FaPencilAlt
+                              style={{fontSize: '1rem', position: 'relative', top: '-0.75rem'}}
+                              onClick={this.editFirstNameClick}
+                            />
+                          </span>
+                        </span> : null }
                     </span>
                   }
                 </Col>
                 <Col sm={6} md={6} xs={12}>
                   {!this.props.profile.is_current_user_profile
                     ? null
-                    : <span>
+                    : <span
+                      onMouseOver={() => this.onEditHover('last_name')}
+                      onMouseLeave={() => this.onEditHover(null)}
+                    >
                       <EditableExternalEventLabel
                         value={this.props.profile.last_name}
                         onChange={this.onLastNameChanged}
                         editMode={this.state.lastNameEditMode}
                       />
-                      <span style={{position: 'relative', paddingLeft: '1rem'}}>
-                        <span className={'base-circle-edit'}>
-                          <Glyphicon
-                            glyph={'pencil'}
-                            onClick={this.editLastNameClick}
-                            style={{fontSize: '2rem', top: '1rem'}} />
-                        </span>
-                      </span>
+                      { this.state.hoverEditOn === 'last_name'
+                        ? <span style={{position: 'relative', paddingLeft: '1rem'}}>
+                          <span className={'base-circle-edit'}>
+                            <FaPencilAlt
+                              style={{fontSize: '1rem', position: 'relative', top: '-0.75rem'}}
+                              onClick={this.editLastNameClick}
+                            />
+                          </span>
+                        </span> : null }
                     </span> }
                 </Col>
               </Row>
@@ -232,31 +258,28 @@ class ProfileTabView extends React.Component {
             <Col sm={4} md={4}>
               <Row>
                 <Col sm={12} md={12}>
-                  <Glyphicon
-                    glyph={'user'} /> Member for <Moment toNow>
+                  <FaUser /> Member for <Moment toNow>
                     {this.props.profile.created_on}
                   </Moment>
                 </Col>
               </Row>
               <Row>
                 <Col sm={12} md={12}>
-                  <Glyphicon
-                    glyph={'eye-open'} /> {this.props.profile.profile_views || 0} profile views
+                  <FaEye /> {this.props.profile.profile_views || 0} profile views
                 </Col>
               </Row>
               { this.props.profile.last_activity
                 ? <Row>
                   <Col sm={12} md={12}>
-                    <Glyphicon
-                      glyph={'time'} /> Last seen <Moment fromNow>
+                    <FaClock /> Last seen <Moment fromNow>
                       {this.props.profile.last_activity}
                     </Moment>
                   </Col>
                 </Row> : null }
             </Col>
           </Row>
-        </Grid>
-        : <Grid fluid>
+        </Container>
+        : <Container fluid>
           <Row>
             <Col sm={12} md={12}>
               <div style={{height: '10rem'}}>
@@ -269,21 +292,21 @@ class ProfileTabView extends React.Component {
               </div>
             </Col>
           </Row>
-        </Grid>
+        </Container>
       }
     </div>
   }
 }
 
 ProfileTabView.propTypes = {
-  tabActions: PropTypes.shape({
-    changeSelectedTab: PropTypes.func.isRequired
-  }).isRequired,
+  // tabActions: PropTypes.shape({
+  //   changeSelectedTab: PropTypes.func.isRequired
+  // }).isRequired,
   profileActions: PropTypes.shape({
     fetchProfile: PropTypes.func.isRequired,
     updateReloadProfile: PropTypes.func.isRequired
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
+  // dispatch: PropTypes.func.isRequired,
   profile_fetching: PropTypes.bool,
   profile: PropTypes.object,
   profileId: PropTypes.string.isRequired

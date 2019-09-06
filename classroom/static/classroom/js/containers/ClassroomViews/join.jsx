@@ -44,21 +44,28 @@ class JoinClassroomView extends React.Component {
 
   render () {
     return (
-      <div className='pop-up-window text-align-center'><button type='button' className='close' aria-label='Close' onClick={() => { history.goBack() }}><span aria-hidden='true'>×</span></button>
-        <div>Enter your teacher's classroom code below:</div>
-        <form className='form-inline' onSubmit={this.joinClassroom}>
-          <div>
-            <input maxLength={'6'} type='text' name='name' className={'form-control input-sm'} onChange={this.handleCodeChange} />
-          </div>
-          {this.props.classroomStudent === null
-            ? <div className={'red-text'}>This code does not match any classroom.<br />
-            Please double check what you typed</div> : null }
-          <button disabled={!this.state.codeIsValid}
-            className={'classroom-common-button' + (this.state.codeIsValid ? '' : ' disabled-button')}
-            type='submit'>
-            Join classroom
-          </button>
-        </form>
+      <div className='pop-up-window'>
+        <button type='button' className='close' aria-label='Close' onClick={() => { history.goBack() }}><span aria-hidden='true'>×</span></button>
+        <div className={'text-align-center'}>Enter your teacher's classroom code below:</div>
+        <div className={'justify-content-center row'}>
+          <form className='form' onSubmit={this.joinClassroom}>
+            <input
+              maxLength={'6'}
+              type='text' name='name'
+              className={'form-control'}
+              onChange={this.handleCodeChange} />
+            {this.props.classroomStudent === null
+              ? <div className={'red-text'}>This code does not match any classroom.<br />
+              Please double check what you typed</div> : null }
+            <div>
+              <button disabled={!this.state.codeIsValid}
+                className={'classroom-common-button' + (this.state.codeIsValid ? '' : ' disabled-button')}
+                type='submit'>
+                Join classroom
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     )
   }

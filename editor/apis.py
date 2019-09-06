@@ -2,14 +2,14 @@ from django.db.models import Q, Count, Max, F
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status, generics
+from rest_framework.decorators import action
 from rest_framework.response import Response
 # from rest_framework.pagination import PageNumberPagination
 # from rest_framework.decorators import action
-# from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import ValidationError
 # from rest_framework import filters
-#
 # from django_filters.rest_framework import DjangoFilterBackend
-
+# from tagging.models import Tag
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, CurriculumUserDashboard
 
@@ -19,8 +19,31 @@ from editor.serializers import CurriculumSerializer, UnitSerializer, \
 from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
     IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
 
+# TODO add pagiantion to api views! or block load listview for Units/Lessons at least
 
-class CurriculumViewSet(ModelViewSet):
+
+class TagAddRemoveViewMixin(object):
+    # @action(methods=['POST', 'DELETE'],
+    #         detail=True,
+    #         permission_classes=[IsOwnerOrCollaboratorBase, ], )
+    def tags(self, request, *args, **kwargs):
+        tagret_object = self.get_object()
+        if request.method == 'POST':
+            # create tag
+            new_tag = request.data.get('tag', None)
+            if not new_tag:
+                raise ValidationError('tag is not present')
+            tagret_object.tags.add(new_tag)
+            return Response({'tag': new_tag}, status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
+            to_delete_tag = request.data.get('tag', None)
+            if not to_delete_tag:
+                raise ValidationError('tag is not present')
+            tagret_object.tags.remove(to_delete_tag)
+            return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
+
+
+class CurriculumViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCollaboratorBase)    
     serializer_class = CurriculumSerializer
     lookup_field = 'uuid'
@@ -29,7 +52,8 @@ class CurriculumViewSet(ModelViewSet):
         return Curriculum.objects.filter(Q(author=self.request.user)
                                          | Q(collaborators=self.request.user.profile)
                                          | Q(classroom__students__user=self.request.user)).\
-               select_related('author').\
+               select_related('author'). \
+               prefetch_related('units__modules', 'units__tags').\
                annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
     def perform_create(self, serializer):
@@ -39,11 +63,17 @@ class CurriculumViewSet(ModelViewSet):
             prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
             prototype.clone(new_curriculum)
 
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsOwnerOrCollaboratorBase, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(CurriculumViewSet, self).tags(request, args, kwargs)
+
     class Meta:
         ordering = ['-published_on']
 
     
-class UnitViewSet(ModelViewSet):
+class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsUnitOwnerOrCollaborator)
     serializer_class = UnitSerializer
     lookup_field = 'uuid'
@@ -57,12 +87,20 @@ class UnitViewSet(ModelViewSet):
         else:
             return super().create(request, *args, **kwargs)
 
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsUnitOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(UnitViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Unit.objects.filter(Q(curriculum__author=self.request.user) |
-                                   Q(curriculum__collaborators=self.request.user.profile)).distinct()
+                                   Q(curriculum__collaborators=self.request.user.profile)). \
+                                   prefetch_related('tags').\
+                                   distinct()
 
     
-class ModuleViewSet(ModelViewSet):
+class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsModuleOwnerOrCollaborator)
     serializer_class = ModuleSerializer
     lookup_field = 'uuid'
@@ -76,12 +114,20 @@ class ModuleViewSet(ModelViewSet):
         else:
             return super().create(request, *args, **kwargs)
 
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsModuleOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(ModuleViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
-                                     Q(unit__curriculum__collaborators=self.request.user.profile)).distinct()
+                                     Q(unit__curriculum__collaborators=self.request.user.profile)).\
+                                     prefetch_related('tags', 'lessons').\
+                                     distinct()
 
     
-class LessonViewSet(ModelViewSet):
+class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsLessonOwnerOrCollaborator)
     serializer_class = LessonSerializer
     lookup_field = 'uuid'
@@ -91,16 +137,26 @@ class LessonViewSet(ModelViewSet):
             prototype = Lesson.objects.get(uuid=self.request.data['prototype'])
             copied_lesson = prototype.clone(Module.objects.get(uuid=self.request.data['module']))
 
-            return Response(LessonSerializer(copied_lesson, context={'request': request}).data, status=status.HTTP_201_CREATED)
+            return Response(
+                LessonSerializer(copied_lesson, context={'request': request}).data, status=status.HTTP_201_CREATED
+            )
         else:
             return super().create(request, *args, **kwargs)
 
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsLessonOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(LessonViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
-                                     Q(module__unit__curriculum__collaborators=self.request.user.profile)).distinct()
+                                     Q(module__unit__curriculum__collaborators=self.request.user.profile))\
+            .prefetch_related('questions__tags', 'questions__vectors')\
+            .distinct()
 
 
-class QuestionViewSet(ModelViewSet):
+class QuestionViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsQuestionOwnerOrCollaborator)
     serializer_class = QuestionSerializer
     lookup_field = 'uuid'
@@ -114,7 +170,13 @@ class QuestionViewSet(ModelViewSet):
                             status=status.HTTP_201_CREATED)
         else:
             return super().create(request, *args, **kwargs)
-    
+
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsQuestionOwnerOrCollaborator, ], )
+    def tags(self, request, *args, **kwargs):
+        return super(QuestionViewSet, self).tags(request, args, kwargs)
+
     def get_queryset(self):
         return Question.objects.filter(Q(lesson__module__unit__curriculum__author=self.request.user) |
                                        Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile)).\

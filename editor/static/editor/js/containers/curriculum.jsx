@@ -2,7 +2,10 @@ import { connect } from 'react-redux'
 
 import {Curriculum} from '../components/curriculum'
 
-import {renameCurriculum, changeCurriculumImage, deleteCurriculum, addUnit, moveUnit} from '../actions'
+import {
+  renameCurriculum, changeCurriculumImage, deleteCurriculum, addUnit, moveUnit,
+  addCurriculumTag, deleteCurriculumTag
+} from '../actions'
 
 const mapStateToProps = (state, ownProps) => {
   const cur = state.curricula[ownProps.uuid]
@@ -10,6 +13,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
       loading: false,
       name: cur.name,
+      tags: cur.tags,
       image: cur.image,
       units: cur.units.map(unit_uuid => state.units[unit_uuid])
     }
@@ -22,6 +26,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onNameChange: name => dispatch(renameCurriculum(ownProps.uuid, name)),
     onDeleteClick: () => dispatch(deleteCurriculum(ownProps.uuid)),
     onAddUnitClick: () => dispatch(addUnit(ownProps.uuid)),
+    onAddTag: (tag) => dispatch(addCurriculumTag(ownProps.uuid, tag)),
+    onDeleteTag: (tag) => dispatch(deleteCurriculumTag(ownProps.uuid, tag)),
     onUnitDroppedBefore: (beforeUnit, unit) => dispatch(moveUnit(unit.uuid, beforeUnit))
   }
 }

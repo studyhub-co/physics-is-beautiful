@@ -45,8 +45,9 @@ class ProfileSerializer(BaseSerializer):
     # selected_avatar = serializers.CharField(source='get_selected_avatar_display')
 
     def get_is_current_user_profile(self, obj):
-        if obj.user == self.context['request'].user:
-            return True
+        if self.context and 'request' in self.context:
+            if obj.user == self.context['request'].user:
+                return True
         return False
 
     class Meta:
@@ -83,7 +84,7 @@ class ProfileSerializer(BaseSerializer):
 
     def save(self):
         request = self.context['request']
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return super(ProfileSerializer, self).save()
         else:
             request.session['sound'] = self.validated_data['sound_enabled']

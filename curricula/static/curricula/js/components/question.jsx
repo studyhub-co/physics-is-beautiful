@@ -7,6 +7,7 @@ import { VectorCanvas, CanvasVector, CanvasText } from 'vector_canvas'
 import { DEFAULT_MATHJAX_OPTIONS } from '../constants'
 import { Hint } from './utils/hint'
 import { Answer } from './answers/answer'
+import { QuestionMysql } from './question_mysql'
 
 /* global MathJax */
 
@@ -34,6 +35,12 @@ export class Question extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    if (!window.IS_MOBILE_APP) {
+      window.onbeforeunload = null
+    }
+  }
+
   componentDidMount () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
@@ -46,6 +53,7 @@ export class Question extends React.Component {
   }
 
   componentDidUpdate () {
+    // GLOBAL ( not react MathJax)
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
     if (this.state && this.props.question.hintCollapsed != this.state.hintCollapsed) {
@@ -189,40 +197,18 @@ export class Question extends React.Component {
         <VectorCanvas objects={vectors} />
       )
     }
+    var my_sql = ''
+    if (this.props.question.my_sql) {
+      my_sql = (
+        <div className='thumbnail question-thumbnail'>
+          <QuestionMysql question={this.props.question} />
+        </div>
+      )
+    }
     var hint = ''
     if (this.props.question.hint) {
       hint = <Hint hint={this.props.question.hint} hintCollapsed={this.props.question.hintCollapsed} onClick={this.props.hintClick} />
-      // { /* <div className = 'hintDiv'> */ }
-      // { /* <div className='hintButton'> */ }
-      // { /* <a href='#demo' data-toggle='collapse'>hint</a> */ }
-      // { /* </div> */ }
-      // { /* <div id='demo' className='collapse'> */ }
-      // { /* {this.props.question.hint} */ }
-      // { /* </div> */ }
-      // { /* </div>; */ }
     }
-    // var answerField = ''
-    // if (this.props.question.answer_type == 'MULTIPLE_CHOICE') {
-    //   answerField =
-    //     <MultipleAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       // continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
-    // else if (this.props.question.answer_type == 'MULTISELECT_CHOICE') {
-    //   answerField =
-    //     <MultiSelectAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
-    // else { //default
     var answerField =
       <Answer
         question={this.props.question}
@@ -231,36 +217,7 @@ export class Question extends React.Component {
         updateAnswer={this.props.updateAnswer}
         correct={this.props.correct}
       />
-    // }
-    // if (this.props.question.question_type == 'SINGLE_ANSWER') {
-    //   answerField =
-    //     <SingleAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       // continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // } else if (this.props.question.question_type == 'MULTIPLE_CHOICE') {
-    //   answerField =
-    //     <MultipleAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       // continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
-    // else if (this.props.question.question_type == 'MULTISELECT_CHOICE') {
-    //   answerField =
-    //     <MultiSelectAnswer
-    //       question={this.props.question}
-    //       answer={this.props.correct_answer}
-    //       continueAction={this.props.continueAction}
-    //       updateAnswer={this.props.updateAnswer}
-    //       correct={this.props.correct}
-    //     />
-    // }
+
     function createMarkup (text) {
       return {__html: text}
     }
@@ -269,10 +226,14 @@ export class Question extends React.Component {
         <div className='row'>
           <div className='col-md-6 text-center'>
             <div className='bounding-box'>
-              <h1 id='ajaxDiv' dangerouslySetInnerHTML={createMarkup(this.props.question.text)} />
+              <p
+                style={{marginTop: 10, fontSize: 16}}
+                dangerouslySetInnerHTML={createMarkup(this.props.question.text)}
+              />
               {hint}
               {image}
               {vector}
+              {my_sql}
             </div>
           </div>
           {answerField}

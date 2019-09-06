@@ -3,12 +3,13 @@ import datetime
 from django.utils import timezone
 
 # from django.db.models import Q
+from django.db.models import F
 
 from rest_framework import serializers, status, permissions, mixins
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 # from drf_haystack.serializers import HaystackSerializer
@@ -22,6 +23,8 @@ from .serializers import QuestionSerializer, UserResponseSerializer, AnswerSeria
     CurriculumSerializer, LessonProgressSerializer
 
 # from .search_indexes import CurriculumIndex
+
+from .djeddit import create_thread
 
 # from profiles.serializers import PublicProfileSerializer
 # from pib_auth.models import User
@@ -43,14 +46,30 @@ class QuestionViewSet(ModelViewSet):
     permission_classes = []
     lookup_field = 'uuid'
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # see also LessonViewSet.get_next_question
+        new_thread = create_thread(instance)
+        if new_thread:
+            Question.objects.filter(pk=instance.pk).update(thread=new_thread)
+
+        # increment view count TODO
+        # if new_thread:
+        #     # save new thread in probllem
+        #     Question.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1, thread=new_thread)
+        # else:
+        #     Question.objects.filter(pk=instance.pk).update(count_views=F('count_views') + 1)
+
+        return super(QuestionViewSet, self).retrieve(request, *args, **kwargs)
+
     def user_response(self, request, uuid):
-        question = self.get_object()
+        question = self.get_object()  # self is an instance of the question with the matching uuid
         data = {'question': question.pk, 'answered_on': timezone.now()}
         data.update(request.data)
         sr = UserResponseSerializer(data=data)
         sr.is_valid(raise_exception=True)
         kwargs = {}
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             kwargs['profile'] = request.user.profile
         user_response = sr.get_response(**kwargs)
         service = get_progress_service(request, question.lesson)
@@ -70,6 +89,23 @@ class QuestionViewSet(ModelViewSet):
             elif user_response.answers_list:
                 data['correct_answer'] = AnswerSerializer(user_response.get_correct_answer(), many=True).data
         return Response(data)
+
+    # @renderer_classes((JSONRenderer,))
+    def service_request(self, request, uuid):
+        if 'type' in request.query_params and request.query_params['type'] == 'execute_mysql':
+            question = self.get_object()
+            if question.answer_type != Question.AnswerType.MYSQL or 'value' not in request.data:
+                raise ValidationError({'error': 'Initial data validation error'})
+            answer = question.answers.first()
+            try:
+                return Response({
+                    'json_mysql_result': answer.content.get_json_from_sql(str(request.data['value']))
+                })
+            except Exception as e:
+                raise ValidationError({'error': '{}'.format(e)})
+
+        else:
+            raise NotFound
 
 
 class LessonViewSet(ModelViewSet):
@@ -95,9 +131,13 @@ class LessonViewSet(ModelViewSet):
         except LessonLocked as e:
             raise serializers.ValidationError(e)
         if question:
+            new_thread = create_thread(question)
+            if new_thread:
+                Question.objects.filter(pk=question.pk).update(thread=new_thread)
+                question.thread = new_thread
             data = QuestionSerializer(question, context={'progress_service': service}).data
             # TODO: it might make more sense for these fields to be on the
-            # lesson. Or a separate lesson_profress object.
+            # lesson. Or a separate lesson_progress object.
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
             return Response(data)
@@ -216,7 +256,7 @@ class CurriculaViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         filter_by = self.request.query_params.get('filter', None)
-        if filter_by and self.request.user.is_authenticated():
+        if filter_by and self.request.user.is_authenticated:
             if filter_by == 'my':
                 # todo do we need to get curricula of user classrooms?
                 queryset = queryset.filter(author=self.request.user)
@@ -240,6 +280,7 @@ class CurriculaViewSet(ModelViewSet):
                 user = self.request.user
             return Curriculum.objects.get_default(user=user)
         return super(CurriculaViewSet, self).get_object()
+
 
 
 # # Postgresql FTS Search
@@ -306,6 +347,4 @@ class CurriculaViewSet(ModelViewSet):
 #     permission_classes = [IsAuthenticated]
 #     index_models = [Curriculum]
 #     serializer_class = CurriculumSearchSerializer
-
-
 

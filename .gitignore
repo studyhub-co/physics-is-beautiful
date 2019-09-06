@@ -1,3 +1,9 @@
+# js bundles
+static/js/bundles
+
+
+static_dev/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -98,10 +104,7 @@ media/
 node_modules/
 
 # webpack
-webpack-stats.json
-
-# bundles
-static/bundles/
+# webpack-stats.json
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
@@ -123,3 +126,5 @@ sh.exe.stackdump
 .vscode/settings.json
 /whoosh_index/
 pip-selfcheck.json
+
+webpack-stats.json

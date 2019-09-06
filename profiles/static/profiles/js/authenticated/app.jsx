@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { DragDropContext } from 'react-dnd'
+// import DragDropContext from 'react-dnd/lib/cjs/DragDropContext.js'
+import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
 import PropTypes from 'prop-types'
@@ -19,10 +20,6 @@ class App extends React.Component {
 }
 App.propTypes = {
   children: PropTypes.shape().isRequired
-  // dispatch: PropTypes.func.isRequired,
-  // location: PropTypes.shape({
-  //   pathname: PropTypes.string
-  // })
 }
 App.defaultProps = {
   location: undefined
@@ -34,7 +31,12 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(App))
+const getApp = (props) => {
+  return <DndProvider backend={HTML5Backend}><App {...props}/></DndProvider>
+}
+
+// export default DndProvider(HTML5Backend)(connect(mapStateToProps)(App))
+export default connect(mapStateToProps)(getApp)
 export { App as AppNotConnected }
 
 // chrome 41 fix

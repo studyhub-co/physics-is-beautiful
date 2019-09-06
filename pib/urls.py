@@ -23,6 +23,8 @@ from django.contrib.sitemaps.views import sitemap
 from resources.sitemaps import ResourcesViewSitemap, TextBookProblemsViewSitemap, TextBookSolutionsViewSitemap
 from curricula.sitemaps import CurriculaViewSitemap
 
+from .views import discussion_app
+
 sitemaps = {
     'resources': ResourcesViewSitemap,
     'textbook_problems': TextBookProblemsViewSitemap,
@@ -33,12 +35,13 @@ sitemaps = {
 urlpatterns = [
     url(r'^', include('homepage.urls')),
 
-    url(r'^curriculum/profile/', include('editor.urls', namespace='curriculum_profile')),  # must be upper curriculum/
+    # must be upper than curriculum/
+    url(r'^curriculum/profile/', include(('editor.urls', 'editor'), namespace='curriculum_profile')),
     # namespase is a fix for api/v1/editor/curricula url (drf router)
     url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
     # url(r'^editor/', include('editor.urls')),
-    url(r'^studio/', include('editor.urls', namespace='studio')),
-    url(r'^browse/', include('editor.urls', namespace='browse')),
+    url(r'^studio/', include(('editor.urls', 'studio'), namespace='studio')),
+    url(r'^browse/', include(('editor.urls', 'browse'), namespace='browse')),
     url(r'^classroom/', include('classroom.urls')),
     url(r'^resources/', include('resources.urls')),
     url(r'^admin/', admin.site.urls),
@@ -47,7 +50,8 @@ urlpatterns = [
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
-    url(r'^discussion/', include('djeddit.urls')),
+    url(r'^discussion1/', include('djeddit.urls')),
+    url(r'^discussion/', discussion_app, name='discussion_app'),
     # due https://github.com/encode/django-rest-framework/issues/2760 namespace do not work
     # url(r'^api/v1/', include('pib.urls_api', namespace='api')),
     url(r'^api/v1/', include('pib.urls_api')),

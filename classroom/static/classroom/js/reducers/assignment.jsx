@@ -15,10 +15,10 @@ export default function assignmentReducer (state = initialState, action) {
       return Object.assign({}, state, {
         assignmentsList: action.payload.assignmentsList
       })
-    case ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON:
-      return Object.assign({}, state, {
-        uncompletedLesson: action.payload.uncompletedLesson
-      })
+    // case ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON:
+    //   return Object.assign({}, state, {
+    //     uncompletedLesson: action.payload.uncompletedLesson
+    //   })
     case ASSIGNMENT_RECEIVE_ASSIGNMENT_SUCCESS:
     case ASSIGNMENT_UPDATE_ASSIGNMENT_SUCCESS:
       return Object.assign({}, state, {

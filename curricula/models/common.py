@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
-from django.core import urlresolvers
+from django.urls import reverse
+# from django.core import urlresolvers # django 1.11.20
 
 
 def get_earliest_gap(seq):
@@ -26,7 +27,8 @@ class BaseModel(models.Model):
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
-        return urlresolvers.reverse(
+        # return urlresolvers.reverse(
+        return reverse(
             'admin:{}_{}_change'.format(
                 content_type.app_label,
                 content_type.model
@@ -38,6 +40,7 @@ class BaseModel(models.Model):
         copy = self.__class__.objects.get(id=self.id)
         copy.id = None
         copy.uuid = None
+        copy.thread_id = None
         setattr(copy, self.CloneMeta.parent_field, to_parent)
         copy.save()
         self.clone_children(copy)

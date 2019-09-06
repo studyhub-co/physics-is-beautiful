@@ -3,7 +3,7 @@
 import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 // import { routerMiddleware } from 'react-router-redux'
 
 import rootReducer from '../reducers'
@@ -32,13 +32,17 @@ export default function configureStore (initialState, history) {
   //   middleware
   // )
 
+  const reducers = combineReducers({...rootReducer, router: connectRouter(history)})
+
   // Add the reducer to your store on the `router` key
   // Also apply our middleware for navigating
   const store = createStore(
     // rootReducer,
-    connectRouter(history)(rootReducer),
+    // connectRouter(history)(rootReducer),
+    reducers,
     initialState,
     middlewareWithDevTools
+
     // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(
   )
 

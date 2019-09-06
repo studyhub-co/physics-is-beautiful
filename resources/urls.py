@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^(?P<resource_slug>[\w\-\.]+)/problems/(?P<chapter_slug>[\w\-\.]+)/solutions/(?P<solution_slug>[\w\-\.]+)/(?P<uuid>[0-9a-zA-Z]+)/$',
         TemplateView.as_view(template_name='resources/resources.html'),
         name='resources-solution'),
+    url(r'^adblock/$', TemplateView.as_view(template_name='resources/resources.html'), name='resources-adblock'),
 ]

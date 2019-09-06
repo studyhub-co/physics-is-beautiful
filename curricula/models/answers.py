@@ -9,6 +9,7 @@ from django.db import models
 from django.core.exceptions import ValidationError, MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+# from django.contrib.postgres.fields import JSONField
 
 from jsonfield import JSONField
 
@@ -38,7 +39,7 @@ class Answer(BaseModel):
 
     class CloneMeta:
         parent_field = 'question'
-        
+
     objects = AnswerQuerySet.as_manager()
 
     uuid = ShortUUIDField()
@@ -56,9 +57,11 @@ class Answer(BaseModel):
             return self.content.matches(answer)
 
     def save(self, *args, **kwargs):
-        # if self.question and self.question.question_type == Question.QuestionType.SINGLE_ANSWER:
-        if self.question and self.question.answer_type != Question.AnswerType.MULTISELECT_CHOICE and \
-                self.question.answer_type != Question.AnswerType.MULTIPLE_CHOICE:
+        if self.question and self.question.answer_type not in [
+            Question.AnswerType.MULTISELECT_CHOICE,
+            Question.AnswerType.MULTIPLE_CHOICE,
+            Question.AnswerType.TEXT,
+        ]:
             self.is_correct = True
         super(Answer, self).save(*args, **kwargs)
 
@@ -112,22 +115,12 @@ class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
 
         return self.match_math(self.representation, obj.representation)
 
-        # # parse latex into sympy and then compare (use `.expand`, `simplify`
-        # # and `trigsimp` to get to a canonical form)
-        # try:
-        #     left_side = process_sympy(self.representation)
-        #     right_side = process_sympy(obj.representation)
-        # except Exception:
-        #     # if we fail to parse it, then it's not valid
-        #     return False
-        # return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
-
     def convert_to_vector(self):
         """
         For now we assume that the vector must come in the format:
             A\hat{x|i} ± B\hat{y|j}
         where A and B are the x and y components of the
-        vector, respsectively.
+        vector, respectively.
         Note that each space specified in the typing is escaped by the `\`
         character, so we must account for those as well.
         """
@@ -207,10 +200,13 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
     )
 
     # conversion_steps = [{"numerator":"", "denominator":""},  {"numerator":"", "denominator":""}, ...]
-    conversion_steps = JSONField(blank=True, null=True, default=[{'numerator':'','denominator':''}], help_text="Numerator/Denominator steps")
+    conversion_steps = JSONField(blank=True, null=True,
+                                 default=[{'numerator': '', 'denominator': ''}],
+                                 help_text="Numerator/Denominator steps")
 
     question_number = models.FloatField(blank=True, null=True)
-    question_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
+    question_unit = models.CharField(blank=True, null=True, max_length=100,
+                                     help_text="Correct unit: m, s, kg, m/s, etc")
     answer_number = models.FloatField(blank=True, null=True)
     answer_unit = models.CharField(blank=True, null=True, max_length=100, help_text="Correct unit: m, s, kg, m/s, etc")
 
@@ -270,7 +266,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
         left_si = q.to_base_units().magnitude
         right_si = Q_(str(self.answer_number) + ' ' + self.answer_unit).to_base_units().magnitude
         return self.match_math(str(left_si), str(right_si))
-    
+
     def __str__(self):
         return 'UnitConversion: {}'.format(self.answer)
 
@@ -295,11 +291,6 @@ class ImageWText(BaseModel):
             self.image = ''
         super(ImageWText, self).save(*args, **kwargs)
 
-    # def matches(self, obj):
-    #     if isinstance(obj, Answer):
-    #         return self.matches(obj.content)
-    #     raise ValidationError('It does not make sense to try to compare 2 images.')
-
     def matches(self, obj):
         if isinstance(obj, Answer):
             return self.matches(obj.content)
@@ -310,6 +301,21 @@ class ImageWText(BaseModel):
 
     def __str__(self):
         return 'Image: {}, Text: {}'.format(self.image, self.text)
+
+
+class Text(BaseModel):
+
+    class Meta:
+        db_table = 'curricula_text'
+
+    text = models.TextField(blank=True)
+
+    def matches(self, obj):
+        print(self.text.lower(), obj.text.lower())
+        return self.text.lower() == obj.text.lower()
+
+    def __str__(self):
+        return self.text
 
 
 class Vector(BaseModel):
@@ -437,3 +443,33 @@ class Vector(BaseModel):
         return 'Vector: {}x + {}y ({}, {}°)'.format(
             self.x_component, self.y_component, self.magnitude, self.angle
         )
+
+
+class MySQL(BaseModel):
+    text = models.TextField()  # expected_output as string
+    expected_output_json = JSONField(default=None)  # expected_output as json
+    schema_SQL = models.TextField()
+    schema_SQL_json = JSONField(default=None)  # database as JSON
+    schema_is_valid = models.BooleanField(default=False)
+    query_SQL = models.TextField()
+
+    def clean(self):
+        if not self.pk:  # do not validate if new empty answer
+            return
+
+        from ..helpers.mysql_problem_type import clean_my_sql_problem_type
+        clean_my_sql_problem_type(self)
+
+    def matches(self, obj):
+        from ..helpers.mysql_problem_type import clean_my_sql_problem_type
+        return clean_my_sql_problem_type(self, obj.query_SQL)
+
+    def get_json_from_sql(self, query_sql):
+        from ..helpers.mysql_problem_type import get_json_result_from_sql
+        return get_json_result_from_sql(self, query_sql)
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        db_table = 'curricula_mysql'

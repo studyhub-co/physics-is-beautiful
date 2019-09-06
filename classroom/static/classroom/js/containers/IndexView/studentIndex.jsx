@@ -8,7 +8,7 @@ import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { Grid } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 
 import { JoinClassroomView, StudentClassroomView } from '../index'
 import { StudentClassroomRow } from '../../components/StudentClassroomRow'
@@ -17,38 +17,39 @@ import * as tabsCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
 
 class StudentIndexView extends React.Component {
-
   componentWillMount () {
     this.props.classroomActions.classroomFetchStudentClassroomsList()
     this.props.tabActions.changeSelectedTab('student', 'tab', true)
   }
 
-  render () {
-    var baseUrl =  this.props.match.url.replace(/\/$/, '')
-    var studentClassroomUrl = baseUrl + '/:uuid/'
-
-    var joinUrl = baseUrl + '/new/join'
-
-    if (this.props.match.params && this.props.match.params.joinCode) {
+  componentWillReceiveProps (nextProps, nextContext) {
+    if (nextProps.match.params && nextProps.match.params.joinCode) {
       var joinCode = this.props.match.params.joinCode
       // join to classroom and redirect to classroom student view
       if (joinCode) {
         this.props.classroomActions.classroomJoinClassroom(joinCode)
       }
     }
+  }
+
+  render () {
+    var baseUrl = this.props.match.url.replace(/\/$/, '')
+    var joinUrl = baseUrl + '/new/join'
+
+    var studentClassroomUrl = baseUrl + '/:uuid/'
 
     return <div>
       {this.props.location.pathname === '/classroom/student/' && this.props.classroomStudentList
-        ? <Grid fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
+        ? <Container fluid>{ this.props.classroomStudentList.map(function (classroom, i) {
           return <StudentClassroomRow
             classroom={classroom}
             onAssignmentsClick={(url) => this.props.dispatch(push(url))}
             baseUrl={baseUrl}
             key={i} />
         }, this)}
-        </Grid> : null }
+        </Container> : null }
       <Route exact path={studentClassroomUrl} component={StudentClassroomView} />
-      {/* TODO I think iti is better to move  join URL to routes.jsx */}
+      {/* TODO it is better to move join URL to routes.jsx */}
       <Route path={joinUrl} component={JoinClassroomView} />
       {/* if classrooms list and not empty */}
       {this.props.classroomStudentList && this.props.classroomStudentList.length > 0
@@ -90,7 +91,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
-    classroomActions: bindActionCreators(classroomCreators, dispatch),
+    classroomActions: bindActionCreators(classroomCreators, dispatch)
   }
 }
 

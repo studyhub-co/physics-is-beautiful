@@ -1,6 +1,5 @@
 import React from 'react'
-import { Modal, Popover, OverlayTrigger, Button, OverlayMixin, FormGroup,
-  ControlLabel, Checkbox, FormControl, Image, Row, Col } from 'react-bootstrap'
+import { Modal, Button, FormGroup, FormCheck } from 'react-bootstrap'
 
 import LoggedInForm from './profile_logged_in_form'
 
@@ -9,10 +8,14 @@ class AnonymousForm extends React.Component {
     return (
       <form>
         <FormGroup>
-          <ControlLabel>Sound settings</ControlLabel>
-          <Checkbox checked={this.props.soundEnabled} onChange={this.props.toggleSound}>
-              Sound enabled
-          </Checkbox>
+          <FormCheck>
+            <h4>Sound settings</h4>
+            <FormCheck.Input
+              checked={this.props.soundEnabled}
+              onChange={this.props.toggleSound}
+              type={'checkbox'} />
+            <FormCheck.Label>Sound enabled</FormCheck.Label>
+          </FormCheck>
         </FormGroup>
       </form>
     )
@@ -20,7 +23,6 @@ class AnonymousForm extends React.Component {
 }
 
 class ProfileControl extends React.Component {
-
   render () {
     var name, form
     if (!this.props.isAnonymous) {
@@ -35,10 +37,11 @@ class ProfileControl extends React.Component {
       form = <AnonymousForm {...this.props} />
     }
     return (
-      <li className='nav-item'>
-        <a className='settings' onClick={this.props.open}>
+      <span>
+        {/*<li className='nav-item'>*/}
+        <span className='settings' onClick={this.props.open}>
           {name}
-        </a>
+        </span>
         <Modal className='settings-modal' show={this.props.show} onHide={this.props.close} aria-labelledby='ModalHeader'>
           <Modal.Header closeButton>
             <Modal.Title>Profile</Modal.Title>
@@ -48,10 +51,11 @@ class ProfileControl extends React.Component {
             {form}
           </Modal.Body>
           <Modal.Footer>
-            <Button bsStyle='primary' onClick={this.props.save} disabled={this.props.hasErrors}>Save changes</Button>
+            <Button onClick={this.props.save} disabled={this.props.hasErrors}>Save changes</Button>
           </Modal.Footer>
         </Modal>
-      </li>
+         {/*</li>*/}
+      </span>
     )
   }
 }
@@ -167,7 +171,7 @@ export default class ProfileModalApp extends React.Component {
         };
         $.ajax({
             type: 'PATCH',
-            url: '/api/v1/profiles/me',
+            url: '/api/v1/profiles/me/',
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(profile),

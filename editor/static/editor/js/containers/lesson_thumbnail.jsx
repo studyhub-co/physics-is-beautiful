@@ -1,20 +1,17 @@
-import React from 'react';
+import React from 'react'
 import { connect } from 'react-redux'
 
-import { history } from '../history';
+import { history } from '../history'
 
-import {renameLesson, changeLessonImage} from '../actions';
-
-import {LessonThumbnail} from '../components/lesson_thumbnail';
+import {LessonThumbnail} from '../components/lesson_thumbnail'
 
 const mapStateToProps = (state, ownProps) => {
-  var les = state.lessons[ownProps.uuid];
+  var les = state.lessons[ownProps.uuid]
   return {
-    name : les.name,
-    image : les.image,
-    onClick : () => { history.push('/studio/editor/lessons/'+ownProps.uuid+'/') }
+    name: les.name,
+    image: les.image,
+    onClick: () => { history.push('/studio/editor/lessons/' + ownProps.uuid + '/') }
   }
 }
 
- 
-export const LessonThumbnailContainer = connect(mapStateToProps)(LessonThumbnail);
+export const LessonThumbnailContainer = connect(mapStateToProps)(LessonThumbnail)

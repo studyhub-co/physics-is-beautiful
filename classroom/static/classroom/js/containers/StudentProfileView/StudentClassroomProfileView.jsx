@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import history from '../../history'
+import Draggable from 'react-draggable'
+
 import { BASE_URL } from '../../utils/config'
 import { push } from 'connected-react-router'
 
@@ -12,7 +13,8 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 import * as assignmentCreators from '../../actions/assignment'
 
-import { Grid, Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
+import { FaTimes, FaClock, FaChevronLeft, FaCog, FaCheck } from 'react-icons/fa'
+import { Container, Row, Col, Image, Dropdown, DropdownItem } from 'react-bootstrap'
 import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 class StudentClassroomProfileView extends React.Component {
@@ -48,98 +50,102 @@ class StudentClassroomProfileView extends React.Component {
     var className = 'assignment-teacher-card'
     return (
       <div>
-        <Grid fluid>
+        <Container fluid>
           <Row>
             <Col
               sm={6}
               md={6}
+              xs={12}
               style={{textAlign: 'left', paddingTop: '1rem'}} >
               <a
                 className={'back-button'}
                 onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/students/')) }} >
-                <span
-                  className='glyphicon glyphicon-menu-left'
-                  style={{fontSize: 16}} />
+                <FaChevronLeft />
                 All students
               </a>
             </Col>
-            <Col sm={6} md={6} className={'text-right'}>
+            <Col sm={6} md={6} xs={12} className={'text-right'}>
               {this.props.classroomTeacher && !this.props.classroomTeacher.external_classroom ? <Dropdown onSelect={this.handleSettingsClick} id='dropdown-settings'>
                 <Dropdown.Toggle className={'classroom-common-button'}>
-                  <Glyphicon glyph='cog' />&nbsp;
+                  {/* <Glyphicon glyph='cog' />&nbsp; */}
+                  <FaCog />&nbsp;
                 Manage student
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <MenuItem eventKey='remove'>Remove from class</MenuItem>
-                  {/* <MenuItem eventKey='send'>Send reminder</MenuItem> */}
-                  {/* <MenuItem eventKey='edit'>Move student</MenuItem> */}
+                  <DropdownItem eventKey='remove'>Remove from class</DropdownItem>
+                  {/* <DropdownItem eventKey='send'>Send reminder</DropdownItem> */}
+                  {/* <DropdownItem eventKey='edit'>Move student</DropdownItem> */}
                 </Dropdown.Menu>
               </Dropdown> : null}
             </Col>
           </Row>
           <Row className={className}>
-            <Col sm={1} md={1}>
+            <Col sm={2} md={1} xs={2}>
               {this.props.studentClassroomProfile && this.props.studentClassroomProfile.avatar_url
                 ? <Image
-                  responsive
+                  fluid
                   src={this.props.studentClassroomProfile.avatar_url}
-                  circle />
+                  roundedCircle />
                 : null}
             </Col>
-            <Col sm={8} md={8}>
+            <Col sm={6} md={7} xs={8}>
               { this.props.studentClassroomProfile ? <div>
                 <div className={'title'}>{this.props.studentClassroomProfile.display_name}</div>
                 <div className={'deep-gray-text'}>{this.props.studentClassroomProfile.username}</div></div>
                 : null }
             </Col>
-            <Col sm={3} md={3} className={'vcenter'}>
-              <div className={'gray-text'}>
+            <Col sm={5} md={4} xs={12} className={'vcenter'}>
+              <div style={{whiteSpace: 'nowrap', marginTop: '2rem'}}>
                 <span className={'green-completed-box'}>
-                  <span title={'Completed'} className='glyphicon glyphicon-ok'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}
-                  </span>
+                  <FaCheck title={'Completed'} /> &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_completed_assignments : ''}
                 </span>
                 <span className={'yellow-delayed-box'}>
-                  <span title={'Completed late'} className='glyphicon glyphicon-time'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
-                  </span>
+                  <FaClock title={'Completed late'} />
+                  &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_delayed_assignments : ''}
                 </span>
                 <span className={'red-missed-box'}>
-                  <span title={'Missed'} className='glyphicon glyphicon-remove'>
-                    &nbsp;{this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_missed_assignments : ''}
-                  </span>
+                  <FaTimes title={'Missed'} />
+                  &nbsp;{ this.props.studentClassroomProfile ? this.props.studentClassroomProfile.counts.num_missed_assignments : '' }
                 </span>
               </div>
             </Col>
           </Row>
-        </Grid>
-        <Grid fluid>
-          <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-            <Col sm={6} md={6}>
-              <span className={'gray-text'}>Assignment</span>
-            </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
+        </Container>
+        <Draggable
+          disabled={screen.width > 770}
+          axis='x'
+          bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}}
+        >
+          <div style={{minWidth: '500px'}}>
+            <Container fluid>
+              <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
+                <Col sm={5} md={5} xs={4}>
+                  <span className={'gray-text'}>Assignment</span>
+                </Col>
+                <Col sm={2} md={2} xs={2} className={'vcenter'}>
               Assigned on
-            </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
+                </Col>
+                <Col sm={3} md={3} xs={3} className={'vcenter'}>
               Status
-            </Col>
-            <Col sm={2} md={2} className={'vcenter'}>
+                </Col>
+                <Col sm={2} md={2} xs={2} className={'vcenter'}>
               Completed on
-            </Col>
-          </Row>
-        </Grid>
-        <hr style={{margin: '0'}} />
-        <Grid fluid>
-          { this.props.studentAssignmentsList
-            ? this.props.studentAssignmentsList.map(function (assignment, i) {
-              return <TeacherStudentAssignmentRow
-                isTeacher={Boolean(true)}
-                assignment={assignment}
-                onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
-                key={i} />
-            }, this) : null}
-        </Grid>
+                </Col>
+              </Row>
+            </Container>
+            <hr style={{margin: '0'}} />
+            <Container fluid>
+              { this.props.studentAssignmentsList
+                ? this.props.studentAssignmentsList.map(function (assignment, i) {
+                  return <TeacherStudentAssignmentRow
+                    isTeacher={Boolean(true)}
+                    assignment={assignment}
+                    onTitleClick={() => { this.onAssignmentTitleClick(assignment) }}
+                    key={i} />
+                }, this) : null}
+            </Container>
+          </div>
+        </Draggable>
       </div>
     )
   }

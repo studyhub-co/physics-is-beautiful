@@ -10,7 +10,6 @@ except ImportError:
     MiddlewareMixin = object
 
 from django.conf import settings
-from django.db.models.expressions import F
 from django.utils import timezone
 
 from .models import User
@@ -20,7 +19,8 @@ class LastUserActivityMiddleware(MiddlewareMixin):
     KEY = "last-activity"
 
     def process_request(self, request):
-        if request.user.is_authenticated():
+        # if request.user.is_authenticated: # django 1.11.20
+        if request.user.is_authenticated:
             last_activity = request.session.get(self.KEY)
             last_activity_date = None
 

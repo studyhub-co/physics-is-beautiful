@@ -1,12 +1,11 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-// import { Route } from 'react-router'
-// import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Row, Col } from 'react-bootstrap/'
-// import { Grid, Row, Col, Button, Glyphicon, Overlay, Image, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+// import { Container, Row, Col, Button, Glyphicon, Overlay, Image, FormGroup, InputGroup, FormControl } from 'react-bootstrap'
 // import { RingLoader } from 'react-spinners'
 // import Moment from 'react-moment'
 
@@ -39,7 +38,7 @@ class ActivityTabView extends React.Component {
           </div>
         </Col>
       </Row>
-      <Row style={{paddingTop: '2rem'}}>
+      <Row>
         <Col sm={12} md={12}>
           {this.props.badges
             // TODO sort by level

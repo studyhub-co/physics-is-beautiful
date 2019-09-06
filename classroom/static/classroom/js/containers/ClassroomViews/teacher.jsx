@@ -3,21 +3,19 @@ import PropTypes from 'prop-types'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
 import { Route } from 'react-router'
-
 import { push } from 'connected-react-router'
-import { BASE_URL } from '../../utils/config'
-
-import history from '../../history'
-
+import { FaChevronLeft, FaCheck, FaTimes, FaClock, FaPencilAlt } from 'react-icons/fa'
 import Clipboard from 'react-clipboard.js'
-import EditableLabel from '../../utils/editableLabel'
+import { Container, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
+import { BASE_URL } from '../../utils/config'
+import history from '../../history'
+import EditableLabel from '../../utils/editableLabel'
 import { CurriculumRow } from '../../components/CurriculumRow'
 import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
-
-import { Grid, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { AssignmentView, AssignmentEdit, TeacherClassroomStudentsView } from '../index'
 
 import * as assignmentCreators from '../../actions/assignment'
 import * as classroomCreators from '../../actions/classroom'
@@ -25,10 +23,8 @@ import * as studentCreators from '../../actions/student'
 import * as tabsCreators from '../../actions/tab'
 import * as googleCreators from '../../actions/google'
 
-import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
-import { AssignmentView, AssignmentEdit, TeacherClassroomStudentsView } from '../index'
-
 class TeacherClassroomView extends React.Component {
+  // componentDidUpdate () { # TODO rewrite with
   componentWillMount () {
     // tabs
     this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
@@ -39,9 +35,11 @@ class TeacherClassroomView extends React.Component {
       this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
     }
     // data
-    this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
-    this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
-    this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
+    if (this.props.match.params['uuid'] !== 'create') {
+      this.props.classroomActions.classroomFetchTeacherClassroom(this.props.match.params['uuid'])
+      this.props.studentActions.classroomFetchStudentsClassroomList(this.props.match.params['uuid'])
+      this.props.assignmentActions.assignmentFetchAssignmentList(this.props.match.params['uuid'])
+    }
   }
 
   constructor (props) {
@@ -57,6 +55,15 @@ class TeacherClassroomView extends React.Component {
       createNewAssigment: false
     }
   }
+
+  // shouldComponentUpdate (nextProps, nextState) {
+  //   if (nextProps.match && nextProps.match.params) {
+  //     if (nextProps.match.params.uuid === 'create') {
+  //       return false
+  //     }
+  //   }
+  //   return true
+  // }
 
   handleCreateAssigment () {
     this.setState(
@@ -125,12 +132,13 @@ class TeacherClassroomView extends React.Component {
 
     return (
       <div className={'pop-up-window'}>
-        <Grid fluid> { this.props.classroomTeacher
+        <Container fluid> { this.props.classroomTeacher
           ? <Col sm={12} md={12} style={{padding: 0}}>
             <Row style={{padding: 0}}>
               <Col sm={12} md={12} style={{textAlign: 'left', padding: 0}} >
                 <a className={'back-button'} onClick={() => { history.push(BASE_URL + 'teacher/') }} >
-                  <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                  {/* <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} /> */}
+                  <FaChevronLeft />
                   All Classrooms
                 </a>
               </Col>
@@ -145,13 +153,14 @@ class TeacherClassroomView extends React.Component {
                       text={this.props.classroomTeacher.name} />
                   </span>
                   &nbsp;
-                  <span className='glyphicon glyphicon-pencil' />
+                  {/* <span className='glyphicon glyphicon-pencil' /> */}
+                  <FaPencilAlt />
                 </span>
               </Col>
             </Row>
           </Col>
           : null }
-        </Grid>
+        </Container>
         <Tabs name='teacherClassroomTab'
           className='tabs'
           handleSelect={
@@ -284,23 +293,26 @@ class TeacherClassroomView extends React.Component {
                 ? <span className={'gray-text'}>{this.props.classroomTeacher.count_students + ' student' + studentsS}</span>
                 : null}
               {this.props.assignmentsList && isExactUrl
-                ? <Grid fluid>
+                ? <Container fluid>
                   <Row style={{padding: '1rem 2rem', margin: '0'}} className={'small-text'}>
-                    <Col sm={5} md={5}>
+                    <Col sm={5} md={5} xs={5}>
                       <span className={'gray-text'}>Active assignments</span>
                     </Col>
-                    <Col sm={2} md={2} className={'vcenter'}>
+                    <Col sm={2} md={2} xs={2} className={'vcenter'}>
                         Start on
                     </Col>
-                    <Col sm={2} md={2} className={'vcenter'}>
+                    <Col sm={2} md={2} xs={2} className={'vcenter'}>
                       Due on
                     </Col>
-                    <Col sm={2} md={2} className={'vcenter'}>
-                      <span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' />
-                      <span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' />
-                      <span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' />
+                    <Col sm={2} md={2} xs={6} className={'vcenter'}>
+                      {/* <span title={'Completed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-ok' /> */}
+                      <FaCheck title={'Completed'} style={{padding: '0 1rem'}} />
+                      {/* <span title={'Completed late'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-time' /> */}
+                      <FaClock title={'Completed late'} style={{padding: '0 1rem'}} />
+                      {/* <span title={'Missed'} style={{padding: '0 1rem'}} className='glyphicon glyphicon-remove' /> */}
+                      <FaTimes title={'Missed'} style={{padding: '0 1rem'}} />
                     </Col>
-                    <Col sm={1} md={1} />
+                    <Col sm={1} md={1} xs={6} />
                   </Row>
                   <hr style={{margin: '0'}} />
                   { this.props.assignmentsList.map(function (assignment, i) {
@@ -311,7 +323,7 @@ class TeacherClassroomView extends React.Component {
                       baseUrl={BASE_URL}
                       key={i} />
                   }, this)}
-                </Grid> : null }
+                </Container> : null }
               { isExactUrl ? <div className={'join-another-classroom'} onClick={this.handleCreateAssigment}>
                 + Create an assignment
               </div> : null }

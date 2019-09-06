@@ -5,15 +5,17 @@ import { Route } from 'react-router'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Col from 'react-bootstrap/lib/Col'
-import Grid from 'react-bootstrap/lib/Grid'
-import Row from 'react-bootstrap/lib/Row'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import ListGroup from 'react-bootstrap/lib/ListGroup'
-import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+// import Glyphicon from 'react-bootstrap/Glyphicon'
+import { FaCheck } from 'react-icons/fa'
+
+import ListGroup from 'react-bootstrap/ListGroup'
+import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import { RingLoader } from 'react-spinners'
 import InfiniteScroll from 'react-infinite-scroller'
-import Moment from 'react-moment'
+// import Moment from 'react-moment'
 
 import history from '../../history'
 
@@ -24,6 +26,8 @@ import * as notificationsCreators from '../../actions/notifications'
 import Profile from '../../components/NotificationsDeserializers/profile'
 import Thread from '../../components/NotificationsDeserializers/thread'
 import Badge from '../../components/NotificationsDeserializers/badge'
+import Lesson from '../../components/NotificationsDeserializers/lesson'
+import Module from '../../components/NotificationsDeserializers/module'
 
 class NotificationsTabView extends React.Component {
   constructor (props) {
@@ -77,6 +81,11 @@ class NotificationsTabView extends React.Component {
   }
 
   onFilterClick (filter) {
+    if (this.props.cancelSource) {
+      // cancel prev request
+      this.props.cancelSource.cancel()
+    }
+
     if (filter === 'unread') {
       if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
         var unReadUrl = this.props.match.url.replace(/read\/$/, '');
@@ -102,6 +111,35 @@ class NotificationsTabView extends React.Component {
     }
   }
 
+  getNotificationStringFromOjbect (notification, type) {
+    return <span>
+      { notification[type] && notification[type]['content_type'] === 'thread'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Thread thread={notification[type]} />&nbsp;
+        </span>
+        : null
+      }
+      { notification[type] && notification[type]['content_type'] === 'badge'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Badge badge={notification[type]} user={notification['recipient']} />&nbsp;
+        </span>
+        : null
+      }
+      { notification[type] && notification[type]['content_type'] === 'lesson'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Lesson lesson={notification[type]} />&nbsp;
+        </span>
+        : null
+      }
+      { notification[type] && notification[type]['content_type'] === 'module'
+        ? <span>
+          { type === 'target' ? 'on ' : null }<Module module={notification[type]} />&nbsp;
+        </span>
+        : null
+      }
+    </span>
+  }
+
   render () {
     var items = []
     var markAsTitle = 'read'
@@ -111,38 +149,54 @@ class NotificationsTabView extends React.Component {
 
     if (this.props.notifications) {
       for (var i = 0; i < this.state.notifications.length; i++) {
-        var currentItem = this.state.notifications[i]
+        var notification = this.state.notifications[i]
+        let that = this
+
+        let getMarkAsFunc = function (id) {
+          return function () {
+            that.markAs(id)
+          }
+        }
+
+        var actionString = this.getNotificationStringFromOjbect(notification, 'action_object')
+        var targetString = this.getNotificationStringFromOjbect(notification, 'target')
 
         items.push(
-          <Row key={currentItem.id}>
+          <Row key={notification.id}>
             <Col sm={2} md={2}>
+            {/*<Col sm={2} md={2}>*/}
               {/*<Moment fromNow>*/}
-              {currentItem['timesince']}
+              {notification['timesince']}
               {/*</Moment>*/}
+            {/*</Col>*/}
+            {/*<Col sm={2} md={2}>*/}
             </Col>
-            <Col sm={2} md={2}>
-              {currentItem['recipient'].id !== currentItem['actor'].id
-                ? <Profile profile={currentItem['actor']} />
+            <Col sm={8} md={8}>
+              {notification['recipient'].id !== notification['actor'].id
+                ? <Profile profile={notification['actor']} />
                 : <span>You've</span>
               }
+            {/*</Col>*/}
+            {/*<Col sm={3} md={3}>*/}
+            &nbsp;
+              <span>{notification['verb']}</span>
+            &nbsp;
+            {/*</Col>*/}
+            {/*<Col sm={3} md={3}>*/}
+              { actionString }
+              { targetString }
+              {/*{ notification[type] && notification[type]['content_type'] === 'thread'*/}
+                {/*? <Thread thread={notification[type]} />*/}
+                {/*: null*/}
+              {/*}*/}
+              {/*{ notification[type] && notification[type]['content_type'] === 'badge'*/}
+                {/*? <Badge badge={notification[type]} user={notification['recipient']} />*/}
+                {/*: null*/}
+              {/*}*/}
             </Col>
-            <Col sm={3} md={3}>
-              <span>{currentItem['verb']}</span>
-            </Col>
-            <Col sm={3} md={3}>
-              { currentItem['target'] && currentItem['target']['content_type'] === 'thread'
-                ? <Thread thread={currentItem['target']} />
-                : null
-              }
-              { currentItem['target'] && currentItem['target']['content_type'] === 'badge'
-                ? <Badge badge={currentItem['target']} user={currentItem['recipient']} />
-                : null
-              }
-            </Col>
-            <Col sm={1} md={1}>
-              <Glyphicon
-                glyph={'ok'}
-                onClick={() => this.markAs(currentItem.id)}
+            <Col sm={2} md={2}>
+              <FaCheck
+                onClick={getMarkAsFunc(notification.id)}
                 title={'Mark as ' + markAsTitle}
                 style={{fontSize: '1.5rem', cursor: 'pointer'}} />
             </Col>
@@ -152,11 +206,9 @@ class NotificationsTabView extends React.Component {
     }
 
     return <div>
-      <Grid fluid>
+      <Container fluid>
         <Row style={{padding: '2rem 0 0 0'}}>
           <Col sm={2} md={2}>
-           {/*<Button>Unread</Button>*/}
-           {/*<Button>Read</Button>*/}
             <ListGroup>
               <ListGroupItem
                 onClick={() => this.onFilterClick('unread')}
@@ -195,7 +247,7 @@ class NotificationsTabView extends React.Component {
             }
           </Col>
         </Row>
-      </Grid>
+      </Container>
     </div>
   }
 }
@@ -212,9 +264,10 @@ NotificationsTabView.propTypes = {
     fetchNotifications: PropTypes.func.isRequired,
     markAsRead: PropTypes.func.isRequired
   }).isRequired,
-  profile: PropTypes.object,
-  profile_fetching: PropTypes.bool,
-  notifications: PropTypes.object
+  // profile: PropTypes.object,
+  // profile_fetching: PropTypes.bool,
+  notifications: PropTypes.object,
+  cancelSource: PropTypes.object
   // dispatch: PropTypes.func.isRequired
 }
 
@@ -223,6 +276,7 @@ const mapStateToProps = (state) => {
     // profile: state.profile.profile,
     // profile_fetching: state.profile.fetching
     notifications: state.notifications.notifications,
+    cancelSource: state.notifications.cancelSource
   }
 }
 

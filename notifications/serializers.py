@@ -2,13 +2,16 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-from profiles.serializers import PublicProfileSerializer
-from .models import Notification
+from curricula.models import Lesson, Module
+from curricula.serializers import LessonSerializer, ModuleSerializer
+from curricula.services import get_progress_service
 
 from djeddit.models import Thread, Post
-
+from profiles.serializers import PublicProfileSerializer
 from badges.models import Badge
 from badges.serializers import BadgeSerializer
+
+from .models import Notification
 
 
 class MiniThreadSerializer(serializers.ModelSerializer):
@@ -41,6 +44,15 @@ class BaseObjectRelatedField(serializers.RelatedField):
         if isinstance(value, Badge):
             data = BadgeSerializer(value).data
             data['content_type'] = 'badge'
+            return data
+        if isinstance(value, Lesson):
+            data = LessonSerializer(value).data
+            data['content_type'] = 'lesson'
+            return data
+        if isinstance(value, Module):
+            progress_service = get_progress_service(self.context['request'])
+            data = ModuleSerializer(value, context={'progress_service': progress_service}).data
+            data['content_type'] = 'module'
             return data
         if isinstance(value, get_user_model()):
             data = PublicProfileSerializer(value.profile).data

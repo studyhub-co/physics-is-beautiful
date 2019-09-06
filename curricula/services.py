@@ -1,5 +1,8 @@
 from django.utils.functional import cached_property
 
+# from user_reputation.models import Reputation
+# from notifications.signals import notify
+
 from .models import LessonProgress
 from .serializers import LessonProgressSerializer, UserResponseSerializer
 
@@ -11,7 +14,7 @@ class LessonLocked(Exception):
 
 
 def get_progress_service(request, current_lesson=None):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return ProgressService(request, current_lesson=current_lesson)
     else:
         return AnonymousProgressService(
@@ -56,7 +59,8 @@ class ProgressServiceBase(object):
 
     def unlock_lesson(self, lesson):
         lesson_progress = self.get_lesson_progress(lesson)
-        if lesson_progress.status != LessonProgress.Status.UNLOCKED:
+        if lesson_progress.status != LessonProgress.Status.UNLOCKED and \
+                lesson_progress.status != LessonProgress.Status.COMPLETE:  # no need to change status for completed
             lesson_progress.status = LessonProgress.Status.UNLOCKED
             self._dirty_lesson_progresses[str(lesson.pk)] = lesson_progress
         return lesson_progress
@@ -103,6 +107,7 @@ class ProgressServiceBase(object):
             self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
             if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
                 self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
+
                 # unlock the next lesson!
                 next_lesson = self.current_lesson.get_next_lesson()
                 if next_lesson:

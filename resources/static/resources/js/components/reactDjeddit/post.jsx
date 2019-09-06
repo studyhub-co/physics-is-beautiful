@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import ReactMarkdown from 'react-markdown'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 // import RMathJax from 'react-mathjax'
 
 import { ReplyForm } from './replyForm'
@@ -62,7 +62,6 @@ export class Post extends React.Component {
   }
 
   render () {
-
     // react-mathjax1 do not work with "options="
     //   return (
     //    <RMathJax.Context
@@ -84,7 +83,7 @@ export class Post extends React.Component {
     return (
       <div>
         { this.props.post
-          ? <Grid fluid style={{padding: 0}}>
+          ? <Container fluid style={{padding: 0}}>
             <Row>
               <Col sm={11} md={11}>
                 <Row className={'gray-text'}>
@@ -125,9 +124,10 @@ export class Post extends React.Component {
                       </div>
                       <div className='djeddit-post-item-footer'>
                         <div className='djeddit-score'>
-                          <i className='fas fa-arrow-up djeddit-score-upvote  ' onClick={() => this.upDownClick(1)} />
+                          {/* TODO replace with react-icons*/}
+                          <i style={{cursor: 'pointer'}} className='fas fa-arrow-up djeddit-score-upvote  ' onClick={() => this.upDownClick(1)} />
                           <span className=' djeddit-score-number'>{this.props.post.score}</span>
-                          <i className='fas fa-arrow-down djeddit-score-downvote ' onClick={() => this.upDownClick(-1)} />
+                          <i style={{cursor: 'pointer'}} className='fas fa-arrow-down djeddit-score-downvote ' onClick={() => this.upDownClick(-1)} />
                         </div>
                         <div className='btn-group btn-group-xs fixed-50' role='group'>
                           <button
@@ -174,7 +174,7 @@ export class Post extends React.Component {
                 </div>
               </Col>
             </Row>
-          </Grid> : null }
+          </Container> : null }
       </div>
     )
   }

@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import InfiniteScroll from 'react-infinite-scroller'
 import { RingLoader } from 'react-spinners'
 
@@ -69,20 +69,22 @@ class ResourceSearchView extends React.Component {
       )
     })
 
-    return (<Grid fluid>{this.props.resourceSearchList
-      ? <div>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.loadNextPage}
-          hasMore={this.state.hasMoreItems}
-          loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
-        >
-          {items}
-        </InfiniteScroll>
-        { this.props.resourceSearchList.results.length === 0 ? <h4>
-          Sorry, we couldn't find any results for this query.
-        </h4> : null }
-      </div>
+    return (<Container fluid>{this.props.resourceSearchList
+      ? <Row>
+        <Col sm={12} md={12}>
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={this.loadNextPage}
+            hasMore={this.state.hasMoreItems}
+            loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
+          >
+            {items}
+          </InfiniteScroll>
+          { this.props.resourceSearchList.results.length === 0 ? <h4>
+            Sorry, we couldn't find any results for this query.
+          </h4> : null }
+        </Col>
+      </Row>
       : <Row>
         <Col sm={12} md={12}>
           <div style={{height: '10rem', marginLeft: '50%'}}>
@@ -93,7 +95,7 @@ class ResourceSearchView extends React.Component {
           </div>
         </Col>
       </Row> }
-    </Grid>
+    </Container>
     )
   }
 }
@@ -123,5 +125,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(ResourceSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(ResourceSearchView)
 export { ResourceSearchView as ResourceSearchViewNotConnected }
