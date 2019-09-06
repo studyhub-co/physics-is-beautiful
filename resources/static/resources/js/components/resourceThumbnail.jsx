@@ -2,7 +2,8 @@ import React from 'react'
 
 import PropTypes from 'prop-types'
 
-import { Image, Glyphicon } from 'react-bootstrap'
+import { Image } from 'react-bootstrap'
+import { FaImage } from 'react-icons/fa'
 import { BASE_URL } from '../utils/config'
 import { slugify } from '../utils/urls'
 
@@ -15,10 +16,26 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
   }
 
   onTitleClick (resourceUuid) {
-    var title = this.props.resource.metadata.data.volumeInfo.title
+    // var title = this.props.resource.metadata.data.volumeInfo.title
+    let title = this.props.resource.title
+    if (!title) {
+      title = 'Unknown resource'
+    }
     history.push(BASE_URL + slugify(title) + '/' + this.props.resource.uuid + '/')
   }
+
   render () {
+    let title = this.props.resource.title
+    if (!title) {
+      try {
+        title = this.props.resource.metadata.data.volumeInfo.title
+      } catch (e) {
+        if (e instanceof TypeError) {
+          title = ''
+        } else throw e
+      }
+    }
+
     return (
       <div
         className={'curriculum-card'}>
@@ -29,22 +46,27 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
             overflow: 'hidden',
             borderRadius: '15px',
             cursor: 'pointer'}}>
-          { this.props.resource.resource_type === 'TB' &&
-          this.props.resource.metadata &&
+          { this.props.resource.metadata &&
+            this.props.resource.metadata.data.hasOwnProperty('volumeInfo') &&
           this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
           this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
-            ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
-            : <Glyphicon glyph='picture' /> }
+            ? <Image fluid src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
+            : <FaImage size={'10em'} /> }
+        </div>
+        <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.5rem', cursor: 'pointer'}}>
+          {/*<div>{*/}
+            {/*this.props.resource.metadata.data.volumeInfo.title.length > 49*/}
+              {/*? this.props.resource.metadata.data.volumeInfo.title.substr(0, 50) + '...'*/}
+              {/*: this.props.resource.metadata.data.volumeInfo.title*/}
+          {/*}</div>*/}
+          <div> {
+            title.length > 49
+              ? title.substr(0, 50) + '...'
+              : title
+          }</div>
         </div>
         { this.props.resource.resource_type === 'TB' && this.props.resource.metadata
           ? <div>
-            <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.5rem', cursor: 'pointer'}}>
-              <div>{
-                this.props.resource.metadata.data.volumeInfo.title.length > 49
-                  ? this.props.resource.metadata.data.volumeInfo.title.substr(0, 50) + '...'
-                  : this.props.resource.metadata.data.volumeInfo.title
-              }</div>
-            </div>
             <div>{
               this.props.resource.metadata &&
               this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors') &&
@@ -55,7 +77,7 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
                 </span> // TODO limit authors list
               }, this)}</div>
           </div>
-          : <span>Unknown resource</span>
+          : null
         }
       </div>
     )

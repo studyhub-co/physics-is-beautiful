@@ -28,3 +28,18 @@ export function checkHttpError (error) {
   }
   throw error
 }
+
+// TODO move to a lib
+export function checkNestedProp (object, ...keys) {
+  return keys.reduce((a, b) => (a || { })[b], object) !== undefined
+}
+
+// export function checkNestedProp (obj, ...keys) {
+//   for (var i = 0; i < keys.length; i++) {
+//     if (!obj || !obj.hasOwnProperty(keys[i])) {
+//       return false
+//     }
+//     obj = obj[keys[i]]
+//   }
+//   return true
+// }

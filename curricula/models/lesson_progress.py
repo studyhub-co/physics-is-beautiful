@@ -31,5 +31,21 @@ class LessonProgress(BaseModel):
         self.status = self.Status.COMPLETE
         self.completed_on = timezone.now()
         self.score = score
+
+        # # module-finished﻿ start
+        # lesson_count = self.lesson.module.lessons.count()
+        # lesson_completed_count = \
+        #     LessonProgress.objects.filter(profile=self.profile,
+        #                                   status=LessonProgress.Status.COMPLETE,
+        #                                   lesson=self.lesson
+        #                                   )\
+        #     .count()
+        # if lesson_count == lesson_completed_count:
+        #     from ..meta_badges import ModuleFinished
+        #     badge = ModuleFinished.objects.filter(id='module-finished﻿')
+        #     badge.award_to(self.profile.user)
+        #
+        # # module-finished﻿ end
+
         if duration:
             self.duration = duration

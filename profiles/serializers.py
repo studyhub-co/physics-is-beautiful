@@ -23,14 +23,17 @@ class PublicProfileSerializer(BaseSerializer):
     username = serializers.CharField(source='user.username')
     avatar_url = serializers.CharField(source='get_avatar_url')
     id = serializers.IntegerField(source='user.id', read_only=True)  # (sic!) user_id != profile_id
+    last_activity = serializers.DateTimeField(source='user.last_activity', read_only=True)
 
     class Meta:
         model = Profile
-        fields = ['display_name', 'username', 'avatar_url', 'id', 'get_absolute_url']
-        read_only_fields = ['avatar_url', 'get_absolute_url']
+        fields = ['display_name', 'username', 'avatar_url', 'id', 'get_absolute_url',
+                  'created_on', 'profile_views', 'last_activity']
+        read_only_fields = ['avatar_url', 'get_absolute_url', 'created_on', 'profile_views']
 
 
 class ProfileSerializer(BaseSerializer):
+    # TODO set PublicProfileSerializer as base
     first_name = serializers.CharField(source='user.first_name')
     last_name = serializers.CharField(source='user.last_name')
     display_name = serializers.CharField(source='user.display_name')
@@ -38,20 +41,22 @@ class ProfileSerializer(BaseSerializer):
     avatar_url = serializers.CharField(source='get_avatar_url')
     id = serializers.IntegerField(source='user.id', read_only=True)  # (sic!) user_id != profile_id
     is_current_user_profile = serializers.SerializerMethodField()
+    last_activity = serializers.DateTimeField(source='user.last_activity', read_only=True)
     # selected_avatar = serializers.CharField(source='get_selected_avatar_display')
 
     def get_is_current_user_profile(self, obj):
-        if obj.user == self.context['request'].user:
-            return True
+        if self.context and 'request' in self.context:
+            if obj.user == self.context['request'].user:
+                return True
         return False
 
     class Meta:
         model = Profile
         fields = ['first_name', 'last_name', 'sound_enabled', 'display_name', 'id', 'get_absolute_url',
                   'gravatar_url', 'avatar_url', 'google_avatar_url', 'selected_avatar', 'user_avatar', 'is_staff',
-                  'is_current_user_profile'
+                  'is_current_user_profile', 'created_on', 'profile_views', 'last_activity'
                   ]
-        read_only_fields = ['get_absolute_url', ]
+        read_only_fields = ['get_absolute_url', 'created_on', 'profile_views']
 
     def to_representation(self, obj):
         if isinstance(obj, Profile):
@@ -79,7 +84,7 @@ class ProfileSerializer(BaseSerializer):
 
     def save(self):
         request = self.context['request']
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return super(ProfileSerializer, self).save()
         else:
             request.session['sound'] = self.validated_data['sound_enabled']

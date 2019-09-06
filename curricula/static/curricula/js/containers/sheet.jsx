@@ -1,8 +1,12 @@
 import React from 'react'
 import {Prompt, Link} from 'react-router-dom'
+import {FaChevronLeft} from 'react-icons/fa'
+
 import {Section} from '../navigation'
 import {Question} from '../components/question'
 import {Footer} from '../components/question_footer'
+import {Col, Container, Row} from 'react-bootstrap'
+import AdSense from 'react-adsense'
 
 /* global playAudio */
 
@@ -15,17 +19,21 @@ class LessonComplete extends React.Component {
   render () {
     return (
       <div className='question' id='ajaxDiv'>
-        <div style={{height: '15px'}} />
+        <div style={{height: '15px'}}/>
         <div className='jumbotron'>
           <h2 className='animated rubberBand' style={{color: '#33A', textAlign: 'center'}}>
-              You rock! Lesson complete!
+            You rock! Lesson complete!
           </h2>
         </div>
         <a className='btn btn-primary btn-lg btn-block' onClick={
           () => window.history.back()} href='javascript:void(0)'>
 
-            Proceed to next level
+          Proceed to next level
         </a>
+        <AdSense.Google
+          client='ca-pub-1780955227395785'
+          slot='4334626488'
+        />
       </div>
     )
   }
@@ -34,7 +42,11 @@ class LessonComplete extends React.Component {
 class LessonCompleteSheet extends React.Component {
   render () {
     return (
-      <div className='container problem-sheet' style={window.IS_MOBILE_APP ? {top: '2rem'} : {top: '0px'}}>
+      <div className='container problem-sheet' style={{
+        height: window.IS_MOBILE_APP ? 'auto !important' : 'calc(100% - 60px)',
+        top: window.IS_MOBILE_APP ? '2rem' : '0px',
+        minWidth: window.IS_IOS ? 'auto' : '80vw'}
+      }>
         <LessonComplete lesson={this.props.question.lesson} />
         {/* <div></div> */}
       </div>
@@ -56,6 +68,7 @@ class QuestionSheet extends React.Component {
   clearAnswerContinue () {
     // TODO now we can remove all updateAnswer(null) in child answers
     this.updateAnswer(null)
+    window.scrollTo(0, 0)
     this.props.continueAction()
   }
 
@@ -67,7 +80,7 @@ class QuestionSheet extends React.Component {
         questionShouldUpdate: false
       })
     } else {
-      if (this.state.disabledCheck == false) {
+      if (this.state.disabledCheck === false) {
         this.setState({
           disabledCheck: true,
           questionShouldUpdate: false
@@ -77,6 +90,7 @@ class QuestionSheet extends React.Component {
   }
 
   checkAnswer () {
+    window.scrollTo(0, document.body.scrollHeight)
     if (this.answer) {
       this.setState({
         questionShouldUpdate: true
@@ -89,7 +103,11 @@ class QuestionSheet extends React.Component {
 
   render () {
     return (
-      <div className='container problem-sheet' style={window.IS_MOBILE_APP ? {top: '2rem'} : {top: '0px'}}>
+      <div className='container problem-sheet' style={{
+        height: window.IS_MOBILE_APP ? 'auto !important' : 'calc(100% - 60px)',
+        top: window.IS_MOBILE_APP ? '2rem' : '0px',
+        minWidth: window.IS_IOS ? 'auto' : '80vw'}
+      }>
         <Prompt message='Changes you made may not be saved.' />
         <Question
           question={this.props.question}
@@ -103,6 +121,8 @@ class QuestionSheet extends React.Component {
         <Footer
           progress={this.props.progress}
           correct={this.props.question.is_correct}
+          thread={this.props.question.thread}
+          solutionText={this.props.question.solution_text}
           correct_answer={this.props.correct_answer}
           continueAction={this.clearAnswerContinue.bind(this)}
           checkAction={this.checkAnswer}
@@ -115,12 +135,22 @@ class QuestionSheet extends React.Component {
 
 export class SectionSheet extends React.Component {
   render () {
-    var backLink = ''
+    let backLink = ''
     if (this.props.backLink) {
       backLink = (
-        <Link id='backToDashboard' to={this.props.backLink} replace={false} type='button' className='btn btn-default btn-sm'>
-          <span className='glyphicon glyphicon-chevron-left' style={{color: '#888'}} />
-        </Link>
+        <Container fluid>
+          <Row>
+            <Col sm={12} md={12}>
+              {/* TODO replace href with history support https://github.com/ReactTraining/history#readme */}
+              {/* to make it work as SPA app */}
+              {/* It seems window.history is not enough for this link */}
+              <a className={'back-button'} href={this.props.backLink}>
+                <FaChevronLeft />
+                Course home
+              </a>
+            </Col>
+          </Row>
+        </Container>
       )
     }
     var sections = []

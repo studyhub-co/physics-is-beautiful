@@ -1,0 +1,19 @@
+#navTopOfScreen {
+    background: rgba(0, 0, 0, 0);
+}
+
+
+.nav.navbar-nav.nav-pills a:hover{
+    background: #222;
+    color: white;
+}
+
+body {
+    background-color: white;
+}
+
+.homepage-featured-image-section  {
+    background-image: url('images/deep-space.jpg');
+    padding: 2em;
+    color: black;
+}

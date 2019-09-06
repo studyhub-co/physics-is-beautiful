@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Grid, Row, Col, Image } from 'react-bootstrap'
+import { Container, Row, Col, Image } from 'react-bootstrap'
 
 export default class ChangePicturePopover extends React.Component {
   render () {
@@ -22,12 +22,12 @@ export default class ChangePicturePopover extends React.Component {
         }}
       >
         <h4>Change your picture</h4>
-        <Grid fluid style={{padding: 0}}>
+        <Container fluid style={{padding: 0}}>
           {/* TODO create component frow avatar row */}
           {this.props.userAvatar ? <div><Row className={'pointer'} onClick={() => { this.props.selectAvatar('u') }}>
             <Col sm={3} md={3}>
               <Image
-                responsive
+                fluid
                 rounded
                 src={this.props.userAvatar} />
             </Col>
@@ -43,7 +43,7 @@ export default class ChangePicturePopover extends React.Component {
           {this.props.googleAvatarUrl ? <div><Row className={'pointer'} onClick={() => { this.props.selectAvatar('g')}}>
             <Col sm={3} md={3}>
               <Image
-                responsive
+                fluid
                 rounded
                 src={this.props.googleAvatarUrl} />
             </Col>
@@ -59,7 +59,7 @@ export default class ChangePicturePopover extends React.Component {
           {this.props.gravatarUrl ? <div><Row className={'pointer'} onClick={() => this.props.selectAvatar('a')}>
             <Col sm={3} md={3}>
               <Image
-                responsive
+                fluid
                 rounded
                 src={this.props.gravatarUrl}
               />
@@ -73,7 +73,7 @@ export default class ChangePicturePopover extends React.Component {
           </Row>
           <hr />
           </div> : null}
-        </Grid>
+        </Container>
       </div>
     )
   }

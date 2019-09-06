@@ -80,7 +80,8 @@ class TeacherClassroomStudentsView extends React.Component {
                 this.props.classroomTeacher.uuid +
                 '/students/' + student.username))}
               key={i} />
-          }, this) : null}
+          }, this) : null }
+          { this.props.teacherClassroomStudentsList.length === 0 ? <p style={{margin: '2rem'}}>There are no students in the classroom</p> : null }
           <div style={{clear: 'both'}} />
         </span>
         : null }

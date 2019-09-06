@@ -1,12 +1,12 @@
-@font-face {
-    font-family: 'Tw Cen MT';
-    src: url('typeface/hinted-TwCenMT-Regular.eot');
-    src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
-    url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
-    url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+/*@font-face {*/
+    /*font-family: 'Tw Cen MT';*/
+    /*src: url('typeface/hinted-TwCenMT-Regular.eot');*/
+    /*src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),*/
+    /*url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),*/
+    /*url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');*/
+    /*font-weight: normal;*/
+    /*font-style: normal;*/
+/*}*/
 html, body {
     background-color: #f1f1f1;
     width: 100%;
@@ -24,6 +24,7 @@ p.justify{
 .container{
     position:relative;
     width:85%;
+    max-width:85%;
     margin-top: 10px;
     border-radius: 15px;
     padding: 60px;
@@ -85,6 +86,7 @@ p.justify{
     .container {
         margin: 0;
         width: 100%;
+        max-width: 100%;
         padding:20px;
     }
     .blog-title{

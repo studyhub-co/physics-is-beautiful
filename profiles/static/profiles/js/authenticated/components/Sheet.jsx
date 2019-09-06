@@ -4,7 +4,7 @@ import React from 'react'
 export function Sheet (props) {
   var className = 'container ' + (props.type || 'section') + '-sheet'
   return (
-    <div className={className}>
+    <div className={className} style={{fontSize: '1.2rem'}}>
       {props.children}
     </div>
   )

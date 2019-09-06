@@ -3,7 +3,8 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Grid, Row, Col, Image, Glyphicon } from 'react-bootstrap'
+import { Container, Row, Col, Image } from 'react-bootstrap'
+import { FaPlus, FaImage } from 'react-icons/fa'
 
 import {DockableDropTarget, DragItemTypes} from '../../dnd'
 import Chapter from './Components/chapter'
@@ -11,6 +12,7 @@ import { Thread } from '../../components/reactDjeddit/thread'
 import * as resourcesCreators from '../../actions/resources'
 import * as profileCreators from '../../actions/profile'
 import * as djedditCreators from '../../actions/djeddit'
+import { checkNestedProp } from '../../utils'
 
 class TextBookResourceView extends React.Component {
   constructor (props) {
@@ -38,7 +40,12 @@ class TextBookResourceView extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.resource && !this.props.thread) {
+    // if (this.props.resource && !this.props.thread) {
+    if (
+      // we get resource via props!
+      (prevProps.resource !== this.props.resource && this.props.resource) || // reload
+      (this.props.resource && !this.props.thread) // new
+    ) {
       // reload thread
       this.props.djedditActions.fetchThread(this.props.resource.thread)
     }
@@ -54,7 +61,7 @@ class TextBookResourceView extends React.Component {
       }
       // authors
       var authorsStr
-      if (this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')) {
+      if (checkNestedProp(this.props, ...'resource.metadata.data.volumeInfo.authors'.split('.'))) {
         authorsStr = this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
           return author
         }).join(' ')
@@ -62,6 +69,7 @@ class TextBookResourceView extends React.Component {
 
       document.title = authorsStr + ' ' + title + ' Solutions - Physics is Beautiful'
 
+      // TODO replace with https://github.com/nfl/react-helmet
       var meta = document.createElement('meta')
       meta.name = 'description'
       meta.content = authorsStr + ' ' + title + ' textbook solutions or solutions manual for all problems and chapters.'
@@ -195,7 +203,7 @@ class TextBookResourceView extends React.Component {
     }
 
     return (
-      <Grid fluid>
+      <Container fluid>
         <Row>
           <Col sm={12} md={12}>
             <span style={{position: 'relative', float: 'right', fontSize: 10}}>
@@ -263,7 +271,8 @@ class TextBookResourceView extends React.Component {
                   style={{cursor: 'pointer'}}
                   onClick={() => this.addChapterClick()}
                   className={'blue-text'}>
-                  <Glyphicon glyph='plus' /> Add chapter
+                  {/*<Glyphicon glyph='plus' /> Add chapter*/}
+                  <FaPlus /> Add chapter
                 </div>
                 {/* <div // Add google ads button */}
                 {/* style={{cursor: 'pointer'}} */}
@@ -277,14 +286,15 @@ class TextBookResourceView extends React.Component {
           <Col sm={3} md={3}>
             <div
               style={{paddingBottom: '1rem',
-                fontSize: '20rem',
+                fontSize: '10rem',
                 overflow: 'hidden',
                 textAlign: 'center'}}>
               { this.props.resource.metadata &&
               this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
               this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
                 ? <Image src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail.replace('http', 'https')} />
-                : <Glyphicon glyph='picture' /> }
+                : <FaImage /> }
+                {/*: <Glyphicon glyph='picture' /> }*/}
             </div>
             { this.props.resource.metadata
               ? <div style={{backgroundColor: '#EDEDED', padding: '1rem'}}>
@@ -293,7 +303,7 @@ class TextBookResourceView extends React.Component {
                     <b>Author:</b>
                   </Col>
                   <Col sm={8} md={8}>
-                    { this.props.resource.metadata.data.volumeInfo.hasOwnProperty('authors')
+                    { checkNestedProp(this.props, ...'resource.metadata.data.volumeInfo.authors'.split('.'))
                       ? <div>{this.props.resource.metadata.data.volumeInfo.authors.map(function (author, i) {
                         return <span key={author} style={{paddingRight: '1rem'}}>
                           {author}
@@ -347,20 +357,20 @@ class TextBookResourceView extends React.Component {
               </div> : 'Book data not found'}
           </Col>
         </Row>
-        <Row>
-          <Col sm={12} md={12}>
-            { this.props.thread
-              ? <Thread
-                thread={this.props.thread}
-                currentProfile={this.props.profile}
-                onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread) }}
-                onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}
-                onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread) }}
-                changePostVote={this.props.djedditActions.changePostVote}
-              /> : null }
-          </Col>
-        </Row>
-      </Grid>
+        {/*<Row>*/}
+          {/*<Col sm={12} md={12}>*/}
+            {/*{ this.props.thread*/}
+              {/*? <Thread*/}
+                {/*thread={this.props.thread}*/}
+                {/*currentProfile={this.props.profile}*/}
+                {/*onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread) }}*/}
+                {/*onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}*/}
+                {/*onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread) }}*/}
+                {/*changePostVote={this.props.djedditActions.changePostVote}*/}
+              {/*/> : null }*/}
+          {/*</Col>*/}
+        {/*</Row>*/}
+      </Container>
     )
   }
 }

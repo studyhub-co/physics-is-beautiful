@@ -1,6 +1,9 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_PROFILE_PREFIX } from '../utils/config'
-import { PROFILE_RECEIVE_ME, PROFILE_RECEIVE_PROFILE } from '../constants'
+import {
+  PROFILE_RECEIVE_ME, PROFILE_RECEIVE_PROFILE, PROFILE_FETCHING_PROFILE,
+  PROFILE_RECEIVE_BADGES
+} from '../constants'
 
 export function receiveProfileMe (me) {
   return {
@@ -30,24 +33,26 @@ export function receiveProfile (profile) {
   }
 }
 
+export function fetchingProfile (state) {
+  return {
+    type: PROFILE_FETCHING_PROFILE,
+    payload: {
+      fetching: state
+    }
+  }
+}
+
 export function fetchProfile (id) {
   return (dispatch, state) => {
+    dispatch(fetchingProfile(true))
     return getAxios().get(API_PROFILE_PREFIX + id + '/')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveProfile(response.data))
+        dispatch(fetchingProfile(false))
       })
   }
 }
-
-// export function receiveProfile (profile) {
-//   return {
-//     type: PROFILE_RECEIVE_PROFILE,
-//     payload: {
-//       profile
-//     }
-//   }
-// }
 
 export function updateProfile (profileJson) {
   return (dispatch, state) => {
@@ -64,5 +69,24 @@ export function updateReloadProfile (profileJson) {
     return dispatch(updateProfile(profileJson)).then(() => {
       dispatch(fetchProfile(profileJson.id))
     })
+  }
+}
+
+export function receiveBadges (badges) {
+  return {
+    type: PROFILE_RECEIVE_BADGES,
+    payload: {
+      badges
+    }
+  }
+}
+
+export function fetchBadges (id) {
+  return (dispatch, state) => {
+    return getAxios().get(API_PROFILE_PREFIX + id + '/badges/')
+      .then(checkHttpStatus)
+      .then((response) => {
+        dispatch(receiveBadges(response.data))
+      })
   }
 }

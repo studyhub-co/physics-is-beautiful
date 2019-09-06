@@ -63,6 +63,12 @@ INSTALLED_APPS = [
     'django_gravatar',
     'vote',
     'reversion',
+    'notifications',
+    'admin_reorder',
+    'crispy_forms',
+    'taggit',
+    'taggit_serializer',
+    'mptt',
     # pib apps
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
@@ -71,13 +77,11 @@ INSTALLED_APPS = [
     # lib
     'piblib',
     # blog
+    'user_reputation.apps.UserReputationConfig',
     'blog',
-    'admin_reorder',
     'editor',
-    # discussion
-    'crispy_forms',
-    'mptt',
     'djeddit',
+    'badges',
     'meta',
     'classroom',
     'resources',
@@ -97,6 +101,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'admin_reorder.middleware.ModelAdminReorder',
+    'pib_auth.middleware.LastUserActivityMiddleware'
 ]
 
 ADMIN_REORDER = (
@@ -113,7 +118,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'templates', 'allauth'),  # not sure that we need it
+            os.path.join(BASE_DIR, 'node_modules', '@vermus', 'django-react-djeddit-client', 'dist'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -122,7 +129,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
+                # 'django.template.context_processors.request',
                 'djeddit.context_processors.djeddit_settings'
             ],
         },
@@ -223,6 +230,7 @@ SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialAccountAdapter'
 
 LOGIN_REDIRECT_URL = 'pib_auth:login-next'
 
+USER_LAST_ACTIVITY_INTERVAL_SECS = 120
 
 MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT')
 MEDIA_URL = '/media/'
@@ -241,9 +249,23 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
+STATICFILES_FINDERS = [
+    # by default
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'npm.finders.NpmFinder'
+    # 'piblib.finders.NpmFinder'
+]
+
+NPM_ROOT_PATH = BASE_DIR
+NPM_STATIC_FILES_PREFIX = os.path.join('js', 'npm')
+NPM_FILE_PATTERNS = {
+    os.path.join('@vermus', 'django-react-djeddit-client'): [os.path.join('dist', '*')]
+}
+
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
+        'BUNDLE_DIR_NAME': 'js/bundles/',
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
     }
 }
@@ -256,3 +278,24 @@ WEBPACK_LOADER = {
 # }
 
 # HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+REPUTATION_STAGE_1_POINTS = 5
+REPUTATION_STAGE_2_POINTS = 10
+
+
+DJEDDIT_USER_FIELDS = ['display_name', ]
+DJEDDIT_DISPLAY_USERNAME_FIELD = 'display_name'
+
+# We don't want to use Django generic relations due we lose the consistency and integrity of database
+# and count of sql queries will be increases
+DJEDDIT_RELATED_FIELDS = {
+    'textbook_resource': 'textbook_resource',
+    'textbook_problem': 'textbook_problem',
+    'textbook_solution': 'textbook_solution',
+    'course_question': 'course_question'
+}
+
+DJEDDIT_STATIC_FILES_URL_PREFIX = 'js/npm/@vermus/django-react-djeddit-client/dist'
+
+SYSTEM_USER_ID = 2
+

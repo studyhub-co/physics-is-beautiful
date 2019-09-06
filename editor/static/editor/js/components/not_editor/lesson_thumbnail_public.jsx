@@ -1,12 +1,7 @@
 import React from 'react'
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-
-import { history } from '../../history'
-
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
-
+import { Col } from 'react-bootstrap'
 import copy from 'copy-to-clipboard'
 
 import { Thumbnail } from './../thumbnail'
@@ -42,11 +37,11 @@ export class LessonThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_blank')
+    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
   onTitleClick () {
-    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_blank')
+    window.open('/curriculum/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {
@@ -60,8 +55,11 @@ export class LessonThumbnailPublic extends React.Component {
   render () {
     return (
       <Col
-        sm={2}
-        md={2}
+        xl={2}
+        lg={3}
+        md={4}
+        sm={6}
+        xs={12}
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
         <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
@@ -84,12 +82,12 @@ export class LessonThumbnailPublic extends React.Component {
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.lesson.name}
           </div>
-          {/*<div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
+          {/*<div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
             {/*<a href={this.props.lesson.author.get_absolute_url} target={'_blank'}>*/}
               {/*{this.props.lesson.author.display_name}*/}
             {/*</a> ∙ {this.props.lesson.count_lessons } lessons ∙ { this.props.lesson.number_of_learners } learners*/}
           {/*</div>*/}
-          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+          <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.lesson.created_on}
             </Moment> ∙ Last updated <Moment fromNow>

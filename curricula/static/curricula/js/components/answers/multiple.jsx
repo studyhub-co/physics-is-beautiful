@@ -41,22 +41,6 @@ export class MultipleAnswer extends React.Component {
     }
   }
 
-  // checkAnswer (o) {
-  //   o.persist()
-  //   this.setState({
-  //       clickedAnswerUuid: o.target.id
-  //     }, function () {
-  //     this.props.question.submitAnswer(
-  //       this.props.question.uuid,
-  //       {
-  //         answer: {
-  //           uuid: o.target.id
-  //         }
-  //       }
-  //     )
-  //   })
-  // }
-
   render () {
     var choices = []
 
@@ -69,7 +53,7 @@ export class MultipleAnswer extends React.Component {
     }
 
     var hasAnswer = false // user gave answer
-    if (this.props.answer || this.props.question.is_correct || this.state.selectedAnswersUuids) {
+    if (this.props.answer || this.props.question.is_correct) {
       hasAnswer = true
     }
 
@@ -110,8 +94,8 @@ export class MultipleAnswer extends React.Component {
     }
     return (
       <div className='bounding-box'>
-        <h1>Select answer below:</h1>
-        <div className={textOnlyMode ? 'button-group' : 'card-columns'}>
+        <p style={{fontSize:16}}>Select answer below:</p>
+        <div className={textOnlyMode ? 'button-group' : 'row'} style={{marginLeft: 0, marginRight: 0}}>
           {choices}
         </div>
         <div style={{clear: 'both'}} />

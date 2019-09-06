@@ -1,13 +1,11 @@
 import React from 'react'
 
-import { connect } from 'react-redux'
-
-import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
-import Moment from 'react-moment'
-
-import copy from 'copy-to-clipboard'
-
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Image as ImageBs, Container, Row, Col } from 'react-bootstrap'
+import Moment from 'react-moment'
+import copy from 'copy-to-clipboard'
+import { FaCodeBranch, FaShareAlt, FaChevronLeft } from 'react-icons/fa'
 
 import { store } from '../../app'
 
@@ -31,7 +29,7 @@ class CurriculumProfileView extends React.Component {
   }
 
   startCurriculum () {
-    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_self')
   }
 
   onForkSelect (e) {
@@ -49,29 +47,32 @@ class CurriculumProfileView extends React.Component {
     return (
       <div className={'container section-sheet'}>
         <div className={'pop-up-window'}>
-          <Grid fluid>
+          <Container fluid>
             <Row style={{padding: 0}}>
               <Col sm={6} md={6}>
                 <a className={'back-button'} onClick={() => { history.push('/browse/') }} >
-                  <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+                  <FaChevronLeft />
                   Curricula
                 </a>
               </Col>
               <Col sm={3} md={3}>
                 <a className={'back-button'} onClick={this.onForkSelect} >
-                  <Glyphicon glyph='export' /> Fork
+                  {/*<Glyphicon glyph='export' /> Fork*/}
+                  <FaCodeBranch /> Fork
                 </a>
               </Col>
               <Col sm={3} md={3}>
                 <a className={'back-button'} onClick={this.onCopyShareableLink} >
-                  <Glyphicon glyph='share-alt' /> Copy shareable link
+                  {/*<Glyphicon glyph='share-alt' /> Copy shareable link*/}
+                  <FaShareAlt /> Copy shareable link
                 </a>
               </Col>
             </Row>
-          </Grid>
+          </Container>
+          <br />
           <div style={{height: '100%'}}>
             { selectedCurriculum
-              ? <Grid fluid>
+              ? <Container fluid>
                 <Row style={{padding: 0}}>
                   <Col sm={12} md={12}
                     style={{
@@ -91,7 +92,7 @@ class CurriculumProfileView extends React.Component {
                     >
                       <div style={{position: selectedCurriculum.cover_photo ? 'relative' : ''}}>
                         <div>{ selectedCurriculum.cover_photo
-                          ? <ImageBs src={selectedCurriculum.cover_photo} responsive />
+                          ? <ImageBs src={selectedCurriculum.cover_photo} fluid />
                           : <div style={{ height: '100%', width: '100%' }} /> }
                         </div>
                       </div>
@@ -104,7 +105,7 @@ class CurriculumProfileView extends React.Component {
                     <div style={{minHeight: '10rem'}}>
                       { selectedCurriculum.image ? <ImageBs
                         src={selectedCurriculum.image}
-                        responsive
+                        fluid
                       /> : null }
                     </div>
                   </Col>
@@ -143,7 +144,7 @@ class CurriculumProfileView extends React.Component {
                     {selectedCurriculum.description}
                   </Col>
                 </Row>
-              </Grid> : null }
+              </Container> : null }
           </div>
         </div>
       </div>

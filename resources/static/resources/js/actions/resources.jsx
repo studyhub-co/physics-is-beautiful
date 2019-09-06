@@ -38,7 +38,7 @@ export function fetchResourceOptions () {
 //   }
 // }
 
-export function createResource (chaptersList) {
+export function createResource (chaptersList, callback) {
   return (dispatch, state) => {
     return getAxios().post(API_PREFIX, chaptersList)
       .then(checkHttpStatus)
@@ -46,9 +46,9 @@ export function createResource (chaptersList) {
         // dispatch(createResourceSuccess(response.data))
         // TODO redirect to resource page!
         dispatch(push(BASE_URL)) // redirect ro main page
-        // if (typeof callback === 'function') {
-        //   callback(response.data)
-        // }
+        if (typeof callback === 'function') {
+          callback(response.data)
+        }
       })
   }
 }

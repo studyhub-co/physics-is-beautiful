@@ -1,16 +1,3 @@
-/* Seems no need anymore (used for google button)*/
-/*@font-face {*/
-    /*font-family: 'GTPressuraMono';*/
-    /*src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');*/
-    /*font-style: normal;*/
-/*}*/
-
-/*@font-face {*/
-    /*font-family: 'GTPressuraMono';*/
-    /*src: url('typeface/GT-Pressura-Mono-Regular.woff2') format('woff2');*/
-    /*font-style: bold;*/
-/*}*/
-
 @font-face {
     font-family: 'Museosansrounded';
     src: url('typeface/museosansrounded/museosansrounded-300-webfont.woff2') format('woff2');
@@ -53,7 +40,13 @@
 }
 
 html, body {
-    background-color: #f1f1f1;
+    /* TODO !important needs to replace with theme.css of bootstrap */
+    background-color: #f1f1f1 !important;
+    /*
+    curricula/static/curricula/style.css used with templates of site so we need to set default font-size
+     */
+    font-family: "Museosansrounded", sans-serif !important;
+    font-size: 12px !important;
 }
 
 #backToDashboard {
@@ -72,29 +65,35 @@ html, body {
 .section-sheet {
     position: relative;
     width: 80%;
+    max-width: 80%;
     margin-top: 20px;
-    border-radius: 15px;
+    border-radius: 20px;
     padding: 30px 60px;
     height: 80%;
     background-color: white;
-    box-shadow: 0 0 10px #d8d8d8;
+    box-shadow: 0 0 5px #d8d8d8;
     margin-bottom: 20px;
     height: auto;
 }
-.section-sheet h1 {font-size: 100%;}
+
+@media (min-width: 1200px) {
+    .section-sheet {
+      width: 80% !important;
+      max-width: 80% !important;
+    }
+}
 
 .problem-sheet{
     padding: 0 !important;
     position:relative;
-    min-width: 80vw;
+    /* min-width: 80vw; */
     margin-top: 1%;
-    margin-bottom: 80px;
+    margin-bottom: 100px;
     border-radius: 25px;
     min-height: 60vh;
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
 }
-.problem-sheet h1 {font-size: 120%;}
 
 .game-sheet {
     position: relative;
@@ -108,7 +107,6 @@ html, body {
     margin-bottom: 60px;
     height: auto;
 }
-.section-sheet h1 {font-size: 100%;}
 
 .bounding-box{
     border-radius: 25px;
@@ -134,6 +132,16 @@ html, body {
     border-radius: 0;
     padding-left: 5vw;
     padding-right: 5vw;
+    min-height: 75px;
+    z-index: 5;
+}
+
+#footer .row {
+    padding-bottom: 10px;
+}
+
+.continue-container {
+    padding-bottom: 15px !important;
 }
 
 .progress{
@@ -144,14 +152,26 @@ html, body {
     height: 12px;
 }
 .progress-bottom-container{
+    position: absolute;
     display: inline-block;
     /*bottom: 0;*/
     float: left;
     font-family: Museosansrounded;
-    padding-bottom: 0px;
     width: 90vw;
-    position: fixed;
     bottom: 4px;
+}
+
+.back-button {
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #d8d8d8 !important;
+    transition: color 300ms;
+}
+
+.back-button:hover {
+    text-decoration: none;
+    color: #1caff6 !important;
 }
 
 @media all and (max-width: 770px) { /*iPad, Nexus 6P, iPhone 6+, Nexus 5X optimization*/
@@ -162,27 +182,21 @@ html, body {
         margin-right: 0;
     }
     .problem-sheet {
-        /*height: calc(100% - 60px);*/
 		width: 100%;
 		padding: 0px;
-		margin-top: -15px;
 	}
 	.section-sheet {
 		width: 99%;
-		padding: 20px;
-		margin-top: -15px;
+		padding: 2px !important;
+        padding-top: 10px !important;
+        margin: 0.5rem 0.2rem 1rem 0.2rem;
+        max-width: 100%;
 	}
 	.game-sheet {
 		width: 99%;
 		padding: 20px;
-		margin-top: -15px;
 	}
-    .curriculum	.col-md-1 {
-            margin-right: 0px !important;
-        }
-    .col-md-6 {
-        padding:0px;
-    }
+
     .text-center{
         margin-left: 1%;
         margin-right: 1%;
@@ -197,13 +211,20 @@ html, body {
     .curriculum-display-wrap {
         padding-top: 10px;
     }
-    #ajaxDiv {
-        margin-top: 10px;
+
+    #backToDashboard{
+        position: relative;
+        width: 2rem;
+        margin-bottom: 1rem;
+    }
+    .curriculum .thumbnail-block {
+        margin-right: 10px !important;
     }
 }
 
 .navbar-brand {
     transition: filter .5s;
+    margin-top: 0.5rem;
 }
 
 .navbar-brand:hover {
@@ -238,7 +259,7 @@ html, body {
 }
 
 .section-thumbnail > img {
-    display: block;
+    /*display: block;*/
     height: 93px;
 }
 
@@ -249,6 +270,7 @@ html, body {
 }
 
 .question-thumbnail > img {
+    max-width: 100%;
     display: block;
     max-height: 43vh;
 }
@@ -277,16 +299,6 @@ img.grayed-out-img {
     color: #AAA;
 }
 
-.col-md-1 h1 {
-    font-family: 'Museosansrounded';
-    font-size: 14px;
-    text-align: center;
-    margin: 0;
-    padding: 8px;
-    text-transform: capitalize;
-    height: 40px;
-}
-
 .exam-banner {
     height: 60px;
     padding-top: 50px;
@@ -301,14 +313,6 @@ img.grayed-out-img {
     box-shadow: 0px 0px 10px #8d8 !important;
 }
 
-.module-accessible {
-    /*color: #0A0;*/
-}
-
-.module-accessible-block {
-}
-
-
 .module-skipped {
     color: #FA0;
 }
@@ -317,32 +321,38 @@ img.grayed-out-img {
     color: #AAA;
 }
 
-.curriculum .col-md-1 {
+.thumbnail-title {
+    font-family: 'Museosansrounded';
+    font-size: 14px;
+    text-align: center;
+    margin: 0;
+    padding: 8px;
+    text-transform: capitalize;
+    height: 40px;
+}
+
+
+.curriculum .thumbnail-block {
     border-radius: 5px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: rgba(0, 0, 0, 0);
-    margin: 10px;
-    margin-right: 35px;
-    padding: 0px;
+    border: 1px solid #dadce0;
+    margin: 10px 35px 10px 10px;
+    padding: 6px;
     display: inline-block;
     width: 150px;
     color: #666666;
-    box-shadow: 0px 0px 10px #BBB;
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
+    box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.15);
 }
-.curriculum .col-md-1:hover {
-    color: #1caff6;
-    border-style: solid;
-    border-color:#1caff6;
-    box-shadow: 0px 0px 16px #BBB;
+.curriculum .thumbnail-block:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
 }
 
-.curriculum .col-md-1.disabled {
+.curriculum .thumbnail-block.disabled {
     pointer-events: none;
     opacity: 0.35;
     filter: alpha(opacity=40);
 }
+
 
 .btn.btn-info.btn-xs.pull-right.active {
     background-color: black;
@@ -378,7 +388,7 @@ img.grayed-out-img {
 
 #checkContainer {
     padding-top: 6px;
-    padding-bottom: 20px;
+    padding-bottom: 6px;
 }
 
 #checkButton {
@@ -419,9 +429,9 @@ img.grayed-out-img {
 #correctMessage{
     display: inline-block;
     /* max-width:300px; */
-    padding-right: 21px;
+    /*padding-right: 21px;*/
     text-align: center;
-    font-size:18;
+    /*font-size:18;*/
     font-family: Museosansrounded;
     padding-left: 10px;
 }
@@ -575,6 +585,8 @@ img.grayed-out-img {
     border: .3rem solid green !important;
 }
 
+/* override bootsrap 4 card class  */
+
 .card {
     /* Add shadows to create the "card" effect */
     /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);*/
@@ -584,14 +596,29 @@ img.grayed-out-img {
     height: auto;
     border-radius: 1rem;
     border: 0.2rem solid #e3e3e3;
+    overflow: hidden;
 }
 
 /* On mouse-over, add a deeper shadow */
 .card:hover {
     /*box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
-    border: 0.2rem solid #1caff6;
+    border: 2px solid #1caff6;
     color: #1caff6;
 }
+
+/* START bootsrap 4 additional classes */
+
+.modal-90w {
+    width: 90%!important;
+    max-width: none!important;
+}
+
+.modal-dialog {
+    margin: 1.75rem auto!important;
+}
+
+
+/* END bootsrap 4 additional classes */
 
 .wrapper {
   position: relative;
@@ -670,24 +697,121 @@ img.grayed-out-img {
     text-decoration: none;
 }
 
-.lightgrey-round-background{
-    border-radius: 1rem;
-    background: #f7f7f7;
-    font-size: 2rem;
-    padding: 1rem;
-    margin: 1rem 0;
-}
 
 /* fix alignment of adjacent elements */
 /* FIXME not so good practice to change bootstrap row class */
-.curriculum .section-sheet .row {
-    display: flex;
-    flex-wrap: wrap;
-}
+/*.curriculum .section-sheet .row {*/
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+/*}*/
 
 .sweet-loading {
   position: fixed; /* seems it should be absolute */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* homepage */
+.homepage-sheet {
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.homepage-sheet h1 {
+    font-size: 3em;
+    margin: 0;
+    font-family: "Museosansrounded", sans-serif;
+}
+
+.homepage-shadow-container {
+    padding: 10px;
+}
+
+.homepage-demo {
+    width: 100%;
+    min-height: 600px;
+    border: none;
+}
+
+.homepage-featured-image-section {
+    color: white !important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.homepage-featured-image-section  .modal-content {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white !important;
+}
+
+.modal-content .blur-wrap {
+}
+
+.homepage-section-1 {
+    background-color: lightblue;
+}
+
+.homepage-section-2 {
+    background-color: white;
+}
+
+.homepage-section-3 {
+    background-color: lightslategray;
+}
+
+.homepage-section-3 .modal-content {
+    margin: 1em;
+}
+
+#navTopOfScreen {
+    margin: 0;
+    border: none;
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
+.homepage-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.homepage-section-footer {
+    text-align: center;
+    margin: 2rem auto 1rem auto;
+}
+
+.homepage-section-footer ul li {
+    display: inline;
+    margin: 5px;
+}
+
+#getStartedButton {
+    margin: 4em auto 5px auto;
+    display: table;
+    background-color: rgb(8, 209, 255);
+    border-radius: 2rem;
+    border-width: 1px;
+    color: white;
+    padding: 1rem 4rem 1rem 4rem;
+    border: white;
+    box-shadow: 0 2px 2px rgba(0,0,0,.5);
+}
+
+.curriculum .pib-link {
+    color: rgb(8, 209, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+.rdt_TableHeader > div {
+    font-size: 1.2rem !important;
 }

@@ -1,6 +1,11 @@
-from django.db import models
+from builtins import setattr
+
+from django.db import models, connection
 from django_light_enums import enum
 from shortuuidfield import ShortUUIDField
+# from tagging.registry import register as tags_register
+from taggit.managers import TaggableManager
+
 
 from pib_auth.models import User
 from profiles.models import Profile
@@ -40,7 +45,7 @@ class Curriculum(BaseModel):
     description = models.TextField(blank=True, null=True, default='')
     number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     collaborators = models.ManyToManyField(Profile, related_name='coauthored_curricula')
 
     # settings
@@ -48,6 +53,8 @@ class Curriculum(BaseModel):
     setting_modules_unlocked = models.BooleanField(default=False, blank=True)
     setting_lessons_unlocked = models.BooleanField(default=False, blank=True)
     setting_publically = models.BooleanField(default=False, blank=True)
+
+    tags = TaggableManager()
 
     def count_number_of_learners(self, LessonProgressClass):
         lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
@@ -58,9 +65,60 @@ class Curriculum(BaseModel):
         self.save(update_fields=['number_of_learners_denormalized'])
 
     def clone(self, to_curriculum):
-        for unit in self.units.all():
-            unit.clone(to_curriculum)
-    
+        # copy name, image, description, cover_photo from self to to_curriculum
+        for attr in ('image', 'description', 'cover_photo'):
+            # 'name', don't copy name due default issue
+            setattr(to_curriculum, attr, getattr(self, attr))
+        to_curriculum.save()
+
+        # from django.db import transaction
+        # with transaction.atomic():
+        #     for unit in self.units.all():
+        #         unit.clone(to_curriculum)
+
+        # FIXME:
+        # 1. DOCS for an only posgresql support for now
+        # 2. Create a test for check that this query will be correct with added/removed fields in models
+        # 3. Add checking that uuid is unique
+        # 4. Use ClonMeta fields (add copied fields list) / we can make this script more dynamic (dynamic fields, etc)
+        # 5. User should be superuser of db to first create uuid-ossp extension (or superuser should run command
+        #    before user will be use this sript)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                DO $$
+                DECLARE 
+                    unit_row record;
+                    module_row record;
+                    lesson_row record;
+                    question_row record;
+                BEGIN
+                RAISE NOTICE 'Start forking...';
+                FOR unit_row IN
+                    SELECT * FROM "clone_units"(%s, %s)
+                LOOP
+                    PERFORM "clone_tags"('unit', unit_row.unit_id_from, unit_row.unit_id_to);
+                    FOR module_row IN
+                        SELECT * FROM "clone_modules"(unit_row.unit_id_from, unit_row.unit_id_to)
+                    LOOP
+                        PERFORM "clone_tags"('module', module_row.module_id_from, module_row.module_id_to);
+                        FOR lesson_row IN
+                            SELECT * FROM "clone_lessons"(module_row.module_id_from, module_row.module_id_to)
+                        LOOP
+                            PERFORM "clone_tags"('lesson', lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                            FOR question_row IN
+                                SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
+                            LOOP
+                                PERFORM "clone_tags"('question', question_row.question_id_from, question_row.question_id_to);
+                                -- clone quesion vectors
+                                PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
+                                PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+                            END LOOP;
+                        END LOOP;
+                    END LOOP;
+                END LOOP;
+                END $$;
+                """, [self.id, to_curriculum.id])
+
     def __str__(self):
         return 'Curriculum: {}'.format(self.name)
 
@@ -85,6 +143,8 @@ class Unit(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
+    tags = TaggableManager()
+
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -95,6 +155,34 @@ class Unit(BaseModel):
         
     def __str__(self):
         return 'Unit: {}'.format(self.name)
+
+    def clone_children(self, to_unit):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+        DO $$
+        DECLARE 
+            module_row record;
+            lesson_row record;
+            question_row record;
+        BEGIN
+        RAISE NOTICE 'Start unit forking...';
+            FOR module_row IN
+                SELECT * FROM "clone_modules"(%s, %s)
+            LOOP
+                FOR lesson_row IN
+                    SELECT * FROM "clone_lessons"(module_row.module_id_from, module_row.module_id_to)
+                LOOP
+                    FOR question_row IN
+                        SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
+                    LOOP
+                        -- clone quesion vectors
+                        PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
+                        PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+                    END LOOP;
+                END LOOP;
+            END LOOP;
+        END $$;
+        """, [self.id, to_unit.id])
 
 
 class Module(BaseModel):
@@ -114,6 +202,8 @@ class Module(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
+    tags = TaggableManager()
+
     def save(self, *args, **kwargs):
         if self.position is None:
             taken_positions = list(
@@ -121,6 +211,29 @@ class Module(BaseModel):
             )
             self.position = get_earliest_gap(taken_positions)
         super(Module, self).save(*args, **kwargs)
+
+    def clone_children(self, to_module):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+        DO $$
+        DECLARE 
+            lesson_row record;
+            question_row record;
+        BEGIN
+        RAISE NOTICE 'Start module forking...';
+            FOR lesson_row IN
+                SELECT * FROM "clone_lessons"(%s, %s)
+            LOOP
+                FOR question_row IN
+                    SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
+                LOOP
+                    -- clone quesion vectors
+                    PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
+                    PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+                END LOOP;
+            END LOOP;
+        END $$;
+        """, [self.id, to_module.id])
 
     def __str__(self):
         return 'Module: {}'.format(self.name)
@@ -147,6 +260,8 @@ class Lesson(BaseModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
     lesson_type = enum.EnumField(LessonType)
+
+    tags = TaggableManager()
 
     @property
     def is_start(self):
@@ -188,6 +303,24 @@ class Lesson(BaseModel):
         elif self.lesson_type != self.LessonType.GAME and hasattr(self, 'game'):
             self.game.delete()
 
+    def clone_children(self, to_lesson):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+        DO $$
+        DECLARE 
+            question_row record;
+        BEGIN
+        RAISE NOTICE 'Start lesson forking...';
+            FOR question_row IN
+                SELECT * FROM "clone_questions"(%s, %s)
+            LOOP
+                -- clone quesion vectors
+                PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
+                PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+            END LOOP;
+        END $$;
+        """, [self.id, to_lesson.id])
+
     def clone(self, to_parent):
         copy = super().clone(to_parent)
         if hasattr(self, 'game'):
@@ -209,8 +342,14 @@ class Game(BaseModel):
         db_table = 'curricula_games'
 
     uuid = ShortUUIDField()
-    lesson = models.OneToOneField(Lesson, related_name='game')
+    lesson = models.OneToOneField(Lesson, related_name='game', on_delete=models.CASCADE)
     slug = models.SlugField(null=True, blank=True)
 
     def __str__(self):
         return 'Game: {}'.format(self.slug)
+
+
+# tags_register(Curriculum)
+# tags_register(Unit)
+# tags_register(Module)
+# tags_register(Lesson)

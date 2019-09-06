@@ -3,7 +3,8 @@
 {% load static %}
 
 {% block extrahead %}
-<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> {#TODO move to navbar#}
+{# moved to navbar.html #}
+{#<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> #}
 <link rel="stylesheet" type="text/css" href="{% static 'resources/style.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/pure-checkbox.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'curricula/mathquill-0.10.1/mathquill.css' %}"/>
@@ -27,9 +28,20 @@
 <link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
+{#<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="alert('testing!!');"></script>#}
+
 {% endblock extrahead %}
 
 {% block body_content %}
+ <script type="text/javascript">
+      var DJEDDIT_CONFIG = {
+        API_PROFILE_URL: '/api/v1/profiles/me/',
+        EMBEDDED_MODE: true,
+        API_URL_POSTFIX: 'djeddit/',
+        DISPLAY_USERNAME_FIELD: 'display_name',
+        ANON_AS_USER_OBJECT: true
+      }
+</script>
 <div id="react-app" class="resources">
     {% render_bundle 'resources' %}
 </div>

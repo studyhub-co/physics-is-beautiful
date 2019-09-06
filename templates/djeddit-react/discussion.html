@@ -1,0 +1,20 @@
+{% extends 'navbar.html' %}
+{#{% load render_bundle from webpack_loader %}#}
+{% block body_content %}
+    <div class="container section-sheet">
+        <div>
+            <script type="text/javascript">
+              var DJEDDIT_CONFIG = {
+                API_PROFILE_URL: '/api/v1/profiles/me/',
+                EMBEDDED_MODE: true,
+                ROOT_URL: 'discussion',
+                API_URL_POSTFIX: 'djeddit/',
+                DISPLAY_USERNAME_FIELD: 'display_name',
+                ANON_AS_USER_OBJECT: true
+              }
+            </script>
+{#            {% render_bundle 'react_djeddit' %}#}
+            {% include 'react_reddit_django_embed.html' %}
+        </div>
+    </div>
+{% endblock %}

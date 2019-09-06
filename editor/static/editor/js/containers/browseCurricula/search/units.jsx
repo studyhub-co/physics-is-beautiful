@@ -1,12 +1,10 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-
+import { connect } from 'react-redux'
+import { Container, Row, Col, CardColumns } from 'react-bootstrap'
 import InfiniteScroll from 'react-infinite-scroller'
 
-import { Grid, Row, Col } from 'react-bootstrap'
-
-import { connect } from 'react-redux'
 import { loadSearchUnits } from '../../../actions'
 import { UnitThumbnailPublic } from './../../../components/not_editor/unit_thumbnail_public'
 
@@ -73,7 +71,7 @@ class UnitsSearchView extends React.Component {
       )
     })
 
-    return (<Grid fluid>{this.props.unitsSearchList
+    return (<Container fluid>{this.props.unitsSearchList
       ? <div>
         <InfiniteScroll
           pageStart={0}
@@ -81,7 +79,9 @@ class UnitsSearchView extends React.Component {
           hasMore={this.state.hasMoreItems}
           loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
         >
-          {items}
+          <Row>
+            {items}
+          </Row>
         </InfiniteScroll>
         { this.props.unitsSearchList.results.length === 0 ? <h4>
         Sorry, we couldn't find any results for this query.
@@ -97,7 +97,7 @@ class UnitsSearchView extends React.Component {
           </div>
         </Col>
       </Row> }
-    </Grid>
+    </Container>
     )
   }
 }
@@ -124,5 +124,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(UnitsSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(UnitsSearchView)
 export { UnitsSearchView as UnitsSearchViewNotConnected }

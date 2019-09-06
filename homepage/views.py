@@ -9,9 +9,13 @@ from .serializers import ContactSerializer
 
 
 def homepage(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(reverse('main_curricula:curriculum'))
     return render(request, 'homepage/homepage.html')
+
+
+def homepage2(request):
+    return render(request, 'homepage/homepage2.html')
 
 
 def About(request):

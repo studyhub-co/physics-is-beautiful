@@ -1,11 +1,13 @@
 import React from 'react'
+
+import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+import { FaPencilAlt, FaChevronLeft } from 'react-icons/fa'
 
 import { history } from '../../history'
-import { Image as ImageBs, Grid, Row, Col, Glyphicon, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap'
+import { Image as ImageBs, Container, Row, Col } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import {
@@ -86,10 +88,11 @@ class PencilImageUpload extends React.Component { // TODO move to utils
 
   render () {
     return <div className={'selectable-image'} style={{height: '100%'}}>
-      <Glyphicon
-        glyph={'pencil'}
-        // onClick={this.imageUpload}
-        style={{fontSize: '2rem', top: '1rem'}} />
+      {/*<Glyphicon*/}
+        {/*glyph={'pencil'}*/}
+        {/*// onClick={this.imageUpload}*/}
+        {/*style={{fontSize: '2rem', top: '1rem'}} />*/}
+      <FaPencilAlt style={{fontSize: '1.5rem', marginTop: '0.75rem'}} />
       <input
         type='file' name='image' accept='image/*'
         onChange={this.handleChange}
@@ -152,7 +155,7 @@ class EditCurriculumProfileView extends React.Component {
   }
 
   startCurriculum () {
-    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.match.params.uuid + '/', '_self')
   }
 
   // ==== description
@@ -229,14 +232,6 @@ class EditCurriculumProfileView extends React.Component {
   }
 
   render () {
-    // var assignmentUrl = BASE_URL + 'teacher/:uuid/assignments/:assigmentUuid'
-    // var studentsListUrl = this.props.match.path + 'students/'
-    // var isExactUrl = this.props.match.isExact // exact url for teacher view
-
-    // var studentsS = ''
-    // if (this.props.classroomTeacher && this.props.classroomTeacher.count_students > 1) {
-    //   studentsS = 's'
-    // }
     // var copiedTooltip = (
     //   <Tooltip id='copiedTooltip'>
     //     Copied!
@@ -250,7 +245,8 @@ class EditCurriculumProfileView extends React.Component {
     return (
       <div className={'pop-up-window'}>
         <a className={'back-button'} onClick={() => { history.push('/studio/') }} >
-          <span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />
+          {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
+          <FaChevronLeft />
             My Curricula
         </a>
         <Tabs name='editCurriculumProfileTabs'
@@ -266,7 +262,7 @@ class EditCurriculumProfileView extends React.Component {
           <div className='content'>
             <TabContent for='profile'>
               {/* Todo move the tab content to a new component */}
-              <Grid fluid>
+              <Container fluid>
                 <Row style={{padding: 0}}>
                   <Col sm={12} md={12}
                     style={{
@@ -301,7 +297,7 @@ class EditCurriculumProfileView extends React.Component {
                               : null }
                           </div>
                           : <div>{ selectedCurriculum.cover_photo
-                            ? <ImageBs src={selectedCurriculum.cover_photo} responsive />
+                            ? <ImageBs src={selectedCurriculum.cover_photo} fluid />
                             : <div style={{ height: '100%', width: '100%' }} /> }
                           </div>
                         }
@@ -314,13 +310,17 @@ class EditCurriculumProfileView extends React.Component {
                 </Row>
                 <br />
                 <Row style={{padding: 0}}>
-                  <Col sm={2} md={2} style={{padding: 0}}>
+                  <Col sm={12} md={2} style={{padding: 0}}>
                     <div style={{minHeight: '10rem'}}>
                       { selectedCurriculum.image ? <ImageBs
                         src={selectedCurriculum.image}
-                        responsive
+                        fluid
                       /> : null }
                     </div>
+                    {!selectedCurriculum.image
+                      ? <span>Click to add image:</span>
+                      : null
+                    }
                     <div
                       className={'base-circle-edit bottom-circle-edit right-circle-edit'}
                       title={'Change image'}
@@ -338,10 +338,9 @@ class EditCurriculumProfileView extends React.Component {
                           />
                           <span style={{position: 'relative', paddingLeft: '1rem'}}>
                             <span className={'base-circle-edit'}>
-                              <Glyphicon
-                                glyph={'pencil'}
+                              <FaPencilAlt
                                 onClick={this.editNameClick}
-                                style={{fontSize: '2rem'}} />
+                                style={{fontSize: '1.5rem', marginBottom: '0.75rem'}} />
                             </span>
                           </span>
                         </div>
@@ -365,7 +364,7 @@ class EditCurriculumProfileView extends React.Component {
                       </Col>
                     </Row>
                   </Col>
-                  <Col sm={3} md={3}>
+                  <Col sm={12} md={3}>
                     <button className={'editor-common-button'} onClick={this.startCurriculum}>Start Curriculum</button>
                   </Col>
                 </Row>
@@ -377,17 +376,24 @@ class EditCurriculumProfileView extends React.Component {
                       onChange={this.onDescriptionChanged}
                       editMode={this.state.descriptionEditMode}
                     />
+                    {!selectedCurriculum.description
+                      ? <span>Click to add description:</span>
+                      : null
+                    }
                     <span style={{position: 'relative', paddingLeft: '1rem'}}>
                       <span className={'base-circle-edit'}>
-                        <Glyphicon
-                          glyph={'pencil'}
+                        {/*<Glyphicon*/}
+                          {/*glyph={'pencil'}*/}
+                          {/*onClick={this.editDescriptionClick}*/}
+                          {/*style={{fontSize: '2rem', lineHeight: '2'}} />*/}
+                        <FaPencilAlt
                           onClick={this.editDescriptionClick}
-                          style={{fontSize: '2rem', lineHeight: '2'}} />
+                          style={{fontSize: '1.5rem', marginTop: '0.75rem'}} />
                       </span>
                     </span>
                   </Col>
                 </Row>
-              </Grid>
+              </Container>
             </TabContent>
             <TabContent for='settings'>
               <EditCurriculumSettingsView curriculum={selectedCurriculum} />

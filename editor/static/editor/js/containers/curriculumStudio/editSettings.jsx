@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { connect } from 'react-redux'
-
 import PropTypes from 'prop-types'
-import { Grid, Row, Col, Modal, Button } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { Container, Row, Col, Modal, Button } from 'react-bootstrap'
 
 // import { loadCurriculumIfNeeded } from '../../actions'
 
@@ -12,6 +11,7 @@ import StaffUserRow from './staffUserRow'
 import { updateCurriculum, deleteCurriculum } from '../../actions'
 import { history } from '../../history'
 
+// TODO move to lib app
 class SettingRow extends React.Component {
   constructor (props) {
     super(props)
@@ -120,7 +120,7 @@ class EditCurriculumSettingsView extends React.Component {
 
   render () {
     return (
-      <Grid fluid>
+      <Container fluid>
         <Row>
           <Col sm={12} md={12}>
             <div className={'blue-title'}>
@@ -205,7 +205,9 @@ class EditCurriculumSettingsView extends React.Component {
           <Modal.Footer>
             <button className={'editor-common-button'} onClick={this.deleteCurriculum}>Delete</button>
             &nbsp;
-            <Button onClick={this.handleDeleteCurriculumModal}>Close</Button>
+            <Button
+              variant='light'
+              onClick={this.handleDeleteCurriculumModal}>Close</Button>
           </Modal.Footer>
         </Modal>
         <Row>
@@ -218,7 +220,7 @@ class EditCurriculumSettingsView extends React.Component {
             </a>
           </Col>
         </Row>
-      </Grid>
+      </Container>
     )
   }
 }

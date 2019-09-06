@@ -1,6 +1,8 @@
 import React from 'react'
-import {UnitConversionBase, ConversionTable, MathquillBox} from '../../games/unit_conversion'
+import PropTypes from 'prop-types'
 import Draggable from 'react-draggable'
+
+import {UnitConversionBase, ConversionTable, MathquillBox} from '../../games/unit_conversion'
 /* global MathQuill */
 
 class UnitConversionCanvas extends UnitConversionBase {
@@ -351,10 +353,10 @@ class UnitConversionCanvas extends UnitConversionBase {
   }
 }
 UnitConversionCanvas.propTypes = {
-  updateAnswer: React.PropTypes.func.isRequired,
-  unit_conversion_type: React.PropTypes.string,
-  conversion_steps: React.PropTypes.array,
-  is_correct_answer: React.PropTypes.bool
+  updateAnswer: PropTypes.func.isRequired,
+  unit_conversion_type: PropTypes.string,
+  conversion_steps: PropTypes.array,
+  is_correct_answer: PropTypes.bool
 }
 
 export class UnitConversionAnswer extends React.Component {
@@ -383,7 +385,7 @@ export class UnitConversionAnswer extends React.Component {
   }
 }
 UnitConversionAnswer.propTypes = {
-  updateAnswer: React.PropTypes.func.isRequired,
-  question: React.PropTypes.object,
-  correct: React.PropTypes.bool
+  updateAnswer: PropTypes.func.isRequired,
+  question: PropTypes.object,
+  correct: PropTypes.bool
 }

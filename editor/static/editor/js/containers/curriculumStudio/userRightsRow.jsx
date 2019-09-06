@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
-import { FormGroup, DropdownButton, InputGroup, MenuItem } from 'react-bootstrap'
+import { FormGroup, DropdownButton, InputGroup, DropdownItem } from 'react-bootstrap'
 
 import { MultiSelect } from 'react-selectize'
 
@@ -108,7 +108,11 @@ class UserRightsRow extends React.Component {
     }
 
     var uid = function (item) {
-      return item.id
+      if (item) {
+        return item.id
+      } else {
+        return null
+      }
     }
 
     var foundUsers = []
@@ -134,11 +138,12 @@ class UserRightsRow extends React.Component {
             filterOptions={filterOptions}
           />
           <DropdownButton
-            componentClass={InputGroup.Button}
+            // componentClass={InputGroup.Button}
             id='input-dropdown-addon'
+            variant='light'
             title='Action'
           >
-            <MenuItem key='e' onSelect={this.onAddCollaboratorsClick}>Add collaborators</MenuItem>
+            <DropdownItem key='e' onSelect={this.onAddCollaboratorsClick}>Add collaborators</DropdownItem>
           </DropdownButton>
         </InputGroup>
       </FormGroup>

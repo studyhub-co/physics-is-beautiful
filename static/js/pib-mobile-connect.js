@@ -76,9 +76,17 @@ var postProfile = function () {
         'message': 'loginInfo',
         'data': xmlHttp.responseText
       }, '*')
+
+      var userProfile = JSON.parse(xmlHttp.responseText)
+
+      if (userProfile.hasOwnProperty('sound_enabled') &&
+        window.hasOwnProperty('SoundSingleton')
+      ) {
+        window.SoundSingleton.soundEnabled = JSON.parse(xmlHttp.responseText)['sound_enabled']
+      }
     }
   }
-  xmlHttp.open('GET', '/api/v1/profiles/me', true)
+  xmlHttp.open('GET', '/api/v1/profiles/me/', true)
   xmlHttp.send(null)
 }
 
@@ -106,6 +114,12 @@ window.updateCanGoBack = function (canGoBack) {
       'data': canGoBack
     }, '*')
   }
+}
+
+window.IS_IOS = navigator.platform.match(/iPhone|iPod|iPad/)
+
+if (window.IS_MOBILE_APP && window.IS_IOS) {
+  document.body.style.width = '100vw'
 }
 
 // All credit to https://stackoverflow.com/a/11654596/

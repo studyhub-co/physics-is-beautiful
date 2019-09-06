@@ -1,22 +1,18 @@
 import React from 'react'
-// import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom'
+
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
+import { Dropdown, DropdownItem } from 'react-bootstrap'
+import { RingLoader } from 'react-spinners'
+import copy from 'copy-to-clipboard'
+import { FaEllipsisV, FaGraduationCap, FaInfoCircle, FaCodeBranch, FaShareAlt, FaMinus, FaPlus } from 'react-icons/fa'
 
 import { addCurriculum, addCurriculumToDashboard, removeCurriculumFromDashboard } from './../../actions'
-
 import { history } from '../../history'
-
-import { Row, Col, Image, Dropdown, Glyphicon, MenuItem } from 'react-bootstrap'
-
-import copy from 'copy-to-clipboard'
-
 import { Thumbnail } from './../thumbnail'
-
 import { store } from '../../app'
-
-// import { Portal } from 'react-portal'
-// "react-portal": "^4.1.5",
+import { Overlay } from '../fullscreen_overlay'
 
 class CurriculumMenuToggle extends React.Component {
   constructor (props, context) {
@@ -30,28 +26,20 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
+    { /* <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}> */ }
+    { /* {this.props.children} */ }
+    { /* </Glyphicon> */ }
     return (
-      <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}>
+      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
-      </Glyphicon>
+      </FaEllipsisV>
     )
   }
 }
 
-// not works now
-// class CustomCurriculumMenu extends React.Component {
-//   render () {
-//     const { children } = this.props
-//
-//     return (
-//       <Portal>
-//         <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-//           {children}
-//         </Dropdown.Menu>
-//       </Portal>
-//     )
-//   }
-// }
+CurriculumMenuToggle.propTypes = {
+  onClick: PropTypes.func
+}
 
 export class CurriculumThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -63,10 +51,11 @@ export class CurriculumThumbnailPublic extends React.Component {
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onAddToDashboardSelect = this.onAddToDashboardSelect.bind(this)
     this.onRemoveFromDashboardSelect = this.onRemoveFromDashboardSelect.bind(this)
+    this.state = {showSpinnerOverlay: false}
   }
 
   onLearnSelect () {
-    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_self')
   }
 
   onViewProfileSelect () {
@@ -74,7 +63,7 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   onTitleClick () {
-    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_blank')
+    window.open('/curriculum/' + this.props.curriculum.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {
@@ -96,59 +85,79 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   onForkSelect (e) {
+    this.setState({showSpinnerOverlay: true})
     store.dispatch(addCurriculum(this.props.curriculum.uuid))
   }
 
   render () {
-    // TODO neeed react >= 16
-    // const Menu = () =>
-    //   ReactDOM.createPortal(
-    //     <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-    //       <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
-    //       <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
-    //       <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
-    //       <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-    //       <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
-    //     </Dropdown.Menu>,
-    //     document.getElementById('root')
-    //   )
+    // set spinner
+    const spinner = <Overlay>
+      <div className='overlay-wrapper'>
+        <div className='overlay-inner'>
+          <RingLoader
+            color={'#1caff6'}
+            loading={Boolean(true)}
+          />
+        </div>
+      </div>
+    </Overlay>
+
+    // neeed react >= 16
+    // fix issue https://github.com/akiran/react-slick/issues/757 by append Dropdown.Menu to the react app DOM element
+    const DropdownMenu = () =>
+      ReactDOM.createPortal(
+        <Dropdown.Menu rootCloseEvent={'mousedown'}>
+          <DropdownItem onSelect={this.onLearnSelect} eventKey='1'>
+            <FaGraduationCap /> Learn
+          </DropdownItem>
+          <DropdownItem onSelect={this.onViewProfileSelect} eventKey='2'>
+            <FaInfoCircle /> View profile
+          </DropdownItem>
+          <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
+            <FaCodeBranch /> Fork to curriculum studio
+          </DropdownItem>
+          <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
+            <FaShareAlt /> Copy shareable link
+          </DropdownItem>
+          { this.props.slidesListName === 'recentSlides'
+            ? <DropdownItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'>
+              <FaMinus /> Remove from dashboard
+            </DropdownItem>
+            : <DropdownItem onSelect={this.onAddToDashboardSelect} eventKey='5'>
+              <FaPlus /> Add to dashboard
+            </DropdownItem>
+          }
+        </Dropdown.Menu>,
+        document.getElementById('editor-app')
+      )
 
     return (
-      <Col
-        sm={2}
-        md={2}
+      <div
         className={'curriculum-card'}
         style={{'cursor': 'pointer'}}>
-        <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+        {this.state.showSpinnerOverlay && spinner}
+        <div
+          onClick={this.onTitleClick}
+          style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px', height: '13rem'}}
+        >
           <Thumbnail image={this.props.curriculum.image} />
         </div>
         <div>
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            <CurriculumMenuToggle bsRole='toggle' />
-            {/*<CustomCurriculumMenu bsRole='menu'>*/}
-            <Dropdown.Menu bsRole='menu' rootCloseEvent={'click'}>
-              <MenuItem onSelect={this.onLearnSelect} eventKey='1'><Glyphicon glyph='education' /> Learn</MenuItem>
-              <MenuItem onSelect={this.onViewProfileSelect} eventKey='2'><Glyphicon glyph='info-sign' /> View profile</MenuItem>
-              <MenuItem onSelect={this.onForkSelect} eventKey='3'><Glyphicon glyph='export' /> Fork to curriculum studio</MenuItem>
-              <MenuItem onSelect={this.onCopyShareableLink} eventKey='4'><Glyphicon glyph='share-alt' /> Copy shareable link</MenuItem>
-              { this.props.slidesListName === 'recentSlides'
-                ? <MenuItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Remove from dashboard</MenuItem>
-                : <MenuItem onSelect={this.onAddToDashboardSelect} eventKey='5'><Glyphicon glyph='plus' /> Add to dashboard</MenuItem>
-              }
-            </Dropdown.Menu>
-            {/*</CustomCurriculumMenu>*/}
+            <Dropdown.Toggle as={CurriculumMenuToggle} />
+            <DropdownMenu />
           </Dropdown>
-          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
+          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
             {this.props.curriculum.name}
           </div>
-          <div style={{fontSize: '1.1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            <a href={this.props.curriculum.author.get_absolute_url} target={'_blank'}>
+          <div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+            <a href={this.props.curriculum.author.get_absolute_url}>
               {this.props.curriculum.author.display_name}
             </a> ∙ {this.props.curriculum.count_lessons } lessons ∙ { this.props.curriculum.number_of_learners } learners
           </div>
-          <div style={{fontSize: '1.1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
+          <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.curriculum.created_on}
             </Moment> ∙ Last updated <Moment fromNow>
@@ -156,7 +165,7 @@ export class CurriculumThumbnailPublic extends React.Component {
             </Moment>
           </div>
         </div>
-      </Col>
+      </div>
     )
   }
 }
@@ -168,6 +177,4 @@ CurriculumThumbnailPublic.propTypes = {
   curriculum: PropTypes.object.isRequired,
   slidesListName: PropTypes.string,
   onAddRemoveFromDashboardSildes: PropTypes.func
-  // onEditCurriculumProfileClick: PropTypes.func.isRequired,
-  // onDeleteCurriculumClick: PropTypes.func.isRequired
 }

@@ -134,23 +134,24 @@ export function assignmentDeleteAssignment (classroomUuid, assignmentUuid, refre
   }
 }
 
-export function receiveFirstUncompletedLesson (uncompletedLesson) {
-  return {
-    type: ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON,
-    payload: {
-      uncompletedLesson
-    }
-  }
-}
+// Remove, no need to store uncompletedLesson in root state
+// export function receiveFirstUncompletedLesson (uncompletedLesson) {
+//   return {
+//     type: ASSIGNMENT_FETCH_FIRST_UNCOMPLETED_LESSON,
+//     payload: {
+//       uncompletedLesson
+//     }
+//   }
+// }
 
 export function assignmentFetchFirstUncompletedLesson (classroomUuid, assignmentUuid, callback = null) {
   return (dispatch, state) => {
     return getAxios().get(API_PREFIX + classroomUuid + '/assignment/' + assignmentUuid + '/first_uncompleted_lesson/')
       .then(checkHttpStatus)
       .then((response) => {
-        dispatch(receiveFirstUncompletedLesson(response.data))
+        // dispatch(receiveFirstUncompletedLesson(response.data))
         if (typeof callback === 'function') {
-          callback()
+          callback(response.data)
         }
       })
   }

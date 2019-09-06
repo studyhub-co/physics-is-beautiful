@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export class ImageWithText extends React.Component {
   constructor (props) {
@@ -8,7 +9,7 @@ export class ImageWithText extends React.Component {
 
   keydown (e) {
     if (this.props.hasAnswer) { return }
-    if (e.code.startsWith('Digit')) {
+    if (e.code && e.code.startsWith('Digit')) {
       if (e.key === (this.props.index + 1).toString()) {
         this.setState({
           checked: !this.state.checked
@@ -27,13 +28,13 @@ export class ImageWithText extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (typeof (nextProps.checked) !== 'undefinded' && nextProps.checked != this.state.checked) {
+    if (typeof (nextProps.checked) !== 'undefined' && nextProps.checked != this.state.checked) {
       this.setState({checked: nextProps.checked})
     }
   }
 
   cardClick (evt) {
-    if (this.props.type != 'RADIO_BUTTON') {
+    if (this.props.type !== 'RADIO_BUTTON') {
       this.setState({
         checked: !this.state.checked
       }, function () {
@@ -44,17 +45,11 @@ export class ImageWithText extends React.Component {
     } else {
       // checked state changed with props
       this.props.selectAnswer(this.props.choice.uuid, true)
-
-      // this.setState({
-      //   checked: true
-      // }, function () {
-      //   this.props.selectAnswer(this.props.choice.uuid, this.state.checked)
-      // })
     }
   }
 
   render () {
-    var cardStyle = {width: '16rem', float: 'left'}
+    var cardStyle = {width: '13rem', borderStyle: 'solid', borderWidth:2, borderRadius: 10, padding: 1}
     var buttonStyle = {}
     var hiddenCircle = {}
     hiddenCircle['visibility'] = 'hidden'
@@ -81,8 +76,8 @@ export class ImageWithText extends React.Component {
     if (this.state.checked) {
       cardStyle['backgroundColor'] = '#eafcff'
       buttonStyle['backgroundColor'] = '#eafcff'
-      cardStyle['border'] = '.2rem solid #1caff6'
-      buttonStyle['border'] = '.2rem solid #1caff6'
+      cardStyle['border'] = '2px solid #1caff6'
+      buttonStyle['border'] = '2px solid #1caff6'
     }
 
     var toReturn
@@ -93,7 +88,10 @@ export class ImageWithText extends React.Component {
         // TEXT ONLY RADIO
         toReturn = <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
           <span style={style}>{this.props.index + 1}</span>
-          <input id={'radio' + this.props.choice.uuid} value={this.props.choice.content.text} name='radio'
+          <input
+            id={'radio' + this.props.choice.uuid}
+            value={this.props.choice.content.text} name='radio'
+            onChange={() => {}}
             type='radio' checked={this.state.checked} style={hiddenCircle} />
           {this.props.choice.content.text
             ? <label htmlFor={'radio' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
@@ -104,7 +102,12 @@ export class ImageWithText extends React.Component {
         // TEXT ONLY CHECKBOXES
         toReturn = <div className={'pure-checkbox answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
           <span style={style}>{this.props.index + 1}</span>
-          <input id={'checkbox' + this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked} />
+          <input
+            id={'checkbox' + this.props.choice.uuid}
+            value={this.props.choice.content.text}
+            type='checkbox' checked={this.state.checked}
+            onChange={() => {}}
+          />
           {this.props.choice.content.text
             ? <label htmlFor={'checkbox' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
             : <label htmlFor={'checkbox' + this.props.choice.uuid} style={style} />
@@ -114,22 +117,35 @@ export class ImageWithText extends React.Component {
     } else {
       // IMAGE + TEXT RADIO + CHECKBOXES
       toReturn =
-        <div onClick={this.cardClick.bind(this)} className='card' style={cardStyle} id={this.props.choice.uuid}>
-          <div className='wrapper'>
-            { image }
-          </div>
-
-          <div className={'card-block'} style={{padding: '.5rem'}}>
-            {this.props.type == 'RADIO_BUTTON'
-              ? <div className='pure-radiobutton' style={{float: 'left'}}>
-                <input id={'radio' + this.props.choice.uuid} value={this.props.choice.content.text} name='radio' type='radio' checked={this.state.checked} style={hiddenCircle} />
+        <div
+          onClick={this.cardClick.bind(this)}
+          className='card mx-2 mb-3'
+          style={cardStyle}
+          id={this.props.choice.uuid}
+        >
+          { image }
+          <div className={'card-body'} style={{padding: '.5rem'}}>
+            {this.props.type === 'RADIO_BUTTON'
+              ? <div className='pure-radiobutton' style={{float: 'left', width: '90%'}}>
+                <input
+                  id={'radio' + this.props.choice.uuid}
+                  value={this.props.choice.content.text}
+                  name='radio' type='radio'
+                  checked={this.state.checked} style={hiddenCircle}
+                  onChange={() => {}}
+                />
                 {this.props.choice.content.text
                   ? <label htmlFor={'radio' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
                   : <label htmlFor={'radio' + this.props.choice.uuid} style={{padding: '1rem'}} />
                 }
               </div>
               : <div className={'pure-checkbox'} style={{float: 'left'}}>
-                <input id={'checkbox' + this.props.choice.uuid} value={this.props.choice.content.text} type='checkbox' checked={this.state.checked} />
+                <input
+                  id={'checkbox' + this.props.choice.uuid}
+                  value={this.props.choice.content.text}
+                  type='checkbox' checked={this.state.checked}
+                  onChange={() => {}}
+                />
                 {this.props.choice.content.text
                   ? <label htmlFor={'checkbox' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
                   : <label htmlFor={'checkbox' + this.props.choice.uuid} style={{padding: '1rem'}} />
@@ -148,5 +164,5 @@ export class ImageWithText extends React.Component {
   }
 }
 ImageWithText.propTypes = {
-  selectAnswer: React.PropTypes.func.isRequired
+  selectAnswer: PropTypes.func.isRequired
 }

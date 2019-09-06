@@ -3,19 +3,21 @@
 {% load static %}
 
 {% block extrahead %}
-<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> {#TODO move to navbar#}
+{# moved to navbar.html #}
+{#<link rel="stylesheet" type="text/css" href="{% static 'curricula/style.css' %}" /> #}
 <link rel="stylesheet" type="text/css" href="{% static 'profiles/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'curricula/pure-checkbox.css' %}" />
 {% endblock %}
 
 {% block body_content %}
-<div class="container section-sheet">
-    {% if object.avatar_url %}<div>
-        <img src="{{ object.avatar_url }}" />
-    </div>{% endif %}
-    <div class='curriculum-title'>{{ object.user.display_name }}</div>
-    <div>Username: {{ object.user.username }}</div>
-    Registration date: {{ object.created_on }}
-</div>
+{#<div class="container section-sheet">#}
+{#    {% if object.avatar_url %}<div>#}
+{#        <img src="{{ object.avatar_url }}" />#}
+{#    </div>{% endif %}#}
+{#    <div class='curriculum-title'>{{ object.user.display_name }}</div>#}
+{#    <div>Username: {{ object.user.username }}</div>#}
+{#    Registration date: {{ object.created_on }}#}
+{#</div>#}
 <div id="react-app" class="profile">
     {% render_bundle 'profile' %}
 </div>

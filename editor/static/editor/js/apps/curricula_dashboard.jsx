@@ -3,15 +3,14 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 import { history } from './../history'
-
-import {Route} from 'react-router-dom'
+// import { Route } from 'react-router-dom'
+import { Route } from 'react-router'
+import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import { changeStudioSelectedTab, deleteCurriculum } from './../actions'
 import { Sheet } from './sheet'
 
-import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { CurriculaView } from '../containers/curriculumStudio/curricula'
-
 import EditCurriculumProfileView from '../containers/curriculumStudio/editProfile'
 import BrowseCurriculaView from '../containers/browseCurricula/index'
 
@@ -81,8 +80,8 @@ class CurriculaDashboard extends React.Component {
         selectedTab={this.props.tab}
       >
         <div className='tab-links'>
-          <TabLink to='browse'>Browse curricula</TabLink>
-          <TabLink to='studio'>Curriculum studio</TabLink>
+          <TabLink to='browse'>Browse Courses</TabLink>
+          <TabLink to='studio'>Course studio</TabLink>
         </div>
 
         <div className='content'>
@@ -93,9 +92,9 @@ class CurriculaDashboard extends React.Component {
             {this.state.showEditCurriculumProfile
               ? <Route path='/studio/profile/:uuid/' component={EditCurriculumProfileView} />
               : <div>
-                <div className={'lightgrey-round-background'}>Create a new curriculum from scratch below.
-                  Or, to add content from other curricula or to fork a curriculum visit
-                  the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse curricula</a> tab.
+                <div className={'lightgrey-round-background-studio'}>Create a new curriculum from scratch below.
+                  Or, to add content from other courses or to fork a curriculum visit
+                  the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.
                   Tutorial and additional help here
                 </div>
                 <CurriculaView
@@ -124,7 +123,7 @@ const mapStateToProps = function (store) {
   }
 }
 
-export let CurriculaDashboardApp = connect(
+let CurriculaDashboardApp = connect(
   mapStateToProps,
   dispatch => {
     return {
@@ -132,3 +131,5 @@ export let CurriculaDashboardApp = connect(
       deleteCurriculum: (uuid) => dispatch(deleteCurriculum(uuid))
     }
   })(CurriculaDashboard)
+
+export {CurriculaDashboardApp}

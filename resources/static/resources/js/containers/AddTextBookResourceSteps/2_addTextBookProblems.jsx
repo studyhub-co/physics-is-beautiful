@@ -4,7 +4,11 @@ import React from 'react'
 // import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Row, Col, Glyphicon, Button } from 'react-bootstrap'
+import Col from 'react-bootstrap/Col'
+// import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import { FaChevronLeft, FaChevronRight, FaTimes, FaAsterisk, FaPlus } from 'react-icons/fa'
+import Row from 'react-bootstrap/Row'
+import Button from 'react-bootstrap/Button'
 
 import { GoogleBookThumbnail } from '../../components/googleBookThumbnail'
 
@@ -17,7 +21,7 @@ export default class AddTextBookProblemsView extends React.Component {
     // calculate number of chapters
     var chaptersList = null
     if (props.chaptersList) {
-      if (props.chaptersList.length < props.numberOfChapters) {
+      if (props.chaptersList.length <= props.numberOfChapters) {
         var a = props.chaptersList
         var b = this.generateChaptersList(props.numberOfChapters)
 
@@ -32,7 +36,7 @@ export default class AddTextBookProblemsView extends React.Component {
         var onlyInB = b.filter(diffFunc(a))
         chaptersList = props.chaptersList.concat(onlyInB)
       } else { // if new numberOfChapters < props.chaptersList
-        chaptersList = props.chaptersList.slice(0, props.numberOfChapters - 1)
+        chaptersList = props.chaptersList.slice(0, props.numberOfChapters)
       }
     } else {
       chaptersList = this.generateChaptersList(props.numberOfChapters)
@@ -181,12 +185,14 @@ export default class AddTextBookProblemsView extends React.Component {
         <div className={'blue-title'}>
           <Button
             onClick={this.prevStepClick}
-          ><Glyphicon glyph='chevron-left' /> Previous</Button>
+          ><FaChevronLeft /> Previous</Button>
+            {/*<Glyphicon glyph='chevron-left' /> Previous</Button>*/}
           <span style={{padding: '0 2rem'}}>Second step</span>
           <Button
             disabled={!this.isOneProblemInChapters()}
             onClick={this.nextStepClick}
-          >Next <Glyphicon glyph='chevron-right' /></Button>
+          >Next <FaChevronRight /></Button>
+            {/*<Glyphicon glyph='chevron-right' /></Button>*/}
         </div>
         <div className={'gray-text'}>Add at least one problem</div>
         <br />
@@ -201,7 +207,8 @@ export default class AddTextBookProblemsView extends React.Component {
                   onClick={() => this.removeChapterClick(chapter)}
                   title={'Remove the chapter'}
                 >
-                  <Glyphicon glyph='remove' />&nbsp;
+                  {/*<Glyphicon glyph='remove' />&nbsp;*/}
+                  <FaTimes />&nbsp;
                 </span>
                 <EditableLabel
                   value={chapter.title}
@@ -226,9 +233,11 @@ export default class AddTextBookProblemsView extends React.Component {
                           onClick={() => this.removeProblemClick(chapter, problem)}
                           title={'Remove the problem'}
                         >
-                          <Glyphicon glyph='remove' />&nbsp;
+                          {/*<Glyphicon glyph='remove' />&nbsp;*/}
+                          <FaTimes />&nbsp;
                         </span>
-                        <Glyphicon glyph='asterisk' />&nbsp;
+                        {/*<Glyphicon glyph='asterisk' />&nbsp;*/}
+                        <FaAsterisk />&nbsp;
                         <EditableExternalEventLabel
                           editMode={editMode}
                           value={problem.title}
@@ -241,7 +250,8 @@ export default class AddTextBookProblemsView extends React.Component {
                   style={{paddingLeft: '2rem', cursor: 'pointer'}}
                   onClick={() => this.addProblemClick(chapter)}
                   className={'blue-text'}>
-                  <Glyphicon glyph='plus' /> Add problem
+                  <FaPlus /> Add problem
+                  {/*<Glyphicon glyph='plus' /> Add problem*/}
                 </div>
               </div>
             }, this)}
@@ -249,7 +259,8 @@ export default class AddTextBookProblemsView extends React.Component {
               style={{cursor: 'pointer'}}
               onClick={() => this.addChapterClick()}
               className={'blue-text'}>
-              <Glyphicon glyph='plus' /> Add chapter
+              {/*<Glyphicon glyph='plus' /> Add chapter*/}
+              <FaPlus /> Add chapter
             </div>
           </Col>
           <Col sm={4} md={4}>
@@ -268,17 +279,3 @@ AddTextBookProblemsView.propTypes = {
   onNextStep: PropTypes.func.isRequired,
   onPrevStep: PropTypes.func.isRequired
 }
-
-// const mapStateToProps = (state) => {
-//   return {
-//   }
-// }
-//
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     dispatch
-//   }
-// }
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(AddTextBookProblemsView)
-// export { AddTextBookProblemsView as AddTextBookProblemsViewNotConnected }

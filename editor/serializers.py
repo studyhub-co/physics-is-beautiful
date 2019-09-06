@@ -3,36 +3,39 @@ import json
 from collections import OrderedDict
 
 from django.db.models import F
+from django.core.files.images import get_image_dimensions
 
 from rest_framework import serializers
 from rest_framework.fields import empty
 
+# from tagging.models import Tag
+from taggit_serializer.serializers import (TagListSerializerField,
+                                           TaggitSerializer)
+
 from expander import ExpanderSerializerMixin
 
 from curricula.models import Curriculum, Unit, Module, Lesson, Game, Question, Answer
-from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion
-
+from curricula.models import Vector, ImageWText, MathematicalExpression, UnitConversion, Text, MySQL
 from curricula.serializers import BaseSerializer, UserSerializer
 
 from profiles.serializers import PublicProfileSerializer
-from django.core.files.images import get_image_dimensions
-
 from profiles.models import Profile
 
 
 class DictSerializer(serializers.ListSerializer):
     def to_representation(self, data):
+        # FIXME bad approach, can't use prefetch_related with it
         return OrderedDict([(d['uuid'], d) for d in super().to_representation(data)])
 
     @property
     def data(self):
         return super(serializers.ListSerializer, self).data
 
-        
+
 class SimpleModuleSerializer(BaseSerializer):
 
     unit = serializers.CharField(source='unit.uuid')
-    
+
     class Meta:
         model = Module
         list_serializer_class = DictSerializer
@@ -55,18 +58,18 @@ class AnswerContentField(serializers.Field):
 class AnswerSerializer(BaseSerializer):
 
     question = serializers.CharField(source='question.uuid')
-    
+
     def __init__(self, *args, **kwargs):
         self.answer_type = kwargs.pop('answer_type', None)
         super().__init__(*args, **kwargs)
-    
+
     def validate_question(self, value):
         return Question.objects.get(uuid=value)
 
     def _fix_question(self, validated_data):
         if 'question' in validated_data and isinstance(validated_data['question'], dict):
             validated_data['question'] = validated_data['question']['uuid']
-    
+
     def update(self, instance, validated_data):
         self._fix_question(validated_data)
         content_data = validated_data.pop('content', None)
@@ -74,11 +77,18 @@ class AnswerSerializer(BaseSerializer):
             content = instance.content
             for k, v in content_data.items():
                 setattr(instance.content, k, v)
+            if instance.question.answer_type == Question.AnswerType.MYSQL:
+                # model level validation
+                from django.core.exceptions import ValidationError
+                try:
+                    content.clean()
+                except ValidationError as e:
+                    raise serializers.ValidationError(e.message_dict)
             content.save()
         ret = super().update(instance, validated_data)
         if ret.question and ret.question.answer_type == Question.AnswerType.MULTIPLE_CHOICE and ret.is_correct:
             ret.question.answers.exclude(id=ret.id).update(is_correct=False)
-       
+
         return ret
 
     def create(self, validated_data):
@@ -89,13 +99,17 @@ class AnswerSerializer(BaseSerializer):
                 validated_data['content'] = ImageWText.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION:
                 validated_data['content'] = MathematicalExpression.objects.create(**validated_data['content'])
+            elif self.answer_type == Question.AnswerType.TEXT:
+                validated_data['content'] = Text.objects.create(**validated_data['content'])
+            elif self.answer_type == Question.AnswerType.MYSQL:
+                validated_data['content'] = MySQL.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR:
                 validated_data['content'] = Vector.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.UNIT_CONVERSION:
                 validated_data['content'] = UnitConversion.objects.create(**validated_data['content'])
         elif self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
-            validated_data['content'] = ImageWText.objects.create()            
-        ret =  super().create(validated_data)
+            validated_data['content'] = ImageWText.objects.create()
+        ret = super().create(validated_data)
         if hasattr(self, '_fields'):
             del self._fields
         return ret
@@ -109,6 +123,16 @@ class AnswerSerializer(BaseSerializer):
         elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MathematicalExpression)):
             fields['representation'] = serializers.CharField(source='content.representation')
+        elif self.answer_type == Question.AnswerType.TEXT or \
+        (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Text)):
+            fields['text'] = serializers.CharField(source='content.text', allow_blank=True)
+        elif self.answer_type == Question.AnswerType.MYSQL or \
+        (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MySQL)):
+            fields['text'] = serializers.CharField(source='content.text', allow_blank=False)
+            fields['schema_SQL'] = serializers.CharField(source='content.schema_SQL', allow_blank=False)
+            # TODO we need to hide query_SQL info for non author of the course/curriculum
+            fields['query_SQL'] = serializers.CharField(source='content.query_SQL', allow_blank=True)
+            fields['schema_is_valid'] = serializers.BooleanField(source='content.schema_is_valid', read_only=True)
         elif self.answer_type == Question.AnswerType.VECTOR or self.answer_type == Question.AnswerType.NULLABLE_VECTOR or \
         self.answer_type == Question.AnswerType.VECTOR_COMPONENTS or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, Vector)):
@@ -126,9 +150,9 @@ class AnswerSerializer(BaseSerializer):
             fields['answer_unit'] = serializers.CharField(source='content.answer_unit', max_length=100)
             fields['conversion_steps'] = serializers.JSONField(source='content.conversion_steps')
             fields['is_consistent'] = serializers.BooleanField(source='content.is_consistent', read_only=True)
-            
+
         return fields
-    
+
     class Meta:
         model = Answer
         list_serializer_class = DictSerializer
@@ -142,7 +166,7 @@ class VectorListSerializer(serializers.ListSerializer):
         else:
             return super().get_value(dictionary)
 
-                  
+
 class VectorSerializer(BaseSerializer):
 
     class Meta:
@@ -154,20 +178,21 @@ class VectorSerializer(BaseSerializer):
 class AnswersField(serializers.Field):
     def get_attribute(self, obj):
         return obj
-    
+
     def to_representation(self, obj):
         s = AnswerSerializer(many=True, answer_type=obj.answer_type)
         return s.to_representation(obj.answers.all())
-    
+
     def to_internal_value(self, data):
         return Answer.objects.filter(uuid__in=json.loads(data), question__isnull=True)
 
 
 class QuestionSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
-    
+
     answers = AnswersField(required=False)
     vectors = VectorSerializer(many=True, required=False)
+    tags = TagListSerializerField(read_only=True)
 
     def validate_lesson(self, value):
         return Lesson.objects.get(uuid=value)
@@ -178,15 +203,15 @@ class QuestionSerializer(BaseSerializer):
 
         if 'position' in validated_data and instance.position != validated_data['position']:
             Question.objects.filter(position__gte=validated_data['position'],
-                                    lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)           
+                                    lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
         if 'vectors' in validated_data:
             instance.vectors.all().delete()
-            for v in validated_data['vectors']:                
+            for v in validated_data['vectors']:
                 instance.vectors.add(Vector.objects.create(**v))
-            del validated_data['vectors']            
+            del validated_data['vectors']
 
         new_answers = validated_data.pop('answers', None)
-                                
+
         updated = super().update(instance, validated_data)
         if new_answers:
             updated.answers.all().delete()
@@ -203,10 +228,11 @@ class QuestionSerializer(BaseSerializer):
 
     class Meta:
         model = Question
-        fields = ['uuid', 'lesson', 'text',  'hint', 'image', 'position', 'answer_type', 'answers', 'vectors']
+        fields = ['uuid', 'lesson', 'text', 'solution_text', 'hint', 'image', 'position', 'answer_type', 'answers',
+                  'vectors', 'tags']
         list_serializer_class = DictSerializer
 
-        
+
 class LessonSerializer(BaseSerializer):
 
     module = serializers.CharField(source='module.uuid')
@@ -214,7 +240,7 @@ class LessonSerializer(BaseSerializer):
     questions = QuestionSerializer(many=True, read_only=True)
 
     game_type = serializers.CharField(source='game.slug', required=False)
-    
+
     def validate_module(self, value):
         return Module.objects.get(uuid=value)
 
@@ -225,18 +251,18 @@ class LessonSerializer(BaseSerializer):
             Lesson.objects.filter(position__gte=validated_data['position'],
                                   module=validated_data.get('module', instance.module)).update(position=F('position')+1)
         if 'lesson_type' in validated_data and validated_data['lesson_type'] == Lesson.LessonType.GAME:
-            Game.objects.get_or_create(lesson=instance, defaults={'slug' : 'unit-conversion'})
+            Game.objects.get_or_create(lesson=instance, defaults={'slug': 'unit-conversion'})
         if 'game' in validated_data:
             for k,v in validated_data.pop('game').items():
                 setattr(instance.game, k, v)
                 instance.game.save()
-            
+
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
         validated_data['module'] = validated_data['module']['uuid']
         new_lesson = super().create(validated_data)
-        Question.objects.create(lesson=new_lesson, text='New question')  # WT ?
+        Question.objects.create(lesson=new_lesson, text='New question')  # create new empty quetion for new lesson
         return new_lesson
 
     class Meta:
@@ -244,7 +270,7 @@ class LessonSerializer(BaseSerializer):
         list_serializer_class = DictSerializer
         fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'game_type', 'url', 'questions']
         extra_kwargs = {
-            'url' : {'lookup_field' : 'uuid'}
+            'url': {'lookup_field': 'uuid'}
         }
 
 
@@ -254,12 +280,13 @@ class MiniLessonSerializer(LessonSerializer):
         self.fields.pop('questions')
 
 
-class ModuleSerializer(BaseSerializer):
+class ModuleSerializer(TaggitSerializer, BaseSerializer):
     lessons = MiniLessonSerializer(many=True, read_only=True)
+    tags = TagListSerializerField(read_only=True)
 
     unit = serializers.CharField(source='unit.uuid')
     curriculum = serializers.CharField(source='unit.curriculum.uuid', read_only=True)
-    
+
     def validate_unit(self, value):
         return Unit.objects.get(uuid=value)
 
@@ -279,16 +306,17 @@ class ModuleSerializer(BaseSerializer):
 
     class Meta:
         model = Module
-        fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons'] #, 'curriculum']
+        fields = ['uuid', 'name', 'image', 'position', 'unit', 'curriculum', 'url', 'lessons', 'tags'] #, 'curriculum']
         read_only_fields = ('uuid', )
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
 
 
-class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
+class UnitSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
     modules = SimpleModuleSerializer(many=True, read_only=True)
-    
+    tags = TagListSerializerField(read_only=True)
+
     curriculum = serializers.CharField(source='curriculum.uuid')
 
     def validate_curriculum(self, value):
@@ -298,20 +326,22 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         if 'curriculum' in validated_data:
             validated_data['curriculum'] = validated_data['curriculum']['uuid']
         if 'position' in validated_data and instance.position != validated_data['position']:
-            Unit.objects.filter(position__gte=validated_data['position'],
-                                curriculum=validated_data.get('curriculum', instance.curriculum)).update(position=F('position')+1)
-            
+            Unit.objects.filter(
+                position__gte=validated_data['position'],
+                curriculum=validated_data.get('curriculum', instance.curriculum)
+            ).update(position=F('position')+1)
+
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
         validated_data['curriculum'] = validated_data['curriculum']['uuid']
         return super().create(validated_data)
-    
+
     class Meta:
         model = Unit
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'name', 'image', 'position', 'url', 'curriculum', 'modules']
-        read_only_fields = ('uuid', 'modules')        
+        fields = ['uuid', 'name', 'image', 'position', 'url', 'curriculum', 'modules', 'tags']
+        read_only_fields = ('uuid', 'modules')
         expandable_fields = {
             'modules': (ModuleSerializer, (), {'many': True}),
         }
@@ -320,12 +350,22 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         }
 
 
-class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
+# class TagSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Tag
+#         fields = ['name']
+
+class CurriculumSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
+    # tags = TagSerializer(many=True, read_only=True)
+    tags = TagListSerializerField(read_only=True)
     author = UserSerializer(read_only=True)
     collaborators = PublicProfileSerializer(many=True, read_only=True)
     collaborators_ids = serializers.SlugRelatedField(queryset=Profile.objects.all(), source='collaborators',
-                                                     slug_field='id', many=True, write_only=True)
+                                                     slug_field='id', many=True, write_only=True,
+                                                     style={'base_template': 'input.html'}
+                                                     )
     count_lessons = serializers.IntegerField(read_only=True)
     number_of_learners = serializers.IntegerField(read_only=True, source='number_of_learners_denormalized')
 
@@ -351,14 +391,14 @@ class CurriculumSerializer(ExpanderSerializerMixin, BaseSerializer):
         if 'name' in validated_data and self.instance.name == Curriculum.Name.DEFAULT:
             del validated_data['name']
         return super().update(instance, validated_data)
-    
+
     class Meta:
         model = Curriculum
         list_serializer_class = DictSerializer
         fields = ['uuid', 'name', 'image', 'url', 'units', 'created_on', 'updated_on', 'count_lessons', 'author',
                   'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids',
                   'setting_units_unlocked', 'setting_modules_unlocked', 'setting_lessons_unlocked',
-                  'setting_publically'
+                  'setting_publically', 'tags'
                   ]
         read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
         expandable_fields = {

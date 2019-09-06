@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
-from django.utils.html import escape
+from django.utils.html import escape, format_html
+from django.utils.safestring import mark_safe
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
@@ -9,7 +10,7 @@ from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionSt
 
 from .models import (
     Curriculum, Unit, Module, Lesson, Question, Answer, Vector, MathematicalExpression,
-    UnitConversion, ImageWText
+    UnitConversion, ImageWText, Text, MySQL
 )
 
 from .models.answers import MathematicalExpressionMixin
@@ -19,19 +20,23 @@ admin.AdminSite.site_header = 'Physics is Beautiful Admin'
 admin.AdminSite.site_title = admin.AdminSite.site_header
 
 
+@mark_safe
 def link_to_obj(name):
     def link(obj):
-        return '<a href="{}">{}</a>'.format(obj.get_admin_url(), str(obj))
-    link.allow_tags = True
+        return format_html('<a href="{}">{}</a>', obj.get_admin_url(), str(obj))
+        # return '<a href="{}">{}</a>'.format(obj.get_admin_url(), str(obj))
+    # link.allow_tags = True  # depricated
     link.short_description = name
     return link
 
 
+@mark_safe
 def link_to_field(field_name):
     def link(obj):
         field = getattr(obj, field_name)
-        return '<a href="{}">{}</a>'.format(field.get_admin_url(), escape(field))
-    link.allow_tags = True
+        return format_html('<a href="{}">{}</a>', field.get_admin_url(), escape(field))
+        # return '<a href="{}">{}</a>'.format(field.get_admin_url(), escape(field))
+    # link.allow_tags = True  # depricated
     link.short_description = field_name
     return link
 
@@ -318,6 +323,57 @@ class ImageWTextAnswerInline(AnswerTabularInline):
     model = Answer
     form = ImageWTextAnswerForm
 
+
+class TextAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['text']
+    SPECIAL_MODEL = Text
+
+    class Meta:
+        model = Answer
+        fields = ['text', 'is_correct'] # 'position'
+
+    text = forms.CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        text = cleaned_data.get("text")
+
+        if not text:
+            raise forms.ValidationError(
+                "Text field required"
+            )
+
+
+@create_fields_funcs(TextAnswerForm)
+class TextAnswerInline(AnswerTabularInline):
+    verbose_name_plural = 'Edit Text Answer'
+    model = Answer
+    form = TextAnswerForm
+
+
+class MySQLAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
+
+    FIELDS = ['']
+    SPECIAL_MODEL = MySQL
+
+    class Meta:
+        model = Answer
+        fields = ['text', 'is_correct', 'schema_SQL', 'query_SQL']  # 'position'
+
+    text = forms.CharField(required=True)  # expected_output
+    schema_SQL = forms.CharField(required=True)
+    query_SQL = forms.CharField(required=True)
+
+
+@create_fields_funcs(MySQLAnswerForm)
+class MySQLAnswerInline(AnswerTabularInline):
+    # TODO it is bett fo lock MySQLAnswer edition
+    verbose_name_plural = 'Edit MySQL Answer'
+    model = MySQL
+    form = MySQLAnswerForm
+
+
 class MathematicalExpressionAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
     representation = forms.CharField(required=True, max_length=255, widget=MathConversionWidget())
 
@@ -419,9 +475,9 @@ class UnitConversionAnswerInline(AnswerTabularInline):
 
 
 class CurriculumAdmin(NestedModelAdmin):
-
     inlines = [UnitInline]
     exclude = ['published_on']
+    autocomplete_fields = ['collaborators', 'author']
 
 
 _backlink_to_curriculum = link_to_field('curriculum')
@@ -479,10 +535,11 @@ class LessonForm(forms.ModelForm):
 _backlink_to_lesson = link_to_field('lesson')
 
 
+@mark_safe
 def popup_question(name):
     def iframe(obj):
         return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">Question</a>'.format(obj.get_admin_url(), str(obj))
-    iframe.allow_tags = True
+    # iframe.allow_tags = True
     iframe.short_description = name
     return iframe
 
@@ -490,12 +547,13 @@ def popup_question(name):
 _popup_to_question = popup_question('Question')
 
 
+@mark_safe
 def toggle_answers_list(name):
     def link(obj):
         return '<a id="question-id-{}" data-qs-id="{}" data-qs-url="{}"' \
                ' href="javascript:showQuestionIframe({}, \'{}\');">Toggle answer details</a>' \
                .format(obj.pk, obj.pk, obj.get_admin_url(), obj.pk, obj.get_admin_url())
-    link.allow_tags = True
+    # link.allow_tags = True
     link.short_description = name
     return link
 
@@ -548,7 +606,7 @@ class QuestionAdmin(NestedModelAdmin):
 
     inlines = [
         VectorQuestionsInline, VectorAnswerInline,
-        MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline
+        MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline, TextAnswerInline
     ]
     fields = [
         'lesson', _backlink_to_lesson, 'text',
@@ -564,7 +622,9 @@ class QuestionAdmin(NestedModelAdmin):
         # Question.AnswerType.IMAGE_WITH_TEXT: [ImageWTextAnswerInline]
         # Question.AnswerType.SINGLE_ANSWER: [ImageWTextAnswerInline],
         Question.AnswerType.MULTIPLE_CHOICE: [ImageWTextAnswerInline],
-        Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline]
+        Question.AnswerType.MULTISELECT_CHOICE: [ImageWTextAnswerInline],
+        Question.AnswerType.TEXT: [TextAnswerInline],
+        Question.AnswerType.MYSQL: [MySQLAnswerInline]
     }
 
     def response_change(self, request, obj):

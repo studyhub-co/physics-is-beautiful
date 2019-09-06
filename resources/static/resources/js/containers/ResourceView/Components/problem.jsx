@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 
 import { DragSource } from 'react-dnd'
 
-import { Glyphicon, Row, Col } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
+import { FaTimes } from 'react-icons/fa'
 
 import { EditableLabel } from '../../../utils/editableLabel'
 
@@ -19,7 +20,18 @@ let ProblemClass = class Problem extends React.Component {
     var problemViewUrl = null
 
     if (this.props.resource && this.props.problem) {
-      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      let resourceTitle = this.props.resource.title
+      // TODO refactor this
+      if (!resourceTitle && this.props.resource.metadata) {
+        try {
+          resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+        } catch (e) {
+          if (e instanceof TypeError) {
+            resourceTitle = 'Unknown resource'
+          } else throw e
+        }
+      }
+
       var problemTitle = this.props.problem.title
 
       problemViewUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +
@@ -50,7 +62,8 @@ let ProblemClass = class Problem extends React.Component {
                     title={'Remove the chapter'}
                   >
                     {/* remove chapter button */}
-                    <Glyphicon glyph='remove' />&nbsp;
+                    {/*<Glyphicon glyph='remove' />&nbsp;*/}
+                    <FaTimes />&nbsp;
                   </span>
                   <EditableLabel
                     value={this.props.problem.title}
@@ -66,6 +79,9 @@ let ProblemClass = class Problem extends React.Component {
               <span
                 style={{cursor: 'pointer'}}
                 className={'solution-count'}
+                onClick={() => {
+                  history.push(problemViewUrl)
+                }}
                 // onClick={() => { history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid) }}
                 // onClick={() => { history.push(BASE_URL + slugify(resourceTitle) + '/problems/' + slugify(problemTitle) + '/' + this.props.problem.uuid) }}
               >

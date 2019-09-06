@@ -1,0 +1,22 @@
+/* html, body {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  overflow: hidden;
+}
+
+body > #react-app {
+  width: 100vw;
+  height: 100vh;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+} */
+
+body {
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+.problem-sheet {
+  height: calc(100vh - 70px);
+}

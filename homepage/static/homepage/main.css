@@ -1,3 +1,5 @@
+/* TODO remove it (homepage 1st versio)*/
+
 @font-face {
     font-family: 'Tw Cen MT';
     src: url('typeface/hinted-TwCenMT-Regular.eot');
@@ -22,12 +24,12 @@ a.socialaccount_provider.facebook {
     background-size: cover;
     /*background-attachment: fixed;*/
     height:100%;
-    background-position: center center;@media (max-width: @iphone-screen) {
-    /*background-attachment: scroll;*/
-    top: 0;
-}
-
-z-index:-1;
+    background-position: center;
+    /*@media (max-device-width: @iphone-screen) {*/
+    /*!*background-attachment: scroll;*!*/
+        /*top: 0;*/
+    /*}*/
+    z-index: -1;
 
 }
 

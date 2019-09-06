@@ -1,6 +1,8 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
+from notifications.signals import notify
+
 from pib_auth.models import User
 from .models import Profile
 
@@ -9,10 +11,15 @@ from django_gravatar.helpers import get_gravatar_url, has_gravatar
 # from allauth.socialaccount.signals import social_account_updated # TOO old version django-allauth
 # from allauth.account.signals import user_signed_up, user_logged_in
 
+
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.get_or_create(user=instance)
+
+        notify.send(instance, recipient=instance,
+                    verb='signed up successfully! Thanks for signing up and welcome to Physics is Beautiful!',
+                    )
 
 
 @receiver(pre_save, sender=Profile)
