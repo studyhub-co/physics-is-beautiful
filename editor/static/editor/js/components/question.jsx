@@ -1,7 +1,7 @@
 import React from 'react'
 
 import ReactMde from 'react-mde'
-import Showdown from 'showdown'
+// import Showdown from 'showdown'
 import { FaChevronLeft, FaPen, FaCodeBranch } from 'react-icons/fa'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 
@@ -17,6 +17,7 @@ import { UnitConversionAnswerContainer } from '../containers/unit_conversion_ans
 import { VectorComponentsAnswerContainer } from '../containers/vector_components_answer'
 import { QuestionVectorsContainer } from '../containers/question_vectors'
 import { tagDelimiters } from '../utils'
+import markdownConverter from '../markdownConverter'
 import StructureItemMenu from './structure_item_menu'
 
 export const DEFAULT_MATHJAX_OPTIONS = {
@@ -169,12 +170,12 @@ export class Question extends React.Component {
       )
     }
 
-    const markdownConverter = new Showdown.Converter({
-      tables: true,
-      simplifiedAutoLink: true,
-      strikethrough: true,
-      tasklists: true
-    })
+    // const markdownConverter = new Showdown.Converter({
+    //   tables: true,
+    //   simplifiedAutoLink: true,
+    //   strikethrough: true,
+    //   tasklists: true
+    // })
 
     const solutionEditor = <div>
       <a className={'back-button'} onClick={this.handleShowSolutionEditor} >
