@@ -320,19 +320,15 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             if existing_lesson in new_lessons_uuids:
                 new_lessons_uuids.remove(existing_lesson)
 
-        # FIXME Do we need to check start date
-        # erase AssignmentProgress.completed_on and AssignmentProgress.delayed_on if new lessons added
         if len(new_lessons_uuids) > 0 or serializer.instance.due_on != serializer.validated_data['due_on']:
-            # reset AssignmentProgresses dates
-            # AssignmentProgress.objects.filter(assignment=serializer.instance)\
-            #         .update(completed_on=None, delayed_on=None)
-            # resfresh assignments states
-            AssignmentProgress.objects.recalculate_status_by_assignemnt(serializer.instance)
-
             if serializer.instance.send_email:
                 serializer.send_emails(serializer.instance)
 
         serializer.save()
+
+        # reset AssignmentProgresses dates
+        # should placed after serializer.save
+        AssignmentProgress.objects.recalculate_status_by_assignemnt(serializer.instance)
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def students(self, request, classroom_uuid, uuid):

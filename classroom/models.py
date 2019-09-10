@@ -115,17 +115,20 @@ def add_denormalized_lesson_image(sender, instance, *args, **kwargs):
 class AssignmentProgressManager(models.Manager):
 
     def __process__assignment_progress_list(self, assignment_progress_list):
+
+        # FIXME Do we need to check start date
         for assignment_progress in assignment_progress_list:
             student_completed_lessons = Lesson.objects.filter(
                 progress__profile=assignment_progress.student,
                 progress__status=30)
             need_complete_lessons = assignment_progress.assignment.lessons.all()
 
-            if need_complete_lessons.exclude(id__in=student_completed_lessons).count() == 0:
+            if need_complete_lessons.difference(student_completed_lessons).count() == 0:
                 # student already passed all lessons
-                if timezone.now() < assignment_progress.assignment.due_on.replace():
+                if timezone.now() < assignment_progress.assignment.due_on.replace()\
+                        and not assignment_progress.completed_on:  # if student did't completed yet
                     assignment_progress.completed_on = timezone.now()
-                else:
+                elif assignment_progress.delayed_on:  # if student did't delayed yet
                     assignment_progress.delayed_on = timezone.now()
             else:
                 # reset completed if find uncompleted lessons
@@ -133,8 +136,9 @@ class AssignmentProgressManager(models.Manager):
                 assignment_progress.delayed_on = None
 
             # save all lessons completed in Curriculum into classroom progress
-            assignment_progress.completed_lessons.set(student_completed_lessons.filter(
-                id__in=assignment_progress.assignment.lessons.all()))
+            assignment_progress.completed_lessons.set(
+                student_completed_lessons.intersection(need_complete_lessons)
+            )
 
             assignment_progress.save()
 

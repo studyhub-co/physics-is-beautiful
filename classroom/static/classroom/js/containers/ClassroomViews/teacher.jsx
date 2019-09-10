@@ -266,7 +266,11 @@ class TeacherClassroomView extends React.Component {
                         }}>
                       Course
                     </div>
-                    <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
+                    <div onClick={() => {
+                      window.open('/studio/editor/curricula/' + this.props.classroomTeacher.curriculum.uuid, '_self') }
+                    }>
+                      <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
+                    </div>
                     <div
                       className={'gray-text title pointer'}
                       onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/edit/')) }}>
