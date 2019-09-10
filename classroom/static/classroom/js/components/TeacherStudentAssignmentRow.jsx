@@ -43,15 +43,17 @@ export class TeacherStudentAssignmentRow extends React.Component {
 
     return (
       <Row className={className}>
-        <Col sm={1} md={1} xs={12}>
-          <div className={'gray-text small-text'}>
-            {this.props.assignment && this.props.assignment.image
-              ? <Image
-                fluid
-                src={this.props.assignment.image}
-                roundedCircle />
-              : null}
-          </div>
+        <Col sm={1} md={1} xs={12} style={{padding: 0}}>
+          <Col sm={12} md={12} xs={6} style={{padding: 0}}>
+            <div className={'gray-text small-text'}>
+              {this.props.assignment && this.props.assignment.image
+                ? <Image
+                  fluid
+                  src={this.props.assignment.image}
+                  roundedCircle />
+                : null}
+            </div>
+          </Col>
         </Col>
         <Col sm={4} md={4} xs={4}>
           { !this.props.isTeacher && textColorClassName !== 'gray-text' // TODO check start date
