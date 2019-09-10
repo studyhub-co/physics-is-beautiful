@@ -111,10 +111,11 @@ class StudentClassroomProfileView extends React.Component {
             </Col>
           </Row>
         </Container>
+        {/* TODO create dynamic bounds values */}
         <Draggable
           disabled={screen.width > 770}
           axis='x'
-          bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}}
+          bounds={{left: -screen.width + 100, top: 0, right: 0, bottom: 0}}
         >
           <div style={{minWidth: '500px'}}>
             <Container fluid>

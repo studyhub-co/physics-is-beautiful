@@ -366,7 +366,7 @@ export class UnitConversionAnswer extends React.Component {
 
     return (
       <div>
-        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}} cancel='.mq-root-block'>
+        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: 0, bottom: 0}} cancel='.mq-root-block'>
           <div className='bounding-box'>
             <UnitConversionCanvas
               answer_number={this.props.question.unit_conversion.answer_number}

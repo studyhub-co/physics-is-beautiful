@@ -985,7 +985,7 @@ class UnitConversionQuestionBoard extends React.Component {
 
     return (
       <div>
-        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}} cancel='.mq-root-block'>
+        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: 0, bottom: 0}} cancel='.mq-root-block'>
           <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box text-center'>
             <MediaQuery minDeviceWidth={736}>
               <h2>{ this.props.question }</h2>
@@ -1004,7 +1004,7 @@ class UnitConversionQuestionBoard extends React.Component {
             />
           </div>
         </Draggable>
-        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: screen.width - 100, bottom: 0}} cancel='.mq-root-block'>
+        <Draggable disabled={screen.width > 736} axis='x' bounds={{left: -screen.width + 100, top: 0, right: 0, bottom: 0}} cancel='.mq-root-block'>
           <div style={{display: 'table', marginLeft: 'auto', marginRight: 'auto'}} className='bounding-box'>
             <div className='text-center'>
               <h2>Calculator</h2>
