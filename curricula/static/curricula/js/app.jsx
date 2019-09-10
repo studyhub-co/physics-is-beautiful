@@ -52,7 +52,7 @@ class CurriculumInfoPanel extends React.Component {
                   <Col md={8} />
                   <Col md={12} style={{textAlign: 'right', fontSize: 15}}>
                     {this.state.showMore ? <div>
-                      <a href={'/browse/'} style={{cursor: 'pointer', color: 'grey'}}>{'Select other curriculum'}</a>
+                      <a href={'/browse/'} style={{cursor: 'pointer', color: 'grey'}}>{'Select other course'}</a>
                     </div> : null}
                   </Col>
                 </Row>

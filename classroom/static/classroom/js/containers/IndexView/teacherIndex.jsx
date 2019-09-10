@@ -94,7 +94,7 @@ class TeacherIndexView extends React.Component {
   // ================ Google end
 
   render () {
-    var baseUrl =  this.props.match.url.replace(/\/$/, '')
+    var baseUrl = this.props.match.url.replace(/\/$/, '')
     var createUrl = baseUrl + '/create'
     var teacherUrl = baseUrl + '/:uuid/'
     var editUrl = baseUrl + '/:uuid/edit/'
@@ -106,18 +106,23 @@ class TeacherIndexView extends React.Component {
             <Col sm={6} md={6}>
               <h2>All classrooms</h2>
             </Col>
-            {/*<Col sm={4} md={3} smOffset={2} mdOffset={3} style={{marginTop: 10}}>*/}
+            {/* <Col sm={4} md={3} smOffset={2} mdOffset={3} style={{marginTop: 10}}> */}
             <Col sm={{ span: 4, offset: 2 }} md={{ span: 3, offset: 3 }} style={{marginTop: 10}}>
-              <button
-                disabled={!this.props.gapiInitState}
-                onClick={this.getGoogleClassroomList}
-                className='google-button' type='button'>
-                <div className='google-classroom-img' />
-                <span>
-                  <span>Import from</span>
-                  <span>Google Classroom</span>
-                </span>
-              </button>
+              {this.props.gapiInitState
+                ? <button
+                  onClick={this.getGoogleClassroomList}
+                  className='google-button'
+                  type='button'>
+                  <div className='google-classroom-img' />
+                  <span>
+                    <span>Import from</span>
+                    <span>Google Classroom</span>
+                  </span>
+                </button>
+                : <RingLoader
+                  color={'#1caff6'}
+                  loading={this.state.loading}
+                /> }
               {/* Google Modal start */}
               { this.state.showSelectGoogleClassroom
                 ? <Modal

@@ -247,7 +247,7 @@ class EditCurriculumProfileView extends React.Component {
         <a className={'back-button'} onClick={() => { history.push('/studio/') }} >
           {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
           <FaChevronLeft />
-            My Curricula
+            My courses
         </a>
         <Tabs name='editCurriculumProfileTabs'
           className='tabs'
