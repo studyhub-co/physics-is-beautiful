@@ -97,17 +97,21 @@ class CreateClassroomView extends React.Component {
   }
 
   render () {
+    console.log(this)
     return (
       <PopupWindow goBack={history.goBack}>
         <form onSubmit={this.saveClassroom}>
-          <div style={{paddingTop: '2rem'}}>Name of your classroom:</div>
-          <div>
-            <input
-              type='text' name='name'
-              className={'form-control'}
-              value={this.state.classroomFormValues ? this.state.classroomFormValues.name : ''}
-              onChange={this.handleClassroomFormChange} />
-          </div>
+          {!this.props.classroomTeacher &&
+            <div>
+              <div style={{paddingTop: '2rem'}}>Name of your classroom:</div>
+              <div>
+                <input
+                  type='text' name='name'
+                  className={'form-control'}
+                  value={this.state.classroomFormValues ? this.state.classroomFormValues.name : ''}
+                  onChange={this.handleClassroomFormChange} />
+              </div>
+            </div> }
           <br />
           <SelectCurriculum
             selectedCurriculumChanged={this.selectedCurriculumChanged}

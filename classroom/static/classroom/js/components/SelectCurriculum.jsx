@@ -26,23 +26,25 @@ class SelectCurriculum extends React.Component {
   render () {
     return (
       <div>
-        <div>Select curriculum:</div>
-        <div style={{color: 'rgb(8, 209, 255)'}}>My curricula</div>
+        <div>Select course:</div>
+        <div style={{color: 'rgb(8, 209, 255)'}}>My courses</div>
         {this.props.curriculaList ? <div>{ this.props.curriculaList.map(function (curriculum, i) {
           return <div key={i} onClick={() => { this.selectCurriculumUuid(curriculum) }}>
             <CurriculumRow curriculum={curriculum} selectedUuid={this.props.selectedUuid} />
           </div>
         }, this)}
         </div> : null }
-        <div className={'create-curriculum-button curriculum-card'} onClick={() => { window.open('/studio/editor/', '_blank') }}>+ Create new curriculum</div>
-        <div className={'blue-text'}>Physics is Beautiful curricula:</div>
+        <div
+          className={'create-curriculum-button curriculum-card'}
+          onClick={() => { window.open('/studio/editor/', '_self') }}>+ Create new curriculum</div>
+        <div className={'blue-text'}>Physics is Beautiful courses</div>
         {this.props.curriculaOtherList ? <div>{ this.props.curriculaOtherList.map(function (curriculum, i) {
           return <div key={i} onClick={() => { this.selectCurriculumUuid(curriculum) }}>
             <CurriculumRow curriculum={curriculum} selectedUuid={this.props.selectedUuid} />
           </div>
         }, this)}
         </div> : null }
-        <div className={'gray-text pointer'} onClick={() => { window.open('/editor/', '_blank') }}>Browse other curricula</div>
+        <div className={'gray-text pointer'} onClick={() => { window.open('/browse/', '_self') }}>Browse other courses</div>
       </div>
     )
   }

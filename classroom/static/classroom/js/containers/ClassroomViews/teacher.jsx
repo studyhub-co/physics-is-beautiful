@@ -264,13 +264,13 @@ class TeacherClassroomView extends React.Component {
                           color: '#676767',
                           marginBottom: '1rem'
                         }}>
-                      Curriculum
+                      Course
                     </div>
                     <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
                     <div
                       className={'gray-text title pointer'}
                       onClick={() => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.classroomTeacher.uuid + '/edit/')) }}>
-                      <u>Change curriculum</u>
+                      <u>Change course</u>
                     </div>
                   </div>
                   <div className={'gray-text title pointer text-align-center'}
