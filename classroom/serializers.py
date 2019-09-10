@@ -299,17 +299,26 @@ class StudentAssignmentsSerializer(AssignmentListSerializer):
     start_on = serializers.SerializerMethodField()
 
     def get_completed_on(self, obj):
-        return obj.assignment_student_progress[0].completed_on\
-            if hasattr(obj, 'assignment_student_progress') else None
+        if hasattr(obj, 'assignment_student_progress') and \
+                len(obj.assignment_student_progress) > 0:
+            return obj.assignment_student_progress[0].completed_on
+        else:
+            return None
 
     def get_delayed_on(self, obj):
-        return obj.assignment_student_progress[0].delayed_on\
-            if hasattr(obj, 'assignment_student_progress') else None
+        if hasattr(obj, 'assignment_student_progress') and \
+                len(obj.assignment_student_progress) > 0:
+            return obj.assignment_student_progress[0].delayed_on
+        else:
+            return None
 
     # !!! Warning: we ovverride start_on date of Assignment with start_on date of user Assignment proccess
     def get_start_on(self, obj):
-        return obj.assignment_student_progress[0].start_on\
-            if hasattr(obj, 'assignment_student_progress') else None
+        if hasattr(obj, 'assignment_student_progress') and \
+                len(obj.assignment_student_progress) > 0:
+            return obj.assignment_student_progress[0].start_on
+        else:
+            return None
 
     class Meta:
         model = AssignmentListSerializer.Meta.model

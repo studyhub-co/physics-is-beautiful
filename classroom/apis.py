@@ -8,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, NotAcceptable
+from rest_framework.exceptions import NotFound, PermissionDenied
 
 from profiles.models import Profile
 
@@ -136,7 +136,7 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                         EmailAddress.objects.create(user=user, email=user.email, primary=True, verified=True)
 
                     except TypeError:
-                        raise NotAcceptable('Student should be json {"email": , "first_name", "last_name":}')
+                        raise PermissionDenied('Student should be json {"email": , "first_name", "last_name":}')
 
                 if user:
                     try:
@@ -514,10 +514,15 @@ class StudentProfileViewSet(GenericViewSet):
             raise NotFound('classroom not found')
 
         if request.user != classroom.teacher.user:
-            raise NotAcceptable
+            raise PermissionDenied
 
-        ClassroomStudent.objects.filter(student=profile, classroom=classroom).delete()
-        # TODO remove assignment progress
+        with transaction.atomic():
+            ClassroomStudent.objects.filter(student=profile, classroom=classroom).delete()
+
+            # FIXME async background mode is preferable
+            assignments = AssignmentProgress.objects.filter(student=profile, assignment__classroom=classroom)
+            if assignments.exists():
+                assignments.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
