@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { FaTimes, FaPlusCircle } from 'react-icons/fa'
+import { FaTimes, FaPlusCircle, FaGripHorizontal } from 'react-icons/fa'
 import { DragSource } from 'react-dnd'
 import { WithOutContext as ReactTags } from 'react-tag-input'
-
 
 import {EditableLabel} from './label'
 import {EditableThumbnail} from './thumbnail'
@@ -69,7 +68,7 @@ class Unit extends React.Component {
       <div className='unit' style={{display: this.props.isDragging ? 'none' : 'block'}}>
         <div className='section-title'>
           <h2>
-            {this.props.connectDragSource(<span className='drag-handle'/>)}
+            {this.props.connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)}
             <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
             <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue='New unit'/>
             {/* <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/> */}

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { DragSource } from 'react-dnd'
-import { FaTimes } from 'react-icons/fa'
+import { FaGripHorizontal, FaTimes } from 'react-icons/fa'
 
 // import { Thumbnail } from './thumbnail'
 import { DragItemTypes } from '../dnd'
@@ -43,7 +43,7 @@ class QuestionThumbnail extends React.Component {
         onClick={this.props.onClick}
       >
         <div className="question-thumbnail-inner">
-          {this.props.connectDragSource(<span className="drag-handle" />)}
+          {this.props.connectDragSource(<span className="drag-handle"><FaGripHorizontal /></span>)}
           <span>{this.props.shortText}</span>
         </div>
         {/*<span className="glyphicon glyphicon-remove btn-delete" onClick={this.handleDeleteClick}/>*/}
