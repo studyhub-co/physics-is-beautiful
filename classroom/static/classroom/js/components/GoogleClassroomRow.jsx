@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Row, Col, InputGroup } from 'react-bootstrap'
+// import { Row, Col, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 
 export class GoogleClassroomRow extends React.Component {
   handleChange (classroom) {
@@ -17,7 +18,7 @@ export class GoogleClassroomRow extends React.Component {
       }
     }
 
-    var className = 'google-classroom-row'
+    var className = 'google-classroom-row blue-title'
     var opts = {}
     if (disabled) {
       opts['checked'] = 'checked'
@@ -25,20 +26,37 @@ export class GoogleClassroomRow extends React.Component {
 
     return (
       <div className={className}>
-        <Row>
-          <Col sm={1} md={1}>
-            <InputGroup.Checkbox
-              disabled={disabled}
-              onChange={() => this.handleChange(this.props.classroom)}
-              {...opts}
-            />
-          </Col>
-          <Col sm={11} md={11}>
-            <span
-              className={'blue-title'}>{this.props.classroom.name} {this.props.classroom.section}
-            </span>
-          </Col>
-        </Row>
+        <Form>
+          <Form.Group controlId={`googleCRCheckbox-${this.props.classroom.id}`}>
+            <Form.Check
+            >
+              <Form.Check.Input
+                disabled={disabled}
+                onChange={() => this.handleChange(this.props.classroom)}
+                {...opts}
+                style={{position: 'relative', verticalAlign: 'middle'}}
+              />
+              <Form.Check.Label
+                style={{position: 'relative', verticalAlign: 'middle'}}
+              >
+                &nbsp;{this.props.classroom.name}&nbsp;{this.props.classroom.section}
+              </Form.Check.Label>
+            </Form.Check>
+          </Form.Group>
+        </Form>
+        {/* <Col sm={1} md={1}> */}
+        {/* <InputGroup.Checkbox */}
+        {/* disabled={disabled} */}
+        {/* onChange={() => this.handleChange(this.props.classroom)} */}
+        {/* {...opts} */}
+        {/* /> */}
+        {/* </Col> */}
+        {/* <Col sm={11} md={11}> */}
+        {/* <span */}
+        {/* className={'blue-title'}>{this.props.classroom.name} {this.props.classroom.section} */}
+        {/* </span> */}
+        {/* </Col> */}
+        {/* </Row> */}
       </div>
     )
   }

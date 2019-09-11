@@ -150,14 +150,12 @@ class TeacherIndexView extends React.Component {
                               selectedUuid={this.state.googleCurriculumSelected ? this.state.googleCurriculumSelected.uuid : ''} />
                           </div>}
                         </div>
-                        : <Row style={{height: '10rem'}}>
-                          <Col sm={12} md={12}>
-                            <div className='sweet-loading'>
-                              <RingLoader
-                                color={'#1caff6'}
-                                loading={this.state.loading}
-                              />
-                            </div>
+                        : <Row className='justify-content-center'>
+                          <Col sm={2} md={2}>
+                            <RingLoader
+                              color={'#1caff6'}
+                              loading={this.state.loading}
+                            />
                           </Col>
                         </Row>
                       }
