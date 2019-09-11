@@ -50,8 +50,7 @@ class CurriculumViewSet(ModelViewSet, TagAddRemoveViewMixin):
 
     def get_queryset(self):
         return Curriculum.objects.filter(Q(author=self.request.user)
-                                         | Q(collaborators=self.request.user.profile)
-                                         | Q(classroom__students__user=self.request.user)).\
+                                         | Q(collaborators=self.request.user.profile)). \
                select_related('author'). \
                prefetch_related('units__modules', 'units__tags').\
                annotate(count_lessons=Count('units__modules__lessons', distinct=True))
