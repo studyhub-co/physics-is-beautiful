@@ -49,7 +49,7 @@ export class ImageWithText extends React.Component {
   }
 
   render () {
-    var cardStyle = {width: '13rem', borderStyle: 'solid', borderWidth:2, borderRadius: 10, padding: 1}
+    var cardStyle = {width: '13rem', borderStyle: 'solid', borderWidth: 2, borderRadius: 10, padding: 1}
     var buttonStyle = {}
     var hiddenCircle = {}
     hiddenCircle['visibility'] = 'hidden'
@@ -81,20 +81,25 @@ export class ImageWithText extends React.Component {
     }
 
     var toReturn
-    var style = {marginRight: '10px', width: '10px', display: 'inline-block'}
+    var style = { marginRight: '1rem', width: '1rem' }
+    var indexStyle = {position: 'absolute', top: '50%', transform: 'translate(-50%,-50%)'}
 
     if (this.props.textOnlyMode) {
       if (this.props.type === 'RADIO_BUTTON') {
         // TEXT ONLY RADIO
         toReturn = <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
-          <span style={style}>{this.props.index + 1}</span>
+          <span style={indexStyle}><div>{this.props.index + 1}</div></span>
           <input
             id={'radio' + this.props.choice.uuid}
             value={this.props.choice.content.text} name='radio'
             onChange={() => {}}
             type='radio' checked={this.state.checked} style={hiddenCircle} />
           {this.props.choice.content.text
-            ? <label htmlFor={'radio' + this.props.choice.uuid}>{this.props.choice.content.text}</label>
+            ? <label
+              htmlFor={'radio' + this.props.choice.uuid}
+              style={{marginBottom: '0'}}> {/*fix bootsrap reboot.css (marginBottom:0.6rem)*/}
+              {this.props.choice.content.text}
+            </label>
             : <label htmlFor={'radio' + this.props.choice.uuid} style={style} />
           }
         </div>

@@ -647,12 +647,10 @@ img.grayed-out-img {
 .answer-button{
     border-radius: 12rem;
     border: .2rem solid gray;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding: 1rem 2rem;
     margin: 1rem;
     background: rgba(255, 255, 255, 0);
+    position: relative;
     color: gray;
     transition: color .3s,border .3s;
     text-align: justify;

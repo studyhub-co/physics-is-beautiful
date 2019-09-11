@@ -60,19 +60,19 @@
 .pure-radiobutton input[type="radio"] + label {
   position: relative;
   padding: 0px 5px 0px 2em;
+  margin-left: 1rem;
   vertical-align: middle;
   user-select: none;
   cursor: pointer;
-  width: 95%;
 }
-@media only screen and (max-width: 640px) {
-    .pure-checkbox input[type="checkbox"] + label,
-    .pure-radiobutton input[type="checkbox"] + label,
-    .pure-checkbox input[type="radio"] + label,
-    .pure-radiobutton input[type="radio"] + label {
-      width: 80%;
-}
-}
+/*@media only screen and (max-width: 640px) {*/
+    /*.pure-checkbox input[type="checkbox"] + label,*/
+    /*.pure-radiobutton input[type="checkbox"] + label,*/
+    /*.pure-checkbox input[type="radio"] + label,*/
+    /*.pure-radiobutton input[type="radio"] + label {*/
+
+    /*}*/
+/*}*/
 
 .pure-checkbox input[type="checkbox"] + label:before,
 .pure-radiobutton input[type="checkbox"] + label:before,
