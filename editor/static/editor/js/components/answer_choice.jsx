@@ -30,9 +30,12 @@ export class AnswerChoice extends React.Component {
     //     </div>)
     // }
 
-    return (<Card style={{ height: '13rem' }}>
+    return (<Card style={{ width: '13rem', boxShadow: '0 0 10px #bbb' }} className={'mx-2 mb-3'}>
       <Card.Body>
-        {thumb} {selectionControl} {label} {deleteIcon}
+        <div className='thumbnail'>{thumb}</div>
+        {selectionControl}
+        {label}
+        {deleteIcon}
       </Card.Body>
     </Card>
     )

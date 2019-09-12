@@ -2,7 +2,8 @@ import React from 'react'
 
 import {AnswerChoiceContainer} from '../containers/answer_choice'
 
-import CardColumns from 'react-bootstrap/CardColumns'
+// import CardColumns from 'react-bootstrap/CardColumns'
+import Row from 'react-bootstrap/Row'
 
 export class MultipleChoiceAnswers extends React.Component {
   render () {
@@ -16,7 +17,8 @@ export class MultipleChoiceAnswers extends React.Component {
         withThumbnail={this.props.hasPictures}/>)
     }
     return <div>
-      <CardColumns>{answers}</CardColumns>
+      {/*<CardColumns>{answers}</CardColumns>*/}
+      <Row>{answers}</Row>
       <div className='editor-col-md-1 module-accessible-block add-answer' onClick={e => { e.preventDefault(); this.props.onAddAnswerClick() }}>
       + Add answer
       </div>

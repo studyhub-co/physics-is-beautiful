@@ -124,7 +124,7 @@ export class ImageWithText extends React.Component {
       toReturn =
         <div
           onClick={this.cardClick.bind(this)}
-          className='card mx-2 mb-3'
+          className='card mx-2 mb-3' // TODO replace with react-bootsrap card
           style={cardStyle}
           id={this.props.choice.uuid}
         >
