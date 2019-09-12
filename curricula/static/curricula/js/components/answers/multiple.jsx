@@ -94,7 +94,7 @@ export class MultipleAnswer extends React.Component {
     }
     return (
       <div className='bounding-box'>
-        <p style={{fontSize:16}}>Select answer below:</p>
+        <p style={{fontSize: 16}}>Select answer below:</p>
         <div className={textOnlyMode ? 'button-group' : 'row'} style={{marginLeft: 0, marginRight: 0}}>
           {choices}
         </div>
