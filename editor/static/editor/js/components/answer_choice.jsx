@@ -1,7 +1,7 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-import { FaTimes } from 'react-icons/fa'
+import { FaTimes, FaTrashAlt } from 'react-icons/fa'
 
 import {EditableThumbnail} from './thumbnail'
 import {EditableLabel} from './label'
@@ -12,10 +12,18 @@ export class AnswerChoice extends React.Component {
   constructor (props) {
     super(props)
     this.onHoverToggle = this.onHoverToggle.bind(this)
+    this.onDeleteChoiceClick = this.onDeleteChoiceClick.bind(this)
+    this.state = {
+      hover: false
+    }
   }
 
   onHoverToggle (e) {
-    // TODO add state for hover and show delete button + img
+    // state for hover and show delete button + img
+    this.setState({hover: !this.state.hover})
+  }
+
+  onDeleteChoiceClick (e) {
   }
 
   render () {
@@ -35,7 +43,7 @@ export class AnswerChoice extends React.Component {
       checked={this.props.is_correct}/>
     var label = <EditableLabel value={this.props.text} defaultValue='New answer' onChange={this.props.onTextChange}/>
     // TODO we have no deleteClick function
-    var deleteIcon = <FaTimes onClick={this.onDeleteClick} />
+    var deleteImgIcon = <FaTimes onClick={this.onDeleteImgClick} />
 
     // if (this.props.withThumbnail) {
     //   return (
@@ -60,7 +68,7 @@ export class AnswerChoice extends React.Component {
           <div className='thumbnail'>{thumb}</div>
           {selectionControl}
           {label}
-          {deleteIcon}
+          {deleteImgIcon}
         </Card.Body>
       </Card>
       )
@@ -69,13 +77,26 @@ export class AnswerChoice extends React.Component {
         // answer-choice without-image
         <div
           className='answer-button pure-radiobutton'
-          onMouseOver={this.onHoverToggle}
-          onMouseOut={this.onHoverToggle}>
-          <span style={indexStyle}>{this.props.index}</span>
-          {/* TODO thumb pull right + hover */}
-          {/*{selectionControl} {label} {thumb} {deleteIcon}*/}
+          onMouseEnter={this.onHoverToggle}
+          onMouseLeave={this.onHoverToggle}>
+          <span style={indexStyle}>
+            {this.state.hover
+              ? <FaTrashAlt onClick={this.onDeleteChoiceClick} />
+              : this.props.index}
+          </span>
+          {/* thumb pull right + hover */}
+          {/* {selectionControl} {label} {thumb} {deleteImgIcon} */}
           {selectionControl}
-          <label style={{marginBottom: '0.025rem'}} htmlFor={this.props.uuid}>{label}</label>
+          <label
+            style={{marginBottom: '0.025rem', paddingRight: this.state.hover ? '10%' : '5px'}}
+            htmlFor={this.props.uuid}>
+            {label}
+          </label>
+          {this.state.hover &&
+          <span
+            style={{position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)'}}
+            className={'selectable-image'}>{thumb}
+          </span> }
         </div>)
     }
   }
