@@ -46,6 +46,7 @@ class SimpleModuleSerializer(BaseSerializer):
         }
 
 
+# TODO not use?
 class AnswerContentField(serializers.Field):
     def to_representation(self, obj):
         if isinstance(obj, ImageWText):
@@ -94,7 +95,9 @@ class AnswerSerializer(BaseSerializer):
     def create(self, validated_data):
         self._fix_question(validated_data)
         self.answer_type = validated_data['question'].answer_type
+
         if 'content' in validated_data:
+            # TODO it seems we don't use this code at all, answers are created in question PATCH query (except choices)
             if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
                 validated_data['content'] = ImageWText.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION:
@@ -107,8 +110,9 @@ class AnswerSerializer(BaseSerializer):
                 validated_data['content'] = Vector.objects.create(**validated_data['content'])
             elif self.answer_type == Question.AnswerType.UNIT_CONVERSION:
                 validated_data['content'] = UnitConversion.objects.create(**validated_data['content'])
-        elif self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
-            validated_data['content'] = ImageWText.objects.create()
+        else:  # create an empty choice answer
+            if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE):
+                validated_data['content'] = ImageWText.objects.create()
         ret = super().create(validated_data)
         if hasattr(self, '_fields'):
             del self._fields
@@ -118,7 +122,7 @@ class AnswerSerializer(BaseSerializer):
         fields = super().get_fields()
         if self.answer_type in (Question.AnswerType.MULTIPLE_CHOICE, Question.AnswerType.MULTISELECT_CHOICE) or \
            (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, ImageWText)):
-            fields['image'] = serializers.ImageField(source='content.image', required=False)
+            fields['image'] = serializers.ImageField(source='content.image', required=False, allow_empty_file=True, allow_null=True)
             fields['text'] = serializers.CharField(source='content.text', allow_blank=True)
         elif self.answer_type == Question.AnswerType.MATHEMATICAL_EXPRESSION or \
         (self.instance and isinstance(self.instance, Answer) and isinstance(self.instance.content, MathematicalExpression)):

@@ -13,6 +13,7 @@ export class AnswerChoice extends React.Component {
     super(props)
     this.onHoverToggle = this.onHoverToggle.bind(this)
     this.onDeleteChoiceClick = this.onDeleteChoiceClick.bind(this)
+    this.onDeleteImageClick = this.onDeleteImageClick.bind(this)
     this.state = {
       hover: false
     }
@@ -24,6 +25,11 @@ export class AnswerChoice extends React.Component {
   }
 
   onDeleteChoiceClick (e) {
+    this.props.onDeleteClick()
+  }
+
+  onDeleteImageClick (e) {
+    this.props.onDeleteImageClick()
   }
 
   render () {
@@ -42,8 +48,7 @@ export class AnswerChoice extends React.Component {
       value={this.props.text}
       checked={this.props.is_correct}/>
     var label = <EditableLabel value={this.props.text} defaultValue='New answer' onChange={this.props.onTextChange}/>
-    // TODO we have no deleteClick function
-    var deleteImgIcon = <FaTimes onClick={this.onDeleteImgClick} />
+    var deleteImgIcon = <span title='Delete image'><FaTimes onClick={this.onDeleteImageClick} /></span>
 
     // if (this.props.withThumbnail) {
     //   return (
@@ -62,19 +67,38 @@ export class AnswerChoice extends React.Component {
 
     var indexStyle = {position: 'absolute', top: '50%', transform: 'translate(-50%,-50%)'}
 
+    // card (TEXT + IMAGE)
     if (this.props.withThumbnail) {
-      return (<Card style={{ width: '13rem', boxShadow: '0 0 10px #bbb' }} className={'mx-2 mb-3'}>
+      return (<Card
+        style={{ width: '17rem', boxShadow: '0 0 10px #bbb' }}
+        className={'mx-2 mb-3'}
+        onMouseEnter={this.onHoverToggle}
+        onMouseLeave={this.onHoverToggle}
+      >
         <Card.Body>
-          <div className='thumbnail'>{thumb}</div>
-          {selectionControl}
-          {label}
-          {deleteImgIcon}
+          <div className='thumbnail'>
+            <div className={'selectable-image'}>{thumb}</div>
+            {this.state.hover && this.props.image ? deleteImgIcon : null }
+          </div>
+          <div className={'pure-radiobutton'} style={{float: 'left', width: '90%'}}>
+            {selectionControl}
+            <label
+              style={{marginBottom: '0.025rem', paddingRight: this.state.hover ? '10%' : '5px'}}
+              htmlFor={this.props.uuid}>
+              {label}
+            </label>
+          </div>
+          <div style={{float: 'right'}}>{this.state.hover
+            ? <FaTrashAlt onClick={this.onDeleteChoiceClick} />
+            : this.props.index}
+          </div>
+          <div style={{clear: 'both'}}></div>
         </Card.Body>
       </Card>
       )
     } else {
+      // Row (text only)
       return (
-        // answer-choice without-image
         <div
           className='answer-button pure-radiobutton'
           onMouseEnter={this.onHoverToggle}

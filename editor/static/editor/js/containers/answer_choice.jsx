@@ -29,6 +29,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setAnswerIsCorrect(ownProps.uuid, e.target.checked, ownProps.exclusive),
       ),
     onDeleteClick: () => dispatch(deleteAnswerChoice(ownProps.uuid)),
+    onDeleteImageClick: () => dispatch(changeAnswerImage(ownProps.uuid, null))
   }
 }
 

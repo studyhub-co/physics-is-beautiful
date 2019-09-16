@@ -1506,18 +1506,32 @@ export function changeAnswerMYSQL (uuid, schemaSQL, querySQL) {
 
 export function changeAnswerImage (uuid, image) {
   return dispatch => {
-    var formData = new FormData()
-    formData.append('image', image)
-    $.ajax({
-      url: API_PREFIX + 'answers/' + uuid + '/',
-      type: 'PATCH',
-      processData: false,
-      contentType: false,
-      data: formData,
-      success: function (data) {
-        dispatch(answerLoaded(data))
-      }
-    })
+    let formData
+    if (image) {
+      formData = new FormData()
+      formData.append('image', image)
+
+      $.ajax({
+        url: API_PREFIX + 'answers/' + uuid + '/',
+        type: 'PATCH',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+          dispatch(answerLoaded(data))
+        }
+      })
+    } else {
+      formData = {'image': image}
+      $.ajax({
+        url: API_PREFIX + 'answers/' + uuid + '/',
+        type: 'PATCH',
+        data: formData,
+        success: function (data) {
+          dispatch(answerLoaded(data))
+        }
+      })
+    }
   }
 }
 
