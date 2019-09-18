@@ -33,9 +33,12 @@ def transfer_lesson_progress(request, user, **kwargs):
             )
             content_classes[content_type] = content_class
             if content_class == Answer:
+                # ???
                 content = Answer.objects.get(**response['content'])
             else:
+                # create user response (answer) from session store
                 content = content_class.objects.create(**response['content'])
+
             UserResponse.objects.create(
                 profile=profile,
                 question_id=response['question'],
@@ -44,6 +47,7 @@ def transfer_lesson_progress(request, user, **kwargs):
                 is_correct=response['is_correct'],
                 answered_on=response['answered_on'],
             )
+        # TODO check unlocked lessons
     # clear the session
     request.session['lessons'] = {}
 

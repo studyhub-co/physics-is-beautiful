@@ -4,7 +4,7 @@ from django.utils.functional import cached_property
 # from notifications.signals import notify
 
 from .models import LessonProgress
-from .serializers import LessonProgressSerializer, UserResponseSerializer
+from .serializers import LessonProgressSerializer, UserResponseSerializer, GenericUserResponseSerializer
 
 
 class LessonLocked(Exception):
@@ -198,7 +198,12 @@ class AnonymousProgressService(ProgressServiceBase):
             self.lessons_store.setdefault(lesson_pk, {}).update(raw)
         if self.current_lesson:
             lesson_raw = LessonProgressSerializer(self.current_lesson_progress).data
-            responses_raw = UserResponseSerializer(self.user_responses, many=True).data
+            # responses_raw = UserResponseSerializer(self.user_responses, many=True).data
+            # TODO store in session
+            #  1 answers_list object_ids for multi select
+            #  2 object_id for single selected answer
+            #  3 json data of answer type to create question in
+            responses_raw = GenericUserResponseSerializer(self.user_responses, many=True).data
             self.current_lesson_responses_store.extend(responses_raw)
             lesson_raw['responses'] = self.current_lesson_responses_store
             self.user_responses = []

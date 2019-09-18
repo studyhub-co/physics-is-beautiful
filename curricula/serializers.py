@@ -83,7 +83,7 @@ class MySQLQuestionSerializer(BaseSerializer):
 class MySQLAnswerSerializer(BaseSerializer):
     class Meta:
         model = MySQL
-        fields = ['query_SQL', 'schema_SQL_json',]
+        fields = ['query_SQL', 'schema_SQL_json']
 
 
 class MySQLAnswerReturnedSerializer(BaseSerializer):
@@ -123,7 +123,7 @@ class UserResponseSerializer(BaseSerializer):
     class Meta:
         model = UserResponse
         fields = [
-            'question', 'vector',  'mathematical_expression', 'unit_conversion', 'text', 'my_sql',
+            'question', 'vector', 'mathematical_expression', 'unit_conversion', 'text', 'my_sql',
             'profile',
             'answer', 'answers_list',
             'answered_on'
@@ -185,6 +185,19 @@ class UserResponseSerializer(BaseSerializer):
         instance = self.Meta.model(**self.validated_data)
         instance.answers_list = answers_list
         return instance
+
+
+class GenericAnswerField(serializers.RelatedField):
+    def to_representation(self, value):
+        serializer = AnswerSerializer.CONTENT_SERIALIZER_MAP[value.__class__.__name__.lower()](value)
+        return serializer.data
+
+
+class GenericUserResponseSerializer(UserResponseSerializer):
+    content = GenericAnswerField(read_only=True)
+
+    class Meta(UserResponseSerializer.Meta):
+        fields = UserResponseSerializer.Meta.fields + ['content_type', 'content', 'is_correct']
 
 
 class LessonSerializer(BaseSerializer):
