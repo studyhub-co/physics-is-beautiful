@@ -1,5 +1,8 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.contrib.sessions.models import Session
+
 
 from django_light_enums import enum
 
@@ -19,8 +22,10 @@ class LessonProgress(BaseModel):
         COMPLETE = 30
 
     profile = models.ForeignKey(
-        'profiles.Profile', related_name='lesson_progress', on_delete=models.CASCADE
+        'profiles.Profile', related_name='lesson_progress', on_delete=models.CASCADE,
+        null=True, blank=True
     )
+    anon_session_key = models.CharField(_('session key'), max_length=40, null=True, blank=True)
     lesson = models.ForeignKey(Lesson, related_name='progress', on_delete=models.CASCADE)
     score = models.SmallIntegerField(default=0)
     completed_on = models.DateTimeField(null=True, blank=True)

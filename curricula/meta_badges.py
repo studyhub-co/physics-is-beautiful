@@ -79,7 +79,7 @@ class LessonFinished(MetaBadge):
     # ("4", "Diamond"),
 
     def check_lesson_finished(self, instance):
-        if instance.status == LessonProgress.Status.COMPLETE:
+        if instance.status == LessonProgress.Status.COMPLETE and instance.profile:
 
             lesson_award, created = LessonAwards.objects.get_or_create(user=instance.profile.user,
                                                                        lesson=instance.lesson)

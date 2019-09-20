@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -28,8 +29,10 @@ class UserResponse(BaseModel):
     objects = UserResponseQuerySet.as_manager()
 
     profile = models.ForeignKey(
-        'profiles.Profile', related_name='responses', on_delete=models.CASCADE
+        'profiles.Profile', related_name='responses', on_delete=models.CASCADE,
+        null=True, blank=True
     )
+    anon_session_key = models.CharField(_('session key'), max_length=40, null=True, blank=True)
     question = models.ForeignKey(Question, related_name='responses', on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()

@@ -18,7 +18,7 @@ def get_progress_service(request, current_lesson=None):
         return ProgressService(request, current_lesson=current_lesson)
     else:
         return AnonymousProgressService(
-            request, session=request.session, current_lesson=current_lesson
+            request, current_lesson=current_lesson
         )
 
 
@@ -155,61 +155,69 @@ class ProgressService(ProgressServiceBase):
         return LessonProgress.objects.filter(lesson=lesson, status=LessonProgress.Status.COMPLETE).order_by('duration')
 
 
-class AnonymousProgressService(ProgressServiceBase):
+class AnonymousProgressService(ProgressService):
 
-    DEFAULT_LESSON_STORE = {
-        'score': 0,
-        'status': LessonProgress.Status.LOCKED,
-        'completed_on': None,
-        'responses': [],
-    }
-
-    def __init__(self, request, session, current_lesson=None):
+    def __init__(self, request, current_lesson=None):
         super(AnonymousProgressService, self).__init__(request, current_lesson=current_lesson)
-        self.session = session
-
-    @cached_property
-    def lessons_store(self):
-        return self.session.setdefault('lessons', {})
-
-    def get_lesson_store(self, lesson):
-        return self.lessons_store.setdefault(str(lesson.pk), self.DEFAULT_LESSON_STORE.copy())
-
-    def get_lesson_responses_store(self, lesson):
-        return self.get_lesson_store(lesson)['responses']
-
-    @cached_property
-    def current_lesson_responses_store(self):
-        if self.current_lesson:
-            return self.get_lesson_responses_store(self.current_lesson)
+        if not request.session.session_key:
+            request.session.create()
+        self.session = request.session
 
     def _get_lesson_progress(self, lesson):
-        lesson_progress = self.get_lesson_store(lesson)
-        return LessonProgress(
-            lesson=lesson,
-            score=lesson_progress['score'],
-            status=lesson_progress['status'],
-            completed_on=lesson_progress['completed_on'],
-        )
+        return LessonProgress.objects.get_or_create(lesson=lesson, anon_session_key=self.session.session_key)[0]
 
-    def save(self):
-        for lesson_pk, lesson_progress in self._dirty_lesson_progresses.items():
-            raw = LessonProgressSerializer(lesson_progress).data
-            self.lessons_store.setdefault(lesson_pk, {}).update(raw)
-        if self.current_lesson:
-            lesson_raw = LessonProgressSerializer(self.current_lesson_progress).data
-            # responses_raw = UserResponseSerializer(self.user_responses, many=True).data
-            # TODO store in session
-            #  1 answers_list object_ids for multi select
-            #  2 object_id for single selected answer
-            #  3 json data of answer type to create question in
-            responses_raw = GenericUserResponseSerializer(self.user_responses, many=True).data
-            self.current_lesson_responses_store.extend(responses_raw)
-            lesson_raw['responses'] = self.current_lesson_responses_store
-            self.user_responses = []
-            self.lessons_store[str(self.current_lesson.pk)] = lesson_raw
-        self.session['lessons'] = self.lessons_store
-
-    @staticmethod
-    def get_score_board_qs(lesson):
-        return LessonProgress.objects.filter(lesson=lesson, status=LessonProgress.Status.COMPLETE).order_by('duration')
+# class AnonymousProgressService(ProgressServiceBase):
+#
+#     DEFAULT_LESSON_STORE = {
+#         'score': 0,
+#         'status': LessonProgress.Status.LOCKED,
+#         'completed_on': None,
+#         'responses': [],
+#     }
+#
+#     def __init__(self, request, session, current_lesson=None):
+#         super(AnonymousProgressService, self).__init__(request, current_lesson=current_lesson)
+#         self.session = session
+#
+#     @cached_property
+#     def lessons_store(self):
+#         return self.session.setdefault('lessons', {})
+#
+#     def get_lesson_store(self, lesson):
+#         return self.lessons_store.setdefault(str(lesson.pk), self.DEFAULT_LESSON_STORE.copy())
+#
+#     def get_lesson_responses_store(self, lesson):
+#         return self.get_lesson_store(lesson)['responses']
+#
+#     @cached_property
+#     def current_lesson_responses_store(self):
+#         if self.current_lesson:
+#             return self.get_lesson_responses_store(self.current_lesson)
+#
+#     def _get_lesson_progress(self, lesson):
+#         lesson_progress = self.get_lesson_store(lesson)
+#         return LessonProgress(
+#             lesson=lesson,
+#             score=lesson_progress['score'],
+#             status=lesson_progress['status'],
+#             completed_on=lesson_progress['completed_on'],
+#         )
+#
+#     def save(self):
+#         for lesson_pk, lesson_progress in self._dirty_lesson_progresses.items():
+#             raw = LessonProgressSerializer(lesson_progress).data
+#             self.lessons_store.setdefault(lesson_pk, {}).update(raw)
+#         if self.current_lesson:
+#             lesson_raw = LessonProgressSerializer(self.current_lesson_progress).data
+#             # responses_raw = UserResponseSerializer(self.user_responses, many=True).data
+#             # TODO store in session
+#             responses_raw = GenericUserResponseSerializer(self.user_responses, many=True).data
+#             self.current_lesson_responses_store.extend(responses_raw)
+#             lesson_raw['responses'] = self.current_lesson_responses_store
+#             self.user_responses = []
+#             self.lessons_store[str(self.current_lesson.pk)] = lesson_raw
+#         self.session['lessons'] = self.lessons_store
+#
+#     @staticmethod
+#     def get_score_board_qs(lesson):
+#         return LessonProgress.objects.filter(lesson=lesson, status=LessonProgress.Status.COMPLETE).order_by('duration')

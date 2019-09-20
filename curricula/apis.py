@@ -71,6 +71,11 @@ class QuestionViewSet(ModelViewSet):
         kwargs = {}
         if request.user.is_authenticated:
             kwargs['profile'] = request.user.profile
+        else:
+            if not request.session.session_key:
+                request.session.create()
+            session = request.session
+            kwargs['anon_session_key'] = session.session_key
         user_response = sr.get_response(**kwargs)
         service = get_progress_service(request, question.lesson)
         try:
