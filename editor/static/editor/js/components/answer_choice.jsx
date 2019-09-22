@@ -48,7 +48,10 @@ export class AnswerChoice extends React.Component {
       value={this.props.text}
       checked={this.props.is_correct}/>
     var label = <EditableLabel value={this.props.text} defaultValue='New answer' onChange={this.props.onTextChange}/>
-    var deleteImgIcon = <span title='Delete image'><FaTimes onClick={this.onDeleteImageClick} /></span>
+    var deleteImgIcon =
+      <span title='Delete image' style={{position: 'absolute', right: '1rem', zIndex: '99'}}>
+        <FaTimes size={'2rem'} onClick={this.onDeleteImageClick} />
+      </span>
 
     // if (this.props.withThumbnail) {
     //   return (
@@ -70,15 +73,15 @@ export class AnswerChoice extends React.Component {
     // card (TEXT + IMAGE)
     if (this.props.withThumbnail) {
       return (<Card
-        style={{ width: '17rem', boxShadow: '0 0 10px #bbb'}}
+        style={{ width: '17rem', boxShadow: '0 0 10px #bbb' }}
         className={'mx-2 mb-3'}
         onMouseEnter={this.onHoverToggle}
         onMouseLeave={this.onHoverToggle}
       >
         <Card.Body>
+          {this.state.hover && this.props.image ? deleteImgIcon : null }
           <div className='thumbnail'>
             <div className={'selectable-image'}>{thumb}</div>
-            {this.state.hover && this.props.image ? deleteImgIcon : null }
           </div>
           <div
             className={'pure-radiobutton'}
@@ -92,7 +95,9 @@ export class AnswerChoice extends React.Component {
             </label>
           </div>
           <div style={{float: 'right'}}>{this.state.hover
-            ? <FaTrashAlt onClick={this.onDeleteChoiceClick} />
+            ? <span title='Delete answer'>
+              <FaTrashAlt onClick={this.onDeleteChoiceClick} />
+            </span>
             : this.props.index}
           </div>
           <div style={{clear: 'both'}}></div>
