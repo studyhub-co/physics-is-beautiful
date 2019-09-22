@@ -25,6 +25,10 @@ class ModuleFinished(MetaBadge):
     def check_module_finished(self, instance):
         # count lessons in parent module
         # count passed lesson
+
+        if not instance.profile:
+            return False
+
         lessons_count = instance.lesson.module.lessons.count()
         lessons_completed_count = \
             LessonProgress.objects.filter(profile=instance.profile,

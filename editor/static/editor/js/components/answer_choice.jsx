@@ -70,7 +70,7 @@ export class AnswerChoice extends React.Component {
     // card (TEXT + IMAGE)
     if (this.props.withThumbnail) {
       return (<Card
-        style={{ width: '17rem', boxShadow: '0 0 10px #bbb' }}
+        style={{ width: '17rem', boxShadow: '0 0 10px #bbb'}}
         className={'mx-2 mb-3'}
         onMouseEnter={this.onHoverToggle}
         onMouseLeave={this.onHoverToggle}
@@ -80,7 +80,10 @@ export class AnswerChoice extends React.Component {
             <div className={'selectable-image'}>{thumb}</div>
             {this.state.hover && this.props.image ? deleteImgIcon : null }
           </div>
-          <div className={'pure-radiobutton'} style={{float: 'left', width: '90%'}}>
+          <div
+            className={'pure-radiobutton'}
+            style={{float: 'left', width: '90%', textAlign: 'left'}}
+          >
             {selectionControl}
             <label
               style={{marginBottom: '0.025rem', paddingRight: this.state.hover ? '10%' : '5px'}}

@@ -49,7 +49,11 @@ export class ImageWithText extends React.Component {
   }
 
   render () {
-    var cardStyle = {width: '13rem', borderStyle: 'solid', borderWidth: 2, borderRadius: 10, padding: 1}
+    var cardStyle = {
+      width: '13rem', borderStyle: 'solid',
+      borderWidth: 2, borderRadius: 10, padding: 1,
+      textAlign: 'left'
+    }
     var buttonStyle = {}
     var hiddenCircle = {}
     hiddenCircle['visibility'] = 'hidden'
@@ -87,8 +91,13 @@ export class ImageWithText extends React.Component {
     if (this.props.textOnlyMode) {
       if (this.props.type === 'RADIO_BUTTON') {
         // TEXT ONLY RADIO
-        toReturn = <div className={'pure-radiobutton answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
-          <span style={indexStyle}><div>{this.props.index + 1}</div></span>
+        toReturn = <div
+          className={'pure-radiobutton answer-button'}
+          onClick={this.cardClick.bind(this)}
+          style={buttonStyle}>
+          <span style={indexStyle}>
+            <div>{this.props.index + 1}</div>
+          </span>
           <input
             id={'radio' + this.props.choice.uuid}
             value={this.props.choice.content.text} name='radio'
@@ -105,7 +114,10 @@ export class ImageWithText extends React.Component {
         </div>
       } else {
         // TEXT ONLY CHECKBOXES
-        toReturn = <div className={'pure-checkbox answer-button'} onClick={this.cardClick.bind(this)} style={buttonStyle}>
+        toReturn = <div
+          className={'pure-checkbox answer-button'}
+          onClick={this.cardClick.bind(this)}
+          style={buttonStyle}>
           <span style={style}>{this.props.index + 1}</span>
           <input
             id={'checkbox' + this.props.choice.uuid}
