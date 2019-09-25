@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
     'homepage.apps.HomepageConfig',
+    'courses.apps.CoursesConfig',
     'curricula.apps.CurriculaConfig',
     # lib
     'piblib',
@@ -292,7 +293,8 @@ DJEDDIT_RELATED_FIELDS = {
     'textbook_resource': 'textbook_resource',
     'textbook_problem': 'textbook_problem',
     'textbook_solution': 'textbook_solution',
-    'course_question': 'course_question'
+    'course_question': 'course_question',  # curricula TODO remove
+    'course_material': 'course_material'
 }
 
 DJEDDIT_STATIC_FILES_URL_PREFIX = 'js/npm/@vermus/django-react-djeddit-client/dist'
