@@ -1,3 +1,35 @@
+from django.db import models
+from django.contrib.postgres.fields import JSONField
+
+from . import BaseItemModel
+
+
+class MySQL(BaseItemModel):
+    text = models.TextField()  # expected_output as string
+    expected_output_json = JSONField(default=None)  # expected_output as json
+    schema_SQL = models.TextField()
+    schema_SQL_json = JSONField(default=None)  # database as JSON
+    schema_is_valid = models.BooleanField(default=False)
+    query_SQL = models.TextField()
+
+    def clean(self):
+        if not self.pk:  # do not validate if new empty answer
+            return
+
+        from ..helpers.mysql_problem_type import clean_my_sql_problem_type
+        clean_my_sql_problem_type(self)
+
+    def matches(self, obj):
+        from ..helpers.mysql_problem_type import clean_my_sql_problem_type
+        return clean_my_sql_problem_type(self, obj.query_SQL)
+
+    def get_json_from_sql(self, query_sql):
+        from ..helpers.mysql_problem_type import get_json_result_from_sql
+        return get_json_result_from_sql(self, query_sql)
+
+    def __str__(self):
+        return self.text
+
 # Fixme remove - ALL of this will on the front
 
 # import re
@@ -447,31 +479,4 @@
 #         )
 #
 #
-# class MySQL(BaseItemModel):
-#     text = models.TextField()  # expected_output as string
-#     expected_output_json = JSONField(default=None)  # expected_output as json
-#     schema_SQL = models.TextField()
-#     schema_SQL_json = JSONField(default=None)  # database as JSON
-#     schema_is_valid = models.BooleanField(default=False)
-#     query_SQL = models.TextField()
-#
-#     def clean(self):
-#         if not self.pk:  # do not validate if new empty answer
-#             return
-#
-#         from ..helpers.mysql_problem_type import clean_my_sql_problem_type
-#         clean_my_sql_problem_type(self)
-#
-#     def matches(self, obj):
-#         from ..helpers.mysql_problem_type import clean_my_sql_problem_type
-#         return clean_my_sql_problem_type(self, obj.query_SQL)
-#
-#     def get_json_from_sql(self, query_sql):
-#         from ..helpers.mysql_problem_type import get_json_result_from_sql
-#         return get_json_result_from_sql(self, query_sql)
-#
-#     def __str__(self):
-#         return self.text
-#
-#     class Meta:
-#         db_table = 'curricula_mysql'
+

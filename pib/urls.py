@@ -37,7 +37,7 @@ urlpatterns = [
 
     # must be upper than curriculum/
     url(r'^curriculum/profile/', include(('editor.urls', 'editor'), namespace='curriculum_profile')),
-    # namespase is a fix for api/v1/editor/curricula url (drf router)
+    # namespace - a fix for api/v1/editor/curricula url (drf router)
     url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
     # url(r'^editor/', include('editor.urls')),
     url(r'^studio/', include(('editor.urls', 'studio'), namespace='studio')),
@@ -50,13 +50,13 @@ urlpatterns = [
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),
-    url(r'^discussion1/', include('djeddit.urls')),
+    # url(r'^discussion1/', include('djeddit.urls')),
     url(r'^discussion/', discussion_app, name='discussion_app'),
     # due https://github.com/encode/django-rest-framework/issues/2760 namespace do not work
     # url(r'^api/v1/', include('pib.urls_api', namespace='api')),
     url(r'^api/v1/', include('pib.urls_api')),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap')
+        name='django.contrib.sitemaps.views.sitemap'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
@@ -65,3 +65,7 @@ if settings.DEBUG:
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+
+
+# catch all urls in main SPA app
+urlpatterns += [url(r'^', include('courses.urls', namespace='main')), ]
