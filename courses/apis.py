@@ -35,7 +35,7 @@ def check_classroom_progress(service, user):
 
 class MaterialViewSet(ModelViewSet):
 
-    serializer_class = QuestionSerializer
+    serializer_class = MaterialSerializer
     queryset = Material.objects.all()
     permission_classes = []
     lookup_field = 'uuid'

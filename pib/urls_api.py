@@ -19,11 +19,14 @@ from django.conf.urls import include
 
 urlpatterns = [
     url(r'^curricula/', include('curricula.urls_api')),
+    url(r'^editor/', include('editor.urls_api')),
     url(r'^profiles/', include('profiles.urls_api')),
     url(r'^classroom/', include('classroom.urls_api')),
-    url(r'^editor/', include('editor.urls_api')),
     url(r'^resources/', include('resources.urls_api')),
     url(r'^djeddit/', include('djeddit.urls_api')),
     url(r'^notifications/', include('notifications.urls_api')),
     url(r'^reputation/', include('user_reputation.urls_api')),
+    # new api
+    url(r'^courses/', include('courses.urls_api')),
+    url(r'^studio/', include('studio.urls_api')),  # was editor
 ]

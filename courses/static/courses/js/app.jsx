@@ -9,10 +9,8 @@ import PropTypes from 'prop-types'
 class App extends React.Component {
   render () {
     return (
-      <div className='app'>
-        <div>
-          {this.props.children}
-        </div>
+      <div className='container section-sheet'>
+        {this.props.children}
       </div>
     )
   }

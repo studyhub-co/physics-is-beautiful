@@ -117,7 +117,7 @@ class LessonSerializer(BaseSerializer):
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     lesson_type = serializers.ChoiceField(
-        source='lesson_type_name', choices=Lesson.LessonType.choices_inverse
+        source='lesson_type_name', choices=Lesson.LessonType
     )
     game_slug = serializers.SlugField(source='game.slug')
 
