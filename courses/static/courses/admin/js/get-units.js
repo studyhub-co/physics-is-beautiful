@@ -2,7 +2,7 @@ function jqueryLoaded() {
   django.jQuery(document).ready(function () {
     if (!django.hasOwnProperty('unitsList')){
       django.jQuery.ajax({
-        url: '/api/v1/curricula/units',
+        url: '/api/v1/courses/units',
         success: function (data, status, jqXHR) {
           django.unitsList = data
         }

@@ -5,7 +5,7 @@ from expander import ExpanderSerializerMixin
 
 from django.contrib.auth import get_user_model
 
-from .models import Course, Unit, Module, Lesson, LessonProgress, MySQL, UserReaction, Material
+from .models import Course, Unit, Module, Lesson, LessonType, LessonProgress, MySQL, UserReaction, Material
 
 
 class LessonProgressSerializer(serializers.ModelSerializer):
@@ -117,7 +117,7 @@ class LessonSerializer(BaseSerializer):
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     lesson_type = serializers.ChoiceField(
-        source='lesson_type_name', choices=Lesson.LessonType
+        source='lesson_type_name', choices=LessonType
     )
     game_slug = serializers.SlugField(source='game.slug')
 

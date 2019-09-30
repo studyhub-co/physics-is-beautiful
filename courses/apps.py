@@ -46,18 +46,18 @@ class CoursesConfig(AppConfig):
                 AS $body$
                 begin
                 WITH ins_vector AS (
-                    INSERT INTO public.curricula_vectors (created_on, updated_on, 
+                    INSERT INTO public.courses_vectors (created_on, updated_on, 
                                                           angle, magnitude,
                                                           x_component, y_component) 
-                    SELECT NOW(), NOW(), curricula_vectors.angle, curricula_vectors.magnitude,
-                    curricula_vectors.x_component, curricula_vectors.y_component
-                    FROM public.curricula_vectors
-                    LEFT JOIN public.curricula_questions_vectors 
-                    ON public.curricula_questions_vectors.vector_id=public.curricula_vectors.id
-                    WHERE curricula_questions_vectors.question_id=question_from_id
+                    SELECT NOW(), NOW(), courses_vectors.angle, courses_vectors.magnitude,
+                    courses_vectors.x_component, courses_vectors.y_component
+                    FROM public.courses_vectors
+                    LEFT JOIN public.courses_questions_vectors 
+                    ON public.courses_questions_vectors.vector_id=public.courses_vectors.id
+                    WHERE courses_questions_vectors.question_id=question_from_id
                     RETURNING id 
                 )
-                INSERT INTO public.curricula_questions_vectors(vector_id, question_id) 
+                INSERT INTO public.courses_questions_vectors(vector_id, question_id) 
                 select id, question_to_id 
                 from ins_vector;
 
@@ -78,26 +78,26 @@ class CoursesConfig(AppConfig):
                 begin
 
                 -- 1. Get original content type
-                SELECT model INTO content_type FROM public.django_content_type WHERE id=content_type_id AND app_label='curricula';
+                SELECT model INTO content_type FROM public.django_content_type WHERE id=content_type_id AND app_label='courses';
                 -- 2. Get original content object answer
                 CASE content_type
                     WHEN 'text' THEN 
-                        INSERT INTO public.curricula_text (created_on, updated_on, text) 
+                        INSERT INTO public.courses_text (created_on, updated_on, text) 
                         SELECT NOW(), NOW(), text 
-                        FROM public.curricula_text WHERE id=content_object_id
+                        FROM public.courses_text WHERE id=content_object_id
                         RETURNING id INTO new_content_object_id;
                     WHEN 'vector' THEN 
-                        INSERT INTO public.curricula_vectors (created_on, updated_on, magnitude, angle, x_component, y_component) 
+                        INSERT INTO public.courses_vectors (created_on, updated_on, magnitude, angle, x_component, y_component) 
                         SELECT NOW(), NOW(), magnitude, angle, x_component, y_component 
-                        FROM public.curricula_vectors WHERE id=content_object_id
+                        FROM public.courses_vectors WHERE id=content_object_id
                         RETURNING id INTO new_content_object_id;
                     WHEN 'mathematicalexpression' THEN 
-                        INSERT INTO public.curricula_mathematical_expressions (created_on, updated_on, representation) 
+                        INSERT INTO public.courses_mathematical_expressions (created_on, updated_on, representation) 
                         SELECT NOW(), NOW(), representation
-                        FROM public.curricula_mathematical_expressions WHERE id=content_object_id
+                        FROM public.courses_mathematical_expressions WHERE id=content_object_id
                         RETURNING id INTO new_content_object_id;
                     WHEN 'unitconversion' THEN 
-                        INSERT INTO public.curricula_unitconversion (created_on, updated_on, answer_number, 
+                        INSERT INTO public.courses_unitconversion (created_on, updated_on, answer_number, 
                                                                      answer_unit, conversion_steps, numerator,
                                                                      denominator, question_number, question_unit, 
                                                                      show_answer, unit_conversion_type													 
@@ -106,19 +106,19 @@ class CoursesConfig(AppConfig):
                                                                      answer_unit, conversion_steps, numerator,
                                                                      denominator, question_number, question_unit, 
                                                                      show_answer, unit_conversion_type
-                        FROM public.curricula_unitconversion WHERE id=content_object_id
+                        FROM public.courses_unitconversion WHERE id=content_object_id
                         RETURNING id INTO new_content_object_id;
                     WHEN 'imagewtext' THEN 
-                        INSERT INTO public.curricula_image_w_text (created_on, updated_on, "text", image) 
+                        INSERT INTO public.courses_image_w_text (created_on, updated_on, "text", image) 
                         SELECT NOW(), NOW(), "text", image
-                        FROM public.curricula_image_w_text WHERE id=content_object_id
+                        FROM public.courses_image_w_text WHERE id=content_object_id
                         RETURNING id INTO new_content_object_id;
                     WHEN 'mysql' THEN 
-                        INSERT INTO public.curricula_mysql (created_on, updated_on, "query_SQL", "schema_SQL", 
+                        INSERT INTO public.courses_mysql (created_on, updated_on, "query_SQL", "schema_SQL", 
                                                             "schema_SQL_json", "text", expected_output_json, schema_is_valid) 
                         SELECT NOW(), NOW(), "query_SQL", "schema_SQL", 
                                                             "schema_SQL_json", "text", expected_output_json, schema_is_valid
-                        FROM public.curricula_mysql WHERE id=content_object_id
+                        FROM public.courses_mysql WHERE id=content_object_id
                         RETURNING id INTO new_content_object_id;		
                     ELSE
                         new_content_object_id := 0;
@@ -143,12 +143,12 @@ class CoursesConfig(AppConfig):
                 RETURN QUERY
                 WITH sel AS (
                     SELECT id, object_id, content_type_id, "position", uuid, is_correct, row_number() OVER (ORDER BY id) AS rn
-                    FROM public.curricula_answers
+                    FROM public.courses_answers
                     WHERE question_id=quesion_id_from
                     ORDER BY id
                    )
                    , ins AS (
-                    INSERT INTO public.curricula_answers (created_on, updated_on, uuid, "position", question_id, 
+                    INSERT INTO public.courses_answers (created_on, updated_on, uuid, "position", question_id, 
                                                           content_type_id, is_correct, object_id)
                     SELECT NOW(), NOW(), uuid_generate_v4()::text,  "position", 
                        question_id_to, content_type_id, is_correct, clone_answer_content(content_type_id, object_id)
@@ -175,12 +175,12 @@ class CoursesConfig(AppConfig):
                 RETURN QUERY
                 WITH sel AS (
                    SELECT id, "text", hint, image, solution_text, "position", uuid, answer_type, row_number() OVER (ORDER BY id) AS rn
-                   FROM public.curricula_questions
+                   FROM public.courses_questions
                    WHERE lesson_id=lesson_id_from
                    ORDER BY id
                    )
                    , ins AS (
-                   INSERT INTO public.curricula_questions (created_on, updated_on, uuid, "text", hint, image, 
+                   INSERT INTO public.courses_questions (created_on, updated_on, uuid, "text", hint, image, 
                                                            "position", lesson_id, answer_type, solution_text)
                    SELECT NOW(), NOW(), uuid_generate_v4()::text, 
                        "text", hint, image, "position", lesson_id_to, answer_type, solution_text
@@ -208,12 +208,12 @@ class CoursesConfig(AppConfig):
                 RETURN QUERY
                 WITH sel AS (
                    SELECT id, "name", image, "position", uuid, lesson_type, row_number() OVER (ORDER BY id) AS rn
-                   FROM public.curricula_lessons
+                   FROM public.courses_lessons
                    WHERE module_id=module_id_from
                    ORDER BY id
                    )
                    , ins AS (
-                   INSERT INTO public.curricula_lessons (created_on, updated_on, uuid, "name", image, "position", module_id, lesson_type)
+                   INSERT INTO public.courses_lessons (created_on, updated_on, uuid, "name", image, "position", module_id, lesson_type)
                    SELECT NOW(), NOW(), uuid_generate_v4()::text, 
                        "name", image, "position", module_id_to, lesson_type
                    FROM sel ORDER BY id
@@ -240,12 +240,12 @@ class CoursesConfig(AppConfig):
                 RETURN QUERY
                 WITH sel AS (
                    SELECT id, "name", image, "position", uuid, row_number() OVER (ORDER BY id) AS rn
-                   FROM public.curricula_modules
+                   FROM public.courses_modules
                    WHERE unit_id=unit_id_from
                    ORDER BY id
                    )
                    , ins AS (
-                   INSERT INTO public.curricula_modules (created_on, updated_on, uuid, "name", image, "position", unit_id)
+                   INSERT INTO public.courses_modules (created_on, updated_on, uuid, "name", image, "position", unit_id)
                    SELECT NOW(), NOW(), uuid_generate_v4()::text, "name", image, "position", unit_id_to
                    FROM sel ORDER BY id
                    RETURNING id, uuid
@@ -271,12 +271,12 @@ class CoursesConfig(AppConfig):
                 RETURN QUERY
                 WITH sel AS (
                    SELECT id, "name", image, "position", uuid, row_number() OVER (ORDER BY id) AS rn
-                   FROM public.curricula_units
-                   WHERE curriculum_id=curr_id_from
+                   FROM public.courses_units
+                   WHERE course_id=curr_id_from
                    ORDER BY id
                    )
                    , ins AS (
-                   INSERT INTO public.curricula_units (created_on, updated_on, uuid, "name", image, "position", curriculum_id)
+                   INSERT INTO public.courses_units (created_on, updated_on, uuid, "name", image, "position", course_id)
                    SELECT NOW(), NOW(), uuid_generate_v4()::text, "name", image, "position", curr_id_to
                    FROM sel ORDER BY id
                    RETURNING id, uuid

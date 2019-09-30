@@ -256,7 +256,7 @@ class CourseViewSet(ModelViewSet):
         filter_by = self.request.query_params.get('filter', None)
         if filter_by and self.request.user.is_authenticated:
             if filter_by == 'my':
-                # todo do we need to get curricula of user classrooms?
+                # todo do we need to get courses of user classrooms?
                 queryset = queryset.filter(author=self.request.user)
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
@@ -276,7 +276,7 @@ class CourseViewSet(ModelViewSet):
             user = None
             if self.request.user.is_authenticated:
                 user = self.request.user
-            return Curriculum.objects.get_default(user=user)
+            return Course.objects.get_default(user=user)
         return super(CourseViewSet, self).get_object()
 
 
@@ -285,11 +285,11 @@ class CourseViewSet(ModelViewSet):
 # from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 #
 #
-# class CurriculaSearchViewSet(mixins.ListModelMixin,
+# class coursesSearchViewSet(mixins.ListModelMixin,
 #                              GenericViewSet):
 #     permission_classes = (permissions.IsAuthenticated,)
-#     serializer_class = CurriculumSerializer
-#     queryset = Curriculum.objects.all()
+#     serializer_class = CourseSerializer
+#     queryset = Course.objects.all()
 #     lookup_field = 'uuid'
 #
 #     def get_queryset(self):
@@ -309,7 +309,7 @@ class CourseViewSet(ModelViewSet):
 
 # FTS Search
 
-# class CurriculumSearchSerializer(HaystackSerializer):
+# class CourseSearchSerializer(HaystackSerializer):
 #
 #     def to_representation(self, instance):
 #         representation = super().to_representation(instance)
@@ -331,7 +331,7 @@ class CourseViewSet(ModelViewSet):
 #         return representation
 #
 #     class Meta:
-#         index_classes = [CurriculumIndex]
+#         index_classes = [CourseIndex]
 #
 #         # The `fields` contains all the fields we want to include.
 #         # NOTE: Make sure you don't confuse these with model attributes. These
@@ -341,8 +341,8 @@ class CourseViewSet(ModelViewSet):
 #         ]
 #
 #
-# class CurriculaSearchViewSet(HaystackViewSet):
+# class coursesSearchViewSet(HaystackViewSet):
 #     permission_classes = [IsAuthenticated]
-#     index_models = [Curriculum]
-#     serializer_class = CurriculumSearchSerializer
+#     index_models = [Course]
+#     serializer_class = CourseSearchSerializer
 

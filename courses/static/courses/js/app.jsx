@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { Sheet } from './components/Sheet'
+
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
@@ -9,9 +11,9 @@ import PropTypes from 'prop-types'
 class App extends React.Component {
   render () {
     return (
-      <div className='container section-sheet'>
+      <Sheet>
         {this.props.children}
-      </div>
+      </Sheet>
     )
   }
 }
@@ -36,7 +38,6 @@ const getApp = (props) => {
   return <DndProvider backend={HTML5Backend}><App {...props}/></DndProvider>
 }
 
-// export default DndProvider(HTML5Backend)(connect(mapStateToProps)(App))
 export default connect(mapStateToProps)(getApp)
 export { App as AppNotConnected }
 

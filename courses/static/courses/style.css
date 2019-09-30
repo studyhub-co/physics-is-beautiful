@@ -43,7 +43,7 @@ html, body {
     /* TODO !important needs to replace with theme.css of bootstrap */
     background-color: #f1f1f1 !important;
     /*
-    curricula/static/curricula/style.css used with templates of site so we need to set default font-size
+    courses/static/courses/style.css used with templates of site so we need to set default font-size
      */
     font-family: "Museosansrounded", sans-serif !important;
     font-size: 12px !important;
@@ -208,7 +208,7 @@ html, body {
     #checkButton {
         width: 100%;
     }
-    .curriculum-display-wrap {
+    .course-display-wrap {
         padding-top: 10px;
     }
 
@@ -217,7 +217,7 @@ html, body {
         width: 2rem;
         margin-bottom: 1rem;
     }
-    .curriculum .thumbnail-block {
+    .course .thumbnail-block {
         margin-right: 10px !important;
     }
 }
@@ -332,7 +332,7 @@ img.grayed-out-img {
 }
 
 
-.curriculum .thumbnail-block {
+.course .thumbnail-block {
     border-radius: 5px;
     border: 1px solid #dadce0;
     margin: 10px 35px 10px 10px;
@@ -343,11 +343,11 @@ img.grayed-out-img {
     transition: color 500ms, box-shadow 500ms, border-color 500ms;
     box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.15);
 }
-.curriculum .thumbnail-block:hover {
+.course .thumbnail-block:hover {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
 }
 
-.curriculum .thumbnail-block.disabled {
+.course .thumbnail-block.disabled {
     pointer-events: none;
     opacity: 0.35;
     filter: alpha(opacity=40);
@@ -662,35 +662,35 @@ img.grayed-out-img {
 }
 
 
-/*curriculum info panel styles*/
+/*course info panel styles*/
 
-.curriculum-panel-font{
+.course-panel-font{
     /*font-family: Tw Cen MT;*/
     font-family: Museosansrounded;
     font-size: 25px;
     color: #c8c8c8;
 }
 
-.curriculum-title{
+.course-title{
     font-size: 25px;
     color: #1caff6;
 }
 
-.curriculum-more-less{
+.course-more-less{
     font-size: 16px !important;
     text-decoration: underline;
     cursor: pointer;
     float: right;
 }
 
-.curriculum-user-link{
+.course-user-link{
     text-decoration: none;
     color: darkgrey;
     font-style: italic;
     font-size: 18px;
 }
 
-.curriculum-user-link:hover{
+.course-user-link:hover{
     color: #1caff6;
     text-decoration: none;
 }
@@ -698,7 +698,7 @@ img.grayed-out-img {
 
 /* fix alignment of adjacent elements */
 /* FIXME not so good practice to change bootstrap row class */
-/*.curriculum .section-sheet .row {*/
+/*.course .section-sheet .row {*/
     /*display: flex;*/
     /*flex-wrap: wrap;*/
 /*}*/
@@ -803,7 +803,7 @@ img.grayed-out-img {
     box-shadow: 0 2px 2px rgba(0,0,0,.5);
 }
 
-.curriculum .pib-link {
+.course .pib-link {
     color: rgb(8, 209, 255);
     cursor: pointer;
     text-decoration: underline;

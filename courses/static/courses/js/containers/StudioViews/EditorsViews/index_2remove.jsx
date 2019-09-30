@@ -1,55 +1,25 @@
-import ReactDOM from 'react-dom'
 import React from 'react'
 
-// import { Switch, Route } from 'react-router-dom'
 import { FaPlusCircle, FaBackward, FaForward } from 'react-icons/fa'
-import { Switch, Route } from 'react-router'
-import { connect, Provider } from 'react-redux'
-import { compose, createStore, applyMiddleware } from 'redux'
-import thunkMiddleware from 'redux-thunk'
-// import { ConnectedRouter, routerMiddleware } from 'react-router-redux' Project Deprecated https://github.com/reactjs/react-router-redux
-import { ConnectedRouter, routerMiddleware, connectRouter } from 'connected-react-router'
 
-// import { createLogger } from 'redux-logger'
 import { DockableDropTarget, DragItemTypes } from './dnd'
-// import DragDropContext from 'react-dnd/lib/cjs/DragDropContext.js'
-import { DndProvider } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
-
-import { history } from './history'
+// import { DndProvider } from 'react-dnd'
+// import HTML5Backend from 'react-dnd-html5-backend'
 
 import {ModuleContainer} from './containers/module'
 import {QuestionContainer} from './containers/question'
-import {CurriculumContainer} from './containers/curriculum'
+import {CourseContainer} from './containers/course'
 
 import {LessonContainer} from './containers/lesson'
 import {BackButton} from './components/back_button'
 import {QuestionThumbnailContainer} from './containers/question_thumbnail'
-import CurriculumProfileView from './containers/browseCurricula/curriculumProfile'
 
-import { editor } from './reducers'
 import {
-  loadCurricula,
-  loadModuleIfNeeded, loadLessonIfNeeded,
+    loadModuleIfNeeded, loadLessonIfNeeded,
   loadQuestionIfNeeded, goToQuestion, addQuestion, moveQuestion
 } from './actions'
 import { Sheet } from './apps/sheet'
-import { CurriculaDashboardApp } from './apps/curricula_dashboard'
 
-class CurriculumApp extends React.Component {
-  componentDidMount () {
-    this.props.dispatch(loadCurricula())
-  }
-
-  render () {
-    return (<Sheet>
-      <BackButton link='/studio/' />
-      <CurriculumContainer uuid={this.props.match.params.uuid} />
-    </Sheet>)
-  }
-}
-
-CurriculumApp = connect()(CurriculumApp)
 
 class ModuleApp extends React.Component {
   componentDidMount () {
@@ -188,41 +158,3 @@ LessonApp = connect(
     }
   })(LessonApp)
 
-class EditorRouter extends React.Component {
-  render () {
-    return (
-      <ConnectedRouter history={history}>
-        <Switch>
-          <Route path='/studio/editor/curricula/:uuid' component={CurriculumApp} />
-          <Route path='/studio/editor/modules/:uuid' component={ModuleApp} />
-          <Route path='/studio/editor/lessons/:uuid' component={LessonApp} />
-          <Route path='/studio/editor/questions/:uuid' component={QuestionApp} />
-          <Route path='/curriculum/profile/:uuid' component={CurriculumProfileView} />
-          {/* <Route path='/studio/' component={CurriculaApp} /> */}
-          <Route path='/studio/' component={CurriculaDashboardApp} />
-          <Route path='/browse/' component={CurriculaDashboardApp} />
-        </Switch>
-      </ConnectedRouter>
-    )
-  }
-}
-
-// EditorRouter = DragDropContext(HTML5Backend)(EditorRouter)
-// const loggerMiddleware = createLogger()
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-
-export const store = createStore(connectRouter(history)(editor),
-  composeEnhancers(
-    applyMiddleware(thunkMiddleware, routerMiddleware(history))
-  )
-) // add  loggerMiddleware for logging
-
-// const store = createStore(editor,
-//   applyMiddleware(thunkMiddleware, routerMiddleware(history)),
-//   ) // add  loggerMiddleware for logging
-
-// ReactDOM.render(<Provider store={store}><EditorRouter /></Provider>, document.getElementById('editor-app'))
-ReactDOM.render(<Provider store={store}>
-  <DndProvider backend={HTML5Backend}><EditorRouter/></DndProvider>
-</Provider>, document.getElementById('editor-app'))

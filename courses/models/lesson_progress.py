@@ -7,17 +7,19 @@ from django.utils import timezone
 from . import Lesson
 
 
+class Status(Enum):
+    LOCKED = 0
+    NEW = 10
+    UNLOCKED = 20
+    COMPLETE = 30
+
+
 class LessonProgress(models.Model):
 
     class Meta:
         unique_together = [('profile', 'lesson')]
 
     # class Status(models.IntegerChoices):  # Django 3.0
-    class Status(Enum):
-        LOCKED = 0
-        NEW = 10
-        UNLOCKED = 20
-        COMPLETE = 30
 
     profile = models.ForeignKey(
         'profiles.Profile', related_name='courses_lessons_progress', on_delete=models.CASCADE,

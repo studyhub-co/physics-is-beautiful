@@ -1,26 +1,21 @@
-from django.db.models import Q, Count, Max, F
+from django.db.models import Q, Count
 
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import permissions, status, generics
+from rest_framework.viewsets import ModelViewSet
+from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-# from rest_framework.pagination import PageNumberPagination
-# from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-# from rest_framework import filters
-# from django_filters.rest_framework import DjangoFilterBackend
-# from tagging.models import Tag
 
-from curricula.models import Curriculum, Unit, Module, Lesson, Question, Answer, CurriculumUserDashboard
+from courses.models import Course, Unit, Module, Lesson, Material
 
-from editor.serializers import CurriculumSerializer, UnitSerializer, \
-    ModuleSerializer, LessonSerializer, QuestionSerializer, AnswerSerializer
+from .serializers import CourseSerializer, UnitSerializer, \
+    ModuleSerializer, LessonSerializer, MaterialSerializer
 
-from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
-    IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
+from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
+    IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator
+
 
 # TODO add pagiantion to api views! or block load listview for Units/Lessons at least
-
 
 class TagAddRemoveViewMixin(object):
     # @action(methods=['POST', 'DELETE'],
@@ -43,30 +38,30 @@ class TagAddRemoveViewMixin(object):
             return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
 
 
-class CurriculumViewSet(ModelViewSet, TagAddRemoveViewMixin):
+class CourseViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCollaboratorBase)    
-    serializer_class = CurriculumSerializer
+    serializer_class = CourseSerializer
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Curriculum.objects.filter(Q(author=self.request.user)
+        return Course.objects.filter(Q(author=self.request.user)
                                          | Q(collaborators=self.request.user.profile)). \
                select_related('author'). \
                prefetch_related('units__modules', 'units__tags').\
                annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
     def perform_create(self, serializer):
-        new_curriculum = serializer.save(author=self.request.user)
+        new_course = serializer.save(author=self.request.user)
 
         if 'prototype' in self.request.data and self.request.data['prototype']:
-            prototype = Curriculum.objects.get(uuid=self.request.data['prototype'])
-            prototype.clone(new_curriculum)
+            prototype = Course.objects.get(uuid=self.request.data['prototype'])
+            prototype.clone(new_course)
 
     @action(methods=['POST', 'DELETE'],
             detail=True,
             permission_classes=[IsOwnerOrCollaboratorBase, ], )
     def tags(self, request, *args, **kwargs):
-        return super(CurriculumViewSet, self).tags(request, args, kwargs)
+        return super(CourseViewSet, self).tags(request, args, kwargs)
 
     class Meta:
         ordering = ['-published_on']
@@ -80,7 +75,7 @@ class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
     def create(self, request, *args, **kwargs):
         if 'prototype' in self.request.data and self.request.data['prototype']:
             prototype = Unit.objects.get(uuid=self.request.data['prototype'])
-            copied_unit = prototype.clone(Curriculum.objects.get(uuid=self.request.data['curriculum']))
+            copied_unit = prototype.clone(Course.objects.get(uuid=self.request.data['course']))
 
             return Response(UnitSerializer(copied_unit, context={'request': request}).data, status=status.HTTP_201_CREATED)
         else:
@@ -93,8 +88,8 @@ class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return super(UnitViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Unit.objects.filter(Q(curriculum__author=self.request.user) |
-                                   Q(curriculum__collaborators=self.request.user.profile)). \
+        return Unit.objects.filter(Q(course__author=self.request.user) |
+                                   Q(course__collaborators=self.request.user.profile)). \
                                    prefetch_related('tags').\
                                    distinct()
 
@@ -120,8 +115,8 @@ class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return super(ModuleViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Module.objects.filter(Q(unit__curriculum__author=self.request.user) |
-                                     Q(unit__curriculum__collaborators=self.request.user.profile)).\
+        return Module.objects.filter(Q(unit__course__author=self.request.user) |
+                                     Q(unit__course__collaborators=self.request.user.profile)).\
                                      prefetch_related('tags', 'lessons').\
                                      distinct()
 
@@ -149,23 +144,23 @@ class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return super(LessonViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Lesson.objects.filter(Q(module__unit__curriculum__author=self.request.user) |
-                                     Q(module__unit__curriculum__collaborators=self.request.user.profile))\
+        return Lesson.objects.filter(Q(module__unit__course__author=self.request.user) |
+                                     Q(module__unit__course__collaborators=self.request.user.profile))\
             .prefetch_related('questions__tags', 'questions__vectors')\
             .distinct()
 
 
-class QuestionViewSet(ModelViewSet, TagAddRemoveViewMixin):
+class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsQuestionOwnerOrCollaborator)
-    serializer_class = QuestionSerializer
+    serializer_class = MaterialSerializer
     lookup_field = 'uuid'
 
     def create(self, request, *args, **kwargs):
         if 'prototype' in self.request.data and self.request.data['prototype']:
-            prototype = Question.objects.get(uuid=self.request.data['prototype'])
+            prototype = Material.objects.get(uuid=self.request.data['prototype'])
             copied_question = prototype.clone(Lesson.objects.get(uuid=self.request.data['lesson']))
 
-            return Response(QuestionSerializer(copied_question, context={'request': request}).data,
+            return Response(MaterialSerializer(copied_question, context={'request': request}).data,
                             status=status.HTTP_201_CREATED)
         else:
             return super().create(request, *args, **kwargs)
@@ -174,20 +169,10 @@ class QuestionViewSet(ModelViewSet, TagAddRemoveViewMixin):
             detail=True,
             permission_classes=[IsQuestionOwnerOrCollaborator, ], )
     def tags(self, request, *args, **kwargs):
-        return super(QuestionViewSet, self).tags(request, args, kwargs)
+        return super(MaterialViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Question.objects.filter(Q(lesson__module__unit__curriculum__author=self.request.user) |
-                                       Q(lesson__module__unit__curriculum__collaborators=self.request.user.profile)).\
+        return Material.objects.filter(Q(lesson__module__unit__course__author=self.request.user) |
+                                       Q(lesson__module__unit__course__collaborators=self.request.user.profile)).\
                                 distinct()
 
-    
-class AnswerViewSet(ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, IsAnswerOwnerOrCollaborator)
-    serializer_class = AnswerSerializer
-    lookup_field = 'uuid'
-
-    def get_queryset(self):
-        return Answer.objects.filter(Q(question__lesson__module__unit__curriculum__author=self.request.user) |
-                                     Q(question__lesson__module__unit__curriculum__collaborators=self.request.user.profile)).\
-                              distinct()

@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from curricula.models import Curriculum, Unit, Module, Lesson, Question
+from courses.models import Course, Unit, Module, Lesson, Material
 
 
 class IsOwnerOrCollaboratorBase(permissions.BasePermission):
@@ -30,35 +30,35 @@ class IsOwnerOrCollaboratorBase(permissions.BasePermission):
 
 
 class IsUnitOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
-    root_path = 'curriculum'
+    root_path = 'course'
     owner_field = 'author'
     collaborators_field = 'collaborators'
-    parent_model = Curriculum
+    parent_model = Course
 
 
 class IsModuleOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
-    root_path = 'unit.curriculum'
+    root_path = 'unit.course'
     owner_field = 'author'
     collaborators_field = 'collaborators'
     parent_model = Unit
 
 
 class IsLessonOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
-    root_path = 'module.unit.curriculum'
+    root_path = 'module.unit.course'
     owner_field = 'author'
     collaborators_field = 'collaborators'
     parent_model = Module
 
 
 class IsQuestionOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
-    root_path = 'lesson.module.unit.curriculum'
+    root_path = 'lesson.module.unit.course'
     owner_field = 'author'
     collaborators_field = 'collaborators'
     parent_model = Lesson
 
 
 class IsAnswerOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
-    root_path = 'question.lesson.module.unit.curriculum'
+    root_path = 'question.lesson.module.unit.course'
     owner_field = 'author'
     collaborators_field = 'collaborators'
-    parent_model = Question
+    parent_model = Material

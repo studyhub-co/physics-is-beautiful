@@ -1,5 +1,7 @@
 import profileReducer from './profile'
+import { studioTabsReducer } from './studio'
 
 export default {
-  profile: profileReducer
+  profile: profileReducer,
+  studioTabs: studioTabsReducer
 }

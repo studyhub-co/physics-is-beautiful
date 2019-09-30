@@ -29,8 +29,13 @@ export function checkHttpError (error) {
   throw error
 }
 
-// TODO move to a lib
 export function checkNestedProp (object, ...keys) {
   return keys.reduce((a, b) => (a || { })[b], object) !== undefined
 }
 
+const KeyCodes = {
+  comma: 188,
+  enter: 13
+}
+
+export const tagDelimiters = [KeyCodes.comma, KeyCodes.enter]

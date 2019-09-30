@@ -1,5 +1,4 @@
 import React from 'react'
-// import {BackButton} from './../components/back_button'
 
 export function Sheet (props) {
   var className = 'container ' + (props.type || 'section') + '-sheet'

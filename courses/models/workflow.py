@@ -69,7 +69,7 @@ class MySQL(BaseItemModel):
 #
 #     class Meta:
 #         ordering = ['position']
-#         db_table = 'curricula_answers'
+#         db_table = 'courses_answers'
 #
 #     class CloneMeta:
 #         parent_field = 'question'
@@ -127,7 +127,7 @@ class MySQL(BaseItemModel):
 # class MathematicalExpression(BaseItemModel, MathematicalExpressionMixin):
 #
 #     class Meta:
-#         db_table = 'curricula_mathematical_expressions'
+#         db_table = 'courses_mathematical_expressions'
 #
 #     representation = models.CharField(max_length=255)
 #
@@ -308,7 +308,7 @@ class MySQL(BaseItemModel):
 # class ImageWText(BaseItemModel):
 #
 #     class Meta:
-#         db_table = 'curricula_image_w_text'
+#         db_table = 'courses_image_w_text'
 #
 #     image = models.ImageField(blank=True)
 #     text = models.CharField(blank=True, max_length=200)
@@ -340,7 +340,7 @@ class MySQL(BaseItemModel):
 # class Text(BaseItemModel):
 #
 #     class Meta:
-#         db_table = 'curricula_text'
+#         db_table = 'courses_text'
 #
 #     text = models.TextField(blank=True)
 #
@@ -355,7 +355,7 @@ class MySQL(BaseItemModel):
 # class Vector(BaseItemModel):
 #
 #     class Meta:
-#         db_table = 'curricula_vectors'
+#         db_table = 'courses_vectors'
 #
 #     magnitude = models.FloatField("Magnitude", null=True, blank=True)
 #     angle = models.FloatField("Angle", null=True, blank=True)

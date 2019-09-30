@@ -16,16 +16,17 @@ except (KeyError, AttributeError):
     raise ImproperlyConfigured("Can't find settings.DJEDDIT_RELATED_FIELDS['course_material'] settings")
 
 
+class MaterialWorkflowType(Enum):
+    # TODO create validation schema for all types
+    COMMON = 10  # by defaut
+    GAME = 20
+    QA_COMMON = 80
+    QA_MYSQL = 90
+
+
 class Material(BaseItemModel):
 
     # class MaterialWorkflowType(models.IntegerChoices): # Django 3.0
-    class MaterialWorkflowType(Enum):
-        # TODO create validation schema for all types
-        COMMON = 10  # by defaut
-        GAME = 20
-        QA_COMMON = 80
-        QA_MYSQL = 90
-
     lesson = models.ForeignKey(Lesson, related_name='materials', on_delete=models.CASCADE)
     # material_workflow_type = models.IntegerField(choices=MaterialWorkflowType.choices) # Django 3.0
     material_workflow_type = models.IntegerField(choices=[(type, type.value) for type in MaterialWorkflowType])

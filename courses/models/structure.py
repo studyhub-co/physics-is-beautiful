@@ -219,15 +219,17 @@ class Module(BaseItemModel):
         return 'Module: {}'.format(self.name)
 
 
+class LessonType(Enum):
+    DEFAULT = 0
+    GAME = 1
+
+
 class Lesson(BaseItemModel):
 
     class Meta:
         ordering = ['position']
 
     # class LessonType(models.IntegerChoices):  # Django 3.0
-    class LessonType(Enum):
-        DEFAULT = 0
-        GAME = 1
 
     module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)

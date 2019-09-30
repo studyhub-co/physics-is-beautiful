@@ -26,7 +26,7 @@ django.jQuery(function() {
       }
     })
 
-    django.jQuery(".add-handler.djn-add-handler.djn-model-curricula-answer").click(function (e) {
+    django.jQuery(".add-handler.djn-add-handler.djn-model-courses-answer").click(function (e) {
         django.jQuery("input#id_answers-__prefix__-is_correct").prop('checked', false);
 
     });
