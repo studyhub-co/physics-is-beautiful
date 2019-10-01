@@ -36,7 +36,7 @@ class Course(BaseItemModel):
     description = models.TextField(blank=True, null=True, default='')
     number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
-    # TODO replace with null?
+    # TODO replace with null on delete?
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     collaborators = models.ManyToManyField(Profile, related_name='coauthored_courses')
 

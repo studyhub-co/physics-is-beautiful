@@ -1,6 +1,6 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_PROFILE_PREFIX } from '../utils/config'
-import { PROFILE_RECEIVE_ME} from '../constants'
+import { PROFILE_RECEIVE_ME } from '../constants'
 
 export function receiveProfileMe (me) {
   return {

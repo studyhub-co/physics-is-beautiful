@@ -16,7 +16,7 @@ class IndexView extends React.Component {
 
   render () {
     return (
-      <div>course</div>
+      <div>student view courses</div>
     )
   }
 }

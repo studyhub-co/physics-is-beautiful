@@ -44,14 +44,14 @@ class CourseViewSet(ModelViewSet, TagAddRemoveViewMixin):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Course.objects.filter(Q(author=self.request.user)
-                                         | Q(collaborators=self.request.user.profile)). \
+        profile = self.request.user.profile
+        return Course.objects.filter(Q(author=profile) | Q(collaborators=profile)). \
                select_related('author'). \
                prefetch_related('units__modules', 'units__tags').\
                annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
     def perform_create(self, serializer):
-        new_course = serializer.save(author=self.request.user)
+        new_course = serializer.save(author=self.request.user.profile)
 
         if 'prototype' in self.request.data and self.request.data['prototype']:
             prototype = Course.objects.get(uuid=self.request.data['prototype'])
@@ -88,7 +88,7 @@ class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return super(UnitViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Unit.objects.filter(Q(course__author=self.request.user) |
+        return Unit.objects.filter(Q(course__author=self.request.user.profile) |
                                    Q(course__collaborators=self.request.user.profile)). \
                                    prefetch_related('tags').\
                                    distinct()
@@ -115,7 +115,7 @@ class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return super(ModuleViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Module.objects.filter(Q(unit__course__author=self.request.user) |
+        return Module.objects.filter(Q(unit__course__author=self.request.user.profile) |
                                      Q(unit__course__collaborators=self.request.user.profile)).\
                                      prefetch_related('tags', 'lessons').\
                                      distinct()
@@ -144,7 +144,7 @@ class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return super(LessonViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Lesson.objects.filter(Q(module__unit__course__author=self.request.user) |
+        return Lesson.objects.filter(Q(module__unit__course__author=self.request.user.profile) |
                                      Q(module__unit__course__collaborators=self.request.user.profile))\
             .prefetch_related('questions__tags', 'questions__vectors')\
             .distinct()
@@ -172,7 +172,7 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
         return super(MaterialViewSet, self).tags(request, args, kwargs)
 
     def get_queryset(self):
-        return Material.objects.filter(Q(lesson__module__unit__course__author=self.request.user) |
+        return Material.objects.filter(Q(lesson__module__unit__course__author=self.request.user.profile) |
                                        Q(lesson__module__unit__course__collaborators=self.request.user.profile)).\
                                 distinct()
 

@@ -145,4 +145,4 @@ class CourseFinished(MetaBadge):
             return False
 
     def get_user(self, instance):
-        return instance.author
+        return instance.author.user

@@ -10,7 +10,7 @@ import { BASE_URL } from '../utils/config'
 
 import { changeStudioSelectedTab, deleteCourse } from '../actions/studio'
 
-import { CoursesIndexView } from '../containers/CoursesViews/index'
+import StudioCoursesIndexView from '../containers/StudioViews/IndexView/index'
 // import EditCourseProfileView from '../containers/courseStudio/editProfile'
 import { BrowseIndexView } from '../containers/BrowseViews/index'
 
@@ -95,10 +95,9 @@ class BrowseStudioDashboard extends React.Component {
                 <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit
                   the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.
-                {/* TODO help link? */}
-                  Tutorial and additional help here.
+                  Tutorial and additional help here. {/* TODO help link? */}
                 </div>
-                <CoursesIndexView
+                <StudioCoursesIndexView
                   onEditCourseProfileClick={this.onEditCourseProfileClick}
                   onDeleteCourseClick={this.onDeleteCourseClick}
                 />

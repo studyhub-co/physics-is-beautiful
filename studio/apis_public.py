@@ -131,10 +131,9 @@ class CourseViewSet(mixins.UpdateModelMixin,  # fixme do we need update public c
 
         if self.request.user.is_authenticated:
             profile = self.request.user.profile
-            author = self.request.user
             return Course.objects.filter(
                 Q(setting_publically=True) |
-                Q(Q(author=author) | Q(collaborators=profile))). \
+                Q(Q(author=profile) | Q(collaborators=profile))). \
                 select_related('author'). \
                 annotate(count_lessons=Count('units__modules__lessons', distinct=True)). \
                 order_by('-published_on'). \
@@ -162,7 +161,7 @@ class UnitViewSet(mixins.UpdateModelMixin,
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return self.queryset.filter(Q(course__setting_publically=True) |
-                                    Q(Q(course__author=self.request.user) |
+                                    Q(Q(course__author=self.request.user.profile) |
                                       Q(course__collaborators=self.request.user.profile))).distinct()
         else:
             return self.queryset.filter(Q(course__setting_publically=True)).distinct()
@@ -182,7 +181,7 @@ class ModuleViewSet(mixins.UpdateModelMixin,
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return self.queryset.filter(Q(unit__course__setting_publically=True) |
-                                        Q(Q(unit__course__author=self.request.user) |
+                                        Q(Q(unit__course__author=self.request.user.profile) |
                                           Q(unit__course__collaborators=self.request.user.profile))).distinct()
         else:
             return self.queryset.filter(Q(unit__course__setting_publically=True)).distinct()
@@ -202,7 +201,7 @@ class LessonViewSet(mixins.UpdateModelMixin,
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return self.queryset.filter(Q(module__unit__course__setting_publically=True) |
-                                        Q(Q(module__unit__course__author=self.request.user) |
+                                        Q(Q(module__unit__course__author=self.request.user.profile) |
                                           Q(module__unit__course__collaborators=self.request.user.profile))).distinct()
         else:
             return self.queryset.filter(Q(module__unit__course__setting_publically=True)).distinct()
@@ -226,7 +225,7 @@ class MaterialViewSet(mixins.UpdateModelMixin,
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return self.queryset.filter(Q(lesson__module__unit__course__setting_publically=True) |
-                                        Q(Q(lesson__module__unit__course__author=self.request.user) |
+                                        Q(Q(lesson__module__unit__course__author=self.request.user.profile) |
                                           Q(lesson__module__unit__course__collaborators=self.request.user.profile))).distinct()
         else:
             return self.queryset.filter(Q(lesson__module__unit__course__setting_publically=True)).distinct()

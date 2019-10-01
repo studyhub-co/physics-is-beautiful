@@ -11,7 +11,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('curricula', '0038_auto_20190512_1021'),
-        ('djeddit', '__latest__'),
+        # ('djeddit', '__latest__'),
+        ('djeddit', '0013_auto_20190612_1052'),
     ]
 
     operations = [

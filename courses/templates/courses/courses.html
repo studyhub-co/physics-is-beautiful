@@ -3,8 +3,8 @@
 {% load static %}
 
 {% block extrahead %}
-<link rel="stylesheet" type="text/css" href="{% static 'courses/pure-checkbox.css' %}" />
-{# TODO checnk we need it #}
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/pure-checkbox.css' %}" />
+{# TODO check we need it #}
 {#<link rel="stylesheet" type="text/css" href="{% static 'courses/mathquill-0.10.1/mathquill.css' %}"/>#}
 {#<script src="{% static 'courses/mathquill-0.10.1/mathquill.js' %}"></script>#}
 
@@ -14,15 +14,12 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
 {# editor TODO replace with webpack minification  #}
-<link rel="stylesheet" type="text/css" href="{% static 'editor/style.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'courses/pure-checkbox.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/studio.css' %}" />
 
 {#  reack slick  #}
 <link rel="stylesheet" type="text/css" charset="UTF-8" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
-
-{# MDE #}
-<link rel="stylesheet" type="text/css" href="{% static 'editor/react-mde-all.css' %}" />
 
 {# editor end TODO replace with webpack minification  #}
 {% endblock extrahead %}

@@ -1,0 +1,1 @@
+Common components folder for SPA 
