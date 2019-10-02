@@ -356,18 +356,7 @@ export function loadAllCourses (url, filter, ordering) {
   }
 }
 
-// export function loadRecentCourses () {
-//   return function (dispatch) {
-//     $.ajax({
-//       async: true,
-//       url: API_PREFIX + 'courses/',
-//       context: this,
-//       success: function (data, status, jqXHR) {
-//         dispatch(coursesLoaded(data))
-//       }})
-//   }
-// }
-
+// TODO add pagination
 export function loadCourses () {
   return function (dispatch) {
     dispatch(loadAllCourses())

@@ -2,19 +2,17 @@ import React from 'react'
 import { DropTarget } from 'react-dnd'
 
 export const DragItemTypes = {
-  PROBLEM: 'problem',
-  CHAPTER: 'chapter'
+  UNIT: 'unit',
+  MODULE: 'module',
+  LESSON: 'lesson',
+  MATERIAL: 'material'
 }
 
-let DockableDropTargetClass = class DockableDropTarget extends React.Component {
+class DockableDropTarget extends React.Component {
   render () {
-    let dockSite = null
-
-    let idAttr = this.props.idAttr
-
-    let isOver = this.props.dragOver && (!this.props.self || this.props.itemOver[idAttr] !== this.props.self[idAttr])
+    let dockSite, isOver = this.props.dragOver && this.props.itemOver.uuid != this.props.selfUuid
     if (isOver) {
-      dockSite = <div className='dock-site' />
+      dockSite = <div className='dock-site'></div>
     }
     return this.props.connectDropTarget(
       <div className={'drop-target' + (isOver ? ' drag-over' : '')}>
@@ -25,13 +23,10 @@ let DockableDropTargetClass = class DockableDropTarget extends React.Component {
   }
 }
 
-let DockableDropTarget = DropTarget(props => props.itemType,
+DockableDropTarget = DropTarget(props => props.itemType,
   {drop: function (props, monitor) {
     var item = monitor.getItem()
-    let idAttr = props.idAttr
-    if (!props.self || item[idAttr] !== props.self[idAttr]) {
-      props.onDrop(item)
-    }
+    if (item.uuid !== props.selfUuid) { props.onDrop(item) }
   }
   },
   (connect, monitor) => {
@@ -40,6 +35,36 @@ let DockableDropTarget = DropTarget(props => props.itemType,
       dragOver: monitor.isOver(),
       itemOver: monitor.getItem()
     }
-  })(DockableDropTargetClass)
+  })(DockableDropTarget)
 
 export {DockableDropTarget}
+
+class DragHoverable extends React.Component {
+  render () {
+    return this.props.connectDropTarget(
+      <div>
+        {this.props.children}
+      </div>
+    )
+  }
+}
+
+DragHoverable = DropTarget(props => props.itemType,
+			   { hover: (props, monitor, component) => {
+			       component.lastDragOver = Date.now()
+			       if (!component.timer) {
+				 component.timer = setTimeout(() => {
+				   component.timer = null
+				   if (Date.now() - component.lastDragOver < 200) { props.onDragHover() }
+				 }, 500)
+			       }
+  }},
+  (connect, monitor) => {
+    return {
+      connectDropTarget: connect.dropTarget(),
+      dragOver: monitor.isOver()
+    }
+  }
+)(DragHoverable)
+
+export {DragHoverable}

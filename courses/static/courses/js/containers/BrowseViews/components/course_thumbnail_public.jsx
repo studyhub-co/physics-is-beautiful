@@ -59,7 +59,7 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   onViewProfileSelect () {
-    history.push(BASE_URL + 'course/profile/' + this.props.course.uuid + '/')
+    history.push(BASE_URL + 'courses/profile/' + this.props.course.uuid + '/')
   }
 
   onTitleClick () {

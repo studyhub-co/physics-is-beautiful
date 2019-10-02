@@ -14,10 +14,14 @@ class IsOwnerOrCollaboratorBase(permissions.BasePermission):
         self._root_path = self.root_path.split('.') if self.root_path else []
 
     def _is_owner_or_collaborator(self, user, obj, path=None):
+        if not hasattr(user, 'profile'):
+            # user has no profile data
+            return False
+
         o = obj
         for f in path if path is not None else self._root_path:
             o = getattr(o, f)
-        return getattr(o, self.owner_field) == user or getattr(o, self.collaborators_field).filter(user__id=user.id).exists()
+        return getattr(o, self.owner_field) == user.profile or getattr(o, self.collaborators_field).filter(user__id=user.profile.id).exists()
         
     def has_permission(self, request, view):
         if self.parent_model and request.method in ('POST', 'PUT', 'PATCH') and self._root_path[0] in request.data:

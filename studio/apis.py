@@ -51,7 +51,8 @@ class CourseViewSet(ModelViewSet, TagAddRemoveViewMixin):
                annotate(count_lessons=Count('units__modules__lessons', distinct=True))
 
     def perform_create(self, serializer):
-        new_course = serializer.save(author=self.request.user.profile)
+        new_course = serializer.save()
+        # new_course = serializer.save(author=self.request.user.profile)
 
         if 'prototype' in self.request.data and self.request.data['prototype']:
             prototype = Course.objects.get(uuid=self.request.data['prototype'])

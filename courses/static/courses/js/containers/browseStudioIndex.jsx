@@ -118,7 +118,7 @@ BrowseStudioDashboard.propTypes = {
 
 const mapStateToProps = function (store) {
   return {
-    tab: store.studioTabs.tab
+    tab: store.studio.tabs.tab
   }
 }
 

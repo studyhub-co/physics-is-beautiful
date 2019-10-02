@@ -25,9 +25,15 @@ class BaseItemModel(models.Model):
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_on = models.DateTimeField(auto_now_add=True)
-    updated_on = models.DateTimeField(auto_now=True)
+
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+    # TODO updates history
+    updated_on = models.DateTimeField(auto_now=True)
+    last_edit_user = models.ForeignKey(Profile,
+                                       related_name="%(app_label)s_%(class)s_last_edit_items",
+                                       on_delete=models.CASCADE, null=True, blank=True)
 
     def instance_from_db(self):
         return self.__class__.objects.get(pk=self.pk)

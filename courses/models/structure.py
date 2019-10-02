@@ -7,6 +7,7 @@ from taggit.managers import TaggableManager
 from profiles.models import Profile
 
 from . import BaseItemModel, get_earliest_gap
+from .utils import UUIDTaggedItem
 
 
 class CourseQuerySet(models.QuerySet):
@@ -47,7 +48,7 @@ class Course(BaseItemModel):
     setting_publically = models.BooleanField(default=False, blank=True)
     is_default = models.BooleanField(default=False, blank=True)
 
-    tags = TaggableManager()
+    tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_coursess')
 
     def count_number_of_learners(self, LessonProgressClass):
         lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
@@ -110,8 +111,8 @@ class Course(BaseItemModel):
     def __str__(self):
         return 'Course: {}'.format(self.name)
 
-    def get_frontend_url(self):
-        return '/course/{}/'.format(self.uuid)
+    # def get_frontend_url(self):
+    #     return '/course/{}/'.format(self.uuid)
 
 
 class Unit(BaseItemModel):
@@ -129,7 +130,7 @@ class Unit(BaseItemModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
-    tags = TaggableManager(related_name='courses_units')
+    tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_units')
 
     def save(self, *args, **kwargs):
         if self.position is None:
@@ -182,7 +183,7 @@ class Module(BaseItemModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
 
-    tags = TaggableManager(related_name='courses_modules')
+    tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_modules')
 
     def save(self, *args, **kwargs):
         if self.position is None:
@@ -239,7 +240,7 @@ class Lesson(BaseItemModel):
     # lesson_type = models.IntegerField(choices=LessonType.choices)  # Django 3.0
     lesson_type = models.IntegerField(choices=[(type, type.value) for type in LessonType])
 
-    tags = TaggableManager(related_name='courses_lessons')
+    tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_lessons')
 
     @property
     def is_start(self):

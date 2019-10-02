@@ -1,8 +1,12 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
+import { BASE_URL } from './utils/config'
+
 import { CoursesIndexView } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
-import { BASE_URL } from './utils/config'
+import { EditCourseView } from './containers/StudioViews/EditorsViews'
+
+import NotFoundView from './components/NotFoundView'
 
 export default(
   <Switch>
@@ -13,7 +17,7 @@ export default(
 
     {/* studio */}
     <Route exact path={BASE_URL + 'studio/'} component={BrowseStudioDashboard} />
-    <Route exact path={BASE_URL + 'studio/editor/course/:uuid'} component={BrowseStudioDashboard} />
+    <Route exact path={BASE_URL + 'studio/editor/courses/:uuid'} component={EditCourseView} />
     {/*<Route exact path={BASE_URL + '/studio/editor/modules/:uuid'} component={ModuleApp} />*/}
     {/*<Route exact path={BASE_URL + '/studio/editor/lessons/:uuid'} component={LessonApp} />*/}
     {/*<Route exact path={BASE_URL + '/studio/editor/questions/:uuid'} component={QuestionApp} />*/}
@@ -28,6 +32,6 @@ export default(
       {/*component={ProblemView} />*/}
     {/*<Route exact path={BASE_URL + ':title([A-Za-z0-9_\\-\\.]+)/:uuid/'} component={ResourceView} />*/}
     {/*<Route exact path={BASE_URL + 'adblock/'} component={AdblockView} />*/}
-     {/*<Route path='*' component={NotFoundView} />*/}
+     <Route path='*' component={NotFoundView} />
   </Switch>
 )

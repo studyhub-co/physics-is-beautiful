@@ -133,6 +133,7 @@ class ProgressService(ProgressServiceBase):
         return LessonProgress.objects.get_or_create(lesson=lesson, profile=self.user.profile)[0]
 
     def _allow_override(self, lesson):
+        # FIXME ???
         # return self.user.profile.all_lessons_unlocked or lesson.module.unit.course.author == self.user
         return True
 

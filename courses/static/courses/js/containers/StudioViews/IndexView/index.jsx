@@ -76,16 +76,15 @@ IndexView.propTypes = {
   onMounted: PropTypes.func.isRequired,
   onAddClick: PropTypes.func.isRequired,
   onCourseClick: PropTypes.func.isRequired,
-  allCourses: PropTypes.array,
-  courses: PropTypes.array
+  allCourses: PropTypes.object,
+  courses: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
-      console.log(state);
   return {
-    course: state.course,
-    courses: state.courses,
-    allCourses: state.allCourses
+    course: state.studio.course,
+    courses: state.studio.courses,
+    allCourses: state.studio.allCourses
   }
 }
 
@@ -94,7 +93,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     onAddClick: prototype => dispatch(addCourse(prototype)),
     onMounted: () => dispatch(loadCourses()),
-    onCourseClick: (uuid) => { history.push(BASE_URL + 'studio/editor/course/' + uuid + '/') }
+    onCourseClick: (uuid) => { history.push(BASE_URL + 'studio/editor/courses/' + uuid + '/') }
   }
 }
 

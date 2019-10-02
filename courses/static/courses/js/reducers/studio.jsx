@@ -1,3 +1,5 @@
+import { combineReducers } from 'redux'
+
 import { LOCATION_CHANGE } from 'react-router-redux'
 import { ActionTypes } from '../actions/studio'
 
@@ -259,10 +261,12 @@ function course (state = {}, action) {
   return state
 }
 
-function users (state = {}, action) {
+export function users (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FOUND_USERS_LOADED:
-      return Object.assign({}, state, { foundUsers: action.foundUsers })
+      return Object.assign({}, state, {
+        foundUsers: action.foundUsers
+      })
     case ActionTypes.FOUND_USERS_REQUEST:
       return Object.assign({}, state, {
         findUserRequest: action.findUserRequest
@@ -272,10 +276,12 @@ function users (state = {}, action) {
   }
 }
 
-export function studioTabsReducer (state = { tab: null }, action) {
+function tabs (state = { tab: null }, action) {
   switch (action.type) {
     case ActionTypes.STUDIO_TAB_CHANGED:
-      return Object.assign({}, state, { [action.namespace]: action.tab })
+      return Object.assign({}, state, {
+        [action.namespace]: action.tab
+      })
     default:
       return state
   }
@@ -283,6 +289,7 @@ export function studioTabsReducer (state = { tab: null }, action) {
 
 const DEFAULT_NAVIGATION_STATE = {courses: [], units: [], modules: [], lessons: []}
 
+// used to load structure menu navigation
 function courseNavigation (state = DEFAULT_NAVIGATION_STATE, action) {
   switch (action.type) {
     case ActionTypes.COURSE_NAVIGATION_COURSES_LOADED:
@@ -306,36 +313,19 @@ function courseNavigation (state = DEFAULT_NAVIGATION_STATE, action) {
   }
 }
 
-// const combined = combineReducers({
-//   router: connectRouter(history),
-//   search,
-//   courses,
-//   units,
-//   modules,
-//   lessons,
-//   questions,
-//   answers,
-//   currentQuestion,
-//   filteredCourses,
-//   allCourses,
-//   course,
-//   studioTabs,
-//   users,
-//   courseNavigation
-//   // router: routerReducer
-// })
-//
-// export function editor (state = {}, action) {
-//   var newState = combined(state, action)
-//   if (action.type === ActionTypes.PRESERVE_ANSWERS) {
-//     newState.preservedAnswers = Object.assign({}, state.preservedAnswers || {})
-//     var q = state.questions[action.question]
-//     var qpa = Object.assign(
-//       {},
-//       newState.preservedAnswers[action.question] || {}
-//     )
-//     qpa[q.answer_type] = q.answers
-//     newState.preservedAnswers[action.question] = qpa
-//   } else newState.preservedAnswers = state.preservedAnswers || {}
-//   return newState
-// }
+export default combineReducers({
+  search,
+  courses,
+  units,
+  modules,
+  lessons,
+  questions,
+  answers,
+  currentQuestion,
+  filteredCourses,
+  allCourses,
+  course,
+  tabs,
+  users,
+  courseNavigation
+})

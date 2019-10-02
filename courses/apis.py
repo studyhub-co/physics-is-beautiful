@@ -15,7 +15,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 # from drf_haystack.serializers import HaystackSerializer
 # from drf_haystack.viewsets import HaystackViewSet
 
-from .models import Course, Unit, Module, Lesson, Material, Game
+from .models import Course, Unit, Module, Lesson, Material, Game\
     # , UnitConversion
 from .services import get_progress_service, LessonLocked, LessonProgress
 
@@ -82,11 +82,11 @@ class MaterialViewSet(ModelViewSet):
 
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
-        if not is_correct:
-            if user_response.content:
-                data['correct_data'] = AnswerSerializer(user_response.get_correct_data()).data
-            elif user_response.answers_list:
-                data['correct_data'] = AnswerSerializer(user_response.get_correct_data(), many=True).data
+        # if not is_correct:
+            # if user_response.content:
+            #     data['correct_data'] = AnswerSerializer(user_response.get_correct_data()).data
+            # elif user_response.answers_list:
+            #     data['correct_data'] = AnswerSerializer(user_response.get_correct_data(), many=True).data
         return Response(data)
 
     def service_request(self, request, uuid):
@@ -133,7 +133,8 @@ class LessonViewSet(ModelViewSet):
             if new_thread:
                 Material.objects.filter(pk=question.pk).update(thread=new_thread)
                 question.thread = new_thread
-            data = QuestionSerializer(question, context={'progress_service': service}).data
+            data = {}
+            # data = QuestionSerializer(question, context={'progress_service': service}).data
             # TODO: it might make more sense for these fields to be on the
             # lesson. Or a separate lesson_progress object.
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
@@ -247,8 +248,8 @@ class UnitViewSet(ModelViewSet):
 
 class CourseViewSet(ModelViewSet):
 
-    serializer_class = MaterialSerializer
-    queryset = Material.objects.all()
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
     lookup_field = 'uuid'
 
     def get_queryset(self):
@@ -307,42 +308,4 @@ class CourseViewSet(ModelViewSet):
 #         return qs
 
 
-# FTS Search
-
-# class CourseSearchSerializer(HaystackSerializer):
-#
-#     def to_representation(self, instance):
-#         representation = super().to_representation(instance)
-#         # WO hitting DB
-#         request = self.context.get('request', None)
-#         if 'image' in representation and representation['image']:
-#             if request is not None:
-#                 representation['image'] = request.build_absolute_uri(representation['image'])
-#         # With hitting DB
-#         # representation['image'] = None
-#         # if instance.object.image:
-#         #     representation['image'] = instance.object.image.url
-#
-#         representation['author'] = {}
-#         representation['author']['pk'] = instance.author_pk
-#         representation['author']['get_absolute_url'] = instance.author_get_absolute_url
-#         representation['author']['display_name'] = instance.author_display_name
-#
-#         return representation
-#
-#     class Meta:
-#         index_classes = [CourseIndex]
-#
-#         # The `fields` contains all the fields we want to include.
-#         # NOTE: Make sure you don't confuse these with model attributes. These
-#         # fields belong to the search index!
-#         fields = [
-#             "text", "name", "description", "uuid", "image", "author"
-#         ]
-#
-#
-# class coursesSearchViewSet(HaystackViewSet):
-#     permission_classes = [IsAuthenticated]
-#     index_models = [Course]
-#     serializer_class = CourseSearchSerializer
 

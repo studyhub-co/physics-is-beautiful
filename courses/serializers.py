@@ -21,6 +21,18 @@ class BaseSerializer(serializers.ModelSerializer):
         super(BaseSerializer, self).__init__(*args, **kwargs)
         self.lookup_field = getattr(self.Meta, 'lookup_field', 'pk')
 
+    def update(self, instance, validated_data):
+        request = self.context.get("request")
+        if request and hasattr(request, "user") and request.user.profile:
+            validated_data['last_edit_user'] = request.user.profile
+        return super(BaseSerializer, self).update(instance, validated_data)
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        if request and hasattr(request, "user") and request.user.profile:
+            validated_data['author'] = request.user.profile
+        return super(BaseSerializer, self).create(validated_data)
+
     def to_internal_value(self, data):
         if isinstance(data, str):
             print(self.Meta.model.objects.get(**{self.lookup_field: data}))

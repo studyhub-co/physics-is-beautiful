@@ -1,14 +1,17 @@
 import React from 'react'
 
+import PropTypes from 'prop-types'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 import { FaTimes, FaExternalLinkAlt } from 'react-icons/fa'
 
+import { BASE_URL } from '../../../../utils/config'
 import { BackButton } from '../components/back_button'
 import { EditableThumbnail } from '../components/thumbnail'
-// import { UnitContainer } from '../containers/unit'
+import { UnitContainer } from '../containers/unit'
 import { EditableLabel } from '../components/label'
 import { DockableDropTarget, DragItemTypes } from '../components/dnd'
-import { tagDelimiters } from '../../../../utils/index'
+import { tagDelimiters } from '../../../../utils'
+import { Button } from 'react-bootstrap'
 
 export class Course extends React.Component {
   constructor (props) {
@@ -66,27 +69,28 @@ export class Course extends React.Component {
           onDrop={this.props.onUnitDroppedBefore.bind(null, unit.uuid)}
           itemType={DragItemTypes.UNIT}
           selfUuid={unit.uuid}>
-          {/*<UnitContainer key={unit.uuid} uuid={unit.uuid} />*/}
+          <UnitContainer key={unit.uuid} uuid={unit.uuid} />
         </DockableDropTarget>)
     }
     var nameLabel
     // TODO get default from course settings
-    if (this.props.name != 'Default Course') {
-      nameLabel = <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue='New course'/>
+    if (this.props.name !== 'Default Course') {
+      nameLabel = <EditableLabel
+        value={this.props.name}
+        onChange={this.props.onNameChange}
+        defaultValue='New course'/>
     } else {
       nameLabel = <span>{this.props.name}</span>
     }
     return (
       <div>
-        <BackButton link='/studio/' />
+        <BackButton link={BASE_URL + 'studio/'} />
         <div className='course'>
           <h1>
             <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
             {nameLabel}
-            {/* <span className="glyphicon glyphicon-remove" onClick={this.handleDeleteClick}/> */}
             <FaTimes onClick={this.handleDeleteClick} />
-            <a href={'/courses/' + this.props.uuid + '/'} className='btn btn-light'>
-              {/* <span className="glyphicon glyphicon-new-window" /> Open student view */}
+            <a href={BASE_URL + 'courses/' + this.props.uuid + '/'} className='btn btn-light'>
               <FaExternalLinkAlt /> Open student view
             </a>
           </h1>
@@ -100,10 +104,21 @@ export class Course extends React.Component {
             delimiters={tagDelimiters} />
           {units}
           <DockableDropTarget onDrop={this.props.onUnitDroppedBefore.bind(null, null)} itemType={DragItemTypes.UNIT}>
-            <a onClick={this.props.onAddUnitClick} className='btn btn-primary'>Add Unit</a>
+            <Button className={'common-button'} onClick={this.props.onAddUnitClick}>Add Unit</Button>
           </DockableDropTarget>
         </div>
       </div>
     )
   }
+}
+
+Course.propTypes = {
+  onDeleteClick: PropTypes.func.isRequired,
+  onImageChange: PropTypes.func.isRequired,
+  onAddTag: PropTypes.func.isRequired,
+  onDeleteTag: PropTypes.func.isRequired,
+  onNameChange: PropTypes.func.isRequired,
+  onAddUnitClick: PropTypes.func.isRequired,
+  onUnitDroppedBefore: PropTypes.func.isRequired,
+  loadCourses: PropTypes.func.isRequired
 }

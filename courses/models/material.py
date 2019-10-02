@@ -9,6 +9,7 @@ from taggit.managers import TaggableManager
 from djeddit.models import Thread
 
 from . import Lesson, BaseItemModel, MaterialProblemType
+from .utils import UUIDTaggedItem
 
 try:
     course_question_thread_related_name = settings.DJEDDIT_RELATED_FIELDS['course_material']
@@ -35,7 +36,7 @@ class Material(BaseItemModel):
 
     thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True,
                                   on_delete=models.CASCADE)
-    tags = TaggableManager()
+    tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_materials')
 
     def get_correct_data(self):
         # TODO return correct data
