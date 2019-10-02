@@ -7,7 +7,7 @@ import { WithOutContext as ReactTags } from 'react-tag-input'
 
 import { EditableLabel } from '../components/label'
 import { EditableThumbnail } from '../components/thumbnail'
-// import {ModuleThumbnailContainer} from '../containers/module_thumbnail'
+import {ModuleThumbnailContainer} from '../containers/module_thumbnail'
 import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 import { tagDelimiters } from '../../../../utils'
 
@@ -61,7 +61,7 @@ class UnitComponent extends React.Component {
     for (var i = 0; i < this.props.modules.length; i++) {
       modules.push(
         <DockableDropTarget key={this.props.modules[i]} onDrop={this.props.onModuleDroppedBefore.bind(null, this.props.modules[i])} itemType={DragItemTypes.MODULE} selfUuid={this.props.modules[i]}>
-          {/*<ModuleThumbnailContainer uuid={this.props.modules[i]} />*/}
+          <ModuleThumbnailContainer uuid={this.props.modules[i]} />
         </DockableDropTarget>)
     }
 

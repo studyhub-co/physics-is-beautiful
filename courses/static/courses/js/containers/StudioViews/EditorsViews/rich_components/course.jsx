@@ -1,6 +1,7 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
+import { Button } from 'react-bootstrap'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 import { FaTimes, FaExternalLinkAlt } from 'react-icons/fa'
 
@@ -11,7 +12,6 @@ import { UnitContainer } from '../containers/unit'
 import { EditableLabel } from '../components/label'
 import { DockableDropTarget, DragItemTypes } from '../components/dnd'
 import { tagDelimiters } from '../../../../utils'
-import { Button } from 'react-bootstrap'
 
 export class Course extends React.Component {
   constructor (props) {

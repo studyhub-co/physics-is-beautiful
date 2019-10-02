@@ -1,28 +1,27 @@
-import React from 'react'
 import { connect } from 'react-redux'
-
 import { DropTarget } from 'react-dnd'
 
-import { history } from '../history'
+import history from '../../../../history'
 
-import { ModuleThumbnail } from '../components/module_thumbnail'
-
-import { DragItemTypes } from '../dnd'
-
-import { moveLesson } from '../actions'
+import { BASE_URL } from '../../../../utils/config'
+import { DragItemTypes } from '../../../../dnd'
+import { ModuleThumbnail } from '../rich_components/module_thumbnail'
+import { moveLesson } from '../../../../actions/studio'
 
 const mapStateToProps = (state, ownProps) => {
-  var mod = state.modules[ownProps.uuid]
+  const uuid = ownProps.uuid || ownProps.match.params.uuid
+  var mod = state.studio.modules[uuid]
   return {
     name: mod.name,
     image: mod.image,
-    onClick: () => { history.push('/studio/editor/modules/' + ownProps.uuid + '/') }
+    onClick: () => { history.push(BASE_URL + 'studio/editor/modules/' + uuid + '/') }
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const uuid = ownProps.uuid || ownProps.match.params.uuid
   return {
-    onLessonDrop: (lessonUuid) => dispatch(moveLesson(lessonUuid, ownProps.uuid))
+    onLessonDrop: (lessonUuid) => dispatch(moveLesson(lessonUuid, uuid))
   }
 }
 

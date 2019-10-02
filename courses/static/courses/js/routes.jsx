@@ -4,7 +4,7 @@ import { BASE_URL } from './utils/config'
 
 import { CoursesIndexView } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
-import { EditCourseView } from './containers/StudioViews/EditorsViews'
+import { EditCourseView, EditModuleView } from './containers/StudioViews/EditorsViews'
 
 import NotFoundView from './components/NotFoundView'
 
@@ -18,6 +18,7 @@ export default(
     {/* studio */}
     <Route exact path={BASE_URL + 'studio/'} component={BrowseStudioDashboard} />
     <Route exact path={BASE_URL + 'studio/editor/courses/:uuid'} component={EditCourseView} />
+    <Route exact path={BASE_URL + 'studio/editor/modules/:uuid'} component={EditModuleView} />
     {/*<Route exact path={BASE_URL + '/studio/editor/modules/:uuid'} component={ModuleApp} />*/}
     {/*<Route exact path={BASE_URL + '/studio/editor/lessons/:uuid'} component={LessonApp} />*/}
     {/*<Route exact path={BASE_URL + '/studio/editor/questions/:uuid'} component={QuestionApp} />*/}
