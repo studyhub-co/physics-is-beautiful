@@ -1028,7 +1028,8 @@ export function deleteModule (moduleUuid) {
 
 export function loadModuleIfNeeded (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().modules) || !('lessons' in getState().modules[uuid])) {
+    if (!(uuid in getState().studio.modules) ||
+      !('lessons' in getState().studio.modules[uuid])) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'modules/' + uuid + '/',

@@ -1,6 +1,6 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
+import PropTypes from 'prop-types'
 import { FaTimes, FaPlusCircle, FaGripHorizontal } from 'react-icons/fa'
 import { DragSource } from 'react-dnd'
 import { WithOutContext as ReactTags } from 'react-tag-input'

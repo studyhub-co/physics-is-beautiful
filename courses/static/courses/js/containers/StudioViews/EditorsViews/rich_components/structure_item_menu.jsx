@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Dropdown, Image } from 'react-bootstrap'
 import { FaGraduationCap, FaCodeBranch, FaPlus } from 'react-icons/fa'
 
+import { BASE_URL } from '../../../../utils/config'
 import {
   addUnit,
   addToNewCourse,
@@ -46,7 +47,7 @@ class StructureItemMenu extends React.Component {
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onLearnSelect = this.onLearnSelect.bind(this)
     this.onBack = this.onBack.bind(this)
-    this.addElementToNewCurriculum = this.addElementToNewCurriculum.bind(this)
+    this.addElementToNewCourse = this.addElementToNewCourse.bind(this)
     this.onToggle = this.onToggle.bind(this)
 
     var baseName = ''
@@ -78,7 +79,7 @@ class StructureItemMenu extends React.Component {
       baseName: baseName, // type of original item
       uuid: uuid,
       menuOpen: false,
-      selectedCurriculum: null,
+      selectedCourse: null,
       selectedUnit: null,
       selectedModule: null,
       selectedLesson: null,
@@ -88,10 +89,10 @@ class StructureItemMenu extends React.Component {
 
   onLearnSelect (e, event) {
     event.stopPropagation() // stop parents onClicks if exist
-    if (this.state.baseName === 'question') { // open lesson view
-      window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
+    if (this.state.baseName === 'material') { // open lesson view
+      window.open(BASE_URL + 'course/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
     } else {
-      window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
+      window.open(BASE_URL + 'course/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
     }
   }
 
@@ -105,13 +106,13 @@ class StructureItemMenu extends React.Component {
     this.setState({level: 2, menuOpen: true})
   }
 
-  onSelectCurriculum (curriculum, e, event) {
+  onSelectCourse (course, e, event) {
     event.stopPropagation()
     if (this.state.baseName === 'unit') {
       this.setState({showSpinnerOverlay: true})
-      this.props.addUnit(curriculum.uuid, this.props.unit)
+      this.props.addUnit(course.uuid, this.props.unit)
     } else { // move to next level
-      this.setState({level: this.state.level + 1, selectedCurriculum: curriculum})
+      this.setState({level: this.state.level + 1, selectedCourse: course})
     }
   }
 
@@ -143,7 +144,7 @@ class StructureItemMenu extends React.Component {
     }
   }
 
-  addElementToNewCurriculum () {
+  addElementToNewCourse () {
     this.props.addToNewCourse(this.state.baseName, this.props[this.state.baseName])
   }
 
@@ -193,7 +194,7 @@ class StructureItemMenu extends React.Component {
       //   &nbsp;{copyText}</Dropdown.Item>)
     }
 
-    // Curricula list
+    // Courses list
     if (this.state.level === 2) {
       if (!this.props.preSelectMenuItem) {
         menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
@@ -204,20 +205,20 @@ class StructureItemMenu extends React.Component {
       }
 
       for (let uuid in this.props.courses) {
-        var curriculum = this.props.courses[uuid]
+        var course = this.props.courses[uuid]
         menus.push(<Dropdown.Item
-          onSelect={this.onSelectCurriculum.bind(this, curriculum)}
-          key={curriculum.uuid}>
-          {curriculum.image
-            ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={curriculum.image} />
+          onSelect={this.onSelectCourse.bind(this, course)}
+          key={course.uuid}>
+          {course.image
+            ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={course.image} />
             : null }
-          {curriculum.name}{subMenu}
+          {course.name}{subMenu}
         </Dropdown.Item>)
       }
 
-      menus.push(<Dropdown.Item onSelect={this.addElementToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
-        {/* <Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum */}
-        <FaPlus /> Add {this.state.baseName} to new curriculum
+      menus.push(<Dropdown.Item onSelect={this.addElementToNewCourse} key='4' eventKey='4' style={{color: 'blue'}}>
+        {/* <Glyphicon glyph='plus' /> Add {this.state.baseName} to new course */}
+        <FaPlus /> Add {this.state.baseName} to new course
       </Dropdown.Item>)
     }
 
@@ -230,8 +231,8 @@ class StructureItemMenu extends React.Component {
 
       menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
 
-      for (let x = 0; x < this.state.selectedCurriculum.units.length; x++) {
-        var unit = this.props.units[this.state.selectedCurriculum.units[x]]
+      for (let x = 0; x < this.state.selectedCourse.units.length; x++) {
+        var unit = this.props.units[this.state.selectedCourse.units[x]]
 
         menus.push(<Dropdown.Item
           onSelect={this.onSelectUnit.bind(this, unit)}
@@ -314,7 +315,7 @@ StructureItemMenu.propTypes = {
   lesson: PropTypes.object,
   module: PropTypes.object,
   preSelectMenuItem: PropTypes.string
-  // curricula: PropTypes.object,
+  // courses: PropTypes.object,
   // uuid: PropTypes.string
 }
 
@@ -330,7 +331,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    addUnit: (curriculumUuid, unit) => dispatch(addUnit(curriculumUuid, unit)),
+    addUnit: (courseUuid, unit) => dispatch(addUnit(courseUuid, unit)),
     addModule: (unitUuid, module) => dispatch(addModule(unitUuid, module)),
     addLesson: (moduleUuid, lesson) => dispatch(addLesson(moduleUuid, lesson)),
     addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),

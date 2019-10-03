@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     name: unit.name,
     tags: unit.tags,
     image: unit.image,
-    curricilum: unit.curriculum,
+    course: unit.course,
     modules: unit.modules
   }
 }

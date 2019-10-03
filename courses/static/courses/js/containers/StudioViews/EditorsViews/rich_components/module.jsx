@@ -1,9 +1,11 @@
 import React from 'react'
 
+import PropTypes from 'prop-types'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
 // import { LessonThumbnailContainer } from '../containers/lesson_thumbnail'
+import { BASE_URL } from '../../../../utils/config'
 import { EditableThumbnail } from '../components/thumbnail'
 import { EditableLabel } from '../components/label'
 import { BackButton } from '../components/back_button'
@@ -27,7 +29,9 @@ export class Module extends React.Component {
     }
   }
 
-  // TODO load module
+  componentDidMount () {
+    this.props.loadModuleIfNeeded(this.props.match.params.uuid)
+  }
 
   handleDeleteClick (e) {
     e.preventDefault()
@@ -65,14 +69,18 @@ export class Module extends React.Component {
     const lessons = []
     for (var i = 0; i < this.props.lessons.length; i++) {
       lessons.push(
-        <DockableDropTarget key={this.props.lessons[i]} onDrop={this.props.onLessonDroppedBefore.bind(null, this.props.lessons[i])} itemType={DragItemTypes.LESSON} selfUuid={this.props.lessons[i]}>
-          {/*<LessonThumbnailContainer uuid={this.props.lessons[i]}/>*/}
+        <DockableDropTarget
+          key={this.props.lessons[i]}
+          onDrop={this.props.onLessonDroppedBefore.bind(null, this.props.lessons[i])}
+          itemType={DragItemTypes.LESSON}
+          selfUuid={this.props.lessons[i]}>
+          <LessonThumbnailContainer uuid={this.props.lessons[i]}/>
         </DockableDropTarget>
       )
     }
     return (
       <div className='module'>
-        <BackButton link={'/studio/editor/curricula/' + this.props.curriculum + '/'}/>
+        <BackButton link={BASE_URL + 'studio/editor/courses/' + this.props.course + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
           <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue='New module'/>
@@ -92,8 +100,12 @@ export class Module extends React.Component {
         </div>
         <div className='row'>
           {lessons}
-          <DockableDropTarget onDrop={this.props.onLessonDroppedBefore.bind(null, null)} itemType={DragItemTypes.LESSON}>
-            <div className='editor-col-md-1 module-accessible-block btn-add-lesson' onClick={this.props.onAddLessonClick}>
+          <DockableDropTarget
+            onDrop={this.props.onLessonDroppedBefore.bind(null, null)}
+            itemType={DragItemTypes.LESSON}>
+            <div
+              className='editor-col-md-1 module-accessible-block btn-add-lesson'
+              onClick={this.props.onAddLessonClick}>
               <div className='thumbnail section-thumbnail'>
                 {/* <span className="glyphicon glyphicon-plus-sign"/> */}
                 <FaPlusCircle size={'5rem'} />
@@ -104,4 +116,15 @@ export class Module extends React.Component {
         </div>
       </div>)
   }
+}
+
+Module.propTypes = {
+  loadModuleIfNeeded: PropTypes.func.isRequired,
+  onAddLessonClick: PropTypes.func.isRequired,
+  onNameChange: PropTypes.func.isRequired,
+  onAddTag: PropTypes.func.isRequired,
+  onLessonDroppedBefore: PropTypes.func.isRequired,
+  onImageChange: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
+  lessons: PropTypes.array
 }

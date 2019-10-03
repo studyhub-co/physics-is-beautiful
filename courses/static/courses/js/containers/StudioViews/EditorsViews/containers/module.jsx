@@ -9,7 +9,8 @@ import {
   moveLesson,
   addLesson,
   addModuleTag,
-  deleteModuleTag
+  deleteModuleTag,
+  loadModuleIfNeeded
 } from '../../../../actions/studio'
 
 const mapStateToProps = (state, ownProps) => {
@@ -22,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
       tags: mod.tags,
       image: mod.image,
       lessons: mod.lessons || [],
-      curriculum: mod.curriculum
+      course: mod.course
     }
   } else { return {loading: true} }
 }
@@ -37,7 +38,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onDeleteTag: (tag) => dispatch(deleteModuleTag(uuid, tag)),
     onLessonDroppedBefore: (beforeLessonUuid, draggedItem) =>
       dispatch(moveLesson(draggedItem.uuid, uuid, beforeLessonUuid)),
-    onAddLessonClick: () => dispatch(addLesson(uuid))
+    onAddLessonClick: () => dispatch(addLesson(uuid)),
+    loadModuleIfNeeded: () => dispatch(loadModuleIfNeeded(uuid))
   }
 }
 
