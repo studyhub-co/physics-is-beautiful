@@ -2,8 +2,7 @@ import { connect } from 'react-redux'
 
 import history from '../../../../history'
 import { BASE_URL } from '../../../../utils/config'
-
-import {LessonThumbnail} from '../components/lesson_thumbnail'
+import { LessonThumbnail } from '../rich_components/lesson_thumbnail'
 
 const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid

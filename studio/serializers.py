@@ -76,18 +76,16 @@ class MaterialSerializer(BaseSerializer):
 
     class Meta:
         model = Material
-        fields = ['uuid', 'lesson', 'text', 'solution_text', 'hint', 'image', 'position', 'answer_type', 'answers',
-                  'vectors', 'tags']
+        fields = ['uuid', 'lesson', 'tags'
+                  # 'text', 'solution_text', 'hint', 'image', 'position', 'answer_type', 'answers', 'vectors',
+                  ]
         list_serializer_class = DictSerializer
 
 
 class LessonSerializer(BaseSerializer):
-
     module = serializers.CharField(source='module.uuid')
-
-    questions = MaterialSerializer(many=True, read_only=True)
-
-    game_type = serializers.CharField(source='game.slug', required=False)
+    materials = MaterialSerializer(many=True, read_only=True)
+    # game_type = serializers.CharField(source='game.slug', required=False)
 
     def validate_module(self, value):
         return Module.objects.get(uuid=value)
@@ -110,13 +108,23 @@ class LessonSerializer(BaseSerializer):
     def create(self, validated_data):
         validated_data['module'] = validated_data['module']['uuid']
         new_lesson = super().create(validated_data)
-        Material.objects.create(lesson=new_lesson, text='New question')  # create new empty quetion for new lesson
+        # create new empty material for new lesson
+        Material.objects.create(lesson=new_lesson, author=self.context['request'].user.profile)
+        # FIXME remove Lesson Charfield
+        # serializer = MaterialSerializer(
+        #     data={'lesson': new_lesson}, context={'request': self.context['request']}
+        # )
+        # serializer.is_valid(raise_exception=True)
+        # serializer.save()
         return new_lesson
 
     class Meta:
         model = Lesson
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'module', 'name', 'image', 'position', 'lesson_type', 'game_type', 'url', 'questions']
+        fields = ['uuid', 'module', 'name', 'image', 'position',
+                  'lesson_type', 'url', 'materials' ,
+                  # 'game_type',
+                  ]
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
@@ -125,7 +133,7 @@ class LessonSerializer(BaseSerializer):
 class MiniLessonSerializer(LessonSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields.pop('questions')
+        self.fields.pop('materials')
 
 
 class ModuleSerializer(TaggitSerializer, BaseSerializer):

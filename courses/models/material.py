@@ -30,9 +30,18 @@ class Material(BaseItemModel):
     # class MaterialWorkflowType(models.IntegerChoices): # Django 3.0
     lesson = models.ForeignKey(Lesson, related_name='materials', on_delete=models.CASCADE)
     # material_workflow_type = models.IntegerField(choices=MaterialWorkflowType.choices) # Django 3.0
-    material_workflow_type = models.IntegerField(choices=[(type, type.value) for type in MaterialWorkflowType])
-    material_problem_type = models.ForeignKey(MaterialProblemType, related_name='materials', on_delete=models.CASCADE)
-    data = JSONField()  # only Postgresql support!
+    material_workflow_type = models.IntegerField(
+        default=MaterialWorkflowType.COMMON.value,
+        choices=[(type, type.value) for type in MaterialWorkflowType]
+    )
+    solution_text = models.CharField(max_length=2048, db_index=True, null=True, blank=True)
+    hint = models.CharField(max_length=1024, blank=True)
+    position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
+    material_problem_type = models.ForeignKey(
+        MaterialProblemType, related_name='materials', on_delete=models.CASCADE,
+        null=True, blank=True  # we can create empty Material wo type selected
+                                              )
+    data = JSONField(default=dict)  # only Postgresql support!
 
     thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True,
                                   on_delete=models.CASCADE)

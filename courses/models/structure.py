@@ -238,7 +238,7 @@ class Lesson(BaseItemModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
     # lesson_type = models.IntegerField(choices=LessonType.choices)  # Django 3.0
-    lesson_type = models.IntegerField(choices=[(type, type.value) for type in LessonType])
+    lesson_type = models.IntegerField(default=LessonType.DEFAULT.value, choices=[(type, type.value) for type in LessonType])
 
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_lessons')
 
@@ -277,9 +277,11 @@ class Lesson(BaseItemModel):
             )
             self.position = get_earliest_gap(taken_positions)
         super(Lesson, self).save(*args, **kwargs)
-        if self.lesson_type == self.LessonType.GAME and not hasattr(self, 'game'):
+
+        # TODO ??
+        if self.lesson_type == LessonType.GAME and not hasattr(self, 'game'):
             Game.objects.create(lesson=self)
-        elif self.lesson_type != self.LessonType.GAME and hasattr(self, 'game'):
+        elif self.lesson_type != LessonType.GAME and hasattr(self, 'game'):
             self.game.delete()
 
     def clone_children(self, to_lesson):

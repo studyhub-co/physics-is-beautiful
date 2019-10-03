@@ -117,30 +117,30 @@ class LessonViewSet(ModelViewSet):
         context['progress_service'] = get_progress_service(context['request'])
         return context
 
-    def get_next_question(self, request, uuid):
-        lesson = self.get_object()
-        service = get_progress_service(request, lesson)
-        previous_question = None
-        previous_question_uuid = request.query_params.get('previous_question')
-        if previous_question_uuid:
-            previous_question = Material.objects.filter(uuid=previous_question_uuid).first()
-        try:
-            question = service.get_next_question(previous_question)
-        except LessonLocked as e:
-            raise serializers.ValidationError(e)
-        if question:
-            new_thread = create_thread(question)
-            if new_thread:
-                Material.objects.filter(pk=question.pk).update(thread=new_thread)
-                question.thread = new_thread
-            data = {}
-            # data = QuestionSerializer(question, context={'progress_service': service}).data
-            # TODO: it might make more sense for these fields to be on the
-            # lesson. Or a separate lesson_progress object.
-            data.update(LessonProgressSerializer(service.current_lesson_progress).data)
-            data['required_score'] = service.COMPLETION_THRESHOLD
-            return Response(data)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    # def get_next_question(self, request, uuid):
+    #     lesson = self.get_object()
+    #     service = get_progress_service(request, lesson)
+    #     previous_question = None
+    #     previous_question_uuid = request.query_params.get('previous_question')
+    #     if previous_question_uuid:
+    #         previous_question = Material.objects.filter(uuid=previous_question_uuid).first()
+    #     try:
+    #         question = service.get_next_question(previous_question)
+    #     except LessonLocked as e:
+    #         raise serializers.ValidationError(e)
+    #     if question:
+    #         new_thread = create_thread(question)
+    #         if new_thread:
+    #             Material.objects.filter(pk=question.pk).update(thread=new_thread)
+    #             question.thread = new_thread
+    #         data = {}
+    #         # data = QuestionSerializer(question, context={'progress_service': service}).data
+    #         # TODO: it might make more sense for these fields to be on the
+    #         # lesson. Or a separate lesson_progress object.
+    #         data.update(LessonProgressSerializer(service.current_lesson_progress).data)
+    #         data['required_score'] = service.COMPLETION_THRESHOLD
+    #         return Response(data)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])

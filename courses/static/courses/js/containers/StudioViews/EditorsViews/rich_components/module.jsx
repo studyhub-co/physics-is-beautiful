@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
-// import { LessonThumbnailContainer } from '../containers/lesson_thumbnail'
+import { LessonThumbnailContainer } from '../containers/lesson_thumbnail'
 import { BASE_URL } from '../../../../utils/config'
 import { EditableThumbnail } from '../components/thumbnail'
 import { EditableLabel } from '../components/label'

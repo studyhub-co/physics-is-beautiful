@@ -11,7 +11,7 @@ import NotFoundView from './components/NotFoundView'
 export default(
   <Switch>
     {/*<Route exact path={BASE_URL} component={IndexView} />*/}
-    {/* TODO lazy load component */}
+    {/* TODO lazy load component (see units/loadable.jsx for details) */}
     <Route exact path={BASE_URL + 'courses/'} component={CoursesIndexView} />
     <Route exact path={BASE_URL + 'browse/'} component={BrowseStudioDashboard} />
 
@@ -19,7 +19,6 @@ export default(
     <Route exact path={BASE_URL + 'studio/'} component={BrowseStudioDashboard} />
     <Route exact path={BASE_URL + 'studio/editor/courses/:uuid'} component={EditCourseView} />
     <Route exact path={BASE_URL + 'studio/editor/modules/:uuid'} component={EditModuleView} />
-    {/*<Route exact path={BASE_URL + '/studio/editor/modules/:uuid'} component={ModuleApp} />*/}
     {/*<Route exact path={BASE_URL + '/studio/editor/lessons/:uuid'} component={LessonApp} />*/}
     {/*<Route exact path={BASE_URL + '/studio/editor/questions/:uuid'} component={QuestionApp} />*/}
 

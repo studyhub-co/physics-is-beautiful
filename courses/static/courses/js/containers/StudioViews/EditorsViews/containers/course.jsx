@@ -16,6 +16,7 @@ const mapStateToProps = (state, ownProps) => {
       loading: false,
       name: cur.name,
       tags: cur.tags,
+      uuid: uuid,
       image: cur.image,
       units: cur.units.map(unitUuid => state.studio.units[unitUuid])
     }

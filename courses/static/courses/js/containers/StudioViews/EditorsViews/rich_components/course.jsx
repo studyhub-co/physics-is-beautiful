@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button } from 'react-bootstrap'
 import { WithOutContext as ReactTags } from 'react-tag-input'
@@ -82,6 +83,7 @@ export class Course extends React.Component {
     } else {
       nameLabel = <span>{this.props.name}</span>
     }
+
     return (
       <div>
         <BackButton link={BASE_URL + 'studio/'} />
@@ -90,9 +92,9 @@ export class Course extends React.Component {
             <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
             {nameLabel}
             <FaTimes onClick={this.handleDeleteClick} />
-            <a href={BASE_URL + 'courses/' + this.props.uuid + '/'} className='btn btn-light'>
+            <Link to={BASE_URL + 'courses/' + this.props.uuid + '/'} className='btn btn-light'>
               <FaExternalLinkAlt /> Open student view
-            </a>
+            </Link>
           </h1>
           <ReactTags
             tags={this.state.tags}

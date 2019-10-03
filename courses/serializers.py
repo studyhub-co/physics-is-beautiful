@@ -177,7 +177,7 @@ class MaterialSerializer(BaseSerializer):
     class Meta:
         model = Material
         fields = [
-            'uuid',
+            'uuid', 'thread'
             # 'uuid', 'text', 'solution_text', 'hint', 'image', 'vectors', 'answer_type', 'choices',  # 'question_type',
             # 'lesson', 'unit_conversion', 'thread', 'my_sql'
         ]

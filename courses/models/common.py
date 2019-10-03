@@ -34,6 +34,8 @@ class BaseItemModel(models.Model):
     last_edit_user = models.ForeignKey(Profile,
                                        related_name="%(app_label)s_%(class)s_last_edit_items",
                                        on_delete=models.CASCADE, null=True, blank=True)
+    # not sure we need this for now
+    # published_on = models.DateTimeField('date published', null=True, blank=True)
 
     def instance_from_db(self):
         return self.__class__.objects.get(pk=self.pk)
