@@ -14,9 +14,9 @@ from taggit_serializer.serializers import (TagListSerializerField,
 
 from expander import ExpanderSerializerMixin
 
-from courses.models import Course, Unit, Module, Lesson, Game, Material
-from courses.models import MySQL
-from courses.serializers import BaseSerializer, UserSerializer
+from courses.models import Course, Unit, Module, Lesson, Material
+# from courses.models import MySQL
+from courses.serializers import BaseSerializer
 
 from profiles.serializers import PublicProfileSerializer
 from profiles.models import Profile
@@ -85,7 +85,6 @@ class MaterialSerializer(BaseSerializer):
 class LessonSerializer(BaseSerializer):
     module = serializers.CharField(source='module.uuid')
     materials = MaterialSerializer(many=True, read_only=True)
-    # game_type = serializers.CharField(source='game.slug', required=False)
 
     def validate_module(self, value):
         return Module.objects.get(uuid=value)
@@ -96,13 +95,6 @@ class LessonSerializer(BaseSerializer):
         if 'position' in validated_data and instance.position != validated_data['position']:
             Lesson.objects.filter(position__gte=validated_data['position'],
                                   module=validated_data.get('module', instance.module)).update(position=F('position')+1)
-        if 'lesson_type' in validated_data and validated_data['lesson_type'] == Lesson.LessonType.GAME:
-            Game.objects.get_or_create(lesson=instance, defaults={'slug': 'unit-conversion'})
-        if 'game' in validated_data:
-            for k,v in validated_data.pop('game').items():
-                setattr(instance.game, k, v)
-                instance.game.save()
-
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
@@ -121,10 +113,10 @@ class LessonSerializer(BaseSerializer):
     class Meta:
         model = Lesson
         list_serializer_class = DictSerializer
-        fields = ['uuid', 'module', 'name', 'image', 'position',
-                  'lesson_type', 'url', 'materials' ,
-                  # 'game_type',
-                  ]
+        fields = [
+            'uuid', 'module', 'name', 'image', 'position',
+            'url', 'materials'
+        ]
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
@@ -139,7 +131,6 @@ class MiniLessonSerializer(LessonSerializer):
 class ModuleSerializer(TaggitSerializer, BaseSerializer):
     lessons = MiniLessonSerializer(many=True, read_only=True)
     tags = TagListSerializerField(read_only=True)
-
     unit = serializers.CharField(source='unit.uuid')
     course = serializers.CharField(source='unit.course.uuid', read_only=True)
 
@@ -207,7 +198,7 @@ class UnitSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
 class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
     units = UnitSerializer(many=True, read_only=True)
     tags = TagListSerializerField(read_only=True)
-    author = UserSerializer(read_only=True)
+    author = PublicProfileSerializer(read_only=True)
     collaborators = PublicProfileSerializer(many=True, read_only=True)
     collaborators_ids = serializers.SlugRelatedField(queryset=Profile.objects.all(), source='collaborators',
                                                      slug_field='id', many=True, write_only=True,
@@ -245,9 +236,9 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
         fields = ['uuid', 'name', 'image', 'url', 'units', 'created_on', 'updated_on', 'count_lessons', 'author',
                   'cover_photo', 'number_of_learners', 'description', 'collaborators', 'collaborators_ids',
                   'setting_units_unlocked', 'setting_modules_unlocked', 'setting_lessons_unlocked',
-                  'setting_publically', 'tags'
+                  'setting_publically', 'tags', 'slug'
                   ]
-        read_only_fields = ('uuid', 'units', 'created_on', 'updated_on')
+        read_only_fields = ('uuid', 'units', 'created_on', 'updated_on', 'slug')
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),
         }

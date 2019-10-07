@@ -178,10 +178,10 @@ class ModuleAdmin(NestedModelAdmin):
 _backlink_to_module = link_to_field('module')
 
 
-GAME_CHOICES = [
-    ('unit-conversion', 'Unit conversion'),
-    ('vector-game', 'Vector game')
-]
+# GAME_CHOICES = [
+#     ('unit-conversion', 'Unit conversion'),
+#     ('vector-game', 'Vector game')
+# ]
 
 
 class LessonForm(forms.ModelForm):
@@ -189,22 +189,22 @@ class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
         fields = [
-            'module', 'name', 'image', 'lesson_type', 'game_slug',  # 'published_on', 'position',
+            'module', 'name', 'image',
         ]
 
-    game_slug = forms.CharField(required=False, widget=forms.Select(choices=GAME_CHOICES))
+    # game_slug = forms.CharField(required=False, widget=forms.Select(choices=GAME_CHOICES))
 
-    def __init__(self, *args, **kwargs):
-        super(LessonForm, self).__init__(*args, **kwargs)
-        if hasattr(self.instance, 'game'):
-            self.initial['game_slug'] = self.instance.game.slug
-
-    def save(self, commit=True):
-        instance = super(LessonForm, self).save(commit)
-        if 'game_slug' in self.cleaned_data and self.cleaned_data['game_slug']:
-            instance.game.slug = self.cleaned_data['game_slug']
-            instance.game.save()
-        return instance
+    # def __init__(self, *args, **kwargs):
+    #     super(LessonForm, self).__init__(*args, **kwargs)
+    #     if hasattr(self.instance, 'game'):
+    #         self.initial['game_slug'] = self.instance.game.slug
+    #
+    # def save(self, commit=True):
+    #     instance = super(LessonForm, self).save(commit)
+    #     if 'game_slug' in self.cleaned_data and self.cleaned_data['game_slug']:
+    #         instance.game.slug = self.cleaned_data['game_slug']
+    #         instance.game.save()
+    #     return instance
 
 
 _backlink_to_lesson = link_to_field('lesson')

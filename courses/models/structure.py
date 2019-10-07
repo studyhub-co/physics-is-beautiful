@@ -30,7 +30,7 @@ class Course(BaseItemModel):
 
     objects = CourseQuerySet.as_manager()
 
-    name = models.CharField(max_length=200, db_index=True)
+    # name = models.CharField(max_length=200, db_index=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     cover_photo = models.ImageField(blank=True)
@@ -111,9 +111,6 @@ class Course(BaseItemModel):
     def __str__(self):
         return 'Course: {}'.format(self.name)
 
-    # def get_frontend_url(self):
-    #     return '/course/{}/'.format(self.uuid)
-
 
 class Unit(BaseItemModel):
 
@@ -125,7 +122,7 @@ class Unit(BaseItemModel):
         children_field = 'modules'
 
     course = models.ForeignKey(Course, related_name='units', on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    # name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
@@ -178,7 +175,7 @@ class Module(BaseItemModel):
         ordering = ['position']
 
     unit = models.ForeignKey(Unit, related_name='modules', on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    # name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
@@ -220,35 +217,22 @@ class Module(BaseItemModel):
         return 'Module: {}'.format(self.name)
 
 
-class LessonType(Enum):
-    DEFAULT = 0
-    GAME = 1
-
-
 class Lesson(BaseItemModel):
 
     class Meta:
         ordering = ['position']
 
-    # class LessonType(models.IntegerChoices):  # Django 3.0
-
     module = models.ForeignKey(Module, related_name='lessons', on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    # name = models.CharField(max_length=200)
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
-    # lesson_type = models.IntegerField(choices=LessonType.choices)  # Django 3.0
-    lesson_type = models.IntegerField(default=LessonType.DEFAULT.value, choices=[(type, type.value) for type in LessonType])
 
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_lessons')
 
     @property
     def is_start(self):
         return self.position == 0 and self.module.position == 0 and self.module.unit.position == 0
-
-    @property
-    def lesson_type_name(self):
-        return self.LessonType.get_name(self.lesson_type)
 
     def get_previous_lesson(self):
         return Lesson.objects.filter(
@@ -278,12 +262,6 @@ class Lesson(BaseItemModel):
             self.position = get_earliest_gap(taken_positions)
         super(Lesson, self).save(*args, **kwargs)
 
-        # TODO ??
-        if self.lesson_type == LessonType.GAME and not hasattr(self, 'game'):
-            Game.objects.create(lesson=self)
-        elif self.lesson_type != LessonType.GAME and hasattr(self, 'game'):
-            self.game.delete()
-
     def clone_children(self, to_lesson):
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -306,10 +284,10 @@ class Lesson(BaseItemModel):
         return 'Lesson: {}'.format(self.name)
 
 
-class Game(BaseItemModel):
-
-    lesson = models.OneToOneField(Lesson, related_name='game', on_delete=models.CASCADE)
-    slug = models.SlugField(null=True, blank=True)
-
-    def __str__(self):
-        return 'Game: {}'.format(self.slug)
+# class Game(BaseItemModel):
+#
+#     lesson = models.OneToOneField(Lesson, related_name='game', on_delete=models.CASCADE)
+#     slug = models.SlugField(null=True, blank=True)
+#
+#     def __str__(self):
+#         return 'Game: {}'.format(self.slug)

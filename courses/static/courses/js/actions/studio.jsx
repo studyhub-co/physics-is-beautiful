@@ -609,7 +609,7 @@ export function updateCourse (course) {
 
 export function loadCourseIfNeeded (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().courses)) {
+    if (!(uuid in getState().studio.courses)) {
       loadCourse(uuid, dispatch)
     }
   }
@@ -820,7 +820,7 @@ export function deleteUnit (unitUuid) {
   return (dispatch, getState) => {
     dispatch({
       type: ActionTypes.DELETE_UNIT,
-      courseUuid: getState().units[unitUuid].course,
+      courseUuid: getState().studio.units[unitUuid].course,
       uuid: unitUuid
     })
     $.ajax({
@@ -874,7 +874,7 @@ export function changeUnitImage (uuid, image) {
 
 export function moveUnit (uuid, beforeUuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var newPosition
     if (beforeUuid) {
       newPosition = state.units[beforeUuid].position
@@ -963,7 +963,7 @@ export function changeModuleImage (uuid, image) {
 
 export function moveModule (uuid, toUnitUuid, beforeUuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var toUnit = state.units[toUnitUuid]
     var fromUnit = state.units[state.modules[uuid].unit]
     var newPosition
@@ -1008,7 +1008,7 @@ export function moveModule (uuid, toUnitUuid, beforeUuid) {
 
 export function deleteModule (moduleUuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var course = state.modules[moduleUuid].course
     dispatch({
       type: ActionTypes.DELETE_MODULE,
@@ -1091,7 +1091,7 @@ export function lessonAvailable (lesson) {
 
 export function loadLessonIfNeeded (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().lessons) || !getState().lessons[uuid].questions) {
+    if (!(uuid in getState().studio.lessons) || !getState().studio.lessons[uuid].questions) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'lessons/' + uuid + '/',
@@ -1103,7 +1103,7 @@ export function loadLessonIfNeeded (uuid) {
         }
       })
     } else {
-      dispatch(lessonAvailable(getState().lessons[uuid]))
+      dispatch(lessonAvailable(getState().studio.lessons[uuid]))
     }
   }
 }
@@ -1180,7 +1180,7 @@ export function changeLessonGameType (uuid, newType) {
 
 export function moveLesson (uuid, toModuleUuid, beforeLessonUuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var toModule = state.modules[toModuleUuid]
     var newPosition
     if (beforeLessonUuid) {
@@ -1214,7 +1214,7 @@ export function moveLesson (uuid, toModuleUuid, beforeLessonUuid) {
 
 export function deleteLesson (lessonUuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var moduleUuid = state.lessons[lessonUuid].module
     dispatch({
       type: ActionTypes.DELETE_LESSON,
@@ -1242,7 +1242,7 @@ export function questionLoaded (data) {
 
 export function loadQuestionIfNeeded (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().questions)) {
+    if (!(uuid in getState().studio.questions)) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'questions/' + uuid + '/',
@@ -1289,7 +1289,7 @@ export function preserveAnswers (questionUuid) {
 
 export function changeQuestionType (uuid, newType) {
   return function (dispatch, getState) {
-    var state = getState()
+    var state = getState().studio
     // var oldAnswerIds
     var data = {answer_type: newType}
     if (state.preservedAnswers[uuid]) {
@@ -1379,7 +1379,7 @@ export function addQuestion (lesson, question) {
 
 export function moveQuestion (uuid, beforeUuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var lessonUuid = state.questions[uuid].lesson
     var newPosition
     if (beforeUuid) {
@@ -1407,7 +1407,7 @@ export function moveQuestion (uuid, beforeUuid) {
 
 export function deleteQuestion (uuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var currentLesson = state.lessons[state.questions[uuid].lesson]
     var idx = currentLesson.questions.indexOf(uuid)
     var goToQuestion
@@ -1549,7 +1549,7 @@ export function addAnswer (questionUuid) {
 
 export function deleteAnswerChoice (answerUuid) {
   return (dispatch, getState) => {
-    var state = getState()
+    var state = getState().studio
     var questionUuid = state.answers[answerUuid].question
     dispatch({
       type: ActionTypes.DELETE_ANSWER,
@@ -1608,7 +1608,7 @@ export function changeAnswerRepresentation (answerUuid, newRepresentation) {
 export function updateVectorAnswerComponents (answerUuid, x_component, y_component) {
   return (dispatch, getState) => {
     var update
-    var ans = getState().answers[answerUuid]
+    var ans = getState().studio.answers[answerUuid]
     if (ans.angle != null) {
       update = {
         angle: vectorToAngle(x_component, y_component),
@@ -1643,7 +1643,7 @@ export function updateVectorAnswerComponents (answerUuid, x_component, y_compone
 export function updateVectorCheckType (answerUuid, newType) {
   return (dispatch, getState) => {
     var update
-    var ans = getState().answers[answerUuid]
+    var ans = getState().studio.answers[answerUuid]
     if (newType === 'angle') {
       update = {
         x_component: null,
@@ -1751,7 +1751,7 @@ export function updateUnitConversionStep (answerUuid, stepIndex, update) {
       }
       update[k] = splitQuantityUnit(update[k]).join('\\ ')
     }
-    var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
+    var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
     Object.assign(steps[stepIndex], update)
     $.ajax({
       url: API_PREFIX + 'answers/' + answerUuid + '/',
@@ -1766,7 +1766,7 @@ export function updateUnitConversionStep (answerUuid, stepIndex, update) {
 
 export function addConversionStep (answerUuid) {
   return (dispatch, getState) => {
-    var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
+    var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
     steps.push({numerator: '', denominator: ''})
     $.ajax({
       url: API_PREFIX + 'answers/' + answerUuid + '/',
@@ -1781,7 +1781,7 @@ export function addConversionStep (answerUuid) {
 
 export function removeConversionStep (answerUuid) {
   return (dispatch, getState) => {
-    var steps = getState().answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
+    var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
     steps.pop()
     $.ajax({
       url: API_PREFIX + 'answers/' + answerUuid + '/',
@@ -1809,7 +1809,7 @@ export function clearQuestionVectors (uuid) {
 
 export function addQuestionVector (uuid, x_component, y_component) {
   return (dispatch, getState) => {
-    var s = getState()
+    var s = getState().studio
     var vectors = s.questions[uuid].vectors.slice()
     vectors.push({
       x_component: x_component,

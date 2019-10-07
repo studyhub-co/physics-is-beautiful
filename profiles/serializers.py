@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from expander import ExpanderSerializerMixin
-
 from .models import Profile
 
 
@@ -16,6 +14,11 @@ class BaseSerializer(serializers.ModelSerializer):
             return self.Meta.model.objects.get(**{self.lookup_field: data})
         else:
             return super(BaseSerializer, self).to_internal_value(data)
+
+
+class ProfileUserField(serializers.RelatedField):
+    def to_representation(self, value):
+        return '%s %s' % (value.user.first_name, value.user.last_name)
 
 
 class PublicProfileSerializer(BaseSerializer):

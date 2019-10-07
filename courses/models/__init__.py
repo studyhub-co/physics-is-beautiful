@@ -1,5 +1,5 @@
 from .common import BaseItemModel, get_earliest_gap
-from .structure import Course, Lesson, Game, Module, Unit, LessonType
+from .structure import Course, Lesson, Module, Unit
 from .material_problem_type import MaterialProblemType
 from .material import Material
 from .workflow import MySQL
@@ -9,7 +9,7 @@ from .user_related import CourseUserDashboard
 from .badges import ModuleAwards, LessonAwards
 
 __all__ = ["get_earliest_gap", "BaseItemModel",
-           "Course", "Unit", "Module", "Lesson", "Game", "LessonType",
+           "Course", "Unit", "Module", "Lesson",
            "Material",
            "MaterialProblemType",
            "UserReaction",

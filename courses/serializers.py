@@ -3,9 +3,10 @@ from rest_framework.exceptions import ValidationError
 
 from expander import ExpanderSerializerMixin
 
-from django.contrib.auth import get_user_model
+from .models import Course, Unit, Module, Lesson, \
+    LessonProgress, MySQL, UserReaction, Material
 
-from .models import Course, Unit, Module, Lesson, LessonType, LessonProgress, MySQL, UserReaction, Material
+from profiles.serializers import PublicProfileSerializer, ProfileUserField
 
 
 class LessonProgressSerializer(serializers.ModelSerializer):
@@ -128,10 +129,6 @@ class LessonSerializer(BaseSerializer):
 
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
-    lesson_type = serializers.ChoiceField(
-        source='lesson_type_name', choices=LessonType
-    )
-    game_slug = serializers.SlugField(source='game.slug')
 
     def get_module(self, obj):
         return obj.module.uuid
@@ -182,11 +179,6 @@ class MaterialSerializer(BaseSerializer):
             # 'lesson', 'unit_conversion', 'thread', 'my_sql'
         ]
         read_only_fields = ('thread',)
-
-
-class ProfileUserField(serializers.RelatedField):
-    def to_representation(self, value):
-        return '%s %s' % (value.user.first_name, value.user.last_name)
 
 
 class ScoreBoardSerializer(serializers.ModelSerializer):
@@ -248,15 +240,8 @@ class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):
         }
 
 
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = get_user_model()
-        fields = ['pk', 'display_name', 'get_absolute_url']
-
-
 class CourseSerializer(ExpanderSerializerMixin, BaseSerializer):
-    author = UserSerializer(read_only=True)
+    author = PublicProfileSerializer(read_only=True)
 
     class Meta:
         model = Course

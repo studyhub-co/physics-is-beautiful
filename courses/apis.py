@@ -12,11 +12,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-# from drf_haystack.serializers import HaystackSerializer
-# from drf_haystack.viewsets import HaystackViewSet
-
-from .models import Course, Unit, Module, Lesson, Material, Game\
-    # , UnitConversion
+from .models import Course, Unit, Module, Lesson, Material
 from .services import get_progress_service, LessonLocked, LessonProgress
 
 from .serializers import MaterialSerializer, UserResponseSerializer, \
@@ -143,83 +139,83 @@ class LessonViewSet(ModelViewSet):
     #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_unit_conversion_units(request):
-    return Response(UnitConversion.UnitConversionUnits)
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def get_unit_conversion_units(request):
+#     return Response(UnitConversion.UnitConversionUnits)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def game_success(request, uuid):
-    try:
-        game = Game.objects.get(lesson__uuid=uuid)
-    except Game.DoesNotExist:
-        raise NotFound()
-
-    service = get_progress_service(request, game.lesson)
-
-    n = 10  # max number of results to show
-
-    duration_ms = request.data.get('duration', None)
-    score = request.data.get('score', None)
-    if duration_ms:
-        dur = datetime.timedelta(milliseconds=duration_ms)
-    else:
-        dur = None
-
-    service.game_success(game, dur, score)
-
-    check_classroom_progress(service, request.user)
-
-    if game.slug == 'unit-conversion' or game.slug == 'vector-game':  # temp fix
-        # get score list for
-        # try:
-        scores = service.get_score_board_qs(game.lesson).exclude(duration__isnull=True)
-        data_scores_list = []
-        user_already_in_score_list = False
-
-        for row_num, row in enumerate(scores[:10]):
-            # add score if user in top 10
-            # current registered user
-            if request.user.is_authenticated:
-                if request.user.profile.id == row.profile_id:
-                    current_user_score = service.get_score_board_qs(game.lesson).\
-                                                 get(profile__user=request.user)
-                    setattr(current_user_score, 'row_num', row_num + 1)
-                    data_scores_list.append(current_user_score)
-                    user_already_in_score_list = True
-                    continue
-            # current anon user
-            else:
-                if row.duration > dur:
-                    if not user_already_in_score_list:
-                        current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
-                        setattr(current_user_score, 'row_num', row_num + 1)
-                        data_scores_list.append(current_user_score)
-                        user_already_in_score_list = True
-                        continue
-
-            setattr(row, 'row_num', row_num + 1)
-
-            if row.duration:
-                data_scores_list.append(row)
-
-        # add score if user not in top 10
-        if not user_already_in_score_list:
-            if request.user.is_authenticated:
-                current_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
-            else:
-                current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
-
-            position = service.get_score_board_qs(game.lesson).filter(duration__lt=current_user_score.duration).count()
-            setattr(current_user_score, 'row_num', position + 1)
-            data_scores_list.append(current_user_score)
-
-        data = ScoreBoardSerializer(data_scores_list[:n], many=True).data
-        return Response(data)
-
-    return Response(status=status.HTTP_204_NO_CONTENT)
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def game_success(request, uuid):
+#     try:
+#         game = Game.objects.get(lesson__uuid=uuid)
+#     except Game.DoesNotExist:
+#         raise NotFound()
+#
+#     service = get_progress_service(request, game.lesson)
+#
+#     n = 10  # max number of results to show
+#
+#     duration_ms = request.data.get('duration', None)
+#     score = request.data.get('score', None)
+#     if duration_ms:
+#         dur = datetime.timedelta(milliseconds=duration_ms)
+#     else:
+#         dur = None
+#
+#     service.game_success(game, dur, score)
+#
+#     check_classroom_progress(service, request.user)
+#
+#     if game.slug == 'unit-conversion' or game.slug == 'vector-game':  # temp fix
+#         # get score list for
+#         # try:
+#         scores = service.get_score_board_qs(game.lesson).exclude(duration__isnull=True)
+#         data_scores_list = []
+#         user_already_in_score_list = False
+#
+#         for row_num, row in enumerate(scores[:10]):
+#             # add score if user in top 10
+#             # current registered user
+#             if request.user.is_authenticated:
+#                 if request.user.profile.id == row.profile_id:
+#                     current_user_score = service.get_score_board_qs(game.lesson).\
+#                                                  get(profile__user=request.user)
+#                     setattr(current_user_score, 'row_num', row_num + 1)
+#                     data_scores_list.append(current_user_score)
+#                     user_already_in_score_list = True
+#                     continue
+#             # current anon user
+#             else:
+#                 if row.duration > dur:
+#                     if not user_already_in_score_list:
+#                         current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+#                         setattr(current_user_score, 'row_num', row_num + 1)
+#                         data_scores_list.append(current_user_score)
+#                         user_already_in_score_list = True
+#                         continue
+#
+#             setattr(row, 'row_num', row_num + 1)
+#
+#             if row.duration:
+#                 data_scores_list.append(row)
+#
+#         # add score if user not in top 10
+#         if not user_already_in_score_list:
+#             if request.user.is_authenticated:
+#                 current_user_score = service.get_score_board_qs(game.lesson).get(profile__user=request.user)
+#             else:
+#                 current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+#
+#             position = service.get_score_board_qs(game.lesson).filter(duration__lt=current_user_score.duration).count()
+#             setattr(current_user_score, 'row_num', position + 1)
+#             data_scores_list.append(current_user_score)
+#
+#         data = ScoreBoardSerializer(data_scores_list[:n], many=True).data
+#         return Response(data)
+#
+#     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ModuleViewSet(ModelViewSet):
@@ -279,33 +275,3 @@ class CourseViewSet(ModelViewSet):
                 user = self.request.user
             return Course.objects.get_default(user=user)
         return super(CourseViewSet, self).get_object()
-
-
-
-# # Postgresql FTS Search
-# from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-#
-#
-# class coursesSearchViewSet(mixins.ListModelMixin,
-#                              GenericViewSet):
-#     permission_classes = (permissions.IsAuthenticated,)
-#     serializer_class = CourseSerializer
-#     queryset = Course.objects.all()
-#     lookup_field = 'uuid'
-#
-#     def get_queryset(self):
-#         qs = self.queryset
-#
-#         keywords = self.request.GET.get('query')
-#         if not keywords:
-#             raise NotAcceptable('Search query required')
-#
-#         query = SearchQuery(keywords)
-#         vector = SearchVector('name', 'description')
-#         qs = qs.annotate(search=vector).filter(search=query)
-#         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
-#
-#         return qs
-
-
-

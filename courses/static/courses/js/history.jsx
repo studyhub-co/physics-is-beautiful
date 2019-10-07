@@ -1,4 +1,4 @@
-import { createBrowserHistory as createHistory } from 'history'
+import { createBrowserHistory } from 'history'
 
-export default createHistory()
-// export default createHistory({basename: '/resources'})
+export default createBrowserHistory()
+// export default createHistory({basename: '/course'})

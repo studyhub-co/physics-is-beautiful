@@ -1,18 +1,16 @@
 from rest_framework import serializers
 
-from courses.models import Course, Unit, Module, Lesson, Game, Material
+from courses.models import Course, Unit, Module, Lesson, Material
 
-from .serializers import BaseSerializer, UserSerializer
+from profiles.serializers import PublicProfileSerializer
+
+from .serializers import BaseSerializer
 
 
 class PublicCourseSerializer(BaseSerializer):
-    # author = serializers.SerializerMethodField()
-    author = UserSerializer(read_only=True)
+    author = PublicProfileSerializer(read_only=True)
     number_of_learners = serializers.IntegerField(read_only=True, source='number_of_learners_denormalized')
     count_lessons = serializers.IntegerField(read_only=True)
-
-    # def get_author(self, obj):
-    #     return obj.author.display_name
 
     class Meta:
         model = Course
