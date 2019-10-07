@@ -11,8 +11,9 @@ from courses.models import Course, Unit, Module, Lesson, Material
 from .serializers import CourseSerializer, UnitSerializer, \
     ModuleSerializer, LessonSerializer, MaterialSerializer
 
-from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
-    IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator
+from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
+    IsModuleOwnerOrCollaborator, \
+    IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator
 
 
 # TODO add pagiantion to api views! or block load listview for Units/Lessons at least
@@ -146,29 +147,30 @@ class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
 
     def get_queryset(self):
         return Lesson.objects.filter(Q(module__unit__course__author=self.request.user.profile) |
-                                     Q(module__unit__course__collaborators=self.request.user.profile))\
-            .prefetch_related('questions__tags', 'questions__vectors')\
+                                     Q(module__unit__course__collaborators=self.request.user.profile)) \
+            .prefetch_related('materials__tags') \
             .distinct()
+            # .prefetch_related('questions__tags', 'questions__vectors')\
 
 
 class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
-    permission_classes = (permissions.IsAuthenticated, IsQuestionOwnerOrCollaborator)
+    permission_classes = (permissions.IsAuthenticated, IsMaterialOwnerOrCollaborator)
     serializer_class = MaterialSerializer
     lookup_field = 'uuid'
 
     def create(self, request, *args, **kwargs):
         if 'prototype' in self.request.data and self.request.data['prototype']:
             prototype = Material.objects.get(uuid=self.request.data['prototype'])
-            copied_question = prototype.clone(Lesson.objects.get(uuid=self.request.data['lesson']))
+            copied_material = prototype.clone(Lesson.objects.get(uuid=self.request.data['lesson']))
 
-            return Response(MaterialSerializer(copied_question, context={'request': request}).data,
+            return Response(MaterialSerializer(copied_material, context={'request': request}).data,
                             status=status.HTTP_201_CREATED)
         else:
             return super().create(request, *args, **kwargs)
 
     @action(methods=['POST', 'DELETE'],
             detail=True,
-            permission_classes=[IsQuestionOwnerOrCollaborator, ], )
+            permission_classes=[IsMaterialOwnerOrCollaborator, ], )
     def tags(self, request, *args, **kwargs):
         return super(MaterialViewSet, self).tags(request, args, kwargs)
 

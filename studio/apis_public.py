@@ -15,7 +15,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from courses.models import Course, Unit, Module, Lesson, Material, CourseUserDashboard
 
 from .serializers_public import PublicCourseSerializer, PublicUnitSerializer, PublicModuleSerializer, \
-    PublisLessonSerializer, PublicQuestionSerializer
+    PublicLessonSerializer, PublicMaterialSerializer
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -193,7 +193,7 @@ class LessonViewSet(mixins.UpdateModelMixin,
                     SearchMixin):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     queryset = Lesson.objects.all().order_by('-module__unit__course__number_of_learners_denormalized', 'uuid')
-    serializer_class = PublisLessonSerializer
+    serializer_class = PublicLessonSerializer
     search_fields = ['name', ]
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
@@ -215,7 +215,7 @@ class MaterialViewSet(mixins.UpdateModelMixin,
     queryset = Material.objects.all()\
         .order_by('-lesson__module__unit__course__number_of_learners_denormalized', 'uuid')\
         .select_related('lesson')
-    serializer_class = PublicQuestionSerializer
+    serializer_class = PublicMaterialSerializer
     search_fields = ['text', ]  # TODO add answers text
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination

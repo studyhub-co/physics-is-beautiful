@@ -44,19 +44,19 @@ class PublicModuleSerializer(BaseSerializer):
         }
 
 
-class PublisLessonSerializer(BaseSerializer):
+class PublicLessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
         fields = ['uuid', 'name', 'image', 'position', 'url', 'created_on', 'updated_on']
-        read_only_fields = ('uuid', 'questions', 'image')
+        read_only_fields = ('uuid', 'materialss', 'image')
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
 
 
-class PublicQuestionSerializer(BaseSerializer):
-    lesson = PublisLessonSerializer(read_only=True)
+class PublicMaterialSerializer(BaseSerializer):
+    lesson = PublicLessonSerializer(read_only=True)
 
     class Meta:
         model = Material

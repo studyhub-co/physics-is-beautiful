@@ -54,6 +54,7 @@ class MaterialSerializer(BaseSerializer):
         return Lesson.objects.get(uuid=value)
 
     def update(self, instance, validated_data):
+        # ???
         if 'lesson' in validated_data:
             validated_data['lesson'] = validated_data['lesson']['uuid']
 
@@ -61,18 +62,27 @@ class MaterialSerializer(BaseSerializer):
             Material.objects.filter(position__gte=validated_data['position'],
                                     lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
 
-        new_answers = validated_data.pop('answers', None)
+        return super().update(instance, validated_data)
 
-        updated = super().update(instance, validated_data)
-        if new_answers:
-            updated.answers.all().delete()
-            new_answers.update(question=updated)
-        return updated
+    # def update(self, instance, validated_data):
+    #     if 'lesson' in validated_data:
+    #         validated_data['lesson'] = validated_data['lesson']['uuid']
+    #
+    #     if 'position' in validated_data and instance.position != validated_data['position']:
+    #         Material.objects.filter(position__gte=validated_data['position'],
+    #                                 lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
+    #
+    #     new_answers = validated_data.pop('answers', None)
+    #
+    #     updated = super().update(instance, validated_data)
+    #     if new_answers:
+    #         updated.answers.all().delete()
+    #         new_answers.update(question=updated)
+    #     return updated
 
     def create(self, validated_data):
         validated_data['lesson'] = validated_data['lesson']['uuid']
-        new_question = super().create(validated_data)
-        return new_question
+        return super().create(validated_data)
 
     class Meta:
         model = Material
