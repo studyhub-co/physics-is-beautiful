@@ -41,8 +41,8 @@ function search (state = {}, action) {
       return Object.assign({}, state, { modules: action.modulesSearchList })
     case ActionTypes.SEARCH_LESSONS_LOADED:
       return Object.assign({}, state, { lessons: action.lessonsSearchList })
-    case ActionTypes.SEARCH_QUESTIONS_LOADED:
-      return Object.assign({}, state, { questions: action.questionsSearchList })
+    case ActionTypes.SEARCH_MATERIALS_LOADED:
+      return Object.assign({}, state, { materials: action.materialsSearchList })
     default:
       return state
   }
@@ -124,28 +124,28 @@ function lessons (state = {}, action) {
       var ret = Object.assign({}, state)
       delete ret[action.uuid]
       return ret
-    case ActionTypes.QUESTION_ADDED:
+    case ActionTypes.MATERIAL_ADDED:
       var ret = Object.assign({}, state)
-      ret[action.question.lesson].questions = ret[
-        action.question.lesson
-      ].questions.slice()
-      ret[action.question.lesson].questions.push(action.question.uuid)
+      ret[action.material.lesson].materials = ret[
+        action.material.lesson
+      ].materials.slice()
+      ret[action.material.lesson].materials.push(action.material.uuid)
       return ret
-    case ActionTypes.DELETE_QUESTION:
+    case ActionTypes.DELETE_MATERIAL:
       var ret = Object.assign({}, state)
-      ret[action.lesson].questions = ret[action.lesson].questions.slice()
-      ret[action.lesson].questions.splice(
-        ret[action.lesson].questions.indexOf(action.question),
+      ret[action.lesson].materials = ret[action.lesson].materials.slice()
+      ret[action.lesson].materials.splice(
+        ret[action.lesson].materials.indexOf(action.material),
         1
       )
       return ret
-    case ActionTypes.QUESTION_MOVED:
+    case ActionTypes.MATERIAL_MOVED:
       var ret = Object.assign({}, state)
       var les = Object.assign({}, ret[action.lessonUuid])
-      var qs = les.questions.slice()
+      var qs = les.materials.slice()
       qs.splice(qs.indexOf(action.uuid), 1)
       if (action.beforeUuid) { qs.splice(qs.indexOf(action.beforeUuid), 0, action.uuid) } else qs.push(action.uuid)
-      les.questions = qs
+      les.materials = qs
       ret[action.lessonUuid] = les
       return ret
 
@@ -154,81 +154,37 @@ function lessons (state = {}, action) {
   }
 }
 
-function questions (state = {}, action) {
+function materials (state = {}, action) {
   switch (action.type) {
-    case ActionTypes.QUESTION_LOADED:
-    case ActionTypes.QUESTION_ADDED:
+    case ActionTypes.MATERIAL_LOADED:
+    case ActionTypes.MATERIAL_ADDED:
       return Object.assign({}, state, {
-        [action.question.uuid]: action.question
+        [action.material.uuid]: action.material
       })
-    case ActionTypes.ANSWER_ADDED:
+    case ActionTypes.DELETE_MATERIAL:
       var ret = Object.assign({}, state)
-      ret[action.answer.question].answers = ret[
-        action.answer.question
-      ].answers.slice()
-      ret[action.answer.question].answers.push(action.answer.uuid)
-      return ret
-    case ActionTypes.DELETE_ANSWER:
-      var ret = Object.assign({}, state)
-      var newAnswers = ret[action.questionUuid].answers.slice()
-      newAnswers.splice(newAnswers.indexOf(action.uuid), 1)
-      ret[action.questionUuid].answers = newAnswers
-      return ret
-    case ActionTypes.DELETE_QUESTION:
-      var ret = Object.assign({}, state)
-      delete ret[action.question]
+      delete ret[action.material]
       return ret
     case ActionTypes.LESSON_LOADED:
     case ActionTypes.LESSON_ADDED:
-      return Object.assign({}, state, action.questions)
+      return Object.assign({}, state, action.materials)
     default:
       return state
   }
 }
 
-function answers (state = {}, action) {
-  switch (action.type) {
-    case ActionTypes.QUESTION_LOADED:
-    case ActionTypes.QUESTION_ADDED:
-      return Object.assign({}, state, action.answers)
-    case ActionTypes.ANSWER_LOADED:
-    case ActionTypes.ANSWER_ADDED:
-      return Object.assign({}, state, { [action.answer.uuid]: action.answer })
-    case ActionTypes.DELETE_ANSWER:
-      var ret = Object.assign({}, state)
-      delete ret[action.answerUuid]
-      return ret
-    case ActionTypes.SET_ANSWER_EXCLUSIVELY_CORRECT:
-      var ret = Object.assign({}, state)
-      for (var a in ret) {
-        if (ret[a].question === state[action.answer].question) { ret[a].is_correct = a === action.answer }
-      }
-      return ret
-    case ActionTypes.SET_ANSWER_IS_CORRECT:
-      var ret = Object.assign({}, state)
-      ret[action.answer].is_correct = action.is_correct
-      return ret
-    case ActionTypes.LESSON_LOADED:
-    case ActionTypes.LESSON_ADDED:
-      return Object.assign({}, state, action.answers)
-
-    default:
-      return state
-  }
-}
-
-function currentQuestion (state = null, action) {
+function currentMaterial (state = null, action) {
   switch (action.type) {
     case ActionTypes.LESSON_LOADED:
     case ActionTypes.LESSON_AVAILABLE:
-      if (action.lesson.questions.length > 0) return action.lesson.questions[0]
+      if (action.lesson.materials.length > 0) return action.lesson.materials[0]
       else return null
-    case ActionTypes.GOTO_QUESTION:
-      return action.question
-    case ActionTypes.QUESTION_ADDED:
-      return action.question.uuid
-    case ActionTypes.DELETE_QUESTION:
-      return action.goToQuestion
+    case ActionTypes.GOTO_MATERIAL:
+      return action.material
+    case ActionTypes.MATERIAL_ADDED:
+      return action.material.uuid
+    case ActionTypes.DELETE_MATERIAL:
+      return action.goToMaterial
     case LOCATION_CHANGE:
       return null
     default:
@@ -319,9 +275,8 @@ export default combineReducers({
   units,
   modules,
   lessons,
-  questions,
-  answers,
-  currentQuestion,
+  materials,
+  currentMaterial,
   filteredCourses,
   allCourses,
   course,

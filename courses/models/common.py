@@ -60,7 +60,7 @@ class BaseItemModel(models.Model):
             return slug
         # if slug is exist
         try_count += 1
-        return self.__class__.gen_slug(try_count)
+        return self.gen_slug(try_count)
 
     def save(self, *args, **kwargs):
         if self.name:

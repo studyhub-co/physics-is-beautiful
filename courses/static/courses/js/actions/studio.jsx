@@ -1,17 +1,20 @@
+import Cookies from 'js-cookie'
+
 import history from '../history'
 
 import { BASE_URL } from '../utils/config'
 
-import { angleToVector, vectorToAngle
-} from '../utils/vectors'
-import { validateQuantityUnit, splitQuantityUnit
-} from '../utils/units'
+// import { angleToVector, vectorToAngle
+// } from '../utils/vectors'
+// import { validateQuantityUnit, splitQuantityUnit
+// } from '../utils/units'
 
 import request from '../utils/request'
 
 const API_PREFIX = '/api/v1/studio/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
 
+var getCookie = Cookies.get
 
 // TODO move constants to /constants
 
@@ -25,7 +28,7 @@ export const ActionTypes = Object.freeze({
   SEARCH_LESSONS_LOADED: 'SEARCH_LESSONS_LOADED',
   RECENT_COURSES_LOADED: 'RECENT_COURSES_LOADED',
   POPULAR_COURSES_LOADED: 'POPULAR_COURSES_LOADED',
-  SEARCH_QUESTIONS_LOADED: 'SEARCH_QUESTIONS_LOADED',
+  SEARCH_MATERIALS_LOADED: 'SEARCH_MATERIALS_LOADED',
   NEW_COURSES_LOADED: 'NEW_COURSES_LOADED',
   LOAD_COURSES: 'LOAD_COURSES',
   PUBLIC_COURSE_LOADED: 'PUBLIC_COURSE_LOADED',
@@ -43,17 +46,11 @@ export const ActionTypes = Object.freeze({
   LESSON_AVAILABLE: 'LESSON_AVAILABLE',
   LESSON_ADDED: 'LESSON_ADDED',
   DELETE_LESSON: 'DELETE_LESSON',
-  QUESTION_LOADED: 'QUESTION_LOADED',
-  QUESTION_ADDED: 'QUESTION_ADDED',
-  QUESTION_MOVED: 'QUESTION_MOVED',
-  PRESERVE_ANSWERS: 'PRESERVE_ANSWERS',
-  GOTO_QUESTION: 'GOTO_QUESTION',
-  DELETE_QUESTION: 'DELETE_QUESTION',
-  ANSWER_LOADED: 'ANSWER_LOADED',
-  ANSWER_ADDED: 'ANSWER_ADDED',
-  DELETE_ANSWER: 'DELETE_ANSWER',
-  SET_ANSWER_EXCLUSIVELY_CORRECT: 'SET_ANSWER_EXCLUSIVELY_CORRECT',
-  SET_ANSWER_IS_CORRECT: 'SET_ANSWER_IS_CORRECT',
+  MATERIAL_LOADED: 'MATERIAL_LOADED',
+  MATERIAL_ADDED: 'MATERIAL_ADDED',
+  MATERIAL_MOVED: 'MATERIAL_MOVED',
+  GOTO_MATERIAL: 'GOTO_MATERIAL',
+  DELETE_MATERIAL: 'DELETE_MATERIAL',
   STUDIO_TAB_CHANGED: 'STUDIO_TAB_CHANGED',
   FOUND_USERS_LOADED: 'FOUND_USERS_LOADED',
   FOUND_USERS_REQUEST: 'FOUND_USERS_REQUEST',
@@ -165,9 +162,9 @@ export function deleteModuleTag (uuid, tag) {
   }
 }
 
-export function addQuestionTag (uuid, tag) {
+export function addMaterialTag (uuid, tag) {
   return function (dispatch) {
-    request(API_PREFIX + 'questions/' + uuid + '/tags/', {
+    request(API_PREFIX + 'materials/' + uuid + '/tags/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -179,9 +176,9 @@ export function addQuestionTag (uuid, tag) {
     }).then((value) => {
       $.ajax({
         async: true,
-        url: API_PREFIX + 'questions/' + uuid + '/',
+        url: API_PREFIX + 'materials/' + uuid + '/',
         success: function (data, status, jqXHR) {
-          dispatch(questionLoaded(data))
+          dispatch(materialLoaded(data))
         }
       })
     }
@@ -189,9 +186,9 @@ export function addQuestionTag (uuid, tag) {
   }
 }
 
-export function deleteQuestionTag (uuid, tag) {
+export function deleteMaterialTag (uuid, tag) {
   return function (dispatch) {
-    request(API_PREFIX + 'questions/' + uuid + '/tags/', {
+    request(API_PREFIX + 'materials/' + uuid + '/tags/', {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -203,9 +200,9 @@ export function deleteQuestionTag (uuid, tag) {
     }).then((value) => {
       $.ajax({
         async: true,
-        url: API_PREFIX + 'questions/' + uuid + '/',
+        url: API_PREFIX + 'materials/' + uuid + '/',
         success: function (data, status, jqXHR) {
-          dispatch(questionLoaded(data))
+          dispatch(materialLoaded(data))
         }
       })
     })
@@ -495,19 +492,19 @@ export function loadSearchLessons (searchString, nextPageUrl) {
   }
 }
 
-function questionsSearchLoaded (data) {
-  var type = ActionTypes.SEARCH_QUESTIONS_LOADED
+function materialsSearchLoaded (data) {
+  var type = ActionTypes.SEARCH_MATERIALS_LOADED
   return {
     type: type,
-    questionsSearchList: data
+    materialsSearchList: data
   }
 }
 
-export function loadSearchQuestions (searchString, nextPageUrl) {
-  var url = API_PREFIX + 'public/questions/'
+export function loadSearchMaterials (searchString, nextPageUrl) {
+  var url = API_PREFIX + 'public/materials/'
 
   if (searchString) {
-    url = API_PREFIX + 'public/questions/search/?query=' + searchString
+    url = API_PREFIX + 'public/materials/search/?query=' + searchString
   }
 
   if (nextPageUrl) {
@@ -520,7 +517,7 @@ export function loadSearchQuestions (searchString, nextPageUrl) {
       url: url,
       context: this,
       success: function (data, status, jqXHR) {
-        dispatch(questionsSearchLoaded(data))
+        dispatch(materialsSearchLoaded(data))
       }
     })
   }
@@ -770,29 +767,29 @@ export function addToNewCourse (type, value) {
                       data: lessonData,
                       success: function (data, status, jqXHR) {
                         if (type === 'lesson') {
-                          // var questions = extract(data, 'questions')
+                          // var materials = extract(data, 'materials')
                           // dispatch({
                           //   type: ActionTypes.LESSON_ADDED,
                           //   lesson: data,
-                          //   questions: questions,
-                          //   answers: extractAll(questions, 'answers')
+                          //   materials: materials,
+                          //   answers: extractAll(materials, 'answers')
                           // })
                           history.push(BASE_URL + 'studio/editor/lessons/' + data.uuid + '/')
                         } else {
-                          // add question
-                          var questionData = {text: 'New question', lesson: data.uuid}
+                          // add material
+                          var materialData = {text: 'New material', lesson: data.uuid}
 
-                          if (type === 'question') {
-                            // question prototype
-                            questionData['prototype'] = value.uuid
-                            questionData['text'] = value.text
+                          if (type === 'material') {
+                            // material prototype
+                            materialData['prototype'] = value.uuid
+                            materialData['text'] = value.text
                           }
 
                           $.ajax({
                             async: true,
                             method: 'POST',
-                            url: API_PREFIX + 'questions/',
-                            data: questionData,
+                            url: API_PREFIX + 'materials/',
+                            data: materialData,
                             success: function (data, status, jqXHR) {
                               history.push(BASE_URL + 'studio/editor/lessons/' + data.lesson + '/')
                             }
@@ -1059,12 +1056,12 @@ export function addLesson (moduleUuid, lesson) {
       method: 'POST',
       data: data,
       success: function (data, status, jqXHR) {
-        var questions = extract(data, 'questions')
+        var materials = extract(data, 'materials')
         dispatch({
           type: ActionTypes.LESSON_ADDED,
           lesson: data,
-          questions: questions,
-          answers: extractAll(questions, 'answers')
+          materials: materials,
+          answers: extractAll(materials, 'answers')
         })
         history.push(BASE_URL + 'studio/editor/lessons/' + data.uuid + '/')
       }
@@ -1073,12 +1070,12 @@ export function addLesson (moduleUuid, lesson) {
 }
 
 export function lessonLoaded (data) {
-  var questions = extract(data, 'questions')
+  var materials = extract(data, 'materials')
   return {
     type: ActionTypes.LESSON_LOADED,
     lesson: data,
-    questions: questions,
-    answers: extractAll(questions, 'answers')
+    materials: materials,
+    answers: extractAll(materials, 'answers')
   }
 }
 
@@ -1091,14 +1088,14 @@ export function lessonAvailable (lesson) {
 
 export function loadLessonIfNeeded (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().studio.lessons) || !getState().studio.lessons[uuid].questions) {
+    if (!(uuid in getState().studio.lessons) || !getState().studio.lessons[uuid].materials) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'lessons/' + uuid + '/',
         success: function (data, status, jqXHR) {
           dispatch(lessonLoaded(data))
-          if (data.questions.length > 0) {
-            dispatch(loadQuestionIfNeeded(data.questions[0])) // WHAT is this?
+          if (data.materials.length > 0) {
+            dispatch(loadMaterialIfNeeded(data.materials[0])) // WHAT is this?
           }
         }
       })
@@ -1115,8 +1112,8 @@ export function loadLesson (uuid) {
       url: API_PREFIX + 'lessons/' + uuid + '/',
       success: function (data, status, jqXHR) {
         dispatch(lessonLoaded(data))
-        if (data.questions.length > 0) {
-          dispatch(loadQuestionIfNeeded(data.questions[0])) // WHAT is this?
+        if (data.materials.length > 0) {
+          dispatch(loadMaterialIfNeeded(data.materials[0])) // WHAT is this?
         }
       }})
   }
@@ -1232,62 +1229,61 @@ export function deleteLesson (lessonUuid) {
   }
 }
 
-export function questionLoaded (data) {
+export function materialLoaded (data) {
   return {
-    type: ActionTypes.QUESTION_LOADED,
-    question: data,
-    answers: extract(data, 'answers')
+    type: ActionTypes.MATERIAL_LOADED,
+    material: data
   }
 }
 
-export function loadQuestionIfNeeded (uuid) {
+export function loadMaterialIfNeeded (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().studio.questions)) {
+    if (!(uuid in getState().studio.materials)) {
       $.ajax({
         async: true,
-        url: API_PREFIX + 'questions/' + uuid + '/',
+        url: API_PREFIX + 'materials/' + uuid + '/',
         success: function (data, status, jqXHR) {
-          dispatch(questionLoaded(data))
+          dispatch(materialLoaded(data))
         }
       })
     }
   }
 }
 
-export function changeQuestionText (uuid, newText) {
+export function changeMaterialText (uuid, newText) {
   return function (dispatch) {
     $.ajax({
-      url: API_PREFIX + 'questions/' + uuid + '/',
+      url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
       data: {text: newText},
       success: function (data, status, jqXHR) {
-        dispatch(questionLoaded(data))
+        dispatch(materialLoaded(data))
       }
     })
   }
 }
 
-export function changeQuestionSolutionText (uuid, newSolutionText) {
+export function changeMaterialSolutionText (uuid, newSolutionText) {
   return function (dispatch) {
     $.ajax({
-      url: API_PREFIX + 'questions/' + uuid + '/',
+      url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
       data: {solution_text: newSolutionText},
       success: function (data, status, jqXHR) {
-        dispatch(questionLoaded(data))
+        dispatch(materialLoaded(data))
       }
     })
   }
 }
 
-export function preserveAnswers (questionUuid) {
+export function preserveAnswers (materialUuid) {
   return {
     type: ActionTypes.PRESERVE_ANSWERS,
-    question: questionUuid
+    material: materialUuid
   }
 }
 
-export function changeQuestionType (uuid, newType) {
+export function changeMaterialType (uuid, newType) {
   return function (dispatch, getState) {
     var state = getState().studio
     // var oldAnswerIds
@@ -1298,78 +1294,78 @@ export function changeQuestionType (uuid, newType) {
 
     dispatch(preserveAnswers(uuid))
     $.ajax({
-      url: API_PREFIX + 'questions/' + uuid + '/',
+      url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
       data: data,
       success: function (data, status, jqXHR) {
-        dispatch(questionLoaded(data))
+        dispatch(materialLoaded(data))
       }
     })
   }
 }
 
-export function changeQuestionImage (uuid, image) {
-  return dispatch => {
-    var formData = new FormData()
-    formData.append('image', image)
-    $.ajax({
-      url: API_PREFIX + 'questions/' + uuid + '/',
-      type: 'PATCH',
-      processData: false,
-      contentType: false,
-      data: formData,
-      success: function (data) {
-        dispatch(questionLoaded(data))
-      }
-    })
-  }
-}
+// export function changeMaterialImage (uuid, image) {
+//   return dispatch => {
+//     var formData = new FormData()
+//     formData.append('image', image)
+//     $.ajax({
+//       url: API_PREFIX + 'materials/' + uuid + '/',
+//       type: 'PATCH',
+//       processData: false,
+//       contentType: false,
+//       data: formData,
+//       success: function (data) {
+//         dispatch(materialLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function changeQuestionHint (uuid, newHint) {
+export function changeMaterialHint (uuid, newHint) {
   return function (dispatch) {
     $.ajax({
-      url: API_PREFIX + 'questions/' + uuid + '/',
+      url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
       data: {hint: newHint},
       success: function (data, status, jqXHR) {
-        dispatch(questionLoaded(data))
+        dispatch(materialLoaded(data))
       }
     })
   }
 }
 
-export function goToQuestion (uuid) {
+export function goToMaterial (uuid) {
   return dispatch => {
     dispatch({
-      type: ActionTypes.GOTO_QUESTION,
-      question: uuid
+      type: ActionTypes.GOTO_MATERIAL,
+      material: uuid
     })
-    dispatch(loadQuestionIfNeeded(uuid))
+    dispatch(loadMaterialIfNeeded(uuid))
   }
 }
 
-export function addQuestion (lesson, question) {
-  var data = {text: 'New question', lesson: lesson}
-  if (question) {
-    data['prototype'] = question.uuid
+export function addMaterial (lesson, material) {
+  var data = {text: 'New material', lesson: lesson}
+  if (material) {
+    data['prototype'] = material.uuid
   }
 
   return dispatch => {
     $.ajax({
       async: true,
       method: 'POST',
-      url: API_PREFIX + 'questions/',
-      data: data, // {lesson : lesson, text : 'New question'},
+      url: API_PREFIX + 'materials/',
+      data: data, // {lesson : lesson, text : 'New material'},
       success: function (data, status, jqXHR) {
-        if (question) {
+        if (material) {
           history.push(BASE_URL + 'studio/editor/lessons/' + lesson + '/')
           // reload lesson
           dispatch(loadLesson(lesson))
         } else {
           dispatch(
             {
-              type: ActionTypes.QUESTION_ADDED,
-              question: data
+              type: ActionTypes.MATERIAL_ADDED,
+              material: data
             })
         }
       }
@@ -1377,25 +1373,25 @@ export function addQuestion (lesson, question) {
   }
 }
 
-export function moveQuestion (uuid, beforeUuid) {
+export function moveMaterial (uuid, beforeUuid) {
   return (dispatch, getState) => {
     var state = getState().studio
-    var lessonUuid = state.questions[uuid].lesson
+    var lessonUuid = state.materials[uuid].lesson
     var newPosition
     if (beforeUuid) {
-      newPosition = state.questions[beforeUuid].position
+      newPosition = state.materials[beforeUuid].position
     } else {
       var lesson = state.lessons[lessonUuid]
-      newPosition = state.questions[lesson.questions[lesson.questions.length - 1]].position + 1
+      newPosition = state.materials[lesson.materials[lesson.materials.length - 1]].position + 1
     }
     $.ajax({
       async: true,
-      url: API_PREFIX + 'questions/' + uuid + '/',
+      url: API_PREFIX + 'materials/' + uuid + '/',
       method: 'PATCH',
       data: {position: newPosition},
       success: function (data, status, jqXHR) {
         dispatch({
-          type: ActionTypes.QUESTION_MOVED,
+          type: ActionTypes.MATERIAL_MOVED,
           uuid: uuid,
           beforeUuid: beforeUuid,
           lessonUuid: lessonUuid
@@ -1405,428 +1401,428 @@ export function moveQuestion (uuid, beforeUuid) {
   }
 }
 
-export function deleteQuestion (uuid) {
+export function deleteMaterial (uuid) {
   return (dispatch, getState) => {
     var state = getState().studio
-    var currentLesson = state.lessons[state.questions[uuid].lesson]
-    var idx = currentLesson.questions.indexOf(uuid)
-    var goToQuestion
-    if (idx < currentLesson.questions.length - 1) {
-      goToQuestion = currentLesson.questions[idx + 1]
+    var currentLesson = state.lessons[state.materials[uuid].lesson]
+    var idx = currentLesson.materials.indexOf(uuid)
+    var goToMaterial
+    if (idx < currentLesson.materials.length - 1) {
+      goToMaterial = currentLesson.materials[idx + 1]
     } else if (idx > 0) {
-      goToQuestion = currentLesson.questions[idx - 1]
+      goToMaterial = currentLesson.materials[idx - 1]
     } else {
-      goToQuestion = null
+      goToMaterial = null
     }
 
     $.ajax({
       async: true,
-      url: API_PREFIX + 'questions/' + uuid + '/',
+      url: API_PREFIX + 'materials/' + uuid + '/',
       method: 'DELETE',
       success: function (data, status, jqXHR) {
         dispatch({
-          type: ActionTypes.DELETE_QUESTION,
-          question: uuid,
-          lesson: state.questions[uuid].lesson,
-          goToQuestion: goToQuestion
+          type: ActionTypes.DELETE_MATERIAL,
+          material: uuid,
+          lesson: state.materials[uuid].lesson,
+          goToMaterial: goToMaterial
         })
-        dispatch(loadQuestionIfNeeded(goToQuestion))
+        dispatch(loadMaterialIfNeeded(goToMaterial))
       }
     })
   }
 }
 
-export function answerLoaded (data) {
-  return {
-    type: ActionTypes.ANSWER_LOADED,
-    answer: data
-  }
-}
+// export function answerLoaded (data) {
+//   return {
+//     type: ActionTypes.ANSWER_LOADED,
+//     answer: data
+//   }
+// }
 
-export function loadAnswer (uuid) {
-  return function (dispatch) {
-    $.ajax({
-      url: API_PREFIX + 'answers/' + uuid + '/',
-      type: 'GET',
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function loadAnswer (uuid) {
+//   return function (dispatch) {
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + uuid + '/',
+//       type: 'GET',
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function changeAnswerText (uuid, newText) {
-  return function (dispatch) {
-    $.ajax({
-      url: API_PREFIX + 'answers/' + uuid + '/',
-      type: 'PATCH',
-      data: {text: newText},
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function changeAnswerText (uuid, newText) {
+//   return function (dispatch) {
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + uuid + '/',
+//       type: 'PATCH',
+//       data: {text: newText},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function changeAnswerMYSQL (uuid, schemaSQL, querySQL) {
-  return function (dispatch) {
-    $.ajax({
-      url: API_PREFIX + 'answers/' + uuid + '/',
-      type: 'PATCH',
-      data: {schema_SQL: schemaSQL, query_SQL: querySQL},
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      },
-      error: function (data) {
-        if (data.status === 400) {
-          // TODO rewrite with embededd message
-          let errorMessage = null
-          if (data.responseJSON.hasOwnProperty('schema_SQL')) {
-            errorMessage = data.responseJSON.schema_SQL
-          } else if (data.responseJSON.hasOwnProperty('query_SQL')) {
-            errorMessage = data.responseJSON.query_SQL
-          }
-          if (errorMessage) { alert(errorMessage) }
-          // reload answer due validation error
-          dispatch(loadAnswer(uuid))
-        }
-      }
-    })
-  }
-}
+// export function changeAnswerMYSQL (uuid, schemaSQL, querySQL) {
+//   return function (dispatch) {
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + uuid + '/',
+//       type: 'PATCH',
+//       data: {schema_SQL: schemaSQL, query_SQL: querySQL},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       },
+//       error: function (data) {
+//         if (data.status === 400) {
+//           // TODO rewrite with embededd message
+//           let errorMessage = null
+//           if (data.responseJSON.hasOwnProperty('schema_SQL')) {
+//             errorMessage = data.responseJSON.schema_SQL
+//           } else if (data.responseJSON.hasOwnProperty('query_SQL')) {
+//             errorMessage = data.responseJSON.query_SQL
+//           }
+//           if (errorMessage) { alert(errorMessage) }
+//           // reload answer due validation error
+//           dispatch(loadAnswer(uuid))
+//         }
+//       }
+//     })
+//   }
+// }
 
-export function changeAnswerImage (uuid, image) {
-  return dispatch => {
-    let formData
-    if (image) {
-      formData = new FormData()
-      formData.append('image', image)
+// export function changeAnswerImage (uuid, image) {
+//   return dispatch => {
+//     let formData
+//     if (image) {
+//       formData = new FormData()
+//       formData.append('image', image)
+//
+//       $.ajax({
+//         url: API_PREFIX + 'answers/' + uuid + '/',
+//         type: 'PATCH',
+//         processData: false,
+//         contentType: false,
+//         data: formData,
+//         success: function (data) {
+//           dispatch(answerLoaded(data))
+//         }
+//       })
+//     } else {
+//       formData = {'image': image}
+//       $.ajax({
+//         url: API_PREFIX + 'answers/' + uuid + '/',
+//         type: 'PATCH',
+//         data: formData,
+//         success: function (data) {
+//           dispatch(answerLoaded(data))
+//         }
+//       })
+//     }
+//   }
+// }
 
-      $.ajax({
-        url: API_PREFIX + 'answers/' + uuid + '/',
-        type: 'PATCH',
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: function (data) {
-          dispatch(answerLoaded(data))
-        }
-      })
-    } else {
-      formData = {'image': image}
-      $.ajax({
-        url: API_PREFIX + 'answers/' + uuid + '/',
-        type: 'PATCH',
-        data: formData,
-        success: function (data) {
-          dispatch(answerLoaded(data))
-        }
-      })
-    }
-  }
-}
+// export function answerAdded (answer) {
+//   return {
+//     type: ActionTypes.ANSWER_ADDED,
+//     answer: answer
+//   }
+// }
+//
+// export function addAnswer (materialUuid) {
+//   return dispatch => {
+//     $.ajax({
+//       async: true,
+//       url: API_PREFIX + 'answers/',
+//       method: 'POST',
+//       data: {text: 'New answer', material: materialUuid},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerAdded(data))
+//       }
+//     })
+//   }
+// }
 
-export function answerAdded (answer) {
-  return {
-    type: ActionTypes.ANSWER_ADDED,
-    answer: answer
-  }
-}
+// export function deleteAnswerChoice (answerUuid) {
+//   return (dispatch, getState) => {
+//     var state = getState().studio
+//     var materialUuid = state.answers[answerUuid].material
+//     dispatch({
+//       type: ActionTypes.DELETE_ANSWER,
+//       materialUuid: materialUuid,
+//       uuid: answerUuid
+//     })
+//     $.ajax({
+//       async: true,
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       method: 'DELETE',
+//       success: function (data, status, jqXHR) {
+//         //
+//       }
+//     })
+//   }
+// }
 
-export function addAnswer (questionUuid) {
-  return dispatch => {
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'answers/',
-      method: 'POST',
-      data: {text: 'New answer', question: questionUuid},
-      success: function (data, status, jqXHR) {
-        dispatch(answerAdded(data))
-      }
-    })
-  }
-}
+// export function setAnswerIsCorrect (answer, is_correct, exclusive) {
+//   return dispatch => {
+//     $.ajax({
+//       async: true,
+//       url: API_PREFIX + 'answers/' + answer + '/',
+//       method: 'PATCH',
+//       data: {is_correct: is_correct},
+//       success: function (data, status, jqXHR) {
+//         if (exclusive) {
+//           dispatch({
+//             type: ActionTypes.SET_ANSWER_EXCLUSIVELY_CORRECT,
+//             answer: answer
+//           })
+//         } else {
+//           dispatch({
+//             type: ActionTypes.SET_ANSWER_IS_CORRECT,
+//             answer: answer,
+//             is_correct: is_correct
+//           })
+//         }
+//       }
+//     })
+//   }
+// }
 
-export function deleteAnswerChoice (answerUuid) {
-  return (dispatch, getState) => {
-    var state = getState().studio
-    var questionUuid = state.answers[answerUuid].question
-    dispatch({
-      type: ActionTypes.DELETE_ANSWER,
-      questionUuid: questionUuid,
-      uuid: answerUuid
-    })
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      method: 'DELETE',
-      success: function (data, status, jqXHR) {
-        //
-      }
-    })
-  }
-}
+// export function changeAnswerRepresentation (answerUuid, newRepresentation) {
+//   return dispatch => {
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: {representation: newRepresentation},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function setAnswerIsCorrect (answer, is_correct, exclusive) {
-  return dispatch => {
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'answers/' + answer + '/',
-      method: 'PATCH',
-      data: {is_correct: is_correct},
-      success: function (data, status, jqXHR) {
-        if (exclusive) {
-          dispatch({
-            type: ActionTypes.SET_ANSWER_EXCLUSIVELY_CORRECT,
-            answer: answer
-          })
-        } else {
-          dispatch({
-            type: ActionTypes.SET_ANSWER_IS_CORRECT,
-            answer: answer,
-            is_correct: is_correct
-          })
-        }
-      }
-    })
-  }
-}
+// export function updateVectorAnswerComponents (answerUuid, x_component, y_component) {
+//   return (dispatch, getState) => {
+//     var update
+//     var ans = getState().studio.answers[answerUuid]
+//     if (ans.angle != null) {
+//       update = {
+//         angle: vectorToAngle(x_component, y_component),
+//         x_component: null,
+//         y_component: null
+//       }
+//     } else if (ans.magnitude != null) {
+//       update = {
+//         magnitude: Math.sqrt(x_component * x_component + y_component * y_component),
+//         angle: null,
+//         x_component: null,
+//         y_component: null
+//       }
+//     } else {
+//       update = {
+//         angle: null,
+//         x_component: x_component,
+//         y_component: y_component
+//       }
+//     }
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: update,
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function changeAnswerRepresentation (answerUuid, newRepresentation) {
-  return dispatch => {
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: {representation: newRepresentation},
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function updateVectorCheckType (answerUuid, newType) {
+//   return (dispatch, getState) => {
+//     var update
+//     var ans = getState().studio.answers[answerUuid]
+//     if (newType === 'angle') {
+//       update = {
+//         x_component: null,
+//         y_component: null,
+//         angle: ans.angle || vectorToAngle(ans.x_component, ans.y_component) || 0,
+//         magnitude: null
+//       }
+//     } else if (newType === 'full') {
+//       var x, y
+//       if (ans.angle != null) {
+//         [x, y] = angleToVector(ans.angle)
+//       } else {
+//         x = ans.magnitude
+//         y = 0
+//       }
+//       update = {
+//         x_component: ans.x_component || x,
+//         y_component: ans.y_component || y,
+//         angle: null,
+//         magnitude: null
+//       }
+//     } else if (newType === 'magnitude') {
+//       var magnitude = 1
+//       if (ans.x_component) {
+//         magnitude = Math.sqrt(ans.x_component * ans.x_component + ans.y_component * ans.y_component)
+//       }
+//       update = {
+//         x_component: null,
+//         y_component: null,
+//         angle: null,
+//         magnitude: magnitude
+//       }
+//     }
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: update,
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function updateVectorAnswerComponents (answerUuid, x_component, y_component) {
-  return (dispatch, getState) => {
-    var update
-    var ans = getState().studio.answers[answerUuid]
-    if (ans.angle != null) {
-      update = {
-        angle: vectorToAngle(x_component, y_component),
-        x_component: null,
-        y_component: null
-      }
-    } else if (ans.magnitude != null) {
-      update = {
-        magnitude: Math.sqrt(x_component * x_component + y_component * y_component),
-        angle: null,
-        x_component: null,
-        y_component: null
-      }
-    } else {
-      update = {
-        angle: null,
-        x_component: x_component,
-        y_component: y_component
-      }
-    }
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: update,
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function updateUnitConversionType (answerUuid, newType) {
+//   return dispatch => {
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: {'unit_conversion_type': newType},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function updateVectorCheckType (answerUuid, newType) {
-  return (dispatch, getState) => {
-    var update
-    var ans = getState().studio.answers[answerUuid]
-    if (newType === 'angle') {
-      update = {
-        x_component: null,
-        y_component: null,
-        angle: ans.angle || vectorToAngle(ans.x_component, ans.y_component) || 0,
-        magnitude: null
-      }
-    } else if (newType === 'full') {
-      var x, y
-      if (ans.angle != null) {
-        [x, y] = angleToVector(ans.angle)
-      } else {
-        x = ans.magnitude
-        y = 0
-      }
-      update = {
-        x_component: ans.x_component || x,
-        y_component: ans.y_component || y,
-        angle: null,
-        magnitude: null
-      }
-    } else if (newType === 'magnitude') {
-      var magnitude = 1
-      if (ans.x_component) {
-        magnitude = Math.sqrt(ans.x_component * ans.x_component + ans.y_component * ans.y_component)
-      }
-      update = {
-        x_component: null,
-        y_component: null,
-        angle: null,
-        magnitude: magnitude
-      }
-    }
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: update,
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function updateUnitConversionMaterialValue (answerUuid, newValue) {
+//   return dispatch => {
+//     if (!validateQuantityUnit(newValue)) {
+//       return
+//     }
+//     var quantity, unit;
+//     [quantity, unit] = splitQuantityUnit(newValue)
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: {
+//         'material_number': quantity,
+//         'material_unit': unit
+//       },
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function updateUnitConversionType (answerUuid, newType) {
-  return dispatch => {
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: {'unit_conversion_type': newType},
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function updateUnitConversionAnswerValue (answerUuid, newValue) {
+//   return dispatch => {
+//     if (!validateQuantityUnit(newValue)) {
+//       return
+//     }
+//     var quantity, unit;
+//     [quantity, unit] = splitQuantityUnit(newValue)
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: {
+//         'answer_number': quantity,
+//         'answer_unit': unit
+//       },
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function updateUnitConversionQuestionValue (answerUuid, newValue) {
-  return dispatch => {
-    if (!validateQuantityUnit(newValue)) {
-      return
-    }
-    var quantity, unit;
-    [quantity, unit] = splitQuantityUnit(newValue)
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: {
-        'question_number': quantity,
-        'question_unit': unit
-      },
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function updateUnitConversionStep (answerUuid, stepIndex, update) {
+//   return (dispatch, getState) => {
+//     for (var k in update) {
+//       if (!validateQuantityUnit(update[k])) {
+//         return
+//       }
+//       update[k] = splitQuantityUnit(update[k]).join('\\ ')
+//     }
+//     var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
+//     Object.assign(steps[stepIndex], update)
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: {'conversion_steps': JSON.stringify(steps)},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function updateUnitConversionAnswerValue (answerUuid, newValue) {
-  return dispatch => {
-    if (!validateQuantityUnit(newValue)) {
-      return
-    }
-    var quantity, unit;
-    [quantity, unit] = splitQuantityUnit(newValue)
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: {
-        'answer_number': quantity,
-        'answer_unit': unit
-      },
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function addConversionStep (answerUuid) {
+//   return (dispatch, getState) => {
+//     var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
+//     steps.push({numerator: '', denominator: ''})
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: {'conversion_steps': JSON.stringify(steps)},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function updateUnitConversionStep (answerUuid, stepIndex, update) {
-  return (dispatch, getState) => {
-    for (var k in update) {
-      if (!validateQuantityUnit(update[k])) {
-        return
-      }
-      update[k] = splitQuantityUnit(update[k]).join('\\ ')
-    }
-    var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
-    Object.assign(steps[stepIndex], update)
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: {'conversion_steps': JSON.stringify(steps)},
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function removeConversionStep (answerUuid) {
+//   return (dispatch, getState) => {
+//     var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
+//     steps.pop()
+//     $.ajax({
+//       url: API_PREFIX + 'answers/' + answerUuid + '/',
+//       type: 'PATCH',
+//       data: {'conversion_steps': JSON.stringify(steps)},
+//       success: function (data, status, jqXHR) {
+//         dispatch(answerLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function addConversionStep (answerUuid) {
-  return (dispatch, getState) => {
-    var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
-    steps.push({numerator: '', denominator: ''})
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: {'conversion_steps': JSON.stringify(steps)},
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
+// export function clearMaterialVectors (uuid) {
+//   return dispatch => {
+//     $.ajax({
+//       url: API_PREFIX + 'materials/' + uuid + '/',
+//       type: 'PATCH',
+//       data: {'vectors': '[]'},
+//       success: function (data, status, jqXHR) {
+//         dispatch(materialLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function removeConversionStep (answerUuid) {
-  return (dispatch, getState) => {
-    var steps = getState().studio.answers[answerUuid].conversion_steps.map(step => Object.assign({}, step))
-    steps.pop()
-    $.ajax({
-      url: API_PREFIX + 'answers/' + answerUuid + '/',
-      type: 'PATCH',
-      data: {'conversion_steps': JSON.stringify(steps)},
-      success: function (data, status, jqXHR) {
-        dispatch(answerLoaded(data))
-      }
-    })
-  }
-}
-
-export function clearQuestionVectors (uuid) {
-  return dispatch => {
-    $.ajax({
-      url: API_PREFIX + 'questions/' + uuid + '/',
-      type: 'PATCH',
-      data: {'vectors': '[]'},
-      success: function (data, status, jqXHR) {
-        dispatch(questionLoaded(data))
-      }
-    })
-  }
-}
-
-export function addQuestionVector (uuid, x_component, y_component) {
-  return (dispatch, getState) => {
-    var s = getState().studio
-    var vectors = s.questions[uuid].vectors.slice()
-    vectors.push({
-      x_component: x_component,
-      y_component: y_component
-    })
-    $.ajax({
-      url: API_PREFIX + 'questions/' + uuid + '/',
-      type: 'PATCH',
-      contentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-      data: JSON.stringify({'vectors': vectors}),
-      success: function (data, status, jqXHR) {
-        dispatch(questionLoaded(data))
-      }
-    })
-  }
-}
+// export function addMaterialVector (uuid, x_component, y_component) {
+//   return (dispatch, getState) => {
+//     var s = getState().studio
+//     var vectors = s.materials[uuid].vectors.slice()
+//     vectors.push({
+//       x_component: x_component,
+//       y_component: y_component
+//     })
+//     $.ajax({
+//       url: API_PREFIX + 'materials/' + uuid + '/',
+//       type: 'PATCH',
+//       contentType: 'application/json; charset=utf-8',
+//       dataType: 'json',
+//       data: JSON.stringify({'vectors': vectors}),
+//       success: function (data, status, jqXHR) {
+//         dispatch(materialLoaded(data))
+//       }
+//     })
+//   }
+// }
 
 export function foundUsersLoaded (data) {
   return {

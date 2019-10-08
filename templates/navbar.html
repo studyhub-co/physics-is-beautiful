@@ -64,6 +64,9 @@ mixpanel.init("9e791cd977fa18d9229af0e05ab31436");
 
     {# JQuery #}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    {# TODO remove getCookie/jQuery headers/settings, use js-cookie #}
+    {# see courses/static/courses/js/actions/studio.jsx for example#}
     {# csrf from cookie to headers #}
     <script src="{% static 'js/csrf.js' %}"></script>
 

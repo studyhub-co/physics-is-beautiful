@@ -12,7 +12,7 @@ import {
   addToNewCourse,
   addModule,
   addLesson,
-  addQuestion,
+  addMaterial,
   loadNavigationCourses,
   loadNavigationModule
 } from '../../../../actions/studio'
@@ -62,9 +62,9 @@ class StructureItemMenu extends React.Component {
     } else if (props.lesson) {
       baseName = 'lesson'
       uuid = props.lesson.uuid
-    } else if (props.question) {
-      baseName = 'question'
-      uuid = props.question.uuid
+    } else if (props.material) {
+      baseName = 'material'
+      uuid = props.material.uuid
     }
 
     let level = 1
@@ -140,7 +140,7 @@ class StructureItemMenu extends React.Component {
   onSelectLesson (lesson, e, event) {
     if (this.state.baseName === 'question') {
       this.setState({showSpinnerOverlay: true})
-      this.props.addQuestion(lesson.uuid, this.props.question)
+      this.props.addMaterial(lesson.uuid, this.props.question)
     }
   }
 
@@ -311,12 +311,26 @@ class StructureItemMenu extends React.Component {
 }
 
 StructureItemMenu.propTypes = {
+  uuid: PropTypes.string,
+  // fork menu based on:
   unit: PropTypes.object,
   lesson: PropTypes.object,
   module: PropTypes.object,
-  preSelectMenuItem: PropTypes.string
-  // courses: PropTypes.object,
-  // uuid: PropTypes.string
+  material: PropTypes.object,
+
+  preSelectMenuItem: PropTypes.string,
+  addMaterial: PropTypes.function,
+  addLesson: PropTypes.function,
+  addModule: PropTypes.function,
+  addUnit: PropTypes.function,
+  addToNewCourse: PropTypes.function,
+  loadNavigationCourses: PropTypes.function,
+  loadNavigationModule: PropTypes.function,
+  // navigations lists
+  courses: PropTypes.object,
+  units: PropTypes.object,
+  modules: PropTypes.object,
+  lessons: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
@@ -334,7 +348,7 @@ const mapDispatchToProps = (dispatch) => {
     addUnit: (courseUuid, unit) => dispatch(addUnit(courseUuid, unit)),
     addModule: (unitUuid, module) => dispatch(addModule(unitUuid, module)),
     addLesson: (moduleUuid, lesson) => dispatch(addLesson(moduleUuid, lesson)),
-    addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),
+    addMaterial: (lessonUuid, question) => dispatch(addMaterial(lessonUuid, question)),
     addToNewCourse: (type, value) => dispatch(addToNewCourse(type, value)),
     loadNavigationCourses: () => dispatch(loadNavigationCourses()),
     loadNavigationModule: (uuid) => dispatch(loadNavigationModule(uuid))
