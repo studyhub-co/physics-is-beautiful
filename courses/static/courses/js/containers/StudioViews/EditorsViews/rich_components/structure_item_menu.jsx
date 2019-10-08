@@ -319,18 +319,19 @@ StructureItemMenu.propTypes = {
   material: PropTypes.object,
 
   preSelectMenuItem: PropTypes.string,
-  addMaterial: PropTypes.function,
-  addLesson: PropTypes.function,
-  addModule: PropTypes.function,
-  addUnit: PropTypes.function,
-  addToNewCourse: PropTypes.function,
-  loadNavigationCourses: PropTypes.function,
-  loadNavigationModule: PropTypes.function,
+  addMaterial: PropTypes.func,
+  addLesson: PropTypes.func,
+  addModule: PropTypes.func,
+  addUnit: PropTypes.func,
+  addToNewCourse: PropTypes.func,
+  loadNavigationCourses: PropTypes.func,
+  loadNavigationModule: PropTypes.func,
   // navigations lists
-  courses: PropTypes.object,
-  units: PropTypes.object,
-  modules: PropTypes.object,
-  lessons: PropTypes.object
+  // todo check reason why it can be array
+  courses: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  units: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  modules: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  lessons: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 const mapStateToProps = (state) => {

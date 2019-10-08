@@ -24,6 +24,7 @@ export class Course extends React.Component {
   }
 
   componentDidMount () {
+    // TODO load single course
     this.props.loadCourses()
   }
 

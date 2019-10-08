@@ -86,7 +86,7 @@ class MaterialSerializer(BaseSerializer):
 
     class Meta:
         model = Material
-        fields = ['uuid', 'lesson', 'tags'
+        fields = ['uuid', 'lesson', 'tags', 'name', 'hint', 'slug'
                   # 'text', 'solution_text', 'hint', 'image', 'position', 'answer_type', 'answers', 'vectors',
                   ]
         list_serializer_class = DictSerializer
@@ -111,7 +111,11 @@ class LessonSerializer(BaseSerializer):
         validated_data['module'] = validated_data['module']['uuid']
         new_lesson = super().create(validated_data)
         # create new empty material for new lesson
-        Material.objects.create(lesson=new_lesson, author=self.context['request'].user.profile)
+        Material.objects.create(
+            lesson=new_lesson,
+            author=self.context['request'].user.profile,
+            name='New material'
+        )
         # FIXME remove Lesson Charfield
         # serializer = MaterialSerializer(
         #     data={'lesson': new_lesson}, context={'request': self.context['request']}

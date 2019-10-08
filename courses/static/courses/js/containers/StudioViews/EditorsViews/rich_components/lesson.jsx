@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col'
 import Tab from 'react-bootstrap/Tab'
 import Nav from 'react-bootstrap/Nav'
 
-import { FaTimes, FaExternalLinkAlt } from 'react-icons/fa'
+import { FaTimes, FaExternalLinkAlt, FaPlusCircle } from 'react-icons/fa'
 
 import { BASE_URL } from '../../../../utils/config'
 import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
@@ -24,7 +24,6 @@ export class Lesson extends React.Component {
     this.handleMaterialDroppedBefore = this.handleMaterialDroppedBefore.bind(this)
     this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
-    this.handleAddMaterialClick = this.handleAddMaterialClick.bind(this)
   }
 
   componentDidMount () {
@@ -54,9 +53,6 @@ export class Lesson extends React.Component {
   handleNextMaterialClick () {
     // this.props.dispatch(goToQuestion(this.props.nextQuestion))
   }
-  handleAddMaterialClick () {
-    // this.props.dispatch(addQuestion(this.props.match.params.uuid))
-  }
 
   render () {
     if (this.props.loading) {
@@ -65,6 +61,26 @@ export class Lesson extends React.Component {
 
     var materials = []
     var navItems = []
+
+    // Add material button
+    navItems.push(
+      <Nav.Item key={'add'}>
+        <Nav.Link >
+          <DockableDropTarget
+            onDrop={this.handleMaterialDroppedBefore(null, null)}
+            itemType={DragItemTypes.MATERIAL}>
+            <div
+              onClick={this.props.onAddMaterialClick}
+              className='btn btn-light btn-add'
+              style={{cursor: 'pointer'}}
+            >
+              <FaPlusCircle />
+              <br />Add material
+            </div>
+          </DockableDropTarget>
+        </Nav.Link>
+      </Nav.Item>
+    )
 
     for (var i in this.props.materials) {
       let curMaterialUuid = this.props.materials[i]
@@ -152,6 +168,7 @@ Lesson.propTypes = {
   onImageChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
+  onAddMaterialClick: PropTypes.func.isRequired,
   image: PropTypes.string,
   name: PropTypes.string,
   materials: PropTypes.array,

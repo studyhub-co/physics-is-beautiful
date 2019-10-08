@@ -5,7 +5,8 @@ import {
   renameLesson,
   changeLessonImage,
   loadLessonIfNeeded,
-  deleteLesson
+  deleteLesson,
+  addMaterial
 } from '../../../../actions/studio'
 
 const mapStateToProps = (state, ownProps) => {
@@ -39,7 +40,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onImageChange: image => dispatch(changeLessonImage(uuid, image)),
     onNameChange: name => dispatch(renameLesson(uuid, name)),
     onDeleteClick: () => dispatch(deleteLesson(uuid)),
-    loadLessonIfNeeded: () => dispatch(loadLessonIfNeeded(uuid))
+    loadLessonIfNeeded: () => dispatch(loadLessonIfNeeded(uuid)),
+    onAddMaterialClick: () => dispatch(addMaterial(uuid))
   }
 }
 

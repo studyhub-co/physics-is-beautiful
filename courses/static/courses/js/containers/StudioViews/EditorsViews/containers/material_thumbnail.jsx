@@ -8,7 +8,7 @@ const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
   var q = state.studio.materials[uuid]
   return {
-    shortText: q.text
+    shortText: q.name
   }
 }
 

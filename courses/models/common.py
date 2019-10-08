@@ -1,8 +1,10 @@
 import uuid
 
+from django.db.models import Max
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import slugify
 from django.db import models
+from django.core.validators import MinLengthValidator
 
 # from django.urls import reverse
 # from django.core import urlresolvers # django <= 1.11.20
@@ -28,9 +30,18 @@ class BaseItemModel(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_on = models.DateTimeField(auto_now_add=True)
 
-    # used to create slug
-    name = models.CharField(max_length=2048, blank=True, null=True, help_text=_('Name'))
+    # name used to create slug
+    # let's set that name is required
+    name = models.CharField(max_length=2048,
+                            blank=False,
+                            validators=[MinLengthValidator(3)],
+                            help_text=_('Name'))
     slug = models.SlugField(unique=True, max_length=1536, blank=True, null=True)
+
+    # store slug components to efficient getting last one
+    slug_prefix = models.SlugField(max_length=1536, blank=True, null=True)
+    slug_suffix = models.PositiveIntegerField(null=True)
+
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
@@ -42,29 +53,38 @@ class BaseItemModel(models.Model):
     # not sure we need this for now
     # published_on = models.DateTimeField('date published', null=True, blank=True)
 
-    def gen_slug(self, try_count=0, unique=True):
+    def gen_slug(self):
         title = self.name
         max_lengh = self.__class__._meta.get_field('slug').max_length
 
-        if try_count != 0:
-            slug = slugify("{} {}".format(title, try_count))[:max_lengh]
+        slug_prefix = slugify(title)[:max_lengh]
+
+        max_slug_suffix = self.__class__.objects.\
+            filter(slug_prefix=slug_prefix).\
+            aggregate(Max('slug_suffix'))['slug_suffix__max']
+
+        if max_slug_suffix is None:
+            # first slug
+            slug = slug_prefix
+            slug_suffix = 0
         else:
-            slug = slugify(title)[:max_lengh]
+            # last slug
+            slug = slugify("{} {}".format(title, max_slug_suffix + 1))[:max_lengh]
+            slug_suffix = max_slug_suffix + 1
 
-        if not unique:
-            return slug
-
-        try:
-            self.__class__.objects.get(slug=slug)
-        except self.__class__.DoesNotExist:
-            return slug
-        # if slug is exist
-        try_count += 1
-        return self.gen_slug(try_count)
+        return slug, slug_prefix, slug_suffix
 
     def save(self, *args, **kwargs):
         if self.name:
-            self.slug = self.gen_slug()
+            self.slug, self.slug_prefix, self.slug_suffix = self.gen_slug()
+
+        # clean name field at model level
+        # related to default Material creation. code:
+        # studio/serializers.py
+        # 'Material.objects.create(lesson=new_lesson, author=self.context['request'].user.profile)'
+        fields = [f.name for f in self._meta.fields]
+        fields.remove('name')
+        self.clean_fields(exclude=fields)
         super(BaseItemModel, self).save(*args, **kwargs)
 
 

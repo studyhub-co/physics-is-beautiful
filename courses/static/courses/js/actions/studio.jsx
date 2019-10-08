@@ -9,6 +9,7 @@ import { BASE_URL } from '../utils/config'
 // import { validateQuantityUnit, splitQuantityUnit
 // } from '../utils/units'
 
+// TODO replace all $.ajax with request
 import request from '../utils/request'
 
 const API_PREFIX = '/api/v1/studio/'
@@ -322,7 +323,7 @@ export function loadMyCourses () {
             courses: data
           }
         })
-      }
+      },
     })
   }
 }
@@ -363,6 +364,11 @@ export function loadCourses () {
       context: this,
       success: function (data, status, jqXHR) {
         dispatch(coursesLoaded(data))
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        if (xhr.status === 404) {
+          history.push(BASE_URL + '404')
+        }
       }
     })
   }
@@ -585,6 +591,11 @@ function loadCourse (uuid, dispatch) {
     url: API_PREFIX + 'courses/' + uuid + '/',
     success: function (data, status, jqXHR) {
       dispatch(courseLoaded(data))
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      if (xhr.status === 404) {
+        history.push(BASE_URL + '404')
+      }
     }
   })
 }
@@ -777,7 +788,7 @@ export function addToNewCourse (type, value) {
                           history.push(BASE_URL + 'studio/editor/lessons/' + data.uuid + '/')
                         } else {
                           // add material
-                          var materialData = {text: 'New material', lesson: data.uuid}
+                          var materialData = {name: 'New material', lesson: data.uuid}
 
                           if (type === 'material') {
                             // material prototype
@@ -1032,6 +1043,11 @@ export function loadModuleIfNeeded (uuid) {
         url: API_PREFIX + 'modules/' + uuid + '/',
         success: function (data, status, jqXHR) {
           dispatch(moduleLoaded(data))
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          if (xhr.status === 404) {
+            history.push(BASE_URL + '404')
+          }
         }
       })
     }
@@ -1095,27 +1111,19 @@ export function loadLessonIfNeeded (uuid) {
         success: function (data, status, jqXHR) {
           dispatch(lessonLoaded(data))
           if (data.materials.length > 0) {
-            dispatch(loadMaterialIfNeeded(data.materials[0])) // WHAT is this?
+            // load first material
+            dispatch(loadMaterialIfNeeded(data.materials[0]))
+          }
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          if (xhr.status === 404) {
+            history.push(BASE_URL + '404')
           }
         }
       })
     } else {
       dispatch(lessonAvailable(getState().studio.lessons[uuid]))
     }
-  }
-}
-
-export function loadLesson (uuid) {
-  return (dispatch, getState) => {
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'lessons/' + uuid + '/',
-      success: function (data, status, jqXHR) {
-        dispatch(lessonLoaded(data))
-        if (data.materials.length > 0) {
-          dispatch(loadMaterialIfNeeded(data.materials[0])) // WHAT is this?
-        }
-      }})
   }
 }
 
@@ -1149,31 +1157,31 @@ export function changeLessonImage (uuid, image) {
   }
 }
 
-export function changeLessonType (uuid, newType) {
-  return function (dispatch) {
-    $.ajax({
-      url: API_PREFIX + 'lessons/' + uuid + '/',
-      type: 'PATCH',
-      data: {lesson_type: newType},
-      success: function (data, status, jqXHR) {
-        dispatch(lessonLoaded(data))
-      }
-    })
-  }
-}
+// export function changeLessonType (uuid, newType) {
+//   return function (dispatch) {
+//     $.ajax({
+//       url: API_PREFIX + 'lessons/' + uuid + '/',
+//       type: 'PATCH',
+//       data: {lesson_type: newType},
+//       success: function (data, status, jqXHR) {
+//         dispatch(lessonLoaded(data))
+//       }
+//     })
+//   }
+// }
 
-export function changeLessonGameType (uuid, newType) {
-  return function (dispatch) {
-    $.ajax({
-      url: API_PREFIX + 'lessons/' + uuid + '/',
-      type: 'PATCH',
-      data: {game_type: newType},
-      success: function (data, status, jqXHR) {
-        dispatch(lessonLoaded(data))
-      }
-    })
-  }
-}
+// export function changeLessonGameType (uuid, newType) {
+//   return function (dispatch) {
+//     $.ajax({
+//       url: API_PREFIX + 'lessons/' + uuid + '/',
+//       type: 'PATCH',
+//       data: {game_type: newType},
+//       success: function (data, status, jqXHR) {
+//         dispatch(lessonLoaded(data))
+//       }
+//     })
+//   }
+// }
 
 export function moveLesson (uuid, toModuleUuid, beforeLessonUuid) {
   return (dispatch, getState) => {
@@ -1345,7 +1353,7 @@ export function goToMaterial (uuid) {
 }
 
 export function addMaterial (lesson, material) {
-  var data = {text: 'New material', lesson: lesson}
+  var data = {name: 'New material', lesson: lesson}
   if (material) {
     data['prototype'] = material.uuid
   }
