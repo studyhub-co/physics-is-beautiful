@@ -61,13 +61,13 @@ class BrowseStudioDashboard extends React.Component {
       toEditCourseUuid: uuid,
       showEditCourseProfile: !this.state.showEditCourseProfile
     })
-    history.push(BASE_URL + '/studio/profile/' + uuid + '/')
+    history.push(BASE_URL + 'studio/profile/' + uuid + '/')
   }
 
   onDeleteCourseClick (uuid) {
     if (confirm('Are you sure you want to delete this course?')) { // TODO we can use Modal from react bootstrap if needed
       this.props.deleteCourse(uuid)
-      history.push(BASE_URL + '/studio/')
+      history.push(BASE_URL + 'studio/')
     }
   }
 
@@ -90,7 +90,7 @@ class BrowseStudioDashboard extends React.Component {
           </TabContent>
           <TabContent for='studio'>
             {this.state.showEditCourseProfile
-              ? <Route path={BASE_URL + '/studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
+              ? <Route path={BASE_URL + 'studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
               : <div>
                 <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit

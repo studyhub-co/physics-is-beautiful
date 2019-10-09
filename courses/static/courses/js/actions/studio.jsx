@@ -1076,8 +1076,7 @@ export function addLesson (moduleUuid, lesson) {
         dispatch({
           type: ActionTypes.LESSON_ADDED,
           lesson: data,
-          materials: materials,
-          answers: extractAll(materials, 'answers')
+          materials: materials
         })
         history.push(BASE_URL + 'studio/editor/lessons/' + data.uuid + '/')
       }
@@ -1091,7 +1090,6 @@ export function lessonLoaded (data) {
     type: ActionTypes.LESSON_LOADED,
     lesson: data,
     materials: materials,
-    answers: extractAll(materials, 'answers')
   }
 }
 
@@ -1258,12 +1256,12 @@ export function loadMaterialIfNeeded (uuid) {
   }
 }
 
-export function changeMaterialText (uuid, newText) {
+export function changeMaterialName (uuid, newText) {
   return function (dispatch) {
     $.ajax({
       url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
-      data: {text: newText},
+      data: {name: newText},
       success: function (data, status, jqXHR) {
         dispatch(materialLoaded(data))
       }
@@ -1284,33 +1282,26 @@ export function changeMaterialSolutionText (uuid, newSolutionText) {
   }
 }
 
-export function preserveAnswers (materialUuid) {
-  return {
-    type: ActionTypes.PRESERVE_ANSWERS,
-    material: materialUuid
-  }
-}
-
-export function changeMaterialType (uuid, newType) {
-  return function (dispatch, getState) {
-    var state = getState().studio
-    // var oldAnswerIds
-    var data = {answer_type: newType}
-    if (state.preservedAnswers[uuid]) {
-      data['answers'] = JSON.stringify(state.preservedAnswers[uuid][newType])
-    }
-
-    dispatch(preserveAnswers(uuid))
-    $.ajax({
-      url: API_PREFIX + 'materials/' + uuid + '/',
-      type: 'PATCH',
-      data: data,
-      success: function (data, status, jqXHR) {
-        dispatch(materialLoaded(data))
-      }
-    })
-  }
-}
+// export function changeMaterialType (uuid, newType) {
+//   return function (dispatch, getState) {
+//     var state = getState().studio
+//     // var oldAnswerIds
+//     var data = {answer_type: newType}
+//     if (state.preservedAnswers[uuid]) {
+//       data['answers'] = JSON.stringify(state.preservedAnswers[uuid][newType])
+//     }
+//
+//     dispatch(preserveAnswers(uuid))
+//     $.ajax({
+//       url: API_PREFIX + 'materials/' + uuid + '/',
+//       type: 'PATCH',
+//       data: data,
+//       success: function (data, status, jqXHR) {
+//         dispatch(materialLoaded(data))
+//       }
+//     })
+//   }
+// }
 
 // export function changeMaterialImage (uuid, image) {
 //   return dispatch => {

@@ -4,7 +4,7 @@ import { FaGripHorizontal, FaGripLines } from 'react-icons/fa'
 import { DragSource } from 'react-dnd'
 
 import { Thumbnail } from '../components/thumbnail'
-import { DragItemTypes } from '../components/dnd'
+import { DragItemTypes } from '../../../../dnd'
 import StructureItemMenu from '../rich_components/structure_item_menu'
 
 export const moduleDragSource = {

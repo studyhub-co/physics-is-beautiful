@@ -143,7 +143,17 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
 .lesson-questions .drop-target .dock-site { display:none; }
 .lesson-questions .drop-target.drag-over { padding-left:120px; }
 
-.question-thumbnail { background:#FCFCFC; border:1px solid #DDD; border-radius:5px; margin:5px; padding:0 5px; height:65px; max-width:120px; cursor:pointer;}
+.question-thumbnail {
+    background: #FCFCFC;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 0 5px;
+    height: 5rem;
+    width: 15rem;
+    max-width: 15rem;
+    cursor: pointer;
+}
 .question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}
 .question-thumbnail.selected { background: #f0fafe; border:1px solid #9fddfb; }
 .question-thumbnail .btn-delete { position:absolute; right:-7px; top:-7px; cursor:pointer; }

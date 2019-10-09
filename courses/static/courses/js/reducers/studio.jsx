@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 
-import { LOCATION_CHANGE } from 'react-router-redux'
+// import { LOCATION_CHANGE } from 'react-router-redux'
 import { ActionTypes } from '../actions/studio'
 
 function courses (state = {}, action) {
@@ -176,6 +176,7 @@ function materials (state = {}, action) {
 function currentMaterial (state = null, action) {
   switch (action.type) {
     case ActionTypes.LESSON_LOADED:
+    case ActionTypes.LESSON_ADDED:
     case ActionTypes.LESSON_AVAILABLE:
       if (action.lesson.materials.length > 0) return action.lesson.materials[0]
       else return null
@@ -185,8 +186,8 @@ function currentMaterial (state = null, action) {
       return action.material.uuid
     case ActionTypes.DELETE_MATERIAL:
       return action.goToMaterial
-    case LOCATION_CHANGE:
-      return null
+    // case LOCATION_CHANGE:
+    //   return null
     default:
       return state
   }

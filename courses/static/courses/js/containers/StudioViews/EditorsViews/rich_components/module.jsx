@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
-import { LessonThumbnailContainer } from '../containers/lesson_thumbnail'
+import LessonThumbnailContainer from '../containers/lesson_thumbnail'
 import { BASE_URL } from '../../../../utils/config'
 import { EditableThumbnail } from '../components/thumbnail'
 import { EditableLabel } from '../components/label'
 import { BackButton } from '../components/back_button'
-import { DockableDropTarget, DragItemTypes } from '../components/dnd'
+import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 import { tagDelimiters } from '../../../../utils'
 
 export class Module extends React.Component {
@@ -30,7 +30,7 @@ export class Module extends React.Component {
   }
 
   componentDidMount () {
-    this.props.loadModuleIfNeeded(this.props.match.params.uuid)
+    this.props.loadModuleIfNeeded(this.props.uuid)
   }
 
   handleDeleteClick (e) {
@@ -119,6 +119,7 @@ export class Module extends React.Component {
 }
 
 Module.propTypes = {
+  uuid: PropTypes.string.isRequired,
   loadModuleIfNeeded: PropTypes.func.isRequired,
   onAddLessonClick: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,

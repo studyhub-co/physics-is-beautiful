@@ -15,7 +15,8 @@ import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 import { EditableThumbnail } from '../components/thumbnail'
 import { EditableLabel } from '../components/label'
 import { BackButton } from '../components/back_button'
-import { MaterialThumbnailContainer } from '../containers/material_thumbnail'
+import MaterialThumbnailContainer from '../containers/material_thumbnail'
+import MaterialContainer from '../containers/material'
 
 export class Lesson extends React.Component {
   constructor (props) {
@@ -27,7 +28,7 @@ export class Lesson extends React.Component {
   }
 
   componentDidMount () {
-    this.props.loadLessonIfNeeded(this.props.match.params.uuid)
+    this.props.loadLessonIfNeeded(this.props.uuid)
   }
 
   handleDeleteClick (e) {
@@ -59,23 +60,28 @@ export class Lesson extends React.Component {
       return <div>Loading...</div>
     }
 
-    var materials = []
+    var materialsItems = []
     var navItems = []
 
     // Add material button
     navItems.push(
       <Nav.Item key={'add'}>
-        <Nav.Link >
+        <Nav.Link>
           <DockableDropTarget
             onDrop={this.handleMaterialDroppedBefore(null, null)}
             itemType={DragItemTypes.MATERIAL}>
-            <div
-              onClick={this.props.onAddMaterialClick}
-              className='btn btn-light btn-add'
-              style={{cursor: 'pointer'}}
-            >
-              <FaPlusCircle />
-              <br />Add material
+            <div className={'question-thumbnail draggable'}>
+              <div
+                onClick={this.props.onAddMaterialClick}
+                className='btn btn-light btn-add'
+                style={{cursor: 'pointer',
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                <FaPlusCircle />
+                <br />Add material
+              </div>
             </div>
           </DockableDropTarget>
         </Nav.Link>
@@ -85,8 +91,10 @@ export class Lesson extends React.Component {
     for (var i in this.props.materials) {
       let curMaterialUuid = this.props.materials[i]
 
-      materials.push(
-
+      materialsItems.push(
+        <Tab.Pane key={curMaterialUuid} eventKey={curMaterialUuid}>
+          <MaterialContainer uuid={this.props.currentMaterial} />
+        </Tab.Pane>
       )
 
       navItems.push(
@@ -137,21 +145,19 @@ export class Lesson extends React.Component {
           </Col>
         </Row>
         <hr />
-        <Tab.Container defaultActiveKey='first'>
+        <Tab.Container defaultActiveKey={this.props.currentMaterial}>
           <Row>
             <Col sm={3}>
-              <Nav className='flex-column'>
+              <Nav
+                style={{ overflowY: 'auto',
+                  maxHeight: '70vh' }}
+              >
                 {navItems}
               </Nav>
             </Col>
             <Col sm={9}>
               <Tab.Content>
-                <Tab.Pane eventKey='first'>
-                  fgsdfgsfdgsdfgsdgf
-                </Tab.Pane>
-                <Tab.Pane eventKey='second'>
-                  354123453245324523452
-                </Tab.Pane>
+                {materialsItems}
               </Tab.Content>
             </Col>
           </Row>
@@ -162,7 +168,7 @@ export class Lesson extends React.Component {
 }
 
 Lesson.propTypes = {
-  uuid: PropTypes.string,
+  uuid: PropTypes.string.isRequired,
   currentMaterial: PropTypes.string,
   loadLessonIfNeeded: PropTypes.func.isRequired,
   onImageChange: PropTypes.func.isRequired,

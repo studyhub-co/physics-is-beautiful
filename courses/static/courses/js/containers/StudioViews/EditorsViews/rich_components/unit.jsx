@@ -7,7 +7,7 @@ import { WithOutContext as ReactTags } from 'react-tag-input'
 
 import { EditableLabel } from '../components/label'
 import { EditableThumbnail } from '../components/thumbnail'
-import {ModuleThumbnailContainer} from '../containers/module_thumbnail'
+import ModuleThumbnailContainer from '../containers/module_thumbnail'
 import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 import { tagDelimiters } from '../../../../utils'
 

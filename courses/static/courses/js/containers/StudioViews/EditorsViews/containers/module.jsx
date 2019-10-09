@@ -15,17 +15,23 @@ import {
 
 const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
-  const mod = state.studio.modules[uuid]
-  if (mod) {
+  const module = state.studio.modules[uuid]
+  if (module) {
     return {
+      uuid: uuid,
       loading: false,
-      name: mod.name,
-      tags: mod.tags,
-      image: mod.image,
-      lessons: mod.lessons || [],
-      course: mod.course
+      name: module.name,
+      tags: module.tags,
+      image: module.image,
+      lessons: module.lessons || [],
+      course: module.course
     }
-  } else { return {loading: true} }
+  } else {
+    return {
+      loading: true,
+      uuid: uuid
+    }
+  }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {

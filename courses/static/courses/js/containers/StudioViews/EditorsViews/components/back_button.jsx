@@ -3,7 +3,7 @@ import React from 'react'
 import { FaChevronLeft } from 'react-icons/fa'
 
 import history from '../../../../history'
-import { DragHoverable, DragItemTypes } from './dnd'
+import { DragHoverable, DragItemTypes } from '../../../../dnd'
 
 export class BackButton extends React.Component {
   constructor (props) {

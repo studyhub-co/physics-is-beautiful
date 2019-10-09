@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-export const ModuleThumbnailContainer = connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
   DropTarget(DragItemTypes.LESSON,
     {drop: function (props, monitor) {
       props.onLessonDrop(monitor.getItem().uuid)

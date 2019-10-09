@@ -22,6 +22,7 @@ const mapStateToProps = (state, ownProps) => {
     }
 
     return {
+      uuid: uuid,
       loading: false,
       name: lesson.name,
       image: lesson.image,
@@ -31,7 +32,12 @@ const mapStateToProps = (state, ownProps) => {
       nextMaterial: nextMaterial,
       currentMaterial: state.studio.currentMaterial
     }
-  } else { return { loading: true } }
+  } else {
+    return {
+      loading: true,
+      uuid: uuid
+    }
+  }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {

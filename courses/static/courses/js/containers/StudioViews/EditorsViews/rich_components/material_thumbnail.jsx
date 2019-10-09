@@ -8,7 +8,7 @@ import { DragItemTypes } from '../../../../dnd'
 
 export const dragSource = {
   beginDrag (props) {
-    return { uuid: props.studio.uuid }
+    return { uuid: props.uuid }
   }
 }
 

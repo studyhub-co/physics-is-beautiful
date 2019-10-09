@@ -41,7 +41,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-export const UnitContainer = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Unit)

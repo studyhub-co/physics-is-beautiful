@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { RingLoader } from 'react-spinners'
 import PropTypes from 'prop-types'
+import { RingLoader } from 'react-spinners'
 import { connect } from 'react-redux'
 import { Dropdown, Image } from 'react-bootstrap'
 import { FaGraduationCap, FaCodeBranch, FaPlus } from 'react-icons/fa'

@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-export const MaterialThumbnailContainer = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(MaterialThumbnail)

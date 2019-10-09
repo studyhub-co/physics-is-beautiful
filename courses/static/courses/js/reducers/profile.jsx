@@ -5,7 +5,7 @@ import {
 const initialState = {
 }
 
-export default function profile(state = initialState, action) {
+export default function profile (state = initialState, action) {
   switch (action.type) {
     case PROFILE_RECEIVE_ME:
       return Object.assign({}, state, {
