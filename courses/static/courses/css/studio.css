@@ -139,9 +139,18 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
 .lesson-editor .lesson h1 { display:inline-block; margin-right:20px; font-size:36px;}
 .lesson-editor .lesson label { margin:0 10px; }
 
-.lesson-questions .drop-target{ display:inline-block; vertical-align:top;}
-.lesson-questions .drop-target .dock-site { display:none; }
-.lesson-questions .drop-target.drag-over { padding-left:120px; }
+.editor .lesson-nav-materials .drop-target {
+    display:inline-block; vertical-align:top;
+}
+.editor .lesson-nav-materials .drop-target .dock-site {
+    display:none;
+}
+.editor .lesson-nav-materials .drop-target.drag-over {
+  border-top: 0.3rem solid rgba(101, 179, 255, 0);
+  border-left-width: 0;
+  border-right-width: 0;
+  border-image: linear-gradient(to right, #9fddfb, #bceaff, white 90%) 1 stretch;
+}
 
 .question-thumbnail {
     background: #FCFCFC;
@@ -150,8 +159,9 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
     margin: 5px;
     padding: 0 5px;
     height: 5rem;
-    width: 15rem;
-    max-width: 15rem;
+    max-width: 90%;
+    /*width: 15rem;*/
+    /*max-width: 15rem;*/
     cursor: pointer;
 }
 .question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}

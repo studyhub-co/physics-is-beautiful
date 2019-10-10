@@ -1374,6 +1374,9 @@ export function addMaterial (lesson, material) {
 
 export function moveMaterial (uuid, beforeUuid) {
   return (dispatch, getState) => {
+    
+    console.log(beforeUuid);
+    
     var state = getState().studio
     var lessonUuid = state.materials[uuid].lesson
     var newPosition

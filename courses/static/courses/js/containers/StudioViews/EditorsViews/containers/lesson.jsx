@@ -6,7 +6,8 @@ import {
   changeLessonImage,
   loadLessonIfNeeded,
   deleteLesson,
-  addMaterial
+  addMaterial,
+  moveMaterial
 } from '../../../../actions/studio'
 
 const mapStateToProps = (state, ownProps) => {
@@ -15,7 +16,7 @@ const mapStateToProps = (state, ownProps) => {
   if (lesson) {
     let previousMaterial, nextMaterial
 
-    if (state.studio.currentMaterial) {
+    if (state.studio.currentMaterial && lesson.materials) {
       const idx = lesson.materials.indexOf(state.studio.currentMaterial)
       if (idx > 0) { previousMaterial = lesson.materials[idx - 1] }
       if (idx < lesson.materials.length - 1) { nextMaterial = lesson.materials[idx + 1] }
@@ -47,7 +48,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onNameChange: name => dispatch(renameLesson(uuid, name)),
     onDeleteClick: () => dispatch(deleteLesson(uuid)),
     loadLessonIfNeeded: () => dispatch(loadLessonIfNeeded(uuid)),
-    onAddMaterialClick: () => dispatch(addMaterial(uuid))
+    onAddMaterialClick: () => dispatch(addMaterial(uuid)),
+    moveMaterial: (materialUuid, materialBeforeUuid) => dispatch(moveMaterial(materialUuid, materialBeforeUuid))
   }
 }
 

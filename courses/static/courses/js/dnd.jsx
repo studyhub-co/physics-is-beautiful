@@ -10,7 +10,9 @@ export const DragItemTypes = {
 
 class DockableDropTarget extends React.Component {
   render () {
-    let dockSite, isOver = this.props.dragOver && this.props.itemOver.uuid != this.props.selfUuid
+    let dockSite, isOver =
+      this.props.dragOver && this.props.itemOver.uuid !== this.props.selfUuid
+
     if (isOver) {
       dockSite = <div className='dock-site'></div>
     }

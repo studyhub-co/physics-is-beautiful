@@ -39,7 +39,7 @@ class MaterialThumbnailComponent extends React.Component {
           'question-thumbnail draggable' +
           (this.props.selected ? ' selected' : '')
         }
-        style={{ display: this.props.isDragging ? 'none' : 'inline-block' }}
+        style={{ display: this.props.isDragging ? 'none' : 'block' }}
         onClick={this.props.onClick}
       >
         <div className='question-thumbnail-inner'>

@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Tab from 'react-bootstrap/Tab'
-import Nav from 'react-bootstrap/Nav'
+import ListGroup from 'react-bootstrap/ListGroup'
 
 import { FaTimes, FaExternalLinkAlt, FaPlusCircle } from 'react-icons/fa'
 
@@ -23,8 +23,8 @@ export class Lesson extends React.Component {
     super(props)
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleMaterialDroppedBefore = this.handleMaterialDroppedBefore.bind(this)
-    this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
-    this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
+    // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
+    // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
   }
 
   componentDidMount () {
@@ -44,72 +44,37 @@ export class Lesson extends React.Component {
     }
   }
 
-  handleMaterialDroppedBefore (beforeMaterialUuid, material) {
-    // this.props.dispatch(moveQuestion(question.uuid, beforeQuestionUuid))
+  handleMaterialDroppedBefore (maaterialUuid, beforeMaterialUuid) {
+    this.props.moveMaterial(maaterialUuid, beforeMaterialUuid)
   }
 
-  handlePreviousMaterialClick () {
-    // this.props.dispatch(goToQuestion(this.props.previousQuestion))
-  }
-  handleNextMaterialClick () {
-    // this.props.dispatch(goToQuestion(this.props.nextQuestion))
-  }
+  // handlePreviousMaterialClick () {
+  //   // this.props.dispatch(goToQuestion(this.props.previousQuestion))
+  // }
+  // handleNextMaterialClick () {
+  //   // this.props.dispatch(goToQuestion(this.props.nextQuestion))
+  // }
 
   render () {
     if (this.props.loading) {
       return <div>Loading...</div>
     }
 
-    var materialsItems = []
-    var navItems = []
-
-    // Add material button
-    navItems.push(
-      <Nav.Item key={'add'}>
-        <Nav.Link>
-          <DockableDropTarget
-            onDrop={this.handleMaterialDroppedBefore(null, null)}
-            itemType={DragItemTypes.MATERIAL}>
-            <div className={'question-thumbnail draggable'}>
-              <div
-                onClick={this.props.onAddMaterialClick}
-                className='btn btn-light btn-add'
-                style={{cursor: 'pointer',
-                  width: '100%',
-                  height: '100%'
-                }}
-              >
-                <FaPlusCircle />
-                <br />Add material
-              </div>
-            </div>
-          </DockableDropTarget>
-        </Nav.Link>
-      </Nav.Item>
-    )
+    var navMaterials = []
 
     for (var i in this.props.materials) {
       let curMaterialUuid = this.props.materials[i]
 
-      materialsItems.push(
-        <Tab.Pane key={curMaterialUuid} eventKey={curMaterialUuid}>
-          <MaterialContainer uuid={this.props.currentMaterial} />
-        </Tab.Pane>
-      )
-
-      navItems.push(
-        <Nav.Item key={curMaterialUuid}>
-          <Nav.Link eventKey={curMaterialUuid}>
-            <DockableDropTarget
-              key={curMaterialUuid}
-              onDrop={this.handleMaterialDroppedBefore(null, curMaterialUuid)}
-              itemType={DragItemTypes.MATERIAL} selfUuid={curMaterialUuid}>
-              <MaterialThumbnailContainer
-                key={curMaterialUuid} uuid={curMaterialUuid}
-                selected={this.props.currentMaterial === curMaterialUuid} />
-            </DockableDropTarget>
-          </Nav.Link>
-        </Nav.Item>
+      navMaterials.push(
+        <DockableDropTarget
+          key={curMaterialUuid}
+          onDrop={(dropSource) =>
+            this.handleMaterialDroppedBefore(dropSource.uuid, curMaterialUuid)}
+          itemType={DragItemTypes.MATERIAL} selfUuid={curMaterialUuid}>
+          <MaterialThumbnailContainer
+            key={curMaterialUuid} uuid={curMaterialUuid}
+            selected={this.props.currentMaterial === curMaterialUuid} />
+        </DockableDropTarget>
       )
     }
 
@@ -145,20 +110,37 @@ export class Lesson extends React.Component {
           </Col>
         </Row>
         <hr />
-        <Tab.Container defaultActiveKey={this.props.currentMaterial}>
+        <Tab.Container
+          defaultActiveKey={this.props.currentMaterial}>
           <Row>
             <Col sm={3}>
-              <Nav
-                style={{ overflowY: 'auto',
-                  maxHeight: '70vh' }}
+              <ListGroup
+                style={{ overflowY: 'auto', maxHeight: '70vh' }}
+                className={'lesson-nav-materials'}
               >
-                {navItems}
-              </Nav>
+                <DockableDropTarget
+                  onDrop={(dropSource) =>
+                    this.handleMaterialDroppedBefore(dropSource.uuid, null)}
+                  itemType={DragItemTypes.MATERIAL}>
+                  <div className={'question-thumbnail draggable'}>
+                    <div
+                      onClick={this.props.onAddMaterialClick}
+                      className='btn btn-light btn-add'
+                      style={{cursor: 'pointer',
+                        width: '100%',
+                        height: '100%'
+                      }}
+                    >
+                      <FaPlusCircle />
+                      <br />Add material
+                    </div>
+                  </div>
+                </DockableDropTarget>
+                {navMaterials}
+              </ListGroup>
             </Col>
             <Col sm={9}>
-              <Tab.Content>
-                {materialsItems}
-              </Tab.Content>
+              <MaterialContainer uuid={this.props.currentMaterial} />
             </Col>
           </Row>
         </Tab.Container>
@@ -175,6 +157,7 @@ Lesson.propTypes = {
   onNameChange: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   onAddMaterialClick: PropTypes.func.isRequired,
+  moveMaterial: PropTypes.func.isRequired,
   image: PropTypes.string,
   name: PropTypes.string,
   materials: PropTypes.array,

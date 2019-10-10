@@ -1,7 +1,29 @@
-import EditCourseView from './containers/course'
-import EditModuleView from './containers/module'
-import EditLessonView from './containers/lesson'
+import React from 'react'
 
-export {
-  EditCourseView, EditModuleView, EditLessonView
+import EditCourseView1 from './containers/course'
+import EditModuleView1 from './containers/module'
+import EditLessonView1 from './containers/lesson'
+
+export class EditCourseView extends React.Component {
+  render () {
+    return (<div className={'editor'}>
+      <EditCourseView1 {...this.props} />
+    </div>)
+  }
+}
+
+export class EditModuleView extends React.Component {
+  render () {
+    return (<div className={'editor'}>
+      <EditModuleView1 {...this.props} />
+    </div>)
+  }
+}
+
+export class EditLessonView extends React.Component {
+  render () {
+    return (<div className={'editor'}>
+      <EditLessonView1 {...this.props} />
+    </div>)
+  }
 }

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import ReactMde from 'react-mde'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Fade from 'react-bootstrap/Fade'
 
 // import Showdown from 'showdown'
 import { FaChevronLeft, FaPen, FaCodeBranch } from 'react-icons/fa'
@@ -47,7 +48,8 @@ export class Material extends React.Component {
       showSolutionEditor: false,
       solutionText: props.solution_text || '',
       mdeTab: 'write',
-      tags: tags
+      tags: tags,
+      fadeOut: false
     }
   }
 
@@ -86,6 +88,7 @@ export class Material extends React.Component {
   componentDidMount () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
+    this.setState({fadeOut: true})
   }
   componentDidUpdate () {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
@@ -93,6 +96,13 @@ export class Material extends React.Component {
   }
 
   componentWillReceiveProps (nextProps, nextContext) {
+    if (this.props.uuid !== nextProps.uuid) {
+      this.setState({ fadeOut: false }, () => {
+        setTimeout(() => {
+          this.setState({ fadeOut: true })
+        }, 300)
+      })
+    }
     // if (nextProps.solution_text !== this.state.solution_text) {
     //   if (nextProps.solution_text === null) {
     //     this.setState({ solutionText: '' })
@@ -103,12 +113,12 @@ export class Material extends React.Component {
   }
 
   componentWillUpdate (nextProps, nextState, nextContext) {
-    // if (nextProps.tags && nextProps.tags !== this.props.tags) {
-    //   const tags = nextProps.tags.map((tag) => {
-    //     return {id: tag, text: tag}
-    //   })
-    //   this.setState({tags: tags})
-    // }
+    if (nextProps.tags && nextProps.tags !== this.props.tags) {
+      const tags = nextProps.tags.map((tag) => {
+        return {id: tag, text: tag}
+      })
+      this.setState({tags: tags})
+    }
   }
 
   render () {
@@ -133,60 +143,62 @@ export class Material extends React.Component {
     </div>
 
     return (
-      <div className='question'>
-        <div className='row' style={{paddingLeft: '1rem'}}>
-          <ReactTags
-            tags={this.state.tags}
-            placeholder={'Add new material tag'}
-            // suggestions={suggestions}
-            inputFieldPosition='inline'
-            handleDelete={this.handleTagDelete}
-            handleAddition={this.handleTagAddition}
-            allowDragDrop={Boolean(false)}
-            delimiters={tagDelimiters} />
-        </div>
-        {this.state.showSolutionEditor
-          ? solutionEditor
-          : <div>
-            <div className={'curriculum-title'} style={{textAlign: 'right'}}>
-              <div><FaPen /> <a
-                style={{cursor: 'pointer'}}
-                onClick={this.handleShowSolutionEditor}
-              >Edit solution</a></div>
-              <div><FaCodeBranch />
-                <StructureItemMenu preSelectMenuItem={'fork'} material={{uuid: this.props.uuid}}>
+      <Fade in={this.state.fadeOut}>
+        <div className='question'>
+          <div className='row' style={{paddingLeft: '1rem'}}>
+            <ReactTags
+              tags={this.state.tags}
+              placeholder={'Add new material tag'}
+              // suggestions={suggestions}
+              inputFieldPosition='inline'
+              handleDelete={this.handleTagDelete}
+              handleAddition={this.handleTagAddition}
+              allowDragDrop={Boolean(false)}
+              delimiters={tagDelimiters} />
+          </div>
+          {this.state.showSolutionEditor
+            ? solutionEditor
+            : <div>
+              <div className={'curriculum-title'} style={{textAlign: 'right'}}>
+                <div><FaPen /> <a
+                  style={{cursor: 'pointer'}}
+                  onClick={this.handleShowSolutionEditor}
+                >Edit solution</a></div>
+                <div><FaCodeBranch />
+                  <StructureItemMenu preSelectMenuItem={'fork'} material={{uuid: this.props.uuid}}>
                   Fork this problem
-                </StructureItemMenu>
-              </div>
-            </div>
-            <Row>
-              <Col md={12} className='text-center'>
-                <div className='bounding-box'>
-                  <EditableLabel
-                    value={this.props.name}
-                    onChange={this.props.onNameChange}
-                    type={'textarea'}
-                    defaultValue='New material'
-                  />
-                  <br />
-                  <h1>this is place for user material (data) editor</h1>
-                  <br />
-              Hint:{' '}
-                  <EditableLabel
-                    value={this.props.hint}
-                    onChange={this.props.onHintChange}
-                  />
+                  </StructureItemMenu>
                 </div>
-              </Col>
-            </Row>
-          </div>}
-      </div>
+              </div>
+              <Row>
+                <Col md={12} className='text-center'>
+                  <div className='bounding-box'>
+                    <EditableLabel
+                      value={this.props.name}
+                      onChange={this.props.onNameChange}
+                      type={'textarea'}
+                      defaultValue='New material'
+                    />
+                    <br />
+                    <h1>this is place for user material (data) editor</h1>
+                    <br />
+              Hint:{' '}
+                    <EditableLabel
+                      value={this.props.hint}
+                      onChange={this.props.onHintChange}
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </div>}
+        </div>
+      </Fade>
     )
   }
 }
 
 Material.propTypes = {
-  uuid: PropTypes.string.isRequired,
+  uuid: PropTypes.string, // .isRequired
   name: PropTypes.string,
   onNameChange: PropTypes.func.isRequired,
   onAddTag: PropTypes.func.isRequired,
