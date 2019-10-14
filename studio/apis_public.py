@@ -38,7 +38,7 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
                 else:
                     user = None
 
-                queryset = queryset.filter(course_user_dashboard__profile__user=user)
+                queryset = queryset.filter(courses_user_dashboard__profile__user=user)
         return queryset
 
 

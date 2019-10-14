@@ -75,6 +75,7 @@ class BrowseStudioDashboard extends React.Component {
     return (
       <Tabs
         name='tab'
+        id='browse-app'
         className='tabs'
         handleSelect={this.handleTabUserChange}
         selectedTab={this.props.tab}

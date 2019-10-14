@@ -1,14 +1,13 @@
 import React from 'react'
 
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Col, Image, Row } from 'react-bootstrap'
 
 import ThumbnailMenu from './thumbnail_menu'
-import { DEFAULT_MATHJAX_OPTIONS } from '../label'
+import { DEFAULT_MATHJAX_OPTIONS } from '../../../components/label'
 
-export class QuestionThumbnailPublic extends React.Component {
+export class MaterialThumbnailPublic extends React.Component {
   // constructor (props, context) {
   //   super(props, context)
   // }
@@ -30,30 +29,25 @@ export class QuestionThumbnailPublic extends React.Component {
             md={2}
           >
             <div style={{padding: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
-              {this.props.question ? <Image fluid src={this.props.question.image} /> : null }
+              {this.props.material ? <Image fluid src={this.props.material.image} /> : null }
             </div>
           </Col>
           <Col
             sm={10}
             md={10}
           >
-            <ThumbnailMenu question={this.props.question} />
+            <ThumbnailMenu material={this.props.material} />
             <div style={{fontSize: '2rem'}} onClick={this.onTitleClick}>
-              {this.props.question.text}
+              {this.props.material.name}
             </div>
             <div style={{fontSize: '1.5rem', margin: '1rem 0 1rem 0'}} onClick={this.onTitleClick}>
-              {this.props.question.lesson.name}
+              {this.props.material.lesson.name}
             </div>
-            {/*<div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
-              {/*<a href={this.props.question.author.get_absolute_url} target={'_blank'}>*/}
-                {/*{this.props.question.author.display_name}*/}
-              {/*</a> ∙ {this.props.question.count_questions } questions ∙ { this.props.question.number_of_learners } learners*/}
-            {/*</div>*/}
             <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0'}}>
               Created <Moment fromNow>
-                {this.props.question.created_on}
+                {this.props.material.created_on}
               </Moment> ∙ Last updated <Moment fromNow>
-                {this.props.question.updated_on}
+                {this.props.material.updated_on}
               </Moment>
             </div>
           </Col>
@@ -63,6 +57,6 @@ export class QuestionThumbnailPublic extends React.Component {
   }
 }
 
-QuestionThumbnailPublic.propTypes = {
-  question: PropTypes.object.isRequired
+MaterialThumbnailPublic.propTypes = {
+  material: PropTypes.object.isRequired
 }

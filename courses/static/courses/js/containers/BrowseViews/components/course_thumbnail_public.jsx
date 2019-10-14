@@ -6,15 +6,21 @@ import Moment from 'react-moment'
 import { Dropdown, DropdownItem } from 'react-bootstrap'
 import { RingLoader } from 'react-spinners'
 import copy from 'copy-to-clipboard'
-import { FaEllipsisV, FaGraduationCap, FaInfoCircle, FaCodeBranch, FaShareAlt, FaMinus, FaPlus } from 'react-icons/fa'
+import {
+  FaEllipsisV, FaGraduationCap, FaInfoCircle, FaCodeBranch, FaShareAlt,
+  FaMinus, FaPlus
+} from 'react-icons/fa'
 
-import history from '../../../../history'
-import { BASE_URL } from '../../../../utils/config'
-import { addCurriculum, addCurriculumToDashboard, removeCurriculumFromDashboard } from './../../actions'
-import { Thumbnail } from '../../EditorsViews/components/thumbnail'
-import { Overlay } from '../fullscreen_overlay'
+import history from '../../../history'
+import { BASE_URL } from '../../../utils/config'
+import {
+  addCourse, addCourseToDashboard, loadSearchCourses, removeCourseFromDashboard,
+} from '../../../actions/studio'
+import { Thumbnail } from '../../../components/thumbnail'
+import { Overlay } from '../../../components/fullscreen_overlay'
+import { connect } from 'react-redux'
 
-class CurriculumMenuToggle extends React.Component {
+class CourseMenuToggle extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.handleClick = this.handleClick.bind(this)
@@ -26,9 +32,6 @@ class CurriculumMenuToggle extends React.Component {
   }
 
   render () {
-    { /* <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}> */ }
-    { /* {this.props.children} */ }
-    { /* </Glyphicon> */ }
     return (
       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
         {this.props.children}
@@ -37,11 +40,11 @@ class CurriculumMenuToggle extends React.Component {
   }
 }
 
-CurriculumMenuToggle.propTypes = {
+CourseMenuToggle.propTypes = {
   onClick: PropTypes.func
 }
 
-export class CurriculumThumbnailPublic extends React.Component {
+export class CourseThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onTitleClick = this.onTitleClick.bind(this)
@@ -71,14 +74,14 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 
   onAddToDashboardSelect (e) {
-    store.dispatch(addCurriculumToDashboard(this.props.course.uuid))
+    this.props.addCourseToDashboard(this.props.course.uuid)
     if (this.props.slidesListName !== 'recentSlides') {
       this.props.onAddRemoveFromDashboardSildes('add', this.props.course)
     }
   }
 
   onRemoveFromDashboardSelect (e) {
-    store.dispatch(removeCurriculumFromDashboard(this.props.course.uuid))
+    this.props.removeCourseFromDashboard(this.props.course.uuid)
     if (this.props.slidesListName === 'recentSlides') {
       this.props.onAddRemoveFromDashboardSildes('remove', this.props.course)
     }
@@ -86,7 +89,7 @@ export class CurriculumThumbnailPublic extends React.Component {
 
   onForkSelect (e) {
     this.setState({showSpinnerOverlay: true})
-    store.dispatch(addCurriculum(this.props.course.uuid))
+    this.props.addCourse(this.props.course.uuid)
   }
 
   render () {
@@ -128,7 +131,7 @@ export class CurriculumThumbnailPublic extends React.Component {
             </DropdownItem>
           }
         </Dropdown.Menu>,
-        document.getElementById('editor-app')
+        document.getElementById('browse-app')
       )
 
     return (
@@ -146,7 +149,7 @@ export class CurriculumThumbnailPublic extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            <Dropdown.Toggle as={CurriculumMenuToggle} />
+            <Dropdown.Toggle as={CourseMenuToggle} />
             <DropdownMenu />
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
@@ -170,11 +173,32 @@ export class CurriculumThumbnailPublic extends React.Component {
   }
 }
 
-CurriculumThumbnailPublic.propTypes = {
+CourseThumbnailPublic.propTypes = {
   // uuid: PropTypes.string.isRequired,
   // author: PropTypes.object.isRequired,
   // name: PropTypes.string.isRequired,
   course: PropTypes.object.isRequired,
   slidesListName: PropTypes.string,
-  onAddRemoveFromDashboardSildes: PropTypes.func
+  onAddRemoveFromDashboardSildes: PropTypes.func,
+  addCourseToDashboard: PropTypes.func,
+  addCourse: PropTypes.func,
+  removeCourseFromDashboard: PropTypes.func
 }
+
+const mapStateToProps = (state) => {
+  return {
+    coursesSearchList: state.studio.search.courses
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatch,
+    addCourseToDashboard: (uuid) => dispatch(addCourseToDashboard(uuid)),
+    addCourse: (uuid) => dispatch(addCourse(uuid)),
+    removeCourseFromDashboard: (uuid) => dispatch(removeCourseFromDashboard(uuid)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(CourseThumbnailPublic)
+export { CourseThumbnailPublic as CourseThumbnailPublicNotConnected }

@@ -1,14 +1,13 @@
 import React from 'react'
 
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Col } from 'react-bootstrap'
 import copy from 'copy-to-clipboard'
 
-import { Thumbnail } from './../thumbnail'
+import { Thumbnail } from '../../../components/thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
-import { BASE_URL } from '../../../../utils/config'
+import { BASE_URL } from '../../../utils/config'
 
 export class ModuleThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -19,15 +18,15 @@ export class ModuleThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open('/curriculum/modules/' + this.props.module.uuid + '/', '_self')
+    window.open(BASE_URL + 'courses/modules/' + this.props.module.uuid + '/', '_self')
   }
 
   onTitleClick () {
-    window.open('/curriculum/modules/' + this.props.module.uuid + '/', '_self')
+    window.open(BASE_URL + 'courses/modules/' + this.props.module.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {
-    copy(window.location.origin + BASE_URL + '/curriculum/module/' + this.props.module.uuid + '/')
+    copy(window.location.origin + BASE_URL + 'courses/module/' + this.props.module.uuid + '/')
   }
 
   render () {
@@ -38,9 +37,12 @@ export class ModuleThumbnailPublic extends React.Component {
         md={4}
         sm={6}
         xs={12}
-        className={'curriculum-card'}
+        className={'course-card'}
         style={{'cursor': 'pointer'}}>
-        <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+        <div
+          onClick={this.onTitleClick}
+          style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}
+        >
           <Thumbnail image={this.props.module.image} />
         </div>
         <div>
@@ -48,11 +50,6 @@ export class ModuleThumbnailPublic extends React.Component {
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
             {this.props.module.name}
           </div>
-          {/*<div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
-            {/*<a href={this.props.module.author.get_absolute_url} target={'_blank'}>*/}
-              {/*{this.props.module.author.display_name}*/}
-            {/*</a> ∙ {this.props.module.count_lessons } lessons ∙ { this.props.module.number_of_learners } learners*/}
-          {/*</div>*/}
           <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.module.created_on}

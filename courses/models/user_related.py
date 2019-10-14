@@ -8,7 +8,7 @@ class CourseUserDashboard(models.Model):
         'profiles.Profile', related_name='courses_dashboard', on_delete=models.CASCADE
         # will remove CourseUserDashboard object if a user will be deleted
     )
-    course = models.ForeignKey(Course, related_name='user_dashboard', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name='courses_user_dashboard', on_delete=models.CASCADE)
     # will remove CourseUserDashboard object if course will be deleted
 
     class Meta:

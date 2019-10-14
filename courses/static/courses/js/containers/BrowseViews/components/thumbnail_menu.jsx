@@ -6,10 +6,12 @@ import copy from 'copy-to-clipboard'
 import { Dropdown, Image } from 'react-bootstrap'
 import { FaEllipsisV, FaGraduationCap, FaCodeBranch, FaShareAlt, FaPlus } from 'react-icons/fa'
 
-import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadModuleIfNeeded } from '../../actions'
-import { Overlay } from '../fullscreen_overlay'
+import {
+  addUnit, addToNewCourse, addModule, addLesson, addMaterial, loadModuleIfNeeded
+} from '../../../actions/studio'
+import { Overlay } from '../../../components/fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
-import { BASE_URL } from '../../../../utils/config'
+import { BASE_URL } from '../../../utils/config'
 
 class MenuToggle extends React.Component {
   constructor (props, context) {
@@ -40,15 +42,12 @@ MenuToggle.propTypes = {
 class ThumbnailMenu extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // this.onTitleClick = this.onTitleClick.bind(this)
     this.onLearnSelect = this.onLearnSelect.bind(this)
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onBack = this.onBack.bind(this)
-    this.addElementToNewCurriculum = this.addElementToNewCurriculum.bind(this)
+    this.addElementToNewCourse = this.addElementToNewCourse.bind(this)
     this.onToggle = this.onToggle.bind(this)
-    // // this.onSelectCurriculum = this.onSelectCurriculum.bind(this)
-    // this._stayOpened = true
 
     var baseName = ''
     var uuid = ''
@@ -62,9 +61,9 @@ class ThumbnailMenu extends React.Component {
     } else if (props.lesson) {
       baseName = 'lesson'
       uuid = props.lesson.uuid
-    } else if (props.question) {
-      baseName = 'question'
-      uuid = props.question.uuid
+    } else if (props.material) {
+      baseName = 'material'
+      uuid = props.material.uuid
     }
 
     this.state = {
@@ -72,7 +71,7 @@ class ThumbnailMenu extends React.Component {
       baseName: baseName,
       uuid: uuid,
       menuOpen: false,
-      selectedCurriculum: null,
+      selectedCourse: null,
       selectedUnit: null,
       selectedModule: null,
       selectedLesson: null,
@@ -81,23 +80,23 @@ class ThumbnailMenu extends React.Component {
   }
 
   onLearnSelect () {
-    //window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
-    if (this.state.baseName === 'question') { // open lesson view
-      window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
+    //window.open('/courses/units/' + this.props.unit.uuid + '/', '_blank')
+    if (this.state.baseName === 'material') { // open lesson view
+      window.open('/courses/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
     } else {
-      window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
+      window.open('/courses/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
     }
   }
 
   // onTitleClick () {
-  //   window.open('/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+  //   window.open('/courses/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
   // }
 
   onCopyShareableLink (e) {
-    if (this.state.baseName === 'question') { // copy lesson view
-      copy(window.location.origin + BASE_URL + '/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/')
+    if (this.state.baseName === 'material') { // copy lesson view
+      copy(window.location.origin + BASE_URL + 'courses/lessons/' + this.props[this.state.baseName].lesson.uuid + '/')
     } else {
-      copy(window.location.origin + BASE_URL + '/curriculum/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/')
+      copy(window.location.origin + BASE_URL + 'courses/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/')
     }
     this.setState({menuOpen: false})
   }
@@ -111,13 +110,13 @@ class ThumbnailMenu extends React.Component {
     this.setState({level: 2, menuOpen: true})
   }
 
-  onSelectCurriculum (curriculum, e, event) {
+  onSelectCourse (course, e, event) {
     if (this.state.baseName === 'unit') {
       this.setState({showSpinnerOverlay: true})
-      this.props.addUnit(curriculum.uuid, this.props.unit)
+      this.props.addUnit(course.uuid, this.props.unit)
     } else { // move to next level
       event.stopPropagation()
-      this.setState({level: this.state.level + 1, selectedCurriculum: curriculum})
+      this.setState({level: this.state.level + 1, selectedCourse: course})
     }
   }
 
@@ -144,14 +143,14 @@ class ThumbnailMenu extends React.Component {
   }
 
   onSelectLesson (lesson, e, event) {
-    if (this.state.baseName === 'question') {
+    if (this.state.baseName === 'material') {
       this.setState({showSpinnerOverlay: true})
-      this.props.addQuestion(lesson.uuid, this.props.question)
+      this.props.addMaterial(lesson.uuid, this.props.material)
     }
   }
 
-  addElementToNewCurriculum () {
-    this.props.addToNewCurriculum(this.state.baseName, this.props[this.state.baseName])
+  addElementToNewCourse () {
+    this.props.addToNewCourse(this.state.baseName, this.props[this.state.baseName])
   }
 
   onToggle (newValue, event, {source}) {
@@ -179,8 +178,8 @@ class ThumbnailMenu extends React.Component {
     if (this.state.level === 1) {
       var learnText = 'Learn'
       var copyText = 'Copy shareable link'
-      if (this.state.baseName === 'question') {
-        learnText = 'Learn lesson with the question'
+      if (this.state.baseName === 'material') {
+        learnText = 'Learn lesson with the material'
         copyText = 'Copy link to lesson'
       }
       menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
@@ -190,39 +189,39 @@ class ThumbnailMenu extends React.Component {
       menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
         {/*<Glyphicon glyph='export' />*/}
         <FaCodeBranch />
-        &nbsp;Fork to curriculum studio</Dropdown.Item>)
+        &nbsp;Fork to course studio</Dropdown.Item>)
       menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
         {/*<Glyphicon glyph='share-alt' />*/}
         <FaShareAlt />
         &nbsp;{copyText}</Dropdown.Item>)
     }
 
-    // Curricula list
+    // Courses list
     if (this.state.level === 2) {
       menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
-      // for (var i = 0; i < this.props.myCurricula.results.length; i++) {
-      //   var curriculum = this.props.myCurricula.results[i]
+      // for (var i = 0; i < this.props.myCourses.results.length; i++) {
+      //   var course = this.props.myCourses.results[i]
 
       let subMenu = ''
       if (this.state.baseName !== 'unit') {
         subMenu = <span style={{float: 'right'}}>{'>'}</span>
       }
 
-      for (let uuid in this.props.myCurricula) {
-        var curriculum = this.props.myCurricula[uuid]
+      for (let uuid in this.props.myCourses) {
+        var course = this.props.myCourses[uuid]
         menus.push(<Dropdown.Item
-          onSelect={this.onSelectCurriculum.bind(this, curriculum)}
-          key={curriculum.uuid}>
-          {curriculum.image
-            ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={curriculum.image} />
+          onSelect={this.onSelectCourse.bind(this, course)}
+          key={course.uuid}>
+          {course.image
+            ? <Image style={{width: '2rem', height: '2rem', float: 'left', paddingRight: '0.5rem'}} src={course.image} />
             : null }
-          {curriculum.name}{subMenu}
+          {course.name}{subMenu}
         </Dropdown.Item>)
       }
 
-      menus.push(<Dropdown.Item onSelect={this.addElementToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
-        {/*<Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum*/}
-        <FaPlus /> Add {this.state.baseName} to new curriculum
+      menus.push(<Dropdown.Item onSelect={this.addElementToNewCourse} key='4' eventKey='4' style={{color: 'blue'}}>
+        {/*<Glyphicon glyph='plus' /> Add {this.state.baseName} to new course*/}
+        <FaPlus /> Add {this.state.baseName} to new course
       </Dropdown.Item>)
     }
 
@@ -235,8 +234,8 @@ class ThumbnailMenu extends React.Component {
 
       menus.push(<Dropdown.Item onSelect={this.onBack} key={'21'}>{'< Back'}</Dropdown.Item>)
 
-      for (let x = 0; x < this.state.selectedCurriculum.units.length; x++) {
-        var unit = this.props.units[this.state.selectedCurriculum.units[x]]
+      for (let x = 0; x < this.state.selectedCourse.units.length; x++) {
+        var unit = this.props.units[this.state.selectedCourse.units[x]]
 
         menus.push(<Dropdown.Item
           onSelect={this.onSelectUnit.bind(this, unit)}
@@ -318,28 +317,29 @@ ThumbnailMenu.propTypes = {
   unit: PropTypes.object,
   lesson: PropTypes.object,
   module: PropTypes.object,
-  // curricula: PropTypes.object,
+  addMaterial: PropTypes.func,
+  // courses: PropTypes.object,
   // uuid: PropTypes.string
 }
 
 const mapStateToProps = (state) => {
   return {
-    myCurricula: state.curricula, // myCurricula
-    units: state.units,
-    modules: state.modules,
-    lessons: state.lessons
+    myCourses: state.studio.courses, // myCourses
+    units: state.studio.units,
+    modules: state.studio.modules,
+    lessons: state.studio.lessons
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    addUnit: (curriculumUuid, unit) => dispatch(addUnit(curriculumUuid, unit)),
+    addUnit: (courseUuid, unit) => dispatch(addUnit(courseUuid, unit)),
     addModule: (unitUuid, module) => dispatch(addModule(unitUuid, module)),
     addLesson: (moduleUuid, lesson) => dispatch(addLesson(moduleUuid, lesson)),
-    addQuestion: (lessonUuid, question) => dispatch(addQuestion(lessonUuid, question)),
+    addMaterial: (lessonUuid, material) => dispatch(addMaterial(lessonUuid, material)),
     loadModuleIfNeeded: (moduleUuid) => dispatch(loadModuleIfNeeded(moduleUuid)),
-    addToNewCurriculum: (type, value) => dispatch(addToNewCurriculum(type, value))
+    addToNewCourse: (type, value) => dispatch(addToNewCourse(type, value))
   }
 }
 

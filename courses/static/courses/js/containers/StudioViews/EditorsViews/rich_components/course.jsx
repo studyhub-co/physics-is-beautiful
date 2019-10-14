@@ -8,9 +8,9 @@ import { FaTimes, FaExternalLinkAlt } from 'react-icons/fa'
 
 import { BASE_URL } from '../../../../utils/config'
 import { BackButton } from '../components/back_button'
-import { EditableThumbnail } from '../components/thumbnail'
+import { EditableThumbnail } from '../../../../components/thumbnail'
 import UnitContainer from '../containers/unit'
-import { EditableLabel } from '../components/label'
+import { EditableLabel } from '../../../../components/label'
 import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 import { tagDelimiters } from '../../../../utils'
 

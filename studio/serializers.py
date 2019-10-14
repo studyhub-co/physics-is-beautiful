@@ -86,8 +86,9 @@ class MaterialSerializer(BaseSerializer):
 
     class Meta:
         model = Material
-        fields = ['uuid', 'lesson', 'tags', 'name', 'hint', 'slug'
-                  # 'text', 'solution_text', 'hint', 'image', 'position', 'answer_type', 'answers', 'vectors',
+        fields = ['uuid', 'lesson', 'tags', 'name', 'slug'
+                  # 'hint', 'text', 'solution_text', 'hint', 'image', 'position',
+                  # 'answer_type', 'answers', 'vectors',
                   ]
         list_serializer_class = DictSerializer
 

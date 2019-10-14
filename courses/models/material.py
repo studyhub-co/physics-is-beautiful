@@ -34,8 +34,6 @@ class Material(BaseItemModel):
         default=MaterialWorkflowType.COMMON.value,
         choices=[(type, type.value) for type in MaterialWorkflowType]
     )
-    solution_text = models.CharField(max_length=2048, db_index=True, null=True, blank=True)
-    hint = models.CharField(max_length=1024, blank=True)
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     material_problem_type = models.ForeignKey(
         MaterialProblemType, related_name='materials', on_delete=models.CASCADE,

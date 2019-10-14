@@ -16,7 +16,7 @@ import {
   loadNavigationCourses,
   loadNavigationModule
 } from '../../../../actions/studio'
-import { Overlay } from '../../components/fullscreen_overlay'
+import { Overlay } from '../../../../components/fullscreen_overlay'
 
 class MenuToggle extends React.Component {
   constructor (props, context) {

@@ -1,11 +1,11 @@
 import React from 'react'
 
-// import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Col } from 'react-bootstrap'
 
-import { Thumbnail } from './../thumbnail'
+import { BASE_URL } from '../../../utils/config'
+import { Thumbnail } from '../../../components/thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
 
 export class UnitThumbnailPublic extends React.Component {
@@ -15,7 +15,7 @@ export class UnitThumbnailPublic extends React.Component {
   }
 
   onTitleClick () {
-    window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_self')
+    window.open(BASE_URL + 'courses/units/' + this.props.unit.uuid + '/', '_self')
   }
 
   render () {
@@ -36,11 +36,6 @@ export class UnitThumbnailPublic extends React.Component {
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
             {this.props.unit.name}
           </div>
-          {/*<div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
-            {/*<a href={this.props.unit.author.get_absolute_url} target={'_blank'}>*/}
-              {/*{this.props.unit.author.display_name}*/}
-            {/*</a> ∙ {this.props.unit.count_lessons } lessons ∙ { this.props.unit.number_of_learners } learners*/}
-          {/*</div>*/}
           <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
             Created <Moment fromNow>
               {this.props.unit.created_on}

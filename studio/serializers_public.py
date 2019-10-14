@@ -49,7 +49,7 @@ class PublicLessonSerializer(BaseSerializer):
     class Meta:
         model = Lesson
         fields = ['uuid', 'name', 'image', 'position', 'url', 'created_on', 'updated_on']
-        read_only_fields = ('uuid', 'materialss', 'image')
+        read_only_fields = ('uuid', 'materials', 'image')
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
@@ -60,8 +60,8 @@ class PublicMaterialSerializer(BaseSerializer):
 
     class Meta:
         model = Material
-        fields = ['uuid', 'text', 'image', 'position', 'url', 'created_on', 'updated_on', 'lesson']
-        read_only_fields = ('uuid', 'image')
+        fields = ['uuid', 'name', 'position', 'url', 'created_on', 'updated_on', 'lesson']
+        read_only_fields = ('uuid',)
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
