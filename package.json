@@ -51,6 +51,8 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@material-ui/core": "^4.5.1",
+    "@material-ui/icons": "^4.5.1",
     "@vermus/django-react-djeddit-client": "^1.0.72",
     "axios": "^0.17.1",
     "connected-react-router": "^6.5.2",

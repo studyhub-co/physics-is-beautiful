@@ -2,7 +2,8 @@ import React from 'react'
 
 import EditCourseView1 from './containers/course'
 import EditModuleView1 from './containers/module'
-import EditLessonView1 from './containers/lesson'
+// import EditLessonView1 from './containers/lesson'
+import EditLessonView1 from './containers/LessonWorkSpace/index'
 
 export class EditCourseView extends React.Component {
   render () {

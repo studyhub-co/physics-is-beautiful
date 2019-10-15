@@ -183,15 +183,12 @@ class ThumbnailMenu extends React.Component {
         copyText = 'Copy link to lesson'
       }
       menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
-        {/*<Glyphicon glyph='education' />*/}
         <FaGraduationCap />
         &nbsp;{learnText}</Dropdown.Item>)
       menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
-        {/*<Glyphicon glyph='export' />*/}
         <FaCodeBranch />
         &nbsp;Fork to course studio</Dropdown.Item>)
       menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
-        {/*<Glyphicon glyph='share-alt' />*/}
         <FaShareAlt />
         &nbsp;{copyText}</Dropdown.Item>)
     }

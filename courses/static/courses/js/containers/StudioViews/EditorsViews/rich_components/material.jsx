@@ -12,7 +12,7 @@ import { WithOutContext as ReactTags } from 'react-tag-input'
 
 import { EditableLabel } from '../../../../components/label'
 // import { MySQLAnswerContainer } from '../containers/mysql_answer'
-import { tagDelimiters } from '../../../../utils/index'
+import { tagDelimiters } from '../../../../utils'
 import markdownConverter from '../../../../utils/markdownConverter'
 import StructureItemMenu from './structure_item_menu'
 
@@ -160,10 +160,10 @@ export class Material extends React.Component {
             ? solutionEditor
             : <div>
               <div className={'curriculum-title'} style={{textAlign: 'right'}}>
-                <div><FaPen /> <a
-                  style={{cursor: 'pointer'}}
-                  onClick={this.handleShowSolutionEditor}
-                >Edit solution</a></div>
+                {/*<div><FaPen /> <a*/}
+                  {/*style={{cursor: 'pointer'}}*/}
+                  {/*onClick={this.handleShowSolutionEditor}*/}
+                {/*>Edit solution</a></div>*/}
                 <div><FaCodeBranch />
                   <StructureItemMenu preSelectMenuItem={'fork'} material={{uuid: this.props.uuid}}>
                   Fork this problem
