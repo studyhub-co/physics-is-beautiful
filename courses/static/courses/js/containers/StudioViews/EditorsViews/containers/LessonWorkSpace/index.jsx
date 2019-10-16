@@ -21,15 +21,16 @@ import {
   moveMaterial
 } from '../../../../../actions/studio'
 
-import { BASE_URL } from '../../../../../utils/config'
 import { DockableDropTarget, DragItemTypes } from '../../../../../dnd'
 
 import { EditableThumbnail } from '../../../../../components/thumbnail'
 import { EditableLabel } from '../../../../../components/label'
 
 import MaterialThumbnail from './MaterialThumbnail'
+import MaterialContainer from '../../containers/material'
 
-import ToolBar from './ToolBar'
+import ToolBar from './Menu/ToolBar'
+import Menu from './Menu/Menu'
 
 // import MaterialContainer from '..//material'
 
@@ -107,12 +108,55 @@ export class Lesson extends React.Component {
               </h1>
             </div>
             <div>
-              menu
+              <Menu />
             </div>
           </Grid>
         </Grid>
-        <Grid container item sx={12}>
+        {/* todo make styles */}
+        <Grid item xs={12}
+          style={{
+            borderTop: '1px solid #dadce0',
+            borderBottom: '1px solid #dadce0'
+          }}
+        >
           <ToolBar />
+        </Grid>
+        <Grid container item xs={12} spacing={4}>
+          <Grid item xs={2}>
+            <div style={{ display: 'flex', maxHeight: '70vh', flexDirection: 'column' }}>
+              <div
+                style={{ overflowY: 'auto',
+                  /* for Firefox */
+                  flexGrow: 1,
+                  minHeight: 0
+                }}
+                className={'lesson-nav-materials'}
+              >
+                <DockableDropTarget
+                  onDrop={(dropSource) =>
+                    this.handleMaterialDroppedBefore(dropSource.uuid, null)}
+                  itemType={DragItemTypes.MATERIAL}>
+                  <div className={'question-thumbnail draggable'}>
+                    <div
+                      onClick={this.props.onAddMaterialClick}
+                      className='btn btn-light btn-add'
+                      style={{cursor: 'pointer',
+                        width: '100%',
+                        height: '100%'
+                      }}
+                    >
+                      <FaPlusCircle />
+                      <br />Add material
+                    </div>
+                  </div>
+                </DockableDropTarget>
+                {navMaterials}
+              </div>
+            </div>
+          </Grid>
+          <Grid item xs={10}>
+            <MaterialContainer uuid={this.props.currentMaterial} />
+          </Grid>
         </Grid>
       </Grid>
     )

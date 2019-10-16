@@ -139,9 +139,12 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
 .lesson-editor .lesson h1 { display:inline-block; margin-right:20px; font-size:36px;}
 .lesson-editor .lesson label { margin:0 10px; }
 
-.editor .lesson-nav-materials .drop-target {
-    display:inline-block; vertical-align:top;
-}
+/*.editor .lesson-nav-materials .drop-target {*/
+    /*display:inline-block; vertical-align:top;*/
+/*}*/
+
+/**/
+
 .editor .lesson-nav-materials .drop-target .dock-site {
     display:none;
 }
@@ -156,7 +159,7 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
     background: #FCFCFC;
     border: 1px solid #DDD;
     border-radius: 5px;
-    margin: 5px;
+    margin: 1rem;
     padding: 0 5px;
     height: 5rem;
     max-width: 90%;
