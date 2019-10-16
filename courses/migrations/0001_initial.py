@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         ('profiles', '0006_profile_profile_views'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('taggit', '0003_taggeditem_add_unique_index'),
-        ('djeddit', '0015_auto_20190927_1052'),
+        ('djeddit', '0014_post_deleted_on'),
     ]
 
     operations = [

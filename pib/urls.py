@@ -68,4 +68,5 @@ if settings.DEBUG:
 
 
 # catch all urls in main SPA app
-urlpatterns += [url(r'^', include('courses.urls', namespace='main')), ]
+# (.*?) - fix for string non ending with slash
+urlpatterns += [url(r'^(.*?)/$', include('courses.urls', namespace='main')), ]

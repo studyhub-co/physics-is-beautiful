@@ -5,10 +5,12 @@ import os
 DEBUG = False
 
 
+# TODO move to Environment variable
 ALLOWED_HOSTS = [
     'physicsisbeautiful.com',
     'www.physicsisbeautiful.com',
     'dev.physicsisbeautiful.com',
+    'pib-dev.us-east-1.elasticbeanstalk.com',
     '.compute-1.amazonaws.com',
 ]
 
@@ -55,8 +57,8 @@ RAVEN_CONFIG = {
 }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = bool(os.getenv('SESSION_COOKIE_SECURE', True))
+CSRF_COOKIE_SECURE = bool(os.getenv('CSRF_COOKIE_SECURE', True))
 
 # enable for logging to a file in production
 # LOGGING = {
