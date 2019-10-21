@@ -9,6 +9,8 @@ import { BASE_URL } from '../../../utils/config'
 
 import { loadCourses, addCourse } from '../../../actions/studio'
 
+import { Sheet } from '../../../components/Sheet'
+
 import CourseThumbnail from './components/course_thumbnail'
 import AddCourseButton from './components/add_course_button'
 

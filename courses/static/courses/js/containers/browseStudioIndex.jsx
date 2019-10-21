@@ -13,6 +13,7 @@ import { changeStudioSelectedTab, deleteCourse } from '../actions/studio'
 import StudioCoursesIndexView from '../containers/StudioViews/IndexView/index'
 // import EditCourseProfileView from '../containers/courseStudio/editProfile'
 import { BrowseIndexView } from '../containers/BrowseViews/index'
+import { Sheet } from '../components/Sheet'
 
 class BrowseStudioDashboard extends React.Component {
   constructor (props) {
@@ -73,40 +74,42 @@ class BrowseStudioDashboard extends React.Component {
 
   render () {
     return (
-      <Tabs
-        name='tab'
-        id='browse-app'
-        className='tabs'
-        handleSelect={this.handleTabUserChange}
-        selectedTab={this.props.tab}
-      >
-        <div className='tab-links'>
-          <TabLink to='browse'>Browse courses</TabLink>
-          <TabLink to='studio'>Course studio</TabLink>
-        </div>
+      <Sheet>
+        <Tabs
+          name='tab'
+          id='browse-app'
+          className='tabs'
+          handleSelect={this.handleTabUserChange}
+          selectedTab={this.props.tab}
+        >
+          <div className='tab-links'>
+            <TabLink to='browse'>Browse courses</TabLink>
+            <TabLink to='studio'>Course studio</TabLink>
+          </div>
 
-        <div className='content'>
-          <TabContent for='browse'>
-            <BrowseIndexView />
-          </TabContent>
-          <TabContent for='studio'>
-            {this.state.showEditCourseProfile
-              ? <Route path={BASE_URL + 'studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
-              : <div>
-                <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
+          <div className='content'>
+            <TabContent for='browse'>
+              <BrowseIndexView />
+            </TabContent>
+            <TabContent for='studio'>
+              {this.state.showEditCourseProfile
+                ? <Route path={BASE_URL + 'studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
+                : <div>
+                  <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit
                   the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.
                   Tutorial and additional help here. {/* TODO help link? */}
+                  </div>
+                  <StudioCoursesIndexView
+                    onEditCourseProfileClick={this.onEditCourseProfileClick}
+                    onDeleteCourseClick={this.onDeleteCourseClick}
+                  />
                 </div>
-                <StudioCoursesIndexView
-                  onEditCourseProfileClick={this.onEditCourseProfileClick}
-                  onDeleteCourseClick={this.onDeleteCourseClick}
-                />
-              </div>
-            }
-          </TabContent>
-        </div>
-      </Tabs>
+              }
+            </TabContent>
+          </div>
+        </Tabs>
+      </Sheet>
     )
   }
 }

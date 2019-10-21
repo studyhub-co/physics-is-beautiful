@@ -51,7 +51,7 @@ class Course(BaseItemModel):
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_coursess')
 
     def count_number_of_learners(self, LessonProgressClass):
-        lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgress.Status.COMPLETE
+        lps_count = LessonProgressClass.objects.filter(status=30,  # LessonProgressStatus.COMPLETE
                                                        lesson__module__unit__course=self). \
             values('profile').distinct().count()
 

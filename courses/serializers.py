@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from expander import ExpanderSerializerMixin
 
 from .models import Course, Unit, Module, Lesson, \
-    LessonProgress, MySQL, UserReaction, Material
+    LessonProgress, MySQL, UserReaction, Material, LessonProgressStatus
 
 from profiles.serializers import PublicProfileSerializer, ProfileUserField
 
@@ -135,9 +135,10 @@ class LessonSerializer(BaseSerializer):
 
     def get_status(self, obj):
         if 'progress_service' in self.context:
-            return LessonProgress.Status.get_name(
-                self.context['progress_service'].get_lesson_status(obj)
-            ).lower()
+            # return LessonProgressStatus.get_name(
+            #     self.context['progress_service'].get_lesson_status(obj)
+            # ).lower()
+            self.context['progress_service'].get_lesson_status(obj).name.lower()
         else:
             return ''
 
@@ -209,7 +210,7 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
         count = 0
         for lesson in obj.lessons.all():
             if (self.context['progress_service'].get_lesson_status(lesson) ==
-                    LessonProgress.Status.COMPLETE):
+                    LessonProgressStatus.COMPLETE.value):
                 count += 1
         return count
 
@@ -219,15 +220,16 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
             for lesson in obj.lessons.all()
         }
         sequential_check = [
-            LessonProgress.Status.NEW,
-            LessonProgress.Status.UNLOCKED,
-            LessonProgress.Status.LOCKED,
-            LessonProgress.Status.COMPLETE,
+            LessonProgressStatus.NEW,
+            LessonProgressStatus.UNLOCKED,
+            LessonProgressStatus.LOCKED,
+            LessonProgressStatus.COMPLETE,
         ]
         for status in sequential_check:
             if status in lesson_statuses:
                 break
-        return LessonProgress.Status.get_name(status).lower()
+        return status.name.lower()
+        # return LessonProgressStatus.get_name(status).lower()
 
 
 class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):

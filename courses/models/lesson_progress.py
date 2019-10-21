@@ -7,7 +7,7 @@ from django.utils import timezone
 from . import Lesson
 
 
-class Status(Enum):
+class LessonProgressStatus(Enum):
     LOCKED = 0
     NEW = 10
     UNLOCKED = 20
@@ -31,7 +31,10 @@ class LessonProgress(models.Model):
     completed_on = models.DateTimeField(null=True, blank=True)
     duration = models.DurationField(null=True, blank=True)
     # status = models.IntegerField(choices=Status.choices) # Django 3.0
-    status = models.IntegerField(choices=[(status, status.value) for status in Status])
+    status = models.IntegerField(
+        default=LessonProgressStatus.LOCKED.value,
+        choices=[(status, status.value) for status in LessonProgressStatus]
+    )
 
     def complete(self, duration=None, score=None):
         self.status = self.Status.COMPLETE

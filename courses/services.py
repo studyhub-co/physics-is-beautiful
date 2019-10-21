@@ -3,7 +3,8 @@ from django.utils.functional import cached_property
 # from user_reputation.models import Reputation
 # from notifications.signals import notify
 
-from .models import LessonProgress
+from .models import LessonProgress, LessonProgressStatus
+
 
 class LessonLocked(Exception):
 
@@ -51,15 +52,15 @@ class ProgressServiceBase(object):
     @cached_property
     def current_lesson_progress(self):
         if self.current_lesson:
-            if self.get_lesson_status(self.current_lesson) == LessonProgress.Status.LOCKED:
+            if self.get_lesson_status(self.current_lesson) == LessonProgressStatus.LOCKED.value:
                 raise LessonLocked()
             return self.get_lesson_progress(self.current_lesson)
 
     def unlock_lesson(self, lesson):
         lesson_progress = self.get_lesson_progress(lesson)
-        if lesson_progress.status != LessonProgress.Status.UNLOCKED and \
-                lesson_progress.status != LessonProgress.Status.COMPLETE:  # no need to change status for completed
-            lesson_progress.status = LessonProgress.Status.UNLOCKED
+        if lesson_progress.status != LessonProgressStatus.UNLOCKED.value and \
+                lesson_progress.status != LessonProgressStatus.COMPLETE:  # no need to change status for completed
+            lesson_progress.status = LessonProgressStatus.UNLOCKED.value
             self._dirty_lesson_progresses[str(lesson.pk)] = lesson_progress
         return lesson_progress
 
@@ -71,25 +72,25 @@ class ProgressServiceBase(object):
 
     def mark_new(self, lesson):
         lesson_progress = self.get_lesson_progress(lesson)
-        if lesson_progress.status != LessonProgress.Status.NEW:
-            lesson_progress.status = LessonProgress.Status.NEW
+        if lesson_progress.status != LessonProgressStatus.NEW.value:
+            lesson_progress.status = LessonProgressStatus.NEW.value
             self._dirty_lesson_progresses[str(lesson.pk)] = lesson_progress
         return lesson_progress
 
     def get_lesson_status(self, lesson, auto_unlock=True):
         lesson_progress = self.get_lesson_progress(lesson)
-        if lesson_progress.status == LessonProgress.Status.LOCKED:
+        if lesson_progress.status == LessonProgressStatus.LOCKED.value:
             if self._allow_override(lesson):
-                return LessonProgress.Status.UNLOCKED
+                return LessonProgressStatus.UNLOCKED.value
             elif auto_unlock:
                 previous_lesson = lesson.get_previous_lesson()
                 if (not previous_lesson or
                         self.get_lesson_status(previous_lesson, auto_unlock=False) ==
-                        LessonProgress.Status.COMPLETE):
+                        LessonProgressStatus.COMPLETE):
                     next_lesson = lesson.get_next_lesson()
                     if (next_lesson and
                             self.get_lesson_status(next_lesson, auto_unlock=False) !=
-                            LessonProgress.Status.LOCKED):
+                            LessonProgressStatus.LOCKED.value):
                         # if both our previous and next lessons are not locked, we
                         # should indicate this as a newly inserted lesson.
                         return self.mark_new(lesson).status
@@ -151,7 +152,9 @@ class ProgressService(ProgressServiceBase):
 
     @staticmethod
     def get_score_board_qs(lesson):
-        return LessonProgress.objects.filter(lesson=lesson, status=LessonProgress.Status.COMPLETE).order_by('duration')
+        return LessonProgress.objects.filter(
+            lesson=lesson, status=LessonProgressStatus.COMPLETE.value
+        ).order_by('duration')
 
 
 class AnonymousProgressService(ProgressService):

@@ -1,8 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Sheet } from './components/Sheet'
-
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
@@ -11,9 +9,9 @@ import PropTypes from 'prop-types'
 class App extends React.Component {
   render () {
     return (
-      <Sheet>
+      <div>
         {this.props.children}
-      </Sheet>
+      </div>
     )
   }
 }

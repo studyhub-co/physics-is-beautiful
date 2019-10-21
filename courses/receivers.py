@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from allauth.account.signals import user_signed_up
 
-from .models import UserReaction, LessonProgress, CourseUserDashboard
+from .models import UserReaction, LessonProgress, CourseUserDashboard, LessonProgressStatus
 
 
 @receiver(user_signed_up)
@@ -33,13 +33,13 @@ def transfer_lesson_progress(request, user, **kwargs):
 
 @receiver(post_save, sender=LessonProgress)
 def count_the_number_of_learners(sender, instance, created, **kwargs):
-    if instance.status == LessonProgress.Status.COMPLETE:
+    if instance.status == LessonProgressStatus.COMPLETE:
         instance.lesson.module.unit.course.count_number_of_learners(sender)
 
 
 @receiver(post_save, sender=LessonProgress)
 def update_courses_user_dashboard(sender, instance, created, **kwargs):
-    if instance.status == LessonProgress.Status.COMPLETE and instance.profile:
+    if instance.status == LessonProgressStatus.COMPLETE and instance.profile:
         # try to find CourseUserDashboard
         course = instance.lesson.module.unit.course
         course_user_dashboard, created = CourseUserDashboard.objects.get_or_create(

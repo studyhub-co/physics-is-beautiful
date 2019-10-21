@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router'
 import { BASE_URL } from './utils/config'
 
-import { CoursesIndexView } from './containers/CoursesViews'
+import { CoursesRoutes } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
 import {
   EditCourseView, EditModuleView, EditLessonView
@@ -16,7 +16,7 @@ export default(
     {/* TODO lazy load components (see units/loadable.jsx for details) */}
 
     {/* student views */}
-    <Route exact path={BASE_URL + 'courses/'} component={CoursesIndexView} />
+    <Route path={BASE_URL + 'courses/'} component={CoursesRoutes} />
 
     {/* browse courses */}
     <Route exact path={BASE_URL + 'browse/'} component={BrowseStudioDashboard} />

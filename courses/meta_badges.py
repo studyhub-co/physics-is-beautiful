@@ -6,7 +6,7 @@ from user_reputation.models import Reputation
 from badges.utils import MetaBadge
 from badges.models import BadgeToUser
 
-from .models import LessonProgress, ModuleAwards, LessonAwards, Course
+from .models import LessonProgress, ModuleAwards, LessonAwards, Course, LessonProgressStatus
 
 
 class ModuleFinished(MetaBadge):
@@ -32,7 +32,7 @@ class ModuleFinished(MetaBadge):
         lessons_count = instance.lesson.module.lessons.count()
         lessons_completed_count = \
             LessonProgress.objects.filter(profile=instance.profile,
-                                          status=LessonProgress.Status.COMPLETE,
+                                          status=LessonProgressStatus.COMPLETE.value,
                                           lesson__in=instance.lesson.module.lessons.all()
                                           )\
             .count()
@@ -83,7 +83,7 @@ class LessonFinished(MetaBadge):
     # ("4", "Diamond"),
 
     def check_lesson_finished(self, instance):
-        if instance.status == LessonProgress.Status.COMPLETE and instance.profile:
+        if instance.status == LessonProgressStatus.COMPLETE and instance.profile:
 
             lesson_award, created = LessonAwards.objects.get_or_create(user=instance.profile.user,
                                                                        lesson=instance.lesson)
