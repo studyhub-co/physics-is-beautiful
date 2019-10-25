@@ -48,7 +48,7 @@ class CourseInfoPanel extends React.Component {
                   <Col md={8} />
                   <Col md={12} style={{textAlign: 'right', fontSize: 15}}>
                     {this.state.showMore ? <div>
-                      <a href={'/browse/'} style={{cursor: 'pointer', color: 'grey'}}>{'Select other course'}</a>
+                      <Link to={'/browse/'} style={{cursor: 'pointer', color: 'grey'}}>{'Select other course'}</Link>
                     </div> : null}
                   </Col>
                 </Row>
@@ -65,7 +65,10 @@ class CourseInfoPanel extends React.Component {
                 {this.state.showMore
                   ? <Row>
                     <Col md={12}>
-                      {this.props.course.image ? <img className={'img-fluid'} src={this.props.course.image} /> : null}
+                      {this.props.course.image
+                        ? <img className={'img-fluid'} src={this.props.course.image} />
+                        : null
+                      }
                     </Col>
                   </Row>
                   : null}
@@ -108,7 +111,7 @@ export default class CourseApp extends React.Component {
         items.push({
           name: name,
           image: module.image,
-          href: '/modules/' + module.uuid,
+          href: '/courses/modules/' + module.uuid + '/',
           uuid: module.uuid,
           status: module.status
         })

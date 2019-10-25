@@ -86,7 +86,7 @@ class ProgressServiceBase(object):
                 previous_lesson = lesson.get_previous_lesson()
                 if (not previous_lesson or
                         self.get_lesson_status(previous_lesson, auto_unlock=False) ==
-                        LessonProgressStatus.COMPLETE):
+                        LessonProgressStatus.COMPLETE.value):
                     next_lesson = lesson.get_next_lesson()
                     if (next_lesson and
                             self.get_lesson_status(next_lesson, auto_unlock=False) !=

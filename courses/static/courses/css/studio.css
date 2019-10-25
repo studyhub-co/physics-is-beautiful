@@ -1,3 +1,5 @@
+/* Editor + Browse css styles */
+
 @import "ReactCrop.css";
 @import "react-selectize.css";
 @import "react-mde-all.css";
@@ -71,35 +73,35 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
 .unit .drop-target, .module .drop-target { float:left; margin-left:-60px; padding-left:60px;}
 .unit .btn-add-module, .module .btn-add-lesson {text-align:center; padding:1rem; cursor: pointer;}
 
-.question-image img { max-width:100%; }
-.question-image .selectable-image { font-size:80px; }
+/*.question-image img { max-width:100%; }*/
+/*.question-image .selectable-image { font-size:80px; }*/
 
-.question .question-type { margin-bottom: 20px; }
-.question .answer-block .mathematical-expression { font-size:36px; padding:20px; }
+/*.question .question-type { margin-bottom: 20px; }*/
+/*.question .answer-block .mathematical-expression { font-size:36px; padding:20px; }*/
 
 .thumbnail { margin-bottom: 8px}
 .thumbnail img { max-width: 100%; }
 
-.module-accessible-block {
+.editor .module-accessible-block {
     height:auto;
     min-height: 140px;
     line-height:16px;
     text-align:center;
     /*overflow:hidden;*/
 }
-.add-answer {
-    cursor: pointer;
-    border: dashed;
-    border-width: 1px;
-    color: rgb(216, 216, 216);
-    line-height: 130px;
-    transition: border .5s, color .5s;
-}
-.add-answer:hover {
-    border: solid;
-    border-width: 1px;
-    color: #1caff6;
-}
+/*.editor .add-answer {*/
+    /*cursor: pointer;*/
+    /*border: dashed;*/
+    /*border-width: 1px;*/
+    /*color: rgb(216, 216, 216);*/
+    /*line-height: 130px;*/
+    /*transition: border .5s, color .5s;*/
+/*}*/
+/*.editor .add-answer:hover {*/
+    /*border: solid;*/
+    /*border-width: 1px;*/
+    /*color: #1caff6;*/
+/*}*/
 
 .conversion-steps { margin-top:20px; display:inline-block; font-size:20px; }
 .conversion-steps .conversion-step { border-right:1px solid black; display:inline-block;}
@@ -155,7 +157,7 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
   border-image: linear-gradient(to right, #9fddfb, #bceaff, white 90%) 1 stretch;
 }
 
-.question-thumbnail {
+.editor .question-thumbnail {
     background: #FCFCFC;
     border: 1px solid #DDD;
     border-radius: 5px;
@@ -167,48 +169,22 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
     /*max-width: 15rem;*/
     cursor: pointer;
 }
-.question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}
-.question-thumbnail.selected { background: #f0fafe; border:1px solid #9fddfb; }
-.question-thumbnail .btn-delete { position:absolute; right:-7px; top:-7px; cursor:pointer; }
-.question-thumbnail .question-thumbnail-inner { overflow:hidden; height:100%;}
+.editor .question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}
+.editor .question-thumbnail.selected { background: #f0fafe; border:1px solid #9fddfb; }
+.editor .question-thumbnail .btn-delete { position:absolute; right:-7px; top:-7px; cursor:pointer; }
+.editor .question-thumbnail .question-thumbnail-inner { overflow:hidden; height:100%;}
 
-.lesson-questions .btn { height: 65px; vertical-align: top; margin: 5px;}
-.lesson-questions .btn-arrow { padding:22px 10px;}
-.lesson-questions .btn-add { padding-top:16px; }
+/*.editor .lesson-questions .btn { height: 65px; vertical-align: top; margin: 5px;}
+.editor .lesson-questions .btn-arrow { padding:22px 10px;}
+.editor .lesson-questions .btn-add { padding-top:16px; }*/
 
-/* common (copy-paste from classroom */
-
- .back-button {
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: #d8d8d8 !important;
-    transition: color 300ms;
-}
-
-.back-button:hover {
-    text-decoration: none;
-    color: #1caff6 !important;
-}
-
-.editor-common-button {
+.editor  .editor-common-button {
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
     border-width: 1px;
     color: white;
     padding: 1rem 4rem 1rem 4rem;
     margin: 1rem 0 1rem 0;
-}
-
-.blue-title {
-    font-size: 2rem;
-    color: rgb(8, 209, 255);
-    padding-bottom: 2rem;
-}
-
-.blue-text {
-    /*color: rgb(8, 209, 255)*/
-    color: #26a1ff;
 }
 
 .course-card {
@@ -358,66 +334,3 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
   justify-content: space-around;
 }
 
-/* Input tags (react-tags) */
-
-div.ReactTags__tags {
-    position: relative;
-    padding: 1rem 0;
-}
-
-/* Styles for the input */
-div.ReactTags__tagInput {
-    width: 200px;
-    border-radius: 2px;
-    display: inline-block;
-}
-div.ReactTags__tagInput input.ReactTags__tagInputField,
-div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
-    height: 31px;
-    margin: 0;
-    font-size: 12px;
-    width: 100%;
-    border: 1px solid #eee;
-}
-
-/* Styles for selected tags */
-div.ReactTags__selected span.ReactTags__tag {
-    border: 1px solid #1caff6;
-    background: #1caff6;
-    font-size: 1.2rem;
-    display: inline-block;
-    padding: 5px;
-    margin: 0 5px;
-    border-radius: 0.5rem;
-    color: #eeeeee;
-}
-div.ReactTags__selected a.ReactTags__remove {
-    color: #eeeeee;
-    margin-left: 5px;
-    cursor: pointer;
-}
-
-/* Styles for suggestions */
-div.ReactTags__suggestions {
-    position: absolute;
-}
-div.ReactTags__suggestions ul {
-    list-style-type: none;
-    box-shadow: .05em .01em .5em rgba(0,0,0,.2);
-    background: white;
-    width: 200px;
-}
-div.ReactTags__suggestions li {
-    border-bottom: 1px solid #ddd;
-    padding: 5px 10px;
-    margin: 0;
-}
-div.ReactTags__suggestions li mark {
-    text-decoration: underline;
-    background: none;
-    font-weight: 600;
-}
-div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
-    background: #b7cfe0;
-    cursor: pointer;
-}

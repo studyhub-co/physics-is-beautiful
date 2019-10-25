@@ -12,13 +12,13 @@ import {
 } from 'react-icons/fa'
 
 import history from '../../../history'
-import { BASE_URL } from '../../../utils/config'
 import {
   addCourse, addCourseToDashboard, loadSearchCourses, removeCourseFromDashboard,
 } from '../../../actions/studio'
 import { Thumbnail } from '../../../components/thumbnail'
 import { Overlay } from '../../../components/fullscreen_overlay'
 import { connect } from 'react-redux'
+import { BASE_URL } from '../../../utils/config'
 
 class CourseMenuToggle extends React.Component {
   constructor (props, context) {
@@ -58,15 +58,15 @@ export class CourseThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open(BASE_URL + 'courses/' + this.props.course.uuid + '/', '_self')
+    history.push('/courses/' + this.props.course.uuid + '/', '_self')
   }
 
   onViewProfileSelect () {
-    history.push(BASE_URL + 'courses/profile/' + this.props.course.uuid + '/')
+    history.push('/courses/profile/' + this.props.course.uuid + '/')
   }
 
   onTitleClick () {
-    window.open(BASE_URL + 'courses/' + this.props.course.uuid + '/', '_self')
+    history.push('/courses/' + this.props.course.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {

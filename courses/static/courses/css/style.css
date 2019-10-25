@@ -19,6 +19,8 @@
     /*font-style: normal;*/
 /*}*/
 
+/* Common css for SPA apps */
+
 html, body {
     /* TODO !important needs to replace with theme.css of bootstrap */
     background-color: #f1f1f1 !important;
@@ -309,29 +311,6 @@ img.grayed-out-img {
     text-transform: capitalize;
     height: 40px;
 }
-
-
-.course .thumbnail-block {
-    border-radius: 5px;
-    border: 1px solid #dadce0;
-    margin: 10px 35px 10px 10px;
-    padding: 6px;
-    display: inline-block;
-    width: 150px;
-    color: #666666;
-    transition: color 500ms, box-shadow 500ms, border-color 500ms;
-    box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.15);
-}
-.course .thumbnail-block:hover {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
-}
-
-.course .thumbnail-block.disabled {
-    pointer-events: none;
-    opacity: 0.35;
-    filter: alpha(opacity=40);
-}
-
 
 .btn.btn-info.btn-xs.pull-right.active {
     background-color: black;
@@ -641,39 +620,6 @@ img.grayed-out-img {
 }
 
 
-/*course info panel styles*/
-
-.course-panel-font{
-    /*font-family: Tw Cen MT;*/
-    font-family: Museosansrounded;
-    font-size: 25px;
-    color: #c8c8c8;
-}
-
-.course-title{
-    font-size: 25px;
-    color: #1caff6;
-}
-
-.course-more-less{
-    font-size: 16px !important;
-    text-decoration: underline;
-    cursor: pointer;
-    float: right;
-}
-
-.course-user-link{
-    text-decoration: none;
-    color: darkgrey;
-    font-style: italic;
-    font-size: 18px;
-}
-
-.course-user-link:hover{
-    color: #1caff6;
-    text-decoration: none;
-}
-
 
 /* fix alignment of adjacent elements */
 /* FIXME not so good practice to change bootstrap row class */
@@ -791,4 +737,81 @@ img.grayed-out-img {
 
 .rdt_TableHeader > div {
     font-size: 1.2rem !important;
+}
+
+/* common with classroom and editor */
+.blue-title {
+    font-size: 2rem;
+    color: rgb(8, 209, 255);
+    padding-bottom: 2rem;
+}
+
+.blue-text {
+    /*color: rgb(8, 209, 255)*/
+    color: #26a1ff;
+}
+
+
+/* Input tags (react-tags) */
+
+div.ReactTags__tags {
+    position: relative;
+    padding: 1rem 0;
+}
+
+/* Styles for the input */
+div.ReactTags__tagInput {
+    width: 200px;
+    border-radius: 2px;
+    display: inline-block;
+}
+div.ReactTags__tagInput input.ReactTags__tagInputField,
+div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
+    height: 31px;
+    margin: 0;
+    font-size: 12px;
+    width: 100%;
+    border: 1px solid #eee;
+}
+
+/* Styles for selected tags */
+div.ReactTags__selected span.ReactTags__tag {
+    border: 1px solid #1caff6;
+    background: #1caff6;
+    font-size: 1.2rem;
+    display: inline-block;
+    padding: 5px;
+    margin: 0 5px;
+    border-radius: 0.5rem;
+    color: #eeeeee;
+}
+div.ReactTags__selected a.ReactTags__remove {
+    color: #eeeeee;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Styles for suggestions */
+div.ReactTags__suggestions {
+    position: absolute;
+}
+div.ReactTags__suggestions ul {
+    list-style-type: none;
+    box-shadow: .05em .01em .5em rgba(0,0,0,.2);
+    background: white;
+    width: 200px;
+}
+div.ReactTags__suggestions li {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 10px;
+    margin: 0;
+}
+div.ReactTags__suggestions li mark {
+    text-decoration: underline;
+    background: none;
+    font-weight: 600;
+}
+div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
+    background: #b7cfe0;
+    cursor: pointer;
 }

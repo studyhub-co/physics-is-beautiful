@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Col, Container, Row } from 'react-bootstrap'
 import { FaChevronLeft } from 'react-icons/fa'
 import { Section } from './navigation'
@@ -14,10 +15,12 @@ export class SectionSheet extends React.Component {
               {/* TODO replace href with history support https://github.com/ReactTraining/history#readme */}
               {/* to make it work as SPA app */}
               {/* It seems window.history is not enough for this link */}
-              <a className={'back-button'} href={this.props.backLink}>
+              {/*<a className={'back-button'} href={this.props.backLink}>*/}
+              {/*</a>*/}
+              <Link to={this.props.backLink} className={'back-button'}>
                 <FaChevronLeft />
                 Course home
-              </a>
+              </Link>
             </Col>
           </Row>
         </Container>
@@ -28,7 +31,7 @@ export class SectionSheet extends React.Component {
       sections.push(<Section key={el.uuid} name={el.name} items={el.items} />)
     })
     return (
-      <div className='container section-sheet'>
+      <div className='section-sheet'>
         {backLink}
         {sections}
       </div>

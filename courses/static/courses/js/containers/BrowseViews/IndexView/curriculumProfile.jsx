@@ -5,9 +5,9 @@ import { connect } from 'react-redux'
 import { Image as ImageBs, Container, Row, Col } from 'react-bootstrap'
 import Moment from 'react-moment'
 import copy from 'copy-to-clipboard'
-import { FaCodeBranch, FaShareAlt, FaChevronLeft } from 'react-icons/fa'
-
 import { BASE_URL } from '../../../utils/config'
+
+import { FaCodeBranch, FaShareAlt, FaChevronLeft } from 'react-icons/fa'
 
 import {
   loadPublicCourse,
@@ -29,7 +29,7 @@ class CourseProfileView extends React.Component {
   }
 
   startCourse () {
-    window.open(BASE_URL + 'courses/' + this.props.match.params.uuid + '/', '_self')
+    history.push('/courses/' + this.props.match.params.uuid + '/', '_self')
   }
 
   onForkSelect (e) {
@@ -50,7 +50,7 @@ class CourseProfileView extends React.Component {
           <Container fluid>
             <Row style={{padding: 0}}>
               <Col sm={6} md={6}>
-                <a className={'back-button'} onClick={() => { history.push('/browse/') }} >
+                <a className={'back-button'} onClick={() => { history.push('browse/') }} >
                   <FaChevronLeft />
                   Curricula
                 </a>

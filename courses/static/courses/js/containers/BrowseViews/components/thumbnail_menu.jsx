@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import copy from 'copy-to-clipboard'
 import { Dropdown, Image } from 'react-bootstrap'
+import { BASE_URL } from '../../../utils/config'
 import { FaEllipsisV, FaGraduationCap, FaCodeBranch, FaShareAlt, FaPlus } from 'react-icons/fa'
 
 import {
@@ -11,7 +12,6 @@ import {
 } from '../../../actions/studio'
 import { Overlay } from '../../../components/fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
-import { BASE_URL } from '../../../utils/config'
 
 class MenuToggle extends React.Component {
   constructor (props, context) {
@@ -80,16 +80,16 @@ class ThumbnailMenu extends React.Component {
   }
 
   onLearnSelect () {
-    //window.open('/courses/units/' + this.props.unit.uuid + '/', '_blank')
+    //history.push('/courses/units/' + this.props.unit.uuid + '/', '_blank')
     if (this.state.baseName === 'material') { // open lesson view
-      window.open('/courses/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
+      history.push('/courses/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
     } else {
-      window.open('/courses/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
+      history.push('/courses/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
     }
   }
 
   // onTitleClick () {
-  //   window.open('/courses/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
+  //   history.push('/courses/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_blank')
   // }
 
   onCopyShareableLink (e) {

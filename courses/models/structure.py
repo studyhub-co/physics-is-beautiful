@@ -15,7 +15,9 @@ class CourseQuerySet(models.QuerySet):
     def get_default(self, user=None):
         # try to find course in last classrooms
         if user and user.profile.as_student_classrooms.count() > 0:
-            return user.profile.as_student_classrooms.last().course
+            # return user.profile.as_student_classrooms.last().course
+            # TODO migrate classsroom to course .course
+            return user.profile.as_student_classrooms.last().curriculum
 
         return self.filter(is_default=True).first()  # get first default
 

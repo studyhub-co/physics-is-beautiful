@@ -1,4 +1,5 @@
 import { createBrowserHistory } from 'history'
 
-export default createBrowserHistory()
-// export default createHistory({basename: '/course'})
+import { BASE_URL } from './utils/config'
+
+export default createBrowserHistory({basename: BASE_URL})

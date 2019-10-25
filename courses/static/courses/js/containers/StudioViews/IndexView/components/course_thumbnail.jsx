@@ -7,9 +7,9 @@ import { Col, Dropdown, DropdownItem } from 'react-bootstrap'
 import { FaEllipsisV, FaEdit, FaPen, FaCodeBranch, FaShareAlt, FaTrash } from 'react-icons/fa'
 import copy from 'copy-to-clipboard'
 
+import { BASE_URL } from '../../../../utils/config'
 import { Thumbnail } from '../../../../components/thumbnail'
 import { Overlay } from '../../../../components/fullscreen_overlay'
-import { BASE_URL } from '../../../../utils/config'
 
 class CourseMenuToggle extends React.Component {
   constructor (props, context) {
@@ -56,7 +56,7 @@ export default class CourseThumbnail extends React.Component {
   }
 
   onCopyShareableLink (e) {
-    copy(window.location.origin + BASE_URL + '/courses/' + this.props.uuid + '/')
+    copy(window.location.origin + BASE_URL + 'courses/' + this.props.uuid + '/')
   }
 
   onEditCourseSelect (e) {

@@ -6,7 +6,6 @@ import { Route } from 'react-router'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import history from '../history'
-import { BASE_URL } from '../utils/config'
 
 import { changeStudioSelectedTab, deleteCourse } from '../actions/studio'
 
@@ -29,13 +28,13 @@ class BrowseStudioDashboard extends React.Component {
   }
 
   componentWillMount () {
-    if (this.props.match.path === BASE_URL + 'browse/' && this.props.match.isExact) {
+    if (this.props.match.path === 'browse/' && this.props.match.isExact) {
       this.props.changeTab('browse', 'tab')
     }
-    if (this.props.match.path === BASE_URL + 'studio/' && this.props.match.isExact) {
+    if (this.props.match.path === 'studio/' && this.props.match.isExact) {
       this.props.changeTab('studio', 'tab')
     }
-    if (this.props.location.pathname.lastIndexOf(BASE_URL + 'studio/profile/', 0) === 0) {
+    if (this.props.location.pathname.lastIndexOf('studio/profile/', 0) === 0) {
       this.props.changeTab('studio', 'tab')
       this.setState({showEditCourseProfile: true})
     }
@@ -51,8 +50,8 @@ class BrowseStudioDashboard extends React.Component {
 
   handleTabUserChange (tabname, tabspace) {
     if (tabname !== 'studio') {
-      history.push(BASE_URL + tabname + '/')
-    } else { history.push(BASE_URL + 'studio/') }
+      history.push('/' + tabname + '/')
+    } else { history.push('/studio/') }
 
     this.props.changeTab(tabname, tabspace)
   }
@@ -62,13 +61,13 @@ class BrowseStudioDashboard extends React.Component {
       toEditCourseUuid: uuid,
       showEditCourseProfile: !this.state.showEditCourseProfile
     })
-    history.push(BASE_URL + 'studio/profile/' + uuid + '/')
+    history.push('/studio/profile/' + uuid + '/')
   }
 
   onDeleteCourseClick (uuid) {
     if (confirm('Are you sure you want to delete this course?')) { // TODO we can use Modal from react bootstrap if needed
       this.props.deleteCourse(uuid)
-      history.push(BASE_URL + 'studio/')
+      history.push('/studio/')
     }
   }
 
@@ -93,7 +92,7 @@ class BrowseStudioDashboard extends React.Component {
             </TabContent>
             <TabContent for='studio'>
               {this.state.showEditCourseProfile
-                ? <Route path={BASE_URL + 'studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
+                ? <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
                 : <div>
                   <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit

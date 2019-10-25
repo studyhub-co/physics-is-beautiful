@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 
 import history from '../../../../history'
-import { BASE_URL } from '../../../../utils/config'
 import { LessonThumbnail } from '../rich_components/lesson_thumbnail'
 
 const mapStateToProps = (state, ownProps) => {
@@ -11,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
     uuid: uuid,
     name: les.name,
     image: les.image,
-    onClick: () => { history.push(BASE_URL + 'studio/editor/lessons/' + uuid + '/') }
+    onClick: () => { history.push('/studio/editor/lessons/' + uuid + '/') }
   }
 }
 

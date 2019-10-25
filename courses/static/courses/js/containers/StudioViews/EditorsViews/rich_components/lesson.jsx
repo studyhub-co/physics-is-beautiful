@@ -9,7 +9,6 @@ import ListGroup from 'react-bootstrap/ListGroup'
 
 import { FaTimes, FaExternalLinkAlt, FaPlusCircle } from 'react-icons/fa'
 
-import { BASE_URL } from '../../../../utils/config'
 import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 
 import { EditableThumbnail } from '../../../../components/thumbnail'
@@ -82,7 +81,7 @@ export class Lesson extends React.Component {
       <Container>
         <Row>
           <BackButton
-            link={BASE_URL + 'studio/editor/modules/' + this.props.module + '/'}
+            link={'/studio/editor/modules/' + this.props.module + '/'}
           />
         </Row>
         <Row>
@@ -102,7 +101,7 @@ export class Lesson extends React.Component {
           </Col>
           <Col sm={3} md={6} xs={12}>
             <a
-              href={BASE_URL + 'course/lessons/' + this.props.uuid}
+              href={'/course/lessons/' + this.props.uuid}
               className='btn btn-light'
             >
               <FaExternalLinkAlt /> Open student view

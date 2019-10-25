@@ -4,9 +4,9 @@ import Moment from 'react-moment'
 import { Col } from 'react-bootstrap'
 import copy from 'copy-to-clipboard'
 
+import { BASE_URL } from '../../../utils/config'
 import { Thumbnail } from '../../../components/thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
-import { BASE_URL } from '../../../utils/config'
 
 export class LessonThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -18,11 +18,11 @@ export class LessonThumbnailPublic extends React.Component {
   }
 
   onLearnSelect () {
-    window.open(BASE_URL + 'courses/lessons/' + this.props.lesson.uuid + '/', '_self')
+    history.push('/courses/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
   onTitleClick () {
-    window.open(BASE_URL + 'courses/lessons/' + this.props.lesson.uuid + '/', '_self')
+    history.push('/courses/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
   onCopyShareableLink (e) {

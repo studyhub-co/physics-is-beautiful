@@ -6,7 +6,6 @@ import { Button } from 'react-bootstrap'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 import { FaTimes, FaExternalLinkAlt } from 'react-icons/fa'
 
-import { BASE_URL } from '../../../../utils/config'
 import { BackButton } from '../components/back_button'
 import { EditableThumbnail } from '../../../../components/thumbnail'
 import UnitContainer from '../containers/unit'
@@ -87,13 +86,13 @@ export class Course extends React.Component {
 
     return (
       <div>
-        <BackButton link={BASE_URL + 'studio/'} />
+        <BackButton link={'/studio/'} />
         <div className='course'>
           <h1>
             <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
             {nameLabel}
             <FaTimes onClick={this.handleDeleteClick} />
-            <Link to={BASE_URL + 'courses/' + this.props.uuid + '/'} className='btn btn-light'>
+            <Link to={'/courses/' + this.props.uuid + '/'} className='btn btn-light'>
               <FaExternalLinkAlt /> Open student view
             </Link>
           </h1>

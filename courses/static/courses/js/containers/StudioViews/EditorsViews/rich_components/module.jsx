@@ -5,7 +5,6 @@ import { WithOutContext as ReactTags } from 'react-tag-input'
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
 import LessonThumbnailContainer from '../containers/lesson_thumbnail'
-import { BASE_URL } from '../../../../utils/config'
 import { EditableThumbnail } from '../../../../components/thumbnail'
 import { EditableLabel } from '../../../../components/label'
 import { BackButton } from '../components/back_button'
@@ -80,7 +79,7 @@ export class Module extends React.Component {
     }
     return (
       <div className='module'>
-        <BackButton link={BASE_URL + 'studio/editor/courses/' + this.props.course + '/'}/>
+        <BackButton link={'/studio/editor/courses/' + this.props.course + '/'}/>
         <h1>
           <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
           <EditableLabel value={this.props.name} onChange={this.props.onNameChange} defaultValue='New module'/>

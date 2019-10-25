@@ -3,7 +3,6 @@ import { DropTarget } from 'react-dnd'
 
 import history from '../../../../history'
 
-import { BASE_URL } from '../../../../utils/config'
 import { DragItemTypes } from '../../../../dnd'
 import { ModuleThumbnail } from '../rich_components/module_thumbnail'
 import { moveLesson } from '../../../../actions/studio'
@@ -14,7 +13,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     name: mod.name,
     image: mod.image,
-    onClick: () => { history.push(BASE_URL + 'studio/editor/modules/' + uuid + '/') }
+    onClick: () => { history.push('/studio/editor/modules/' + uuid + '/') }
   }
 }
 

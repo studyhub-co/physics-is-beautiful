@@ -1,6 +1,5 @@
 import React from 'react'
 import history from '../history'
-import { BASE_URL } from '../utils/config'
 
 export class AdblockDetect extends React.Component {
   constructor (props) {
@@ -17,7 +16,7 @@ export class AdblockDetect extends React.Component {
 
   render () {
     if (this.state.usingAdblock === true) {
-      history.push(BASE_URL + 'adblock/', { prevPath: this.state.path })
+      history.push('adblock/', { prevPath: this.state.path })
     }
 
     return (

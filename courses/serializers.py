@@ -125,7 +125,7 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['uuid', 'name', 'image', 'module', 'status', 'lesson_type', 'game_slug']
+        fields = ['uuid', 'name', 'image', 'module', 'status'] # 'lesson_type', 'game_slug'
 
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
@@ -138,7 +138,9 @@ class LessonSerializer(BaseSerializer):
             # return LessonProgressStatus.get_name(
             #     self.context['progress_service'].get_lesson_status(obj)
             # ).lower()
-            self.context['progress_service'].get_lesson_status(obj).name.lower()
+            return LessonProgressStatus(
+                self.context['progress_service'].get_lesson_status(obj)
+            ).name.lower()
         else:
             return ''
 
@@ -215,21 +217,22 @@ class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):
         return count
 
     def get_status(self, obj):
+        # bad: loaded all lessons in memory
         lesson_statuses = {
             self.context['progress_service'].get_lesson_status(lesson)
             for lesson in obj.lessons.all()
         }
         sequential_check = [
-            LessonProgressStatus.NEW,
-            LessonProgressStatus.UNLOCKED,
-            LessonProgressStatus.LOCKED,
-            LessonProgressStatus.COMPLETE,
+            LessonProgressStatus.NEW.value,
+            LessonProgressStatus.UNLOCKED.value,
+            LessonProgressStatus.LOCKED.value,
+            LessonProgressStatus.COMPLETE.value,
         ]
         for status in sequential_check:
             if status in lesson_statuses:
                 break
-        return status.name.lower()
-        # return LessonProgressStatus.get_name(status).lower()
+
+        return LessonProgressStatus(status).name.lower()
 
 
 class UnitSerializer(ExpanderSerializerMixin, BaseSerializer):

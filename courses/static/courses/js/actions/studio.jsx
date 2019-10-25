@@ -2,8 +2,6 @@ import Cookies from 'js-cookie'
 
 import history from '../history'
 
-import { BASE_URL } from '../utils/config'
-
 // import { angleToVector, vectorToAngle
 // } from '../utils/vectors'
 // import { validateQuantityUnit, splitQuantityUnit
@@ -222,7 +220,7 @@ export function addCourse (prototype) {
       },
       success: function (data, status, jqXHR) {
         dispatch(courseLoaded(data))
-        history.push(BASE_URL + 'studio/editor/courses/' + data.uuid + '/')
+        history.push('studio/editor/courses/' + data.uuid + '/')
       },
       error: function (xhr, ajaxOptions, thrownError) {
         if (xhr.status === 403) {
@@ -367,7 +365,7 @@ export function loadCourses () {
       },
       error: function (xhr, ajaxOptions, thrownError) {
         if (xhr.status === 404) {
-          history.push(BASE_URL + '404')
+          history.push('404')
         }
       }
     })
@@ -594,7 +592,7 @@ function loadCourse (uuid, dispatch) {
     },
     error: function (xhr, ajaxOptions, thrownError) {
       if (xhr.status === 404) {
-        history.push(BASE_URL + '404')
+        history.push('404')
       }
     }
   })
@@ -668,7 +666,7 @@ export function deleteCourse (uuid) {
       url: API_PREFIX + 'courses/' + uuid + '/',
       method: 'DELETE',
       success: function (data, status, jqXHR) {
-        history.push(BASE_URL + 'studio/')
+        history.push('studio/')
         // TODO: reload all courses
       }
     })
@@ -701,7 +699,7 @@ export function addUnit (courseUuid, unit) {
         // dispatch(unitAdded(courseUuid, data))
         // reload expanded
         loadCourse(courseUuid, dispatch)
-        history.push(BASE_URL + 'studio/editor/courses/' + courseUuid + '/')
+        history.push('studio/editor/courses/' + courseUuid + '/')
       },
       error: function (xhr, ajaxOptions, thrownError) {
         if (xhr.status === 403) {
@@ -738,7 +736,7 @@ export function addToNewCourse (type, value) {
             if (type === 'unit') {
               // dispatch(unitAdded(unitData.course, data))
               loadCourse(unitData.course, dispatch)
-              history.push(BASE_URL + 'studio/editor/courses/' + unitData.course + '/')
+              history.push('studio/editor/courses/' + unitData.course + '/')
             } else {
               // create module
               var moduleData = {name: 'New module', unit: data.uuid}
@@ -757,7 +755,7 @@ export function addToNewCourse (type, value) {
                   if (type === 'module') {
                     // dispatch(moduleAdded(data))
                     loadCourse(unitData.course, dispatch)
-                    history.push(BASE_URL + 'studio/editor/modules/' + data.uuid + '/')
+                    history.push('studio/editor/modules/' + data.uuid + '/')
                   } else {
                     // create lesson
                     var lessonData = {name: 'New lesson', module: data.uuid}
@@ -785,7 +783,7 @@ export function addToNewCourse (type, value) {
                           //   materials: materials,
                           //   answers: extractAll(materials, 'answers')
                           // })
-                          history.push(BASE_URL + 'studio/editor/lessons/' + data.uuid + '/')
+                          history.push('studio/editor/lessons/' + data.uuid + '/')
                         } else {
                           // add material
                           var materialData = {name: 'New material', lesson: data.uuid}
@@ -802,7 +800,7 @@ export function addToNewCourse (type, value) {
                             url: API_PREFIX + 'materials/',
                             data: materialData,
                             success: function (data, status, jqXHR) {
-                              history.push(BASE_URL + 'studio/editor/lessons/' + data.lesson + '/')
+                              history.push('studio/editor/lessons/' + data.lesson + '/')
                             }
                           })
                         }
@@ -925,7 +923,7 @@ export function addModule (unitUuid, module) {
       data: data,
       success: function (data, status, jqXHR) {
         dispatch(moduleAdded(data))
-        history.push(BASE_URL + 'studio/editor/modules/' + data.uuid + '/')
+        history.push('studio/editor/modules/' + data.uuid + '/')
       }
     })
   }
@@ -1028,7 +1026,7 @@ export function deleteModule (moduleUuid) {
       url: API_PREFIX + 'modules/' + moduleUuid + '/',
       method: 'DELETE',
       success: function (data, status, jqXHR) {
-        history.push(BASE_URL + 'studio/editor/courses/' + course + '/')
+        history.push('studio/editor/courses/' + course + '/')
       }
     })
   }
@@ -1046,7 +1044,7 @@ export function loadModuleIfNeeded (uuid) {
         },
         error: function (xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {
-            history.push(BASE_URL + '404')
+            history.push('404')
           }
         }
       })
@@ -1078,7 +1076,7 @@ export function addLesson (moduleUuid, lesson) {
           lesson: data,
           materials: materials
         })
-        history.push(BASE_URL + 'studio/editor/lessons/' + data.uuid + '/')
+        history.push('studio/editor/lessons/' + data.uuid + '/')
       }
     })
   }
@@ -1115,7 +1113,7 @@ export function loadLessonIfNeeded (uuid) {
         },
         error: function (xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {
-            history.push(BASE_URL + '404')
+            history.push('404')
           }
         }
       })
@@ -1229,7 +1227,7 @@ export function deleteLesson (lessonUuid) {
       url: API_PREFIX + 'lessons/' + lessonUuid + '/',
       method: 'DELETE',
       success: function (data, status, jqXHR) {
-        history.push(BASE_URL + 'studio/editor/modules/' + moduleUuid + '/')
+        history.push('studio/editor/modules/' + moduleUuid + '/')
       }
     })
   }
@@ -1357,7 +1355,7 @@ export function addMaterial (lesson, material) {
       data: data, // {lesson : lesson, text : 'New material'},
       success: function (data, status, jqXHR) {
         if (material) {
-          history.push(BASE_URL + 'studio/editor/lessons/' + lesson + '/')
+          history.push('studio/editor/lessons/' + lesson + '/')
           // reload lesson
           dispatch(loadLesson(lesson))
         } else {

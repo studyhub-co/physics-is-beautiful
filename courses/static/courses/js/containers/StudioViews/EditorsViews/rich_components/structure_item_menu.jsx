@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { Dropdown, Image } from 'react-bootstrap'
 import { FaGraduationCap, FaCodeBranch, FaPlus } from 'react-icons/fa'
 
-import { BASE_URL } from '../../../../utils/config'
 import {
   addUnit,
   addToNewCourse,
@@ -90,9 +89,9 @@ class StructureItemMenu extends React.Component {
   onLearnSelect (e, event) {
     event.stopPropagation() // stop parents onClicks if exist
     if (this.state.baseName === 'material') { // open lesson view
-      window.open(BASE_URL + 'course/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
+      history.push('/course/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
     } else {
-      window.open(BASE_URL + 'course/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
+      history.push('/course/' + this.state.baseName + 's/' + this.props[this.state.baseName].uuid + '/', '_self')
     }
   }
 

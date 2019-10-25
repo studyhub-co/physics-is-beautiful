@@ -527,6 +527,7 @@ export default class CurriculumRouter extends React.Component {
         <Switch>
           <Route path='/lessons/:currentId' component={LessonsApp} />
           <Route path='/modules/:currentId' component={ModulesApp} />
+          {/* it seem units app not using */}
           <Route path='/units/:currentId' component={UnitsApp} />
           {/* <Route path='/games/:slug' component={GamesApp} /> */}
           <Route path='/games/:uuid/:slug' component={GamesApp} />
