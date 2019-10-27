@@ -1,0 +1,1 @@
+These apps should load as standalone! Do not include these apps into Courses js code, use <link> in template. 

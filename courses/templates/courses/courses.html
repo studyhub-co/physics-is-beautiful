@@ -26,6 +26,16 @@
 {% endblock extrahead %}
 
 {% block body_content %}
+
+<!-- AMD Loader for Monaco -->
+<script src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/loader.js' %}"}></script>
+<script>
+  window.require.config({
+    url: "{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/loader.js' %}",
+    paths: {vs: "{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/' %}"}
+  });
+</script>
+
 <script type="text/javascript">
 {# TODO move to json file #}
   var DJEDDIT_CONFIG = {

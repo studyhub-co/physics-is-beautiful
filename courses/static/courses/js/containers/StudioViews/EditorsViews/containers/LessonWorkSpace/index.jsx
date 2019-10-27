@@ -1,16 +1,9 @@
 import React from 'react'
 
 import { connect } from 'react-redux'
-
 import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
-// import Container from 'react-bootstrap/Container'
-// import Row from 'react-bootstrap/Row'
-// import Col from 'react-bootstrap/Col'
-// import Tab from 'react-bootstrap/Tab'
-// import ListGroup from 'react-bootstrap/ListGroup'
-
-import { FaTimes, FaExternalLinkAlt, FaPlusCircle } from 'react-icons/fa'
+import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
 import {
   renameLesson,
@@ -31,9 +24,8 @@ import MaterialContainer from '../../containers/material'
 
 import ToolBar from './Menu/ToolBar'
 import Menu from './Menu/Menu'
-import { Sheet } from '../../../../../components/Sheet'
 
-// import MaterialContainer from '..//material'
+import Editor from './Codesandbox/Editor/index'
 
 export class Lesson extends React.Component {
   constructor (props) {
@@ -156,7 +148,9 @@ export class Lesson extends React.Component {
             </div>
           </Grid>
           <Grid item xs={10}>
-            <MaterialContainer uuid={this.props.currentMaterial} />
+            {/* TODO present modes */}
+            {/*<MaterialContainer uuid={this.props.currentMaterial} />*/}
+            <Editor />
           </Grid>
         </Grid>
       </Grid>

@@ -95,6 +95,7 @@
     "react-selectize": "^3.0.1",
     "react-slick": "^0.23.2",
     "react-spinners": "^0.3.3",
+    "react-split-pane": "^0.1.87",
     "react-tabs-redux": "^4.0.0",
     "react-tag-input": "github:physics-is-beautiful/react-tags",
     "react-transition-group": "^1.2.1",
