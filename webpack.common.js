@@ -71,7 +71,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(jsx?)$/,
+        // test: /\.(jsx?)$/,
+        test: /\.(js|jsx|tsx|ts)$/,
         loader: 'babel-loader',
         // exclude: [/node_modules\/(?!(@vermus\/django-react-djeddit-client)\/).*/,
         exclude: [/node_modules/,
@@ -106,7 +107,9 @@ module.exports = {
   },
   resolve: {
     modules: ['static/js/common', 'node_modules', 'bower_components'],
-    extensions: ['.js', '.jsx']
+    // extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    // symlinks: false
   },
   watchOptions: { // fix watch for Windows
     poll: 1000

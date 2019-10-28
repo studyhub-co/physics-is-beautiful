@@ -1,7 +1,9 @@
 {
   "extends": ["standard", "standard-react",  "prettier/react"],
   "plugins": ["prettier"],
+  "parser": "babel-eslint",
   "env": {
-    "jquery": true
+    "jquery": true,
+    "es6": true
   }
 }

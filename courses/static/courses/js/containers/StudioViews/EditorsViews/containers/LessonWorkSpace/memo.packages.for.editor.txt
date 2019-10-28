@@ -1,1 +1,13 @@
 react-split-pane
+react-icon-base
+overmind
+overmind-react
+
+#dev:
+babel-eslint
+typescript
+@types/react
+@types/react-icons
+@types/styled-components
+@babel/preset-typescript
+@babel/plugin-proposal-object-rest-spread
