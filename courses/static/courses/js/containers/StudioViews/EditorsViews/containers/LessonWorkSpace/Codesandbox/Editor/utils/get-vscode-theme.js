@@ -1,10 +1,10 @@
 import JSON from 'json5';
 
-import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import codesandbox from '../../common/themes/codesandbox.json';
 
-import themes from '@codesandbox/common/lib/themes';
-import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
+import themes from '../../common/themes';
+// import { notificationState } from '../../common/utils/notifications';
+// import { NotificationStatus } from '@codesandbox/notifications';
 
 const editorBackground = 'editor.background';
 const editorForeground = 'editor.foreground';

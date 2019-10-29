@@ -2,6 +2,11 @@ react-split-pane
 react-icon-base
 overmind
 overmind-react
+mobx-react-lite
+mobx-react
+mobx
+lodash-es
+glamor
 
 #dev:
 babel-eslint
@@ -10,4 +15,7 @@ typescript
 @types/react-icons
 @types/styled-components
 @babel/preset-typescript
+@babel/preset-flow
+@babel/preset-react
 @babel/plugin-proposal-object-rest-spread
+@typescript-eslint/parser

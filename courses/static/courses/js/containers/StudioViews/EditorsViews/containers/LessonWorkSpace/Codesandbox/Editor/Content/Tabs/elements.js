@@ -1,7 +1,8 @@
-import styled, { css } from 'styled-components';
-import PrettierIcon from 'react-icons/lib/md/brush';
+import styled, { css } from 'styled-components'
+// import PrettierIcon from 'react-icons/lib/md/brush'
+import { MdBrush as PrettierIcon } from 'react-icons/md'
 
-const HEIGHT = '35px';
+const HEIGHT = '35px'
 
 export const Container = styled.div`
   position: absolute;
@@ -16,7 +17,7 @@ export const Container = styled.div`
 
   background-color: ${({ theme }) =>
     theme['editorGroupHeader.tabsBackground'] || theme.background4};
-`;
+`
 
 export const TabsContainer = styled.div`
   display: flex;
@@ -31,7 +32,7 @@ export const TabsContainer = styled.div`
   &::-webkit-scrollbar {
     height: 2px;
   }
-`;
+`
 
 export const StyledPrettierIcon = styled(PrettierIcon)`
   transition: 0.3s ease opacity;
@@ -53,7 +54,7 @@ export const StyledPrettierIcon = styled(PrettierIcon)`
       opacity: 0;
       pointer-events: none;
     `};
-`;
+`
 
 export const IconContainer = styled.div`
   display: flex;
@@ -61,7 +62,7 @@ export const IconContainer = styled.div`
   float: right;
   flex-shrink: 1;
   padding: 0 0.75rem;
-`;
+`
 
 export const Line = styled.div`
   height: 12px;
@@ -69,7 +70,7 @@ export const Line = styled.div`
 
   background-color: ${props =>
     props.theme['editorGroupHeader.tabsBorder'] || 'rgba(255, 255, 255, 0.3)'};
-`;
+`
 
 export const IconWrapper = styled.div`
   svg {
@@ -87,17 +88,17 @@ export const IconWrapper = styled.div`
     }
 
     ${props =>
-      props.active &&
+    props.active &&
       css`
         opacity: 1;
         color: ${props.theme['editor.foreground'] || 'white'};
       `};
 
     ${props =>
-      props.disabled &&
+    props.disabled &&
       css`
         opacity: 0;
         pointer-events: none;
       `};
   }
-`;
+`

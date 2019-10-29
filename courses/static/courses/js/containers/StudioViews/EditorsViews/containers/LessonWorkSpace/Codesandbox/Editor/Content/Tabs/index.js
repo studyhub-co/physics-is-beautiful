@@ -1,11 +1,11 @@
-import React from 'react';
-import { inject, observer } from 'app/componentConnectors';
+import React from 'react'
+import { inject, observer } from '../../../app/componentConnectors'
 
-import { canPrettify } from 'app/utils/prettify';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+// import { canPrettify } from '../../../app/utils/prettify';
+import Tooltip from '../../../common/components/Tooltip'
 
-import TabContainer from './TabContainer';
-import PreviewIcon from './PreviewIcon';
+import TabContainer from './TabContainer'
+import PreviewIcon from './PreviewIcon'
 
 import {
   Container,
@@ -13,104 +13,104 @@ import {
   IconContainer,
   StyledPrettierIcon,
   IconWrapper,
-  Line,
-} from './elements';
+  Line
+} from './elements'
 
-import ModuleTab from './ModuleTab';
+import ModuleTab from './ModuleTab'
 
 class EditorTabs extends React.Component {
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (this.props.currentModuleId !== prevProps.currentModuleId) {
-      const currentTab = this.tabEls[this.props.currentModuleId];
+      const currentTab = this.tabEls[this.props.currentModuleId]
 
       // We need to scroll to the tab
       if (currentTab && this.container) {
-        const { width } = this.container.getBoundingClientRect();
-        const scroll = this.container.scrollLeft;
-        const { left } = currentTab.getBoundingClientRect();
+        const { width } = this.container.getBoundingClientRect()
+        const scroll = this.container.scrollLeft
+        const { left } = currentTab.getBoundingClientRect()
 
         if (left > scroll && left < scroll + width) {
           // if it's already in view
-          return;
+          return
         }
 
-        currentTab.scrollIntoView(false);
+        currentTab.scrollIntoView(false)
       }
     }
   }
 
   closeTab = tabIndex => {
-    this.props.signals.editor.tabClosed({ tabIndex });
+    this.props.signals.editor.tabClosed({ tabIndex })
   };
 
   moveTab = (prevIndex, nextIndex) => {
-    this.props.signals.editor.tabMoved({ prevIndex, nextIndex });
+    this.props.signals.editor.tabMoved({ prevIndex, nextIndex })
   };
 
   /**
    * Mark all tabs not dirty (not cursive)
    */
   markNotDirty = () => {
-    this.props.signals.editor.moduleDoubleClicked();
+    this.props.signals.editor.moduleDoubleClicked()
   };
 
   setCurrentModule = moduleId => {
-    this.props.signals.editor.moduleSelected({ id: moduleId });
+    this.props.signals.editor.moduleSelected({ id: moduleId })
   };
 
   discardModuleChanges = moduleShortid => {
-    this.props.signals.editor.discardModuleChanges({ moduleShortid });
+    this.props.signals.editor.discardModuleChanges({ moduleShortid })
   };
 
   prettifyModule = () => {
     this.props.signals.editor.prettifyClicked({
-      moduleShortid: this.props.store.editor.currentModuleShortid,
-    });
+      moduleShortid: this.props.store.editor.currentModuleShortid
+    })
   };
 
   canPrettify = module => {
     if (!module) {
-      return false;
+      return false
     }
 
-    return canPrettify(module.title);
+    // return canPrettify(module.title)
   };
 
   container;
   tabEls = {};
 
-  render() {
-    const { store, signals } = this.props;
-    const sandbox = store.editor.currentSandbox;
-    const moduleObject = {};
+  render () {
+    const { store, signals } = this.props
+    const sandbox = store.editor.currentSandbox
+    const moduleObject = {}
     // We keep this object to keep track if there are duplicate titles.
     // In that case we need to show which directory the module is in.
-    const tabNamesObject = {};
+    const tabNamesObject = {}
 
     sandbox.modules.forEach(m => {
-      moduleObject[m.shortid] = m;
-    });
+      moduleObject[m.shortid] = m
+    })
 
     store.editor.tabs
       .filter(tab => tab.type === 'MODULE')
       .filter(tab => moduleObject[tab.moduleShortid])
       .forEach(tab => {
-        const module = moduleObject[tab.moduleShortid];
+        const module = moduleObject[tab.moduleShortid]
 
-        tabNamesObject[module.title] = tabNamesObject[module.title] || [];
-        tabNamesObject[module.title].push(module.shortid);
-      });
+        tabNamesObject[module.title] = tabNamesObject[module.title] || []
+        tabNamesObject[module.title].push(module.shortid)
+      })
 
-    const { currentTab } = store.editor;
-    const { currentModule } = store.editor;
+    const { currentTab } = store.editor
+    const { currentModule } = store.editor
 
-    const previewVisible = store.editor.previewWindowVisible;
+    const previewVisible = store.editor.previewWindowVisible
 
     return (
       <Container>
         <TabsContainer
           ref={el => {
-            this.container = el;
+            this.container = el
           }}
         >
           {store.editor.tabs
@@ -118,13 +118,13 @@ class EditorTabs extends React.Component {
             .map((tab, i) => {
               if (tab.type === 'MODULE') {
                 if (tab.module == null) {
-                  return null;
+                  return null
                 }
 
-                const { module } = tab;
-                const modulesWithName = tabNamesObject[module.title];
-                const { id } = tab.module;
-                let dirName = null;
+                const { module } = tab
+                const modulesWithName = tabNamesObject[module.title]
+                const { id } = tab.module
+                let dirName = null
 
                 if (
                   modulesWithName.length > 1 &&
@@ -134,10 +134,10 @@ class EditorTabs extends React.Component {
                     d =>
                       d.shortid === module.directoryShortid &&
                       d.sourceId === module.sourceId
-                  );
+                  )
 
                   if (dir) {
-                    dirName = dir.title;
+                    dirName = dir.title
                   }
                 }
 
@@ -168,10 +168,10 @@ class EditorTabs extends React.Component {
                       )
                     )}
                     ref={el => {
-                      this.tabEls[id] = el;
+                      this.tabEls[id] = el
                     }}
                   />
-                );
+                )
               }
               if (tab.type === 'DIFF') {
                 return (
@@ -187,21 +187,21 @@ class EditorTabs extends React.Component {
                     position={i}
                     dirty={tab.dirty}
                     ref={el => {
-                      this.tabEls[tab.id] = el;
+                      this.tabEls[tab.id] = el
                     }}
                     title={`Diff: ${tab.titleA} - ${tab.titleB}`}
                   />
-                );
+                )
               }
 
-              return null;
+              return null
             })}
         </TabsContainer>
 
         <IconContainer>
           <Tooltip
             style={{ display: 'inline-flex', alignItems: 'center' }}
-            content="Prettify"
+            content='Prettify'
           >
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
@@ -221,8 +221,8 @@ class EditorTabs extends React.Component {
           </Tooltip>
         </IconContainer>
       </Container>
-    );
+    )
   }
 }
 
-export default inject('signals', 'store')(observer(EditorTabs));
+export default inject('signals', 'store')(observer(EditorTabs))

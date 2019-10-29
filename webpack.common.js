@@ -71,12 +71,14 @@ module.exports = {
   module: {
     rules: [
       {
-        // test: /\.(jsx?)$/,
         test: /\.(js|jsx|tsx|ts)$/,
         loader: 'babel-loader',
         // exclude: [/node_modules\/(?!(@vermus\/django-react-djeddit-client)\/).*/,
-        exclude: [/node_modules/,
-          path.resolve(__dirname, '../django-react-djeddit/frontend/django-react-djeddit-client/dist/')] // dev version
+        exclude: [
+          /node_modules/,
+          path.resolve(__dirname,
+            '../django-react-djeddit/frontend/django-react-djeddit-client/dist/') // dev version
+        ]
       },
       {
         // Preprocess our own .css files
@@ -109,7 +111,7 @@ module.exports = {
     modules: ['static/js/common', 'node_modules', 'bower_components'],
     // extensions: ['.js', '.jsx']
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-    // symlinks: false
+    symlinks: false
   },
   watchOptions: { // fix watch for Windows
     poll: 1000

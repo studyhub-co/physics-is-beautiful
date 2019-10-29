@@ -1,51 +1,51 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import { ContextMenu } from 'app/components/ContextMenu';
-import { Container, TabTitle, StyledCloseIcon } from './elements';
+import { ContextMenu } from '../../../../app/components/ContextMenu'
+import { Container, TabTitle, StyledCloseIcon } from './elements'
 
 class Tab extends React.Component {
   state = { hovering: false };
 
   handleMouseEnter = () => {
     this.setState({
-      hovering: true,
-    });
+      hovering: true
+    })
   };
 
   handleMouseLeave = () => {
     this.setState({
-      hovering: false,
-    });
+      hovering: false
+    })
   };
 
   onMouseDown = e => {
     if (e.button === 1) {
       // Middle mouse button
-      this.closeTab(e);
+      this.closeTab(e)
     }
   };
 
   closeTab = e => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
 
     if (this.props.closeTab) {
-      this.props.closeTab(this.props.position);
+      this.props.closeTab(this.props.position)
     }
   };
 
   renderTabStatus = () => {
-    const { tabCount } = this.props;
-    const { hovering } = this.state;
+    const { tabCount } = this.props
+    const { hovering } = this.state
 
     if (hovering && tabCount > 1) {
-      return <StyledCloseIcon onClick={this.closeTab} show="true" />;
+      return <StyledCloseIcon onClick={this.closeTab} show='true' />
     }
 
-    return <StyledCloseIcon onClick={this.closeTab} show={undefined} />;
+    return <StyledCloseIcon onClick={this.closeTab} show={undefined} />
   };
 
-  render() {
+  render () {
     const {
       active,
       dirty,
@@ -54,9 +54,9 @@ class Tab extends React.Component {
       onDoubleClick,
       children,
       title,
-      items,
-    } = this.props;
-    const { hovering } = this.state;
+      items
+    } = this.props
+    const { hovering } = this.state
 
     return (
       <ContextMenu style={{ height: 'calc(100% - 1px)' }} items={items || []}>
@@ -71,17 +71,14 @@ class Tab extends React.Component {
           onMouseLeave={this.handleMouseLeave}
         >
           {title ? (
-            <>
-              <TabTitle>{title}</TabTitle>
-              {this.renderTabStatus()}
-            </>
+            <>'             '<TabTitle>{title}</TabTitle>'             '{this.renderTabStatus()}'           '</>
           ) : (
             children({ hovering, closeTab: this.closeTab })
           )}
         </Container>
       </ContextMenu>
-    );
+    )
   }
 }
 
-export default Tab;
+export default Tab

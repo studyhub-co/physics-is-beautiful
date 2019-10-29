@@ -5,7 +5,8 @@ module.exports = {
       'useBuiltIns': 'entry',
       'debug': false
     }],
-    '@babel/react',
+    '@babel/preset-flow',
+    '@babel/preset-react',
     '@babel/preset-typescript'
   ],
   'plugins': [
