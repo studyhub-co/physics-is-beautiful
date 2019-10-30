@@ -3,7 +3,7 @@ import { AsyncAction, Action } from '../../../../app/overmind';
 
 import { chunk } from 'lodash-es';
 // import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
-MAX_FILE_SIZE = 5
+const MAX_FILE_SIZE = 5
 // import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 // import { DiffTab, TabType } from '../../../../common//types';
 

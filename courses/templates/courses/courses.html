@@ -36,6 +36,30 @@
   });
 </script>
 
+<!-- Browser FS -->
+<script type="text/javascript"
+        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.js' %}">
+
+</script>
+<script type="text/javascript">
+
+    console.log(BrowserFS);
+
+    if (BrowserFS) {
+    window.process = {
+      env: {
+        VSCODE_DEV: false
+      },
+      nextTick: function(cb) {
+        return requestAnimationFrame(cb);
+      },
+      once: BrowserFS.BFSRequire('process').once,
+      removeListener: function () {}
+    };
+    window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+  }
+</script>
+
 <script type="text/javascript">
 {# TODO move to json file #}
   var DJEDDIT_CONFIG = {

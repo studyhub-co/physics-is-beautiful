@@ -1,166 +1,163 @@
-import * as React from 'react'
-import SplitPane from 'react-split-pane'
-// import { inject, observer } from '../../../../app/componentConnectors';
-import styled, { ThemeProvider } from 'styled-components'
-// import { templateColor } from '../../../../app/utils/template-color'
-import Fullscreen from '../common/components/flex/Fullscreen'
-import getTemplateDefinition from '../common/templates'
-import codesandbox from '../common/themes/codesandbox.json'
+import React from 'react'
 
-// import ForkFrozenSandboxModal from './ForkFrozenSandboxModal'
-import { Container } from './elements'
-// import { Workspace } from './Workspace'
-import Content from './Content'
-// import { Header } from './Header'
-import { Navigation } from './Navigation'
-import getVSCodeTheme from './utils/get-vscode-theme'
+import { ThemeProvider } from 'styled-components'
+import { Provider as ActualOvermindProvider } from 'overmind-react'
+import { createOvermind } from 'overmind'
 
-// const STATUS_BAR_SIZE = 22
+import { config } from '../app/overmind'
+import { Provider as OvermindProvider } from '../app/overmind/Provider'
+import theme from '../common/theme'
 
-// const StatusBar = styled.div`
-//   a {
-//     color: inherit;
-//   }
-// `
+import Editor from './editor'
 
-class ContentSplit extends React.Component {
-  state = {
-    theme: {
-      colors: {},
-      vscodeTheme: codesandbox
-    },
-    customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme
-  };
+export default class Index extends React.Component {
+  initialize () {
+  /*
+    Configure Cerebral and Overmind
+  */
+    const overmind = createOvermind(config, {
+      devtools:
+      (window.opener && window.opener !== window) || !window.chrome
+        ? false
+        : 'localhost:3031',
+      name:
+      'PIB material editor - ' +
+      (navigator.userAgent.indexOf('Chrome/76') > 0 ? 'Chrome' : 'Canary'),
+      logProxies: true
+    })
 
-  componentDidMount () {
-    this.loadTheme()
+    const getState = path =>
+      path
+        ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
+        : overmind.state
+    const getSignal = path =>
+      path.split('.').reduce((aggr, key) => aggr[key], overmind.actions)
+
+    window.getState = getState
+    window.getSignal = getSignal
+
+    this.overmind = overmind
+
+    // Configures BrowserFS to use the LocalStorage file system.
+    window.BrowserFS.configure(
+      {
+        fs: 'MountableFileSystem',
+        options: {
+          '/': { fs: 'InMemory', options: {} },
+          '/PIB': {
+            fs: 'PibMaterialEditorFS',
+            options: {
+              api: {
+                getState: () => ({
+                  modulesByPath: getState().editor.currentSandbox
+                    ? getState().editor.modulesByPath
+                    : {}
+                })
+              }
+            }
+          },
+          // FIXME we no need store modules in BrowserFS
+          '/PIB/node_modules': {
+            fs: 'PIBNodeFS'
+            // options: getTypeFetcher().options
+          },
+          '/vscode': {
+            fs: 'LocalStorage'
+          },
+          '/home': {
+            fs: 'LocalStorage'
+          }
+          // '/extensions': {
+          //   fs: 'BundledHTTPRequest',
+          //   options: {
+          //     index: EXTENSIONS_LOCATION + '/extensions/index.json',
+          //     baseUrl: EXTENSIONS_LOCATION + '/extensions',
+          //     bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+          //     logReads: process.env.NODE_ENV === 'development'
+          //   }
+          // },
+          // '/extensions/custom-theme': {
+          //   fs: 'InMemory'
+          // }
+        }
+      },
+      e => {
+        if (e) {
+          console.error('Problems initializing FS', e)
+          // An error happened!
+          throw e
+        }
+
+        const isVSCode = getState().preferences.settings.experimentVSCode
+
+        if (isVSCode) {
+        // For first-timers initialize a theme in the cache so it doesn't jump colors
+        //   initializeExtensionsFolder()
+        //   initializeCustomTheme()
+        //   initializeThemeCache()
+        //   initializeSettings()
+        //   setVimExtensionEnabled(
+        //     localStorage.getItem('settings.vimmode') === 'true'
+        //   )
+        }
+
+        // eslint-disable-next-line global-require
+        // vscode.loadScript(
+        //   [
+        //     isVSCode
+        //       ? 'vs/editor/codesandbox.editor.main'
+        //       : 'vs/editor/editor.main'
+        //   ],
+        //   isVSCode,
+        //   () => {
+        //     if (process.env.NODE_ENV === 'development') {
+        //     console.log('Loaded Monaco'); // eslint-disable-line
+        //     }
+        //     if (isVSCode) {
+        //       vscode.acquireController({
+        //         getSignal,
+        //         getState
+        //       })
+        //
+        //     import(
+        //       'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
+        //     ).then(ExtHostWorkerLoader => {
+        //       childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default)
+        //       // child_process.preloadWorker('/vs/bootstrap-fork');
+        //     })
+        //
+        //     // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
+        //     //   SearchServiceWorker => {
+        //     //     child_process.addForkHandler(
+        //     //       'csb:search-service',
+        //     //       SearchServiceWorker.default
+        //     //     );
+        //     //   }
+        //     // );
+        //     }
+        //   }
+        // )
+      }
+    )
   }
-
-  componentDidUpdate () {
-    if (
-      this.props.store.preferences.settings.customVSCodeTheme !==
-      this.state.customVSCodeTheme
-    ) {
-      this.loadTheme()
-    }
-  }
-
-  loadTheme = async () => {
-    const { customVSCodeTheme } = this.props.store.preferences.settings
-
-    try {
-      const theme = await getVSCodeTheme('', customVSCodeTheme)
-      this.setState({ theme, customVSCodeTheme })
-    } catch (e) {
-      console.error(e)
-    }
-  };
 
   render () {
-    const { signals, store, match } = this.props
-    const sandbox = store.editor.currentSandbox
+    this.initialize()
 
-    // Force MobX to update this component by observing the following value
-    this.props.store.preferences.settings.customVSCodeTheme; // eslint-disable-line
-
-    const vscode = this.props.store.preferences.settings.experimentVSCode
-
-    const hideNavigation =
-      store.preferences.settings.zenMode && store.workspace.workspaceHidden
-
-    const { statusBar } = store.editor
-
-    const templateDef = sandbox && getTemplateDefinition(sandbox.template)
-
-    const topOffset = store.preferences.settings.zenMode ? 0 : 3 * 16
-    const bottomOffset = vscode ? STATUS_BAR_SIZE : 0
+    console.log(this.overmind)
 
     return (
-      <ThemeProvider
-        theme={{
-          // templateColor: templateColor(sandbox, templateDef),
-          templateBackgroundColor: templateDef && templateDef.backgroundColor,
-          ...this.state.theme
-        }}
-      >
-        <Container
-          style={{ lineHeight: 'initial' }}
-          className='monaco-workbench'
-        >
-          <Header zenMode={store.preferences.settings.zenMode} />
-
-          <Fullscreen style={{ width: 'initial' }}>
-            {!hideNavigation && (
-              <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
-            )}
-
-            <div
-              style={{
-                position: 'fixed',
-                left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',
-                top: topOffset,
-                right: 0,
-                bottom: bottomOffset,
-                height: statusBar ? 'auto' : 'calc(100% - 3.5rem)'
-              }}
-            >
-              <SplitPane
-                split='vertical'
-                defaultSize={17 * 16}
-                minSize={0}
-                onDragStarted={() => signals.editor.resizingStarted()}
-                onDragFinished={() => signals.editor.resizingStopped()}
-                onChange={size => {
-                  if (size > 0 && store.workspace.workspaceHidden) {
-                    signals.workspace.setWorkspaceHidden({ hidden: false })
-                  } else if (size === 0 && !store.workspace.workspaceHidden) {
-                    signals.workspace.setWorkspaceHidden({ hidden: true })
-                  }
-                }}
-                pane1Style={{
-                  visibility: store.workspace.workspaceHidden
-                    ? 'hidden'
-                    : 'visible',
-                  maxWidth: store.workspace.workspaceHidden ? 0 : 'inherit'
-                }}
-                pane2Style={{
-                  height: '100%'
-                }}
-                style={{
-                  overflow: 'visible' // For VSCode Context Menu
-                }}
-              >
-                {store.workspace.workspaceHidden ? <div /> : <Workspace />}
-                <Content match={match} />
-              </SplitPane>
-
-              {/* {vscode && ( */}
-              {/* <StatusBar */}
-              {/* style={{ */}
-              {/* position: 'fixed', */}
-              {/* display: statusBar ? 'block' : 'none', */}
-              {/* bottom: 0, */}
-              {/* left: 0, */}
-              {/* right: 0, */}
-              {/* height: STATUS_BAR_SIZE, */}
-              {/* }} */}
-              {/* className="monaco-workbench mac nopanel" */}
-              {/* > */}
-              {/* <div */}
-              {/* className="part statusbar" */}
-              {/* id="workbench.parts.statusbar" */}
-              {/* /> */}
-              {/* </StatusBar> */}
-              {/* )} */}
-            </div>
-          </Fullscreen>
-          {/*<ForkFrozenSandboxModal />*/}
-        </Container>
-      </ThemeProvider>
+      <ActualOvermindProvider value={this.overmind}>
+        <OvermindProvider value={this.overmind}>
+          {/* <HooksProvider client={client}> */}
+          <ThemeProvider theme={theme}>
+            <Editor>
+              {this.props.children}
+            </Editor>
+          </ThemeProvider>
+          {/* </HooksProvider> */}
+        </OvermindProvider>
+      </ActualOvermindProvider>
     )
   }
 }
-
-export default ContentSplit
-
-// export default inject('signals', 'store')(observer(ContentSplit));

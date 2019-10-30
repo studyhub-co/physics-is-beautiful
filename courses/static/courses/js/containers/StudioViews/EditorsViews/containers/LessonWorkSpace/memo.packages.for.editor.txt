@@ -7,6 +7,7 @@ mobx-react
 mobx
 lodash-es
 glamor
+react-spring
 
 #dev:
 babel-eslint
@@ -19,3 +20,4 @@ typescript
 @babel/preset-react
 @babel/plugin-proposal-object-rest-spread
 @typescript-eslint/parser
+@babel/plugin-transform-runtime

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 // import CloseIcon from 'react-icons/lib/go/x';
-// import CloseIcon from 'react-icons/go/';
+import {GoX as CloseIcon} from 'react-icons/go';
 
 export const Container = styled.div<{
   isOver?: boolean;
