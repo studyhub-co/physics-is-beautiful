@@ -11,7 +11,7 @@ import { merge, namespaced } from 'overmind/config';
 
 import * as actions from './actions';
 import { createConnect } from './createConnect';
-// import * as effects from './effects';
+import * as effects from './effects';
 import { createModals } from './factories';
 import * as modals from './modals';
 // import * as dashboard from './namespaces/dashboard';
@@ -22,7 +22,7 @@ import * as files from './namespaces/files';
 // import * as git from './namespaces/git';
 // import * as live from './namespaces/live';
 // import * as patron from './namespaces/patron';
-// import * as preferences from './namespaces/preferences';
+import * as preferences from './namespaces/preferences';
 // import * as profile from './namespaces/profile';
 // import * as server from './namespaces/server';
 // import * as userNotifications from './namespaces/userNotifications';
@@ -33,12 +33,12 @@ import { state } from './state';
 export const config = merge(
   {
     onInitialize,
-    // effects,
+    effects,
     state,
     actions,
   },
   namespaced({
-    // preferences,
+    preferences,
     // userNotifications,
     // patron,
     editor,

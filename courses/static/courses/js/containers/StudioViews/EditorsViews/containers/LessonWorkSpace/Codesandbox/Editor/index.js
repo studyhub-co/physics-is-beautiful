@@ -16,10 +16,11 @@ export default class Index extends React.Component {
     Configure Cerebral and Overmind
   */
     const overmind = createOvermind(config, {
-      devtools:
-      (window.opener && window.opener !== window) || !window.chrome
-        ? false
-        : 'localhost:3031',
+      // devtools:
+      // (window.opener && window.opener !== window) || !window.chrome
+      //   ? false
+      //   : 'localhost:3031',
+      devtools: false,
       name:
       'PIB material editor - ' +
       (navigator.userAgent.indexOf('Chrome/76') > 0 ? 'Chrome' : 'Canary'),
@@ -44,8 +45,8 @@ export default class Index extends React.Component {
         fs: 'MountableFileSystem',
         options: {
           '/': { fs: 'InMemory', options: {} },
-          '/PIB': {
-            fs: 'PibMaterialEditorFS',
+          '/editor': {
+            fs: 'CodeSandboxEditorFS',
             options: {
               api: {
                 getState: () => ({
@@ -56,11 +57,10 @@ export default class Index extends React.Component {
               }
             }
           },
-          // FIXME we no need store modules in BrowserFS
-          '/PIB/node_modules': {
-            fs: 'PIBNodeFS'
-            // options: getTypeFetcher().options
-          },
+          // '/PIB/node_modules': {
+          //   fs: 'CodeSandboxFS'
+          //   options: getTypeFetcher().options
+          // },
           '/vscode': {
             fs: 'LocalStorage'
           },
@@ -143,8 +143,6 @@ export default class Index extends React.Component {
 
   render () {
     this.initialize()
-
-    console.log(this.overmind)
 
     return (
       <ActualOvermindProvider value={this.overmind}>

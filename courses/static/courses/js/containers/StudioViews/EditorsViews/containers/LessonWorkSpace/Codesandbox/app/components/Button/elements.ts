@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
 // import theme from '../../theme';
 
 export type OptionProps = {

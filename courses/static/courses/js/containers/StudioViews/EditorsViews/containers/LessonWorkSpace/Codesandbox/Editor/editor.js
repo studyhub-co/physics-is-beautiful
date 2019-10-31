@@ -73,7 +73,8 @@ class ContentSplit extends React.Component {
     const templateDef = sandbox && getTemplateDefinition(sandbox.template)
 
     const topOffset = store.preferences.settings.zenMode ? 0 : 3 * 16
-    const bottomOffset = vscode ? STATUS_BAR_SIZE : 0
+    // const bottomOffset = vscode ? STATUS_BAR_SIZE : 0
+    const bottomOffset = 0
 
     return (
       <ThemeProvider
@@ -110,19 +111,19 @@ class ContentSplit extends React.Component {
                 minSize={0}
                 onDragStarted={() => signals.editor.resizingStarted()}
                 onDragFinished={() => signals.editor.resizingStopped()}
-                onChange={size => {
-                  if (size > 0 && store.workspace.workspaceHidden) {
-                    signals.workspace.setWorkspaceHidden({ hidden: false })
-                  } else if (size === 0 && !store.workspace.workspaceHidden) {
-                    signals.workspace.setWorkspaceHidden({ hidden: true })
-                  }
-                }}
-                pane1Style={{
-                  visibility: store.workspace.workspaceHidden
-                    ? 'hidden'
-                    : 'visible',
-                  maxWidth: store.workspace.workspaceHidden ? 0 : 'inherit'
-                }}
+                // onChange={size => {
+                //   if (size > 0 && store.workspace.workspaceHidden) {
+                //     signals.workspace.setWorkspaceHidden({ hidden: false })
+                //   } else if (size === 0 && !store.workspace.workspaceHidden) {
+                //     signals.workspace.setWorkspaceHidden({ hidden: true })
+                //   }
+                // }}
+                // pane1Style={{
+                //   visibility: store.workspace.workspaceHidden
+                //     ? 'hidden'
+                //     : 'visible',
+                //   maxWidth: store.workspace.workspaceHidden ? 0 : 'inherit'
+                // }}
                 pane2Style={{
                   height: '100%'
                 }}
@@ -130,7 +131,8 @@ class ContentSplit extends React.Component {
                   overflow: 'visible' // For VSCode Context Menu
                 }}
               >
-                {store.workspace.workspaceHidden ? <div /> : <Workspace />}
+                {/*{store.workspace.workspaceHidden ? <div /> : <Workspace />}*/}
+                <div />
                 <Content match={match} />
               </SplitPane>
 

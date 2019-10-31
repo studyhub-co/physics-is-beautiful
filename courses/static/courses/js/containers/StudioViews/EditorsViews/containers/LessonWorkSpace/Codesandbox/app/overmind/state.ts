@@ -1,9 +1,9 @@
-// import store from 'store/dist/store.modern';
+import store from 'store/dist/store.modern';
 
 import {
   // CurrentUser,
   // Notification,
-  // Sandbox,
+  Sandbox,
   UploadFile,
 } from '../../common/types';
 import { Derive } from '.';
@@ -37,7 +37,7 @@ type State = {
   maxStorage: number;
   usedStorage: number;
   updateStatus: string;
-  isContributor: Derive<State, (username: String) => boolean>;
+  // isContributor: Derive<State, (username: String) => boolean>;
 };
 
 export const state: State = {
@@ -53,7 +53,7 @@ export const state: State = {
   //       contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
   //   ) > -1,
   // popularSandboxes: null,
-  hasLoadedApp: false,
+  // hasLoadedApp: false,
   // jwt: null,
   // isAuthenticating: true,
   // authToken: null,

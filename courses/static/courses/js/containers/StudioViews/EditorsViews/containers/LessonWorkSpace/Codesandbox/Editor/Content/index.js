@@ -558,6 +558,8 @@ class EditorPreview extends React.Component {
                 }
               />
             </div>
+            {/*need for SplitPane*/}
+            <div></div>
 
             {/* <div */}
             {/* style={{ */}
