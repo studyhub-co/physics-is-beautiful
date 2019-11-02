@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components'
 import { Provider as ActualOvermindProvider } from 'overmind-react'
 import { createOvermind } from 'overmind'
 
+import { vscode } from '../app/vscode'
 import { config } from '../app/overmind'
 import { Provider as OvermindProvider } from '../app/overmind/Provider'
 import theme from '../common/theme'
@@ -102,41 +103,41 @@ export default class Index extends React.Component {
         }
 
         // eslint-disable-next-line global-require
-        // vscode.loadScript(
-        //   [
-        //     isVSCode
-        //       ? 'vs/editor/codesandbox.editor.main'
-        //       : 'vs/editor/editor.main'
-        //   ],
-        //   isVSCode,
-        //   () => {
-        //     if (process.env.NODE_ENV === 'development') {
-        //     console.log('Loaded Monaco'); // eslint-disable-line
-        //     }
-        //     if (isVSCode) {
-        //       vscode.acquireController({
-        //         getSignal,
-        //         getState
-        //       })
-        //
-        //     import(
-        //       'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
-        //     ).then(ExtHostWorkerLoader => {
-        //       childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default)
-        //       // child_process.preloadWorker('/vs/bootstrap-fork');
-        //     })
-        //
-        //     // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
-        //     //   SearchServiceWorker => {
-        //     //     child_process.addForkHandler(
-        //     //       'csb:search-service',
-        //     //       SearchServiceWorker.default
-        //     //     );
-        //     //   }
-        //     // );
-        //     }
-        //   }
-        // )
+        vscode.loadScript(
+          [
+            isVSCode
+              ? 'vs/editor/codesandbox.editor.main'
+              : 'vs/editor/editor.main'
+          ],
+          isVSCode,
+          () => {
+            if (process.env.NODE_ENV === 'development') {
+            console.log('Loaded Monaco'); // eslint-disable-line
+            }
+            if (isVSCode) {
+              vscode.acquireController({
+                getSignal,
+                getState
+              })
+
+            // import(
+            //   'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
+            // ).then(ExtHostWorkerLoader => {
+            //   childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default)
+            //   // child_process.preloadWorker('/vs/bootstrap-fork');
+            // })
+
+            // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
+            //   SearchServiceWorker => {
+            //     child_process.addForkHandler(
+            //       'csb:search-service',
+            //       SearchServiceWorker.default
+            //     );
+            //   }
+            // );
+            }
+          }
+        )
       }
     )
   }

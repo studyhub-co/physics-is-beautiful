@@ -63,7 +63,7 @@ module.exports = {
   },
 
   // additional loading on babel, enable if needed js debug mode
-  // devtool: 'source-map',
+  devtool: 'source-map',
 
   // show all messages from webpack
   // stats: 'verbose',

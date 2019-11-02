@@ -96,7 +96,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   editor?: any;
   monaco?: any;
   receivingCode: boolean = false;
-  codeSandboxAPIListener: () => void;
+  // codeSandboxAPIListener: () => void;
   sizeProbeInterval: number | undefined;
   resizeEditor: (() => void) | EventListener;
   commitLibChanges: () => void;
@@ -122,7 +122,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     this.resizeEditor = debounce(this.resizeEditorInstantly, 150);
     this.commitLibChanges = debounce(this.commitLibChangesInstantly, 300);
 
-    this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener();
+    //this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -232,35 +232,35 @@ export class VSCode extends React.Component<Props> implements Editor {
       },
     ]);
 
-  setupCodeSandboxAPIListener = () =>
-    listen(({ action, type, code, path, lineNumber, column }: any) => {
-      if (type === 'add-extra-lib') {
-        // TODO: bring this func back
-        // const dtsPath = `${path}.d.ts`;
-        // this.monaco.languages.typescript.typescriptDefaults._extraLibs[
-        //   `file:///${dtsPath}`
-        // ] = code;
-        // this.commitLibChanges();
-      } else if (action === 'editor.open-module') {
-        const options: {
-          selection?: { startLineNumber: number; startColumn: number };
-        } = {};
-
-        if (lineNumber || column) {
-          options.selection = {
-            startLineNumber: lineNumber,
-            startColumn: column || 0,
-          };
-        }
-
-        if (this.editor) {
-          this.editor.codeEditorService.openCodeEditor({
-            resource: this.monaco.Uri.file('/sandbox' + path),
-            options,
-          });
-        }
-      }
-    });
+  // setupCodeSandboxAPIListener = () =>
+  //   listen(({ action, type, code, path, lineNumber, column }: any) => {
+  //     if (type === 'add-extra-lib') {
+  //       // TODO: bring this func back
+  //       // const dtsPath = `${path}.d.ts`;
+  //       // this.monaco.languages.typescript.typescriptDefaults._extraLibs[
+  //       //   `file:///${dtsPath}`
+  //       // ] = code;
+  //       // this.commitLibChanges();
+  //     } else if (action === 'editor.open-module') {
+  //       const options: {
+  //         selection?: { startLineNumber: number; startColumn: number };
+  //       } = {};
+  //
+  //       if (lineNumber || column) {
+  //         options.selection = {
+  //           startLineNumber: lineNumber,
+  //           startColumn: column || 0,
+  //         };
+  //       }
+  //
+  //       if (this.editor) {
+  //         this.editor.codeEditorService.openCodeEditor({
+  //           resource: this.monaco.Uri.file('/sandbox' + path),
+  //           options,
+  //         });
+  //       }
+  //     }
+  //   });
 
   modelListeners: {
     [path: string]: {
@@ -361,20 +361,20 @@ export class VSCode extends React.Component<Props> implements Editor {
     this.editor = editor;
     this.monaco = monaco;
 
-    monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
-    monaco.languages.registerDocumentFormattingEditProvider(
-      'typescriptreact',
-      this
-    );
+    // monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
+    // monaco.languages.registerDocumentFormattingEditProvider(
+    //   'typescriptreact',
+    //   this
+    // );
     monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
     monaco.languages.registerDocumentFormattingEditProvider(
       'javascriptreact',
       this
     );
     monaco.languages.registerDocumentFormattingEditProvider('css', this);
-    monaco.languages.registerDocumentFormattingEditProvider('less', this);
-    monaco.languages.registerDocumentFormattingEditProvider('sass', this);
-    monaco.languages.registerDocumentFormattingEditProvider('graphql', this);
+    // monaco.languages.registerDocumentFormattingEditProvider('less', this);
+    // monaco.languages.registerDocumentFormattingEditProvider('sass', this);
+    // monaco.languages.registerDocumentFormattingEditProvider('graphql', this);
     monaco.languages.registerDocumentFormattingEditProvider('html', this);
     monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
     monaco.languages.registerDocumentFormattingEditProvider('json', this);
@@ -1167,7 +1167,7 @@ export class VSCode extends React.Component<Props> implements Editor {
       <Container id="vscode-container">
         <GlobalStyles />
         <MonacoEditorComponent
-          id={this.props.sandbox.id}
+          // id={this.props.sandbox.id}
           width={width}
           height={height}
           theme="CodeSandbox"

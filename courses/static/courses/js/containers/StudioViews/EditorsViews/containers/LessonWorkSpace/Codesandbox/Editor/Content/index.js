@@ -220,45 +220,45 @@ class EditorPreview extends React.Component {
     const disposePendingOperationHandler = this.props.reaction(
       state => clone(state.editor.pendingOperations),
       () => {
-        if (store.live.isLive) {
-          if (store.editor.pendingOperations) {
-            if (editor.setReceivingCode) {
-              editor.setReceivingCode(true)
-            }
-            if (editor.applyOperations) {
-              editor.applyOperations(store.editor.pendingOperations)
-            } else {
-              try {
-                store.editor.pendingOperations.forEach(
-                  (operationJSON, moduleShortid) => {
-                    const operation = TextOperation.fromJSON(operationJSON)
-
-                    const module = store.currentSandbox.modules.find(
-                      m => m.shortid === moduleShortid
-                    )
-
-                    if (!module) {
-                      throw new Error(
-                        'Cannot find module with shortid: ' + moduleShortid
-                      )
-                    }
-
-                    this.props.signals.editor.codeChanged({
-                      code: operation.apply(module.code || ''),
-                      moduleShortid: module.shortid
-                    })
-                  }
-                )
-              } catch (e) {
-                console.error(e)
-              }
-            }
-            if (editor.setReceivingCode) {
-              editor.setReceivingCode(false)
-            }
-            this.props.signals.live.onOperationApplied()
-          }
-        }
+        // if (store.live.isLive) {
+        //   if (store.editor.pendingOperations) {
+        //     if (editor.setReceivingCode) {
+        //       editor.setReceivingCode(true)
+        //     }
+        //     if (editor.applyOperations) {
+        //       editor.applyOperations(store.editor.pendingOperations)
+        //     } else {
+        //       try {
+        //         store.editor.pendingOperations.forEach(
+        //           (operationJSON, moduleShortid) => {
+        //             const operation = TextOperation.fromJSON(operationJSON)
+        //
+        //             const module = store.currentSandbox.modules.find(
+        //               m => m.shortid === moduleShortid
+        //             )
+        //
+        //             if (!module) {
+        //               throw new Error(
+        //                 'Cannot find module with shortid: ' + moduleShortid
+        //               )
+        //             }
+        //
+        //             this.props.signals.editor.codeChanged({
+        //               code: operation.apply(module.code || ''),
+        //               moduleShortid: module.shortid
+        //             })
+        //           }
+        //         )
+        //       } catch (e) {
+        //         console.error(e)
+        //       }
+        //     }
+        //     if (editor.setReceivingCode) {
+        //       editor.setReceivingCode(false)
+        //     }
+        //     this.props.signals.live.onOperationApplied()
+        //   }
+        // }
       }
     )
 
@@ -390,54 +390,57 @@ class EditorPreview extends React.Component {
     const { currentModule } = store.editor
     const notSynced = !store.editor.isAllModulesSynced
     const sandbox = store.editor.currentSandbox
-    const { preferences } = store
+    // const { preferences } = store
     const { currentTab } = store.editor
 
     const windowVisible = store.editor.previewWindowVisible
 
     const { width: editorWidth, height: editorHeight } = this.state
 
-    const template = getTemplateDefinition(sandbox.template)
+    // template - create-react-app, vue, etc
+    // const template = getTemplateDefinition(sandbox.template)
 
     const isReadOnly = () => {
-      if (store.live.isLive) {
-        if (
-          !store.live.isCurrentEditor ||
-          (store.live.roomInfo && store.live.roomInfo.ownerIds.length === 0)
-        ) {
-          return true
-        }
-      }
+      // if (store.live.isLive) {
+      //   if (
+      //     !store.live.isCurrentEditor ||
+      //     (store.live.roomInfo && store.live.roomInfo.ownerIds.length === 0)
+      //   ) {
+      //     return true
+      //   }
+      // }
 
-      if (template.isServer) {
-        if (!store.isLoggedIn || store.server.status !== 'connected') {
-          return true
-        }
-      }
+      // if (template.isServer) {
+      //   if (!store.isLoggedIn || store.server.status !== 'connected') {
+      //     return true
+      //   }
+      // }
 
       return false
     }
 
-    const views = store.editor.devToolTabs
-    const currentPosition = this.props.store.editor.currentDevToolsPosition
+    // const views = store.editor.devToolTabs
+    // const currentPosition = this.props.store.editor.currentDevToolsPosition
 
-    const browserConfig = {
-      id: 'codesandbox.browser',
-      title: options =>
-        options.port || options.title
-          ? `Browser (${options.title || `:${options.port}`})`
-          : `Browser`,
-      Content: ({ hidden, options }) => (
-        <Preview options={options} hidden={hidden} width='100%' height='100%' />
-      ),
-      actions: []
-    }
+    // const browserConfig = {
+    //   id: 'codesandbox.browser',
+    //   title: options =>
+    //     options.port || options.title
+    //       ? `Browser (${options.title || `:${options.port}`})`
+    //       : `Browser`,
+    //   Content: ({ hidden, options }) => (
+    //     <Preview options={options} hidden={hidden} width='100%' height='100%' />
+    //   ),
+    //   actions: []
+    // }
+    
+    console.log(store.preferences.settings);
 
     return (
       <ThemeProvider
         theme={{
-          templateColor: template.color,
-          templateBackgroundColor: template.backgroundColor
+          // templateColor: template.color,
+          // templateBackgroundColor: template.backgroundColor
         }}
       >
         <div
@@ -455,12 +458,12 @@ class EditorPreview extends React.Component {
             }
           }}
         >
-          <Prompt
-            when={notSynced && !store.editor.isForkingSandbox}
-            message={() =>
-              'You have not saved this sandbox, are you sure you want to navigate away?'
-            }
-          />
+          {/*<Prompt*/}
+            {/*when={notSynced && !store.editor.isForkingSandbox}*/}
+            {/*message={() =>*/}
+              {/*'You have not saved this sandbox, are you sure you want to navigate away?'*/}
+            {/*}*/}
+          {/*/>*/}
           <SplitPane
             maxSize={-100}
             onDragFinished={() => {
@@ -469,11 +472,11 @@ class EditorPreview extends React.Component {
             onDragStarted={() => {
               this.props.signals.editor.resizingStarted()
             }}
-            onChange={() => {
-              requestAnimationFrame(() => {
-                this.getBounds()
-              })
-            }}
+            // onChange={() => {
+            //   requestAnimationFrame(() => {
+            //     this.getBounds()
+            //   })
+            // }}
             style={{
               overflow: 'visible' // For VSCode Context Menu
             }}
@@ -527,9 +530,9 @@ class EditorPreview extends React.Component {
                 settings={settings(store)}
                 sendTransforms={this.sendTransforms}
                 readOnly={isReadOnly()}
-                isLive={store.live.isLive}
-                onCodeReceived={signals.live.onCodeReceived}
-                onSelectionChanged={signals.live.onSelectionChanged}
+                // isLive={store.live.isLive}
+                // onCodeReceived={signals.live.onCodeReceived}
+                // onSelectionChanged={signals.live.onSelectionChanged}
                 onNpmDependencyAdded={name => {
                   if (sandbox.owned) {
                     signals.editor.addNpmDependency({ name, isDev: true })
@@ -545,17 +548,17 @@ class EditorPreview extends React.Component {
                 onModuleChange={moduleId =>
                   signals.editor.moduleSelected({ id: moduleId })
                 }
-                onModuleStateMismatch={signals.live.onModuleStateMismatch}
+                // onModuleStateMismatch={signals.live.onModuleStateMismatch}
                 onSave={code =>
                   signals.editor.codeSaved({
                     code,
                     moduleShortid: currentModule.shortid
                   })
                 }
-                tsconfig={
-                  store.editor.parsedConfigurations.typescript &&
-                  store.editor.parsedConfigurations.typescript.parsed
-                }
+                // tsconfig={
+                //   store.editor.parsedConfigurations.typescript &&
+                //   store.editor.parsedConfigurations.typescript.parsed
+                // }
               />
             </div>
             {/*need for SplitPane*/}

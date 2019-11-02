@@ -23,28 +23,14 @@
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
 
 {# editor end TODO replace with webpack minification  #}
-{% endblock extrahead %}
-
-{% block body_content %}
-
-<!-- AMD Loader for Monaco -->
-<script src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/loader.js' %}"}></script>
-<script>
-  window.require.config({
-    url: "{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/loader.js' %}",
-    paths: {vs: "{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/' %}"}
-  });
-</script>
 
 <!-- Browser FS -->
+{# TODO replace with native Browser FS ? #}
 <script type="text/javascript"
-        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.js' %}">
+        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}">
 
 </script>
 <script type="text/javascript">
-
-    console.log(BrowserFS);
-
     if (BrowserFS) {
     window.process = {
       env: {
@@ -59,6 +45,28 @@
     window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
   }
 </script>
+
+<link data-name="editor.main"
+      rel="preload" as="style"
+      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}">
+</link>
+<link rel="preload"
+      as="script"
+      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}">
+</link>
+{% endblock extrahead %}
+
+{% block body_content %}
+
+{#<link rel="stylesheet" type="text/css"#}
+{#      data-name="editor.main"#}
+{#      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}">#}
+{#<script async="" type="text/javascript"#}
+{#        src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/loader.js' %}"></script>#}
+{#<script async="async" type="text/javascript"#}
+{#        src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.nls.js' %}"></script>#}
+{#<script async="async" type="text/javascript"#}
+{#        src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}"></script>#}
 
 <script type="text/javascript">
 {# TODO move to json file #}

@@ -113,59 +113,59 @@ export class CodeEditor extends React.PureComponent<
       );
     }
 
-    const dependencies = getDependencies(sandbox);
+    // const dependencies = getDependencies(sandbox);
 
-    const template = getDefinition(sandbox.template);
-    const modulePath = getModulePath(
-      sandbox.modules,
-      sandbox.directories,
-      module.id
-    );
-    const config = template.configurationFiles[modulePath];
+    // const template = getDefinition(sandbox.template);
+    // const modulePath = getModulePath(
+    //   sandbox.modules,
+    //   sandbox.directories,
+    //   module.id
+    // );
+    // const config = template.configurationFiles[modulePath];
 
-    if (
-      !settings.experimentVSCode &&
-      config &&
-      getUI(config.type) &&
-      this.state.showConfigUI
-    ) {
-      return (
-        <Configuration
-          {...props}
-          dependencies={dependencies}
-          config={config}
-          toggleConfigUI={this.toggleConfigUI}
-        />
-      );
-    }
+    // if (
+    //   !settings.experimentVSCode &&
+    //   config &&
+    //   getUI(config.type) &&
+    //   this.state.showConfigUI
+    // ) {
+    //   return (
+    //     <Configuration
+    //       {...props}
+    //       dependencies={dependencies}
+    //       config={config}
+    //       toggleConfigUI={this.toggleConfigUI}
+    //     />
+    //   );
+    // }
 
-    if (!settings.experimentVSCode && module.isBinary) {
-      if (isImage(module.title)) {
-        return <ImageViewer {...props} dependencies={dependencies} />;
-      }
-
-      return (
-        <Margin
-          style={{
-            overflow: 'auto',
-            height: props.height || '100%',
-            width: props.width || '100%',
-          }}
-          top={2}
-        >
-          <Centered horizontal vertical>
-            <Title>This file is too big to edit</Title>
-            <SubTitle>
-              We will add support for this as soon as possible.
-            </SubTitle>
-
-            <a href={module.code} target="_blank" rel="noreferrer noopener">
-              Open file externally
-            </a>
-          </Centered>
-        </Margin>
-      );
-    }
+    // if (!settings.experimentVSCode && module.isBinary) {
+    //   if (isImage(module.title)) {
+    //     return <ImageViewer {...props} dependencies={dependencies} />;
+    //   }
+    //
+    //   return (
+    //     <Margin
+    //       style={{
+    //         overflow: 'auto',
+    //         height: props.height || '100%',
+    //         width: props.width || '100%',
+    //       }}
+    //       top={2}
+    //     >
+    //       <Centered horizontal vertical>
+    //         <Title>This file is too big to edit</Title>
+    //         <SubTitle>
+    //           We will add support for this as soon as possible.
+    //         </SubTitle>
+    //
+    //         <a href={module.code} target="_blank" rel="noreferrer noopener">
+    //           Open file externally
+    //         </a>
+    //       </Centered>
+    //     </Margin>
+    //   );
+    // }
 
     let Editor =
       settings.codeMirror && !props.isLive
@@ -195,35 +195,38 @@ export class CodeEditor extends React.PureComponent<
             changes
           </Icons>
         )}
-        {config &&
-          (getUI(config.type) && !settings.experimentVSCode ? (
-            <Icons>
-              <Tooltip content="Switch to UI Configuration">
-                <Icon onClick={this.toggleConfigUI}>
-                  <UIIcon />
-                </Icon>
-              </Tooltip>
-            </Icons>
-          ) : (
-            <Icons>
-              {config.partialSupportDisclaimer ? (
-                <Tooltip
-                  placement="bottom"
-                  content={config.partialSupportDisclaimer}
-                  style={{
-                    display: 'flex',
-                    'align-items': 'center',
-                  }}
-                >
-                  Partially Supported Config{' '}
-                  <QuestionIcon style={{ marginLeft: '.5rem' }} />
-                </Tooltip>
-              ) : (
-                <div>Supported Configuration</div>
-              )}
-            </Icons>
-          ))}
-        <Editor {...props} dependencies={dependencies} />
+        {/*{config &&*/}
+          {/*(getUI(config.type) && !settings.experimentVSCode ? (*/}
+            {/*<Icons>*/}
+              {/*<Tooltip content="Switch to UI Configuration">*/}
+                {/*<Icon onClick={this.toggleConfigUI}>*/}
+                  {/*<UIIcon />*/}
+                {/*</Icon>*/}
+              {/*</Tooltip>*/}
+            {/*</Icons>*/}
+          {/*) : (*/}
+            {/*<Icons>*/}
+              {/*{config.partialSupportDisclaimer ? (*/}
+                {/*<Tooltip*/}
+                  {/*placement="bottom"*/}
+                  {/*content={config.partialSupportDisclaimer}*/}
+                  {/*style={{*/}
+                    {/*display: 'flex',*/}
+                    {/*'align-items': 'center',*/}
+                  {/*}}*/}
+                {/*>*/}
+                  {/*Partially Supported Config{' '}*/}
+                  {/*<QuestionIcon style={{ marginLeft: '.5rem' }} />*/}
+                {/*</Tooltip>*/}
+              {/*) : (*/}
+                {/*<div>Supported Configuration</div>*/}
+              {/*)}*/}
+            {/*</Icons>*/}
+          {/*))}*/}
+        <Editor
+          {...props}
+          // dependencies={dependencies}
+        />
       </div>
     );
   }
