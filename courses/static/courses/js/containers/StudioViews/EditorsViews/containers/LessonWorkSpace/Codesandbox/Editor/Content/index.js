@@ -433,8 +433,6 @@ class EditorPreview extends React.Component {
     //   ),
     //   actions: []
     // }
-    
-    console.log(store.preferences.settings);
 
     return (
       <ThemeProvider

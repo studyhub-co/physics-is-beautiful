@@ -205,12 +205,12 @@ export const setUpdateStatus: Action<{ status: string }> = (
   state.updateStatus = status;
 };
 
-export const track: Action<{ name: string; data: any }> = (
-  { effects },
-  { name, data }
-) => {
-  effects.analytics.track(name, data);
-};
+// export const track: Action<{ name: string; data: any }> = (
+//   { effects },
+//   { name, data }
+// ) => {
+//   effects.analytics.track(name, data);
+// };
 
 export const refetchSandboxInfo: AsyncAction = async ({
   state,

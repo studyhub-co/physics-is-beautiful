@@ -25,19 +25,23 @@ import MaterialContainer from '../../containers/material'
 import ToolBar from './Menu/ToolBar'
 import Menu from './Menu/Menu'
 
-import Editor from './Codesandbox/Editor/index'
+// import Editor from './Codesandbox/Editor/index'
+import asyncEditor from './Codesandbox/Editor/index'
 
 export class Lesson extends React.Component {
   constructor (props) {
     super(props)
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleMaterialDroppedBefore = this.handleMaterialDroppedBefore.bind(this)
+    this.state = {editor: <div></div>}
     // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     this.props.loadLessonIfNeeded(this.props.uuid)
+    let editor = await asyncEditor()
+    this.setState({editor: editor})
   }
 
   handleDeleteClick (e) {
@@ -79,6 +83,8 @@ export class Lesson extends React.Component {
         </DockableDropTarget>
       )
     }
+
+    const editorComponent = this.state.editor
 
     return (
       <Grid container>
@@ -149,11 +155,12 @@ export class Lesson extends React.Component {
           </Grid>
           <Grid item xs={10}>
             {/* TODO present modes */}
-            {/*<MaterialContainer uuid={this.props.currentMaterial} />*/}
-            <Editor />
+            {/* <MaterialContainer uuid={this.props.currentMaterial} /> */}
+            {editorComponent}
           </Grid>
         </Grid>
       </Grid>
+
     )
 
     // return (

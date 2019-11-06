@@ -1,6 +1,6 @@
 import React from 'react'
 import FontFaceObserver from 'fontfaceobserver'
-// import { vscode } from 'app/vscode';
+import { vscode } from '../../../../app/vscode'
 
 import './icon-theme.css'
 import './workbench-theme.css'
@@ -49,13 +49,11 @@ class MonacoEditor extends React.PureComponent {
     // setSocketURL(`ws://localhost:7070`);
 
     // eslint-disable-next-line global-require
-
     this.initMonaco()
   };
 
   initMonaco = () => {
     const context = this.props.context || window
-
     if (this.containerElement && typeof context.monaco !== 'undefined') {
       // Before initializing monaco editor
       this.editorWillMount(context.monaco)
