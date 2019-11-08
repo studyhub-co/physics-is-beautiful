@@ -10,6 +10,7 @@ glamor
 react-spring
 store
 http-browserify
+babel-plugin-preval
 
 #dev:
 babel-eslint
@@ -23,3 +24,4 @@ typescript
 @babel/plugin-proposal-object-rest-spread
 @typescript-eslint/parser
 @babel/plugin-transform-runtime
+@sentry/browser

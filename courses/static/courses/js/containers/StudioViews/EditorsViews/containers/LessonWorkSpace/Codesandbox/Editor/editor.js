@@ -15,13 +15,13 @@ import Content from './Content'
 // import { Navigation } from './Navigation'
 import getVSCodeTheme from './utils/get-vscode-theme'
 
-// const STATUS_BAR_SIZE = 22
+const STATUS_BAR_SIZE = 22
 
-// const StatusBar = styled.div`
-//   a {
-//     color: inherit;
-//   }
-// `
+const StatusBar = styled.div`
+  a {
+    color: inherit;
+  }
+`
 
 class ContentSplit extends React.Component {
   state = {
@@ -88,12 +88,12 @@ class ContentSplit extends React.Component {
           style={{ lineHeight: 'initial' }}
           className='monaco-workbench'
         >
-          {/*<Header zenMode={store.preferences.settings.zenMode} />*/}
+          {/* <Header zenMode={store.preferences.settings.zenMode} /> */}
 
           <Fullscreen style={{ width: 'initial' }}>
-            {/*{!hideNavigation && (*/}
-              {/*<Navigation topOffset={topOffset} bottomOffset={bottomOffset} />*/}
-            {/*)}*/}
+            {/* {!hideNavigation && ( */}
+            {/* <Navigation topOffset={topOffset} bottomOffset={bottomOffset} /> */}
+            {/* )} */}
 
             <div
               style={{
@@ -131,29 +131,29 @@ class ContentSplit extends React.Component {
                   overflow: 'visible' // For VSCode Context Menu
                 }}
               >
-                {/*{store.workspace.workspaceHidden ? <div /> : <Workspace />}*/}
+                {/* {store.workspace.workspaceHidden ? <div /> : <Workspace />} */}
                 <div />
                 <Content match={match} />
               </SplitPane>
 
-              {/* {vscode && ( */}
-              {/* <StatusBar */}
-              {/* style={{ */}
-              {/* position: 'fixed', */}
-              {/* display: statusBar ? 'block' : 'none', */}
-              {/* bottom: 0, */}
-              {/* left: 0, */}
-              {/* right: 0, */}
-              {/* height: STATUS_BAR_SIZE, */}
-              {/* }} */}
-              {/* className="monaco-workbench mac nopanel" */}
-              {/* > */}
-              {/* <div */}
-              {/* className="part statusbar" */}
-              {/* id="workbench.parts.statusbar" */}
-              {/* /> */}
-              {/* </StatusBar> */}
-              {/* )} */}
+              {vscode && (
+                <StatusBar
+                  style={{
+                    position: 'fixed',
+                    display: statusBar ? 'block' : 'none',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: STATUS_BAR_SIZE
+                  }}
+                  className='monaco-workbench mac nopanel'
+                >
+                  <div
+                    className='part statusbar'
+                    id='workbench.parts.statusbar'
+                  />
+                </StatusBar>
+              )}
             </div>
           </Fullscreen>
           {/* <ForkFrozenSandboxModal /> */}

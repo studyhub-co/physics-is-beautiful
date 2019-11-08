@@ -4,7 +4,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import { CLOSE_TIMEOUT_MS, BaseModal, ModalTitle, ModalBody } from './elements';
 
-if (document.getElementById('root')) {
+if (document.getElementById('main-app')) {
   Modal.setAppElement('#root');
 } else if (document.getElementById('___gatsby')) {
   Modal.setAppElement('#___gatsby');

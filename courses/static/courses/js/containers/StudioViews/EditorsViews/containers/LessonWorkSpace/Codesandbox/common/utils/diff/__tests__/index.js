@@ -43,7 +43,7 @@ describe('Diffing', () => {
       )
     }
 
-    const rootElement = document.getElementById('root')
+    const rootElement = document.getElementById('main-app')
     ReactDOM.render(<App />, rootElement)
     `;
     const textB = `

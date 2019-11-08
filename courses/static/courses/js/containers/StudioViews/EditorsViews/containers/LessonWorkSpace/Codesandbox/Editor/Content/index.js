@@ -353,6 +353,8 @@ class EditorPreview extends React.Component {
   detectStructureChange = ({ editor }) => {
     const sandbox = editor.currentSandbox
 
+    console.log(sandbox);
+
     return String(
       sandbox.modules
         .map(module => module.id + module.directoryShortid + module.title)

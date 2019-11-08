@@ -4,6 +4,22 @@ import { createOvermind } from 'overmind'
 import { config } from '../app/overmind'
 import { vscode } from '../app/vscode'
 
+import {
+  initializeSentry,
+  // logError
+} from '../common/utils/analytics'
+
+if (process.env.NODE_ENV === 'production') {
+  try {
+    // tod is this secure?
+    initializeSentry(
+      'https://dfee93ca50204a9e9b3f91680ad8a8ff@sentry.io/142243'
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export function initializeSettings () {
   // @ts-ignore
   const fs = BrowserFS.BFSRequire('fs')

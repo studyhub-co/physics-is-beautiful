@@ -1,4 +1,4 @@
-// import preval from 'babel-plugin-preval/macro';
+import preval from 'babel-plugin-preval/macro'
 
 // This is .js for preval
 
@@ -10,9 +10,9 @@ const versionType = preval`module.exports = (() => {
     return 'PR';
   }
   return 'PROD';
-})()`;
+})()`
 
-const versionNumber = Math.floor(preval`module.exports = Date.now();` / 1000);
+const versionNumber = Math.floor(preval`module.exports = Date.now();` / 1000)
 
 const shortCommitSha = preval(`
 var execSync = require('child_process').execSync;
@@ -21,10 +21,10 @@ try {
 } catch (e) {
   module.exports = 'unknown';
 }
-`);
+`)
 
-export const getTimestamp = version => +version.split('-')[1];
+export const getTimestamp = version => +version.split('-')[1]
 
 export default preval(
   `module.exports = "${versionType}-${versionNumber}-${shortCommitSha}";`
-);
+)

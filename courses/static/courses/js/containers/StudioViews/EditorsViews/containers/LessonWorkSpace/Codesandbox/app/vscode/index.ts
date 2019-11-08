@@ -42,7 +42,6 @@ class VSCodeManager {
 
   public acquireController(controller: any) {
     this.controller = controller;
-
     this.addWorkbenchActions();
   }
 
@@ -123,13 +122,13 @@ class VSCodeManager {
         } else {
           document.documentElement.requestFullscreen();
 
-          this.addNotification({
-            title: 'Fullscreen',
-            message:
-              'You are now in fullscreen mode. Press and hold ESC to exit',
-            status: NotificationStatus.NOTICE,
-            timeAlive: 5000,
-          });
+          // this.addNotification({
+          //   title: 'Fullscreen',
+          //   message:
+          //     'You are now in fullscreen mode. Press and hold ESC to exit',
+          //   status: NotificationStatus.NOTICE,
+          //   timeAlive: 5000,
+          // });
 
           if ('keyboard' in navigator) {
             // @ts-ignore - keyboard locking is experimental api
@@ -350,7 +349,7 @@ class VSCodeManager {
   }
 
   addNotification(notification: NotificationMessage) {
-    notificationState.addNotification(notification);
+    // notificationState.addNotification(notification);
   }
 
   /**
@@ -432,8 +431,8 @@ class VSCodeManager {
           this.statusbarPart.resolve(statusbarPart);
 
           // Initialize menu bar
-          const menubarPart = accessor.get('menubar');
-          this.menubarPart.resolve(menubarPart);
+          // const menubarPart = accessor.get('menubar');
+          // this.menubarPart.resolve(menubarPart);
 
           // Initialize command service
           const commandService = accessor.get(ICommandService);
@@ -450,6 +449,8 @@ class VSCodeManager {
           // Initialize these services
           accessor.get(CodeSandboxConfigurationUIService);
           accessor.get(ICodeSandboxEditorConnectorService);
+          
+          console.log(accessor);
 
           cb(accessor);
         });
