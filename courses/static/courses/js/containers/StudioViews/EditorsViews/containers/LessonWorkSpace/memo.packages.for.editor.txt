@@ -2,6 +2,7 @@ react-split-pane
 react-icon-base
 overmind
 overmind-react
+# TODO remove mobx
 mobx-react-lite
 mobx-react
 mobx

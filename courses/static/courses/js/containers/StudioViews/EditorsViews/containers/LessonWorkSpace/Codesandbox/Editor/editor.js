@@ -32,9 +32,19 @@ class ContentSplit extends React.Component {
     customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme
   };
 
+  componentWillMount () {
+    this.fetchReactSandbox()
+  }
+
   componentDidMount () {
     this.loadTheme()
   }
+
+  fetchReactSandbox = () => {
+    // const { id } = this.props.match.params;
+    const id = 'new' // this is the react template of sandbox
+    this.props.signals.editor.sandboxChanged({ id })
+  };
 
   componentDidUpdate () {
     if (

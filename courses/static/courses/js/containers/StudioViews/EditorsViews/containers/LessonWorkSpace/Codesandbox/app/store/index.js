@@ -1,49 +1,49 @@
-import HttpProvider from '@cerebral/http';
-import { Module } from 'cerebral';
-import { createContext } from 'react';
+import HttpProvider from '@cerebral/http'
+import { Module } from 'cerebral'
+import { createContext } from 'react'
 
-import model from './model';
-import ApiProvider from './providers/Api';
-import ConnectionProvider from './providers/Connection';
-import JwtProvider from './providers/Jwt';
-import BrowserProvider from './providers/Browser';
-import RouterProvider from './providers/Router';
-import UtilsProvider from './providers/Utils';
-import JSZipProvider from './providers/JSZip';
-import SettingsStoreProvider from './providers/SettingsStore';
-import GitProvider from './providers/Git';
-import SocketProvider from './providers/Socket';
-import LiveProvider from './providers/Live';
-import NotificationsProvider from './providers/Notifications';
-import ModuleRecover from './providers/ModuleRecover';
-import OTProvider from './providers/OT';
-import KeybindingManagerProvider from './providers/KeybindingManager';
-import SSEProvider from './providers/SSE';
-import FSSyncProvider from './providers/FSSync';
-import CodeSandboxAPIProvider from './providers/CodeSandboxAPI';
-import ExecutorProvider from './providers/Executor';
+import model from './model'
+import ApiProvider from './providers/Api'
+import ConnectionProvider from './providers/Connection'
+import JwtProvider from './providers/Jwt'
+import BrowserProvider from './providers/Browser'
+import RouterProvider from './providers/Router'
+import UtilsProvider from './providers/Utils'
+import JSZipProvider from './providers/JSZip'
+import SettingsStoreProvider from './providers/SettingsStore'
+import GitProvider from './providers/Git'
+import SocketProvider from './providers/Socket'
+import LiveProvider from './providers/Live'
+import NotificationsProvider from './providers/Notifications'
+import ModuleRecover from './providers/ModuleRecover'
+import OTProvider from './providers/OT'
+import KeybindingManagerProvider from './providers/KeybindingManager'
+import SSEProvider from './providers/SSE'
+import FSSyncProvider from './providers/FSSync'
+import CodeSandboxAPIProvider from './providers/CodeSandboxAPI'
+import ExecutorProvider from './providers/Executor'
 
-import * as sequences from './sequences';
-import * as errors from './errors';
-import { isContributor } from './computed';
-import { isPatron, isLoggedIn, hasLogIn } from './utils/getters';
+import * as sequences from './sequences'
+import * as errors from './errors'
+import { isContributor } from './computed'
+import { isPatron, isLoggedIn, hasLogIn } from './utils/getters'
 
-import patron from './modules/patron';
-import editor from './modules/editor';
-import profile from './modules/profile';
-import server from './modules/server';
-import deployment from './modules/deployment';
-import explore from './modules/explore';
-import git from './modules/git';
-import preferences from './modules/preferences';
-import workspace from './modules/workspace';
-import files from './modules/files';
-import live from './modules/live';
-import dashboard from './modules/dashboard';
-import userNotifications from './modules/user-notifications';
+import patron from './modules/patron'
+import editor from './modules/editor'
+import profile from './modules/profile'
+import server from './modules/server'
+import deployment from './modules/deployment'
+import explore from './modules/explore'
+import git from './modules/git'
+import preferences from './modules/preferences'
+import workspace from './modules/workspace'
+import files from './modules/files'
+import live from './modules/live'
+import dashboard from './modules/dashboard'
+import userNotifications from './modules/user-notifications'
 
-export const Signals = createContext();
-export const Store = createContext();
+export const Signals = createContext()
+export const Store = createContext()
 
 export default Module({
   model,
@@ -65,22 +65,22 @@ export default Module({
       show: false,
       items: [],
       x: 0,
-      y: 0,
+      y: 0
     },
     currentModal: undefined,
     currentModalMessage: undefined,
     uploadedFiles: null,
     maxStorage: 0,
     usedStorage: 0,
-    updateStatus: null,
+    updateStatus: null
   },
   getters: {
     isPatron,
     isLoggedIn,
-    hasLogIn,
+    hasLogIn
   },
   computed: {
-    isContributor,
+    isContributor
   },
   signals: {
     appUnmounted: sequences.unloadApp,
@@ -107,11 +107,11 @@ export default Module({
     signOutGithubIntegration: sequences.signOutGithubIntegration,
     setUpdateStatus: sequences.setUpdateStatus,
     refetchSandboxInfo: sequences.refetchSandboxInfo,
-    track: sequences.track,
+    track: sequences.track
   },
   catch: [
     [errors.CancelError, []],
-    [errors.AuthenticationError, sequences.showAuthenticationError],
+    [errors.AuthenticationError, sequences.showAuthenticationError]
   ],
   modules: {
     dashboard,
@@ -126,7 +126,7 @@ export default Module({
     live,
     userNotifications,
     server,
-    explore,
+    explore
   },
   providers: {
     api: ApiProvider,
@@ -148,6 +148,6 @@ export default Module({
     sse: SSEProvider,
     fsSync: FSSyncProvider,
     executor: ExecutorProvider,
-    codeSandboxApi: CodeSandboxAPIProvider,
-  },
-});
+    codeSandboxApi: CodeSandboxAPIProvider
+  }
+})

@@ -10,11 +10,11 @@ import {
 import { Action, AsyncAction } from '../../../../app/overmind';
 import { withLoadApp, withOwnedSandbox } from '../../../../app/overmind/factories';
 import { sortObjectByKeys } from '../../../../app/overmind/utils/common';
-// import {
-//   addDevToolsTab as addDevToolsTabUtil,
-//   closeDevToolsTab as closeDevToolsTabUtil,
-//   moveDevToolsTab as moveDevToolsTabUtil,
-// } from '../../../../app/pages/Sandbox/Editor/Content/utils';
+import {
+  addDevToolsTab as addDevToolsTabUtil,
+  closeDevToolsTab as closeDevToolsTabUtil,
+  moveDevToolsTab as moveDevToolsTabUtil,
+} from '../../../../Editor/Content/utils';
 import { clearCorrectionsFromAction } from '../../../../app/utils/corrections';
 import { json } from 'overmind';
 
@@ -64,7 +64,8 @@ export const npmDependencyRemoved: AsyncAction<{
   });
 });
 
-export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
+// export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
+export const sandboxChanged: AsyncAction<{ id: string }> = <{
   id: string;
 }>(async ({ state, actions, effects }, { id }) => {
   state.editor.error = null;

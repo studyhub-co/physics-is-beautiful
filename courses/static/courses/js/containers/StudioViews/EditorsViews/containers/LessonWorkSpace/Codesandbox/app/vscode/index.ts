@@ -449,8 +449,6 @@ class VSCodeManager {
           // Initialize these services
           accessor.get(CodeSandboxConfigurationUIService);
           accessor.get(ICodeSandboxEditorConnectorService);
-          
-          console.log(accessor);
 
           cb(accessor);
         });

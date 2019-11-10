@@ -1,7 +1,7 @@
-import { Module } from 'cerebral';
-import themes from '@codesandbox/common/themes';
-import model from './model';
-import * as sequences from './sequences';
+import { Module } from 'cerebral'
+import themes from '@codesandbox/common/themes'
+import model from './model'
+import * as sequences from './sequences'
 import {
   isAllModulesSynced,
   currentSandbox,
@@ -13,10 +13,10 @@ import {
   currentTab,
   modulesByPath,
   isAdvancedEditor,
-  devToolTabs,
-} from './getters';
-import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
-import { loadSandbox } from '../../sequences';
+  devToolTabs
+} from './getters'
+import { isModuleSynced, shouldDirectoryBeOpen } from './computed'
+import { loadSandbox } from '../../sequences'
 
 export default Module({
   model,
@@ -51,7 +51,7 @@ export default Module({
     themes,
     currentDevToolsPosition: {
       devToolIndex: 0,
-      tabPosition: 0,
+      tabPosition: 0
     },
 
     /**
@@ -60,7 +60,7 @@ export default Module({
      * why we introduce this field until we have datasources. When we have datasources we can store
      * the actual content in the localStorage.
      */
-    workspaceConfigCode: '',
+    workspaceConfigCode: ''
   },
   getters: {
     isAllModulesSynced,
@@ -73,11 +73,11 @@ export default Module({
     currentTab,
     modulesByPath,
     isAdvancedEditor,
-    devToolTabs,
+    devToolTabs
   },
   computed: {
     isModuleSynced,
-    shouldDirectoryBeOpen,
+    shouldDirectoryBeOpen
   },
   signals: {
     addNpmDependency: sequences.addNpmDependency,
@@ -121,6 +121,6 @@ export default Module({
     onDevToolsTabMoved: sequences.moveDevToolsTab,
     onDevToolsTabClosed: sequences.closeDevToolsTab,
     onDevToolsPositionChanged: sequences.setDevToolPosition,
-    openDevToolsTab: sequences.openDevToolsTab,
-  },
-});
+    openDevToolsTab: sequences.openDevToolsTab
+  }
+})
