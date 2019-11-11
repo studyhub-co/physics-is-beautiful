@@ -157,6 +157,9 @@ export class Lesson extends React.Component {
             {/* TODO present modes */}
             {/* <MaterialContainer uuid={this.props.currentMaterial} /> */}
             {editorComponent}
+            {/*<div className='monaco-shell'>*/}
+              {/*{editorComponent}*/}
+            {/*</div>*/}
           </Grid>
         </Grid>
       </Grid>

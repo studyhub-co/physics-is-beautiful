@@ -12,17 +12,17 @@ import { initialize } from './init'
 let Index = class Index extends React.Component {
   render () {
     return (
-      <ActualOvermindProvider value={this.props.overmind}>
-        <OvermindProvider value={this.props.overmind}>
-          {/* <HooksProvider client={client}> */}
-          <ThemeProvider theme={theme}>
-            <Editor>
-              {/*{this.props.children}*/}
-            </Editor>
-          </ThemeProvider>
-          {/* </HooksProvider> */}
-        </OvermindProvider>
-      </ActualOvermindProvider>
+        <ActualOvermindProvider value={this.props.overmind}>
+          <OvermindProvider value={this.props.overmind}>
+            {/* <HooksProvider client={client}> */}
+            <ThemeProvider theme={theme}>
+              <Editor>
+                {/* {this.props.children} */}
+              </Editor>
+            </ThemeProvider>
+            {/* </HooksProvider> */}
+          </OvermindProvider>
+        </ActualOvermindProvider>
     )
   }
 }

@@ -1,464 +1,85 @@
-import { TemplateType } from '../../../../common/templates';
-import {
-  CurrentUser,
-  CustomTemplate,
-  Dependency,
-  Directory,
-  EnvironmentVariable,
-  GitChanges,
-  GitCommit,
-  GitInfo,
-  GitPr,
-  Module,
-  PaymentDetails,
-  PickedSandboxes,
-  PopularSandboxes,
-  Profile,
-  Sandbox,
-  SandboxPick,
-  UploadedFilesInfo,
-  UserSandbox,
-} from '../../../../common/types';
-import { client } from 'app/graphql/client';
-import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
-
-import {
-  transformDirectory,
-  transformModule,
-  transformSandbox,
-} from '../utils/sandbox';
-import apiFactory, { Api, ApiConfig } from './apiFactory';
-import {
-  IDirectoryAPIResponse,
-  IModuleAPIResponse,
-  SandboxAPIResponse,
-} from './types';
-
-let api: Api;
+import { Sandbox } from '../../../../common/types'
+import { SandboxAPIResponse } from './types'
+import { transformSandbox } from '../utils/sandbox'
 
 export default {
-  initialize(config: ApiConfig) {
-    api = apiFactory(config);
-  },
-  async getAuthToken(): Promise<string> {
-    const response = await api.get<{ token: string }>('/auth/auth-token');
-
-    return response.token;
-  },
-  createPatronSubscription(token: string, amount: number, coupon: string) {
-    return api.post<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-        token,
-      },
-    });
-  },
-  updatePatronSubscription(amount: number, coupon: string) {
-    return api.patch<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-      },
-    });
-  },
-  cancelPatronSubscription() {
-    return api.delete<CurrentUser>('/users/current_user/subscription');
-  },
-  getCurrentUser(): Promise<CurrentUser> {
-    return api.get('/users/current');
-  },
-  getDependency(name: string): Promise<Dependency> {
-    return api.get(`/dependencies/${name}@latest`);
-  },
   async getSandbox(id: string): Promise<Sandbox> {
-    const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
+      // const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
 
-    // We need to add client side properties for tracking
-    return transformSandbox(sandbox);
-  },
-  async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
-    const url = id.includes('/')
-      ? `/sandboxes/fork/${id}`
-      : `/sandboxes/${id}/fork`;
+    // Mock for sandbox from server
+      const sandbox = JSON.parse(JSON.stringify({"data":
+          {
+            "version":66,
+            "user_liked":false,
+            "git":null,
+            "external_resources":[],
+            "npm_dependencies":{"react-dom":"16.0.0","react":"16.0.0"},
+            "is_sse":false,
+            "team":null,
+            "entry":"src/index.js",
+            "updated_at":"2019-05-28T11:33:39",
+            "original_git":null,
+            "author":null,
+            "screenshot_url":"https://screenshots.codesandbox.io/new.png",
+            "view_count":4020046,
+            "source_id":"6bd39aa7-9800-45fb-9487-c915634d8d4f",
+            "picks":[],
+            "like_count":1226,
+            "template":"create-react-app",
+            "description":null,
+            "privacy":0,
+            "preview_secret":null,
+            "fork_count":0,
+            "custom_template":null,
+            "forked_template":null,
+            "is_frozen":false,
+            "owned":false,
+            "room_id":null,
+            "id":"new",
+            "modules":[{
+              "updated_at":"2019-05-28T11:33:39",
+              "title":"package.json",
+              "source_id":"6bd39aa7-9800-45fb-9487-c915634d8d4f",
+              "shortid":"ZGQK6",
+              "is_binary":false,
+              "inserted_at":"2018-02-07T14:00:44",
+              "id":"dd3f0f6a-4555-457f-b2af-963bf00f9172",
+              "directory_shortid":null,
+              "code":"{\n  \"name\": \"new\",\n  \"version\": \"1.0.0\",\n  \"description\": \"\",\n  \"keywords\": [],\n  \"main\": \"src/index.js\",\n  \"dependencies\": {\n    \"react\": \"16.8.6\",\n    \"react-dom\": \"16.8.6\",\n    \"react-scripts\": \"3.0.1\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"3.3.3\"\n  },\n  \"scripts\": {\n    \"start\": \"react-scripts start\",\n    \"build\": \"react-scripts build\",\n    \"test\": \"react-scripts test --env=jsdom\",\n    \"eject\": \"react-scripts eject\"\n  },\n  \"browserslist\": [\">0.2%\", \"not dead\", \"not ie <= 11\", \"not op_mini all\"]\n}\n"
+            },
+              {"updated_at":"2018-06-09T22:04:48",
+                "title":"index.js",
+                "source_id":"6bd39aa7-9800-45fb-9487-c915634d8d4f","shortid":"wRo98","is_binary":false,
+                "inserted_at":"2017-04-01T14:30:32",
+                "id":"928871a1-bbdc-425c-ace2-0b302b14a58a",
+                "directory_shortid":"GXOoy",
+                "code":"import React from \"react\";\nimport ReactDOM from \"react-dom\";\n\nimport \"./styles.css\";\n\nfunction App() {\n  return (\n    <div className=\"App\">\n      <h1>Hello CodeSandbox</h1>\n      <h2>Start editing to see some magic happen!</h2>\n    </div>\n  );\n}\n\nconst rootElement = document.getElementById(\"root\");\nReactDOM.render(<App />, rootElement);\n"},{"updated_at":"2018-06-09T22:03:25","title":"styles.css","source_id":"6bd39aa7-9800-45fb-9487-c915634d8d4f","shortid":"qZyB7","is_binary":false,"inserted_at":"2018-06-09T21:51:56","id":"9224aee8-b579-4f68-8a8c-e647098f50cc","directory_shortid":"GXOoy","code":".App {\n  font-family: sans-serif;\n  text-align: center;\n}\n"},{"updated_at":"2018-02-07T14:06:13","title":"index.html","source_id":"6bd39aa7-9800-45fb-9487-c915634d8d4f","shortid":"BA1N","is_binary":false,"inserted_at":"2017-04-08T15:19:04","id":"9c54d8d0-5a0e-4e5f-8794-3092757733ee","directory_shortid":"rgkK4","code":"<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n\t<meta charset=\"utf-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n\t<meta name=\"theme-color\" content=\"#000000\">\n\t<!--\n      manifest.json provides metadata used when your web app is added to the\n      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/\n    -->\n\t<link rel=\"manifest\" href=\"%PUBLIC_URL%/manifest.json\">\n\t<link rel=\"shortcut icon\" href=\"%PUBLIC_URL%/favicon.ico\">\n\t<!--\n      Notice the use of %PUBLIC_URL% in the tags above.\n      It will be replaced with the URL of the `public` folder during the build.\n      Only files inside the `public` folder can be referenced from the HTML.\n\n      Unlike \"/favicon.ico\" or \"favicon.ico\", \"%PUBLIC_URL%/favicon.ico\" will\n      work correctly both with client-side routing and a non-root public URL.\n      Learn how to configure a non-root public URL by running `npm run build`.\n    -->\n\t<title>React App</title>\n</head>\n\n<body>\n\t<noscript>\n\t\tYou need to enable JavaScript to run this app.\n\t</noscript>\n\t<div id=\"root\"></div>\n\t<!--\n      This HTML file is a template.\n      If you open it directly in the browser, you will see an empty page.\n\n      You can add webfonts, meta tags, or analytics to this file.\n      The build step will place the bundled scripts into the <body> tag.\n\n      To begin the development, run `npm start` or `yarn start`.\n      To create a production bundle, use `npm run build` or `yarn build`.\n    -->\n</body>\n\n</html>"}
+                ],
+            "directories":[
+              {"updated_at":"2018-02-07T14:00:49",
+              "title":"src",
+              "source_id":"6bd39aa7-9800-45fb-9487-c915634d8d4f",
+              "shortid":"GXOoy",
+              "inserted_at":"2018-02-07T14:00:49",
+              "id":"d27aefca-c15c-41a1-b9d5-bd362fdd7f19",
+              "directory_shortid":null},
+              {"updated_at":"2018-02-07T14:04:34","title":"public",
+              "source_id":"6bd39aa7-9800-45fb-9487-c915634d8d4f",
+              "shortid":"rgkK4",
+              "inserted_at":"2018-02-07T14:04:34",
+              "id":"859f77fe-8e09-4efb-bd44-f66ea4f949e4",
+              "directory_shortid":null}],
+            "collection":false,
+            "title":null,
+            "original_git_commit_sha":null,
+            "tags":[],
+            "alias":null,
+            "forked_from_sandbox":null}})
+      )['data']
 
-    const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
+      // We need to add client side properties for tracking
 
-    return transformSandbox(sandbox);
-  },
-  createModule(sandboxId: string, module: Module): Promise<Module> {
-    return api
-      .post<IModuleAPIResponse>(`/sandboxes/${sandboxId}/modules`, {
-        module: {
-          title: module.title,
-          directoryShortid: module.directoryShortid,
-          code: module.code,
-          isBinary: module.isBinary === undefined ? false : module.isBinary,
-        },
-      })
-      .then(transformModule);
-  },
-  async deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
-    await api.delete<IModuleAPIResponse>(
-      `/sandboxes/${sandboxId}/modules/${moduleShortid}`
-    );
-  },
-  saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
-    return api
-      .put<IModuleAPIResponse>(
-        `/sandboxes/${sandboxId}/modules/${module.shortid}`,
-        {
-          module: { code: module.code },
-        }
-      )
-      .then(transformModule);
-  },
-  saveModules(sandboxId: string, modules: Module[]) {
-    return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
-      modules,
-    });
-  },
-  getGitChanges(sandboxId: string): Promise<GitChanges> {
-    return api.get(`/sandboxes/${sandboxId}/git/diff`);
-  },
-  saveTemplate(sandboxId: string, template: TemplateType): Promise<void> {
-    return api.put(`/sandboxes/${sandboxId}/`, {
-      sandbox: { template },
-    });
-  },
-  unlikeSandbox(sandboxId: string) {
-    return api.request({
-      method: 'DELETE',
-      url: `/sandboxes/${sandboxId}/likes`,
-      data: {
-        id: sandboxId,
-      },
-    });
-  },
-  likeSandbox(sandboxId: string) {
-    return api.post(`/sandboxes/${sandboxId}/likes`, {
-      id: sandboxId,
-    });
-  },
-  savePrivacy(sandboxId: string, privacy: 0 | 1 | 2) {
-    return api.patch<SandboxAPIResponse>(`/sandboxes/${sandboxId}/privacy`, {
-      sandbox: {
-        privacy,
-      },
-    });
-  },
-  saveFrozen(sandboxId: string, isFrozen: boolean) {
-    return api.put<SandboxAPIResponse>(`/sandboxes/${sandboxId}`, {
-      sandbox: {
-        is_frozen: isFrozen,
-      },
-    });
-  },
-  getEnvironmentVariables(
-    sandboxId: string
-  ): Promise<{ [key: string]: string }> {
-    return api.get(
-      `/sandboxes/${sandboxId}/env`,
-      {},
-      { shouldCamelize: false }
-    );
-  },
-  saveEnvironmentVariable(
-    sandboxId: string,
-    environmentVariable: EnvironmentVariable
-  ): Promise<{ [key: string]: string }> {
-    return api.post(
-      `/sandboxes/${sandboxId}/env`,
-      {
-        environment_variable: environmentVariable,
-      },
-      {
-        shouldCamelize: false,
-      }
-    );
-  },
-  deleteEnvironmentVariable(
-    sandboxId: string,
-    name: string
-  ): Promise<{ [key: string]: string }> {
-    return api.delete(
-      `/sandboxes/${sandboxId}/env/${name}`,
-      {},
-      { shouldCamelize: false }
-    );
-  },
-  saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
-    return api.put<IModuleAPIResponse>(
-      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
-      {
-        module: { title },
-      }
-    );
-  },
-  getPopularSandboxes(date: string): Promise<PopularSandboxes> {
-    return api.get(`/sandboxes/popular?start_date=${date}`);
-  },
-  saveSandboxPick(
-    sandboxId: string,
-    title: string,
-    description: string
-  ): Promise<SandboxPick> {
-    return api.post(`/sandboxes/${sandboxId}/pick`, {
-      title,
-      description,
-    });
-  },
-  getPickedSandboxes(): Promise<PickedSandboxes> {
-    return api.get(`/sandboxes/picked`);
-  },
-  createDirectory(
-    sandboxId: string,
-    directoryShortid: string,
-    title: string
-  ): Promise<Directory> {
-    return api
-      .post<IDirectoryAPIResponse>(`/sandboxes/${sandboxId}/directories`, {
-        directory: {
-          title,
-          directoryShortid,
-        },
-      })
-      .then(transformDirectory);
-  },
-  saveModuleDirectory(
-    sandboxId: string,
-    moduleShortid: string,
-    directoryShortid: string
-  ) {
-    return api.put<IDirectoryAPIResponse>(
-      `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
-      {
-        module: { directoryShortid },
-      }
-    );
-  },
-  saveDirectoryDirectory(
-    sandboxId: string,
-    sourceDirectoryShortid: string,
-    targetDirectoryShortId: string
-  ) {
-    return api.put<IDirectoryAPIResponse>(
-      `/sandboxes/${sandboxId}/directories/${sourceDirectoryShortid}`,
-      {
-        directory: { directoryShortid: targetDirectoryShortId },
-      }
-    );
-  },
-  deleteDirectory(sandboxId: string, directoryShortid: string) {
-    return api.delete(
-      `/sandboxes/${sandboxId}/directories/${directoryShortid}`
-    );
-  },
-  saveDirectoryTitle(
-    sandboxId: string,
-    directoryShortid: string,
-    title: string
-  ) {
-    return api.put<IDirectoryAPIResponse>(
-      `/sandboxes/${sandboxId}/directories/${directoryShortid}`,
-      {
-        directory: { title },
-      }
-    );
-  },
-  getUploads(): Promise<UploadedFilesInfo> {
-    return api.get('/users/current_user/uploads');
-  },
-  deleteUploadedFile(uploadId: string): Promise<void> {
-    return api.delete(`/users/current_user/uploads/${uploadId}`);
-  },
-  createUpload(name: string, content: string): Promise<{ url: string }> {
-    return api.post('/users/current_user/uploads', {
-      content,
-      name,
-    });
-  },
-  async massCreateModules(
-    sandboxId: string,
-    directoryShortid: string | null,
-    modules: Module[],
-    directories: Directory[]
-  ): Promise<{
-    modules: Module[];
-    directories: Directory[];
-  }> {
-    const data = (await api.post(`/sandboxes/${sandboxId}/modules/mcreate`, {
-      directoryShortid,
-      modules,
-      directories,
-    })) as {
-      modules: IModuleAPIResponse[];
-      directories: IDirectoryAPIResponse[];
-    };
+      return transformSandbox(sandbox);
+    },
 
-    return {
-      modules: data.modules.map(transformModule),
-      directories: data.directories.map(transformDirectory),
-    };
-  },
-  createGit(
-    sandboxId: string,
-    repoTitle: string,
-    data: object
-  ): Promise<GitInfo> {
-    return api.post(`/sandboxes/${sandboxId}/git/repo/${repoTitle}`, data);
-  },
-  createGitCommit(sandboxId: string, message: string): Promise<GitCommit> {
-    return api.post(`/sandboxes/${sandboxId}/git/commit`, {
-      id: sandboxId,
-      message,
-    });
-  },
-  createGitPr(sandboxId: string, message: string): Promise<GitPr> {
-    return api.post(`/sandboxes/${sandboxId}/git/pr`, {
-      id: sandboxId,
-      message,
-    });
-  },
-  async createLiveRoom(sandboxId: string): Promise<string> {
-    const data = await api.post<{
-      id: string;
-    }>(`/sandboxes/${sandboxId}/live`, {
-      id: sandboxId,
-    });
-
-    return data.id;
-  },
-  updateBadge(badgeId: string, visible: boolean): Promise<void> {
-    return api.patch(`/users/current_user/badges/${badgeId}`, {
-      badge: {
-        visible,
-      },
-    });
-  },
-  getPaymentDetails(): Promise<PaymentDetails> {
-    return api.get(`/users/current_user/payment_details`);
-  },
-  updatePaymentDetails(token: string): Promise<PaymentDetails> {
-    return api.patch('/users/current_user/payment_details', {
-      paymentDetails: {
-        token,
-      },
-    });
-  },
-  getProfile(username: string): Promise<Profile> {
-    return api.get(`/users/${username}`);
-  },
-  getUserSandboxes(
-    username: string,
-    page: number
-  ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes`, {
-      page: String(page),
-    });
-  },
-  getUserLikedSandboxes(
-    username: string,
-    page: number
-  ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes/liked`, {
-      page: String(page),
-    });
-  },
-  getSandboxes(): Promise<UserSandbox[]> {
-    return api.get('/sandboxes');
-  },
-  updateShowcasedSandbox(username: string, sandboxId: string) {
-    return api.patch(`/users/${username}`, {
-      user: {
-        showcasedSandboxShortid: sandboxId,
-      },
-    });
-  },
-  deleteSandbox(sandboxId: string): Promise<void> {
-    return api.request({
-      method: 'DELETE',
-      url: `/sandboxes/${sandboxId}`,
-      data: {
-        id: sandboxId,
-      },
-    });
-  },
-  createTag(sandboxId: string, tagName: string): Promise<string[]> {
-    return api.post(`/sandboxes/${sandboxId}/tags`, {
-      tag: tagName,
-    });
-  },
-  deleteTag(sandboxId: string, tagName: string): Promise<string[]> {
-    return api.delete(`/sandboxes/${sandboxId}/tags/${tagName}`);
-  },
-  updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
-    return api.put(`/sandboxes/${sandboxId}`, {
-      sandbox: data,
-    });
-  },
-  createResource(sandboxId: string, resource: string): Promise<void> {
-    return api.post(`/sandboxes/${sandboxId}/resources`, {
-      externalResource: resource,
-    });
-  },
-  deleteResource(sandboxId: string, resource: string): Promise<void> {
-    return api.request({
-      method: 'DELETE',
-      url: `/sandboxes/${sandboxId}/resources/`,
-      data: {
-        id: resource,
-      },
-    });
-  },
-  updatePrivacy(sandboxId: string, privacy: 0 | 1 | 2): Promise<void> {
-    return api.patch(`/sandboxes/${sandboxId}/privacy`, {
-      sandbox: {
-        privacy,
-      },
-    });
-  },
-  createZeitIntegration(code: string): Promise<CurrentUser> {
-    return api.post(`/users/current_user/integrations/zeit`, {
-      code,
-    });
-  },
-  signout(): Promise<void> {
-    return api.delete(`/users/signout`);
-  },
-  signoutGithubIntegration(): Promise<void> {
-    return api.delete(`/users/current_user/integrations/github`);
-  },
-  preloadTemplates() {
-    client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
-  },
-  deleteTemplate(
-    sandboxId: string,
-    templateId: string
-  ): Promise<CustomTemplate> {
-    return api.delete(`/sandboxes/${sandboxId}/templates/${templateId}`);
-  },
-  updateTemplate(
-    sandboxId: string,
-    template: CustomTemplate
-  ): Promise<CustomTemplate> {
-    return api
-      .put<{ template: CustomTemplate }>(
-        `/sandboxes/${sandboxId}/templates/${template.id}`,
-        {
-          template,
-        }
-      )
-      .then(data => data.template);
-  },
-  createTemplate(
-    sandboxId: string,
-    template: { color: string; description: string; title: string }
-  ): Promise<CustomTemplate> {
-    return api
-      .post<{ template: CustomTemplate }>(`/sandboxes/${sandboxId}/templates`, {
-        template,
-      })
-      .then(data => data.template);
-  },
 };

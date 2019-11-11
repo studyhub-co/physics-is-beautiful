@@ -74,9 +74,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = <{
 
   newId = actions.editor.internal.ensureSandboxId(newId);
 
-  if (state.live.isLive) {
-    actions.live.internal.disconnect();
-  }
+  // if (state.live.isLive) {
+  //   actions.live.internal.disconnect();
+  // }
 
   if (state.editor.sandboxes[newId] && !state.editor.sandboxes[newId].team) {
     const sandbox = await effects.api.getSandbox(newId);
@@ -106,6 +106,8 @@ export const sandboxChanged: AsyncAction<{ id: string }> = <{
       actions.internal.setCurrentSandbox(sandbox);
     }
   } catch (error) {
+    console.log('error: '+error);
+    
     state.editor.notFound = true;
     state.editor.error = error.message;
     state.editor.isLoading = false;

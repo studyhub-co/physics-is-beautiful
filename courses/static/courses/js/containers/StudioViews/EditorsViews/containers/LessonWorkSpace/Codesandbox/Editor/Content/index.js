@@ -164,7 +164,7 @@ class EditorPreview extends React.Component {
     const disposeResizeHandler = this.props.reaction(
       state => [
         state.preferences.settings.zenMode,
-        state.workspace.workspaceHidden,
+        // state.workspace.workspaceHidden,
         state.editor.previewWindowOrientation
       ],
       () => {
@@ -199,14 +199,14 @@ class EditorPreview extends React.Component {
         }
       }
     )
-    const disposeLiveHandler = this.props.reaction(
-      state => state.live.receivingCode,
-      () => {
-        if (editor.setReceivingCode) {
-          editor.setReceivingCode(store.live.receivingCode)
-        }
-      }
-    )
+    // const disposeLiveHandler = this.props.reaction(
+    //   state => state.live.receivingCode,
+    //   () => {
+    //     if (editor.setReceivingCode) {
+    //       editor.setReceivingCode(store.live.receivingCode)
+    //     }
+    //   }
+    // )
 
     const disposeModuleSyncedHandler = this.props.reaction(
       state => state.editor.changedModuleShortids.map(shortid => shortid),
@@ -265,14 +265,14 @@ class EditorPreview extends React.Component {
     const updateUserSelections = () => {
       if (store.editor.pendingUserSelections) {
         if (editor.updateUserSelections) {
-          if (store.live.isLive) {
-            requestAnimationFrame(() => {
-              editor.updateUserSelections(store.editor.pendingUserSelections)
-              this.props.signals.live.onSelectionDecorationsApplied()
-            })
-          } else {
-            this.props.signals.live.onSelectionDecorationsApplied()
-          }
+          // if (store.live.isLive) {
+          //   requestAnimationFrame(() => {
+          //     editor.updateUserSelections(store.editor.pendingUserSelections)
+          //     this.props.signals.live.onSelectionDecorationsApplied()
+          //   })
+          // } else {
+          //   this.props.signals.live.onSelectionDecorationsApplied()
+          // }
         }
       }
     }
@@ -342,7 +342,7 @@ class EditorPreview extends React.Component {
       disposeModuleHandler()
       disposeToggleDevtools()
       disposeResizeHandler()
-      disposeLiveHandler()
+      // disposeLiveHandler()
       disposePendingOperationHandler()
       disposeLiveSelectionHandler()
       disposeTogglePreview()
@@ -353,7 +353,7 @@ class EditorPreview extends React.Component {
   detectStructureChange = ({ editor }) => {
     const sandbox = editor.currentSandbox
 
-    console.log(sandbox);
+    // console.log(sandbox);
 
     return String(
       sandbox.modules

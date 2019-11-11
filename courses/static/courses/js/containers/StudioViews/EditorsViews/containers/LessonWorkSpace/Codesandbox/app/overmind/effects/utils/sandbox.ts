@@ -27,6 +27,7 @@ export function transformDirectory(
 }
 
 export function transformSandbox(sandbox: SandboxAPIResponse) {
+
   // We need to add client side properties for tracking
   return {
     ...sandbox,
