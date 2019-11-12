@@ -77,7 +77,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = <{
   // if (state.live.isLive) {
   //   actions.live.internal.disconnect();
   // }
-
+  
   if (state.editor.sandboxes[newId] && !state.editor.sandboxes[newId].team) {
     const sandbox = await effects.api.getSandbox(newId);
 
@@ -118,7 +118,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = <{
 
   actions.internal.ensurePackageJSON();
 
-  await actions.editor.internal.initializeLiveSandbox(sandbox);
+  // await actions.editor.internal.initializeLiveSandbox(sandbox);
 
   if (sandbox.owned && !state.live.isLive) {
     actions.files.internal.recoverFiles();
@@ -126,7 +126,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = <{
 
   state.editor.isLoading = false;
 
-  effects.chameleon.loadTour(state.user && getHashedUserId(state.user.id));
+  // effects.chameleon.loadTour(state.user && getHashedUserId(state.user.id));
 });
 
 export const contentMounted: Action = ({ state, effects }) => {

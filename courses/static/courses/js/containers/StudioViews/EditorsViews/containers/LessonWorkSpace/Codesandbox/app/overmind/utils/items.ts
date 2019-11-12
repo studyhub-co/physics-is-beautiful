@@ -61,18 +61,18 @@ const SERVER: INavigationItem = {
 };
 
 export default function getItems(store): INavigationItem[] {
-  if (
-    store.live.isLive &&
-    !(
-      store.live.isOwner ||
-      (store.user &&
-        store.live &&
-        store.live.roomInfo &&
-        store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
-    )
-  ) {
-    return [FILES, LIVE];
-  }
+  // if (
+  //   store.live.isLive &&
+  //   !(
+  //     store.live.isOwner ||
+  //     (store.user &&
+  //       store.live &&
+  //       store.live.roomInfo &&
+  //       store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
+  //   )
+  // ) {
+  //   return [FILES, LIVE];
+  // }
 
   if (!store.editor.currentSandbox.owned) {
     return [PROJECT_SUMMARY, CONFIGURATION, MORE];

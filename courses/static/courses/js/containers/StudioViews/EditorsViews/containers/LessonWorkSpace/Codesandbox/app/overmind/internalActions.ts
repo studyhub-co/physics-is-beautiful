@@ -230,35 +230,37 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   if (sandboxOptions.runOnClick)
     state.preferences.runOnClick = sandboxOptions.runOnClick;
 
-  state.workspace.project.title = sandbox.title || '';
-  state.workspace.project.description = sandbox.description || '';
-  state.workspace.project.alias = sandbox.alias || '';
+  // state.workspace.project.title = sandbox.title || '';
+  // state.workspace.project.description = sandbox.description || '';
+  // state.workspace.project.alias = sandbox.alias || '';
 
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  // const items = getItems(state);
+  // const defaultItem = items.find(i => i.defaultOpen) || items[0];
 
-  state.workspace.openedWorkspaceItem = defaultItem.id;
+  // state.workspace.openedWorkspaceItem = defaultItem.id;
 
-  await effects.executor.initializeExecutor(sandbox);
+  // TODO try to use sandbox executor
 
-  [
-    'connect',
-    'disconnect',
-    'sandbox:status',
-    'sandbox:start',
-    'sandbox:stop',
-    'sandbox:error',
-    'sandbox:log',
-    'sandbox:hibernate',
-    'sandbox:update',
-    'sandbox:port',
-    'shell:out',
-    'shell:exit',
-  ].forEach(message => {
-    effects.executor.listen(message, actions.server.onSSEMessage);
-  });
+  // await effects.executor.initializeExecutor(sandbox);
 
-  effects.executor.setupExecutor();
+  // [
+  //   'connect',
+  //   'disconnect',
+  //   'sandbox:status',
+  //   'sandbox:start',
+  //   'sandbox:stop',
+  //   'sandbox:error',
+  //   'sandbox:log',
+  //   'sandbox:hibernate',
+  //   'sandbox:update',
+  //   'sandbox:port',
+  //   'shell:out',
+  //   'shell:exit',
+  // ].forEach(message => {
+  //   effects.executor.listen(message, actions.server.onSSEMessage);
+  // });
+  //
+  // effects.executor.setupExecutor();
 
   /*
     There seems to be a race condition here? Verify if this still happens with Overmind

@@ -232,35 +232,35 @@ export class VSCode extends React.Component<Props> implements Editor {
       },
     ]);
 
-  // setupCodeSandboxAPIListener = () =>
-  //   listen(({ action, type, code, path, lineNumber, column }: any) => {
-  //     if (type === 'add-extra-lib') {
-  //       // TODO: bring this func back
-  //       // const dtsPath = `${path}.d.ts`;
-  //       // this.monaco.languages.typescript.typescriptDefaults._extraLibs[
-  //       //   `file:///${dtsPath}`
-  //       // ] = code;
-  //       // this.commitLibChanges();
-  //     } else if (action === 'editor.open-module') {
-  //       const options: {
-  //         selection?: { startLineNumber: number; startColumn: number };
-  //       } = {};
-  //
-  //       if (lineNumber || column) {
-  //         options.selection = {
-  //           startLineNumber: lineNumber,
-  //           startColumn: column || 0,
-  //         };
-  //       }
-  //
-  //       if (this.editor) {
-  //         this.editor.codeEditorService.openCodeEditor({
-  //           resource: this.monaco.Uri.file('/sandbox' + path),
-  //           options,
-  //         });
-  //       }
-  //     }
-  //   });
+  setupCodeSandboxAPIListener = () =>
+    listen(({ action, type, code, path, lineNumber, column }: any) => {
+      if (type === 'add-extra-lib') {
+        // TODO: bring this func back
+        // const dtsPath = `${path}.d.ts`;
+        // this.monaco.languages.typescript.typescriptDefaults._extraLibs[
+        //   `file:///${dtsPath}`
+        // ] = code;
+        // this.commitLibChanges();
+      } else if (action === 'editor.open-module') {
+        const options: {
+          selection?: { startLineNumber: number; startColumn: number };
+        } = {};
+
+        if (lineNumber || column) {
+          options.selection = {
+            startLineNumber: lineNumber,
+            startColumn: column || 0,
+          };
+        }
+
+        if (this.editor) {
+          this.editor.codeEditorService.openCodeEditor({
+            resource: this.monaco.Uri.file('/sandbox' + path),
+            options,
+          });
+        }
+      }
+    });
 
   modelListeners: {
     [path: string]: {
@@ -394,6 +394,8 @@ export class VSCode extends React.Component<Props> implements Editor {
         }
 
         const activeEditor = editor.getActiveCodeEditor();
+        
+        console.log('ss+' + activeEditor);
 
         if (activeEditor) {
           const modulePath = activeEditor.getModel().uri.path;
@@ -1167,7 +1169,7 @@ export class VSCode extends React.Component<Props> implements Editor {
       <Container id="vscode-container">
         <GlobalStyles />
         <MonacoEditorComponent
-          // id={this.props.sandbox.id}
+          id={this.props.sandbox.id}
           width={width}
           height={height}
           theme="CodeSandbox"

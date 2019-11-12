@@ -19,11 +19,11 @@ import {
   WindowOrientation,
   DevToolsTabPosition,
 } from '../../../../common//types';
-// import { getSandboxOptions } from '../../../../common//url';
+import { getSandboxOptions } from '../../../../common/url';
 import { Derive } from '../../../../app/overmind';
 import immer from 'immer';
 
-import { ViewConfig } from '../../../../common//templates/template';
+import { ViewConfig } from '../../../../common/templates/template';
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 

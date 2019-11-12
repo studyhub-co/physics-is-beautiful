@@ -24,7 +24,7 @@ import * as files from './namespaces/files';
 // import * as patron from './namespaces/patron';
 import * as preferences from './namespaces/preferences';
 // import * as profile from './namespaces/profile';
-// import * as server from './namespaces/server';
+import * as server from './namespaces/server';
 // import * as userNotifications from './namespaces/userNotifications';
 import * as workspace from './namespaces/workspace';
 import { onInitialize } from './onInitialize';
@@ -50,7 +50,7 @@ export const config = merge(
     // git,
     explore,
     // profile,
-    // server,
+    server,
     modals: createModals(modals),
   })
 );

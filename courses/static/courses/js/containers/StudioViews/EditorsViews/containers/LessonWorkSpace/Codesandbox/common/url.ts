@@ -23,6 +23,27 @@ export interface SandboxOptions {
 }
 
 export const getSandboxOptions = (url: string) => {
+
+  // TODO fix this
+  // temp mock
+
+  return {
+    autoResize: false,
+    editorSize: 50,
+    enableEslint: false,
+    expandDevTools: false,
+    forceRefresh: false,
+    hideNavigation: true,
+    isConsolePreviewWindow: false,
+    isEditorScreen: true,
+    isInProjectView: true,
+    isPreviewScreen: false,
+    isSplitScreen: false,
+    isTestPreviewWindow: false,
+    runOnClick: undefined,
+    useCodeMirror: false
+  };
+
   const result: SandboxOptions = {
     editorSize: 50,
   };

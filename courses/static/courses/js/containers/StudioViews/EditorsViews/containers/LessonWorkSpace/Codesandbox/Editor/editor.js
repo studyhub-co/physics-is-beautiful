@@ -143,7 +143,7 @@ class ContentSplit extends React.Component {
               >
                 {/* {store.workspace.workspaceHidden ? <div /> : <Workspace />} */}
                 <div />
-                <Content match={match} />
+                {sandbox ? <Content match={match} /> : null}
               </SplitPane>
 
               {vscode && (

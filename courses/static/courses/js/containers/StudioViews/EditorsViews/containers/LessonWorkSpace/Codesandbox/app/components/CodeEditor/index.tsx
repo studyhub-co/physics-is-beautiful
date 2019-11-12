@@ -113,7 +113,7 @@ export class CodeEditor extends React.PureComponent<
       );
     }
 
-    // const dependencies = getDependencies(sandbox);
+    const dependencies = getDependencies(sandbox);
 
     // const template = getDefinition(sandbox.template);
     // const modulePath = getModulePath(
@@ -225,7 +225,7 @@ export class CodeEditor extends React.PureComponent<
           {/*))}*/}
         <Editor
           {...props}
-          // dependencies={dependencies}
+          dependencies={dependencies}
         />
       </div>
     );
