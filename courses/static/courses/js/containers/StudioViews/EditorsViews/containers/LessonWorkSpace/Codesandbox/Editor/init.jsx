@@ -149,12 +149,16 @@ export const initialize = (component, callback1) => {
               getState
             })
 
-            // import(
-            //   'worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/bootstrappers/ext-host'
-            // ).then(ExtHostWorkerLoader => {
-            //   childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default)
-            //   // child_process.preloadWorker('/vs/bootstrap-fork');
-            // })
+            // extesion host of VS code
+            import(
+              'worker-loader?publicPath=/static/js/bundles/&name=ext-host-worker.[hash:8].worker.js!../app/vscode/extensionHostWorker/bootstrappers/ext-host'
+            ).then(ExtHostWorkerLoader => {
+
+              console.log(ExtHostWorkerLoader);
+
+              childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default)
+              // child_process.preloadWorker('/vs/bootstrap-fork');
+            })
 
             // import('worker-loader?publicPath=/&name=ext-host-worker.[hash:8].worker.js!./vscode/extensionHostWorker/services/searchService').then(
             //   SearchServiceWorker => {

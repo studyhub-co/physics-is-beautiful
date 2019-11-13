@@ -16,7 +16,7 @@ module.exports = {
     resources: './resources/static/resources/js/index',
     homepage: './homepage/static/homepage/js/index',
     notifications_inbox: './notifications/static/notifications_inbox/js/index',
-    trophy_inbox: './user_reputation/static/trophy_inbox/js/index',
+    trophy_inbox: './user_reputation/static/trophy_inbox/js/index'
     // react_djeddit: './static/js/djedditWraper'
   },
 
@@ -68,6 +68,12 @@ module.exports = {
   // show all messages from webpack
   // stats: 'verbose',
 
+  node: {
+    setImmediate: false,
+    module: 'empty',
+    child_process: 'empty'
+  },
+
   module: {
     rules: [
       {
@@ -111,7 +117,25 @@ module.exports = {
     modules: ['static/js/common', 'node_modules', 'bower_components'],
     // extensions: ['.js', '.jsx']
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-    symlinks: false
+    symlinks: false,
+    alias: {
+      // NodeJs modules emulators
+      fs: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/fs.js'),
+      buffer: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/buffer.js'),
+      processGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/process.js'),
+      bufferGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/bufferGlobal.js')
+      /* bfsGlobal: require.resolve(
+        path.join(
+          '..',
+          '..',
+          '..',
+          'codesandbox-apps',
+          'codesandbox-browserfs',
+          'build',
+          __DEV__ ? 'browserfs.js' : 'browserfs.min.js'
+        )
+      ), */
+    }
   },
   watchOptions: { // fix watch for Windows
     poll: 1000

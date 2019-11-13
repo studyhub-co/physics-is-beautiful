@@ -1,11 +1,11 @@
 // This is the default worker that will be called if no worker is specified.
 // It's function is to execute the code of the path that's given to it.
 
-import { default as Module } from 'node-services/lib/module';
+import { default as Module } from '../../../../node-services/lib/module';
 import resolve from 'resolve';
 import { basename } from 'path';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
+import _debug from '../../../../common/utils/debug';
+import { commonPostMessage } from '../../../../common/utils/global';
 
 import { initializeBrowserFS } from '../common/fs';
 

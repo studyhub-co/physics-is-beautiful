@@ -1,10 +1,10 @@
 import { dirname } from 'path';
 import immer from 'immer';
-import { generateFileFromSandbox } from '@codesandbox/common/templates/configuration/package-json';
-import { parseSandboxConfigurations } from '@codesandbox/common/templates/configuration/parse-sandbox-configurations';
-import getTemplate from '@codesandbox/common/templates';
-import { getPreviewTabs } from '@codesandbox/common/templates/devtools';
-import { getSandboxOptions } from '@codesandbox/common/url';
+import { generateFileFromSandbox } from '../../../../common/templates/configuration/package-json';
+import { parseSandboxConfigurations } from '../../../../common/templates/configuration/parse-sandbox-configurations';
+import getTemplate from '../../../../common/templates';
+import { getPreviewTabs } from '../../../../common/templates/devtools';
+import { getSandboxOptions } from '../../../../common/url';
 import {
   getModulePath,
   getDirectoryPath,

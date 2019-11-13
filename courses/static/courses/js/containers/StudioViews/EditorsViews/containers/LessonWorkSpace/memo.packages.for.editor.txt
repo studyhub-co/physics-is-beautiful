@@ -12,6 +12,11 @@ react-spring
 store
 http-browserify
 babel-plugin-preval
+error-polyfill
+onigasm
+# node
+is-arguments
+is-generator-function
 
 #dev:
 babel-eslint

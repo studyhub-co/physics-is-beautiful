@@ -1,7 +1,7 @@
 import {
   getGlobal,
   commonPostMessage,
-} from '@codesandbox/common/lib/utils/global';
+} from '../../../../common/utils/global';
 import {
   IModule,
   IManager,

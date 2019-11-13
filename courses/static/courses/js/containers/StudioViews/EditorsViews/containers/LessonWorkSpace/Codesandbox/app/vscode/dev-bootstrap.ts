@@ -1,8 +1,8 @@
 /* eslint-disable */
-// import * as child_process from 'node-services/lib/child_process';
-// import * as net from 'node-services/lib/net';
-// import { default as Module } from 'node-services/lib/module';
-// import resolve from 'resolve';
+import * as child_process from '../../node-services/lib/child_process';
+import * as net from '../../node-services/net';
+import { default as Module } from '../../node-services/lib/module';
+import resolve from 'resolve';
 
 const { VSCODE_METADATA, MONACO_METADATA } = require('./metadata');
 
@@ -343,8 +343,7 @@ function initializeRequires() {
   });
 
   global.require.define('vscode-textmate', [], () => {
-    // return require('vscode-textmate/out/main');
-     return {};
+     return require('../../../../../../../../codesandbox-apps/vscode-textmate/out/main');
   });
 
   global.require.define('yazl', [], () => {

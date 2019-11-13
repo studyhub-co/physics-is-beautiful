@@ -344,7 +344,7 @@ class EditorPreview extends React.Component {
       disposeResizeHandler()
       // disposeLiveHandler()
       disposePendingOperationHandler()
-      disposeLiveSelectionHandler()
+      // disposeLiveSelectionHandler()
       disposeTogglePreview()
       disposeModuleSyncedHandler()
     }
@@ -352,8 +352,6 @@ class EditorPreview extends React.Component {
 
   detectStructureChange = ({ editor }) => {
     const sandbox = editor.currentSandbox
-
-    console.log(sandbox);
 
     return String(
       sandbox.modules
@@ -369,10 +367,10 @@ class EditorPreview extends React.Component {
   sendTransforms = operation => {
     const { currentModuleShortid } = this.props.store.editor
 
-    this.props.signals.live.onTransformMade({
-      moduleShortid: currentModuleShortid,
-      operation: operation.toJSON()
-    })
+    // this.props.signals.live.onTransformMade({
+    //   moduleShortid: currentModuleShortid,
+    //   operation: operation.toJSON()
+    // })
   };
 
   moveDevToolsTab = (prevPos, nextPos) => {
@@ -394,13 +392,15 @@ class EditorPreview extends React.Component {
     const sandbox = store.editor.currentSandbox
     const { preferences } = store
     const { currentTab } = store.editor
+    
+    console.log(currentTab);
 
     const windowVisible = store.editor.previewWindowVisible
 
     const { width: editorWidth, height: editorHeight } = this.state
 
     // template - create-react-app, vue, etc
-    // const template = getTemplateDefinition(sandbox.template)
+    const template = getTemplateDefinition(sandbox.template)
 
     const isReadOnly = () => {
       // if (store.live.isLive) {
@@ -412,11 +412,11 @@ class EditorPreview extends React.Component {
       //   }
       // }
 
-      // if (template.isServer) {
-      //   if (!store.isLoggedIn || store.server.status !== 'connected') {
-      //     return true
-      //   }
-      // }
+      if (template.isServer) {
+        if (!store.isLoggedIn || store.server.status !== 'connected') {
+          return true
+        }
+      }
 
       return false
     }
@@ -555,10 +555,10 @@ class EditorPreview extends React.Component {
                     moduleShortid: currentModule.shortid
                   })
                 }
-                // tsconfig={
-                //   store.editor.parsedConfigurations.typescript &&
-                //   store.editor.parsedConfigurations.typescript.parsed
-                // }
+                tsconfig={
+                  store.editor.parsedConfigurations.typescript &&
+                  store.editor.parsedConfigurations.typescript.parsed
+                }
               />
             </div>
             {/*need for SplitPane*/}

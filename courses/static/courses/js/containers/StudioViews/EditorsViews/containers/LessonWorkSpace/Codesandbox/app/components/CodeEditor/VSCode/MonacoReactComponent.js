@@ -5,7 +5,7 @@ import { vscode } from '../../../../app/vscode'
 import './icon-theme.css'
 import './workbench-theme.css'
 
-// import { setSocketURL } from 'node-services/lib/net';
+//import { setSocketURL } from 'node-services/lib/net';
 
 function noop () {}
 
@@ -169,7 +169,8 @@ class MonacoEditor extends React.PureComponent {
 
             this.editor = editorApi
 
-            // After initializing monaco editor
+            // After initializing monaco 
+
             this.editorDidMount(editorApi, context.monaco)
             // document.getElementById('main-app').className += ` monaco-shell`
           })

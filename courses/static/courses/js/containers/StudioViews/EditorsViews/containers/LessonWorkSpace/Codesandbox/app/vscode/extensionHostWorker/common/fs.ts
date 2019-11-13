@@ -1,5 +1,5 @@
-import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
-import { FileSystemConfiguration } from '../../../../../../../standalone-packages/codesandbox-browserfs';
+import { commonPostMessage } from '../../../../common/utils/global';
+import { FileSystemConfiguration } from '../../../../../../../../../../codesandbox-apps/codesandbox-browserfs';
 import { getTypeFetcher } from './type-downloader';
 import { EXTENSIONS_LOCATION } from '../../constants';
 
