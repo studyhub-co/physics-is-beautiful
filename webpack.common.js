@@ -23,7 +23,11 @@ module.exports = {
   output: {
     path: path.resolve('./static/js/bundles/'),
     filename: '[name]-[hash].js',
-    chunkFilename: '[name]-[hash].js'
+    chunkFilename: '[name]-[hash].js',
+    // sandbox require
+    jsonpFunction: 'csbJsonP',
+    publicPath: '/static/js/bundles/',
+    globalObject: 'this',
   },
 
   optimization: {
@@ -103,7 +107,27 @@ module.exports = {
       {
         test: /\.(eot|otf|ttf|woff|woff2)$/,
         loader: 'url-loader?limit=1000000'
-      }
+      },
+      {
+        test: /\.(svg)(\?.*)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'static/js/bundles/[name].[hash:8].[ext]',
+            },
+          },
+          { loader: 'svgo-loader' },
+        ],
+      },
+      {
+        test: /\.(ico|jpg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
+        exclude: [/\/favicon.ico$/],
+        loader: 'file-loader',
+        options: {
+          name: 'static/js/bundles/[name].[hash:8].[ext]',
+        },
+      },
       // {
       //   test: /\.jpe?g$|\.gif$|\.png$/,
       //   options: {

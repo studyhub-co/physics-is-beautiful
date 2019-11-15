@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../../common/components/Button';
+import { Button } from '../../../common/components/Button';
 import { Container, Title, Text, Buttons } from './elements';
 
 interface IAlertProps {

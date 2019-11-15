@@ -1,4 +1,4 @@
-import getTemplate from '@codesandbox/common/templates';
+import getTemplate from '../../../../common/templates';
 
 export interface INavigationItem {
   id: string;

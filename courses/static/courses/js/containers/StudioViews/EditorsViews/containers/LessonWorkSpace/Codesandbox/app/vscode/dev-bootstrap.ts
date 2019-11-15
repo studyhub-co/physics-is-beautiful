@@ -1,6 +1,6 @@
 /* eslint-disable */
 import * as child_process from '../../node-services/lib/child_process';
-import * as net from '../../node-services/net';
+import * as net from '../../node-services/lib/net';
 import { default as Module } from '../../node-services/lib/module';
 import resolve from 'resolve';
 
@@ -276,8 +276,7 @@ function initializeRequires() {
   });
 
   global.require.define('child_process', [], () => {
-    // return child_process;
-    return {};
+    return child_process;
   });
 
   global.require.define('electron', [], () => {
@@ -301,8 +300,7 @@ function initializeRequires() {
   });
 
   global.require.define('net', [], () => {
-    // return net;
-    return {};
+    return net;
   });
 
   global.require.define('fs', [], () => {

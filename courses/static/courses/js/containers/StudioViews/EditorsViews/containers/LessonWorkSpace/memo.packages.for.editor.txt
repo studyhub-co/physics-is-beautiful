@@ -17,8 +17,16 @@ onigasm
 # node
 is-arguments
 is-generator-function
+@samuelmeuli/font-manager
+algoliasearch # search npm packages
+compare-versions
+react-modal
+react-show
+reakit
+# "color": "^0.11.4",
 
 #dev:
+svgo-loader
 babel-eslint
 typescript
 @types/react

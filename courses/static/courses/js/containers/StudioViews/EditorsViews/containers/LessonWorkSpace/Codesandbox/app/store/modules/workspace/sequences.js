@@ -1,6 +1,6 @@
 import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import getTemplate from '@codesandbox/common/templates';
+import getTemplate from '../../../../common/templates';
 import track from '@codesandbox/common/utils/analytics';
 import * as actions from './actions';
 import { ensureOwnedEditable, closeModal, openModal } from '../../sequences';

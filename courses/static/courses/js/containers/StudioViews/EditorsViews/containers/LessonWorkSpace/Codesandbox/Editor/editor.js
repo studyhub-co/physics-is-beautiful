@@ -9,7 +9,7 @@ import codesandbox from '../common/themes/codesandbox.json'
 
 // import ForkFrozenSandboxModal from './ForkFrozenSandboxModal'
 import { Container } from './elements'
-// import { Workspace } from './Workspace'
+import { Workspace } from './Workspace'
 import Content from './Content'
 // import { Header } from './Header'
 // import { Navigation } from './Navigation'
@@ -141,7 +141,7 @@ class ContentSplit extends React.Component {
                   overflow: 'visible' // For VSCode Context Menu
                 }}
               >
-                {/* {store.workspace.workspaceHidden ? <div /> : <Workspace />} */}
+                 {store.workspace.workspaceHidden ? <div /> : <Workspace />}
                 <div />
                 {sandbox ? <Content match={match} /> : <div></div>}
               </SplitPane>

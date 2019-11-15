@@ -12,6 +12,9 @@ import { SubTitle } from '../../../app/components/SubTitle';
 import { Title } from '../../../app/components/Title';
 import Loadable from '../../../app/utils/Loadable';
 
+import { MdDvr as UIIcon } from 'react-icons/md';
+import { GoQuestion as QuestionIcon } from 'react-icons/go';
+
 // import QuestionIcon from 'react-icons/lib/go/question';
 // import UIIcon from 'react-icons/lib/md/dvr';
 
@@ -167,10 +170,12 @@ export class CodeEditor extends React.PureComponent<
     //   );
     // }
 
-    let Editor =
-      settings.codeMirror && !props.isLive
-        ? ((CodeMirror as unknown) as React.ComponentClass<Props>)
-        : ((Monaco as unknown) as React.ComponentClass<Props>);
+    // let Editor =
+    //   settings.codeMirror && !props.isLive
+    //     ? ((CodeMirror as unknown) as React.ComponentClass<Props>)
+    //     : ((Monaco as unknown) as React.ComponentClass<Props>);
+
+    let Editor = ((Monaco as unknown) as React.ComponentClass<Props>);
 
     if (settings.experimentVSCode) {
       Editor = VSCode as React.ComponentClass<Props>;

@@ -1,3 +1,4 @@
 export const EXTENSIONS_LOCATION = process.env.VSCODE
   ? '/vscode/extensions-bundle'
-  : '/public/vscode-extensions/v10';
+  : '/static/courses/js/codesandbox-apps/vscode-extensions/out'
+  // : '/public/vscode-extensions/v10';

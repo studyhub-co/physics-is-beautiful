@@ -1,4 +1,4 @@
-import { Action } from 'app/overmind';
+import { Action } from '../../../../app/overmind';
 import {
   ServerStatus,
   ServerContainerStatus,

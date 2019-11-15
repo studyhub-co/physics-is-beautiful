@@ -4,6 +4,8 @@ import { createOvermind } from 'overmind'
 import { config } from '../app/overmind'
 import { vscode } from '../app/vscode'
 
+import * as childProcess from '../node-services/lib/child_process'
+
 import {
   initializeSentry,
   // logError
@@ -153,9 +155,6 @@ export const initialize = (component, callback1) => {
             import(
               'worker-loader?publicPath=/static/js/bundles/&name=ext-host-worker.[hash:8].worker.js!../app/vscode/extensionHostWorker/bootstrappers/ext-host'
             ).then(ExtHostWorkerLoader => {
-
-              console.log(ExtHostWorkerLoader);
-
               childProcess.addDefaultForkHandler(ExtHostWorkerLoader.default)
               // child_process.preloadWorker('/vs/bootstrap-fork');
             })
