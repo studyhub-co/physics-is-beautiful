@@ -1,13 +1,13 @@
-import React from 'react';
-import Modal from 'react-modal';
-import { createGlobalStyle } from 'styled-components';
+import React from 'react'
+import Modal from 'react-modal'
+import { createGlobalStyle } from 'styled-components'
 
-import { CLOSE_TIMEOUT_MS, BaseModal, ModalTitle, ModalBody } from './elements';
+import { CLOSE_TIMEOUT_MS, BaseModal, ModalTitle, ModalBody } from './elements'
 
 if (document.getElementById('main-app')) {
-  Modal.setAppElement('#root');
+  Modal.setAppElement('#main-app')
 } else if (document.getElementById('___gatsby')) {
-  Modal.setAppElement('#___gatsby');
+  Modal.setAppElement('#___gatsby')
 }
 
 const GlobalStyles = createGlobalStyle`
@@ -52,7 +52,7 @@ const GlobalStyles = createGlobalStyle`
   opacity: 0;
   transform: scale(0.9) translateY(0);
 }
-`;
+`
 
 class ModalComponent extends React.Component {
   getStyles = (width = 400, top = 20) => ({
@@ -60,7 +60,7 @@ class ModalComponent extends React.Component {
       backgroundColor: 'rgba(0, 0, 0, 0.75)',
       overflowY: 'auto',
       zIndex: 30,
-      transform: 'translate3d(0, 0, 0)',
+      transform: 'translate3d(0, 0, 0)'
     },
     content: {
       position: 'relative',
@@ -73,11 +73,11 @@ class ModalComponent extends React.Component {
       right: 0,
       margin: `0 auto ${top}vh`,
       border: 'none',
-      borderRadius: '8px',
-    },
+      borderRadius: '8px'
+    }
   });
 
-  render() {
+  render () {
     const {
       isOpen,
       width,
@@ -86,7 +86,7 @@ class ModalComponent extends React.Component {
       children,
       title,
       ...props
-    } = this.props;
+    } = this.props
 
     return (
       <>
@@ -97,7 +97,7 @@ class ModalComponent extends React.Component {
           contentLabel={title || 'Modal'}
           style={this.getStyles(width, top)}
           closeTimeoutMS={CLOSE_TIMEOUT_MS}
-          htmlOpenClassName="ReactModal__Html--open"
+          htmlOpenClassName='ReactModal__Html--open'
           {...props}
         >
           <BaseModal>
@@ -106,8 +106,8 @@ class ModalComponent extends React.Component {
           </BaseModal>
         </Modal>
       </>
-    );
+    )
   }
 }
 
-export default ModalComponent;
+export default ModalComponent

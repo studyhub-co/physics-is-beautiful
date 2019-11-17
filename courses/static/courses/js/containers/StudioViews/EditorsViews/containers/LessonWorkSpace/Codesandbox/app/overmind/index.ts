@@ -43,7 +43,7 @@ export const config = merge(
     // patron,
     editor,
     // live,
-    // workspace,
+    workspace,
     // dashboard,
     // deployment,
     files,

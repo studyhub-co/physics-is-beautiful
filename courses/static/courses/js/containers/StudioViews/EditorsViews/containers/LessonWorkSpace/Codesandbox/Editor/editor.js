@@ -104,7 +104,6 @@ class ContentSplit extends React.Component {
             {/* {!hideNavigation && ( */}
             {/* <Navigation topOffset={topOffset} bottomOffset={bottomOffset} /> */}
             {/* )} */}
-
             <div
               style={{
                 position: 'fixed',
@@ -128,12 +127,12 @@ class ContentSplit extends React.Component {
                 //     signals.workspace.setWorkspaceHidden({ hidden: true })
                 //   }
                 // }}
-                // pane1Style={{
-                //   visibility: store.workspace.workspaceHidden
-                //     ? 'hidden'
-                //     : 'visible',
-                //   maxWidth: store.workspace.workspaceHidden ? 0 : 'inherit'
-                // }}
+                pane1Style={{
+                  visibility: store.workspace.workspaceHidden
+                    ? 'hidden'
+                    : 'visible',
+                  maxWidth: store.workspace.workspaceHidden ? 0 : 'inherit'
+                }}
                 pane2Style={{
                   height: '100%'
                 }}
@@ -141,8 +140,7 @@ class ContentSplit extends React.Component {
                   overflow: 'visible' // For VSCode Context Menu
                 }}
               >
-                 {store.workspace.workspaceHidden ? <div /> : <Workspace />}
-                <div />
+                {store.workspace.workspaceHidden ? <div /> : <Workspace />}
                 {sandbox ? <Content match={match} /> : <div></div>}
               </SplitPane>
 

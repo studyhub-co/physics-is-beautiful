@@ -164,7 +164,7 @@ class EditorPreview extends React.Component {
     const disposeResizeHandler = this.props.reaction(
       state => [
         state.preferences.settings.zenMode,
-        // state.workspace.workspaceHidden,
+        state.workspace.workspaceHidden,
         state.editor.previewWindowOrientation
       ],
       () => {

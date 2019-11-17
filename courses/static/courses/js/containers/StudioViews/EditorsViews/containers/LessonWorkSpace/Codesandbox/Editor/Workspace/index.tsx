@@ -44,15 +44,17 @@ const workspaceTabs = {
 
 export const Workspace: FunctionComponent = () => {
   const { state } = useOvermind();
+
   const {
     editor: {
-      currentSandbox: { owned },
+      // currentSandbox: { owned },
+      currentSandbox,
     },
     // isPatron,
     // live: { isLive, roomInfo },
-    // preferences: {
-    //   settings: { zenMode },
-    // },
+    preferences: {
+      settings: { zenMode },
+    },
     workspace: { openedWorkspaceItem: activeTab },
   } = state;
 
