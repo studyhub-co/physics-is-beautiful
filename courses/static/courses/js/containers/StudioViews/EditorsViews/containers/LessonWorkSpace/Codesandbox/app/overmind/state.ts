@@ -13,7 +13,7 @@ type State = {
   // isLoggedIn: Derive<State, boolean>;
   // hasLogIn: Derive<State, boolean>;
   // popularSandboxes: Sandbox[];
-  // hasLoadedApp: boolean;
+  hasLoadedApp: boolean;
   // jwt: string;
   // isAuthenticating: boolean;
   // authToken: string;
@@ -53,7 +53,7 @@ export const state: State = {
   //       contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
   //   ) > -1,
   // popularSandboxes: null,
-  // hasLoadedApp: false,
+  hasLoadedApp: false,
   // jwt: null,
   // isAuthenticating: true,
   // authToken: null,

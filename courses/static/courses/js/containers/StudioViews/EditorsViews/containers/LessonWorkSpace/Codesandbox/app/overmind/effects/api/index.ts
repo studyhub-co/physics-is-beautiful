@@ -2,6 +2,8 @@ import { Sandbox } from '../../../../common/types'
 import { SandboxAPIResponse } from './types'
 import { transformSandbox } from '../utils/sandbox'
 
+import { camelizeKeys, decamelizeKeys } from 'humps'
+
 export default {
   async getSandbox(id: string): Promise<Sandbox> {
       // const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
@@ -78,8 +80,7 @@ export default {
       )['data']
 
       // We need to add client side properties for tracking
-
-      return transformSandbox(sandbox);
+      return transformSandbox(camelizeKeys(sandbox));
     },
 
 };

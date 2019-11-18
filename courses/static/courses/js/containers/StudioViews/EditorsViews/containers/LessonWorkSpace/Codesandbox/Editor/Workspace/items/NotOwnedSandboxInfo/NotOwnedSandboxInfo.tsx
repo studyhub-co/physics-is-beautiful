@@ -14,7 +14,7 @@ export const NotOwnedSandboxInfo = () => {
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <Project />
+      {/*<Project />*/}
       <WorkspaceItem
         actions={editActions}
         defaultOpen

@@ -19,6 +19,6 @@ module.exports = {
     [
       '@babel/plugin-transform-runtime'
     ],
-    'babel-plugin-macros',
+    'babel-plugin-macros'
   ]
 }

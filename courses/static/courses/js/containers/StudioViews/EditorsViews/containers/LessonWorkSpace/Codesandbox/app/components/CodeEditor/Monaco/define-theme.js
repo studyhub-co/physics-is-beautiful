@@ -1,4 +1,4 @@
-// import Color from 'color';
+import Color from 'color';
 //import { notificationState } from '../../common/utils/notifications';
 // import { NotificationStatus } from '@codesandbox/notifications';
 

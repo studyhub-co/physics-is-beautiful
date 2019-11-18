@@ -64,8 +64,8 @@ export const npmDependencyRemoved: AsyncAction<{
   });
 });
 
-// export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
-export const sandboxChanged: AsyncAction<{ id: string }> = <{
+export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
+// export const sandboxChanged: AsyncAction<{ id: string }> = <{
   id: string;
 }>(async ({ state, actions, effects }, { id }) => {
   state.editor.error = null;
@@ -77,7 +77,10 @@ export const sandboxChanged: AsyncAction<{ id: string }> = <{
   // if (state.live.isLive) {
   //   actions.live.internal.disconnect();
   // }
-  
+
+  console.log('state.editor');
+  console.log(state.editor);
+
   if (state.editor.sandboxes[newId] && !state.editor.sandboxes[newId].team) {
     const sandbox = await effects.api.getSandbox(newId);
 
@@ -120,9 +123,9 @@ export const sandboxChanged: AsyncAction<{ id: string }> = <{
 
   // await actions.editor.internal.initializeLiveSandbox(sandbox);
 
-  if (sandbox.owned && !state.live.isLive) {
-    actions.files.internal.recoverFiles();
-  }
+  // if (sandbox.owned && !state.live.isLive) {
+  //   actions.files.internal.recoverFiles();
+  // }
 
   state.editor.isLoading = false;
 

@@ -459,7 +459,8 @@ export default function(isVSCode = false, requiredModule?: string[]) {
   };
   Component.prototype.generateLoaderConfig = function(dest) {
     // dest[this.modulePrefix] = process.env.CODESANDBOX_HOST + this.getResolvedPath();
-    dest[this.modulePrefix] = window.location.origin + this.getResolvedPath();
+    // cant use window in worker TODO add deploy host
+    dest[this.modulePrefix] = 'http://127.0.0.1:8000'+this.getResolvedPath();
   };
   Component.prototype.generateUrlForPath = function(pathName) {
     var NEW_LOADER_OPTS = {};
@@ -485,7 +486,7 @@ export default function(isVSCode = false, requiredModule?: string[]) {
       search = '?' + search;
     }
     
-    console.log(toHREF(search));
+    // console.log(toHREF(search));
     
     return toHREF(search);
   };

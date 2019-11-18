@@ -1,4 +1,4 @@
-import { dispatch, listen } from 'codesandbox-api';
+import { dispatch, listen } from '../../codesandbox-api/codesandbox';
 
 const listeners = new Map();
 

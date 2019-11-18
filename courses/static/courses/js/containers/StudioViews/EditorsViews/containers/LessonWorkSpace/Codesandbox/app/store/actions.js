@@ -1,45 +1,45 @@
-import axios from 'axios';
-import { client } from 'app/graphql/client';
-import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
+import axios from 'axios'
+import { client } from 'app/graphql/client'
+import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries'
 
-import { generateFileFromSandbox } from '@codesandbox/common/templates/configuration/package-json';
-import { parseSandboxConfigurations } from '@codesandbox/common/templates/configuration/parse-sandbox-configurations';
+import { generateFileFromSandbox } from '@codesandbox/common/templates/configuration/package-json'
+import { parseSandboxConfigurations } from '@codesandbox/common/templates/configuration/parse-sandbox-configurations'
 import track, {
   identify,
-  setUserId,
-} from '@codesandbox/common/utils/analytics';
+  setUserId
+} from '@codesandbox/common/utils/analytics'
 import {
   sandboxUrl,
-  editorUrl,
-} from '@codesandbox/common/utils/url-generator';
-import { notificationState } from '@codesandbox/common/utils/notifications';
-import { NotificationStatus } from '@codesandbox/notifications';
+  editorUrl
+} from '@codesandbox/common/utils/url-generator'
+import { notificationState } from '@codesandbox/common/utils/notifications'
+import { NotificationStatus } from '@codesandbox/notifications'
 
-import { mainModule, defaultOpenedModule } from './utils/main-module';
-import getItems from './modules/workspace/items';
+import { mainModule, defaultOpenedModule } from './utils/main-module'
+import getItems from './modules/workspace/items'
 
 /**
  * We use this to eagerly load templates for the new sandbox modal.
  */
-export function loadTemplatesForStartModal() {
-  client.query({ query: LIST_TEMPLATES, variables: { showAll: true } });
+export function loadTemplatesForStartModal () {
+  client.query({ query: LIST_TEMPLATES, variables: { showAll: true } })
 }
 
-export function getSandbox({ props, api, path }) {
+export function getSandbox ({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
     .then(data => {
       // data.template = 'custom';
-      const sandbox = data;
-      return path.success({ sandbox });
+      const sandbox = data
+      return path.success({ sandbox })
     })
     .catch(error => {
       if (error.response.status === 404) {
-        return path.notFound();
+        return path.notFound()
       }
 
-      return path.error({ error });
-    });
+      return path.error({ error })
+    })
 }
 
 /**
@@ -47,60 +47,60 @@ export function getSandbox({ props, api, path }) {
  * sandbox in the state we need to make sure that the id is set correctly.
  * This function is reps
  */
-export function setIdFromAlias({ props, state }) {
+export function setIdFromAlias ({ props, state }) {
   if (state.get(`editor.sandboxes.${props.id}`)) {
-    return {};
+    return {}
   }
 
-  const sandboxes = state.get(`editor.sandboxes`).toJSON();
+  const sandboxes = state.get(`editor.sandboxes`).toJSON()
   const matchingSandbox = Object.keys(sandboxes).find(
     id => sandboxUrl(sandboxes[id]) === `${editorUrl()}${props.id}`
-  );
+  )
 
   if (matchingSandbox) {
-    return { id: matchingSandbox };
+    return { id: matchingSandbox }
   }
 
-  return {};
+  return {}
 }
 
-export function callVSCodeCallback({ props }) {
-  const { cbID } = props;
+export function callVSCodeCallback ({ props }) {
+  const { cbID } = props
   if (cbID) {
     if (window.cbs && window.cbs[cbID]) {
-      window.cbs[cbID](undefined, undefined);
-      delete window.cbs[cbID];
+      window.cbs[cbID](undefined, undefined)
+      delete window.cbs[cbID]
     }
   }
 }
 
-export function callVSCodeCallbackError({ props }) {
-  const { cbID } = props;
+export function callVSCodeCallbackError ({ props }) {
+  const { cbID } = props
   if (cbID) {
     if (window.cbs && window.cbs[cbID]) {
       const errorMessage =
-        props.message || 'Something went wrong while saving the file.';
-      window.cbs[cbID](new Error(errorMessage), undefined);
-      delete window.cbs[cbID];
+        props.message || 'Something went wrong while saving the file.'
+      window.cbs[cbID](new Error(errorMessage), undefined)
+      delete window.cbs[cbID]
     }
   }
 }
 
-export function setWorkspace({ controller, state, props }) {
-  state.set('workspace.project.title', props.sandbox.title || '');
-  state.set('workspace.project.description', props.sandbox.description || '');
-  state.set('workspace.project.alias', props.sandbox.alias || '');
+export function setWorkspace ({ controller, state, props }) {
+  state.set('workspace.project.title', props.sandbox.title || '')
+  state.set('workspace.project.description', props.sandbox.description || '')
+  state.set('workspace.project.alias', props.sandbox.alias || '')
 
-  const items = getItems(controller.getState());
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-  state.set(`workspace.openedWorkspaceItem`, defaultItem.id);
+  const items = getItems(controller.getState())
+  const defaultItem = items.find(i => i.defaultOpen) || items[0]
+  state.set(`workspace.openedWorkspaceItem`, defaultItem.id)
 }
 
-export function setUrlOptions({ state, router, utils }) {
-  const options = router.getSandboxOptions();
+export function setUrlOptions ({ state, router, utils }) {
+  const options = router.getSandboxOptions()
 
   if (options.currentModule) {
-    const sandbox = state.get('editor.currentSandbox');
+    const sandbox = state.get('editor.currentSandbox')
 
     try {
       const module = utils.resolveModule(
@@ -108,79 +108,69 @@ export function setUrlOptions({ state, router, utils }) {
         sandbox.modules,
         sandbox.directories,
         options.currentModule.directoryShortid
-      );
+      )
 
       if (module) {
         state.push('editor.tabs', {
           type: 'MODULE',
           moduleShortid: module.shortid,
-          dirty: false,
-        });
-        state.set('editor.currentModuleShortid', module.shortid);
+          dirty: false
+        })
+        state.set('editor.currentModuleShortid', module.shortid)
       }
     } catch (err) {
-      const now = Date.now();
-      const title = `Could not find the module ${options.currentModule}`;
+      const now = Date.now()
+      const title = `Could not find the module ${options.currentModule}`
 
       state.push('notifications', {
         title,
         id: now,
         notificationType: 'warning',
         endTime: now + 2000,
-        buttons: [],
-      });
+        buttons: []
+      })
     }
   }
 
   state.set(
     'preferences.showPreview',
     options.isPreviewScreen || options.isSplitScreen
-  );
+  )
   state.set(
     'preferences.showEditor',
     options.isEditorScreen || options.isSplitScreen
-  );
+  )
 
-  if (options.initialPath) state.set('editor.initialPath', options.initialPath);
-  if (options.fontSize)
-    state.set('preferences.settings.fontSize', options.fontSize);
-  if (options.highlightedLines)
-    state.set('editor.highlightedLines', options.highlightedLines);
-  if (options.hideNavigation)
-    state.set('preferences.hideNavigation', options.hideNavigation);
-  if (options.isInProjectView)
-    state.set('editor.isInProjectView', options.isInProjectView);
-  if (options.autoResize)
-    state.set('preferences.settings.autoResize', options.autoResize);
-  if (options.useCodeMirror)
-    state.set('preferences.settings.useCodeMirror', options.useCodeMirror);
-  if (options.enableEslint)
-    state.set('preferences.settings.enableEslint', options.enableEslint);
-  if (options.forceRefresh)
-    state.set('preferences.settings.forceRefresh', options.forceRefresh);
-  if (options.expandDevTools)
-    state.set('preferences.showDevtools', options.expandDevTools);
-  if (options.runOnClick)
-    state.set(`preferences.runOnClick`, options.runOnClick);
+  if (options.initialPath) state.set('editor.initialPath', options.initialPath)
+  if (options.fontSize) { state.set('preferences.settings.fontSize', options.fontSize) }
+  if (options.highlightedLines) { state.set('editor.highlightedLines', options.highlightedLines) }
+  if (options.hideNavigation) { state.set('preferences.hideNavigation', options.hideNavigation) }
+  if (options.isInProjectView) { state.set('editor.isInProjectView', options.isInProjectView) }
+  if (options.autoResize) { state.set('preferences.settings.autoResize', options.autoResize) }
+  if (options.useCodeMirror) { state.set('preferences.settings.useCodeMirror', options.useCodeMirror) }
+  if (options.enableEslint) { state.set('preferences.settings.enableEslint', options.enableEslint) }
+  if (options.forceRefresh) { state.set('preferences.settings.forceRefresh', options.forceRefresh) }
+  if (options.expandDevTools) { state.set('preferences.showDevtools', options.expandDevTools) }
+  if (options.runOnClick) { state.set(`preferences.runOnClick`, options.runOnClick) }
 }
 
-export function setCurrentModuleShortid({ props, state }) {
-  const currentModuleShortid = state.get('editor.currentModuleShortid');
-  const { sandbox } = props;
+export function setCurrentModuleShortid ({ props, state }) {
+  const currentModuleShortid = state.get('editor.currentModuleShortid')
+  const { sandbox } = props
 
   // Only change the module shortid if it doesn't exist in the new sandbox
   if (!sandbox.modules.map(m => m.shortid).includes(currentModuleShortid)) {
-    const parsedConfigs = parseSandboxConfigurations(sandbox);
-    const module = defaultOpenedModule(sandbox, parsedConfigs);
+    const parsedConfigs = parseSandboxConfigurations(sandbox)
+    const module = defaultOpenedModule(sandbox, parsedConfigs)
 
-    state.set('editor.currentModuleShortid', module.shortid);
+    state.set('editor.currentModuleShortid', module.shortid)
   }
 }
 
-export function showUserSurveyIfNeeded({ state, controller, api }) {
+export function showUserSurveyIfNeeded ({ state, controller, api }) {
   if (state.get('user.sendSurvey')) {
     // Let the server know that we've seen the survey
-    api.post('/users/survey-seen', {});
+    api.post('/users/survey-seen', {})
 
     notificationState.addNotification({
       title: 'Help improve CodeSandbox',
@@ -194,57 +184,57 @@ export function showUserSurveyIfNeeded({ state, controller, api }) {
             label: 'Open Survey',
             run: () => {
               controller.getSignal('modalOpened')({
-                modal: 'userSurvey',
-              });
-            },
-          },
-        ],
-      },
-    });
+                modal: 'userSurvey'
+              })
+            }
+          }
+        ]
+      }
+    })
   }
 }
 
-export function setMainModuleShortid({ props, state }) {
-  const { sandbox } = props;
-  const parsedConfigs = parseSandboxConfigurations(sandbox);
-  const module = mainModule(sandbox, parsedConfigs);
+export function setMainModuleShortid ({ props, state }) {
+  const { sandbox } = props
+  const parsedConfigs = parseSandboxConfigurations(sandbox)
+  const module = mainModule(sandbox, parsedConfigs)
 
-  state.set('editor.mainModuleShortid', module.shortid);
+  state.set('editor.mainModuleShortid', module.shortid)
 }
 
-export function setInitialTab({ state }) {
-  const currentModule = state.get('editor.currentModule');
+export function setInitialTab ({ state }) {
+  const currentModule = state.get('editor.currentModule')
   const newTab = {
     type: 'MODULE',
     moduleShortid: currentModule.shortid,
-    dirty: true,
-  };
+    dirty: true
+  }
 
-  state.set('editor.tabs', [newTab]);
+  state.set('editor.tabs', [newTab])
 }
 
-export function getGitChanges({ api, state }) {
-  const id = state.get('editor.currentId');
+export function getGitChanges ({ api, state }) {
+  const id = state.get('editor.currentId')
 
   return api
     .get(`/sandboxes/${id}/git/diff`)
-    .then(gitChanges => ({ gitChanges }));
+    .then(gitChanges => ({ gitChanges }))
 }
 
-export function forkSandbox({ state, props, api, path }) {
-  const sandboxId = props.sandboxId || state.get('editor.currentId');
+export function forkSandbox ({ state, props, api, path }) {
+  const sandboxId = props.sandboxId || state.get('editor.currentId')
   const url = sandboxId.includes('/')
     ? `/sandboxes/fork/${sandboxId}`
-    : `/sandboxes/${sandboxId}/fork`;
+    : `/sandboxes/${sandboxId}/fork`
 
   return api
     .post(url, props.body || {})
     .then(data => path.success({ forkedSandbox: data }))
-    .catch(error => path.error({ error }));
+    .catch(error => path.error({ error }))
 }
 
-export function moveModuleContent({ props, state }) {
-  const currentSandbox = state.get('editor.currentSandbox');
+export function moveModuleContent ({ props, state }) {
+  const currentSandbox = state.get('editor.currentSandbox')
 
   if (currentSandbox) {
     return {
@@ -255,223 +245,223 @@ export function moveModuleContent({ props, state }) {
           code: currentSandbox.modules.find(
             currentSandboxModule =>
               currentSandboxModule.shortid === module.shortid
-          ).code,
-        })),
-      },
-    };
+          ).code
+        }))
+      }
+    }
   }
 
-  return { sandbox: props.forkedSandbox };
+  return { sandbox: props.forkedSandbox }
 }
 
-export function closeTabByIndex({ state, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const currentModule = state.get('editor.currentModule');
-  const tabs = state.get('editor.tabs');
-  const tabModuleId = tabs[props.tabIndex].moduleId;
-  const isActiveTab = currentModule.id === tabModuleId;
+export function closeTabByIndex ({ state, props }) {
+  const sandbox = state.get('editor.currentSandbox')
+  const currentModule = state.get('editor.currentModule')
+  const tabs = state.get('editor.tabs')
+  const tabModuleId = tabs[props.tabIndex].moduleId
+  const isActiveTab = currentModule.id === tabModuleId
 
   if (isActiveTab) {
     const newTab =
-      props.tabIndex > 0 ? tabs[props.tabIndex - 1] : tabs[props.tabIndex + 1];
+      props.tabIndex > 0 ? tabs[props.tabIndex - 1] : tabs[props.tabIndex + 1]
 
     if (newTab) {
       const newModule = sandbox.modules.find(
         module => module.id === newTab.moduleId
-      );
+      )
 
-      state.set('editor.currentModuleShortid', newModule.shortid);
+      state.set('editor.currentModuleShortid', newModule.shortid)
     }
   }
 
-  state.splice('editor.tabs', props.tabIndex, 1);
+  state.splice('editor.tabs', props.tabIndex, 1)
 }
 
-export function signInGithub({ browser, path, props }) {
-  const { useExtraScopes } = props;
+export function signInGithub ({ browser, path, props }) {
+  const { useExtraScopes } = props
   const popup = browser.openPopup(
     `/auth/github${useExtraScopes ? '?scope=user:email,repo' : ''}`,
     'sign in'
-  );
+  )
 
   return browser.waitForMessage('signin').then(data => {
-    const { jwt } = data;
+    const { jwt } = data
 
-    popup.close();
+    popup.close()
 
     if (jwt) {
-      return path.success({ jwt });
+      return path.success({ jwt })
     }
 
-    return path.error();
-  });
+    return path.error()
+  })
 }
 
-export function signOut({ api }) {
-  api.delete(`/users/signout`);
+export function signOut ({ api }) {
+  api.delete(`/users/signout`)
 }
 
-export function getAuthToken({ api, path }) {
+export function getAuthToken ({ api, path }) {
   return api
     .get('/auth/auth-token')
     .then(({ token }) => path.success({ token }))
-    .catch(error => path.error({ error }));
+    .catch(error => path.error({ error }))
 }
 
-export function setModal({ state, props }) {
-  track('Open Modal', { modal: props.modal });
-  state.set('currentModalMessage', props.message);
-  state.set('currentModal', props.modal);
+export function setModal ({ state, props }) {
+  track('Open Modal', { modal: props.modal })
+  state.set('currentModalMessage', props.message)
+  state.set('currentModal', props.modal)
 }
 
-export function setStoredSettings({ state, settingsStore }) {
-  const settings = settingsStore.getAll();
+export function setStoredSettings ({ state, settingsStore }) {
+  const settings = settingsStore.getAll()
 
   if (settings.keybindings) {
     settings.keybindings = Object.keys(settings.keybindings).reduce(
       (value, key) =>
         value.concat({
           key,
-          bindings: settings.keybindings[key],
+          bindings: settings.keybindings[key]
         }),
       []
-    );
+    )
   }
 
-  state.merge('preferences.settings', settings);
+  state.merge('preferences.settings', settings)
 }
 
-export function setKeybindings({ state, keybindingManager }) {
-  keybindingManager.set(state.get('preferences.settings.keybindings').toJSON());
+export function setKeybindings ({ state, keybindingManager }) {
+  keybindingManager.set(state.get('preferences.settings.keybindings').toJSON())
 }
 
-export function startKeybindings({ keybindingManager }) {
-  keybindingManager.start();
+export function startKeybindings ({ keybindingManager }) {
+  keybindingManager.start()
 }
 
-export function removeNotification({ state, props }) {
-  const notifications = state.get('notifications');
+export function removeNotification ({ state, props }) {
+  const notifications = state.get('notifications')
   const notificationToRemoveIndex = notifications.findIndex(
     notification => notification.id === props.id
-  );
+  )
 
-  state.splice('notifications', notificationToRemoveIndex, 1);
+  state.splice('notifications', notificationToRemoveIndex, 1)
 }
 
-export function getUser({ api, path }) {
+export function getUser ({ api, path }) {
   return api
     .get('/users/current')
     .then(data => path.success({ user: data }))
     .catch(e => {
       if (e.response.status === 401) {
-        return path.unauthorized();
+        return path.unauthorized()
       }
 
-      return path.error();
-    });
+      return path.error()
+    })
 }
 
-export function connectWebsocket({ socket }) {
+export function connectWebsocket ({ socket }) {
   if (process.env.LOCAL_SERVER) {
     // TODO: Make the ws proxy work in start.js
-    return {};
+    return {}
   }
 
-  return socket.connect();
+  return socket.connect()
 }
 
-export function setJwtFromProps({ jwt, state, props }) {
-  jwt.set(props.jwt);
-  state.set('jwt', props.jwt);
+export function setJwtFromProps ({ jwt, state, props }) {
+  jwt.set(props.jwt)
+  state.set('jwt', props.jwt)
 }
 
-export function setJwtFromStorage({ jwt, state }) {
-  state.set('jwt', jwt.get() || null);
+export function setJwtFromStorage ({ jwt, state }) {
+  state.set('jwt', jwt.get() || null)
 }
 
-export function removeJwtFromStorage({ jwt, state }) {
-  jwt.reset();
-  state.set('jwt', null);
+export function removeJwtFromStorage ({ jwt, state }) {
+  jwt.reset()
+  state.set('jwt', null)
 }
 
-export function setSignedInCookie({ props }) {
-  document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', true);
-  setUserId(props.user.id);
+export function setSignedInCookie ({ props }) {
+  document.cookie = 'signedIn=true; Path=/;'
+  identify('signed_in', true)
+  setUserId(props.user.id)
 }
 
-export function listenToConnectionChange({ connection }) {
-  connection.addListener('connectionChanged');
+export function listenToConnectionChange ({ connection }) {
+  connection.addListener('connectionChanged')
 }
 
-export function stopListeningToConnectionChange({ connection }) {
-  connection.removeListener('connectionChanged');
+export function stopListeningToConnectionChange ({ connection }) {
+  connection.removeListener('connectionChanged')
 }
 
-export function setPatronPrice({ props, state }) {
+export function setPatronPrice ({ props, state }) {
   state.set(
     'patron.price',
     props.user.subscription ? props.user.subscription.amount : 10
-  );
+  )
 }
 
-export function signInZeit({ browser, path }) {
-  const popup = browser.openPopup('/auth/zeit', 'sign in');
+export function signInZeit ({ browser, path }) {
+  const popup = browser.openPopup('/auth/zeit', 'sign in')
   return browser.waitForMessage('signin').then(data => {
-    popup.close();
+    popup.close()
 
     if (data && data.code) {
-      return path.success({ code: data.code });
+      return path.success({ code: data.code })
     }
 
-    return path.error();
-  });
+    return path.error()
+  })
 }
 
-export function updateUserZeitDetails({ api, path, props }) {
-  const { code } = props;
+export function updateUserZeitDetails ({ api, path, props }) {
+  const { code } = props
 
   return api
     .post(`/users/current_user/integrations/zeit`, {
-      code,
+      code
     })
     .then(data => path.success({ user: data }))
-    .catch(error => path.error({ error }));
+    .catch(error => path.error({ error }))
 }
 
-export function getZeitIntegrationDetails({ state, path }) {
-  const token = state.get(`user.integrations.zeit.token`);
+export function getZeitIntegrationDetails ({ state, path }) {
+  const token = state.get(`user.integrations.zeit.token`)
 
   return axios
     .get('https://api.zeit.co/www/user', {
       headers: {
-        Authorization: `bearer ${token}`,
-      },
+        Authorization: `bearer ${token}`
+      }
     })
     .then(response => path.success({ response: response.data }))
-    .catch(error => path.error({ error }));
+    .catch(error => path.error({ error }))
 }
 
-export function signOutZeit({ api }) {
-  return api.delete(`/users/current_user/integrations/zeit`).then(() => {});
+export function signOutZeit ({ api }) {
+  return api.delete(`/users/current_user/integrations/zeit`).then(() => {})
 }
 
-export function signOutGithubIntegration({ api }) {
-  return api.delete(`/users/current_user/integrations/github`).then(() => {});
+export function signOutGithubIntegration ({ api }) {
+  return api.delete(`/users/current_user/integrations/github`).then(() => {})
 }
 
-export function createPackageJSON({ props }) {
-  const { sandbox } = props;
+export function createPackageJSON ({ props }) {
+  const { sandbox } = props
 
-  const code = generateFileFromSandbox(sandbox);
+  const code = generateFileFromSandbox(sandbox)
 
   return {
     title: 'package.json',
-    newCode: code,
-  };
+    newCode: code
+  }
 }
 
-export function getContributors({ state }) {
+export function getContributors ({ state }) {
   return window
     .fetch(
       'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
@@ -479,5 +469,5 @@ export function getContributors({ state }) {
     .then(x => x.json())
     .then(x => x.contributors.map(u => u.login))
     .then(names => state.set('contributors', names))
-    .catch(() => {});
+    .catch(() => {})
 }

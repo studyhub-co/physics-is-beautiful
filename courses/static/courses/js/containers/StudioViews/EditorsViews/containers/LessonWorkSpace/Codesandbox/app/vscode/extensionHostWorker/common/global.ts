@@ -10,9 +10,11 @@ if (typeof Worker === 'undefined') {
 }
 
 export const initializePolyfills = () => {
+
   require('core-js/fn/string/starts-with');
   require('core-js/fn/string/ends-with');
   require('core-js/fn/array/find');
+  require('core-js/fn/array/filter');
   require('core-js/fn/promise');
 
   return requirePolyfills();
@@ -40,6 +42,9 @@ export const initializeGlobals = () => {
 
 export function initializeAll() {
   return new Promise(async resolve => {
+
+    console.log('initializePolyfills');
+    
     await initializePolyfills();
     loadBrowserFS();
     initializeGlobals();

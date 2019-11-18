@@ -6,24 +6,24 @@ export const onInitialize: OnInitialize = (
 ) => {
   // const provideJwtToken = () => state.jwt || effects.jwt.get();
 
-  // effects.fsSync.initialize({
-  //   onModulesByPathChange(cb: (modulesByPath: any) => void) {
-  //     overmindInstance.reaction(
-  //       ({ editor }) => editor.modulesByPath,
-  //       modulesByPath => cb(modulesByPath)
-  //     );
-  //   },
-  //   getModulesByPath() {
-  //     return state.editor.modulesByPath;
-  //   },
-  // });
+  effects.fsSync.initialize({
+    onModulesByPathChange(cb: (modulesByPath: any) => void) {
+      overmindInstance.reaction(
+        ({ editor }) => editor.modulesByPath,
+        modulesByPath => cb(modulesByPath)
+      );
+    },
+    getModulesByPath() {
+      return state.editor.modulesByPath;
+    },
+  });
   //
   // effects.live.initialize({
   //   // provideJwtToken,
   //   onApplyOperation: actions.live.applyTransformation,
   // });
 
-  // effects.keybindingManager.initialize(overmindInstance);
+  effects.keybindingManager.initialize(overmindInstance);
 
   // effects.api.initialize({
   //   // provideJwtToken,

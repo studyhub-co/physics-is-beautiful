@@ -392,8 +392,6 @@ class EditorPreview extends React.Component {
     const sandbox = store.editor.currentSandbox
     const { preferences } = store
     const { currentTab } = store.editor
-    
-    console.log(currentTab);
 
     const windowVisible = store.editor.previewWindowVisible
 
@@ -562,6 +560,7 @@ class EditorPreview extends React.Component {
               />
             </div>
             {/*need for SplitPane*/}
+            {/* TODO it will be preview panel */}
             <div></div>
 
             {/* <div */}

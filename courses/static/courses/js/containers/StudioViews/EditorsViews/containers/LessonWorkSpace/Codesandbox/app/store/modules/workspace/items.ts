@@ -74,18 +74,18 @@ export function getDisabledItems(store: any): INavigationItem[] {
 }
 
 export default function getItems(store: any): INavigationItem[] {
-  if (
-    store.live.isLive &&
-    !(
-      store.live.isOwner ||
-      (store.user &&
-        store.live &&
-        store.live.roomInfo &&
-        store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
-    )
-  ) {
-    return [FILES, LIVE];
-  }
+  // if (
+  //   store.live.isLive &&
+  //   !(
+  //     store.live.isOwner ||
+  //     (store.user &&
+  //       store.live &&
+  //       store.live.roomInfo &&
+  //       store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
+  //   )
+  // ) {
+  //   return [FILES, LIVE];
+  // }
 
   const { currentSandbox } = store.editor;
 
@@ -115,9 +115,9 @@ export default function getItems(store: any): INavigationItem[] {
     items.push(DEPLOYMENT);
   }
 
-  if (store.isLoggedIn) {
-    items.push(LIVE);
-  }
+  // if (store.isLoggedIn) {
+  //   items.push(LIVE);
+  // }
 
   return items;
 }

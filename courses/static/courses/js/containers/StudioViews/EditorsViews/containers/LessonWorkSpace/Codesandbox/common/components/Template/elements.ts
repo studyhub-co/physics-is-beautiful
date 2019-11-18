@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-// import Color from 'color';
+import Color from 'color';
 
 const makeColor = (
   color: any,

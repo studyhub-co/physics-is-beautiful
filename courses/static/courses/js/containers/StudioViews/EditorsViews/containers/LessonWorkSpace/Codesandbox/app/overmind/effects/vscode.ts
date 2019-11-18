@@ -1,4 +1,4 @@
-// import { vscode } from '../../../app/vscode';
+import { vscode } from '../../../app/vscode';
 
 export default {
   callCallbackError(id: string, message?: string) {
@@ -21,8 +21,8 @@ export default {
       delete window.cbs[id];
     }
   },
-  // runCommand(command: string) {
-  //   // @ts-ignore
-  //   vscode.runCommand(command);
-  // },
+  runCommand(command: string) {
+    // @ts-ignore
+    vscode.runCommand(command);
+  },
 };

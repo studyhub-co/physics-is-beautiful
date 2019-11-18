@@ -234,10 +234,10 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   // state.workspace.project.description = sandbox.description || '';
   // state.workspace.project.alias = sandbox.alias || '';
 
-  // const items = getItems(state);
-  // const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  const items = getItems(state);
+  const defaultItem = items.find(i => i.defaultOpen) || items[0];
 
-  // state.workspace.openedWorkspaceItem = defaultItem.id;
+  state.workspace.openedWorkspaceItem = defaultItem.id;
 
   // TODO try to use sandbox executor
 

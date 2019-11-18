@@ -25,7 +25,7 @@ const ModuleEntry = ({
   const type = getType(module.title);
   const hasError = module.errors.length;
 
-  const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
+  // const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
 
   const isNotSynced = module.savedCode && module.code !== module.savedCode;
 
@@ -34,7 +34,7 @@ const ModuleEntry = ({
       id={module.id}
       shortid={module.shortid}
       title={module.title}
-      rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
+      // rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
       depth={depth + 1}
       active={isActive}
       type={type || 'function'}

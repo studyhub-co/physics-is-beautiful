@@ -5,7 +5,7 @@
 import {
   KEYBINDINGS,
   normalizeKey,
-} from '@codesandbox/common/utils/keybindings';
+} from '../../../common/utils/keybindings';
 
 const isIOS =
   typeof navigator !== 'undefined' &&

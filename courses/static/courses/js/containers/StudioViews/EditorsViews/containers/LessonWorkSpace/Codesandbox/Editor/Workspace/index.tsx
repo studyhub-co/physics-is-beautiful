@@ -24,7 +24,9 @@ import { FilesItem } from './items/Files';
 // import { GitHub } from './items/GitHub';
 // import { Live } from './items/Live';
 // import { More } from './items/More';
-// import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
+
+// this Component includes File's explorer
+import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
 // import { ProjectInfo } from './items/ProjectInfo';
 // import { Server } from './items/Server';
 // import { SSEDownNotice } from './SSEDownNotice';
@@ -32,7 +34,7 @@ import { WorkspaceItem } from './WorkspaceItem';
 
 const workspaceTabs = {
   // project: ProjectInfo,
-  // 'project-summary': NotOwnedSandboxInfo,
+  'project-summary': NotOwnedSandboxInfo,
   files: FilesItem,
   // github: GitHub,
   deploy: Deployment,

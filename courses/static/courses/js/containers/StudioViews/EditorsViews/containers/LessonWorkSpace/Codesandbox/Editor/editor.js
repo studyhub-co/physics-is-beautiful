@@ -106,11 +106,11 @@ class ContentSplit extends React.Component {
             {/* )} */}
             <div
               style={{
-                position: 'fixed',
+                // position: 'fixed',
                 // left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',
-                top: topOffset,
-                right: 0,
-                bottom: bottomOffset,
+                // top: topOffset,
+                // right: 0,
+                // bottom: bottomOffset,
                 height: statusBar ? 'auto' : 'calc(100% - 3.5rem)'
               }}
             >

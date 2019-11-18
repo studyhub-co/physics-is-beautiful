@@ -23,7 +23,10 @@ compare-versions
 react-modal
 react-show
 reakit
-# "color": "^0.11.4",
+humps
+color
+image-extensions
+@tippy.js/react
 
 #dev:
 svgo-loader

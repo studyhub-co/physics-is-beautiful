@@ -1,6 +1,6 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
-// import Tippy from '@tippy.js/react';
+import Tippy from '@tippy.js/react';
 import theme from '../../theme';
 
 const GlobalStyle = createGlobalStyle`

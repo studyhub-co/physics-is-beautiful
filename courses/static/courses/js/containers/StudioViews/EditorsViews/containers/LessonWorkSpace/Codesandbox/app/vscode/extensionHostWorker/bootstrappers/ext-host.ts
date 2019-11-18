@@ -2,7 +2,7 @@ import * as childProcess from '../../../../node-services/lib/child_process';
 // @ts-ignore
 import DefaultWorkLoader from 'worker-loader?publicPath=/&name=dynamic-worker.[hash:8].worker.js!./generic-1';
 // @ts-ignore
-import TSWorker from 'worker-loader?publicPath=/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
+import TSWorker from 'worker-loader?publicPath=/static/js/bundles/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
 // @ts-ignore
 import VueWorker from 'worker-loader?publicPath=/&name=vue-worker.[hash:8].worker.js!./vue-worker';
 // @ts-ignore

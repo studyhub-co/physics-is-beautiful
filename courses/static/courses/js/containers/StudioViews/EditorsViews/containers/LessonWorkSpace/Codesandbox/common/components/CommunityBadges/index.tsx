@@ -1,6 +1,6 @@
 import React from 'react';
 // import IconBase from 'react-icons/lib/IconBase';
-// import Color from 'color';
+import Color from 'color';
 import styled from 'styled-components';
 import Tooltip from '../Tooltip';
 import getIcon from '../../templates/icons';

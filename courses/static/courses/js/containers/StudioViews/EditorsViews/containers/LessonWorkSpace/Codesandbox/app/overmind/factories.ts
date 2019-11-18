@@ -15,8 +15,8 @@ export const withLoadApp = <T>(
     return;
   }
 
-  state.isAuthenticating = true;
-  state.jwt = effects.jwt.get() || null;
+  // state.isAuthenticating = true;
+  // state.jwt = effects.jwt.get() || null;
   effects.connection.addListener(actions.connectionChanged);
   actions.internal.setStoredSettings();
   effects.keybindingManager.set(
@@ -25,44 +25,44 @@ export const withLoadApp = <T>(
   effects.keybindingManager.start();
   effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
 
-  if (state.jwt) {
-    try {
-      state.user = await effects.api.getCurrentUser();
-      actions.internal.setPatronPrice();
-      actions.internal.setSignedInCookie();
-      effects.live.connect();
-      actions.userNotifications.internal.initialize();
-      effects.api.preloadTemplates();
-    } catch (error) {
-      effects.notificationToast.error(
-        'Your session seems to be expired, please log in again...'
-      );
-      effects.jwt.reset();
-    }
-  } else {
-    effects.jwt.reset();
-  }
+  // if (state.jwt) {
+  //   try {
+  //     state.user = await effects.api.getCurrentUser();
+  //     actions.internal.setPatronPrice();
+  //     actions.internal.setSignedInCookie();
+  //     effects.live.connect();
+  //     actions.userNotifications.internal.initialize();
+  //     effects.api.preloadTemplates();
+  //   } catch (error) {
+  //     effects.notificationToast.error(
+  //       'Your session seems to be expired, please log in again...'
+  //     );
+  //     effects.jwt.reset();
+  //   }
+  // } else {
+  //   effects.jwt.reset();
+  // }
 
   if (continueAction) {
     await continueAction(context, value);
   }
 
   state.hasLoadedApp = true;
-  state.isAuthenticating = false;
+  // state.isAuthenticating = false;
 
-  try {
-    const response = await effects.http.get<{
-      contributors: Contributor[];
-    }>(
-      'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
-    );
-
-    state.contributors = response.data.contributors.map(
-      contributor => contributor.login
-    );
-  } catch (error) {
-    // Something wrong in the parsing probably, make sure the file is JSON valid
-  }
+  // try {
+  //   const response = await effects.http.get<{
+  //     contributors: Contributor[];
+  //   }>(
+  //     'https://raw.githubusercontent.com/codesandbox/codesandbox-client/master/.all-contributorsrc'
+  //   );
+  //
+  //   state.contributors = response.data.contributors.map(
+  //     contributor => contributor.login
+  //   );
+  // } catch (error) {
+  //   // Something wrong in the parsing probably, make sure the file is JSON valid
+  // }
 };
 
 export const withOwnedSandbox = <T>(
