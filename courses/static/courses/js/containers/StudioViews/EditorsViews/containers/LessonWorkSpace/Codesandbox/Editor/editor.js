@@ -140,7 +140,10 @@ class ContentSplit extends React.Component {
                   overflow: 'visible' // For VSCode Context Menu
                 }}
               >
-                {store.workspace.workspaceHidden ? <div /> : <Workspace />}
+                {store.workspace.workspaceHidden
+                  ? <div />
+                  : <Workspace />
+                }
                 {sandbox ? <Content match={match} /> : <div></div>}
               </SplitPane>
 

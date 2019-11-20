@@ -22,8 +22,8 @@ class Files extends React.Component {
   };
 
   onDownload = () => {
-    console.log('this.props.signals.editor.createZipClicked()')
-    // this.props.signals.editor.createZipClicked()
+    // console.log('this.props.signals.editor.createZipClicked()')
+    this.props.signals.editor.createZipClicked()
   };
 
   getModulePath = moduleId => {

@@ -4,6 +4,16 @@ import { createOvermind } from 'overmind'
 import { config } from '../app/overmind'
 import { vscode } from '../app/vscode'
 
+import { getTypeFetcher } from '../app/vscode/extensionHostWorker/common/type-downloader'
+
+import {
+  initializeThemeCache,
+  initializeSettings,
+  initializeExtensionsFolder,
+  initializeCustomTheme,
+  setVimExtensionEnabled,
+} from '../app/vscode/initializers'
+
 import * as childProcess from '../node-services/lib/child_process'
 
 import {
@@ -22,28 +32,8 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-export function initializeSettings () {
-  // @ts-ignore
-  const fs = BrowserFS.BFSRequire('fs')
-  if (!fs.existsSync('/vscode/settings.json')) {
-    fs.writeFileSync(
-      '/vscode/settings.json',
-      JSON.stringify(
-        {
-          'editor.formatOnSave': true,
-          'editor.fontSize': 15,
-          'editor.fontFamily': "dm, Menlo, Monaco, 'Courier New', monospace",
-          'editor.tabSize': 2,
-          'editor.minimap.enabled': false,
-          'workbench.editor.openSideBySideDirection': 'down',
-          'svelte.plugin.typescript.diagnostics.enable': false
-        },
-        null,
-        2
-      )
-    )
-  }
-}
+let getState;
+let getSignal;
 
 export const initialize = (component, callback1) => {
   /*
@@ -61,11 +51,11 @@ export const initialize = (component, callback1) => {
     logProxies: true
   })
 
-  const getState = path =>
+  getState = path =>
     path
       ? path.split('.').reduce((aggr, key) => aggr[key], overmind.state)
       : overmind.state
-  const getSignal = path =>
+  getSignal = path =>
     path.split('.').reduce((aggr, key) => aggr[key], overmind.actions)
 
   window.getState = getState
@@ -89,16 +79,16 @@ export const initialize = (component, callback1) => {
             }
           }
         },
-        // '/PIB/node_modules': {
-        //   fs: 'CodeSandboxFS'
-        //   options: getTypeFetcher().options
-        // },
+        '/sandbox/node_modules': {
+          fs: 'CodeSandboxFS',
+          options: getTypeFetcher().options,
+        },
         '/vscode': {
           fs: 'LocalStorage'
         },
         '/home': {
           fs: 'LocalStorage'
-        }
+        },
         // '/extensions': {
         //   fs: 'BundledHTTPRequest',
         //   options: {
@@ -108,9 +98,9 @@ export const initialize = (component, callback1) => {
         //     logReads: process.env.NODE_ENV === 'development'
         //   }
         // },
-        // '/extensions/custom-theme': {
-        //   fs: 'InMemory'
-        // }
+        '/extensions/custom-theme': {
+          fs: 'InMemory'
+        }
       }
     },
     e => {
@@ -120,13 +110,15 @@ export const initialize = (component, callback1) => {
         throw e
       }
 
-      const isVSCode = getState().preferences.settings.experimentVSCode
+      // const isVSCode = getState().preferences.settings.experimentVSCode
+
+      const isVSCode = true
 
       if (isVSCode) {
         // For first-timers initialize a theme in the cache so it doesn't jump colors
-        //   initializeExtensionsFolder()
-        //   initializeCustomTheme()
-        //   initializeThemeCache()
+        initializeExtensionsFolder()
+        initializeCustomTheme()
+        initializeThemeCache()
         initializeSettings()
         // setVimExtensionEnabled(
         //   localStorage.getItem('settings.vimmode') === 'true'
@@ -146,6 +138,9 @@ export const initialize = (component, callback1) => {
             console.log('Loaded Monaco'); // eslint-disable-line
           }
           if (isVSCode) {
+            
+            console.log(getSignal);
+            
             vscode.acquireController({
               getSignal,
               getState

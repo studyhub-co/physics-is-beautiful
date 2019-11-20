@@ -17,7 +17,7 @@ let Index = class Index extends React.Component {
           {/* <HooksProvider client={client}> */}
           <ThemeProvider theme={theme}>
             <Editor>
-              {/* {this.props.children} */}
+               {/*{this.props.children}*/}
             </Editor>
           </ThemeProvider>
           {/* </HooksProvider> */}

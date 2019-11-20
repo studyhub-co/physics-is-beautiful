@@ -276,10 +276,10 @@ class EditorPreview extends React.Component {
         }
       }
     }
-    const disposeLiveSelectionHandler = this.props.reaction(
-      state => state.editor.pendingUserSelections.map(x => x),
-      updateUserSelections
-    )
+    // const disposeLiveSelectionHandler = this.props.reaction(
+    //   state => state.editor.pendingUserSelections.map(x => x),
+    //   updateUserSelections
+    // )
     updateUserSelections()
 
     const disposeModuleHandler = this.props.reaction(

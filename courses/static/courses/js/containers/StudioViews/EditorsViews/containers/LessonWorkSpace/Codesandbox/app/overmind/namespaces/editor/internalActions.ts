@@ -10,11 +10,11 @@ import {
 import getTemplateDefinition from '../../../../common//templates';
 // import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { sortObjectByKeys } from '../../../../app/overmind/utils/common';
-// import slugify from '../../../../common//utils/slugify';
-// import {
-//   sandboxUrl,
-//   editorUrl,
-// } from '../../../../common//utils/url-generator';
+import slugify from '../../../../common/utils/slugify';
+import {
+  sandboxUrl,
+  editorUrl,
+} from '../../../../common/utils/url-generator';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -30,27 +30,27 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   return matchingSandboxId || id;
 };
 
-export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
-  { state, actions },
-  sandbox
-) => {
-  state.live.isTeam = Boolean(sandbox.team);
-
-  if (state.live.isLive) {
-    const roomChanged = state.live.roomInfo.roomId !== sandbox.roomId;
-
-    if (!roomChanged) {
-      // In this case we don't need to initialize new live session, we reuse the existing one
-      return;
-    }
-
-    await actions.live.internal.disconnect();
-  }
-
-  if (sandbox.owned && sandbox.roomId) {
-    await actions.live.internal.initialize(sandbox.roomId);
-  }
-};
+// export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
+//   { state, actions },
+//   sandbox
+// ) => {
+//   state.live.isTeam = Boolean(sandbox.team);
+//
+//   if (state.live.isLive) {
+//     const roomChanged = state.live.roomInfo.roomId !== sandbox.roomId;
+//
+//     if (!roomChanged) {
+//       // In this case we don't need to initialize new live session, we reuse the existing one
+//       return;
+//     }
+//
+//     await actions.live.internal.disconnect();
+//   }
+//
+//   if (sandbox.owned && sandbox.roomId) {
+//     await actions.live.internal.initialize(sandbox.roomId);
+//   }
+// };
 
 export const setModuleSavedCode: Action<{
   moduleShortid: string;
@@ -144,9 +144,9 @@ export const saveCode: AsyncAction<{
       effects.executor.updateFiles(state.editor.currentSandbox);
     }
 
-    if (state.live.isLive && state.live.isCurrentEditor) {
-      effects.live.sendModuleSaved(module);
-    }
+    // if (state.live.isLive && state.live.isCurrentEditor) {
+    //   effects.live.sendModuleSaved(module);
+    // }
 
     await actions.editor.internal.updateCurrentTemplate();
 
@@ -289,14 +289,14 @@ export const forkSandbox: AsyncAction<{
     state.editor.currentSandbox ? state.editor.currentSandbox.template : null
   );
 
-  if (!state.isLoggedIn && templateDefinition.isServer) {
-    effects.analytics.track('Show Server Fork Sign In Modal');
-    actions.modalOpened({ modal: 'forkServerModal', message: null });
+  // if (!state.isLoggedIn && templateDefinition.isServer) {
+  //   effects.analytics.track('Show Server Fork Sign In Modal');
+  //   actions.modalOpened({ modal: 'forkServerModal', message: null });
+  //
+  //   return;
+  // }
 
-    return;
-  }
-
-  effects.analytics.track('Fork Sandbox');
+  // effects.analytics.track('Fork Sandbox');
 
   try {
     state.editor.isForkingSandbox = true;
@@ -317,11 +317,11 @@ export const forkSandbox: AsyncAction<{
     }
 
     await actions.internal.setCurrentSandbox(forkedSandbox);
-    effects.notificationToast.success('Forked sandbox!');
+    // effects.notificationToast.success('Forked sandbox!');
     effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
     console.error(error);
-    effects.notificationToast.error('Sorry, unable to fork this sandbox');
+    // effects.notificationToast.error('Sorry, unable to fork this sandbox');
   }
 
   state.editor.isForkingSandbox = false;

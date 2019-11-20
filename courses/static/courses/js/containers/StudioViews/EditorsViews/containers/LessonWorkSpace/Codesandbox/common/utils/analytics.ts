@@ -76,6 +76,19 @@ let sentryInitialized = false;
 function getSentry() {
   return import(/* webpackChunkName: 'sentry' */ '@sentry/browser');
 }
+
+// node/ie func -> need for vscode
+window.setImmediate = (func, delay) => setTimeout(func, delay);
+
+window.addEventListener('unhandledrejection', e => {
+  if (e && e.reason && e.reason.name === 'Canceled') {
+    // This is an error from vscode that vscode uses to cancel some actions
+    // We don't want to show this to the user
+    e.preventDefault();
+  }
+});
+
+
 export async function initializeSentry(dsn: string) {
   if (!DNT) {
     sentryInitialized = true;

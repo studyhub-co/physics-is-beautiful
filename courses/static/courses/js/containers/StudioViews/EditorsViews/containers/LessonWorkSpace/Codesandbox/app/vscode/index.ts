@@ -431,8 +431,8 @@ class VSCodeManager {
           this.statusbarPart.resolve(statusbarPart);
 
           // Initialize menu bar
-          // const menubarPart = accessor.get('menubar');
-          // this.menubarPart.resolve(menubarPart);
+          const menubarPart = accessor.get('menubar');
+          this.menubarPart.resolve(menubarPart);
 
           // Initialize command service
           const commandService = accessor.get(ICommandService);

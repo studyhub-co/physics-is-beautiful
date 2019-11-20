@@ -1,13 +1,14 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
-//import { TextOperation } from 'ot';
+// import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
+import * as fs from 'fs';
 import {
   getModulePath,
   resolveModule,
 } from '../../../../common/sandbox/modules';
-// import { listen, actions, dispatch } from 'codesandbox-api';
+import { listen, actions, dispatch } from '../../../../app/codesandbox-api/codesandbox';
 
 import prettify from '../../../../app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from '../../../../common/prettify-default-config';
@@ -97,7 +98,7 @@ export class VSCode extends React.Component<Props> implements Editor {
   editor?: any;
   monaco?: any;
   receivingCode: boolean = false;
-  // codeSandboxAPIListener: () => void;
+  codeSandboxAPIListener: () => void;
   sizeProbeInterval: number | undefined;
   resizeEditor: (() => void) | EventListener;
   commitLibChanges: () => void;
@@ -123,7 +124,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     this.resizeEditor = debounce(this.resizeEditorInstantly, 150);
     this.commitLibChanges = debounce(this.commitLibChangesInstantly, 300);
 
-    //this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener();
+    this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -135,6 +136,10 @@ export class VSCode extends React.Component<Props> implements Editor {
     }
 
     const activeEditor = this.editor && this.editor.getActiveCodeEditor();
+
+    // console.log('activeEditor');
+    // console.log(activeEditor);
+
 
     if (this.props.readOnly !== nextProps.readOnly && activeEditor) {
       activeEditor.updateOptions({ readOnly: Boolean(nextProps.readOnly) });
@@ -234,6 +239,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     ]);
 
   setupCodeSandboxAPIListener = () =>
+  {
     listen(({ action, type, code, path, lineNumber, column }: any) => {
       if (type === 'add-extra-lib') {
         // TODO: bring this func back
@@ -255,13 +261,14 @@ export class VSCode extends React.Component<Props> implements Editor {
         }
 
         if (this.editor) {
+          // console.log(this.editor);
           this.editor.codeEditorService.openCodeEditor({
             resource: this.monaco.Uri.file('/sandbox' + path),
             options,
           });
         }
       }
-    });
+    });}
 
   modelListeners: {
     [path: string]: {
@@ -285,16 +292,16 @@ export class VSCode extends React.Component<Props> implements Editor {
           this.sandbox.directories
         );
 
-        const { isLive, sendTransforms } = this.props;
-
-        if (
-          path === this.getCurrentModuleVSCodePath() &&
-          isLive &&
-          sendTransforms &&
-          !this.receivingCode
-        ) {
-          this.sendChangeOperations(e);
-        }
+        // const { isLive, sendTransforms } = this.props;
+        //
+        // if (
+        //   path === this.getCurrentModuleVSCodePath() &&
+        //   isLive &&
+        //   sendTransforms &&
+        //   !this.receivingCode
+        // ) {
+        //   this.sendChangeOperations(e);
+        // }
 
         this.handleChange(module.shortid, module.title, model.getValue());
       } catch (err) {
@@ -360,25 +367,26 @@ export class VSCode extends React.Component<Props> implements Editor {
 
   configureEditor = async (editor: EditorAPI, monaco: any) => {
     this.editor = editor;
-    this.monaco = monaco;
 
+    // this.monaco = monaco;
+    //
     // monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
     // monaco.languages.registerDocumentFormattingEditProvider(
     //   'typescriptreact',
     //   this
     // );
-    monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
-    monaco.languages.registerDocumentFormattingEditProvider(
-      'javascriptreact',
-      this
-    );
-    monaco.languages.registerDocumentFormattingEditProvider('css', this);
+    // monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
+    // monaco.languages.registerDocumentFormattingEditProvider(
+    //   'javascriptreact',
+    //   this
+    // );
+    // monaco.languages.registerDocumentFormattingEditProvider('css', this);
     // monaco.languages.registerDocumentFormattingEditProvider('less', this);
     // monaco.languages.registerDocumentFormattingEditProvider('sass', this);
     // monaco.languages.registerDocumentFormattingEditProvider('graphql', this);
-    monaco.languages.registerDocumentFormattingEditProvider('html', this);
-    monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
-    monaco.languages.registerDocumentFormattingEditProvider('json', this);
+    // monaco.languages.registerDocumentFormattingEditProvider('html', this);
+    // monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
+    // monaco.languages.registerDocumentFormattingEditProvider('json', this);
 
     // eslint-disable-next-line no-underscore-dangle
     const global = window as any;
@@ -388,6 +396,11 @@ export class VSCode extends React.Component<Props> implements Editor {
     };
 
     this.listenForFileChanges();
+    
+    editor.editorService.onDidActiveEditorChange(() => {
+      console.log('1wtqwegsgs');
+    }) 
+    
     this.activeEditorListener = editor.editorService.onDidActiveEditorChange(
       () => {
         if (this.modelSelectionListener) {
@@ -395,8 +408,9 @@ export class VSCode extends React.Component<Props> implements Editor {
         }
 
         const activeEditor = editor.getActiveCodeEditor();
-        
-        console.log('ss+' + activeEditor);
+
+        console.log('activeEditor_activeEditorListener');
+        console.log(activeEditor);
 
         if (activeEditor) {
           const modulePath = activeEditor.getModel().uri.path;
@@ -1000,6 +1014,8 @@ export class VSCode extends React.Component<Props> implements Editor {
     )[0];
 
   getCurrentModelPath = () => {
+    console.log('getCurrentModelPath');
+    console.log(this.editor.getActiveCodeEditor());
     const activeEditor = this.editor.getActiveCodeEditor();
 
     if (!activeEditor) {
@@ -1022,6 +1038,16 @@ export class VSCode extends React.Component<Props> implements Editor {
       );
 
       if (path && this.getCurrentModelPath() !== path) {
+        // console.log('path');
+        // console.log(this.editor);
+        console.log(path);
+        fs.readdir('/sandbox/', function(err, items) {
+          console.log(items);
+        })
+        fs.readFile('/sandbox/'+path, function(err, contents) {
+          console.log(contents);
+          console.log(err);
+        });
         this.editor.openFile(path);
       }
     }

@@ -147,7 +147,8 @@ module.exports = {
       fs: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/fs.js'),
       buffer: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/buffer.js'),
       processGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/process.js'),
-      bufferGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/bufferGlobal.js')
+      bufferGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/bufferGlobal.js'),
+      bfsGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/browserfs.js'),
       /* bfsGlobal: require.resolve(
         path.join(
           '..',
