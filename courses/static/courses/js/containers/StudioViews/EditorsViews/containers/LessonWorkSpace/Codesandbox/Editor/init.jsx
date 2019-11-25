@@ -67,7 +67,7 @@ export const initialize = (component, callback1) => {
       fs: 'MountableFileSystem',
       options: {
         '/': { fs: 'InMemory', options: {} },
-        '/editor': {
+        '/sandbox': {
           fs: 'CodeSandboxEditorFS',
           options: {
             api: {
@@ -138,9 +138,7 @@ export const initialize = (component, callback1) => {
             console.log('Loaded Monaco'); // eslint-disable-line
           }
           if (isVSCode) {
-            
-            console.log(getSignal);
-            
+
             vscode.acquireController({
               getSignal,
               getState

@@ -2,7 +2,7 @@ import * as React from 'react'
 import SplitPane from 'react-split-pane'
 import { inject, observer } from '../app/componentConnectors'
 import styled, { ThemeProvider } from 'styled-components'
-// import { templateColor } from '../../../../app/utils/template-color'
+import { templateColor } from '../app/utils/template-color'
 import Fullscreen from '../common/components/flex/Fullscreen'
 import getTemplateDefinition from '../common/templates'
 import codesandbox from '../common/themes/codesandbox.json'
@@ -14,6 +14,8 @@ import Content from './Content'
 // import { Header } from './Header'
 // import { Navigation } from './Navigation'
 import getVSCodeTheme from './utils/get-vscode-theme'
+
+    import * as fs from 'fs';
 
 const STATUS_BAR_SIZE = 22
 
@@ -43,6 +45,7 @@ class ContentSplit extends React.Component {
   fetchReactSandbox = () => {
     // const { id } = this.props.match.params;
     const id = 'new' // this is the react template of sandbox
+
     this.props.signals.editor.sandboxChanged({ id })
   };
 
@@ -89,7 +92,7 @@ class ContentSplit extends React.Component {
     return (
       <ThemeProvider
         theme={{
-          // templateColor: templateColor(sandbox, templateDef),
+          templateColor: templateColor(sandbox, templateDef),
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
           ...this.state.theme
         }}

@@ -131,13 +131,17 @@ export const setSandbox = [
     state`editor.currentId`,
     props`sandbox.id`,
     state`live.isLoading`,
-    // If we don't add the live check we will never initialize this state, since the roomJoined sequence also initializes
+    // If we don't add the live check we will never initialize this state,
+    // since the roomJoined sequence also initializes
     // editor.currentId to sandbox.id, which causes this check to always resolve to true
     (currentId, newId, isLoadingLive) => currentId === newId && !isLoadingLive
   ),
   {
-    true: [],
+    true: [
+      console.log('setSandboxTrue'),
+    ],
     false: [
+      console.log('setSandbox'),
       set(props`oldId`, state`editor.currentId`),
       set(state`editor.currentId`, props`sandbox.id`),
       actions.setCurrentModuleShortid,
@@ -505,9 +509,11 @@ export const signInCli = [
   },
 ];
 
-export const loadSandbox = factories.withLoadApp([
+// export const loadSandbox = factories.withLoadApp([
+export const loadSandbox = [
+  console.log('fsdfsd'),
   set(state`editor.error`, null),
-
+  console.log('fsdfsd'),
   actions.setIdFromAlias,
 
   when(
@@ -530,6 +536,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
+        // success: [joinLiveSessionIfAvailable, ensurePackageJSON],
         success: [joinLiveSessionIfAvailable, ensurePackageJSON],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
@@ -538,7 +545,7 @@ export const loadSandbox = factories.withLoadApp([
   },
 
   set(state`editor.isLoading`, false),
-]);
+];
 
 export const setUpdateStatus = [set(state`updateStatus`, props`status`)];
 

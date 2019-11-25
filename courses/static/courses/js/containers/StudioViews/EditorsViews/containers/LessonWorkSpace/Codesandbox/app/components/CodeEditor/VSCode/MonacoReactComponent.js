@@ -155,6 +155,7 @@ class MonacoEditor extends React.PureComponent {
                 })
               },
               getActiveCodeEditor () {
+
                 return codeEditorService.getActiveCodeEditor()
               },
               textFileService,
@@ -169,8 +170,7 @@ class MonacoEditor extends React.PureComponent {
 
             this.editor = editorApi
 
-            // After initializing monaco 
-
+            // After initializing monaco editor
             this.editorDidMount(editorApi, context.monaco)
             // document.getElementById('main-app').className += ` monaco-shell`
           })

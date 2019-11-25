@@ -149,6 +149,5 @@
     "showdown-katex": "^0.6.0",
     "store": "^2.0.12",
     "styled-components": "^4.3.2",
-    "vscode-textmate": "^4.3.0"
   }
 }

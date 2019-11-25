@@ -368,25 +368,26 @@ export class VSCode extends React.Component<Props> implements Editor {
   configureEditor = async (editor: EditorAPI, monaco: any) => {
     this.editor = editor;
 
-    // this.monaco = monaco;
-    //
-    // monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
-    // monaco.languages.registerDocumentFormattingEditProvider(
-    //   'typescriptreact',
-    //   this
-    // );
-    // monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
-    // monaco.languages.registerDocumentFormattingEditProvider(
-    //   'javascriptreact',
-    //   this
-    // );
-    // monaco.languages.registerDocumentFormattingEditProvider('css', this);
-    // monaco.languages.registerDocumentFormattingEditProvider('less', this);
-    // monaco.languages.registerDocumentFormattingEditProvider('sass', this);
-    // monaco.languages.registerDocumentFormattingEditProvider('graphql', this);
-    // monaco.languages.registerDocumentFormattingEditProvider('html', this);
-    // monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
-    // monaco.languages.registerDocumentFormattingEditProvider('json', this);
+    this.monaco = monaco;
+
+    // foirmating support
+    monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
+    monaco.languages.registerDocumentFormattingEditProvider(
+      'typescriptreact',
+      this
+    );
+    monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
+    monaco.languages.registerDocumentFormattingEditProvider(
+      'javascriptreact',
+      this
+    );
+    monaco.languages.registerDocumentFormattingEditProvider('css', this);
+    monaco.languages.registerDocumentFormattingEditProvider('less', this);
+    monaco.languages.registerDocumentFormattingEditProvider('sass', this);
+    monaco.languages.registerDocumentFormattingEditProvider('graphql', this);
+    monaco.languages.registerDocumentFormattingEditProvider('html', this);
+    monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
+    monaco.languages.registerDocumentFormattingEditProvider('json', this);
 
     // eslint-disable-next-line no-underscore-dangle
     const global = window as any;
@@ -396,11 +397,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     };
 
     this.listenForFileChanges();
-    
-    editor.editorService.onDidActiveEditorChange(() => {
-      console.log('1wtqwegsgs');
-    }) 
-    
+
     this.activeEditorListener = editor.editorService.onDidActiveEditorChange(
       () => {
         if (this.modelSelectionListener) {
@@ -408,9 +405,6 @@ export class VSCode extends React.Component<Props> implements Editor {
         }
 
         const activeEditor = editor.getActiveCodeEditor();
-
-        console.log('activeEditor_activeEditorListener');
-        console.log(activeEditor);
 
         if (activeEditor) {
           const modulePath = activeEditor.getModel().uri.path;
@@ -853,6 +847,7 @@ export class VSCode extends React.Component<Props> implements Editor {
           errorMarkers
         );
       } else {
+        console.log(this);
         this.monaco.editor.setModelMarkers(
           activeEditor.getModel(),
           'error',
@@ -1014,8 +1009,6 @@ export class VSCode extends React.Component<Props> implements Editor {
     )[0];
 
   getCurrentModelPath = () => {
-    console.log('getCurrentModelPath');
-    console.log(this.editor.getActiveCodeEditor());
     const activeEditor = this.editor.getActiveCodeEditor();
 
     if (!activeEditor) {
@@ -1040,14 +1033,13 @@ export class VSCode extends React.Component<Props> implements Editor {
       if (path && this.getCurrentModelPath() !== path) {
         // console.log('path');
         // console.log(this.editor);
-        console.log(path);
-        fs.readdir('/sandbox/', function(err, items) {
-          console.log(items);
-        })
-        fs.readFile('/sandbox/'+path, function(err, contents) {
-          console.log(contents);
-          console.log(err);
-        });
+        // fs.readdir('/sandbox/', function(err, items) {
+        //   console.log(items);
+        // })
+        // fs.readFile('/sandbox/'+path, function(err, contents) {
+        //   console.log(contents);
+        //   console.log(err);
+        // });
         this.editor.openFile(path);
       }
     }

@@ -341,7 +341,9 @@ function initializeRequires() {
   });
 
   global.require.define('vscode-textmate', [], () => {
-     return require('../../../../../../../../codesandbox-apps/vscode-textmate/out/main');
+     return require('vscode-textmate/release/main');
+    // return require('vscode-textmate/out/main');
+    return require('../../../../../../../../codesandbox-apps/vscode-textmate/out/main');
   });
 
   global.require.define('yazl', [], () => {
@@ -459,8 +461,13 @@ export default function(isVSCode = false, requiredModule?: string[]) {
   };
   Component.prototype.generateLoaderConfig = function(dest) {
     // dest[this.modulePrefix] = process.env.CODESANDBOX_HOST + this.getResolvedPath();
-    // cant use window in worker TODO add deploy host
-    dest[this.modulePrefix] = 'http://127.0.0.1:8000'+this.getResolvedPath();
+    let port = global.location.port;
+    if (port.length > 0) {
+      port = ':' + port;
+    }
+    let host = global.location.protocol + '//' +  global.location.hostname + port
+    console.log(host);
+    dest[this.modulePrefix] = host+this.getResolvedPath();
   };
   Component.prototype.generateUrlForPath = function(pathName) {
     var NEW_LOADER_OPTS = {};
@@ -503,7 +510,6 @@ export default function(isVSCode = false, requiredModule?: string[]) {
             }
             return (
               '<a href="' +
-              this.generateUrlForPath(pathName) +
               this.generateUrlForPath(pathName) +
               '">' +
               pathName +
@@ -621,6 +627,7 @@ export default function(isVSCode = false, requiredModule?: string[]) {
       }
 
       const requireToUrl = p => require('path').join('/vs', p);
+
       global.require.toUrl = requireToUrl;
 
       if (!requiresDefined && global.require.define) {
@@ -671,3 +678,5 @@ export default function(isVSCode = false, requiredModule?: string[]) {
     }
   };
 }
+
+

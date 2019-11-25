@@ -78,9 +78,6 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   //   actions.live.internal.disconnect();
   // }
 
-  console.log('state.editor');
-  console.log(state.editor);
-
   if (state.editor.sandboxes[newId] && !state.editor.sandboxes[newId].team) {
     const sandbox = await effects.api.getSandbox(newId);
 
@@ -88,7 +85,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     state.editor.currentId = newId;
     state.editor.isLoading = false;
 
-    await actions.editor.internal.initializeLiveSandbox(sandbox);
+    // await actions.editor.internal.initializeLiveSandbox(sandbox);
 
     return;
   }
@@ -187,11 +184,11 @@ export const codeChanged: Action<{
     return;
   }
 
-  if (state.live.isLive && !noLive) {
-    state.live.receivingCode = true;
-    effects.live.sendCodeUpdate(moduleShortid, module.code || '', code);
-    state.live.receivingCode = false;
-  }
+  // if (state.live.isLive && !noLive) {
+  //   state.live.receivingCode = true;
+  //   effects.live.sendCodeUpdate(moduleShortid, module.code || '', code);
+  //   state.live.receivingCode = false;
+  // }
 
   actions.editor.internal.setModuleCode({
     module,
@@ -236,6 +233,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
 );
 
 export const createZipClicked: Action = ({ state, effects }) => {
+  console.log(state.editor.currentSandbox);
   effects.zip.download(state.editor.currentSandbox);
 };
 
@@ -283,7 +281,7 @@ export const moduleSelected: Action<{
   path?: string;
   id?: string;
 }> = ({ state, effects, actions }, { path, id }) => {
-  effects.analytics.track('Open File');
+  // effects.analytics.track('Open File');
 
   const sandbox = state.editor.currentSandbox;
 
@@ -304,29 +302,30 @@ export const moduleSelected: Action<{
 
     actions.editor.internal.setCurrentModule(module);
 
-    if (state.live.isLive) {
-      state.editor.pendingUserSelections = actions.live.internal.getSelectionsForModule(
-        module
-      );
-      state.live.liveUser.currentModuleShortid = module.shortid;
-
-      if (state.live.followingUserId) {
-        const followingUser = state.live.roomInfo.users.find(
-          u => u.id === state.live.followingUserId
-        );
-
-        if (
-          followingUser &&
-          followingUser.currentModuleShortid !== module.shortid
-        ) {
-          // Reset following as this is a user change module action
-          state.live.followingUserId = null;
-        }
-      }
-
-      effects.live.sendUserCurrentModule(module.shortid);
-    }
+    // if (state.live.isLive) {
+    //   state.editor.pendingUserSelections = actions.live.internal.getSelectionsForModule(
+    //     module
+    //   );
+    //   state.live.liveUser.currentModuleShortid = module.shortid;
+    //
+    //   if (state.live.followingUserId) {
+    //     const followingUser = state.live.roomInfo.users.find(
+    //       u => u.id === state.live.followingUserId
+    //     );
+    //
+    //     if (
+    //       followingUser &&
+    //       followingUser.currentModuleShortid !== module.shortid
+    //     ) {
+    //       // Reset following as this is a user change module action
+    //       state.live.followingUserId = null;
+    //     }
+    //   }
+    //
+    //   effects.live.sendUserCurrentModule(module.shortid);
+    // }
   } catch (error) {
+    console.log('error:' + error);
     state.editor.currentModuleShortid = null;
   }
 };
