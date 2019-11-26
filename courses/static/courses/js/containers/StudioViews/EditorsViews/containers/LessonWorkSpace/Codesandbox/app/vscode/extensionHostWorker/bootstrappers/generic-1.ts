@@ -1,6 +1,6 @@
 import * as childProcess from '../../../../node-services/lib/child_process';
 // @ts-ignore
-import SubWorkLoader from 'worker-loader?publicPath=/&name=sub-dynamic-worker.[hash:8].worker.js!./generic-2';
+import SubWorkLoader from 'worker-loader?publicPath=/static/js/bundles/&name=sub-dynamic-worker.[hash:8].worker.js!./generic-2';
 import { initializeAll } from '../common/global';
 
 childProcess.addDefaultForkHandler(SubWorkLoader);

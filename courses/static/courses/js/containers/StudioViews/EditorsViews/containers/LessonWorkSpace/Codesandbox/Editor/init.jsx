@@ -4,6 +4,8 @@ import { createOvermind } from 'overmind'
 import { config } from '../app/overmind'
 import { vscode } from '../app/vscode'
 
+import { EXTENSIONS_LOCATION } from '../app/vscode/constants'
+
 import { getTypeFetcher } from '../app/vscode/extensionHostWorker/common/type-downloader'
 
 import {
@@ -89,15 +91,16 @@ export const initialize = (component, callback1) => {
         '/home': {
           fs: 'LocalStorage'
         },
-        // '/extensions': {
-        //   fs: 'BundledHTTPRequest',
-        //   options: {
-        //     index: EXTENSIONS_LOCATION + '/extensions/index.json',
-        //     baseUrl: EXTENSIONS_LOCATION + '/extensions',
-        //     bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
-        //     logReads: process.env.NODE_ENV === 'development'
-        //   }
-        // },
+        '/extensions': {
+          fs: 'BundledHTTPRequest',
+          options: {
+            index: EXTENSIONS_LOCATION + '/extensions/index.json',
+            baseUrl: EXTENSIONS_LOCATION + '/extensions',
+            bundle: EXTENSIONS_LOCATION + '/bundles/main.min.json',
+            logReads: true
+            // logReads: process.env.NODE_ENV === 'development'
+          }
+        },
         '/extensions/custom-theme': {
           fs: 'InMemory'
         }
@@ -120,9 +123,9 @@ export const initialize = (component, callback1) => {
         initializeCustomTheme()
         initializeThemeCache()
         initializeSettings()
-        // setVimExtensionEnabled(
-        //   localStorage.getItem('settings.vimmode') === 'true'
-        // )
+        setVimExtensionEnabled(
+          localStorage.getItem('settings.vimmode') === 'true'
+        )
       }
 
       // eslint-disable-next-line global-require

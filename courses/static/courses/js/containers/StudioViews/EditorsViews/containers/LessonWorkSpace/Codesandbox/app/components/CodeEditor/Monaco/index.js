@@ -19,7 +19,7 @@ import { getTextOperation } from '../../../../common/utils/diff';
 import delay from '../../../../common/utils/delay';
 
 /* eslint-disable import/no-webpack-loader-syntax, import/default */
-import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
+import LinterWorker from 'worker-loader?publicPath=&name=monaco-linter.[hash:8].worker.js!./workers/linter';
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax, import/default */
 

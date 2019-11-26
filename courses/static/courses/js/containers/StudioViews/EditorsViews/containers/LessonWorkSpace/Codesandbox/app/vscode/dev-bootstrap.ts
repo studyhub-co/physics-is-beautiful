@@ -341,8 +341,6 @@ function initializeRequires() {
   });
 
   global.require.define('vscode-textmate', [], () => {
-     return require('vscode-textmate/release/main');
-    // return require('vscode-textmate/out/main');
     return require('../../../../../../../../codesandbox-apps/vscode-textmate/out/main');
   });
 
@@ -466,7 +464,7 @@ export default function(isVSCode = false, requiredModule?: string[]) {
       port = ':' + port;
     }
     let host = global.location.protocol + '//' +  global.location.hostname + port
-    console.log(host);
+    console.log(host+this.getResolvedPath());
     dest[this.modulePrefix] = host+this.getResolvedPath();
   };
   Component.prototype.generateUrlForPath = function(pathName) {
@@ -492,9 +490,9 @@ export default function(isVSCode = false, requiredModule?: string[]) {
     if (search.length > 0) {
       search = '?' + search;
     }
-    
+
     // console.log(toHREF(search));
-    
+
     return toHREF(search);
   };
   Component.prototype.renderLoadingOptions = function() {

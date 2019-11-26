@@ -847,7 +847,6 @@ export class VSCode extends React.Component<Props> implements Editor {
           errorMarkers
         );
       } else {
-        console.log(this);
         this.monaco.editor.setModelMarkers(
           activeEditor.getModel(),
           'error',

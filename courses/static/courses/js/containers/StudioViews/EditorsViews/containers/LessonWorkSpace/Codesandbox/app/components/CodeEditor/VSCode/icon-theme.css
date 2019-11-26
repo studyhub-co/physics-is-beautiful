@@ -1,5 +1,7 @@
 @font-face {
-  src: url('/static/fonts/seti.woff') format('woff');
+    /*static\courses\js\codesandbox-apps\vscode-extensions\out\extensions\theme-seti\icons\*/
+  /*src: url('/static/fonts/seti.woff') format('woff');*/
+  src: url('/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions/theme-seti/icons/seti.woff') format('woff');
   font-family: 'seti';
   font-weight: normal;
   font-style: normal;
