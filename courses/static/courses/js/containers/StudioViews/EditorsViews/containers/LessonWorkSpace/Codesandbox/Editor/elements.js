@@ -14,3 +14,9 @@ export const Container = styled.div`
     background-clip: padding-box;
   }
 `
+
+export const Left = styled.div`
+  display: flex;
+  height: 100%;
+  z-index: 1;
+`
