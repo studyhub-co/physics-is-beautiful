@@ -581,7 +581,8 @@ export default function(isVSCode = false, requiredModule?: string[]) {
   })();
 
   return function(callback: () => void, PATH_PREFIX?: string) {
-    PATH_PREFIX = PATH_PREFIX || '';
+    // TODO dev/prod url
+    PATH_PREFIX = PATH_PREFIX || 'https://assets-dev.physicsisbeautiful.com';
 
     global.nodeRequire = path => {
       if (path.indexOf('/extensions/') === 0) {

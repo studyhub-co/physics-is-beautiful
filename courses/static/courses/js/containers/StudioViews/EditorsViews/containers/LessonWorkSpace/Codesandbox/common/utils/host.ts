@@ -17,6 +17,7 @@ export default () => {
     return process.env.ROOT_URL;
   }
 
+  return 'https://assets-dev.physicsisbeautiful.com/'
   return 'http://pib-dev.us-east-1.elasticbeanstalk.com'
   // return 'https://physicsisbeautiful.com/';
 };
