@@ -4,7 +4,7 @@ const VSCODE_METADATA = {
       // src: process.env.VSCODE ? '/vscode/out/vs' : '/public/vscode24/vs',
       // src: process.env.VSCODE ? '/vscode/out/vs' : '/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs',
       // TODO dev/prod url
-      src: process.env.VSCODE ? '/vscode/out/vs' : '/courses/js/codesandbox-apps/vscode-editor/release/min/vs',
+      src: process.env.VSCODE ? '/vscode/out/vs' : 'https://assets-dev.physicsisbeautiful.com/courses/js/codesandbox-apps/vscode-editor/release/min/vs',
       'npm/dev': 'node_modules/monaco-editor-core/dev/vs',
       'npm/min': 'node_modules/monaco-editor-core/min/vs',
       built: '/vscode/out-monaco-editor-core/min/vs',

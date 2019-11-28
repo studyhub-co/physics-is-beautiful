@@ -27,9 +27,8 @@
 <!-- Browser FS -->
 {# TODO replace with native Browser FS ? #}
 <script type="text/javascript"
-        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}">
+        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}" />
 
-</script>
 <script type="text/javascript">
     if (BrowserFS) {
     window.process = {
@@ -46,6 +45,7 @@
   }
 </script>
 
+{# TODO dev/prod url #}
 <link data-name="vs/editor/editor.main"
       rel="preload" as="style"
       href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}">
@@ -54,19 +54,10 @@
       as="script"
       href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}">
 </link>
+
 {% endblock extrahead %}
 
 {% block body_content %}
-
-{#<link rel="stylesheet" type="text/css"#}
-{#      data-name="editor.main"#}
-{#      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}">#}
-{#<script async="" type="text/javascript"#}
-{#        src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/loader.js' %}"></script>#}
-{#<script async="async" type="text/javascript"#}
-{#        src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.nls.js' %}"></script>#}
-{#<script async="async" type="text/javascript"#}
-{#        src="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}"></script>#}
 
 <script type="text/javascript">
 {# TODO move to json file #}

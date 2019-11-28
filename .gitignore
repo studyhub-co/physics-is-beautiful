@@ -23,7 +23,7 @@ eggs/
 .eggs/
 lib/
 lib64/
-parts/
+# parts/
 sdist/
 var/
 *.egg-info/
@@ -97,8 +97,8 @@ ENV/
 db.sqlite3
 
 # ignore media dir
-MEDIA/
-media/
+/MEDIA/
+/media/
 
 # npm
 node_modules/

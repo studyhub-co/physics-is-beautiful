@@ -463,7 +463,11 @@ export default function(isVSCode = false, requiredModule?: string[]) {
     if (port.length > 0) {
       port = ':' + port;
     }
-    let host = global.location.protocol + '//' +  global.location.hostname + port
+    // let host = global.location.protocol + '//' +  global.location.hostname + port
+    // TODO dev/prod url
+    // let host = 'https://assets-dev.physicsisbeautiful.com/'
+    // already have host
+    let host = ''
     console.log(host+this.getResolvedPath());
     dest[this.modulePrefix] = host+this.getResolvedPath();
   };
@@ -582,7 +586,7 @@ export default function(isVSCode = false, requiredModule?: string[]) {
 
   return function(callback: () => void, PATH_PREFIX?: string) {
     // TODO dev/prod url
-    PATH_PREFIX = PATH_PREFIX || 'https://assets-dev.physicsisbeautiful.com';
+    PATH_PREFIX = PATH_PREFIX || ''; // https://assets-dev.physicsisbeautiful.com
 
     global.nodeRequire = path => {
       if (path.indexOf('/extensions/') === 0) {

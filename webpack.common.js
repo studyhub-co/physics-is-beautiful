@@ -26,8 +26,11 @@ module.exports = {
     chunkFilename: '[name]-[hash].js',
     // sandbox require
     jsonpFunction: 'csbJsonP',
-    publicPath: '/static/js/bundles/',
-    globalObject: 'this',
+    // web pack add publicPath to webpack stat, we need publicPath for codesanbox worker-loaders
+    // publicPath: '/static/js/bundles/',
+    // TODO dev/prod url
+    publicPath: 'https://assets-dev.physicsisbeautiful.com/',
+    globalObject: 'this'
   },
 
   optimization: {
