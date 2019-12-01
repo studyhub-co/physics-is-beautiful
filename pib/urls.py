@@ -23,7 +23,7 @@ from django.contrib.sitemaps.views import sitemap
 from resources.sitemaps import ResourcesViewSitemap, TextBookProblemsViewSitemap, TextBookSolutionsViewSitemap
 from curricula.sitemaps import CurriculaViewSitemap
 
-from .views import discussion_app
+from .views import discussion_app, codesandbox_static_proxy_view
 
 sitemaps = {
     'resources': ResourcesViewSitemap,
@@ -55,6 +55,7 @@ urlpatterns = [
     # due https://github.com/encode/django-rest-framework/issues/2760 namespace do not work
     # url(r'^api/v1/', include('pib.urls_api', namespace='api')),
     url(r'^api/v1/', include('pib.urls_api')),
+    url(r'^proxy/static/courses/js/codesandbox-apps/(?P<path>.*)', codesandbox_static_proxy_view),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
