@@ -3,7 +3,7 @@
   /*src: url('/static/fonts/seti.woff') format('woff');*/
    /*TODO dev/prod url*/
   /*src: url('/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions/theme-seti/icons/seti.woff') format('woff');*/
-  src: url('/courses/js/codesandbox-apps/vscode-extensions/out/extensions/theme-seti/icons/seti.woff') format('woff');
+  src: url('/proxy/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions/theme-seti/icons/seti.woff') format('woff');
   font-family: 'seti';
   font-weight: normal;
   font-style: normal;

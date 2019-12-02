@@ -27,9 +27,9 @@ module.exports = {
     // sandbox require
     jsonpFunction: 'csbJsonP',
     // web pack add publicPath to webpack stat, we need publicPath for codesanbox worker-loaders
-    // publicPath: '/static/js/bundles/',
+    publicPath: '/static/js/bundles/',
     // TODO dev/prod url
-    publicPath: 'https://assets-dev.physicsisbeautiful.com/',
+    // publicPath: 'https://assets-dev.physicsisbeautiful.com/js/bundles/',
     globalObject: 'this'
   },
 
@@ -117,20 +117,22 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: 'static/js/bundles/[name].[hash:8].[ext]',
-            },
+              name: '[name].[hash:8].[ext]'
+              // name: 'static/js/bundles/[name].[hash:8].[ext]',
+            }
           },
-          { loader: 'svgo-loader' },
-        ],
+          { loader: 'svgo-loader' }
+        ]
       },
       {
         test: /\.(ico|jpg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
         exclude: [/\/favicon.ico$/],
         loader: 'file-loader',
         options: {
-          name: 'static/js/bundles/[name].[hash:8].[ext]',
-        },
-      },
+          // name: 'static/js/bundles/[name].[hash:8].[ext]',
+          name: '[name].[hash:8].[ext]'
+        }
+      }
       // {
       //   test: /\.jpe?g$|\.gif$|\.png$/,
       //   options: {
@@ -151,7 +153,7 @@ module.exports = {
       buffer: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/buffer.js'),
       processGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/process.js'),
       bufferGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/bufferGlobal.js'),
-      bfsGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/browserfs.js'),
+      bfsGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/browserfs.js')
       /* bfsGlobal: require.resolve(
         path.join(
           '..',

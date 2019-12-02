@@ -88,7 +88,7 @@ window.addEventListener('unhandledrejection', e => {
   }
 });
 
-
+// TODO move to root of courses app
 export async function initializeSentry(dsn: string) {
   if (!DNT) {
     sentryInitialized = true;

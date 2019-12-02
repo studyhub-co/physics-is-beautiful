@@ -27,32 +27,36 @@
 <!-- Browser FS -->
 {# TODO replace with native Browser FS ? #}
 <script type="text/javascript"
-        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}" />
+        src="/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js" >
+{#src="{% static '/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}" >#}
+</script>
 
 <script type="text/javascript">
     if (BrowserFS) {
-    window.process = {
-      env: {
-        VSCODE_DEV: false
-      },
-      nextTick: function(cb) {
-        return requestAnimationFrame(cb);
-      },
-      once: BrowserFS.BFSRequire('process').once,
-      removeListener: function () {}
-    };
-    window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
-  }
+        window.process = {
+          env: {
+            VSCODE_DEV: false
+          },
+          nextTick: function(cb) {
+            return requestAnimationFrame(cb);
+          },
+          once: BrowserFS.BFSRequire('process').once,
+          removeListener: function () {}
+        };
+        window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+      }
 </script>
 
 {# TODO dev/prod url #}
 <link data-name="vs/editor/editor.main"
       rel="preload" as="style"
-      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}">
+      href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css">
+{#      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}">#}
 </link>
 <link rel="preload"
       as="script"
-      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}">
+      href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js">
+{#      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}">#}
 </link>
 
 {% endblock extrahead %}

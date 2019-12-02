@@ -13,6 +13,7 @@ def discussion_app(request):
 
 
 def codesandbox_static_proxy_view(request, path):
+    # TODO prod/dev
     remoteurl = 'https://assets-dev.physicsisbeautiful.com/courses/js/codesandbox-apps/' + path
     body = None
     headers = {

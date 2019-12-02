@@ -13,7 +13,7 @@ export function getOnigasm(): Thenable<IOnigLib> {
 	if (!onigasmLib) {
 		let onigasmModule = require('onigasm');
 		// const wasmBin = '/public/onigasm/2.2.1/onigasm.wasm';
-    const wasmBin = '/static/courses/onigasm.wasm';
+    const wasmBin = '/proxy/static/courses/onigasm.wasm';
 		onigasmLib = onigasmModule.loadWASM(wasmBin).then((_: any) => {
 			return {
 				createOnigScanner(patterns: string[]) { return new onigasmModule.OnigScanner(patterns); },

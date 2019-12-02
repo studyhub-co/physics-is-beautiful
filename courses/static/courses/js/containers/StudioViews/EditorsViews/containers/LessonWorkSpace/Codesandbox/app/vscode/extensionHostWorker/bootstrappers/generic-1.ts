@@ -1,6 +1,8 @@
 import * as childProcess from '../../../../node-services/lib/child_process';
+// TODO dev/prod url
 // @ts-ignore
 import SubWorkLoader from 'worker-loader?publicPath=/static/js/bundles/&name=sub-dynamic-worker.[hash:8].worker.js!./generic-2';
+// import SubWorkLoader from 'worker-loader?publicPath=https://assets-dev.physicsisbeautiful.com/js/bundles/&name=sub-dynamic-worker.[hash:8].worker.js!./generic-2';
 import { initializeAll } from '../common/global';
 
 childProcess.addDefaultForkHandler(SubWorkLoader);

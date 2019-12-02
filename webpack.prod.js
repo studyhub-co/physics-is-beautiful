@@ -6,7 +6,9 @@ var webpack = require('webpack')
 
 module.exports = merge(common, {
   mode: 'production',
-
+  // output: {
+  //   publicPath: 'https://assets-dev.physicsisbeautiful.com/js/bundles/'
+  // },
   plugins: [
     new BundleTracker({filename: './webpack-stats.json'}),
     new CleanWebpackPlugin(),

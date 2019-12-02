@@ -27,6 +27,7 @@ import { getTextOperation } from '../../../../common/utils/diff';
 /* eslint-disable import/no-webpack-loader-syntax, import/default */
 // @ts-ignore
 // import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
+// TODO dev/prod url
 import LinterWorker from 'worker-loader?publicPath=/static/js/bundles/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
 /* eslint-enable import/no-webpack-loader-syntax, import/default */
 import { clone } from '../../../../app/componentConnectors';

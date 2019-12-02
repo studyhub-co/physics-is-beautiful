@@ -148,6 +148,7 @@ export const initialize = (component, callback1) => {
             })
 
             // extesion host of VS code
+            // TODO dev/prod url
             import(
               'worker-loader?publicPath=/static/js/bundles/&name=ext-host-worker.[hash:8].worker.js!../app/vscode/extensionHostWorker/bootstrappers/ext-host'
             ).then(ExtHostWorkerLoader => {

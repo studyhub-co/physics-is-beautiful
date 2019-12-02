@@ -463,11 +463,11 @@ export default function(isVSCode = false, requiredModule?: string[]) {
     if (port.length > 0) {
       port = ':' + port;
     }
-    // let host = global.location.protocol + '//' +  global.location.hostname + port
+    let host = global.location.protocol + '//' +  global.location.hostname + port
     // TODO dev/prod url
     // let host = 'https://assets-dev.physicsisbeautiful.com/'
     // already have host
-    let host = ''
+    // let host = ''
     console.log(host+this.getResolvedPath());
     dest[this.modulePrefix] = host+this.getResolvedPath();
   };

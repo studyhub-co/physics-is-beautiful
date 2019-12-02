@@ -1,7 +1,10 @@
 import * as childProcess from '../../../../node-services/lib/child_process';
 // @ts-ignore
+// TODO dev/prod url
+// import DefaultWorkLoader from 'worker-loader?publicPath=https://assets-dev.physicsisbeautiful.com/js/bundles/&name=dynamic-worker.[hash:8].worker.js!./generic-1';
 import DefaultWorkLoader from 'worker-loader?publicPath=/static/js/bundles/&name=dynamic-worker.[hash:8].worker.js!./generic-1';
 // @ts-ignore
+// import TSWorker from 'worker-loader?publicPath=https://assets-dev.physicsisbeautiful.com/js/bundles/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
 import TSWorker from 'worker-loader?publicPath=/static/js/bundles/&name=typescript-worker.[hash:8].worker.js!./ts-extension';
 // @ts-ignore
 import VueWorker from 'worker-loader?publicPath=/static/js/bundles/&name=vue-worker.[hash:8].worker.js!./vue-worker';

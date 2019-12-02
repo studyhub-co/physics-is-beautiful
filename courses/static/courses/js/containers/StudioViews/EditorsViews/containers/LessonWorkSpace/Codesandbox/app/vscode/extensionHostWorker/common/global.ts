@@ -22,7 +22,9 @@ export const initializePolyfills = () => {
 
 export const loadBrowserFS = () => {
   ctx.importScripts(
-    '/static/courses/js/codesandbox-apps/codesandbox-browserfs/build/browserfs.js'
+    // TODO dev/prod url
+    '/proxy/static/courses/js/codesandbox-apps/codesandbox-browserfs/build/browserfs.js'
+    // 'https://assets-dev.physicsisbeautiful.com/courses/js/codesandbox-apps/codesandbox-browserfs/build/browserfs.js'
     // `${process.env.CODESANDBOX_HOST}/static/browserfs5/browserfs.js`
   );
 };
