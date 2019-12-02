@@ -22,7 +22,7 @@ export const host = () => {
   if (process.env.NODE_ENV === 'production') {
     // return process.env.CODESANDBOX_HOST.split('//')[1];
     // TODO dev/prod url
-    return 'assets-dev.physicsisbeautiful.com'
+    return 'pib-dev.us-east-1.elasticbeanstalk.com'
     return 'physicsisbeautiful.com'
   }
   if (process.env.LOCAL_SERVER) {

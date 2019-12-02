@@ -1076,7 +1076,7 @@ export function addLesson (moduleUuid, lesson) {
           lesson: data,
           materials: materials
         })
-        history.push('studio/editor/lessons/' + data.uuid + '/')
+        history.push('/studio/editor/lessons/' + data.uuid + '/')
       }
     })
   }

@@ -101,7 +101,7 @@ db.sqlite3
 /media/
 
 # npm
-node_modules/
+/node_modules/
 
 # webpack
 # webpack-stats.json
