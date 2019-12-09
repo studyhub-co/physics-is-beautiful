@@ -22,7 +22,8 @@ export const BROWSER_FS_CONFIG: FileSystemConfiguration = {
       options: {
         index: EXTENSIONS_LOCATION + '/extensions/index.json',
         baseUrl: EXTENSIONS_LOCATION + '/extensions',
-        logReads: process.env.NODE_ENV === 'development',
+        logReads: true,
+        // logReads: process.env.NODE_ENV === 'development',
       },
     },
     // '/vscode': {
@@ -48,6 +49,9 @@ export async function initializeBrowserFS({
   extraMounts = {},
 } = {}) {
   return new Promise(resolve => {
+    
+    console.log(BROWSER_FS_CONFIG);
+    
     const config = { ...BROWSER_FS_CONFIG };
     let modulesByPath = {};
 

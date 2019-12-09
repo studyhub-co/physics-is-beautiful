@@ -244,8 +244,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
 
-  // TODO try to use sandbox executor
-
+  // TODO not sure that we need this
   // await effects.executor.initializeExecutor(sandbox);
 
   // [

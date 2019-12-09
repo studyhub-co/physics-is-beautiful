@@ -308,8 +308,8 @@ export default {
   },
   start() {
     if (
-      isStarted ||
-      _overmindInstance.state.preferences.settings.experimentVSCode
+      isStarted
+      // ||      _overmindInstance.state.preferences.settings.experimentVSCode
     ) {
       return;
     }

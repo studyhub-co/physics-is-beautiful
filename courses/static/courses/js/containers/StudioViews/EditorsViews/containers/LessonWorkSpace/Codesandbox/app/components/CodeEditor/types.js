@@ -19,7 +19,7 @@ export type Settings = {
   tabWidth: number,
   enableLigatures: boolean,
   forceRefresh: boolean,
-  experimentVSCode: boolean,
+  // experimentVSCode: boolean,
   prettierConfig: Object,
 };
 

@@ -20,7 +20,9 @@ self.addEventListener('message', async e => {
   if (data.$type === 'worker-manager') {
     if (data.$event === 'init') {
       debug('Initializing BrowserFS');
-      console.log('Initializing BrowserFS');
+      console.log('Initializing BrowserFS ext host start');
+      
+      console.log(EXTENSIONS_LOCATION);
 
       await initializeBrowserFS({
         syncSandbox: true,
@@ -39,6 +41,7 @@ self.addEventListener('message', async e => {
         },
       });
       debug('Initialized BrowserFS', data.data.env);
+      console.log('Initialized BrowserFS', data.data.env);
 
       const process = ctx.BrowserFS.BFSRequire('process');
       process.cwd = () => data.data.cwd || '/sandbox';

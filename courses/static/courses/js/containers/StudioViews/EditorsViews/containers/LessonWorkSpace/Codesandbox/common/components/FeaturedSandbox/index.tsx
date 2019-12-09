@@ -246,7 +246,7 @@ export default class FeaturedSandbox extends React.PureComponent<
                           tabWidth: 2,
                           enableLigatures: true,
                           forceRefresh: false,
-                          experimentVSCode: true,
+                          // experimentVSCode: true,
                           prettierConfig: false,
                           zenMode: true,
                         }}

@@ -7,6 +7,9 @@ export const withLoadApp = <T>(
 ): AsyncAction<T> => async (context, value) => {
   const { effects, state, actions } = context;
 
+  // console.log('state.hasLoadedApp');
+  // console.log(state.hasLoadedApp);
+
   if (state.hasLoadedApp && continueAction) {
     await continueAction(context, value);
     return;
@@ -47,8 +50,11 @@ export const withLoadApp = <T>(
     await continueAction(context, value);
   }
 
+  console.log(state);
+  console.log(state.hasLoadedApp);
   state.hasLoadedApp = true;
-  // state.isAuthenticating = false;
+  console.log(state.hasLoadedApp);
+  state.isAuthenticating = false;
 
   // try {
   //   const response = await effects.http.get<{

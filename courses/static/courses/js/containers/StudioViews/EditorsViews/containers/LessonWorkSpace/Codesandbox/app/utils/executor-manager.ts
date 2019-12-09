@@ -1,18 +1,18 @@
 import {
   IExecutor,
-  ServerExecutor,
+  // ServerExecutor,
   SandboxExecutor,
-} from '@codesandbox/executors';
-import { IFiles } from '@codesandbox/executors/dist/executor';
+} from '../../executors';
+import { IFiles } from '../../executors/executor';
 import { Sandbox } from '../../common/types';
 import getDefinition from '../../common/templates';
 import { getModulePath } from '../../common/sandbox/modules';
 import { generateFileFromSandbox } from '../../common/templates/configuration/package-json';
 
 function getExecutorType(isServer: boolean) {
-  if (isServer) {
-    return ServerExecutor;
-  }
+  // if (isServer) {
+  //   return ServerExecutor;
+  // }
 
   return SandboxExecutor;
 }

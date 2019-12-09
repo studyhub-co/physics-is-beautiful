@@ -189,7 +189,6 @@ export const codeChanged: Action<{
   //   effects.live.sendCodeUpdate(moduleShortid, module.code || '', code);
   //   state.live.receivingCode = false;
   // }
-
   actions.editor.internal.setModuleCode({
     module,
     code,
@@ -335,9 +334,9 @@ export const clearModuleSelected: Action = ({ state }) => {
 };
 
 export const moduleDoubleClicked: Action = ({ state, effects }) => {
-  if (state.preferences.settings.experimentVSCode) {
+  // if (state.preferences.settings.experimentVSCode) {
     effects.vscode.runCommand('workbench.action.keepEditor');
-  }
+  // }
 
   const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];

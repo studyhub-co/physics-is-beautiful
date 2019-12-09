@@ -293,8 +293,8 @@ export default Provider({
   },
   start() {
     if (
-      isStarted ||
-      this.context.controller.getState().preferences.settings.experimentVSCode
+      isStarted
+      // || this.context.controller.getState().preferences.settings.experimentVSCode
     ) {
       return;
     }

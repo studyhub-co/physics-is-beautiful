@@ -28,7 +28,8 @@ const settings = store => ({
     ? store.preferences.settings.prettierConfig.tabWidth || 2
     : 2,
   enableLigatures: store.preferences.settings.enableLigatures,
-  experimentVSCode: store.preferences.settings.experimentVSCode,
+  // experimentVSCode: store.preferences.settings.experimentVSCode,
+  experimentVSCode: true,
   prettierConfig: store.preferences.settings.prettierConfig,
   forceRefresh: store.preferences.settings.forceRefresh
 })
@@ -511,10 +512,11 @@ class EditorPreview extends React.Component {
                 marginTop: 0
               }}
             >
-              {!store.preferences.settings.experimentVSCode && <Tabs />}
+              {/*{!store.preferences.settings.experimentVSCode && <Tabs />}*/}
               <CodeEditor
                 style={{
-                  top: store.preferences.settings.experimentVSCode ? 0 : 35
+                  top: 0
+                  // top: store.preferences.settings.experimentVSCode ? 0 : 35
                 }}
                 onInitialized={this.onInitialized}
                 sandbox={sandbox}

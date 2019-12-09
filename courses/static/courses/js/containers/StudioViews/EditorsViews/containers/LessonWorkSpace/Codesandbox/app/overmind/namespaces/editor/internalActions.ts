@@ -83,7 +83,8 @@ export const saveCode: AsyncAction<{
     return;
   }
 
-  if (state.preferences.settings.experimentVSCode) {
+  // if (state.preferences.settings.experimentVSCode) {
+  if (true) {
     await actions.editor.codeChanged({
       code,
       moduleShortid,
@@ -150,9 +151,9 @@ export const saveCode: AsyncAction<{
 
     await actions.editor.internal.updateCurrentTemplate();
 
-    if (state.preferences.settings.experimentVSCode) {
+    // if (state.preferences.settings.experimentVSCode) {
       effects.vscode.runCommand('workbench.action.keepEditor');
-    }
+    // }
 
     const tabs = state.editor.tabs as ModuleTab[];
     const tab = tabs.find(
@@ -258,9 +259,9 @@ export const setModuleCode: Action<{
     state.editor.changedModuleShortids.push(module.shortid);
   }
 
-  if (state.preferences.settings.experimentVSCode) {
+  // if (state.preferences.settings.experimentVSCode) {
     effects.vscode.runCommand('workbench.action.keepEditor');
-  }
+  // }
 
   const tabs = state.editor.tabs as ModuleTab[];
   const tab = tabs.find(tabItem => tabItem.moduleShortid === module.shortid);

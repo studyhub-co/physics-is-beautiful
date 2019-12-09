@@ -34,8 +34,8 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-let getState;
-let getSignal;
+let getState
+let getSignal
 
 export const initialize = (component, callback1) => {
   /*
@@ -63,6 +63,10 @@ export const initialize = (component, callback1) => {
   window.getState = getState
   window.getSignal = getSignal
 
+  console.log('getState');
+  console.log(getState);
+
+
   // Configures BrowserFS to use the LocalStorage file system.
   window.BrowserFS.configure(
     {
@@ -83,7 +87,7 @@ export const initialize = (component, callback1) => {
         },
         '/sandbox/node_modules': {
           fs: 'CodeSandboxFS',
-          options: getTypeFetcher().options,
+          options: getTypeFetcher().options
         },
         '/vscode': {
           fs: 'LocalStorage'
@@ -141,7 +145,6 @@ export const initialize = (component, callback1) => {
             console.log('Loaded Monaco'); // eslint-disable-line
           }
           if (isVSCode) {
-
             vscode.acquireController({
               getSignal,
               getState
@@ -165,7 +168,6 @@ export const initialize = (component, callback1) => {
             //   }
             // );
           }
-
           callback1(component, overmind)
         }
       )

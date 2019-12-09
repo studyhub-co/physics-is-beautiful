@@ -439,9 +439,9 @@ export function moveTab({ state, props }) {
 }
 
 export function unsetDirtyTab({ state }) {
-  if (state.get('preferences.settings.experimentVSCode')) {
-    vscode.runCommand('workbench.action.keepEditor');
-  }
+  // if (state.get('preferences.settings.experimentVSCode')) {
+  vscode.runCommand('workbench.action.keepEditor');
+  // }
 
   const currentModule = state.get('editor.currentModule');
   const tabs = state.get('editor.tabs');

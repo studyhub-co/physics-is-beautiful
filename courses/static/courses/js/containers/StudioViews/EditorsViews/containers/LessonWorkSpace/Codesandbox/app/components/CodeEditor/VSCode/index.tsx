@@ -1094,6 +1094,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     }
 
     const editor = this.editor.getActiveCodeEditor();
+
     if (currentModuleShortid === this.currentModule.shortid && editor) {
       this.lint(newCode, currentModuleTitle, editor.getModel().getVersionId());
     }

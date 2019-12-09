@@ -224,7 +224,8 @@ export const prettifyCode = [
 export const saveCode = [
   track('Save Code', {}),
   ensureOwnedEditable,
-  when(state`preferences.settings.experimentVSCode`),
+  // when(state`preferences.settings.experimentVSCode`),
+  when(true),
   {
     true: [
       changeCode, // Call this to send the live changes before saving

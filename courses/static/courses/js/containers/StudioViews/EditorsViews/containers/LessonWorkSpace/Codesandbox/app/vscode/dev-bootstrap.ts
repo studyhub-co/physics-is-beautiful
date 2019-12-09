@@ -341,6 +341,7 @@ function initializeRequires() {
   });
 
   global.require.define('vscode-textmate', [], () => {
+    // return require('../../../../../../../../codesandbox-apps/vscode-textmate/release/main');
     return require('../../../../../../../../codesandbox-apps/vscode-textmate/out/main');
   });
 

@@ -78,7 +78,8 @@ class ContentSplit extends React.Component {
     // Force MobX to update this component by observing the following value
     this.props.store.preferences.settings.customVSCodeTheme; // eslint-disable-line
 
-    const vscode = this.props.store.preferences.settings.experimentVSCode
+    // const vscode = this.props.store.preferences.settings.experimentVSCode
+    const vscode = true
 
     // const hideNavigation =
     //   store.preferences.settings.zenMode && store.workspace.workspaceHidden

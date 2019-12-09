@@ -375,7 +375,7 @@ export type Settings = {
   enableLigatures: boolean;
   customVSCodeTheme: string;
   manualCustomVSCodeTheme: string;
-  experimentVSCode: boolean;
+  // experimentVSCode: boolean;
 };
 
 export type NotificationButton = {

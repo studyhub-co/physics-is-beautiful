@@ -510,10 +510,8 @@ export const signInCli = [
 ];
 
 // export const loadSandbox = factories.withLoadApp([
-export const loadSandbox = [
-  console.log('fsdfsd'),
-  set(state`editor.error`, null),
-  console.log('fsdfsd'),
+export const loadSandbox = factories.withLoadApp([
+
   actions.setIdFromAlias,
 
   when(

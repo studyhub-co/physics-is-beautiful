@@ -29,9 +29,9 @@ import { VSCode } from './VSCode';
 //   import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
 // );
 
-const Monaco = Loadable(() =>
-  import(/* webpackChunkName: 'codemirror-editor' */ './Monaco')
-);
+// const Monaco = Loadable(() =>
+//   import(/* webpackChunkName: 'codemirror-editor' */ './Monaco')
+// );
 
 const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
@@ -175,11 +175,13 @@ export class CodeEditor extends React.PureComponent<
     //     ? ((CodeMirror as unknown) as React.ComponentClass<Props>)
     //     : ((Monaco as unknown) as React.ComponentClass<Props>);
 
-    let Editor = ((Monaco as unknown) as React.ComponentClass<Props>);
+    // let Editor = ((Monaco as unknown) as React.ComponentClass<Props>);
 
-    if (settings.experimentVSCode) {
-      Editor = VSCode as React.ComponentClass<Props>;
-    }
+    let Editor = VSCode as React.ComponentClass<Props>;
+
+    // if (settings.experimentVSCode) {
+    //   Editor = VSCode as React.ComponentClass<Props>;
+    // }
 
     return (
       <div
