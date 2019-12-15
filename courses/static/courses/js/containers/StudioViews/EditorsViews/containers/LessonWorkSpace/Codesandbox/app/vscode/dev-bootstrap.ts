@@ -664,6 +664,8 @@ export default function(isVSCode = false, requiredModule?: string[]) {
               }
             );
           } else {
+            // console.log('callback');
+            // console.log(callback);
             callback();
           }
         });

@@ -108,6 +108,11 @@ class MonacoEditor extends React.PureComponent {
           instantiationService.invokeFunction(accessor => {
             const EditorPart = accessor.get(IEditorGroupsService)
 
+            // TODO editorPart!
+
+            // console.log('editorPart');
+            // console.log(EditorPart);
+
             if (editorPart) {
               editorPart.parent = part
               editorPart = EditorPart
@@ -149,13 +154,15 @@ class MonacoEditor extends React.PureComponent {
             const editorApi = {
               openFile (path: string) {
                 fontPromise.then(() => {
+                  // console.log(codeEditorService.openCodeEditor);
+                  // console.log(codeEditorService);
+                  // console.log(path);
                   codeEditorService.openCodeEditor({
                     resource: context.monaco.Uri.file('/sandbox' + path)
                   })
                 })
               },
               getActiveCodeEditor () {
-
                 return codeEditorService.getActiveCodeEditor()
               },
               textFileService,
@@ -171,6 +178,9 @@ class MonacoEditor extends React.PureComponent {
             this.editor = editorApi
 
             // After initializing monaco editor
+            
+            console.log(context.monaco);
+            
             this.editorDidMount(editorApi, context.monaco)
             // document.getElementById('main-app').className += ` monaco-shell`
           })

@@ -32,6 +32,7 @@ function getOnigasm() {
         var path = require('path');
         // var wasmBin = '/public/onigasm/2.2.1/onigasm.wasm';
         var wasmBin = '/proxy/static/courses/js/codesandbox-apps/onigasm.wasm';
+        // var wasmBin = '/static/courses/js/codesandbox-apps/onigasm.wasm';
         onigasmLib = onigasmModule_1.loadWASM(wasmBin).then(function (_) {
             return {
                 createOnigScanner: function (patterns) { return new onigasmModule_1.OnigScanner(patterns); },

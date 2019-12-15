@@ -2,7 +2,11 @@ const VSCODE_METADATA = {
   CORE: {
     paths: {
       // src: process.env.VSCODE ? '/vscode/out/vs' : '/public/vscode24/vs',
-      src: process.env.VSCODE ? '/vscode/out/vs' : '/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs',
+      src: process.env.VSCODE ? 
+        '/vscode/out/vs' :
+          process.env.NODE_ENV === 'development' ?
+            '/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs'
+          : '/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs',
       // TODO dev/prod url
       // src: process.env.VSCODE ? '/vscode/out/vs' : 'https://assets-dev.physicsisbeautiful.com/courses/js/codesandbox-apps/vscode-editor/release/min/vs',
       'npm/dev': 'node_modules/monaco-editor-core/dev/vs',

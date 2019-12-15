@@ -22,6 +22,9 @@ def codesandbox_static_proxy_view(request, path):
     try:
         response = urllib.request.urlopen(request)
         content_type = response.headers['content-type']
+        usr_lst = response.url.rsplit('.', 1)
+        if usr_lst and usr_lst[1] == 'wasm':
+            content_type = 'application/wasm'
         response_body = response.read()
         status = response.getcode()
     except urllib.error.HTTPError as e:

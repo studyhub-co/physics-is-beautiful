@@ -50,7 +50,8 @@ export async function initializeBrowserFS({
 } = {}) {
   return new Promise(resolve => {
     
-    console.log(BROWSER_FS_CONFIG);
+    // console.log(BROWSER_FS_CONFIG);
+    // console.trace();
     
     const config = { ...BROWSER_FS_CONFIG };
     let modulesByPath = {};

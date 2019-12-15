@@ -96,7 +96,7 @@
     "mobx-react": "^6.1.4",
     "mobx-react-lite": "^1.5.0",
     "moment": "^2.22.2",
-    "onigasm": "^2.2.4",
+    "onigasm": "^2.2.1",
     "overmind": "^20.0.0",
     "overmind-react": "^21.0.0",
     "prop-types": "^15.6.2",

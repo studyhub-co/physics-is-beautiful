@@ -27,8 +27,12 @@
 <!-- Browser FS -->
 {# TODO replace with native Browser FS ? #}
 <script type="text/javascript"
-        src="/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js" >
-{#src="{% static '/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}" >#}
+    {% if debug %}
+        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}"
+    {% else %}
+        src="/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js"
+    {% endif %}
+>
 </script>
 
 <script type="text/javascript">
@@ -47,16 +51,23 @@
       }
 </script>
 
-{# TODO dev/prod url #}
 <link data-name="vs/editor/editor.main"
       rel="preload" as="style"
-      href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css">
-{#      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}">#}
+    {% if debug %}
+      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}"
+    {% else %}
+      href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css"
+    {% endif %}
+>
 </link>
 <link rel="preload"
       as="script"
-      href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js">
-{#      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}">#}
+    {% if debug %}
+        href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}"
+    {% else %}
+        href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js"
+    {% endif %}
+>
 </link>
 
 {% endblock extrahead %}

@@ -21,7 +21,6 @@ self.addEventListener('message', async e => {
     if (data.$event === 'init') {
       debug('Initializing BrowserFS');
       console.log('Initializing BrowserFS ext host start');
-      
       console.log(EXTENSIONS_LOCATION);
 
       await initializeBrowserFS({
@@ -41,7 +40,7 @@ self.addEventListener('message', async e => {
         },
       });
       debug('Initialized BrowserFS', data.data.env);
-      console.log('Initialized BrowserFS', data.data.env);
+      console.log('Initialized BrowserFS from ext end', data.data.env);
 
       const process = ctx.BrowserFS.BFSRequire('process');
       process.cwd = () => data.data.cwd || '/sandbox';
@@ -52,6 +51,9 @@ self.addEventListener('message', async e => {
         ctx.require(
           ['vs/workbench/services/extensions/node/extensionHostProcess'],
           () => {
+            
+            // console.log('initialized');
+            
             commonPostMessage({
               $type: 'worker-client',
               $event: 'initialized',

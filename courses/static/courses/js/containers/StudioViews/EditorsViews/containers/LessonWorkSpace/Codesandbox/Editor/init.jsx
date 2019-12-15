@@ -63,9 +63,8 @@ export const initialize = (component, callback1) => {
   window.getState = getState
   window.getSignal = getSignal
 
-  console.log('getState');
-  console.log(getState);
-
+  // console.log('getState');
+  // console.log(getState);
 
   // Configures BrowserFS to use the LocalStorage file system.
   window.BrowserFS.configure(

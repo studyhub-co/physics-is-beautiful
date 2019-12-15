@@ -1,4 +1,5 @@
 import os
+import mimetypes
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault('DJANGO_SECRET', '0dk3tvyko9mz6t!+y42*$lzow)^dr3#(i_8^!7(x64!&yrpiz7')
@@ -54,3 +55,4 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 #         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
 #     }
 # }
+
