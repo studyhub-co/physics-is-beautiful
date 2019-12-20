@@ -1,7 +1,8 @@
 import * as React from 'react';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
+// import FileIcon from 'react-icons/lib/md/insert-drive-file';
+import { MdInsertDriveFile as FileIcon } from 'react-icons/md';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '../../../../../../../common/components/Tooltip';
 import { Test } from '../..';
 
 import { BlockHeader, Container, Actions } from './elements';

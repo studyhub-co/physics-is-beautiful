@@ -1,5 +1,7 @@
 import styled from 'styled-components';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
+// import ChevronRight from 'react-icons/lib/md/chevron-right';
+
+import { MdChevronRight as ChevronRight } from 'react-icons/md';
 
 export const Container = styled.div`
   background-color: ${props =>

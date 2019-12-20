@@ -1,5 +1,6 @@
 import * as React from 'react';
-import IconBase from 'react-icons/lib/IconBase';
+// import IconBase from 'react-icons/lib/IconBase';
+import {IconBase} from 'react-icons/lib/esm/iconBase';
 
 export const LoadingBubbles = props => (
   <IconBase

@@ -1,13 +1,14 @@
 import React from 'react';
 import { TweenMax, Elastic } from 'gsap';
-import FaAngleUp from 'react-icons/lib/fa/angle-up';
+// import FaAngleUp from 'react-icons/lib/fa/angle-up';
+import { FaAngleUp as FaAngleUp } from 'react-icons/fa';
 import store from 'store/dist/store.modern';
 
-import { TemplateType } from '@codesandbox/common/lib/templates';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { TemplateType } from '../../../../common/templates';
+import { ViewConfig } from '../../../../common/templates/template';
+// import track from '../../../../common/utils/analytics';
 
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import { DevToolsTabPosition } from '../../../../common/types';
 import { console } from './Console';
 import { DevToolTabs } from './Tabs';
 import { problems } from './Problems';
@@ -394,9 +395,9 @@ export class DevTools extends React.PureComponent<Props, State> {
       this.openDevTools();
     }
     const pane = this.props.viewConfig.views[index];
-    if (pane) {
-      track('DevTools - Open Pane', { pane: pane.id });
-    }
+    // if (pane) {
+    //   track('DevTools - Open Pane', { pane: pane.id });
+    // }
 
     this.props.setPane({
       devToolIndex: this.props.devToolIndex,
@@ -480,10 +481,10 @@ export class DevTools extends React.PureComponent<Props, State> {
               moveTab={
                 this.props.moveTab
                   ? (prevPos, nextPos) => {
-                      track('DevTools - Move Pane', {
-                        pane: this.props.viewConfig.views[prevPos.tabPosition]
-                          .id,
-                      });
+                      // track('DevTools - Move Pane', {
+                      //   pane: this.props.viewConfig.views[prevPos.tabPosition]
+                      //     .id,
+                      // });
                       this.props.moveTab(prevPos, nextPos);
                     }
                   : undefined

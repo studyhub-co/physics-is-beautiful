@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
-import SyncIcon from 'react-icons/lib/go/sync';
+// import SyncIcon from 'react-icons/lib/go/sync';
+
+import { GoSync as SyncIcon } from 'react-icons/go';
 
 export const Container = styled.div`
   display: flex;

@@ -476,7 +476,7 @@ class VSCodeManager {
    */
   public async runCommand(id: string, ...args: any[]) {
     const commandService = await this.getCommandService();
-    console.log(commandService.executeCommand);
+    // console.log(commandService.executeCommand);
     return commandService.executeCommand(id, ...args);
   }
 

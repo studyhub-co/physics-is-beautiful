@@ -45,8 +45,8 @@ export const initializeGlobals = () => {
 export function initializeAll() {
   return new Promise(async resolve => {
 
-    console.log('initializePolyfills');
-    console.trace();
+    // console.log('initializePolyfills');
+    // console.trace();
     
     await initializePolyfills();
     loadBrowserFS();

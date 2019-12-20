@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import PlusIcon from 'react-icons/lib/go/plus';
+// import PlusIcon from 'react-icons/lib/go/plus';
+
+import { GoPlus as PlusIcon } from 'react-icons/go';
+
 import { ContextMenu } from 'app/components/ContextMenu';
 
 const Container = styled.button`

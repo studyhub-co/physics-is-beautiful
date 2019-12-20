@@ -1,5 +1,5 @@
-import { messages } from '@codesandbox/common/lib/utils/jest-lite';
-import { actions, dispatch, listen } from 'codesandbox-api';
+import { messages } from '../../../../../common/utils/jest-lite';
+import { actions, dispatch, listen } from '../../../../codesandbox-api/codesandbox';
 import immer from 'immer';
 import { debounce } from 'lodash-es';
 import React from 'react';

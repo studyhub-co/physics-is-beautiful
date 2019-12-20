@@ -1,7 +1,7 @@
 import React from 'react';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { ViewTab } from '@codesandbox/common/lib/templates/template';
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import Tooltip from '../../../../../common/components/Tooltip';
+import { ViewTab } from '../../../../../common/templates/template';
+import { DevToolsTabPosition } from '../../../../../common/types';
 
 import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';

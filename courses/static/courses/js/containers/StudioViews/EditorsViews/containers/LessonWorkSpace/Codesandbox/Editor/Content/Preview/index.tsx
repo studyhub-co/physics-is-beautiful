@@ -102,6 +102,9 @@ class PreviewComponent extends Component<Props, State> {
     const { isServer } = getTemplate(
       this.props.store.editor.currentSandbox.template
     )
+    
+    console.log(preview);
+    
     if (!isServer && settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately()

@@ -1,17 +1,19 @@
-import Select from '@codesandbox/common/lib/components/Select';
-import theme from '@codesandbox/common/lib/theme';
-import { listen, dispatch } from 'codesandbox-api';
+import Select from '../../../../../common/components/Select';
+import theme from '../../../../../common/theme';
+import { listen, dispatch } from '../../../../codesandbox-api/codesandbox';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
 import update from 'immutability-helper';
 import { debounce } from 'lodash-es';
 import React from 'react';
-import ClearIcon from 'react-icons/lib/md/block';
+// import ClearIcon from 'react-icons/lib/md/block';
+import { MdBlock as ClearIcon } from 'react-icons/md';
+
 import styled, { withTheme } from 'styled-components';
 
 import { DevToolProps } from '..';
 
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
-import { ConsoleInput } from './Input';
+// import { ConsoleInput } from './Input';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return';
@@ -240,7 +242,8 @@ class ConsoleComponent extends React.Component<StyledProps> {
             searchKeywords={searchKeywordsHasError ? '' : searchKeywords}
           />
         </Messages>
-        <ConsoleInput evaluateConsole={this.evaluateConsole} />
+        {/* Fixme Console uses CodeMirror so disable it for now */}
+        {/*<ConsoleInput evaluateConsole={this.evaluateConsole} />*/}
       </Container>
     );
   }

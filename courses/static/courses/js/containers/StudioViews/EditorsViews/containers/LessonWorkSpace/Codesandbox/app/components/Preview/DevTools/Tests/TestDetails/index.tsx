@@ -1,8 +1,11 @@
 import * as React from 'react';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
-import PlayIcon from 'react-icons/lib/go/playback-play';
+// import FileIcon from 'react-icons/lib/md/insert-drive-file';
+// import PlayIcon from 'react-icons/lib/go/playback-play';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { MdInsertDriveFile as FileIcon } from 'react-icons/md';
+import { GoPlay as PlayIcon } from 'react-icons/go';
+
+import Tooltip from '../../../../../../common/components/Tooltip';
 import { File, Status } from '..';
 
 import { Action, TestName, TestTitle, Blocks, ErrorNotice } from './elements';

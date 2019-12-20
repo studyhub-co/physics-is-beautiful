@@ -7,9 +7,10 @@ import {
   DropTargetMonitor,
   DropTargetConnector,
 } from 'react-dnd';
-import CrossIcon from 'react-icons/lib/md/clear';
+// import CrossIcon from 'react-icons/lib/md/clear';
+import { MdClear as CrossIcon } from 'react-icons/md';
 
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import { DevToolsTabPosition } from '../../../../../../common/types';
 import { Tab, CloseTab } from './elements';
 import { IViewType, Status } from '../..';
 import { UnreadDevToolsCount } from './UnreadDevToolsCount';

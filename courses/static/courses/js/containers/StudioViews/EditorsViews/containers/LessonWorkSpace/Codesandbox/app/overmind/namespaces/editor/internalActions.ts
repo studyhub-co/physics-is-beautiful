@@ -107,6 +107,9 @@ export const saveCode: AsyncAction<{
   }
 
   try {
+    
+    console.log('updatedModule');
+    console.log(updatedModule);
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
     module.insertedAt = updatedModule.insertedAt;

@@ -6,7 +6,7 @@ import {
   DropTargetMonitor,
   DropTargetConnector,
 } from 'react-dnd';
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import { DevToolsTabPosition } from '../../../../../../common/types';
 
 import { PREVIEW_TAB_ID } from '../Tab';
 

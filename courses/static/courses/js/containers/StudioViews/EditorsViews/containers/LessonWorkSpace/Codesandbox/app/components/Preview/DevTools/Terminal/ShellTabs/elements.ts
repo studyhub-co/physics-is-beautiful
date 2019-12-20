@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
-import CrossIconClean from 'react-icons/lib/md/clear';
+// import CrossIconClean from 'react-icons/lib/md/clear';
+import { MdClear as CrossIconClean } from 'react-icons/md';
 
 export const Container = styled.div`
   display: flex;

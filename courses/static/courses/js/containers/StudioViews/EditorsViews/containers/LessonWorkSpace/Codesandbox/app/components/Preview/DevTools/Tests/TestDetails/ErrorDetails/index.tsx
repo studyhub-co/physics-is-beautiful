@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import theme from '@codesandbox/common/lib/theme';
+import theme from '../../../../../../../common/theme';
 import ansiHTML from 'ansi-html';
 
-import { escapeHtml } from 'app/utils/escape';
+import { escapeHtml } from '../../../../../../../app/utils/escape';
 
 import { TestError } from '../..';
 

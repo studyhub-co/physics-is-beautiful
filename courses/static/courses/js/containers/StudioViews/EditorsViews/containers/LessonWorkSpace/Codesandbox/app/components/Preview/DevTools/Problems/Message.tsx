@@ -1,12 +1,16 @@
 import React from 'react';
 
-import { dispatch, actions } from 'codesandbox-api';
+import { dispatch, actions } from '../../../../codesandbox-api/codesandbox';
 
-import NoticeIcon from 'react-icons/lib/md/info';
-import ErrorIcon from 'react-icons/lib/md/error';
-import WarningIcon from 'react-icons/lib/md/warning';
+// import NoticeIcon from 'react-icons/lib/md/info';
+// import ErrorIcon from 'react-icons/lib/md/error';
+// import WarningIcon from 'react-icons/lib/md/warning';
 
-import theme from '@codesandbox/common/lib/theme';
+import { MdInfo as NoticeIcon } from 'react-icons/md';
+import { MdError as ErrorIcon } from 'react-icons/md';
+import { MdWarning as WarningIcon } from 'react-icons/md';
+
+import theme from '../../../../../common/theme';
 import {
   MessageContainer,
   MessageIconContainer,

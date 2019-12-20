@@ -1,5 +1,6 @@
 import React from 'react';
-import PlusIcon from 'react-icons/lib/md/add';
+// import PlusIcon from 'react-icons/lib/md/add';
+import { MdAdd as PlusIcon } from 'react-icons/md';
 
 import { Container, Tab, CrossIcon, PlusContainer } from './elements';
 import { ShellT } from '../types';

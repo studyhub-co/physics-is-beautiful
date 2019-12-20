@@ -1,10 +1,15 @@
 import * as React from 'react';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '../../../../../../common/components/Tooltip';
 
-import PlayIcon from 'react-icons/lib/go/playback-play';
-import FileIcon from 'react-icons/lib/md/insert-drive-file';
-import ExpandTestsIcon from 'react-icons/lib/fa/expand';
-import CollapseTestsIcon from 'react-icons/lib/fa/minus';
+// import PlayIcon from 'react-icons/lib/go/playback-play';
+// import FileIcon from 'react-icons/lib/md/insert-drive-file';
+// import ExpandTestsIcon from 'react-icons/lib/fa/expand';
+// import CollapseTestsIcon from 'react-icons/lib/fa/minus';
+
+import { GoPlay as PlayIcon } from 'react-icons/go';
+import { MdInsertDriveFile as FileIcon } from 'react-icons/md';
+import { FaExpand as ExpandTestsIcon } from 'react-icons/fa';
+import { FaMinus as CollapseTestsIcon } from 'react-icons/fa';
 
 import { File, Status } from '..';
 

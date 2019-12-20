@@ -1,6 +1,8 @@
 import * as React from 'react';
-import PlayIcon from 'react-icons/lib/go/playback-play';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+// import PlayIcon from 'react-icons/lib/go/playback-play';
+import { GoPlay as PlayIcon } from 'react-icons/go';
+
+import Tooltip from '../../../../../../common/components/Tooltip';
 
 import { File, Test, Status } from '..';
 

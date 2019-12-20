@@ -9,7 +9,7 @@ import getTemplateDefinition from '../../common/templates'
 import SplitPane from 'react-split-pane'
 
 import { CodeEditor } from '../../app/components/CodeEditor'
-// import { DevTools } from '../../app/componentsPreview/DevTools';
+import { DevTools } from '../../app/components/Preview/DevTools'
 
 import { Preview } from './Preview'
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll'
@@ -420,20 +420,20 @@ class EditorPreview extends React.Component {
       return false
     }
 
-    // const views = store.editor.devToolTabs
-    // const currentPosition = this.props.store.editor.currentDevToolsPosition
+    const views = store.editor.devToolTabs
+    const currentPosition = this.props.store.editor.currentDevToolsPosition
 
-    // const browserConfig = {
-    //   id: 'codesandbox.browser',
-    //   title: options =>
-    //     options.port || options.title
-    //       ? `Browser (${options.title || `:${options.port}`})`
-    //       : `Browser`,
-    //   Content: ({ hidden, options }) => (
-    //     <Preview options={options} hidden={hidden} width='100%' height='100%' />
-    //   ),
-    //   actions: []
-    // }
+    const browserConfig = {
+      id: 'codesandbox.browser',
+      title: options =>
+        options.port || options.title
+          ? `Browser (${options.title || `:${options.port}`})`
+          : `Browser`,
+      Content: ({ hidden, options }) => (
+        <Preview options={options} hidden={hidden} width='100%' height='100%' />
+      ),
+      actions: []
+    }
 
     return (
       <ThemeProvider
@@ -457,12 +457,12 @@ class EditorPreview extends React.Component {
             }
           }}
         >
-          {/*<Prompt*/}
-            {/*when={notSynced && !store.editor.isForkingSandbox}*/}
-            {/*message={() =>*/}
-              {/*'You have not saved this sandbox, are you sure you want to navigate away?'*/}
-            {/*}*/}
-          {/*/>*/}
+          {/* <Prompt */}
+          {/* when={notSynced && !store.editor.isForkingSandbox} */}
+          {/* message={() => */}
+          {/* 'You have not saved this sandbox, are you sure you want to navigate away?' */}
+          {/* } */}
+          {/* /> */}
           <SplitPane
             maxSize={-100}
             onDragFinished={() => {
@@ -471,11 +471,11 @@ class EditorPreview extends React.Component {
             onDragStarted={() => {
               this.props.signals.editor.resizingStarted()
             }}
-            // onChange={() => {
-            //   requestAnimationFrame(() => {
-            //     this.getBounds()
-            //   })
-            // }}
+            onChange={() => {
+              requestAnimationFrame(() => {
+                this.getBounds()
+              })
+            }}
             style={{
               overflow: 'visible' // For VSCode Context Menu
             }}
@@ -512,7 +512,7 @@ class EditorPreview extends React.Component {
                 marginTop: 0
               }}
             >
-              {/*{!store.preferences.settings.experimentVSCode && <Tabs />}*/}
+              {/* {!store.preferences.settings.experimentVSCode && <Tabs />} */}
               <CodeEditor
                 style={{
                   top: 0
@@ -561,54 +561,53 @@ class EditorPreview extends React.Component {
                 }
               />
             </div>
-            {/*need for SplitPane*/}
+            {/* need for SplitPane */}
             {/* TODO it will be preview panel */}
-            <div></div>
-
-            {/* <div */}
-            {/* style={{ */}
-            {/* display: 'flex', */}
-            {/* flexDirection: 'column', */}
-            {/* height: '100%', */}
-            {/* }} */}
-            {/* id="csb-devtools" // used for tabs for highlighting */}
-            {/* > */}
-            {/* {views.map((v, i) => ( */}
-            {/* <DevTools */}
-            {/* key={i} // eslint-disable-line react/no-array-index-key */}
-            {/* devToolIndex={i} */}
-            {/* addedViews={{ */}
-            {/* 'codesandbox.browser': browserConfig, */}
-            {/* }} */}
-            {/* setDragging={dragging => { */}
-            {/* if (dragging) { */}
-            {/* this.props.signals.editor.resizingStarted(); */}
-            {/* } else { */}
-            {/* this.props.signals.editor.resizingStopped(); */}
-            {/* } */}
-            {/* }} */}
-            {/* sandboxId={sandbox.id} */}
-            {/* template={sandbox.template} */}
-            {/* shouldExpandDevTools={store.preferences.showDevtools} */}
-            {/* zenMode={preferences.settings.zenMode} */}
-            {/* setDevToolsOpen={open => */}
-            {/* this.props.signals.preferences.setDevtoolsOpen({ open }) */}
-            {/* } */}
-            {/* owned={sandbox.owned} */}
-            {/* primary={i === 0} */}
-            {/* viewConfig={v} */}
-            {/* moveTab={this.moveDevToolsTab} */}
-            {/* closeTab={this.closeDevToolsTab} */}
-            {/* currentDevToolIndex={currentPosition.devToolIndex} */}
-            {/* currentTabPosition={currentPosition.tabPosition} */}
-            {/* setPane={position => */}
-            {/* this.props.signals.editor.onDevToolsPositionChanged({ */}
-            {/* position, */}
-            {/* }) */}
-            {/* } */}
-            {/* /> */}
-            {/* ))} */}
-            {/* </div> */}
+            {/*<div></div>*/}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%'
+              }}
+              id='csb-devtools' // used for tabs for highlighting
+            >
+              {views.map((v, i) => (
+                <DevTools
+                  key={i} // eslint-disable-line react/no-array-index-key
+                  devToolIndex={i}
+                  addedViews={{
+                    'codesandbox.browser': browserConfig
+                  }}
+                  setDragging={dragging => {
+                    if (dragging) {
+                      this.props.signals.editor.resizingStarted()
+                    } else {
+                      this.props.signals.editor.resizingStopped()
+                    }
+                  }}
+                  sandboxId={sandbox.id}
+                  template={sandbox.template}
+                  shouldExpandDevTools={store.preferences.showDevtools}
+                  zenMode={preferences.settings.zenMode}
+                  setDevToolsOpen={open =>
+                    this.props.signals.preferences.setDevtoolsOpen({ open })
+                  }
+                  owned={sandbox.owned}
+                  primary={i === 0}
+                  viewConfig={v}
+                  moveTab={this.moveDevToolsTab}
+                  closeTab={this.closeDevToolsTab}
+                  currentDevToolIndex={currentPosition.devToolIndex}
+                  currentTabPosition={currentPosition.tabPosition}
+                  setPane={position =>
+                    this.props.signals.editor.onDevToolsPositionChanged({
+                      position
+                    })
+                  }
+                />
+              ))}
+            </div>
           </SplitPane>
         </div>
       </ThemeProvider>

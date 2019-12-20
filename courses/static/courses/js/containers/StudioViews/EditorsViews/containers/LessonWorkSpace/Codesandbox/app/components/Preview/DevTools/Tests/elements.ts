@@ -1,8 +1,13 @@
 import styled, { css } from 'styled-components';
 
-import Check from 'react-icons/lib/go/check';
-import Cross from 'react-icons/lib/go/x';
-import DotIcon from 'react-icons/lib/go/primitive-dot';
+// import Check from 'react-icons/lib/go/check';
+// import Cross from 'react-icons/lib/go/x';
+// import DotIcon from 'react-icons/lib/go/primitive-dot';
+
+import { GoCheck as Check } from 'react-icons/go';
+import { GoX as Cross } from 'react-icons/go';
+import { GoPrimitiveDot as DotIcon } from 'react-icons/go';
+
 import { LoadingBubbles } from './LoadingBubbles';
 
 export const Container = styled.div`
