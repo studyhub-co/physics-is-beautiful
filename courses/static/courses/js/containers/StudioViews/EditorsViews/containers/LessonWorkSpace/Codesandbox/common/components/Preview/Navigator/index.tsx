@@ -1,8 +1,12 @@
 import React from 'react';
 
-import LeftIcon from 'react-icons/lib/fa/angle-left';
-import RightIcon from 'react-icons/lib/fa/angle-right';
-import RefreshIcon from 'react-icons/lib/md/refresh';
+// import LeftIcon from 'react-icons/lib/fa/angle-left';
+// import RightIcon from 'react-icons/lib/fa/angle-right';
+// import RefreshIcon from 'react-icons/lib/md/refresh';
+
+import { FaAngleLeft as LeftIcon } from 'react-icons/fa'
+import { FaAngleRight as RightIcon } from 'react-icons/fa'
+import { MdRefresh as RefreshIcon } from 'react-icons/md'
 
 import Switch from '../../Switch';
 import Tooltip from '../../Tooltip';

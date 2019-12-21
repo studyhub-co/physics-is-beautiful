@@ -2,8 +2,8 @@
 import React, { Component } from 'react'
 import { inject, observer } from '../../../app/componentConnectors'
 
-// import BasePreview from '../../../common/components/Preview'
-import RunOnClick from '../../../common/components/RunOnClick'
+import BasePreview from '../../../common/components/Preview';
+import RunOnClick from '../../../common/components/RunOnClick';
 import getTemplate from '../../../common/templates';
 
 type Props = {

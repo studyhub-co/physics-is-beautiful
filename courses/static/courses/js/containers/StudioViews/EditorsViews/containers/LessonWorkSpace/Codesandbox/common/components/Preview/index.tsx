@@ -5,7 +5,7 @@ import {
   actions,
   registerFrame,
   resetState,
-} from 'codesandbox-api';
+} from '../../../app/codesandbox-api/codesandbox';
 import debounce from 'lodash/debounce';
 import { Spring } from 'react-spring/renderprops.cjs';
 import { Sandbox, Module } from '../../types';
