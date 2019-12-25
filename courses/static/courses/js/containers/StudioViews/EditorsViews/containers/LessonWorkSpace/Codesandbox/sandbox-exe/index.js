@@ -121,6 +121,8 @@ requirePolyfills().then(() => {
             'csb-dynamic-download'
           ),
         };
+        
+        console.log(data);
 
         compile(data);
       });

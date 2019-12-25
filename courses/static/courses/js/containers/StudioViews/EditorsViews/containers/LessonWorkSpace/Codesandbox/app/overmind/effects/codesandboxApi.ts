@@ -9,6 +9,7 @@ export default {
     }
 
     const disposer = listen(data => {
+      console.log('data');
       console.log(data);
       action({ data: data || {} });
     });

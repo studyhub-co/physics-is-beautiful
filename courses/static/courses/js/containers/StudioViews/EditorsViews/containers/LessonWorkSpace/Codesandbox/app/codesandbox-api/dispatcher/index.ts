@@ -84,6 +84,9 @@ export function listen(callback: Callback): () => void {
 }
 
 export function notifyListeners(data: object, source?: MessageEvent['source']) {
+  
+  // console.log(listeners);
+  
   Object.keys(listeners).forEach(listenerId => {
     if (listeners[listenerId]) {
       listeners[listenerId](data, source);
@@ -103,7 +106,15 @@ function notifyFrames(message: object) {
 function eventListener(e: MessageEvent) {
   const { data } = e;
 
+  // console.log('notifyListeners');
+  // console.log(parentOrigin);
+  // console.log(data);
+
   if (data && data.codesandbox && (parentOrigin === null || e.origin === parentOrigin)) {
+    
+    console.log('notifyListeners');
+    console.log(window.location.href);
+    
     notifyListeners(data, e.source);
   }
 }
@@ -127,6 +138,7 @@ export function registerFrame(frame: Window, origin: string) {
 
 if (typeof window !== 'undefined') {
   // We now start listening so we can let our listeners know
+  // console.log(eventListener);
   window.addEventListener('message', eventListener);
 }
 

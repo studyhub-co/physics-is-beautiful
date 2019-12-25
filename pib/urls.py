@@ -68,6 +68,12 @@ if settings.DEBUG:
     ] + urlpatterns
 
 
+from django.views.generic.base import TemplateView
+
+# TODO add material id / move to courses urls
+urlpatterns += [
+    url(r'^material-iframe/$', TemplateView.as_view(template_name='courses/material-iframe.html'), name='material-iframe'),
+]
 # catch all urls in main SPA app
 # (.*?) - fix for string non ending with slash
 urlpatterns += [url(r'^(.*?)/$', include('courses.urls', namespace='main')), ]

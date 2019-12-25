@@ -25,6 +25,9 @@ class PreviewComponent extends Component<Props, State> {
   };
 
   onPreviewInitialized = preview => {
+    
+    console.log('onPreviewInitialized');
+    
     const disposeHandleProjectViewChange = this.props.reaction(
       ({ editor }) => editor.isInProjectView,
       this.handleProjectView.bind(this, preview)
@@ -44,6 +47,7 @@ class PreviewComponent extends Component<Props, State> {
     const disposeHandleCodeChange = this.props.reaction(
       ({ editor }) => String(editor.currentSandbox.modules.map(m => m.code)),
       () => {
+        console.log('disposeHandleCodeChange');
         this.handleCodeChange(preview)
       }
     )
@@ -98,11 +102,13 @@ class PreviewComponent extends Component<Props, State> {
   };
 
   handleCodeChange = preview => {
+
     const { settings } = this.props.store.preferences
     const { isServer } = getTemplate(
       this.props.store.editor.currentSandbox.template
     )
-    
+
+    console.log('preview');
     console.log(preview);
     
     if (!isServer && settings.livePreviewEnabled) {

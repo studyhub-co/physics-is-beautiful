@@ -1,49 +1,49 @@
-//import { TextOperation } from 'ot';
-import { lineAndColumnToIndex } from './monaco-index-converter';
+import { TextOperation } from 'ot'
+import { lineAndColumnToIndex } from './monaco-index-converter'
 
-export default function convertChangeEventToOperation(
+export default function convertChangeEventToOperation (
   changeEvent,
   liveOperationCode
 ) {
-  let otOperation;
+  let otOperation
 
-  let composedCode = liveOperationCode;
+  let composedCode = liveOperationCode
 
   // eslint-disable-next-line no-restricted-syntax
   for (const change of [...changeEvent.changes]) {
-    const newOt = new TextOperation();
+    const newOt = new TextOperation()
     const cursorStartOffset = lineAndColumnToIndex(
       composedCode.split(/\n/),
       change.range.startLineNumber,
       change.range.startColumn
-    );
+    )
 
-    const retain = cursorStartOffset - newOt.targetLength;
+    const retain = cursorStartOffset - newOt.targetLength
 
     if (retain !== 0) {
-      newOt.retain(retain);
+      newOt.retain(retain)
     }
 
     if (change.rangeLength > 0) {
-      newOt.delete(change.rangeLength);
+      newOt.delete(change.rangeLength)
     }
 
     if (change.text) {
-      newOt.insert(change.text);
+      newOt.insert(change.text)
     }
 
-    const remaining = composedCode.length - newOt.baseLength;
+    const remaining = composedCode.length - newOt.baseLength
     if (remaining > 0) {
-      newOt.retain(remaining);
+      newOt.retain(remaining)
     }
 
-    otOperation = otOperation ? otOperation.compose(newOt) : newOt;
+    otOperation = otOperation ? otOperation.compose(newOt) : newOt
 
-    composedCode = otOperation.apply(liveOperationCode);
+    composedCode = otOperation.apply(liveOperationCode)
   }
 
   return {
     operation: otOperation,
-    newCode: composedCode,
-  };
+    newCode: composedCode
+  }
 }

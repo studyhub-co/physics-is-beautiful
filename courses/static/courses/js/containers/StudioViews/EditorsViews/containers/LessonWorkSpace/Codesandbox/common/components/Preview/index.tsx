@@ -59,6 +59,7 @@ type State = {
   useFallbackDomain: boolean;
 };
 
+// TODO:
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
   `https://${sandbox ? `${sandbox.id}.` : ''}sse.${
     process.env.NODE_ENV === 'development' || process.env.STAGING
@@ -104,6 +105,18 @@ class BasePreview extends React.Component<Props, State> {
       }, 100);
     }
     this.listener = listen(this.handleMessage);
+
+    // PIB: simulate iframe ready (see codesandbox-exe)
+    //
+    dispatch({ type: 'initialized' });
+
+    // dispatch({
+    //       type: 'compile',
+    //       version: 4,
+    // })
+
+    // console.log('listener');
+    // console.log(this.listener);
 
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);
@@ -267,61 +280,86 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleMessage = (data: any, source: any) => {
+    
+    // wait for iframe init (see /sandbox-exe/index.js)
+    // dispatch event
     if (data && data.codesandbox) {
-      if (data.type === 'initialized' && source) {
-        registerFrame(source, this.currentUrl());
-
-        if (!this.state.frameInitialized && this.props.onInitialized) {
+     // PIB code
+      if (data.type === 'initialized'){
+         if (!this.state.frameInitialized && this.props.onInitialized) {
+          console.log('disposeInitializer');
           this.disposeInitializer = this.props.onInitialized(this);
         }
-
-        setTimeout(
-          () => {
-            // We show a screenshot of the sandbox (if available) on top of the preview if the frame
-            // hasn't loaded yet
-            this.setState({ showScreenshot: false });
-          },
-          this.serverPreview ? 0 : 600
-        );
-
-        this.executeCodeImmediately(true);
-      } else {
-        const { type } = data;
-
-        switch (type) {
-          case 'render': {
-            this.executeCodeImmediately();
-            break;
-          }
-          case 'urlchange': {
-            this.commitUrl(data.url, data.back, data.forward);
-            break;
-          }
-          case 'resize': {
-            if (this.props.onResize) {
-              this.props.onResize(data.height);
-            }
-            break;
-          }
-          case 'action': {
-            if (this.props.onAction) {
-              this.props.onAction({
-                ...data,
-                sandboxId: this.props.sandbox.id,
-              });
-            }
-
-            break;
-          }
-          case 'done': {
-            this.setState({ showScreenshot: false });
-            break;
-          }
-          default: {
-            break;
-          }
-        }
       }
+
+    //TODO
+     // 1. compile sanbox
+
+     // 2. upload to backend
+      // (TODO separete this:
+      // 2.1. compile online (codesandbox)
+      // 2.2. upload on Save
+      //  )
+     // 3. SSE message from server to refresh iframe
+
+
+    //  !======== codesandbox iframe communication code below ======
+    //   // source will destroy after 1st touch
+    //   if (data.type === 'initialized' && source) {
+    //     registerFrame(source, this.currentUrl());
+    //
+    //     if (!this.state.frameInitialized && this.props.onInitialized) {
+    //       console.log('disposeInitializer');
+    //       this.disposeInitializer = this.props.onInitialized(this);
+    //     }
+    //
+    //     setTimeout(
+    //       () => {
+    //         // We show a screenshot of the sandbox (if available) on top of the preview if the frame
+    //         // hasn't loaded yet
+    //         this.setState({ showScreenshot: false });
+    //       },
+    //       this.serverPreview ? 0 : 600
+    //     );
+    //
+    //     this.executeCodeImmediately(true);
+    //   } else {
+    //     const { type } = data;
+    //
+    //     switch (type) {
+    //       case 'render': {
+    //         this.executeCodeImmediately();
+    //         break;
+    //       }
+    //       case 'urlchange': {
+    //         this.commitUrl(data.url, data.back, data.forward);
+    //         break;
+    //       }
+    //       case 'resize': {
+    //         if (this.props.onResize) {
+    //           this.props.onResize(data.height);
+    //         }
+    //         break;
+    //       }
+    //       case 'action': {
+    //         if (this.props.onAction) {
+    //           this.props.onAction({
+    //             ...data,
+    //             sandboxId: this.props.sandbox.id,
+    //           });
+    //         }
+    //
+    //         break;
+    //       }
+    //       case 'done': {
+    //         this.setState({ showScreenshot: false });
+    //         break;
+    //       }
+    //       default: {
+    //         break;
+    //       }
+    //     }
+    //   }
     }
   };
 
@@ -373,6 +411,9 @@ class BasePreview extends React.Component<Props, State> {
     // the only reason we do this is because executeCodeImmediately can be called
     // directly as well
     // @ts-ignore
+    console.log('executeCodeImmediately');
+    console.trace();
+
     this.executeCode.cancel();
     const { settings } = this.props;
     const { sandbox } = this.props;
@@ -487,6 +528,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   render() {
+
     const {
       showNavigation,
       inactive,

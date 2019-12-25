@@ -179,7 +179,7 @@ class MonacoEditor extends React.PureComponent {
 
             // After initializing monaco editor
             
-            console.log(context.monaco);
+            // console.log(context.monaco);
             
             this.editorDidMount(editorApi, context.monaco)
             // document.getElementById('main-app').className += ` monaco-shell`

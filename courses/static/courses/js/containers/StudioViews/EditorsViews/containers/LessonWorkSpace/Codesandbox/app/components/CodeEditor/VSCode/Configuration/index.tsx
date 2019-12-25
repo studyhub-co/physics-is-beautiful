@@ -2,10 +2,10 @@ import { ConfigurationFile } from '../../common/templates/configuration/types';
 // import getUI from '../../../../../common/templates/configuration/ui';
 import theme from '../../../../../common/theme';
 import { Module } from '../../../../common/types';
-//import { TextOperation } from 'ot';
+import { TextOperation } from 'ot';
 import React from 'react';
 
-// import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+// import EntryIcons from 'pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from '../../../../../app/utils/get-type';
 
 import { Props as EditorProps, Editor } from '../../types'; // eslint-disable-line

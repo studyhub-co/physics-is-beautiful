@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
-// import { TextOperation } from 'ot';
+import { TextOperation } from 'ot';
 import { debounce } from 'lodash-es';
 import * as fs from 'fs';
 import {
@@ -156,6 +156,7 @@ export class VSCode extends React.Component<Props> implements Editor {
     if (this.lintWorker) {
       this.lintWorker.terminate();
     }
+
     if (this.codeSandboxAPIListener) {
       this.codeSandboxAPIListener();
     }
@@ -240,7 +241,6 @@ export class VSCode extends React.Component<Props> implements Editor {
     ]);
 
   setupCodeSandboxAPIListener = () =>
-  {
     listen(({ action, type, code, path, lineNumber, column }: any) => {
       if (type === 'add-extra-lib') {
         // TODO: bring this func back
@@ -269,7 +269,7 @@ export class VSCode extends React.Component<Props> implements Editor {
           });
         }
       }
-    });}
+    });
 
   modelListeners: {
     [path: string]: {
@@ -303,6 +303,8 @@ export class VSCode extends React.Component<Props> implements Editor {
         // ) {
         //   this.sendChangeOperations(e);
         // }
+
+        this.sendChangeOperations(e);
 
         this.handleChange(module.shortid, module.title, model.getValue());
       } catch (err) {
@@ -349,6 +351,8 @@ export class VSCode extends React.Component<Props> implements Editor {
         }
       }
     );
+
+    // console.log(this.modelListeners);
   };
 
   disposeContentListeners = () => {

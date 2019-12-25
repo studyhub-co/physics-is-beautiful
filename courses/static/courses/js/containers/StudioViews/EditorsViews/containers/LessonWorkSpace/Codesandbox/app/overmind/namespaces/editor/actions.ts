@@ -174,8 +174,7 @@ export const codeChanged: Action<{
   moduleShortid: string;
   noLive?: boolean;
 }> = ({ effects, state, actions }, { code, moduleShortid, noLive }) => {
-  effects.analytics.trackOnce('Change Code');
-  // console.log('Change Code');
+  // effects.analytics.trackOnce('Change Code');
 
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
