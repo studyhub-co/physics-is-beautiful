@@ -1,15 +1,16 @@
-import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { flatten } from 'lodash';
-import { absolute } from '@codesandbox/common/lib/utils/path';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
-import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
-import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
+
+import { dispatch, reattach, clearErrorTransformers } from '../app/codesandbox-api/codesandbox';
+import { absolute } from '../common/utils/path';
+import _debug from '../common/utils/debug';
+import parseConfigurations from '../common/templates/configuration/parse';
+// import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
+// import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import { isBabel7 } from '../common/utils/is-babel-7';
+import { ParsedConfigurationFiles } from '../common/templates/template';
 import getDefinition, {
   TemplateType,
-} from '@codesandbox/common/lib/templates/index';
+} from '../common/templates/index';
 
 import getPreset from './eval';
 import Manager, { Manifest } from './eval/manager';
@@ -394,7 +395,7 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-inject();
+// inject();
 
 interface CompileOptions {
   sandboxId: string;
@@ -429,10 +430,10 @@ async function compile({
 
   const startTime = Date.now();
   try {
-    inject();
+    // inject();
     clearErrorTransformers();
-    initializeErrorTransformers();
-    unmount(manager && manager.webpackHMR ? true : hadError);
+    // initializeErrorTransformers();
+    // unmount(manager && manager.webpackHMR ? true : hadError);
   } catch (e) {
     console.error(e);
   }

@@ -1,4 +1,4 @@
-import { dispatch, actions } from 'codesandbox-api';
+import { dispatch, actions } from '../../../../app/codesandbox-api/codesandbox';
 
 import type Manager from '../../manager';
 

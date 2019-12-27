@@ -25,9 +25,6 @@ class PreviewComponent extends Component<Props, State> {
   };
 
   onPreviewInitialized = preview => {
-    
-    console.log('onPreviewInitialized');
-    
     const disposeHandleProjectViewChange = this.props.reaction(
       ({ editor }) => editor.isInProjectView,
       this.handleProjectView.bind(this, preview)
@@ -108,16 +105,17 @@ class PreviewComponent extends Component<Props, State> {
       this.props.store.editor.currentSandbox.template
     )
 
-    console.log('preview');
-    console.log(preview);
-    
-    if (!isServer && settings.livePreviewEnabled) {
-      if (settings.instantPreviewEnabled) {
-        preview.executeCodeImmediately()
-      } else {
-        preview.executeCode()
-      }
-    }
+    // pib code
+    preview.pibExecuteCodeImmediately()
+
+    // codesandbox code
+    // if (!isServer && settings.livePreviewEnabled) {
+    //   if (settings.instantPreviewEnabled) {
+    //     preview.executeCodeImmediately()
+    //   } else {
+    //     preview.executeCode()
+    //   }
+    // }
   };
 
   handleStructureChange = preview => {

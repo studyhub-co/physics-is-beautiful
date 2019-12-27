@@ -23,6 +23,20 @@ import Navigator from './Navigator';
 import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
 
+// PIB import
+import compile, { getCurrentManager } from '../../../sandbox-exe/compile';
+
+// startup.js of iframe
+/* eslint-disable import/default */
+import BabelWorker from 'worker-loader?publicPath=/static/js/bundles/&name=babel-transpiler.[hash:8].worker.js!../../../sandbox-exe/eval/transpilers/babel/worker/index';
+/* eslint-enable import/default */
+
+window.babelworkers = [];
+for (let i = 0; i < 3; i++) {
+  window.babelworkers.push(new BabelWorker());
+}
+// startup.js of iframe
+
 export type Props = {
   sandbox: Sandbox;
   settings: Settings;
@@ -107,16 +121,7 @@ class BasePreview extends React.Component<Props, State> {
     this.listener = listen(this.handleMessage);
 
     // PIB: simulate iframe ready (see codesandbox-exe)
-    //
     dispatch({ type: 'initialized' });
-
-    // dispatch({
-    //       type: 'compile',
-    //       version: 4,
-    // })
-
-    // console.log('listener');
-    // console.log(this.listener);
 
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);
@@ -287,15 +292,24 @@ class BasePreview extends React.Component<Props, State> {
      // PIB code
       if (data.type === 'initialized'){
          if (!this.state.frameInitialized && this.props.onInitialized) {
-          console.log('disposeInitializer');
           this.disposeInitializer = this.props.onInitialized(this);
         }
       }
 
-    //TODO
-     // 1. compile sanbox
+    const { type } = data;
 
-     // 2. upload to backend
+    //TODO
+    // 1. compile sanbox
+    console.log(type);
+
+    switch (type) {
+       case 'pib_compile': {
+         this.pibExecuteCodeImmediately();
+         break;
+       }
+     }
+
+       // 2. upload to backend
       // (TODO separete this:
       // 2.1. compile online (codesandbox)
       // 2.2. upload on Save
@@ -363,11 +377,79 @@ class BasePreview extends React.Component<Props, State> {
     }
   };
 
+  pibExecuteCodeImmediately = (initialRender: boolean = false) => {
+    // We cancel the existing calls with executeCode to prevent concurrent calls,
+    // the only reason we do this is because executeCodeImmediately can be called
+    // directly as well
+    // @ts-ignore
+    this.executeCode.cancel();
+    const { settings } = this.props;
+    const { sandbox } = this.props;
+    const modulesToSend = this.getModulesToSend();
+
+    const data = {
+          type: 'compile',
+          version: 3,
+          entry: this.getRenderedModule(),
+          modules: modulesToSend,
+          sandboxId: sandbox.id,
+          externalResources: sandbox.externalResources,
+          isModuleView: !this.props.isInProjectView,
+          template: sandbox.template,
+          hasActions: Boolean(this.props.onAction),
+        };
+
+        console.log(data);
+        const result = compile(data);
+
+        // console.log(result)
+
+    // if (settings.clearConsoleEnabled && !this.serverPreview) {
+    //   // @ts-ignore Chrome behaviour
+    //   // console.clear('__internal__'); // eslint-disable-line no-console
+    //   dispatch({ type: 'clear-console' });
+    // }
+    // Do it here so we can see the dependency fetching screen if needed
+    // this.clearErrors();
+  //   if (settings.forceRefresh && !initialRender) {
+  //     this.handleRefresh();
+  //   } else {
+  //     if (!this.props.isInProjectView) {
+  //       dispatch({
+  //         type: 'evaluate',
+  //         command: `history.pushState({}, null, '/')`,
+  //       });
+  //     }
+  //
+  //     const modulesToSend = this.getModulesToSend();
+  //     if (!this.serverPreview) {
+  //       dispatch({
+  //         type: 'compile',
+  //         version: 3,
+  //         entry: this.getRenderedModule(),
+  //         modules: modulesToSend,
+  //         sandboxId: sandbox.id,
+  //         externalResources: sandbox.externalResources,
+  //         isModuleView: !this.props.isInProjectView,
+  //         template: sandbox.template,
+  //         hasActions: Boolean(this.props.onAction),
+  //       });
+  //     }
+  //   }
+   };
+
   executeCode = () => {
     requestAnimationFrame(() => {
       this.executeCodeImmediately();
     });
   };
+
+  pibExecuteCode = () => {
+    requestAnimationFrame(() => {
+      this.pibExecuteCodeImmediately();
+    });
+  };
+
 
   getRenderedModule = () => {
     const { sandbox, currentModule, isInProjectView } = this.props;
@@ -406,52 +488,50 @@ class BasePreview extends React.Component<Props, State> {
     return modulesToSend;
   };
 
-  executeCodeImmediately = (initialRender: boolean = false) => {
-    // We cancel the existing calls with executeCode to prevent concurrent calls,
-    // the only reason we do this is because executeCodeImmediately can be called
-    // directly as well
-    // @ts-ignore
-    console.log('executeCodeImmediately');
-    console.trace();
-
-    this.executeCode.cancel();
-    const { settings } = this.props;
-    const { sandbox } = this.props;
-
-    if (settings.clearConsoleEnabled && !this.serverPreview) {
-      // @ts-ignore Chrome behaviour
-      // console.clear('__internal__'); // eslint-disable-line no-console
-      dispatch({ type: 'clear-console' });
-    }
-
-    // Do it here so we can see the dependency fetching screen if needed
-    this.clearErrors();
-    if (settings.forceRefresh && !initialRender) {
-      this.handleRefresh();
-    } else {
-      if (!this.props.isInProjectView) {
-        dispatch({
-          type: 'evaluate',
-          command: `history.pushState({}, null, '/')`,
-        });
-      }
-
-      const modulesToSend = this.getModulesToSend();
-      if (!this.serverPreview) {
-        dispatch({
-          type: 'compile',
-          version: 3,
-          entry: this.getRenderedModule(),
-          modules: modulesToSend,
-          sandboxId: sandbox.id,
-          externalResources: sandbox.externalResources,
-          isModuleView: !this.props.isInProjectView,
-          template: sandbox.template,
-          hasActions: Boolean(this.props.onAction),
-        });
-      }
-    }
-  };
+  // executeCodeImmediately = (initialRender: boolean = false) => {
+  //   // We cancel the existing calls with executeCode to prevent concurrent calls,
+  //   // the only reason we do this is because executeCodeImmediately can be called
+  //   // directly as well
+  //   // @ts-ignore
+  //
+  //   this.executeCode.cancel();
+  //   const { settings } = this.props;
+  //   const { sandbox } = this.props;
+  //
+  //   if (settings.clearConsoleEnabled && !this.serverPreview) {
+  //     // @ts-ignore Chrome behaviour
+  //     // console.clear('__internal__'); // eslint-disable-line no-console
+  //     dispatch({ type: 'clear-console' });
+  //   }
+  //
+  //   // Do it here so we can see the dependency fetching screen if needed
+  //   this.clearErrors();
+  //   if (settings.forceRefresh && !initialRender) {
+  //     this.handleRefresh();
+  //   } else {
+  //     if (!this.props.isInProjectView) {
+  //       dispatch({
+  //         type: 'evaluate',
+  //         command: `history.pushState({}, null, '/')`,
+  //       });
+  //     }
+  //
+  //     const modulesToSend = this.getModulesToSend();
+  //     if (!this.serverPreview) {
+  //       dispatch({
+  //         type: 'compile',
+  //         version: 3,
+  //         entry: this.getRenderedModule(),
+  //         modules: modulesToSend,
+  //         sandboxId: sandbox.id,
+  //         externalResources: sandbox.externalResources,
+  //         isModuleView: !this.props.isInProjectView,
+  //         template: sandbox.template,
+  //         hasActions: Boolean(this.props.onAction),
+  //       });
+  //     }
+  //   }
+  // };
 
   setIframeElement = (el: HTMLIFrameElement) => {
     if (el) {

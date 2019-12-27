@@ -1,5 +1,5 @@
 import resolve from 'browser-resolve';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { getGlobal } from '../../../../../common/utils/global';
 import getRequireStatements from './simple-get-require-statements';
 
 const global = getGlobal();

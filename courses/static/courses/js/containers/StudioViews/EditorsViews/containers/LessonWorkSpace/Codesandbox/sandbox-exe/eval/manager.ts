@@ -1,13 +1,13 @@
-import { flattenDeep, uniq, values } from 'lodash-es';
-import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
+import { flattenDeep, uniq, values } from 'lodash-es';
 
-import * as pathUtils from '@codesandbox/common/lib/utils/path';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { getGlobal } from '@codesandbox/common/lib/utils/global';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
-import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
-import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
+import { Protocol } from '../../app/codesandbox-api/codesandbox';
+import * as pathUtils from '../../common/utils/path';
+import _debug from '../../common/utils/debug';
+import { getGlobal } from '../../common/utils/global';
+import { ParsedConfigurationFiles } from '../../common/templates/template';
+// import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
+// import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
 import { Module } from './entities/module';
 import TranspiledModule, {

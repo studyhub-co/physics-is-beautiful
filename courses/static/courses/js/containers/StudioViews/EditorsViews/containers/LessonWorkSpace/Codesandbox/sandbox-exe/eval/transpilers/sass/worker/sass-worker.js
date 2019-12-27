@@ -1,7 +1,7 @@
 import resolve from 'browser-resolve';
-import { absolute } from '@codesandbox/common/lib/utils/path';
+import { absolute } from '../../../../../common/utils/path';
 import { extname } from 'path';
-import delay from '@codesandbox/common/lib/utils/delay';
+import delay from '../../../../../common/utils/delay';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.11.0/sass.sync.js',

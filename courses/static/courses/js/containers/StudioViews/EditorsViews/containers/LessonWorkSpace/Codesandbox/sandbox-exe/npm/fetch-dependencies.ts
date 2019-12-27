@@ -1,6 +1,6 @@
-import { actions, dispatch } from 'codesandbox-api';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import { actions, dispatch } from '../../app/codesandbox-api/codesandbox';
+import _debug from '../../common/utils/debug';
+import { getAbsoluteDependencies } from '../../common/utils/dependencies';
 
 import dependenciesToQuery from './dependencies-to-query';
 

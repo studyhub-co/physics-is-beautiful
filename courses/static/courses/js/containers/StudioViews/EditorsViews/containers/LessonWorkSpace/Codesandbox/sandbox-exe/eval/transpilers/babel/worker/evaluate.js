@@ -4,7 +4,7 @@ import * as events from 'events';
 import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
-import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
+import detectOldBrowser from '../../../../../common/detect-old-browser';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};

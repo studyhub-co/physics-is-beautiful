@@ -1,5 +1,5 @@
 // @flow
-import { dispatch } from 'codesandbox-api';
+import { dispatch } from '../../../../../app/codesandbox-api/codesandbox';
 import { StyleTranspiler } from '../../../transpilers/style';
 import { type LoaderContext } from '../../../transpiled-module';
 import insertCss from '../../../transpilers/style/utils/insert-css';

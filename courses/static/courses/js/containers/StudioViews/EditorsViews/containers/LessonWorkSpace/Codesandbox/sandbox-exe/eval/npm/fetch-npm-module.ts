@@ -1,9 +1,9 @@
-import * as pathUtils from '@codesandbox/common/lib/utils/path';
-import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
+import * as pathUtils from '../../../common/utils/path';
+import { CSB_PKG_PROTOCOL } from '../../../common/utils/ci';
 import resolve from 'browser-resolve';
-import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
+// import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
-import delay from 'sandbox/utils/delay';
+// import delay from 'sandbox/utils/delay';
 import { Module } from '../entities/module';
 import Manager from '../manager';
 

@@ -1,5 +1,5 @@
-import _debug from '@codesandbox/common/lib/utils/debug';
-import { dispatch, actions } from 'codesandbox-api';
+import _debug from '../../../common/utils/debug';
+import { dispatch, actions } from '../../../app/codesandbox-api/codesandbox';
 
 import Transpiler, { TranspilerResult } from '.';
 import { parseWorkerError } from './utils/worker-error-handler';

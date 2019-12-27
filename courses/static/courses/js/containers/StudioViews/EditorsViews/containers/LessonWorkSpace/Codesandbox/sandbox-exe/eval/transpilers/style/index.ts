@@ -1,4 +1,4 @@
-import { dispatch } from 'codesandbox-api';
+import { dispatch } from '../../../../app/codesandbox-api/codesandbox';
 import Transpiler from '..';
 import { LoaderContext } from '../../transpiled-module';
 
