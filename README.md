@@ -9,19 +9,16 @@ Requires Python 3.5, recommended to run in a virtual environment (virtualenv, co
 pip install -r requirements.txt
 ```
 
-Requires MySql
+Requires PostgreSQL
 
 * install mysql:
 ```
-brew install mysql
+brew install postgresql
 ```
-* create a db named `pib_development` (either use mysql command line or sequel pro - like program: https://www.sequelpro.com, ex:
+* create a db named `pib`:  ex:
 
 ```
-mysql.server start
-mysql -h 127.0.0.1 -u root
-create database pib_development;
-exit;
+createdb pib
 ```
 
 * install npm:
@@ -35,45 +32,29 @@ npm install
 ```
 
 ## To run locally
+
 * Create a `.env` file in the root directory that contains just:
 ```
 DJANGO_SETTINGS_MODULE=pib.local_settings
 ``` 
 * Build the front-end
 ```
-./node_modules/.bin/webpack --config webpack.config.js
-```
-or
-```
-npm run prod
-```
-(if you want to reload automatically when changes are made, you can run):
-```
-./node_modules/.bin/webpack --config webpack.config.js --watch
-```
-(if you want to use redux-devtools (hotkey: ctrl+h), Redux DevTools chrome extension, redux-logger)
-```
-./node_modules/.bin/webpack --config webpack.config.js --watch --env.NODE_ENV=develop
-```
-or
-```
 npm run dev
 ```
+
+* Activate your virtual environment
 
 * Setup the db:
 ```
 ./manage.py migrate
 ```
+* Create an admin account by running `/manage.py createsuperuser`
 
-* Activate your virtual environment
 * Run:
 ```
 ./manage.py runserver
 ```
-
 * You should find the site running on `http://localhost:8000`
-
-* To create an admin account run `/manage.py createsuperuser`
 
 * To login to the admin account go to `http://localhost:8000/admin`
 
@@ -108,7 +89,8 @@ brew install awscli
 ```
 brew install awsebcli
 ```
-* run `eb init`
+* run `aws configure` 
+* run `eb init` (you'll need the access id/key 
 * on git `develop` branch run `eb use pib-dev`
 * on git `master` branch run `eb use pib-prod`
 
