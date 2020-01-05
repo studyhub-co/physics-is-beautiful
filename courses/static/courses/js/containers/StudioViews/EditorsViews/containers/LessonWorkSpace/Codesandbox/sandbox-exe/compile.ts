@@ -534,10 +534,12 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
+    console.log(`Transpilation start`);
 
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
+    console.log(`Transpilation time ${Date.now() - t}ms`);
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     dispatch({ type: 'status', status: 'evaluating' });
@@ -693,9 +695,9 @@ async function compile({
       }
     }
 
-    if (firstLoad) {
-      inject();
-    }
+    // if (firstLoad) {
+    //   inject();
+    // }
 
     const event = new Event('error');
     // @ts-ignore
@@ -729,7 +731,7 @@ async function compile({
       });
     }
   }
-  firstLoad = false;
+  // firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });
   dispatch({ type: 'done', compilatonError: hadError });

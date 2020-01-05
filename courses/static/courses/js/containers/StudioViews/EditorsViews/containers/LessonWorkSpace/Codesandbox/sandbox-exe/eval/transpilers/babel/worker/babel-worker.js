@@ -405,7 +405,7 @@ async function compile (code, customConfig, path, isV7) {
 
 try {
   self.importScripts(
-    process.env.NODE_ENV === 'development'
+    process.env.NODE_ENV === 'developxment'
       ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
       : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.3.4.min.js`
   )

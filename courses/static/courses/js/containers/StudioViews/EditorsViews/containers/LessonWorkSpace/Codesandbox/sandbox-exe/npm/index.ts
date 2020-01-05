@@ -60,7 +60,7 @@ export async function loadDependencies(
       loadedDependencyCombination = depQuery;
       manifest = data;
 
-      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
+      // setScreen({ type: 'loading', text: 'Transpiling Modules...' });
     }
   } else {
     manifest = null;

@@ -76,9 +76,13 @@ module.exports = {
   // stats: 'verbose',
 
   node: {
+    // codesandbox part
     setImmediate: false,
     module: 'empty',
-    child_process: 'empty'
+    child_process: 'empty',
+    // codesanbdox added
+    // net: 'empty',
+    // tls: 'empty'
   },
 
   module: {

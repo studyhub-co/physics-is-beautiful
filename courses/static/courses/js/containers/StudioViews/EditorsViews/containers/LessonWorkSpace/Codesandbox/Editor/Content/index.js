@@ -561,9 +561,6 @@ class EditorPreview extends React.Component {
                 }
               />
             </div>
-            {/* need for SplitPane */}
-            {/* TODO it will be preview panel */}
-            {/*<div></div>*/}
             <div
               style={{
                 display: 'flex',

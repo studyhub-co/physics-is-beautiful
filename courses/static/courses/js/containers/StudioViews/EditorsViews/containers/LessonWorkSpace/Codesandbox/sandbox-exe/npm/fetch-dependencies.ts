@@ -123,7 +123,7 @@ async function getDependencies(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(absoluteDependencies);
   const bucketDependencyUrl = dependenciesToBucketPath(absoluteDependencies);
 
-  setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+  // setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
   warmupPackager(`${NEW_PACKAGER_URL}/${dependencyUrl}`, 'POST');
   try {
     const bucketManifest = await callApi(
@@ -139,7 +139,7 @@ async function getDependencies(dependencies: Object) {
       'POST'
     );
 
-    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+    // setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
 
     return requestPackager(`${BUCKET_URL}/${url}`);
   }
@@ -154,7 +154,7 @@ export async function fetchDependencies(
 
     try {
       const result = await getDependencies(npmDependencies);
-      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
+      // setScreen({ type: 'loading', text: 'Transpiling Modules...' });
 
       return result;
     } catch (e) {

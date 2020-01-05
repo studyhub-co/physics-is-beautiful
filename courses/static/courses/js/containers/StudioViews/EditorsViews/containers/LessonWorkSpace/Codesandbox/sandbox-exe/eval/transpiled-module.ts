@@ -564,6 +564,9 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async transpile(manager: Manager) {
+    
+    console.log(this);
+    
     if (this.source) {
       return this;
     }
@@ -623,6 +626,7 @@ export default class TranspiledModule {
           manager,
           transpilerConfig.options || {}
         );
+        
         loaderContext.remainingRequests = transpilers
           .slice(i + 1)
           .map(transpiler => transpiler.transpiler.name)

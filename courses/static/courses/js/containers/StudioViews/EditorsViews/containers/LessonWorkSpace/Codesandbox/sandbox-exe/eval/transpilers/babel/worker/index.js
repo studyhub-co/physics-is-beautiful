@@ -2,9 +2,11 @@ import loadPolyfills from '../../../../../common/load-dynamic-polyfills'
 
 // require('app/config/polyfills')
 
-// TODO fix?
+// NB we no need fs now
+
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST}/static/browserfs5/browserfs.min.js`
+  `/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js`
+  // `${process.env.CODESANDBOX_HOST}/static/browserfs5/browserfs.min.js`
 )
 
 self.process = self.BrowserFS.BFSRequire('process')

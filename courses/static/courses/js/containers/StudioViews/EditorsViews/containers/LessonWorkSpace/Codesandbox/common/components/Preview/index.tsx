@@ -24,17 +24,16 @@ import { Container, StyledFrame, Loading } from './elements';
 import { Settings } from './types';
 
 // PIB import
-import compile, { getCurrentManager } from '../../../sandbox-exe/compile';
-
+// import compile, { getCurrentManager } from '../../../sandbox-exe/compile';
 // startup.js of iframe
 /* eslint-disable import/default */
-import BabelWorker from 'worker-loader?publicPath=/static/js/bundles/&name=babel-transpiler.[hash:8].worker.js!../../../sandbox-exe/eval/transpilers/babel/worker/index';
+// import BabelWorker from 'worker-loader?publicPath=/static/js/bundles/&name=babel-transpiler.[hash:8].worker.js!../../../sandbox-exe/eval/transpilers/babel/worker/index';
 /* eslint-enable import/default */
 
-window.babelworkers = [];
-for (let i = 0; i < 3; i++) {
-  window.babelworkers.push(new BabelWorker());
-}
+// window.babelworkers = [];
+// for (let i = 0; i < 3; i++) {
+//   window.babelworkers.push(new BabelWorker());
+// }
 // startup.js of iframe
 
 export type Props = {
@@ -79,7 +78,7 @@ const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
     process.env.NODE_ENV === 'development' || process.env.STAGING
       ? 'codesandbox.io'
       : host()
-  }${initialPath}`;
+  }${initialPath}`
 
 interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };
@@ -176,6 +175,7 @@ class BasePreview extends React.Component<Props, State> {
             this.props.initialPath || '',
             true
           ),
+          // urlInAddressBar: 'http://127.0.0.1:8000/material-frame/',
         },
         () => {
           requestAnimationFrame(() => {
@@ -201,6 +201,10 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   currentUrl = () => {
+    // TODO
+    return 'http://pib-dev.us-east-1.elasticbeanstalk.com/material-frame/';
+    return 'http://127.0.0.1:8000/material-frame/';
+
     const { url, sandbox } = this.props;
     if (url && !url.startsWith('/')) {
       // An absolute url is given, just return that
@@ -298,132 +302,95 @@ class BasePreview extends React.Component<Props, State> {
 
     const { type } = data;
 
-    //TODO
+    //  TODO: remove, too many issues with transpiling in the same origin
     // 1. compile sanbox
-    console.log(type);
-
-    switch (type) {
-       case 'pib_compile': {
-         this.pibExecuteCodeImmediately();
-         break;
-       }
-     }
-
-       // 2. upload to backend
-      // (TODO separete this:
-      // 2.1. compile online (codesandbox)
-      // 2.2. upload on Save
-      //  )
-     // 3. SSE message from server to refresh iframe
+    // console.log(type);
+    //
+    // switch (type) {
+    //    case 'pib_compile': {
+    //      this.pibExecuteCodeImmediately();
+    //      break;
+    //    }
+    //  }
+    // 2. upload to backend
+    // (TODO separete this:
+    // 2.1. compile online (codesandbox)
+    // 2.2. upload on Save
+    //  )
+    // 3. SSE message from server to refresh iframe
 
 
     //  !======== codesandbox iframe communication code below ======
-    //   // source will destroy after 1st touch
-    //   if (data.type === 'initialized' && source) {
-    //     registerFrame(source, this.currentUrl());
-    //
-    //     if (!this.state.frameInitialized && this.props.onInitialized) {
-    //       console.log('disposeInitializer');
-    //       this.disposeInitializer = this.props.onInitialized(this);
-    //     }
-    //
-    //     setTimeout(
-    //       () => {
-    //         // We show a screenshot of the sandbox (if available) on top of the preview if the frame
-    //         // hasn't loaded yet
-    //         this.setState({ showScreenshot: false });
-    //       },
-    //       this.serverPreview ? 0 : 600
-    //     );
-    //
-    //     this.executeCodeImmediately(true);
-    //   } else {
-    //     const { type } = data;
-    //
-    //     switch (type) {
-    //       case 'render': {
-    //         this.executeCodeImmediately();
-    //         break;
-    //       }
-    //       case 'urlchange': {
-    //         this.commitUrl(data.url, data.back, data.forward);
-    //         break;
-    //       }
-    //       case 'resize': {
-    //         if (this.props.onResize) {
-    //           this.props.onResize(data.height);
-    //         }
-    //         break;
-    //       }
-    //       case 'action': {
-    //         if (this.props.onAction) {
-    //           this.props.onAction({
-    //             ...data,
-    //             sandboxId: this.props.sandbox.id,
-    //           });
-    //         }
-    //
-    //         break;
-    //       }
-    //       case 'done': {
-    //         this.setState({ showScreenshot: false });
-    //         break;
-    //       }
-    //       default: {
-    //         break;
-    //       }
-    //     }
-    //   }
+      // source will destroy after 1st touch
+      if (data.type === 'initialized' && source) {
+        registerFrame(source, this.currentUrl());
+
+        if (!this.state.frameInitialized && this.props.onInitialized) {
+
+          this.disposeInitializer = this.props.onInitialized(this);
+        }
+
+        setTimeout(
+          () => {
+            // We show a screenshot of the sandbox (if available) on top of the preview if the frame
+            // hasn't loaded yet
+            this.setState({ showScreenshot: false });
+          },
+          this.serverPreview ? 0 : 600
+        );
+
+        this.executeCodeImmediately(true);
+      } else {
+        const { type } = data;
+
+        switch (type) {
+          case 'render': {
+            this.executeCodeImmediately();
+            break;
+          }
+          case 'urlchange': {
+            this.commitUrl(data.url, data.back, data.forward);
+            break;
+          }
+          case 'resize': {
+            if (this.props.onResize) {
+              this.props.onResize(data.height);
+            }
+            break;
+          }
+          case 'action': {
+            if (this.props.onAction) {
+              this.props.onAction({
+                ...data,
+                sandboxId: this.props.sandbox.id,
+              });
+            }
+
+            break;
+          }
+          case 'done': {
+            this.setState({ showScreenshot: false });
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+      }
     }
   };
 
-  pibExecuteCodeImmediately = (initialRender: boolean = false) => {
-    // We cancel the existing calls with executeCode to prevent concurrent calls,
-    // the only reason we do this is because executeCodeImmediately can be called
-    // directly as well
-    // @ts-ignore
-    this.executeCode.cancel();
-    const { settings } = this.props;
-    const { sandbox } = this.props;
-    const modulesToSend = this.getModulesToSend();
-
-    const data = {
-          type: 'compile',
-          version: 3,
-          entry: this.getRenderedModule(),
-          modules: modulesToSend,
-          sandboxId: sandbox.id,
-          externalResources: sandbox.externalResources,
-          isModuleView: !this.props.isInProjectView,
-          template: sandbox.template,
-          hasActions: Boolean(this.props.onAction),
-        };
-
-        console.log(data);
-        const result = compile(data);
-
-        // console.log(result)
-
-    // if (settings.clearConsoleEnabled && !this.serverPreview) {
-    //   // @ts-ignore Chrome behaviour
-    //   // console.clear('__internal__'); // eslint-disable-line no-console
-    //   dispatch({ type: 'clear-console' });
-    // }
-    // Do it here so we can see the dependency fetching screen if needed
-    // this.clearErrors();
-  //   if (settings.forceRefresh && !initialRender) {
-  //     this.handleRefresh();
-  //   } else {
-  //     if (!this.props.isInProjectView) {
-  //       dispatch({
-  //         type: 'evaluate',
-  //         command: `history.pushState({}, null, '/')`,
-  //       });
-  //     }
+  // pibExecuteCodeImmediately = (initialRender: boolean = false) => {
+  //   // We cancel the existing calls with executeCode to prevent concurrent calls,
+  //   // the only reason we do this is because executeCodeImmediately can be called
+  //   // directly as well
+  //   // @ts-ignore
+  //   this.executeCode.cancel();
+  //   const { settings } = this.props;
+  //   const { sandbox } = this.props;
+  //   const modulesToSend = this.getModulesToSend();
   //
-  //     const modulesToSend = this.getModulesToSend();
-  //     if (!this.serverPreview) {
-  //       dispatch({
+  //   const data = {
   //         type: 'compile',
   //         version: 3,
   //         entry: this.getRenderedModule(),
@@ -433,10 +400,46 @@ class BasePreview extends React.Component<Props, State> {
   //         isModuleView: !this.props.isInProjectView,
   //         template: sandbox.template,
   //         hasActions: Boolean(this.props.onAction),
-  //       });
-  //     }
-  //   }
-   };
+  //       };
+  //
+  //       console.log(data);
+  //       const result = compile(data);
+  //
+  //       console.log(result)
+  //
+  //   // if (settings.clearConsoleEnabled && !this.serverPreview) {
+  //   //   // @ts-ignore Chrome behaviour
+  //   //   // console.clear('__internal__'); // eslint-disable-line no-console
+  //   //   dispatch({ type: 'clear-console' });
+  //   // }
+  //   // Do it here so we can see the dependency fetching screen if needed
+  //   // this.clearErrors();
+  // //   if (settings.forceRefresh && !initialRender) {
+  // //     this.handleRefresh();
+  // //   } else {
+  // //     if (!this.props.isInProjectView) {
+  // //       dispatch({
+  // //         type: 'evaluate',
+  // //         command: `history.pushState({}, null, '/')`,
+  // //       });
+  // //     }
+  // //
+  // //     const modulesToSend = this.getModulesToSend();
+  // //     if (!this.serverPreview) {
+  // //       dispatch({
+  // //         type: 'compile',
+  // //         version: 3,
+  // //         entry: this.getRenderedModule(),
+  // //         modules: modulesToSend,
+  // //         sandboxId: sandbox.id,
+  // //         externalResources: sandbox.externalResources,
+  // //         isModuleView: !this.props.isInProjectView,
+  // //         template: sandbox.template,
+  // //         hasActions: Boolean(this.props.onAction),
+  // //       });
+  // //     }
+  // //   }
+  //  };
 
   executeCode = () => {
     requestAnimationFrame(() => {
@@ -444,11 +447,11 @@ class BasePreview extends React.Component<Props, State> {
     });
   };
 
-  pibExecuteCode = () => {
-    requestAnimationFrame(() => {
-      this.pibExecuteCodeImmediately();
-    });
-  };
+  // pibExecuteCode = () => {
+  //   requestAnimationFrame(() => {
+  //     this.pibExecuteCodeImmediately();
+  //   });
+  // };
 
 
   getRenderedModule = () => {
@@ -488,50 +491,50 @@ class BasePreview extends React.Component<Props, State> {
     return modulesToSend;
   };
 
-  // executeCodeImmediately = (initialRender: boolean = false) => {
-  //   // We cancel the existing calls with executeCode to prevent concurrent calls,
-  //   // the only reason we do this is because executeCodeImmediately can be called
-  //   // directly as well
-  //   // @ts-ignore
-  //
-  //   this.executeCode.cancel();
-  //   const { settings } = this.props;
-  //   const { sandbox } = this.props;
-  //
-  //   if (settings.clearConsoleEnabled && !this.serverPreview) {
-  //     // @ts-ignore Chrome behaviour
-  //     // console.clear('__internal__'); // eslint-disable-line no-console
-  //     dispatch({ type: 'clear-console' });
-  //   }
-  //
-  //   // Do it here so we can see the dependency fetching screen if needed
-  //   this.clearErrors();
-  //   if (settings.forceRefresh && !initialRender) {
-  //     this.handleRefresh();
-  //   } else {
-  //     if (!this.props.isInProjectView) {
-  //       dispatch({
-  //         type: 'evaluate',
-  //         command: `history.pushState({}, null, '/')`,
-  //       });
-  //     }
-  //
-  //     const modulesToSend = this.getModulesToSend();
-  //     if (!this.serverPreview) {
-  //       dispatch({
-  //         type: 'compile',
-  //         version: 3,
-  //         entry: this.getRenderedModule(),
-  //         modules: modulesToSend,
-  //         sandboxId: sandbox.id,
-  //         externalResources: sandbox.externalResources,
-  //         isModuleView: !this.props.isInProjectView,
-  //         template: sandbox.template,
-  //         hasActions: Boolean(this.props.onAction),
-  //       });
-  //     }
-  //   }
-  // };
+  executeCodeImmediately = (initialRender: boolean = false) => {
+    // We cancel the existing calls with executeCode to prevent concurrent calls,
+    // the only reason we do this is because executeCodeImmediately can be called
+    // directly as well
+    // @ts-ignore
+
+    this.executeCode.cancel();
+    const { settings } = this.props;
+    const { sandbox } = this.props;
+
+    if (settings.clearConsoleEnabled && !this.serverPreview) {
+      // @ts-ignore Chrome behaviour
+      // console.clear('__internal__'); // eslint-disable-line no-console
+      dispatch({ type: 'clear-console' });
+    }
+
+    // Do it here so we can see the dependency fetching screen if needed
+    this.clearErrors();
+    if (settings.forceRefresh && !initialRender) {
+      this.handleRefresh();
+    } else {
+      if (!this.props.isInProjectView) {
+        dispatch({
+          type: 'evaluate',
+          command: `history.pushState({}, null, '/')`,
+        });
+      }
+
+      const modulesToSend = this.getModulesToSend();
+      if (!this.serverPreview) {
+        dispatch({
+          type: 'compile',
+          version: 3,
+          entry: this.getRenderedModule(),
+          modules: modulesToSend,
+          sandboxId: sandbox.id,
+          externalResources: sandbox.externalResources,
+          isModuleView: !this.props.isInProjectView,
+          template: sandbox.template,
+          hasActions: Boolean(this.props.onAction),
+        });
+      }
+    }
+  };
 
   setIframeElement = (el: HTMLIFrameElement) => {
     if (el) {

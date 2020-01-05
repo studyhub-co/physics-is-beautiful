@@ -107,6 +107,7 @@ db.sqlite3
 # dev bundles
 static/bundles/
 
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
@@ -115,6 +116,10 @@ static/bundles/
 # pycharm
 library_test
 .idea
+
+# exclude source of SPA
+/courses/static/courses/js/
+!/courses/static/courses/js/codesandbox-apps/
 
 # emacs
 *~

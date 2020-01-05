@@ -22,7 +22,7 @@ import fetchModule, {
 } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
-import TestRunner from './tests/jest-lite';
+// import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import { packageFilter } from './utils/resolve-utils';
 
@@ -117,7 +117,7 @@ export default class Manager {
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
   hmrStatusChangeListeners: Set<(status: HMRStatus) => void>;
-  testRunner: TestRunner;
+  // testRunner: TestRunner;
   isFirstLoad: boolean;
 
   fileResolver: IFileResolver | undefined;
@@ -157,7 +157,7 @@ export default class Manager {
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
-    this.testRunner = new TestRunner(this);
+    // this.testRunner = new TestRunner(this);
 
     getGlobal().manager = this;
     if (process.env.NODE_ENV === 'development') {
@@ -478,7 +478,10 @@ export default class Manager {
     transpiledModule.setIsTestFile(isTestFile);
 
     const result = await transpiledModule.transpile(this);
+
     this.getTranspiledModules().forEach(t => t.postTranspile(this));
+    
+    console.log(result);
 
     return result;
   }

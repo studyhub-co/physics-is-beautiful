@@ -44,7 +44,6 @@ class PreviewComponent extends Component<Props, State> {
     const disposeHandleCodeChange = this.props.reaction(
       ({ editor }) => String(editor.currentSandbox.modules.map(m => m.code)),
       () => {
-        console.log('disposeHandleCodeChange');
         this.handleCodeChange(preview)
       }
     )
@@ -106,7 +105,7 @@ class PreviewComponent extends Component<Props, State> {
     )
 
     // pib code
-    preview.pibExecuteCodeImmediately()
+    // preview.pibExecuteCodeImmediately()
 
     // codesandbox code
     // if (!isServer && settings.livePreviewEnabled) {
@@ -116,6 +115,8 @@ class PreviewComponent extends Component<Props, State> {
     //     preview.executeCode()
     //   }
     // }
+
+    preview.executeCode()
   };
 
   handleStructureChange = preview => {

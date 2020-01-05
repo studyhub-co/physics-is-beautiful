@@ -10,11 +10,13 @@ import codesandbox from '../common/themes/codesandbox.json'
 import { MenuBar } from './MenuBar'
 
 // import ForkFrozenSandboxModal from './ForkFrozenSandboxModal'
-import { Container, Left } from './elements'
+import { Container } from './elements'
+import { HeaderContainer, HeaderLeft } from './elements'
 import { Workspace } from './Workspace'
 import Content from './Content'
 // import { Header } from './Header'
 // import { Navigation } from './Navigation'
+
 import getVSCodeTheme from './utils/get-vscode-theme'
 
 import * as fs from 'fs'
@@ -104,8 +106,14 @@ class ContentSplit extends React.Component {
           style={{ lineHeight: 'initial' }}
           className='monaco-workbench'
         >
-          <div><MenuBar/></div>
-          {/*<Left><MenuBar/></Left>*/}
+          {/* <HeaderContainer> */}
+          {/* <HeaderLeft> */}
+          <div>
+            <MenuBar/>
+          </div>
+          {/* </HeaderLeft> */}
+          {/* </HeaderContainer> */}
+          {/* <div><MenuBar/></div> */}
           {/* <Header zenMode={store.preferences.settings.zenMode} /> */}
           <Fullscreen style={{ width: 'initial' }}>
             {/* {!hideNavigation && ( */}
