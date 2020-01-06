@@ -233,4 +233,5 @@
 /* CodeSandbox Change */
 .context-view.monaco-menu-container {
   font-size: 0.75rem;
+  /*left: 0px!important;*/
 }
