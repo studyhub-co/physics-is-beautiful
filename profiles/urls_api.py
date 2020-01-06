@@ -8,7 +8,7 @@ app_name = 'profiles'  # ????
 
 router = routers.DefaultRouter()
 
-router.register(r'', ProfileViewSet, base_name='profiles')
+router.register(r'', ProfileViewSet, basename='profiles')
 
 urlpatterns = [
     url(r'me/$', ProfileViewSetMe.as_view({'get': 'retrieve', 'patch': 'partial_update'})),

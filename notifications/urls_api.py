@@ -6,7 +6,7 @@ from .apis import NotificationViewSet
 
 
 router = routers.DefaultRouter()
-router.register(r'', NotificationViewSet, base_name='notifications')
+router.register(r'', NotificationViewSet, basename='notifications')
 
 
 urlpatterns = router.urls

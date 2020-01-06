@@ -12,12 +12,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .models import Course, Unit, Module, Lesson, Material
+from .models import Course, Unit, Module, Lesson, Material, MaterialProblemType
 from .services import get_progress_service, LessonLocked, LessonProgress
 
 from .serializers import MaterialSerializer, UserResponseSerializer, \
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
-    CourseSerializer, LessonProgressSerializer
+    CourseSerializer, LessonProgressSerializer, MaterialMaterialProblemTypeSerializer
+
+from .api_permissions import ReadOnly
 
 from .djeddit import create_thread
 
@@ -27,6 +29,14 @@ def check_classroom_progress(service, user):
         from classroom.models import AssignmentProgress
 
         AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
+
+
+class MaterialProblemTypeViewSet(ModelViewSet):
+
+    serializer_class = MaterialMaterialProblemTypeSerializer
+    queryset = MaterialProblemType.objects.all()
+    permission_classes = [IsAuthenticated|ReadOnly]
+    lookup_field = 'uuid'
 
 
 class MaterialViewSet(ModelViewSet):
@@ -143,8 +153,6 @@ class LessonViewSet(ModelViewSet):
 # @permission_classes([AllowAny])
 # def get_unit_conversion_units(request):
 #     return Response(UnitConversion.UnitConversionUnits)
-
-
 # @api_view(['POST'])
 # @permission_classes([AllowAny])
 # def game_success(request, uuid):

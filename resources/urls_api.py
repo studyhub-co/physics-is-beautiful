@@ -7,12 +7,12 @@ from .apis import ResourceViewSet, ResourceProblemsViewSet, TextBookSolutionsVie
 
 router = routers.DefaultRouter()
 # text book resources
-router.register(r'problems', ResourceProblemsViewSet, base_name='problems')
-router.register(r'solutions', TextBookSolutionsViewSet, base_name='solutions')
-router.register(r'chapters', TextBookChaptersViewSet, base_name='chapters')
-# router.register(r'ads', TextBookAdViewSet, base_name='ads')
+router.register(r'problems', ResourceProblemsViewSet, basename='problems')
+router.register(r'solutions', TextBookSolutionsViewSet, basename='solutions')
+router.register(r'chapters', TextBookChaptersViewSet, basename='chapters')
+# router.register(r'ads', TextBookAdViewSet, basename='ads')
 # all resources
-router.register(r'', ResourceViewSet, base_name='resources')
+router.register(r'', ResourceViewSet, basename='resources')
 
 urlpatterns = router.urls
 

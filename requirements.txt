@@ -13,7 +13,7 @@ django-s3-storage==0.12.4
 django-webpack-loader==0.6.0
 django-webtest==1.8.0
 django-filter==2.0.0
-djangorestframework==3.8.2
+djangorestframework==3.11.0
 djangorestframework-expander==0.2.3
 factory-boy==2.8.1
 gunicorn==19.6.0
@@ -60,7 +60,7 @@ django-cors-headers==2.4.0
 django-model-utils==3.1.2
 django-user_agents==0.3.2
 future==0.17.1
--e git+https://github.com/physics-is-beautiful/django-react-djeddit.git@0dc6b23ca89620b4a44e027dd2af3ef7e96533ef#egg=django-react-djeddit
+-e git+https://github.com/physics-is-beautiful/django-react-djeddit.git@a9ce8e1c220fe7de725851a47b5bbbd937483ad6#egg=django-react-djeddit
 django-taggit==1.1.0
 django-taggit-serializer==0.1.7
 django-npm==1.0.0

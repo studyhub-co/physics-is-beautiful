@@ -5,6 +5,6 @@ from .apis import ReputationActionViewSet
 
 
 router = routers.DefaultRouter()
-router.register(r'', ReputationActionViewSet, base_name='reputation_action')
+router.register(r'', ReputationActionViewSet, basename='reputation_action')
 
 urlpatterns = router.urls
