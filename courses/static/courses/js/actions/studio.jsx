@@ -10,7 +10,7 @@ import history from '../history'
 // TODO replace all $.ajax with request
 import request from '../utils/request'
 
-const API_PREFIX = '/api/v1/studio/'
+export const API_PREFIX = '/api/v1/studio/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
 
 var getCookie = Cookies.get

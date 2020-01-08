@@ -260,3 +260,7 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
+
+
+class MaterialMaterialProblemTypeSerializer(BaseSerializer):
+    pass

@@ -3,8 +3,16 @@ import { SandboxAPIResponse } from './types'
 import { transformSandbox } from '../utils/sandbox'
 
 import { camelizeKeys, decamelizeKeys } from 'humps'
+import apiFactory, { Api, ApiConfig } from './apiFactory';
+
+import { API_PREFIX } from '../../../../../../../../../../actions/studio'
+
+let api: Api;
 
 export default {
+  initialize(config: ApiConfig) {
+    api = apiFactory(config);
+  },
   async getSandbox(id: string): Promise<Sandbox> {
       // const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
 
@@ -82,5 +90,19 @@ export default {
       // We need to add client side properties for tracking
       return transformSandbox(camelizeKeys(sandbox));
     },
+
+  async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
+    // const url = id.includes('/')
+    //   ? `/sandboxes/fork/${id}`
+    //   : `/sandboxes/${id}/fork`;
+
+    const url = `${API_PREFIX}/material-type/${id}/fork`;
+
+    console.log(body);
+    
+    // const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
+
+    return transformSandbox(sandbox);
+  },
 
 };

@@ -3,6 +3,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import Edit from '@material-ui/icons/Edit'
+import Slideshow from '@material-ui/icons/Slideshow'
+
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
 import {
@@ -28,12 +34,16 @@ import Menu from './Menu/Menu'
 // import Editor from './Codesandbox/Editor/index'
 import asyncEditor from './Codesandbox/Editor/index'
 
+
 export class Lesson extends React.Component {
   constructor (props) {
     super(props)
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleMaterialDroppedBefore = this.handleMaterialDroppedBefore.bind(this)
-    this.state = {editor: <div></div>}
+    this.state = {
+      editor: <div></div>,
+      layout: 'present'
+    }
     // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
   }
@@ -86,6 +96,13 @@ export class Lesson extends React.Component {
 
     const editorComponent = this.state.editor
 
+    const handleLayoutChange = name => event => {
+      this.setState({
+        ...this.state,
+        [name]: event.target.value
+      })
+    }
+
     return (
       <Grid container>
         <Grid container item xs={12}>
@@ -95,9 +112,10 @@ export class Lesson extends React.Component {
               onChange={this.props.onImageChange}
             />
           </Grid>
-          <Grid item xs={11}>
+          <Grid item xs={8}>
             <div>
               <h1>
+                {/* TODO add problem type name */}
                 <EditableLabel
                   value={this.props.name}
                   onChange={this.props.onNameChange}
@@ -110,6 +128,24 @@ export class Lesson extends React.Component {
               <Menu />
             </div>
           </Grid>
+          <Grid item xs={3}>
+            {/* <FormControl variant='outlined' className={classes.formControl} */}
+            {/* <InputLabel ref={inputLabel} htmlFor='outlined-age-native-simple'> */}
+            {/* Age */}
+            {/* </InputLabel> */}
+            <FormControl variant='outlined'>
+              <Select
+                value={this.state.layout}
+                onChange={handleLayoutChange('layout')}
+              >
+                <MenuItem value={'present'}>
+                  <Slideshow /> Present</MenuItem>
+                <MenuItem value={'edit'}>
+                  <Edit /> Edit mode
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
         {/* todo make styles */}
         <Grid item xs={12}
@@ -121,7 +157,7 @@ export class Lesson extends React.Component {
           <ToolBar />
         </Grid>
         <Grid container item xs={12} spacing={4}>
-          <Grid item xs={2}>
+          { this.state.layout === 'present' && <Grid item xs={2}>
             <div style={{ display: 'flex', maxHeight: '70vh', flexDirection: 'column' }}>
               <div
                 style={{ overflowY: 'auto',
@@ -152,14 +188,14 @@ export class Lesson extends React.Component {
                 {navMaterials}
               </div>
             </div>
-          </Grid>
-          <Grid item xs={10}>
-            {/* TODO present modes */}
-            {/* <MaterialContainer uuid={this.props.currentMaterial} /> */}
+          </Grid> }
+          <Grid
+            item xs={12}
+            style={{
+              display: this.state.layout === 'edit' ? 'flex' : 'none',
+              height: '100vh'
+            }}>
             {editorComponent}
-            {/*<div className='monaco-shell'>*/}
-              {/*{editorComponent}*/}
-            {/*</div>*/}
           </Grid>
         </Grid>
       </Grid>

@@ -108,11 +108,6 @@ class MonacoEditor extends React.PureComponent {
           instantiationService.invokeFunction(accessor => {
             const EditorPart = accessor.get(IEditorGroupsService)
 
-            // TODO editorPart!
-
-            // console.log('editorPart');
-            // console.log(EditorPart);
-
             if (editorPart) {
               editorPart.parent = part
               editorPart = EditorPart

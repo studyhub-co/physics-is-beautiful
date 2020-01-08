@@ -145,7 +145,8 @@ var parsers = {
   }
 };
 
-importScripts("/static/js/prettier/1.16.4/standalone.js");
+// importScripts("/static/js/prettier/1.16.4/standalone.js");
+importScripts("/proxy/static/courses/js/codesandbox-apps/prettier/1.16.4/standalone.js");
 
 self.onmessage = function(event) {
   const message = handleMessage(event.data);

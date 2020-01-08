@@ -1,6 +1,6 @@
 // export const BASE_URL = '/'
 export const BASE_URL = '/beta/'
-export const API_PREFIX = '/api/v1/resources/'
+export const API_PREFIX = '/api/v1/'
 export const API_DJEDDIT_PREFIX = '/api/v1/djeddit/'
 export const API_PROFILE_PREFIX = '/api/v1/profiles/'
 

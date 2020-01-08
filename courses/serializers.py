@@ -145,10 +145,6 @@ class LessonSerializer(BaseSerializer):
             return ''
 
 
-class MaterialMaterialProblemTypeSerializer(BaseSerializer):
-    pass
-
-
 class MaterialSerializer(BaseSerializer):
     # unit_conversion = serializers.SerializerMethodField()
     lesson = LessonSerializer()

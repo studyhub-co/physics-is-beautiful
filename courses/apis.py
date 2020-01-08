@@ -17,9 +17,7 @@ from .services import get_progress_service, LessonLocked, LessonProgress
 
 from .serializers import MaterialSerializer, UserResponseSerializer, \
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
-    CourseSerializer, LessonProgressSerializer, MaterialMaterialProblemTypeSerializer
-
-from .api_permissions import ReadOnly
+    CourseSerializer, LessonProgressSerializer
 
 from .djeddit import create_thread
 
@@ -29,14 +27,6 @@ def check_classroom_progress(service, user):
         from classroom.models import AssignmentProgress
 
         AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
-
-
-class MaterialProblemTypeViewSet(ModelViewSet):
-
-    serializer_class = MaterialMaterialProblemTypeSerializer
-    queryset = MaterialProblemType.objects.all()
-    permission_classes = [IsAuthenticated|ReadOnly]
-    lookup_field = 'uuid'
 
 
 class MaterialViewSet(ModelViewSet):

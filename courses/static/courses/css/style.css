@@ -815,3 +815,9 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
     background: #b7cfe0;
     cursor: pointer;
 }
+
+
+/* vscode editor fix */
+/*.monaco-workbench {*/
+    /*position: relative!important;*/
+/*}*/

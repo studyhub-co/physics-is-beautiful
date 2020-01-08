@@ -6,10 +6,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
-from courses.models import Course, Unit, Module, Lesson, Material
+from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType
 
 from .serializers import CourseSerializer, UnitSerializer, \
-    ModuleSerializer, LessonSerializer, MaterialSerializer
+    ModuleSerializer, LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer
 
 from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
     IsModuleOwnerOrCollaborator, \
@@ -179,3 +179,10 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
                                        Q(lesson__module__unit__course__collaborators=self.request.user.profile)).\
                                 distinct()
 
+
+class MaterialProblemTypeViewSet(ModelViewSet):
+
+    serializer_class = MaterialMaterialProblemTypeSerializer
+    queryset = MaterialProblemType.objects.all()
+    # permission_classes = [IsAuthenticated|ReadOnly]
+    lookup_field = 'uuid'
