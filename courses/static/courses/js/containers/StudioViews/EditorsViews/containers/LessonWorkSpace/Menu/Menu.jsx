@@ -6,12 +6,12 @@ import Theme from '../Styles'
 import FileMenu from './FileMenu.jsx'
 import ViewMenu from './ViewMenu.jsx'
 
-function WorkspaceMenu () {
+function WorkspaceMenu (props) {
   return (
     <Theme>
       {/* TODO hide menu for Mobile */}
       <FileMenu />
-      <ViewMenu />
+      <ViewMenu {...props}/>
     </Theme>
   )
 }

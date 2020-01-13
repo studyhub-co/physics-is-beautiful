@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Q, Count
 
 from rest_framework.viewsets import ModelViewSet
@@ -6,14 +8,15 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
-from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType
+from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
+    SANDOX_TEMPLATE_REACT_JSON_STRING
 
-from .serializers import CourseSerializer, UnitSerializer, \
-    ModuleSerializer, LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer
+from .serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
+    LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer
 
 from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
-    IsModuleOwnerOrCollaborator, \
-    IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator
+    IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator,\
+    IsMaterialProblemTypeAuthor
 
 
 # TODO add pagiantion to api views! or block load listview for Units/Lessons at least
@@ -181,8 +184,30 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
 
 
 class MaterialProblemTypeViewSet(ModelViewSet):
-
+    permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
     serializer_class = MaterialMaterialProblemTypeSerializer
     queryset = MaterialProblemType.objects.all()
     # permission_classes = [IsAuthenticated|ReadOnly]
     lookup_field = 'uuid'
+
+    # fork sandbox/MaterialProblemType
+    @action(methods=['POST'],
+            detail=True,
+            permission_classes=[permissions.IsAuthenticated, ], )
+    def fork(self, request, *args, **kwargs):
+
+        forked_material_problem_type = None
+
+        if kwargs['uuid'] == 'new':
+            forked_material_problem_type = self.queryset.create(
+                name='Material problem type name',
+                author=request.user.profile,  # TODO create profile getter
+                data=json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+            )
+        else:
+            # TODO get base sandbox
+            pass
+
+        serializer = self.get_serializer(forked_material_problem_type)
+        return Response(serializer.data)
+

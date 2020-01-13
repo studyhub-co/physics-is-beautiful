@@ -289,9 +289,9 @@ export const forkSandbox: AsyncAction<{
   sandboxId: string;
   body?: { collectionId: string | undefined };
 }> = async ({ state, effects, actions }, { sandboxId: id, body }) => {
-  const templateDefinition = getTemplateDefinition(
-    state.editor.currentSandbox ? state.editor.currentSandbox.template : null
-  );
+  // const templateDefinition = getTemplateDefinition(
+  //   state.editor.currentSandbox ? state.editor.currentSandbox.template : null
+  // );
 
   // if (!state.isLoggedIn && templateDefinition.isServer) {
   //   effects.analytics.track('Show Server Fork Sign In Modal');

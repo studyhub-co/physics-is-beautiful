@@ -2,6 +2,7 @@ from rest_framework import permissions
 
 from courses.models import Course, Unit, Module, Lesson, Material
 
+
 class IsOwnerOrCollaboratorBase(permissions.BasePermission):
     root_path = None
     owner_field = 'author'
@@ -58,4 +59,19 @@ class IsMaterialOwnerOrCollaborator(IsOwnerOrCollaboratorBase):
     owner_field = 'author'
     collaborators_field = 'collaborators'
     parent_model = Lesson
+
+
+class IsMaterialProblemTypeAuthor(IsOwnerOrCollaboratorBase):
+    owner_field = 'author'
+
+    # only author can change
+    def has_object_permission(self, request, view, obj):
+        if request.method not in ('POST', 'PUT', 'PATCH'):
+            return True
+
+        if not hasattr(request.user, 'profile'):
+            # user has no profile data
+            return False
+
+        return getattr(obj, self.owner_field) == request.user.profile
 

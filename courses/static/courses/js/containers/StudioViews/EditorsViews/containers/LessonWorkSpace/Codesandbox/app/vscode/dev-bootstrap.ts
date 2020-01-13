@@ -469,7 +469,7 @@ export default function(isVSCode = false, requiredModule?: string[]) {
     // let host = 'https://assets-dev.physicsisbeautiful.com/'
     // already have host
     // let host = ''
-    console.log(host+this.getResolvedPath());
+    // console.log(host+this.getResolvedPath());
     dest[this.modulePrefix] = host+this.getResolvedPath();
   };
   Component.prototype.generateUrlForPath = function(pathName) {

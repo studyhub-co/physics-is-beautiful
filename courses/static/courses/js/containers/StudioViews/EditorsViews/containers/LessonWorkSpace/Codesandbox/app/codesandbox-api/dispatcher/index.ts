@@ -112,8 +112,8 @@ function eventListener(e: MessageEvent) {
 
   if (data && data.codesandbox && (parentOrigin === null || e.origin === parentOrigin)) {
     
-    console.log('notifyListeners');
-    console.log(window.location.href);
+    // console.log('notifyListeners');
+    // console.log(window.location.href);
     
     notifyListeners(data, e.source);
   }

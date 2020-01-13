@@ -39,6 +39,7 @@ let api: Api;
 export default {
   initialize(config: ApiConfig) {
     api = apiFactory(config);
+    alert(api);
   },
   async getAuthToken(): Promise<string> {
     const response = await api.get<{ token: string }>('/auth/auth-token');

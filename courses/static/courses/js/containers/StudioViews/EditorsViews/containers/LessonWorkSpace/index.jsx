@@ -29,20 +29,21 @@ import MaterialThumbnail from './MaterialThumbnail'
 import MaterialContainer from '../../containers/material'
 
 import ToolBar from './Menu/ToolBar'
-import Menu from './Menu/Menu'
+import WorkspaceMenu from './Menu/Menu'
 
 // import Editor from './Codesandbox/Editor/index'
 import asyncEditor from './Codesandbox/Editor/index'
-
 
 export class Lesson extends React.Component {
   constructor (props) {
     super(props)
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleMaterialDroppedBefore = this.handleMaterialDroppedBefore.bind(this)
+    this.onMenuItemChange = this.onMenuItemChange.bind(this)
+
     this.state = {
       editor: <div></div>,
-      layout: 'present'
+      layout: 'present' // TODO load problem type name in edit mode
     }
     // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
@@ -69,6 +70,16 @@ export class Lesson extends React.Component {
 
   handleMaterialDroppedBefore (maaterialUuid, beforeMaterialUuid) {
     this.props.moveMaterial(maaterialUuid, beforeMaterialUuid)
+  }
+
+  onMenuItemChange (e, menuId) {
+    // main menu click
+    if (menuId === 'view.present') {
+      this.setState({layout: 'present'})
+    }
+    if (menuId === 'view.edit') {
+      this.setState({layout: 'edit'})
+    }
   }
 
   render () {
@@ -125,7 +136,7 @@ export class Lesson extends React.Component {
               </h1>
             </div>
             <div>
-              <Menu />
+              <WorkspaceMenu onChange={this.onMenuItemChange}/>
             </div>
           </Grid>
           <Grid item xs={3}>

@@ -21,7 +21,7 @@ self.addEventListener('message', async e => {
     if (data.$event === 'init') {
       debug('Initializing BrowserFS');
       console.log('Initializing BrowserFS ext host start');
-      console.log(EXTENSIONS_LOCATION);
+      // console.log(EXTENSIONS_LOCATION);
 
       await initializeBrowserFS({
         syncSandbox: true,

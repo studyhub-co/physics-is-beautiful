@@ -96,12 +96,11 @@ export default {
     //   ? `/sandboxes/fork/${id}`
     //   : `/sandboxes/${id}/fork`;
 
-    const url = `${API_PREFIX}/material-type/${id}/fork`;
+    // console.trace();
 
-    console.log(body);
-    
-    // const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
+    const url = `/studio/material-problem-type/${id}/fork/`;
 
+    const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
     return transformSandbox(sandbox);
   },
 

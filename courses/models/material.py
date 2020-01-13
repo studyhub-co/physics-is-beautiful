@@ -39,6 +39,7 @@ class Material(BaseItemModel):
         MaterialProblemType, related_name='materials', on_delete=models.CASCADE,
         null=True, blank=True  # we can create empty Material wo type selected
                                               )
+    # this is a data that uses by material_problem_type
     data = JSONField(default=dict)  # only Postgresql support!
 
     thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True,

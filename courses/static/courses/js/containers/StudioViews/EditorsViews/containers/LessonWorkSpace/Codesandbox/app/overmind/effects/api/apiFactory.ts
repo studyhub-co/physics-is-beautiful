@@ -56,7 +56,8 @@ export default (config: {
     try {
       showError(newError);
     } catch (e) {
-      console.error(e);
+      // console.error(e);
+      console.log(e);
     }
 
     throw newError;

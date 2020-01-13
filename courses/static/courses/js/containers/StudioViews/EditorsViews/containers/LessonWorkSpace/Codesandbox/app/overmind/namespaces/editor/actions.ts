@@ -176,6 +176,8 @@ export const codeChanged: Action<{
 }> = ({ effects, state, actions }, { code, moduleShortid, noLive }) => {
   // effects.analytics.trackOnce('Change Code');
 
+  // console.log(state.editor.currentSandbox);
+
   const module = state.editor.currentSandbox.modules.find(
     m => m.shortid === moduleShortid
   );
@@ -198,6 +200,7 @@ export const codeChanged: Action<{
 export const saveClicked: AsyncAction = withOwnedSandbox(
   async ({ state, effects, actions }) => {
     const sandbox = state.editor.currentSandbox;
+
     const currentlyChangedModuleShortids = state.editor.changedModuleShortids.slice();
 
     try {

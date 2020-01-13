@@ -14,7 +14,7 @@ from taggit_serializer.serializers import (TagListSerializerField,
 
 from expander import ExpanderSerializerMixin
 
-from courses.models import Course, Unit, Module, Lesson, Material
+from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType
 # from courses.models import MySQL
 from courses.serializers import BaseSerializer
 
@@ -263,4 +263,11 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
 
 
 class MaterialMaterialProblemTypeSerializer(BaseSerializer):
-    pass
+    class Meta:
+        model = MaterialProblemType
+        fields = ['uuid', 'name', 'data', 'created_on', 'updated_on']
+        extra_kwargs = {
+            'url': {'lookup_field': 'uuid'}
+        }
+
+

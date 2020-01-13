@@ -25,18 +25,21 @@ export const onInitialize: OnInitialize = (
 
   effects.keybindingManager.initialize(overmindInstance);
 
-  // effects.api.initialize({
-  //   // provideJwtToken,
-  //   onError(error) {
-  //     effects.notificationToast.error(error);
-  //   },
-  //   getParsedConfigurations() {
-  //     return state.editor.parsedConfigurations;
-  //   },
-  //   getModulesByPath() {
-  //     return state.editor.modulesByPath;
-  //   },
-  // });
+
+  effects.api.initialize({
+    // provideJwtToken,
+    provideJwtToken:  () => '',
+    onError(error) {
+      // effects.notificationToast.error(error);
+      console.log(error);
+    },
+    getParsedConfigurations() {
+      return state.editor.parsedConfigurations;
+    },
+    getModulesByPath() {
+      return state.editor.modulesByPath;
+    },
+  });
 
   // effects.notifications.initialize({
   //   provideSocket() {

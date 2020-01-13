@@ -6,8 +6,9 @@ import Edit from '@material-ui/icons/Edit'
 import Slideshow from '@material-ui/icons/Slideshow'
 
 import { StyledListItemIcon, StyledMenu, StyledMenuItem } from './StyledComponents'
+import PropTypes from 'prop-types'
 
-export default function ViewMenu () {
+export default function ViewMenu ({onChange}) {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = event => {
@@ -16,6 +17,11 @@ export default function ViewMenu () {
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleMenuClick = (event, menuId) => {
+    onChange(event.currentTarget, menuId)
+    handleClose()
   }
 
   return (
@@ -35,13 +41,13 @@ export default function ViewMenu () {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem>
+        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.present')}>
           <StyledListItemIcon>
             <Slideshow />
           </StyledListItemIcon>
           <ListItemText primary='Present' />
         </StyledMenuItem>
-        <StyledMenuItem>
+        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.edit')}>
           <StyledListItemIcon>
             <Edit />
           </StyledListItemIcon>
@@ -53,5 +59,5 @@ export default function ViewMenu () {
 }
 
 ViewMenu.propTypes = {
-
+  onChange: PropTypes.func.isRequired
 }
