@@ -74,7 +74,9 @@ export const saveCode: AsyncAction<{
   moduleShortid: string;
   cbID?: string | null;
 }> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
-  effects.analytics.track('Save Code');
+  // effects.analytics.track('Save Code');
+  
+  console.log('Save Code');
 
   const sandbox = state.editor.currentSandbox;
   const module = sandbox.modules.find(m => m.shortid === moduleShortid);
