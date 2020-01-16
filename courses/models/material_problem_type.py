@@ -6,8 +6,10 @@ from .material_problem_type_sandbox import MaterialProblemTypeSandbox
 
 
 class MaterialProblemType(MaterialProblemTypeSandbox):  # MaterialProblemTypeSandbox ~= sanbox data
-    pass
     # sanbox reverse field (see material_sandbox)
     # TODO we will add PIB realted fields
+
+    class Meta:
+        proxy = True
 
 

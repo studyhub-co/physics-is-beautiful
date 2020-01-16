@@ -1,4 +1,4 @@
-import uuid
+# import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import JSONField
@@ -122,6 +122,8 @@ SANDOX_TEMPLATE_REACT_JSON_STRING = r"""{
 """
 
 
+# is seems source_id should be equal MaterialProblemTypeSandbox.id
+
 class MaterialProblemTypeSandbox(BaseItemModel):
     # reverse field (see material_problem_type)
 
@@ -132,7 +134,7 @@ class MaterialProblemTypeSandbox(BaseItemModel):
     # "user_liked": false,
 
     # "git": null,
-    git = models.URLField(default=None)
+    git = models.URLField(null=True, blank=True)
 
     # "external_resources": [
     # ],
@@ -145,7 +147,7 @@ class MaterialProblemTypeSandbox(BaseItemModel):
     npm_dependencies = JSONField(default=dict)
 
     # "is_sse": false,
-    is_sse = models.BooleanField(default=False)
+    is_sse = models.BooleanField(default=False, null=True, blank=True)
 
     # "team": null,
 
@@ -161,13 +163,14 @@ class MaterialProblemTypeSandbox(BaseItemModel):
     # exist in BaseItemModel
 
     # "screenshot_url": "https://screenshots.codesandbox.io/new.png",
-    screenshot_url = models.URLField(default=None)
+    screenshot_url = models.URLField(null=True, blank=True)
 
     # "view_count": 4020046,
     # TODO calculated field
 
     # "source_id": "6bd39aa7-9800-45fb-9487-c915634d8d4f",
-    source_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    # source_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    # == MaterialProblemTypeSandbox.id
 
     # "picks": [
     #
@@ -229,14 +232,17 @@ class MaterialProblemTypeSandbox(BaseItemModel):
 class MaterialProblemTypeSandboxDirectory(BaseItemModel):
     # "updated_at": "2018-02-07T14:00:49",
     # exist in BaseItemModel
+
     # "title": "src",
+    # title = models.TextField()
     # name in BaseItemModel
 
     # "source_id": "6bd39aa7-9800-45fb-9487-c915634d8d4f",
-    source_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    # source_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    # == MaterialProblemTypeSandbox.id
 
     # "shortid": "GXOoy",
-    # use source_id instead
+    # use uuid instead
 
     # "inserted_at": "2018-02-07T14:00:49",
     # created_on in BaseItemModel
@@ -255,7 +261,12 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
     code = models.TextField()
 
     # directory_shortid: "GXOoy"
-    directory = models.ForeignKey(MaterialProblemTypeSandboxDirectory, related_name='directories', on_delete=models.CASCADE)
+    directory = models.ForeignKey(
+        MaterialProblemTypeSandboxDirectory,
+        related_name='directories',
+        on_delete=models.CASCADE,
+        null=True
+    )
 
     # id: "322578c0-5cf6-4552-b170-f065b7a17a7e"
     # exist in BaseItemModel
@@ -270,7 +281,8 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
     # use source_id instead
 
     # source_id: "e33bcee1-2d16-40ea-b578-f4af8d3a73e9"
-    source_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    # source_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    # == MaterialProblemTypeSandbox.id
 
     # title: "App.js"
     # name in BaseItemModel

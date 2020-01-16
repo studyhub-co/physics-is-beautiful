@@ -186,9 +186,45 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
 class MaterialProblemTypeViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
     serializer_class = MaterialMaterialProblemTypeSerializer
-    queryset = MaterialProblemType.objects.all()
+    queryset = MaterialProblemType.objects.\
+        select_related('author__user').\
+        prefetch_related('modules__author__user').all()
     # permission_classes = [IsAuthenticated|ReadOnly]
     lookup_field = 'uuid'
+
+    def create_new_from_json(self, request, *args, **kwargs):
+        data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+        from pib_auth.models import User
+        superuser = User.objects.filter(is_superuser=True).first()
+        # TODO check profile
+        if superuser:
+            author = superuser.profile
+        else:
+            author = request.user.profile
+
+        # data['name'] = 'Material problem type name'
+        data['name'] = 'New'  # don't chage 'new' slug!
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=True):
+            instance = serializer.save(author=author)
+            return instance
+            # return Response(serializer.data)
+
+    # override RetrieveModelMixin
+    def retrieve(self, request, *args, **kwargs):
+        if 'uuid' in kwargs and kwargs['uuid'] == 'new':
+            # get or create 'new' sandbox skeleton
+            try:
+                instance = self.queryset.get(slug='new')
+            except MaterialProblemType.DoesNotExist:
+                instance = self.create_new_from_json(request)
+        else:
+            # regular instance
+            instance = self.get_object()
+        instance = self.queryset.get(slug='new')
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     # fork sandbox/MaterialProblemType
     @action(methods=['POST'],
@@ -199,15 +235,36 @@ class MaterialProblemTypeViewSet(ModelViewSet):
         forked_material_problem_type = None
 
         if kwargs['uuid'] == 'new':
-            forked_material_problem_type = self.queryset.create(
-                name='Material problem type name',
-                author=request.user.profile,  # TODO create profile getter
-                data=json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-            )
+
+            data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+            # TODO check profile
+            data['author'] = request.user.profile.pk
+            data['name'] = 'Material problem type name'
+
+            serializer = self.serializer_class(data=data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                return Response(serializer.data)
+
+            # data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+            # data['name'] = 'Material problem type name'
+            # data['author'] = request.user.profile
+
+            # modules = data.pop('modules')
+            # forked_material_problem_type = self.queryset.create(**data)
+            # forked_material_problem_type.modules.set(modules)
+
+            # forked_material_problem_type = self.queryset.create(
+            #     name='Material problem type name',
+            #     author=request.user.profile,  # TODO create profile getter
+            #     data=json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+            # )
         else:
             # TODO get base sandbox
             pass
 
-        serializer = self.get_serializer(forked_material_problem_type)
-        return Response(serializer.data)
+        # serializer = self.get_serializer(forked_material_problem_type)
+        # return Response(serializer.data)
+        return Response('')
 

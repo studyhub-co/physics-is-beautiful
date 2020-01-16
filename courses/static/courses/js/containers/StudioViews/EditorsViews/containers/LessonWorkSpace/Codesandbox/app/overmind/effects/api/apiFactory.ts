@@ -163,12 +163,14 @@ export function handleResponse(
   response: AxiosResponse,
   { shouldCamelize = true } = {}
 ) {
+
   const camelizedData = shouldCamelize
     ? camelizeKeys(response.data)
     : response.data;
 
   // Quickfix to prevent underscored dependencies from being camelized.
   // Never store data as keys in the future.
+  /* o_O */
   if (
     camelizedData &&
     camelizedData.data &&
@@ -177,5 +179,17 @@ export function handleResponse(
     camelizedData.data.npmDependencies = response.data.data.npm_dependencies;
   }
 
-  return camelizedData.data ? camelizedData.data : camelizedData;
+  /* PIB didn't uses data key */
+  if (
+    camelizedData &&
+    camelizedData.npmDependencies
+  ) {
+    camelizedData.npmDependencies = response.data.npm_dependencies;
+  }
+
+  const data = camelizedData.data ? camelizedData.data : camelizedData;
+
+  console.log(data);
+  
+  return data;
 }

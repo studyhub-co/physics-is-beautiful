@@ -14,7 +14,10 @@ from taggit_serializer.serializers import (TagListSerializerField,
 
 from expander import ExpanderSerializerMixin
 
-from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType
+from courses.models import (
+    Course, Unit, Module, Lesson, Material, MaterialProblemType, MaterialProblemTypeSandboxDirectory,
+    MaterialProblemTypeSandboxModule
+)
 # from courses.models import MySQL
 from courses.serializers import BaseSerializer
 
@@ -262,10 +265,82 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
         }
 
 
+class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
+    shortid = serializers.SerializerMethodField()
+
+    def get_shortid(self, obj):
+        return obj.uuid
+
+    class Meta:
+        model = MaterialProblemTypeSandboxDirectory
+        # fields = '__all__'
+        fields = [field.name for field in model._meta.fields]
+        fields.append('shortid')
+        read_only_fields = ('author', 'last_edit_user')
+
+
+class MaterialProblemTypeSandboxModulesSerializer(BaseSerializer):
+    directory_shortid = serializers.SerializerMethodField()
+
+    def get_directory_shortid(self, obj):
+        if obj.directory:
+            return obj.directory.uuid
+        else:
+            return None
+
+    class Meta:
+        model = MaterialProblemTypeSandboxModule
+        # fields = '__all__'
+        fields = [field.name for field in model._meta.fields]
+        fields.append('directory_shortid')
+        read_only_fields = ('author', 'last_edit_user')
+
+
 class MaterialMaterialProblemTypeSerializer(BaseSerializer):
+    directories = MaterialProblemTypeSandboxDirectorySerializer(many=True, read_only=True)
+    modules = MaterialProblemTypeSandboxModulesSerializer(many=True, read_only=True)
+
+    def create(self, validated_data):
+        modules_data = self.initial_data.pop('modules')
+        directories_data = self.initial_data.pop('directories')
+        material_problem_type = super().create(validated_data)
+        # material_problem_type = MaterialProblemType.objects.create(**validated_data)
+
+        # directory shortid / instance src dict
+        directory_ids = {}
+
+        # create directories
+        for directory_data in directories_data:
+            # directory_data['author'] = validated_data['author'].pk
+            directory_data['name'] = directory_data['title']
+            directory_data['sandbox'] = material_problem_type.uuid
+            serializer = MaterialProblemTypeSandboxDirectorySerializer(data=directory_data)
+            if serializer.is_valid(raise_exception=True):
+                instance = serializer.save(author=material_problem_type.author)
+                directory_ids[directory_data['shortid']] = instance
+
+        # create modules (and place it in directory)
+        for module_data in modules_data:
+            # module_data['author'] = validated_data['author'].pk
+            module_data['name'] = module_data['title']
+            module_data['sandbox'] = material_problem_type.uuid
+
+            # try to find module directory
+            if module_data['directory_shortid']:
+                if module_data['directory_shortid'] in directory_ids:
+                    module_data['directory'] = directory_ids[module_data['directory_shortid']].pk
+
+            serializer = MaterialProblemTypeSandboxModulesSerializer(data=module_data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(author=material_problem_type.author)
+
+        return material_problem_type
+
     class Meta:
         model = MaterialProblemType
-        fields = ['uuid', 'name', 'data', 'created_on', 'updated_on']
+        # fields = ['uuid', 'name', 'data', 'created_on', 'updated_on']
+        fields = '__all__'
+        read_only_fields = ('author', 'last_edit_user', 'forked_from_sandbox')
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
