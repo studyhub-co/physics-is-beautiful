@@ -3,6 +3,7 @@ import json
 from collections import OrderedDict
 
 from django.db.models import F
+from django.db import transaction
 from django.core.files.images import get_image_dimensions
 
 from rest_framework import serializers
@@ -267,6 +268,21 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
 
 class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
     shortid = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    id = serializers.SerializerMethodField()
+    directory_shortid = serializers.SerializerMethodField()
+
+    def get_directory_shortid(self, obj):
+        if obj.directory:  # parent dir
+            return obj.directory.uuid
+        else:
+            return None
+
+    def get_id(self, obj):
+        return obj.uuid
+
+    def get_title(self, obj):
+        return obj.name
 
     def get_shortid(self, obj):
         return obj.uuid
@@ -275,12 +291,25 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
         model = MaterialProblemTypeSandboxDirectory
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
-        fields.append('shortid')
+        fields.extend(['shortid', 'title', 'id', 'directory_shortid'])
         read_only_fields = ('author', 'last_edit_user')
 
 
 class MaterialProblemTypeSandboxModulesSerializer(BaseSerializer):
     directory_shortid = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    id = serializers.SerializerMethodField()
+    shortid = serializers.SerializerMethodField()
+    # source_id = serializers.SerializerMethodField()
+
+    def get_shortid(self, obj):
+        return obj.uuid
+
+    def get_id(self, obj):
+        return obj.uuid
+
+    def get_title(self, obj):
+        return obj.name
 
     def get_directory_shortid(self, obj):
         if obj.directory:
@@ -292,15 +321,75 @@ class MaterialProblemTypeSandboxModulesSerializer(BaseSerializer):
         model = MaterialProblemTypeSandboxModule
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
-        fields.append('directory_shortid')
+        fields.extend(['directory_shortid', 'title', 'id', 'shortid'])
         read_only_fields = ('author', 'last_edit_user')
 
 
 class MaterialMaterialProblemTypeSerializer(BaseSerializer):
     directories = MaterialProblemTypeSandboxDirectorySerializer(many=True, read_only=True)
     modules = MaterialProblemTypeSandboxModulesSerializer(many=True, read_only=True)
+    title = serializers.SerializerMethodField()
+    id = serializers.SerializerMethodField()
 
-    def create(self, validated_data):
+    def get_id(self, obj):
+        return obj.uuid
+
+    def get_title(self, obj):
+        return obj.name
+
+    # TODO not sure we need save_from_tree_data create_from_tree_data
+    def save_from_tree_data(self, **kwargs):
+        assert not hasattr(self, 'save_object'), (
+            'Serializer `%s.%s` has old-style version 2 `.save_object()` '
+            'that is no longer compatible with REST framework 3. '
+            'Use the new-style `.create()` and `.update()` methods instead.' %
+            (self.__class__.__module__, self.__class__.__name__)
+        )
+
+        assert hasattr(self, '_errors'), (
+            'You must call `.is_valid()` before calling `.save()`.'
+        )
+
+        assert not self.errors, (
+            'You cannot call `.save()` on a serializer with invalid data.'
+        )
+
+        # Guard against incorrect use of `serializer.save(commit=False)`
+        assert 'commit' not in kwargs, (
+            "'commit' is not a valid keyword argument to the 'save()' method. "
+            "If you need to access data before committing to the database then "
+            "inspect 'serializer.validated_data' instead. "
+            "You can also pass additional keyword arguments to 'save()' if you "
+            "need to set extra attributes on the saved model instance. "
+            "For example: 'serializer.save(owner=request.user)'.'"
+        )
+
+        assert not hasattr(self, '_data'), (
+            "You cannot call `.save()` after accessing `serializer.data`."
+            "If you need to access data before committing to the database then "
+            "inspect 'serializer.validated_data' instead. "
+        )
+
+        validated_data = dict(
+            list(self.validated_data.items()) +
+            list(kwargs.items())
+        )
+
+        if self.instance is not None:
+            self.instance = self.update(self.instance, validated_data)
+            assert self.instance is not None, (
+                '`update()` did not return an object instance.'
+            )
+        else:
+            self.instance = self.create_from_tree_data(validated_data)
+            assert self.instance is not None, (
+                '`create()` did not return an object instance.'
+            )
+
+        return self.instance
+
+    @transaction.atomic
+    def create_from_tree_data(self, validated_data):
         modules_data = self.initial_data.pop('modules')
         directories_data = self.initial_data.pop('directories')
         material_problem_type = super().create(validated_data)
@@ -310,6 +399,7 @@ class MaterialMaterialProblemTypeSerializer(BaseSerializer):
         directory_ids = {}
 
         # create directories
+        # TODO this code don't support descendants dirs
         for directory_data in directories_data:
             # directory_data['author'] = validated_data['author'].pk
             directory_data['name'] = directory_data['title']

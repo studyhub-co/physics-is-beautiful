@@ -235,7 +235,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
 );
 
 export const createZipClicked: Action = ({ state, effects }) => {
-  console.log(state.editor.currentSandbox);
+  //console.log(state.editor.currentSandbox);
   effects.zip.download(state.editor.currentSandbox);
 };
 

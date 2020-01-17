@@ -1,6 +1,7 @@
 import json
 
 from django.db.models import Q, Count
+from django.db import transaction
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, status
@@ -207,9 +208,8 @@ class MaterialProblemTypeViewSet(ModelViewSet):
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid(raise_exception=True):
-            instance = serializer.save(author=author)
+            instance = serializer.save_from_tree_data(author=author)
             return instance
-            # return Response(serializer.data)
 
     # override RetrieveModelMixin
     def retrieve(self, request, *args, **kwargs):
@@ -226,45 +226,88 @@ class MaterialProblemTypeViewSet(ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    # @transaction.atomic
+    # TODO rewrite with SQL
+    def clone_sanbox(self):
+        # clone sandbox
+        initial_sandbox = self.get_object()
+
+        initial_modules = initial_sandbox.modules.all()
+        initial_directories = initial_sandbox.directories.all()
+
+        # clone sandbox
+        initial_sandbox.pk = None
+        initial_sandbox.save()
+
+        new_old_dir_pks = {}
+
+        # clone directories
+        for directory in initial_directories:
+            old_dir_pk = directory.pk
+
+            directory.pk = None
+            directory.sandbox = initial_sandbox
+            directory.save()
+            new_dir_pk = directory.pk
+
+            new_old_dir_pks[old_dir_pk] = new_dir_pk
+
+        # resave parent
+        for dir in initial_sandbox.directories.all():
+            if directory.directory:
+                directory.directory_id = new_old_dir_pks[directory.directory_id]
+                directory.save()
+
+        # clone modules
+        for module in initial_modules:
+            module.pk = None
+            module.sandbox = initial_sandbox
+
+            if module.directory:
+                module.directory_id = new_old_dir_pks[module.directory_id]
+
+            module.save()
+
+        return initial_sandbox
+
     # fork sandbox/MaterialProblemType
     @action(methods=['POST'],
             detail=True,
             permission_classes=[permissions.IsAuthenticated, ], )
     def fork(self, request, *args, **kwargs):
 
-        forked_material_problem_type = None
+        forked_material_problem_type = self.clone_sanbox()
 
-        if kwargs['uuid'] == 'new':
+        # if kwargs['uuid'] == 'new':
+        #
+        #     data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+        #     # TODO check profile
+        #     data['author'] = request.user.profile.pk
+        #     data['name'] = 'Material problem type name'
+        #
+        #     serializer = self.serializer_class(data=data)
+        #     if serializer.is_valid(raise_exception=True):
+        #         serializer.save()
+        #
+        #         return Response(serializer.data)
+        #
+        #     # data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+        #     # data['name'] = 'Material problem type name'
+        #     # data['author'] = request.user.profile
+        #
+        #     # modules = data.pop('modules')
+        #     # forked_material_problem_type = self.queryset.create(**data)
+        #     # forked_material_problem_type.modules.set(modules)
+        #
+        #     # forked_material_problem_type = self.queryset.create(
+        #     #     name='Material problem type name',
+        #     #     author=request.user.profile,  # TODO create profile getter
+        #     #     data=json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+        #     # )
+        # else:
+        #     # TODO get base sandbox
+        #     pass
 
-            data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-            # TODO check profile
-            data['author'] = request.user.profile.pk
-            data['name'] = 'Material problem type name'
-
-            serializer = self.serializer_class(data=data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-
-                return Response(serializer.data)
-
-            # data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-            # data['name'] = 'Material problem type name'
-            # data['author'] = request.user.profile
-
-            # modules = data.pop('modules')
-            # forked_material_problem_type = self.queryset.create(**data)
-            # forked_material_problem_type.modules.set(modules)
-
-            # forked_material_problem_type = self.queryset.create(
-            #     name='Material problem type name',
-            #     author=request.user.profile,  # TODO create profile getter
-            #     data=json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-            # )
-        else:
-            # TODO get base sandbox
-            pass
-
-        # serializer = self.get_serializer(forked_material_problem_type)
-        # return Response(serializer.data)
-        return Response('')
+        serializer = self.get_serializer(forked_material_problem_type)
+        return Response(serializer.data)
 

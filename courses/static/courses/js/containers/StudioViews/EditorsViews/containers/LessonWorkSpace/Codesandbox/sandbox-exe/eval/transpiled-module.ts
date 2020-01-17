@@ -565,7 +565,7 @@ export default class TranspiledModule {
    */
   async transpile(manager: Manager) {
     
-    console.log(this);
+    // console.log(this);
     
     if (this.source) {
       return this;

@@ -189,7 +189,7 @@ export function handleResponse(
 
   const data = camelizedData.data ? camelizedData.data : camelizedData;
 
-  console.log(data);
+  // console.log(data);
   
   return data;
 }

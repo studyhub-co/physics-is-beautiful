@@ -243,6 +243,7 @@ class MaterialProblemTypeSandboxDirectory(BaseItemModel):
 
     # "shortid": "GXOoy",
     # use uuid instead
+    # !!!!! TODO shortid being the same for a forked directory, why? !!!!!
 
     # "inserted_at": "2018-02-07T14:00:49",
     # created_on in BaseItemModel
@@ -251,7 +252,8 @@ class MaterialProblemTypeSandboxDirectory(BaseItemModel):
     # uuid in BaseItemModel
 
     # "directory_shortid": null
-    # what is this?
+    # parent directory id
+    directory = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, null=True)
 
     sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='directories', on_delete=models.CASCADE)
 

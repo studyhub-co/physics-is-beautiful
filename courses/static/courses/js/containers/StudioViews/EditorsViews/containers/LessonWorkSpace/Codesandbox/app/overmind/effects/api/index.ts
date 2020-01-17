@@ -17,9 +17,11 @@ export default {
     const url = `/studio/material-problem-type/${id}/`;
     const sandbox = await api.get<SandboxAPIResponse>(url);
     // const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
-
-    // Mock for sandbox from server
-    //   const sandbox = JSON.parse(JSON.stringify({"data":
+    //
+    // console.log(sandbox);
+    //
+    // // Mock for sandbox from server
+    //   const sandbox1 = JSON.parse(JSON.stringify({"data":
     //       {
     //         "version":66,
     //         "user_liked":false,
@@ -88,6 +90,8 @@ export default {
     //         "alias":null,
     //         "forked_from_sandbox":null}})
     //   )['data']
+    //
+    //   console.log(sandbox1);
 
       // We need to add client side properties for tracking
       return transformSandbox(camelizeKeys(sandbox));

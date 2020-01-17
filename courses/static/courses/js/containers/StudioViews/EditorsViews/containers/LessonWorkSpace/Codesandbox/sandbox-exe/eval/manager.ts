@@ -481,7 +481,7 @@ export default class Manager {
 
     this.getTranspiledModules().forEach(t => t.postTranspile(this));
     
-    console.log(result);
+    // console.log(result);
 
     return result;
   }
