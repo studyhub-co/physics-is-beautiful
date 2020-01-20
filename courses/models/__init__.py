@@ -3,7 +3,7 @@ from .structure import Course, Lesson, Module, Unit
 from .material_problem_type import MaterialProblemType
 from .material_problem_type_sandbox import (
     SANDOX_TEMPLATE_REACT_JSON_STRING, MaterialProblemTypeSandboxDirectory,
-    MaterialProblemTypeSandboxModule
+    MaterialProblemTypeSandboxModule, MaterialProblemTypeSandboxCache
 )
 from .material import Material
 from .workflow import MySQL
@@ -17,7 +17,7 @@ __all__ = ["get_earliest_gap", "BaseItemModel",
            "Material",
            "MaterialProblemType",
            "SANDOX_TEMPLATE_REACT_JSON_STRING", "MaterialProblemTypeSandboxDirectory",
-           "MaterialProblemTypeSandboxModule",
+           "MaterialProblemTypeSandboxModule", "MaterialProblemTypeSandboxCache",
            "UserReaction",
            "MySQL",
            "LessonProgress", "LessonProgressStatus",

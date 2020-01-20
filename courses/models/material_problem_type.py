@@ -7,9 +7,9 @@ from .material_problem_type_sandbox import MaterialProblemTypeSandbox
 
 class MaterialProblemType(MaterialProblemTypeSandbox):  # MaterialProblemTypeSandbox ~= sanbox data
     # sanbox reverse field (see material_sandbox)
-    # TODO we will add PIB realted fields
+    official = models.BooleanField(default=False)
 
-    class Meta:
-        proxy = True
+
+
 
 

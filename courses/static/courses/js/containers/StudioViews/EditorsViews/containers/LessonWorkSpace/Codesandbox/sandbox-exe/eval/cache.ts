@@ -93,7 +93,8 @@ export async function saveCache(
     );
 
     return window
-      .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
+       .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
+      // .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache`, {
         method: 'POST',
         body: JSON.stringify({
           version: SCRIPT_VERSION,

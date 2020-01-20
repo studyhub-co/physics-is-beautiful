@@ -57,9 +57,12 @@ const sandboxGitUrl = (git: {
   buildEncodedUri`github/${git.username}/${git.repo}/tree/${git.branch}/` +
   git.path;
 
-export const editorUrl = () => `/s/`;
+// export const editorUrl = () => `/s/`;
+// TODO remove/conf-le /beta/
+export const editorUrl = () => `/beta/studio/editor/material-problem-type/`;
 
 export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+  // TODO ???
   if (sandboxDetails.git) {
     const { git } = sandboxDetails;
     return `${editorUrl()}${sandboxGitUrl(git)}`;

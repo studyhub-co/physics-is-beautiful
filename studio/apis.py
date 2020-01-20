@@ -187,6 +187,7 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
 class MaterialProblemTypeViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
     serializer_class = MaterialMaterialProblemTypeSerializer
+    serializer_class_cache = MaterialMaterialProblemTypeSerializer
     queryset = MaterialProblemType.objects.\
         select_related('author__user').\
         prefetch_related('modules__author__user').all()
@@ -204,11 +205,15 @@ class MaterialProblemTypeViewSet(ModelViewSet):
             author = request.user.profile
 
         # data['name'] = 'Material problem type name'
+        # fixme - not good, if we remove object with 'new' slug,
+        #  this will create new objects with new-2, new-3, etc...
+        #   create fixtures
         data['name'] = 'New'  # don't chage 'new' slug!
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid(raise_exception=True):
-            instance = serializer.save_from_tree_data(author=author)
+            instance = serializer.save_from_tree_data(author=author,
+                                                      official=True)
             return instance
 
     # override RetrieveModelMixin
@@ -218,6 +223,9 @@ class MaterialProblemTypeViewSet(ModelViewSet):
             try:
                 instance = self.queryset.get(slug='new')
             except MaterialProblemType.DoesNotExist:
+                # fixme - not good, if we remove object with 'new' slug,
+                #  this will create new objects with new-2, new-3, etc...
+                #   create fixtures
                 instance = self.create_new_from_json(request)
         else:
             # regular instance
@@ -310,4 +318,12 @@ class MaterialProblemTypeViewSet(ModelViewSet):
 
         serializer = self.get_serializer(forked_material_problem_type)
         return Response(serializer.data)
+
+    @action(methods=['POST'],
+            detail=True,
+            permission_classes=[permissions.IsAuthenticated, ], )
+    # TODO check problem type owner permission
+    def cache(self, request, *args, **kwargs):
+        # save transpiled data
+        pass
 

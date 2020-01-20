@@ -242,7 +242,7 @@ class MaterialProblemTypeSandboxDirectory(BaseItemModel):
     # == MaterialProblemTypeSandbox.id
 
     # "shortid": "GXOoy",
-    # use uuid instead
+    #  / use uuid instead / update - use hash of name instead
     # !!!!! TODO shortid being the same for a forked directory, why? !!!!!
 
     # "inserted_at": "2018-02-07T14:00:49",
@@ -308,4 +308,12 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
     }
     """
 
+
+class MaterialProblemTypeSandboxCache(models.Model):
+    """
+    Transpiled modules data (cache)
+    """
+    version = models.URLField()
+    data = JSONField(default=dict)
+    sandbox = models.OneToOneField(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
 

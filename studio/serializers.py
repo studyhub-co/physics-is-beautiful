@@ -1,3 +1,4 @@
+import hashlib
 import json
 
 from collections import OrderedDict
@@ -17,13 +18,17 @@ from expander import ExpanderSerializerMixin
 
 from courses.models import (
     Course, Unit, Module, Lesson, Material, MaterialProblemType, MaterialProblemTypeSandboxDirectory,
-    MaterialProblemTypeSandboxModule
+    MaterialProblemTypeSandboxModule, MaterialProblemTypeSandboxCache
 )
 # from courses.models import MySQL
 from courses.serializers import BaseSerializer
 
 from profiles.serializers import PublicProfileSerializer
 from profiles.models import Profile
+
+
+def to_short_id(text):
+    return hashlib.sha1(str(text).encode('utf-8')).hexdigest()[:8]
 
 
 class DictSerializer(serializers.ListSerializer):
@@ -274,7 +279,8 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
 
     def get_directory_shortid(self, obj):
         if obj.directory:  # parent dir
-            return obj.directory.uuid
+            return to_short_id(obj.directory.name)
+            # return obj.directory.uuid
         else:
             return None
 
@@ -295,7 +301,7 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
         read_only_fields = ('author', 'last_edit_user')
 
 
-class MaterialProblemTypeSandboxModulesSerializer(BaseSerializer):
+class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
     directory_shortid = serializers.SerializerMethodField()
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
@@ -303,7 +309,8 @@ class MaterialProblemTypeSandboxModulesSerializer(BaseSerializer):
     # source_id = serializers.SerializerMethodField()
 
     def get_shortid(self, obj):
-        return obj.uuid
+        return to_short_id(obj.name)
+        # return obj.uuid
 
     def get_id(self, obj):
         return obj.uuid
@@ -327,7 +334,7 @@ class MaterialProblemTypeSandboxModulesSerializer(BaseSerializer):
 
 class MaterialMaterialProblemTypeSerializer(BaseSerializer):
     directories = MaterialProblemTypeSandboxDirectorySerializer(many=True, read_only=True)
-    modules = MaterialProblemTypeSandboxModulesSerializer(many=True, read_only=True)
+    modules = MaterialProblemTypeSandboxModuleSerializer(many=True, read_only=True)
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
 
@@ -420,7 +427,7 @@ class MaterialMaterialProblemTypeSerializer(BaseSerializer):
                 if module_data['directory_shortid'] in directory_ids:
                     module_data['directory'] = directory_ids[module_data['directory_shortid']].pk
 
-            serializer = MaterialProblemTypeSandboxModulesSerializer(data=module_data)
+            serializer = MaterialProblemTypeSandboxModuleSerializer(data=module_data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save(author=material_problem_type.author)
 
@@ -436,3 +443,8 @@ class MaterialMaterialProblemTypeSerializer(BaseSerializer):
         }
 
 
+class MaterialProblemTypeSandboxCacheSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialProblemTypeSandboxCache
+        # fields = '__all__'
+        fields = [field.name for field in model._meta.fields]
