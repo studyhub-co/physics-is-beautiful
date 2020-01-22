@@ -4,16 +4,17 @@ from django.db.models import Q, Count
 from django.db import transaction
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions, status
+from rest_framework import permissions, status, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
-    SANDOX_TEMPLATE_REACT_JSON_STRING
+    SANDOX_TEMPLATE_REACT_JSON_STRING, MaterialProblemTypeSandboxCache
 
 from .serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
-    LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer
+    LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer, \
+    MaterialProblemTypeSandboxCacheSerializer
 
 from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
     IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator,\
@@ -184,10 +185,14 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
                                 distinct()
 
 
-class MaterialProblemTypeViewSet(ModelViewSet):
+# class MaterialProblemTypeViewSet(ModelViewSet):
+class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
+                                 mixins.UpdateModelMixin,
+                                 mixins.ListModelMixin,
+                                 viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
     serializer_class = MaterialMaterialProblemTypeSerializer
-    serializer_class_cache = MaterialMaterialProblemTypeSerializer
+    serializer_class_cache = MaterialProblemTypeSandboxCacheSerializer
     queryset = MaterialProblemType.objects.\
         select_related('author__user').\
         prefetch_related('modules__author__user').all()
@@ -244,7 +249,9 @@ class MaterialProblemTypeViewSet(ModelViewSet):
         initial_directories = initial_sandbox.directories.all()
 
         # clone sandbox
+        # based on https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
         initial_sandbox.pk = None
+        initial_sandbox.uuid = None
         initial_sandbox.save()
 
         new_old_dir_pks = {}
@@ -325,5 +332,29 @@ class MaterialProblemTypeViewSet(ModelViewSet):
     # TODO check problem type owner permission
     def cache(self, request, *args, **kwargs):
         # save transpiled data
-        pass
+
+        # get version
+        version = request.data.get('version', None)
+        if not version:
+            raise ValidationError('version field not found')
+
+        sandbox = self.get_object()
+
+        try:
+            # try to get existing cache
+            cache = MaterialProblemTypeSandboxCache.objects.get(
+                version=version,
+                sandbox=sandbox.pk
+            )
+            serializer = self.serializer_class_cache(cache)
+        except MaterialProblemTypeSandboxCache.DoesNotExist:
+            # data = {'sandbox': sandbox.pk}
+            # data.update(request.data)
+            # serializer = self.serializer_class_cache(data=data)
+            serializer = self.serializer_class_cache(data=request.data)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(sandbox=sandbox)
+
+        return Response(serializer.data)
 

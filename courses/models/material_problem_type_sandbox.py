@@ -313,7 +313,12 @@ class MaterialProblemTypeSandboxCache(models.Model):
     """
     Transpiled modules data (cache)
     """
-    version = models.URLField()
+    version = models.URLField()  # transpiler version
     data = JSONField(default=dict)
     sandbox = models.OneToOneField(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
+
+    # TODO remove old data functional
+
+    class Meta:
+        unique_together = [['sandbox', 'version']]
 

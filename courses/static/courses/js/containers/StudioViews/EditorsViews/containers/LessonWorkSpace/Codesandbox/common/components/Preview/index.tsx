@@ -202,8 +202,13 @@ class BasePreview extends React.Component<Props, State> {
 
   currentUrl = () => {
     // TODO
-    return 'http://pib-dev.us-east-1.elasticbeanstalk.com/material-frame/';
-    return 'http://127.0.0.1:8000/material-frame/';
+    if (window.location.hostname=='127.0.0.1')
+    {
+      return 'http://127.0.0.1:8000/material-frame/';
+    }
+    else {
+      return 'http://pib-dev.us-east-1.elasticbeanstalk.com/material-frame/';
+    }
 
     const { url, sandbox } = this.props;
     if (url && !url.startsWith('/')) {

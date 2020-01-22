@@ -72,7 +72,7 @@ from django.views.generic.base import TemplateView
 
 # TODO add material id / move to courses urls
 urlpatterns += [
-    url(r'^material-iframe/$', TemplateView.as_view(template_name='courses/material-iframe.html'), name='material-iframe'),
+    # url(r'^material-iframe/$', TemplateView.as_view(template_name='courses/material-iframe.html'), name='material-iframe'),
     url(r'^material-frame/$', TemplateView.as_view(template_name='courses/frame.html'), name='material-frame'),
 ]
 # catch all urls in main SPA app

@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router'
 import { CoursesRoutes } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
 import {
-  EditCourseView, EditModuleView, EditLessonView
+  EditCourseView, EditModuleView, EditLessonView, ProblemTypeEditorView
 } from './containers/StudioViews/EditorsViews'
 
 import NotFoundView from './components/NotFoundView'
@@ -25,6 +25,7 @@ export default(
     <Route exact path={'/studio/editor/courses/:uuid'} component={EditCourseView} />
     <Route exact path={'/studio/editor/modules/:uuid'} component={EditModuleView} />
     <Route exact path={'/studio/editor/lessons/:uuid'} component={EditLessonView} />
+    <Route exact path={'/studio/editor/material-problem-type/:problem_type_uuid'} component={ProblemTypeEditorView} />
     {/* <Route exact path={'/studio/editor/questions/:uuid'} component={QuestionApp} /> */}
     {/* <Route path={BASE_URL + '/course/profile/:uuid'} component={CourseProfileView} /> */}
 

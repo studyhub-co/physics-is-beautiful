@@ -291,7 +291,8 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
         return obj.name
 
     def get_shortid(self, obj):
-        return obj.uuid
+        return to_short_id(obj.name)
+        # return obj.uuid
 
     class Meta:
         model = MaterialProblemTypeSandboxDirectory
@@ -320,7 +321,8 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
 
     def get_directory_shortid(self, obj):
         if obj.directory:
-            return obj.directory.uuid
+            # return obj.directory.uuid
+            return to_short_id(obj.directory.name)
         else:
             return None
 
@@ -447,4 +449,5 @@ class MaterialProblemTypeSandboxCacheSerializer(serializers.ModelSerializer):
     class Meta:
         model = MaterialProblemTypeSandboxCache
         # fields = '__all__'
-        fields = [field.name for field in model._meta.fields]
+        fields = ['version', 'data']
+
