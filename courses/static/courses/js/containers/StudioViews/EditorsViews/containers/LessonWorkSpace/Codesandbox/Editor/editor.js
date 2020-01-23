@@ -48,12 +48,15 @@ class ContentSplit extends React.Component {
 
   fetchReactSandbox = () => {
     // const { id } = this.props.match.params;
+    // load custom sanbox if we have problem_type_uuid in param
+    let id
 
-    // TODO
-    console.log('load custom sanbox if we have problem_type_uuid in param');
-    console.log(this.props);
-
-    const id = 'new' // this is the react template of sandbox
+    if (this.props.hasOwnProperty('problem_type_uuid')) {
+      id = this.props.problem_type_uuid
+    } else {
+      // th default react template of sandbox
+      id = 'new'
+    }
 
     this.props.signals.editor.sandboxChanged({ id })
   };

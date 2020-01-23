@@ -1035,15 +1035,6 @@ export class VSCode extends React.Component<Props> implements Editor {
       );
 
       if (path && this.getCurrentModelPath() !== path) {
-        // console.log('path');
-        // console.log(this.editor);
-        // fs.readdir('/sandbox/', function(err, items) {
-        //   console.log(items);
-        // })
-        // fs.readFile('/sandbox/'+path, function(err, contents) {
-        //   console.log(contents);
-        //   console.log(err);
-        // });
         this.editor.openFile(path);
       }
     }

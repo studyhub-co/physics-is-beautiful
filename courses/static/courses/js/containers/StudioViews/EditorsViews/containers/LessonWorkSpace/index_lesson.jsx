@@ -45,6 +45,9 @@ export class Lesson extends React.Component {
       editor: <div></div>,
       layout: 'present' // TODO load problem type name in edit mode
     }
+
+    // TODO add material url support
+
     // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
   }

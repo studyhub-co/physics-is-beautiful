@@ -1,9 +1,11 @@
 # import uuid
+import hashlib
+
 from django.db import models
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 
-from profiles.models import Profile
+# from profiles.models import Profile
 
 from . import BaseItemModel
 
@@ -121,8 +123,6 @@ SANDOX_TEMPLATE_REACT_JSON_STRING = r"""{
 }
 """
 
-
-# is seems source_id should be equal MaterialProblemTypeSandbox.id
 
 class MaterialProblemTypeSandbox(BaseItemModel):
     # reverse field (see material_problem_type)
@@ -242,8 +242,8 @@ class MaterialProblemTypeSandboxDirectory(BaseItemModel):
     # == MaterialProblemTypeSandbox.id
 
     # "shortid": "GXOoy",
-    #  / use uuid instead / update - use hash of name instead
-    # !!!!! TODO shortid being the same for a forked directory, why? !!!!!
+    # sandox API client works with short ids, so we need to store it
+    shortid = models.CharField(max_length=10)
 
     # "inserted_at": "2018-02-07T14:00:49",
     # created_on in BaseItemModel
@@ -280,7 +280,7 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
     is_binary = models.BooleanField(default=False)
 
     # shortid: "5QyoA"
-    # use source_id instead
+    shortid = models.CharField(max_length=10)
 
     # source_id: "e33bcee1-2d16-40ea-b578-f4af8d3a73e9"
     # source_id = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -321,4 +321,21 @@ class MaterialProblemTypeSandboxCache(models.Model):
 
     class Meta:
         unique_together = [['sandbox', 'version']]
+
+from django.db.models.signals import  pre_save
+from django.dispatch import receiver
+
+
+def to_short_id(text):
+    return hashlib.sha1(str(text).encode('utf-8')).hexdigest()[:8]
+
+
+@receiver(pre_save, sender=MaterialProblemTypeSandboxModule)
+def module_will_change(sender, instance, **kwargs):
+    instance.shortid = to_short_id(instance.name)
+
+
+@receiver(pre_save, sender=MaterialProblemTypeSandboxDirectory)
+def directory_will_change(sender, instance, **kwargs):
+    instance.shortid = to_short_id(instance.name)
 

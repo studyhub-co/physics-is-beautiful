@@ -1,6 +1,3 @@
-import hashlib
-import json
-
 from collections import OrderedDict
 
 from django.db.models import F
@@ -25,10 +22,6 @@ from courses.serializers import BaseSerializer
 
 from profiles.serializers import PublicProfileSerializer
 from profiles.models import Profile
-
-
-def to_short_id(text):
-    return hashlib.sha1(str(text).encode('utf-8')).hexdigest()[:8]
 
 
 class DictSerializer(serializers.ListSerializer):
@@ -272,14 +265,15 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
 
 
 class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
-    shortid = serializers.SerializerMethodField()
+    # shortid = serializers.SerializerMethodField()
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     directory_shortid = serializers.SerializerMethodField()
 
     def get_directory_shortid(self, obj):
         if obj.directory:  # parent dir
-            return to_short_id(obj.directory.name)
+            return obj.directory.shortid
+            # return to_short_id(obj.directory.name)
             # return obj.directory.uuid
         else:
             return None
@@ -290,8 +284,8 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
     def get_title(self, obj):
         return obj.name
 
-    def get_shortid(self, obj):
-        return to_short_id(obj.name)
+    # def get_shortid(self, obj):
+    #     return to_short_id(obj.name)
         # return obj.uuid
 
     class Meta:
@@ -306,12 +300,12 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
     directory_shortid = serializers.SerializerMethodField()
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
-    shortid = serializers.SerializerMethodField()
+    # shortid = serializers.SerializerMethodField()
     # source_id = serializers.SerializerMethodField()
 
-    def get_shortid(self, obj):
-        return to_short_id(obj.name)
-        # return obj.uuid
+    # def get_shortid(self, obj):
+    #     return to_short_id(obj.name)
+    #     # return obj.uuid
 
     def get_id(self, obj):
         return obj.uuid
@@ -322,7 +316,8 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
     def get_directory_shortid(self, obj):
         if obj.directory:
             # return obj.directory.uuid
-            return to_short_id(obj.directory.name)
+            # return to_short_id(obj.directory.name)
+            return obj.directory.shortid
         else:
             return None
 

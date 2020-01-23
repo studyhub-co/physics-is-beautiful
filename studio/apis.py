@@ -1,5 +1,6 @@
 import json
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count
 from django.db import transaction
 
@@ -7,14 +8,15 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, status, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, NotFound
 
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
     SANDOX_TEMPLATE_REACT_JSON_STRING, MaterialProblemTypeSandboxCache
 
 from .serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
     LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer, \
-    MaterialProblemTypeSandboxCacheSerializer
+    MaterialProblemTypeSandboxCacheSerializer, MaterialProblemTypeSandboxModuleSerializer
+
 
 from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
     IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator,\
@@ -193,6 +195,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
     permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
     serializer_class = MaterialMaterialProblemTypeSerializer
     serializer_class_cache = MaterialProblemTypeSandboxCacheSerializer
+    serializer_class_module = MaterialProblemTypeSandboxModuleSerializer
     queryset = MaterialProblemType.objects.\
         select_related('author__user').\
         prefetch_related('modules__author__user').all()
@@ -235,7 +238,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
         else:
             # regular instance
             instance = self.get_object()
-        instance = self.queryset.get(slug='new')
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -285,6 +287,29 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
         return initial_sandbox
 
+    # sanbox modules API
+    # /api/v1/sandboxes/06zqu/modules/5QyoA ==> /api/v1/material-problem-type/06zqu/modules/5QyoA
+    #                   ^^^^^ material-problem-type id                                      ^^^^^ module id
+    @action(methods=['PUT'],
+            detail=True,
+            permission_classes=[permissions.IsAuthenticated, ],  # TODO add
+            url_path='modules/(?P<module_shortid>[^/.]+)'
+            )
+    def module_update(self, request, *args, **kwargs):
+        material_problem_type = self.get_object()
+        try:
+            # we need to store shortid in model
+            module = material_problem_type.modules.get(shortid=kwargs['module_shortid'])
+        except ObjectDoesNotExist:
+            raise NotFound('Module not found')
+
+        serializer = self.serializer_class_module(module, data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+        return Response(serializer.data)
+
     # fork sandbox/MaterialProblemType
     @action(methods=['POST'],
             detail=True,
@@ -292,36 +317,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
     def fork(self, request, *args, **kwargs):
 
         forked_material_problem_type = self.clone_sanbox()
-
-        # if kwargs['uuid'] == 'new':
-        #
-        #     data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-        #     # TODO check profile
-        #     data['author'] = request.user.profile.pk
-        #     data['name'] = 'Material problem type name'
-        #
-        #     serializer = self.serializer_class(data=data)
-        #     if serializer.is_valid(raise_exception=True):
-        #         serializer.save()
-        #
-        #         return Response(serializer.data)
-        #
-        #     # data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-        #     # data['name'] = 'Material problem type name'
-        #     # data['author'] = request.user.profile
-        #
-        #     # modules = data.pop('modules')
-        #     # forked_material_problem_type = self.queryset.create(**data)
-        #     # forked_material_problem_type.modules.set(modules)
-        #
-        #     # forked_material_problem_type = self.queryset.create(
-        #     #     name='Material problem type name',
-        #     #     author=request.user.profile,  # TODO create profile getter
-        #     #     data=json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-        #     # )
-        # else:
-        #     # TODO get base sandbox
-        #     pass
 
         serializer = self.get_serializer(forked_material_problem_type)
         return Response(serializer.data)

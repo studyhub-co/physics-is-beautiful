@@ -75,12 +75,10 @@ export const saveCode: AsyncAction<{
   cbID?: string | null;
 }> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
   // effects.analytics.track('Save Code');
-  
   console.log('Save Code');
 
   const sandbox = state.editor.currentSandbox;
   const module = sandbox.modules.find(m => m.shortid === moduleShortid);
-
   if (!module) {
     return;
   }
@@ -109,10 +107,10 @@ export const saveCode: AsyncAction<{
   }
 
   try {
-    
-    // console.log('updatedModule');
-    // console.log(updatedModule);
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
+
+    console.log('updatedModule');
+    console.log(updatedModule);
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
@@ -169,7 +167,8 @@ export const saveCode: AsyncAction<{
       tab.dirty = false;
     }
   } catch (error) {
-    effects.notificationToast.warning(error.message);
+    // effects.notificationToast.warning(error.message);
+    alert(error.message)
 
     if (cbID) {
       effects.vscode.callCallbackError(cbID, error.message);

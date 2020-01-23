@@ -158,6 +158,10 @@ export const codeSaved: AsyncAction<{
   cbID: string;
 }> = withOwnedSandbox(
   async ({ actions }, { code, moduleShortid, cbID }) => {
+
+    // console.trace()
+    console.log(code, moduleShortid, cbID);
+    
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
@@ -175,7 +179,6 @@ export const codeChanged: Action<{
   noLive?: boolean;
 }> = ({ effects, state, actions }, { code, moduleShortid, noLive }) => {
   // effects.analytics.trackOnce('Change Code');
-
   // console.log(state.editor.currentSandbox);
 
   const module = state.editor.currentSandbox.modules.find(

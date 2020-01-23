@@ -38,7 +38,7 @@ export class ProblemTypeEditorView extends React.Component {
 
     this.state = {
       editor: <div></div>,
-      layout: 'editor' // TODO load problem type name in edit mode
+      layout: 'edit' // TODO load problem type name in edit mode
     }
     // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
@@ -46,9 +46,8 @@ export class ProblemTypeEditorView extends React.Component {
 
   async componentDidMount () {
     // this.props.loadLessonIfNeeded(this.props.uuid)
-    console.log(this.props.problem_type_uuid)
-    // TODO send uuid to editor to load sanbbox
-    let editor = await asyncEditor()
+    // send uuid to editor to load sanbbox
+    let editor = await asyncEditor(this.props)
     this.setState({editor: editor})
   }
 
@@ -104,8 +103,9 @@ export class ProblemTypeEditorView extends React.Component {
 
     const editorComponent = this.state.editor
 
-    // TODO disable handle if we have no material id in state
+    // TODO disable present if we have no material id in state
     const handleLayoutChange = name => event => {
+      // TODO if we have material_id in state redirect to material url
       this.setState({
         ...this.state,
         [name]: event.target.value
@@ -138,7 +138,7 @@ export class ProblemTypeEditorView extends React.Component {
             </div>
           </Grid>
           <Grid item xs={3}>
-            <FormControl variant='outlined'>
+            <FormControl variant='outlined' disabled>
               <Select
                 value={this.state.layout}
                 onChange={handleLayoutChange('layout')}

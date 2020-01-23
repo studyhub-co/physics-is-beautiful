@@ -16,7 +16,7 @@ let Index = class Index extends React.Component {
         <OvermindProvider value={this.props.overmind}>
           {/* <HooksProvider client={client}> */}
           <ThemeProvider theme={theme}>
-            <Editor>
+            <Editor {...this.props}>
                {/*{this.props.children}*/}
             </Editor>
           </ThemeProvider>
@@ -27,10 +27,10 @@ let Index = class Index extends React.Component {
   }
 }
 
-export default async () => {
+export default async (props) => {
   const x = await new Promise((resolve, reject) => {
     initialize(Index, (Component, overmind) => {
-      resolve(<Component overmind={overmind} />)
+      resolve(<Component overmind={overmind} {...props}/>)
     })
   })
   return x

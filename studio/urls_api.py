@@ -11,10 +11,6 @@ router.register(r'lessons', apis.LessonViewSet, basename='lesson')
 router.register(r'materials', apis.MaterialViewSet, basename='material')
 router.register(r'material-problem-type', apis.MaterialProblemTypeViewSet, basename='material_problem_type')
 
-# TODO sanbox modules API, like
-# /api/v1/sandboxes/06zqu/modules/5QyoA ==> /api/v1/material-problem-type/06zqu/modules/5QyoA
-#                   ^^^^^ material-problem-type id                                      ^^^^^ module id
-
 public_router = routers.DefaultRouter()
 public_router.register(r'courses', apis_public.CourseViewSet, basename='public_course')
 public_router.register(r'units', apis_public.UnitViewSet, basename='public_unit')

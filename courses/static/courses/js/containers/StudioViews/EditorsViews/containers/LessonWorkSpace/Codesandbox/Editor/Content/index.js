@@ -549,11 +549,14 @@ class EditorPreview extends React.Component {
                   signals.editor.moduleSelected({ id: moduleId })
                 }
                 // onModuleStateMismatch={signals.live.onModuleStateMismatch}
-                onSave={code =>
+                onSave={code => {
+                  console.log('onSave from vscode');
+                  console.log(code);
                   signals.editor.codeSaved({
                     code,
                     moduleShortid: currentModule.shortid
                   })
+                }
                 }
                 tsconfig={
                   store.editor.parsedConfigurations.typescript &&

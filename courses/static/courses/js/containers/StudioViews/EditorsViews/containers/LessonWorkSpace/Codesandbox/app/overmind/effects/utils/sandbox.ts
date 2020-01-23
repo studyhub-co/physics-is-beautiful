@@ -28,9 +28,6 @@ export function transformDirectory(
 
 export function transformSandbox(sandbox: SandboxAPIResponse) {
 
-  // console.log('transformSandbox');
-  // console.log(sandbox);
-  
   // We need to add client side properties for tracking
   return {
     ...sandbox,
