@@ -158,10 +158,7 @@ export const codeSaved: AsyncAction<{
   cbID: string;
 }> = withOwnedSandbox(
   async ({ actions }, { code, moduleShortid, cbID }) => {
-
     // console.trace()
-    console.log(code, moduleShortid, cbID);
-    
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
@@ -230,9 +227,10 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
           state.editor.changedModuleShortids.push(moduleShortid);
         }
       });
-      effects.notificationToast.error(
-        'Sorry, was not able to save, please try again'
-      );
+      alert('Sorry, was not able to save, please try again')
+      // effects.notificationToast.error(
+      //   'Sorry, was not able to save, please try again'
+      // );
     }
   }
 );

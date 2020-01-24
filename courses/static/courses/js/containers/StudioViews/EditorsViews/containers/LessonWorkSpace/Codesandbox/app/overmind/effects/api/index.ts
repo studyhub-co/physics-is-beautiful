@@ -32,8 +32,6 @@ export default {
     return transformSandbox(sandbox);
   },
   saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
-    // console.log(module.code);
-
     return api
       .put<IModuleAPIResponse>(
         // `/sandboxes/${sandboxId}/modules/${module.shortid}`,

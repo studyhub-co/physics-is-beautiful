@@ -76,6 +76,9 @@ export const saveCode: AsyncAction<{
 }> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
   // effects.analytics.track('Save Code');
   console.log('Save Code');
+  // TODO fix me - saving run twice
+  // console.log(code, moduleShortid, cbID);
+  // console.trace();
 
   const sandbox = state.editor.currentSandbox;
   const module = sandbox.modules.find(m => m.shortid === moduleShortid);
@@ -109,8 +112,8 @@ export const saveCode: AsyncAction<{
   try {
     const updatedModule = await effects.api.saveModuleCode(sandbox.id, module);
 
-    console.log('updatedModule');
-    console.log(updatedModule);
+    // console.log('updatedModule');
+    // console.log(updatedModule);
 
     module.insertedAt = updatedModule.insertedAt;
     module.updatedAt = updatedModule.updatedAt;
@@ -141,12 +144,12 @@ export const saveCode: AsyncAction<{
 
     // If the executor is a server we only should send updates if the sandbox has been
     // started already
-    if (
-      !effects.executor.isServer() ||
-      state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
-    ) {
-      effects.executor.updateFiles(state.editor.currentSandbox);
-    }
+    // if (
+    //   !effects.executor.isServer() ||
+    //   state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
+    // ) {
+    //   effects.executor.updateFiles(state.editor.currentSandbox);
+    // }
 
     // if (state.live.isLive && state.live.isCurrentEditor) {
     //   effects.live.sendModuleSaved(module);

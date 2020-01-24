@@ -75,6 +75,7 @@ export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>,
   cancelAction: AsyncAction<T> = () => Promise.resolve()
 ): AsyncAction<T> => async (context, payload) => {
+
   const { state, actions } = context;
 
   if (!state.editor.currentSandbox.owned) {
@@ -101,6 +102,8 @@ export const withOwnedSandbox = <T>(
       return cancelAction(context, payload);
     }
   }
+
+  // console.log(payload);
 
   return continueAction(context, payload);
 };

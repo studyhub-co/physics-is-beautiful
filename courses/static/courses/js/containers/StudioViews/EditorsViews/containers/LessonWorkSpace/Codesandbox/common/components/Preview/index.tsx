@@ -201,7 +201,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   currentUrl = () => {
-    // TODO
+    // TODO Do need url with sandox id?
     if (window.location.hostname=='127.0.0.1')
     {
       return 'http://127.0.0.1:8000/material-frame/';

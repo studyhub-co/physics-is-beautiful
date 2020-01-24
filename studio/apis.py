@@ -303,7 +303,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
         except ObjectDoesNotExist:
             raise NotFound('Module not found')
 
-        serializer = self.serializer_class_module(module, data=request.data)
+        serializer = self.serializer_class_module(module, data=request.data.get('module'), partial=True)
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()

@@ -145,9 +145,6 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   const oldSandboxId =
     state.editor.currentId === sandbox.id ? null : state.editor.currentId;
 
-  // console.log('setCurrentSandbox');
-  // console.log(sandbox);
-
   state.editor.sandboxes[sandbox.id] = sandbox;
 
   // here is where syncfiles

@@ -334,6 +334,14 @@ class MaterialMaterialProblemTypeSerializer(BaseSerializer):
     modules = MaterialProblemTypeSandboxModuleSerializer(many=True, read_only=True)
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
+    owned = serializers.SerializerMethodField()
+
+    def get_owned(self, obj):
+        if self.context['request'].user.profile.id == obj.author_id \
+                or self.context['request'].user.is_superuser:
+            return True
+        else:
+            return False
 
     def get_id(self, obj):
         return obj.uuid

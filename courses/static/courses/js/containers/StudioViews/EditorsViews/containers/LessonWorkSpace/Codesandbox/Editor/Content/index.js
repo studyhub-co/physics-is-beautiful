@@ -550,8 +550,8 @@ class EditorPreview extends React.Component {
                 }
                 // onModuleStateMismatch={signals.live.onModuleStateMismatch}
                 onSave={code => {
-                  console.log('onSave from vscode');
-                  console.log(code);
+                  // console.log('onSave from vscode');
+                  // console.log(code);
                   signals.editor.codeSaved({
                     code,
                     moduleShortid: currentModule.shortid
