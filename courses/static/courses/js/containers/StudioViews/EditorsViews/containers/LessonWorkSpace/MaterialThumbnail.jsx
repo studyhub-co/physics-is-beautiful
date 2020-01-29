@@ -31,7 +31,7 @@ class MaterialThumbnailComponent extends React.Component {
   }
   handleDeleteClick (e) {
     e.preventDefault()
-    if (confirm('Are you sure you want to delete this question?')) {
+    if (confirm('Are you sure you want to delete this material?')) {
       this.props.onDeleteClick()
     }
   }
@@ -59,6 +59,8 @@ class MaterialThumbnailComponent extends React.Component {
 MaterialThumbnailComponent.propTypes = {
   shortText: PropTypes.string,
   onClick: PropTypes.func,
+  uuid: PropTypes.string, // material uuid
+  lessonUuid: PropTypes.string.isRequired, // leeeson uuid
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
@@ -77,7 +79,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
   return {
-    onClick: e => dispatch(goToMaterial(uuid)),
+    onClick: e => dispatch(goToMaterial(uuid, ownProps.lessonUuid)),
     onDeleteClick: () => dispatch(deleteMaterial(uuid))
   }
 }

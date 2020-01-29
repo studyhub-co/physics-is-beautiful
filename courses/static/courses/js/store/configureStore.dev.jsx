@@ -4,9 +4,9 @@ import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
-// import { routerMiddleware } from 'react-router-redux'
 
 import rootReducer from '../reducers'
+import routingMiddleware from '../middleware/routing'
 import DevTools from '../containers/Root/DevTools'
 
 import { connectRouter, routerMiddleware } from 'connected-react-router'
@@ -16,8 +16,9 @@ export default function configureStore (initialState, history) {
 
   // Build the middleware for intercepting and dispatching navigation actions
   // const reduxRouterMiddleware = routerMiddleware(history)
-
-  const middleware = applyMiddleware(thunk, routerMiddleware(history), logger)
+  const middleware = applyMiddleware(
+    thunk, routerMiddleware(history), routingMiddleware, logger
+  )
 
   // comment this for using inline dev tools, need comment compose below DevTools works only in one place
   const middlewareWithDevTools = compose(

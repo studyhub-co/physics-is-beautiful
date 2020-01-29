@@ -33,6 +33,7 @@ import WorkspaceMenu from './Menu/Menu'
 
 // import Editor from './Codesandbox/Editor/index'
 import asyncEditor from './Codesandbox/Editor/index'
+import history from '../../../../../history'
 
 export class Lesson extends React.Component {
   constructor (props) {
@@ -93,17 +94,20 @@ export class Lesson extends React.Component {
     var navMaterials = []
 
     for (var i in this.props.materials) {
-      let curMaterialUuid = this.props.materials[i]
+      let materialUuid = this.props.materials[i]
 
       navMaterials.push(
         <DockableDropTarget
-          key={curMaterialUuid}
+          key={materialUuid}
           onDrop={(dropSource) =>
-            this.handleMaterialDroppedBefore(dropSource.uuid, curMaterialUuid)}
-          itemType={DragItemTypes.MATERIAL} selfUuid={curMaterialUuid}>
+            this.handleMaterialDroppedBefore(dropSource.uuid, materialUuid)}
+          itemType={DragItemTypes.MATERIAL} selfUuid={materialUuid}>
           <MaterialThumbnail
-            key={curMaterialUuid} uuid={curMaterialUuid}
-            selected={this.props.currentMaterial === curMaterialUuid} />
+            key={materialUuid}
+            uuid={materialUuid}
+            lessonUuid={this.props.uuid}
+            selected={this.props.currentMaterial.uuid === materialUuid}
+          />
         </DockableDropTarget>
       )
     }
@@ -214,77 +218,12 @@ export class Lesson extends React.Component {
         </Grid>
       </Grid>
     )
-
-    // return (
-    //   <Container>
-    //     <Row>
-    //       <Col sm={9} md={6} xs={12}>
-    //         <h1>
-    //           <EditableThumbnail
-    //             image={this.props.image}
-    //             onChange={this.props.onImageChange}
-    //           />
-    //           <EditableLabel
-    //             value={this.props.name}
-    //             onChange={this.props.onNameChange}
-    //             defaultValue='New lesson'
-    //           />
-    //           <FaTimes onClick={this.handleDeleteClick} />
-    //         </h1>
-    //       </Col>
-    //       <Col sm={3} md={6} xs={12}>
-    //         <a
-    //           href={'/course/lessons/' + this.props.uuid}
-    //           className='btn btn-light'
-    //         >
-    //           <FaExternalLinkAlt /> Open student view
-    //         </a>
-    //       </Col>
-    //     </Row>
-    //     <hr />
-    //     <Tab.Container
-    //       defaultActiveKey={this.props.currentMaterial}>
-    //       <Row>
-    //         <Col sm={3}>
-    //           <ListGroup
-    //             style={{ overflowY: 'auto', maxHeight: '70vh' }}
-    //             className={'lesson-nav-materials'}
-    //           >
-    //             <DockableDropTarget
-    //               onDrop={(dropSource) =>
-    //                 this.handleMaterialDroppedBefore(dropSource.uuid, null)}
-    //               itemType={DragItemTypes.MATERIAL}>
-    //               <div className={'question-thumbnail draggable'}>
-    //                 <div
-    //                   onClick={this.props.onAddMaterialClick}
-    //                   className='btn btn-light btn-add'
-    //                   style={{cursor: 'pointer',
-    //                     width: '100%',
-    //                     height: '100%'
-    //                   }}
-    //                 >
-    //                   <FaPlusCircle />
-    //                   <br />Add material
-    //                 </div>
-    //               </div>
-    //             </DockableDropTarget>
-    //             {navMaterials}
-    //           </ListGroup>
-    //         </Col>
-    //         <Col sm={9}>
-    //           {/*<MaterialContainer uuid={this.props.currentMaterial} />*/}
-    //         </Col>
-    //       </Row>
-    //     </Tab.Container>
-    //   </Container>
-    // )
   }
 }
 
 Lesson.propTypes = {
   uuid: PropTypes.string.isRequired,
-  problem_type_uuid: PropTypes.string.isRequired,
-  currentMaterial: PropTypes.string,
+  currentMaterial: PropTypes.object,
   loadLessonIfNeeded: PropTypes.func.isRequired,
   onImageChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,
@@ -300,13 +239,13 @@ Lesson.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
-  const problemTypeUuid = ownProps.problem_type_uuid || ownProps.match.params.problem_type_uuid
   const lesson = state.studio.lessons[uuid]
   if (lesson) {
     let previousMaterial, nextMaterial
 
+    // set material checked
     if (state.studio.currentMaterial && lesson.materials) {
-      const idx = lesson.materials.indexOf(state.studio.currentMaterial)
+      const idx = lesson.materials.indexOf(state.studio.currentMaterial.uuid)
       if (idx > 0) { previousMaterial = lesson.materials[idx - 1] }
       if (idx < lesson.materials.length - 1) { nextMaterial = lesson.materials[idx + 1] }
     }
@@ -324,8 +263,7 @@ const mapStateToProps = (state, ownProps) => {
     }
   } else {
     return {
-      loading: true,
-      problem_type_uuid: problemTypeUuid
+      loading: true
     }
   }
 }

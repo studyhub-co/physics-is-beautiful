@@ -254,6 +254,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
         # based on https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
         initial_sandbox.pk = None
         initial_sandbox.uuid = None
+        initial_sandbox.official = False
         initial_sandbox.save()
 
         new_old_dir_pks = {}
@@ -341,15 +342,15 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
                 version=version,
                 sandbox=sandbox.pk
             )
-            serializer = self.serializer_class_cache(cache)
+            serializer = self.serializer_class_cache(cache, data=request.data)
         except MaterialProblemTypeSandboxCache.DoesNotExist:
             # data = {'sandbox': sandbox.pk}
             # data.update(request.data)
             # serializer = self.serializer_class_cache(data=data)
             serializer = self.serializer_class_cache(data=request.data)
 
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(sandbox=sandbox)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(sandbox=sandbox)
 
         return Response(serializer.data)
 

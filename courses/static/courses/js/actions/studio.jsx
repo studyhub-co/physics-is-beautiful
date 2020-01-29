@@ -321,7 +321,7 @@ export function loadMyCourses () {
             courses: data
           }
         })
-      },
+      }
     })
   }
 }
@@ -1087,7 +1087,7 @@ export function lessonLoaded (data) {
   return {
     type: ActionTypes.LESSON_LOADED,
     lesson: data,
-    materials: materials,
+    materials: materials
   }
 }
 
@@ -1331,18 +1331,19 @@ export function changeMaterialHint (uuid, newHint) {
   }
 }
 
-export function goToMaterial (uuid) {
+export function goToMaterial (uuid, lessonUuid) {
   return dispatch => {
     dispatch({
       type: ActionTypes.GOTO_MATERIAL,
-      material: uuid
+      material: {uuid: uuid},
+      lesson: {uuid: lessonUuid}
     })
     dispatch(loadMaterialIfNeeded(uuid))
   }
 }
 
-export function addMaterial (lesson, material) {
-  var data = {name: 'New material', lesson: lesson}
+export function addMaterial (lessonUuid, material) {
+  var data = {name: 'New material', lesson: lessonUuid}
   if (material) {
     data['prototype'] = material.uuid
   }
@@ -1354,16 +1355,14 @@ export function addMaterial (lesson, material) {
       url: API_PREFIX + 'materials/',
       data: data, // {lesson : lesson, text : 'New material'},
       success: function (data, status, jqXHR) {
-        if (material) {
-          history.push('/studio/editor/lessons/' + lesson + '/')
-          // reload lesson
-          dispatch(loadLesson(lesson))
+        if (data) {
+          dispatch({
+            type: ActionTypes.MATERIAL_ADDED,
+            material: data,
+            lesson: {uuid: lessonUuid}
+          })
         } else {
-          dispatch(
-            {
-              type: ActionTypes.MATERIAL_ADDED,
-              material: data
-            })
+          console.log('material was not saved')
         }
       }
     })
@@ -1372,9 +1371,8 @@ export function addMaterial (lesson, material) {
 
 export function moveMaterial (uuid, beforeUuid) {
   return (dispatch, getState) => {
-    
-    console.log(beforeUuid);
-    
+    console.log(beforeUuid)
+
     var state = getState().studio
     var lessonUuid = state.materials[uuid].lesson
     var newPosition

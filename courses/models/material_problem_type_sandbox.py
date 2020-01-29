@@ -315,7 +315,9 @@ class MaterialProblemTypeSandboxCache(models.Model):
     """
     version = models.URLField()  # transpiler version
     data = JSONField(default=dict)
-    sandbox = models.OneToOneField(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
+    # sandbox = models.OneToOneField(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
+    # we can have > 1 of a cache for one sandbox (different versions)
+    sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
 
     # TODO remove old data functional
 

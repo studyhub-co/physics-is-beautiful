@@ -183,11 +183,10 @@ function currentMaterial (state = null, action) {
     case ActionTypes.GOTO_MATERIAL:
       return action.material
     case ActionTypes.MATERIAL_ADDED:
-      return action.material.uuid
+      // return action.material.uuid
+      return action.material
     case ActionTypes.DELETE_MATERIAL:
       return action.goToMaterial
-    // case LOCATION_CHANGE:
-    //   return null
     default:
       return state
   }
