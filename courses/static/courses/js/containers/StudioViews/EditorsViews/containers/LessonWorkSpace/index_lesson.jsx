@@ -9,6 +9,8 @@ import Select from '@material-ui/core/Select'
 import Edit from '@material-ui/icons/Edit'
 import Slideshow from '@material-ui/icons/Slideshow'
 
+import loadable from '../../../../../utils/loadable.jsx'
+
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
 import {
@@ -31,7 +33,7 @@ import MaterialThumbnail from './MaterialThumbnail'
 import ToolBar from './Menu/ToolBar'
 import WorkspaceMenu from './Menu/Menu'
 
-// import Editor from './Codesandbox/Editor/index'
+import Search from './Codesandbox/Search/index'
 import asyncEditor from './Codesandbox/Editor/index'
 import history from '../../../../../history'
 
@@ -120,6 +122,7 @@ export class Lesson extends React.Component {
         [name]: event.target.value
       })
     }
+    // console.log(this.props.currentMaterial)
 
     return (
       <Grid container>
@@ -147,10 +150,6 @@ export class Lesson extends React.Component {
             </div>
           </Grid>
           <Grid item xs={3}>
-            {/* <FormControl variant='outlined' className={classes.formControl} */}
-            {/* <InputLabel ref={inputLabel} htmlFor='outlined-age-native-simple'> */}
-            {/* Age */}
-            {/* </InputLabel> */}
             <FormControl variant='outlined'>
               <Select
                 value={this.state.layout}
@@ -174,39 +173,53 @@ export class Lesson extends React.Component {
         >
           <ToolBar />
         </Grid>
+        {/* Present mode on */}
         <Grid container item xs={12} spacing={4}>
-          { this.state.layout === 'present' && <Grid item xs={2}>
-            <div style={{ display: 'flex', maxHeight: '70vh', flexDirection: 'column' }}>
-              <div
-                style={{ overflowY: 'auto',
+          {/* Materials list */}
+          { this.state.layout === 'present' && <React.Fragment>
+            <Grid item xs={2}>
+              <div style={{ display: 'flex', maxHeight: '80vh', flexDirection: 'column' }}>
+                <div
+                  style={{ overflowY: 'auto',
                   /* for Firefox */
-                  flexGrow: 1,
-                  minHeight: 0
-                }}
-                className={'lesson-nav-materials'}
-              >
-                <DockableDropTarget
-                  onDrop={(dropSource) =>
-                    this.handleMaterialDroppedBefore(dropSource.uuid, null)}
-                  itemType={DragItemTypes.MATERIAL}>
-                  <div className={'question-thumbnail draggable'}>
-                    <div
-                      onClick={this.props.onAddMaterialClick}
-                      className='btn btn-light btn-add'
-                      style={{cursor: 'pointer',
-                        width: '100%',
-                        height: '100%'
-                      }}
-                    >
-                      <FaPlusCircle />
-                      <br />Add material
+                    flexGrow: 1,
+                    minHeight: 0
+                  }}
+                  className={'lesson-nav-materials'}
+                >
+                  <DockableDropTarget
+                    onDrop={(dropSource) =>
+                      this.handleMaterialDroppedBefore(dropSource.uuid, null)}
+                    itemType={DragItemTypes.MATERIAL}>
+                    <div className={'question-thumbnail draggable'}>
+                      <div
+                        onClick={this.props.onAddMaterialClick}
+                        className='btn btn-light btn-add'
+                        style={{cursor: 'pointer',
+                          width: '100%',
+                          height: '100%'
+                        }}
+                      >
+                        <FaPlusCircle />
+                        <br />Add material
+                      </div>
                     </div>
-                  </div>
-                </DockableDropTarget>
-                {navMaterials}
+                  </DockableDropTarget>
+                  {navMaterials}
+                  {/* Search material type */}
+                  {/* {this.props.currentMaterial && */}
+                </div>
               </div>
-            </div>
-          </Grid> }
+            </Grid>
+            <Grid
+              item xs={10}>
+              {/* TODO show Search if sanbox does not exist in curent Material */}
+              {/*<Search />*/}
+            </Grid>
+          </React.Fragment>
+          }
+          {/* Present mode off */}
+          {/* Material editor */}
           <Grid
             item xs={12}
             style={{
@@ -215,6 +228,7 @@ export class Lesson extends React.Component {
             }}>
             {editorComponent}
           </Grid>
+
         </Grid>
       </Grid>
     )

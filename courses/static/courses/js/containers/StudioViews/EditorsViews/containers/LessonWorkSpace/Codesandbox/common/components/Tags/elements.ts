@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 // import CrossIcon from 'react-icons/lib/md/clear';
+import { MdClear as CrossIcon } from 'react-icons/md';
 
 export const TagContainer = styled.div<{ align: 'left' | 'right' }>`
   display: flex;
