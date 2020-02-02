@@ -260,6 +260,9 @@ const mapStateToProps = (state, ownProps) => {
 
     const currentMaterial = state.studio.currentMaterial
 
+    // console.log(state.studio.materials);
+    // console.log(currentMaterial)
+
     // set material nexp/prev buttons
     // if (currentMaterial && lesson.materials) {
     //   const idx = lesson.materials.indexOf(currentMaterial.uuid)
@@ -277,7 +280,8 @@ const mapStateToProps = (state, ownProps) => {
       name: lesson.name,
       image: lesson.image,
       module: lesson.module,
-      materials: lesson.materials,
+      materials: lesson.materials, // this is uuids list
+      materialsDict: state.studio.materials, // this is {'uuid': obj} dict with all materials ever loaded o_0
       // previousMaterial: previousMaterial,
       // nextMaterial: nextMaterial,
       currentMaterial: currentMaterial

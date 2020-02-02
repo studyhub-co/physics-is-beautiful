@@ -10,12 +10,15 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
 
+from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
+
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
     SANDOX_TEMPLATE_REACT_JSON_STRING, MaterialProblemTypeSandboxCache
 
 from .serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
     LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer, \
-    MaterialProblemTypeSandboxCacheSerializer, MaterialProblemTypeSandboxModuleSerializer
+    MaterialProblemTypeSandboxCacheSerializer, MaterialProblemTypeSandboxModuleSerializer, \
+    MaterialListSerializer
 
 
 from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
@@ -160,9 +163,10 @@ class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
             # .prefetch_related('questions__tags', 'questions__vectors')\
 
 
-class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin):
+class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin, SeparateListObjectSerializerMixin):
     permission_classes = (permissions.IsAuthenticated, IsMaterialOwnerOrCollaborator)
     serializer_class = MaterialSerializer
+    list_serializer_class = MaterialListSerializer
     lookup_field = 'uuid'
 
     def create(self, request, *args, **kwargs):

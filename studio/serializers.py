@@ -23,8 +23,18 @@ from courses.serializers import BaseSerializer
 from profiles.serializers import PublicProfileSerializer
 from profiles.models import Profile
 
+"""
+Fixme:
 
+The ListSerializer class provides the behavior for serializing and validating multiple objects at once. 
+You won't typically need to use ListSerializer directly, but should instead simply pass many=True when 
+instantiating a serializer.
+
+When a serializer is instantiated and many=True is passed, a ListSerializer instance will be created. 
+The serializer class then becomes a child of the parent ListSerializer
+"""
 class DictSerializer(serializers.ListSerializer):
+
     def to_representation(self, data):
         # FIXME bad approach, can't use prefetch_related with it
         return OrderedDict([(d['uuid'], d) for d in super().to_representation(data)])
@@ -46,6 +56,20 @@ class SimpleModuleSerializer(BaseSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
+
+
+# class MaterialListSerializer(DictSerializer):
+# TODO its load all material now - add pagination
+class MaterialListSerializer(BaseSerializer):
+    lesson = serializers.CharField(source='lesson.uuid')
+
+    def create(self, validated_data):
+        validated_data['lesson'] = validated_data['lesson']['uuid']
+        return super().create(validated_data)
+
+    class Meta:
+        model = Material
+        fields = ['uuid', 'lesson', 'name', 'slug']
 
 
 class MaterialSerializer(BaseSerializer):
@@ -92,12 +116,14 @@ class MaterialSerializer(BaseSerializer):
                   # 'hint', 'text', 'solution_text', 'hint', 'image', 'position',
                   # 'answer_type', 'answers', 'vectors',
                   ]
-        list_serializer_class = DictSerializer
+        # not support Meta/fields, see piblib.drf.views_set_mixins
+        # list_serializer_class = DictSerializer
 
 
 class LessonSerializer(BaseSerializer):
     module = serializers.CharField(source='module.uuid')
-    materials = MaterialSerializer(many=True, read_only=True)
+    # materials = MaterialSerializer(many=True, read_only=True)
+    materials = MaterialListSerializer(many=True, read_only=True)
 
     def validate_module(self, value):
         return Module.objects.get(uuid=value)

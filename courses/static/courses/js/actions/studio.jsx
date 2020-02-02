@@ -274,6 +274,7 @@ export function coursesLoaded (data) {
 }
 
 function extract (object, prop) {
+  // This function change object! :(
   var ret = object[prop]
   var ids = []
   for (var k in object[prop]) {
@@ -1098,7 +1099,25 @@ function redirectTo1stMaterial (lesson) {
 }
 
 export function lessonLoaded (data) {
-  var materials = extract(data, 'materials')
+  // var materials = extract(data, 'materials')
+  // extract function:
+  // return materials as {{},{}}
+  // convert data['materials'] from [{},{}] to [uuid1, uuid2]
+  // very confusing behavior!
+
+  // we get list of materials instead dict of UUID from API now
+  // see studio/serializers.py for detail
+  // so we need to rewrite extract()
+
+  // copy list of materials
+  var materials = {}
+  data['materials'].forEach(material => {
+    materials[material.uuid] = material
+  })
+
+  // convert list of materials to list of uuid
+  data['materials'] = data['materials'].map(item => item.uuid)
+
   return {
     type: ActionTypes.LESSON_LOADED,
     lesson: data,

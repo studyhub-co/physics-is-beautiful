@@ -125,7 +125,7 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['uuid', 'name', 'image', 'module', 'status'] # 'lesson_type', 'game_slug'
+        fields = ['uuid', 'name', 'image', 'module', 'status']  # 'lesson_type', 'game_slug'
 
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()

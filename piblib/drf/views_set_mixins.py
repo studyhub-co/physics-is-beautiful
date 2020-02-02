@@ -1,3 +1,9 @@
+# TODO move to
+# class Meta:
+#   list_serializer_class =
+# https://www.django-rest-framework.org/api-guide/serializers/#customizing-listserializer-behavior
+# but it seems it's not support Meta: fields now
+
 
 class SeparateListObjectSerializerMixin:
     def get_serializer_class(self):
