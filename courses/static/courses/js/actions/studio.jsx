@@ -1076,9 +1076,24 @@ export function addLesson (moduleUuid, lesson) {
           lesson: data,
           materials: materials
         })
-        history.push('/studio/editor/lessons/' + data.uuid + '/')
+        // history.push('/studio/editor/lessons/' + data.uuid + '/')
+        dispatch(redirectTo1stMaterial(data))
       }
     })
+  }
+}
+
+function redirectTo1stMaterial (lesson) {
+  return (dispatch, getState) => {
+    // materials: Array(5)
+    // 0: "3ecaf3d9-87d4-4496-b9f1-79f9f22b8b83"
+    // 1: "2b5b3dc9-d6f8-4786-b589-d911ac4a8e36"
+    // 2: "81754bbd-eaa1-420a-916f-7d2c662c9bcc"
+    // NOTE: materials is array of uuids after 'extract' data,
+    // I think we need to remove this useless 'extract' data function at all in the future
+    if (lesson.materials && lesson.materials.length > 0) {
+      dispatch(goToMaterial(lesson.materials[0], lesson.uuid))
+    }
   }
 }
 
@@ -1106,10 +1121,7 @@ export function loadLessonIfNeeded (uuid) {
         url: API_PREFIX + 'lessons/' + uuid + '/',
         success: function (data, status, jqXHR) {
           dispatch(lessonLoaded(data))
-          if (data.materials.length > 0) {
-            // load first material
-            dispatch(loadMaterialIfNeeded(data.materials[0]))
-          }
+          dispatch(redirectTo1stMaterial(data))
         },
         error: function (xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {
@@ -1240,19 +1252,38 @@ export function materialLoaded (data) {
   }
 }
 
-export function loadMaterialIfNeeded (uuid) {
+export function loadMaterial (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().studio.materials)) {
-      $.ajax({
-        async: true,
-        url: API_PREFIX + 'materials/' + uuid + '/',
-        success: function (data, status, jqXHR) {
-          dispatch(materialLoaded(data))
-        }
-      })
-    }
+    // load full version of a material
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'materials/' + uuid + '/',
+      success: function (data, status, jqXHR) {
+        dispatch(materialLoaded(data))
+      }
+    })
   }
 }
+
+// FIXME fixed: I do not like to store full versions of all materials in memory
+
+// export function loadMaterialIfNeeded (uuid) {
+//   return (dispatch, getState) => {
+//     if (
+//       !(uuid in getState().studio.materials) ||
+//       getState().studio.materials[uuid].completelyLoaded === false
+//     ) {
+//       // load full version of a material
+//       $.ajax({
+//         async: true,
+//         url: API_PREFIX + 'materials/' + uuid + '/',
+//         success: function (data, status, jqXHR) {
+//           dispatch(materialLoaded(data))
+//         }
+//       })
+//     }
+//   }
+// }
 
 export function changeMaterialName (uuid, newText) {
   return function (dispatch) {
@@ -1338,7 +1369,9 @@ export function goToMaterial (uuid, lessonUuid) {
       material: {uuid: uuid},
       lesson: {uuid: lessonUuid}
     })
-    dispatch(loadMaterialIfNeeded(uuid))
+    // dispatch(loadMaterialIfNeeded(uuid))
+    // get fresh version every time we navigate to material, we can cache it in the future
+    dispatch(loadMaterial(uuid))
   }
 }
 
@@ -1371,8 +1404,7 @@ export function addMaterial (lessonUuid, material) {
 
 export function moveMaterial (uuid, beforeUuid) {
   return (dispatch, getState) => {
-    console.log(beforeUuid)
-
+    // console.log(beforeUuid)
     var state = getState().studio
     var lessonUuid = state.materials[uuid].lesson
     var newPosition
@@ -1404,13 +1436,13 @@ export function deleteMaterial (uuid) {
     var state = getState().studio
     var currentLesson = state.lessons[state.materials[uuid].lesson]
     var idx = currentLesson.materials.indexOf(uuid)
-    var goToMaterial
+    var willGoToMaterial
     if (idx < currentLesson.materials.length - 1) {
-      goToMaterial = currentLesson.materials[idx + 1]
+      willGoToMaterial = currentLesson.materials[idx + 1]
     } else if (idx > 0) {
-      goToMaterial = currentLesson.materials[idx - 1]
+      willGoToMaterial = currentLesson.materials[idx - 1]
     } else {
-      goToMaterial = null
+      willGoToMaterial = null
     }
 
     $.ajax({
@@ -1424,7 +1456,8 @@ export function deleteMaterial (uuid) {
           lesson: state.materials[uuid].lesson,
           goToMaterial: goToMaterial
         })
-        dispatch(loadMaterialIfNeeded(goToMaterial))
+        // dispatch(loadMaterialIfNeeded(goToMaterial))
+        dispatch(goToMaterial(willGoToMaterial.uuid, currentLesson.uuid))
       }
     })
   }

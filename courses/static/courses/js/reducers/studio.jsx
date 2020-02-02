@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 
 // import { LOCATION_CHANGE } from 'react-router-redux'
-import { ActionTypes } from '../actions/studio'
+import { ActionTypes, goToMaterial } from '../actions/studio'
 
 function courses (state = {}, action) {
   switch (action.type) {
@@ -153,13 +153,14 @@ function lessons (state = {}, action) {
       return state
   }
 }
-
+// materials list (Got with lesson loaded)
 function materials (state = {}, action) {
   switch (action.type) {
     case ActionTypes.MATERIAL_LOADED:
     case ActionTypes.MATERIAL_ADDED:
       return Object.assign({}, state, {
-        [action.material.uuid]: action.material
+        [action.material.uuid]:
+        Object.assign({}, action.material, {completelyLoaded: true})
       })
     case ActionTypes.DELETE_MATERIAL:
       var ret = Object.assign({}, state)
@@ -173,13 +174,18 @@ function materials (state = {}, action) {
   }
 }
 
+// currentMaterial (Got with lesson loaded)
 function currentMaterial (state = null, action) {
   switch (action.type) {
-    case ActionTypes.LESSON_LOADED:
-    case ActionTypes.LESSON_ADDED:
-    case ActionTypes.LESSON_AVAILABLE:
-      if (action.lesson.materials.length > 0) return action.lesson.materials[0]
-      else return null
+    // move to actions (redirect)
+    // case ActionTypes.LESSON_LOADED:
+    // case ActionTypes.LESSON_ADDED:
+    // case ActionTypes.LESSON_AVAILABLE:
+    //   if (action.lesson.materials.length > 0) {
+    //     return null
+    //   } else {
+    //     return null
+    //   }
     case ActionTypes.GOTO_MATERIAL:
       return action.material
     case ActionTypes.MATERIAL_ADDED:
@@ -191,6 +197,26 @@ function currentMaterial (state = null, action) {
       return state
   }
 }
+
+// // currentMaterial Full version (Got after material loaded)
+// function currentMaterialFull (state = {}, action) {
+//   switch (action.type) {
+//     case ActionTypes.MATERIAL_LOADED:
+//     case ActionTypes.MATERIAL_ADDED:
+//       return Object.assign({}, state, {
+//         [action.material.uuid]: action.material
+//       })
+//     case ActionTypes.DELETE_MATERIAL:
+//       var ret = Object.assign({}, state)
+//       delete ret[action.material]
+//       return ret
+//     case ActionTypes.LESSON_LOADED:
+//     case ActionTypes.LESSON_ADDED:
+//       return Object.assign({}, state, action.materials)
+//     default:
+//       return state
+//   }
+// }
 
 function allCourses (state = {}, action) {
   if (action.type === ActionTypes.ALL_COURSES_LOADED) {

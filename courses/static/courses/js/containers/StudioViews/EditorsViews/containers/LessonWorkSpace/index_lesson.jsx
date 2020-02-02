@@ -35,7 +35,6 @@ import WorkspaceMenu from './Menu/Menu'
 
 import Search from './Codesandbox/Search/index'
 import asyncEditor from './Codesandbox/Editor/index'
-import history from '../../../../../history'
 
 export class Lesson extends React.Component {
   constructor (props) {
@@ -48,15 +47,16 @@ export class Lesson extends React.Component {
       editor: <div></div>,
       layout: 'present' // TODO load problem type name in edit mode
     }
-
-    // TODO add material url support
-
     // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
   }
 
   async componentDidMount () {
     this.props.loadLessonIfNeeded(this.props.uuid)
+    // TODO add material url support
+    // if (this.props.currentMaterial) {
+    //   console.log(this.props);
+    // }
     let editor = await asyncEditor()
     this.setState({editor: editor})
   }
@@ -108,7 +108,7 @@ export class Lesson extends React.Component {
             key={materialUuid}
             uuid={materialUuid}
             lessonUuid={this.props.uuid}
-            selected={this.props.currentMaterial.uuid === materialUuid}
+            selected={this.props.currentMaterial && this.props.currentMaterial.uuid === materialUuid}
           />
         </DockableDropTarget>
       )
@@ -253,16 +253,23 @@ Lesson.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
+
   const lesson = state.studio.lessons[uuid]
   if (lesson) {
-    let previousMaterial, nextMaterial
+    // let previousMaterial, nextMaterial
 
-    // set material checked
-    if (state.studio.currentMaterial && lesson.materials) {
-      const idx = lesson.materials.indexOf(state.studio.currentMaterial.uuid)
-      if (idx > 0) { previousMaterial = lesson.materials[idx - 1] }
-      if (idx < lesson.materials.length - 1) { nextMaterial = lesson.materials[idx + 1] }
-    }
+    const currentMaterial = state.studio.currentMaterial
+
+    // set material nexp/prev buttons
+    // if (currentMaterial && lesson.materials) {
+    //   const idx = lesson.materials.indexOf(currentMaterial.uuid)
+    //   if (idx > 0) {
+    //     previousMaterial = lesson.materials[idx - 1]
+    //   }
+    //   if (idx < lesson.materials.length - 1) {
+    //     nextMaterial = lesson.materials[idx + 1]
+    //   }
+    // }
 
     return {
       uuid: uuid,
@@ -271,12 +278,13 @@ const mapStateToProps = (state, ownProps) => {
       image: lesson.image,
       module: lesson.module,
       materials: lesson.materials,
-      previousMaterial: previousMaterial,
-      nextMaterial: nextMaterial,
-      currentMaterial: state.studio.currentMaterial
+      // previousMaterial: previousMaterial,
+      // nextMaterial: nextMaterial,
+      currentMaterial: currentMaterial
     }
   } else {
     return {
+      uuid: uuid,
       loading: true
     }
   }
@@ -290,7 +298,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onDeleteClick: () => dispatch(deleteLesson(uuid)),
     loadLessonIfNeeded: () => dispatch(loadLessonIfNeeded(uuid)),
     onAddMaterialClick: () => dispatch(addMaterial(uuid)),
-    moveMaterial: (materialUuid, materialBeforeUuid) => dispatch(moveMaterial(materialUuid, materialBeforeUuid))
+    moveMaterial: (materialUuid, materialBeforeUuid) =>
+      dispatch(moveMaterial(materialUuid, materialBeforeUuid))
   }
 }
 

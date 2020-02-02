@@ -173,9 +173,6 @@ class MonacoEditor extends React.PureComponent {
             this.editor = editorApi
 
             // After initializing monaco editor
-            
-            // console.log(context.monaco);
-            
             this.editorDidMount(editorApi, context.monaco)
             // document.getElementById('main-app').className += ` monaco-shell`
           })
@@ -187,11 +184,11 @@ class MonacoEditor extends React.PureComponent {
   destroyMonaco = () => {
     const groupsToClose = this.editor.editorService.editorGroupService.getGroups()
 
-    document.getElementById('main-app').className = document
-      .getElementById('root')
-      .className.split(' ')
-      .filter(x => !['monaco-shell', 'vs-dark'].includes(x))
-      .join(' ')
+    // document.getElementById('main-app').className = document
+    //   .getElementById('root')
+    //   .className.split(' ')
+    //   .filter(x => !['monaco-shell', 'vs-dark'].includes(x))
+    //   .join(' ')
 
     Promise.all(groupsToClose.map(g => g.closeAllEditors()))
       .then(() => {
