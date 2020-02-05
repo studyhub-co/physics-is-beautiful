@@ -64,7 +64,7 @@ export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
 
   &:last-child {
     flex-grow: 0;
-    min-width: calc(33% - 1rem);
+    #min-width: calc(33% - 1rem);
   }
 `;
 

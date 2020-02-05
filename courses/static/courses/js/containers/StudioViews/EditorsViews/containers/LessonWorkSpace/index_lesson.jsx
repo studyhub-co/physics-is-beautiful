@@ -57,8 +57,13 @@ export class Lesson extends React.Component {
     // if (this.props.currentMaterial) {
     //   console.log(this.props);
     // }
-    let editor = await asyncEditor()
-    this.setState({editor: editor})
+
+    // TODO make editor loadable
+    // export default loadable(() => import('./index'), {
+    //   LoadingComponent: LoadingIndicator,	  fallback: <LoadingIndicator />,
+    // });
+    // let editor = await asyncEditor()
+    // this.setState({editor: editor})
   }
 
   handleDeleteClick (e) {
@@ -213,8 +218,11 @@ export class Lesson extends React.Component {
             </Grid>
             <Grid
               item xs={10}>
-              {/* TODO show Search if sanbox does not exist in curent Material */}
-              {/*<Search />*/}
+              {/* Search if sanbox does not exist in curent Material */}
+              {this.props.currentMaterial && !this.props.currentMaterial.material_problem_type
+                ? <Search />
+                : null
+              }
             </Grid>
           </React.Fragment>
           }
@@ -226,7 +234,7 @@ export class Lesson extends React.Component {
               display: this.state.layout === 'edit' ? 'flex' : 'none',
               height: '100vh'
             }}>
-            {editorComponent}
+            {/*{editorComponent}*/}
           </Grid>
 
         </Grid>
@@ -259,9 +267,6 @@ const mapStateToProps = (state, ownProps) => {
     // let previousMaterial, nextMaterial
 
     const currentMaterial = state.studio.currentMaterial
-
-    // console.log(state.studio.materials);
-    // console.log(currentMaterial)
 
     // set material nexp/prev buttons
     // if (currentMaterial && lesson.materials) {

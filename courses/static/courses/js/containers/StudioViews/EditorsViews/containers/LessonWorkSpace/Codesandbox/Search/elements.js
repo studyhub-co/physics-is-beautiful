@@ -28,5 +28,6 @@ export const Main = styled(Row)`
 
 export const Container = styled.div`
   background: ${props => props.theme.background5};
-  width: 100vw;
+  width: 100%;
 `
+

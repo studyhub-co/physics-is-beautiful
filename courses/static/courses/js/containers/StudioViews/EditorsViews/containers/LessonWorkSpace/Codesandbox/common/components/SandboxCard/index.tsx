@@ -3,6 +3,10 @@ import React from 'react';
 // import EyeIcon from 'react-icons/lib/go/eye';
 // import LikeIcon from 'react-icons/lib/go/heart';
 
+import { GoRepoForked as ForkIcon } from 'react-icons/go';
+import { GoHeart as LikeIcon } from 'react-icons/go';
+import { GoEye as EyeIcon } from 'react-icons/go';
+
 import getIcon from '../../templates/icons';
 import getTemplate, { TemplateType } from '../../templates';
 import { profileUrl } from '../../utils/url-generator';
@@ -66,7 +70,8 @@ const kFormatter = (num: number): number | string => {
 
 export default class SandboxCard extends React.PureComponent<Props> {
   toggleOpen = () => {
-    this.props.selectSandbox({ ...this.props.sandbox });
+    // this.props.selectSandbox({ ...this.props.sandbox });
+
   };
 
   handleKeyUp = e => {
@@ -104,12 +109,12 @@ export default class SandboxCard extends React.PureComponent<Props> {
         onKeyUp={this.handleKeyUp}
       >
         <Image>
-          <SandboxImage
-            alt={sandbox.title}
-            src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
-            color={template.color()}
-            style={{ height: defaultHeight }}
-          />
+          {/*<SandboxImage*/}
+            {/*alt={sandbox.title}*/}
+            {/*src={sandbox.screenshot_url || getScreenshot(sandbox.id)}*/}
+            {/*color={template.color()}*/}
+            {/*style={{ height: defaultHeight }}*/}
+          {/*/>*/}
 
           <Overlay>
             <SandboxDescription>{sandbox.description}</SandboxDescription>

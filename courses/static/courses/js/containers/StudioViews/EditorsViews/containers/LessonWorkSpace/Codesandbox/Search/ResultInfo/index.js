@@ -13,7 +13,7 @@ const ResultInfo = () => (
     0 results found
 
     <ClearAllContainer>
-      Clear
+      Clear all filters
        {/*<ClearRefnements />*/}
     </ClearAllContainer>
   </div>

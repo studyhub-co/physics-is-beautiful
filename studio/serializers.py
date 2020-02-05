@@ -23,6 +23,7 @@ from courses.serializers import BaseSerializer
 from profiles.serializers import PublicProfileSerializer
 from profiles.models import Profile
 
+
 """
 Fixme:
 
@@ -70,54 +71,6 @@ class MaterialListSerializer(BaseSerializer):
     class Meta:
         model = Material
         fields = ['uuid', 'lesson', 'name', 'slug']
-
-
-class MaterialSerializer(BaseSerializer):
-    lesson = serializers.CharField(source='lesson.uuid')
-    tags = TagListSerializerField(read_only=True)
-
-    def validate_lesson(self, value):
-        return Lesson.objects.get(uuid=value)
-
-    def update(self, instance, validated_data):
-        # ???
-        if 'lesson' in validated_data:
-            validated_data['lesson'] = validated_data['lesson']['uuid']
-
-        if 'position' in validated_data and instance.position != validated_data['position']:
-            Material.objects.filter(position__gte=validated_data['position'],
-                                    lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
-
-        return super().update(instance, validated_data)
-
-    # def update(self, instance, validated_data):
-    #     if 'lesson' in validated_data:
-    #         validated_data['lesson'] = validated_data['lesson']['uuid']
-    #
-    #     if 'position' in validated_data and instance.position != validated_data['position']:
-    #         Material.objects.filter(position__gte=validated_data['position'],
-    #                                 lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
-    #
-    #     new_answers = validated_data.pop('answers', None)
-    #
-    #     updated = super().update(instance, validated_data)
-    #     if new_answers:
-    #         updated.answers.all().delete()
-    #         new_answers.update(question=updated)
-    #     return updated
-
-    def create(self, validated_data):
-        validated_data['lesson'] = validated_data['lesson']['uuid']
-        return super().create(validated_data)
-
-    class Meta:
-        model = Material
-        fields = ['uuid', 'lesson', 'tags', 'name', 'slug'
-                  # 'hint', 'text', 'solution_text', 'hint', 'image', 'position',
-                  # 'answer_type', 'answers', 'vectors',
-                  ]
-        # not support Meta/fields, see piblib.drf.views_set_mixins
-        # list_serializer_class = DictSerializer
 
 
 class LessonSerializer(BaseSerializer):
@@ -480,3 +433,52 @@ class MaterialProblemTypeSandboxCacheSerializer(serializers.ModelSerializer):
         # fields = '__all__'
         fields = ['version', 'data']
 
+
+class MaterialSerializer(BaseSerializer):
+    lesson = serializers.CharField(source='lesson.uuid')
+    tags = TagListSerializerField(read_only=True)
+    material_problem_type = MaterialMaterialProblemTypeSerializer(read_only=True)
+
+    def validate_lesson(self, value):
+        return Lesson.objects.get(uuid=value)
+
+    def update(self, instance, validated_data):
+        # ???
+        if 'lesson' in validated_data:
+            validated_data['lesson'] = validated_data['lesson']['uuid']
+
+        if 'position' in validated_data and instance.position != validated_data['position']:
+            Material.objects.filter(position__gte=validated_data['position'],
+                                    lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
+
+        return super().update(instance, validated_data)
+
+    # def update(self, instance, validated_data):
+    #     if 'lesson' in validated_data:
+    #         validated_data['lesson'] = validated_data['lesson']['uuid']
+    #
+    #     if 'position' in validated_data and instance.position != validated_data['position']:
+    #         Material.objects.filter(position__gte=validated_data['position'],
+    #                                 lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
+    #
+    #     new_answers = validated_data.pop('answers', None)
+    #
+    #     updated = super().update(instance, validated_data)
+    #     if new_answers:
+    #         updated.answers.all().delete()
+    #         new_answers.update(question=updated)
+    #     return updated
+
+    def create(self, validated_data):
+        validated_data['lesson'] = validated_data['lesson']['uuid']
+        return super().create(validated_data)
+
+    class Meta:
+        model = Material
+        fields = ['uuid', 'lesson', 'tags', 'name', 'slug', 'material_workflow_type',
+                  'material_problem_type'
+                  # 'hint', 'text', 'solution_text', 'hint', 'image', 'position',
+                  # 'answer_type', 'answers', 'vectors',
+                  ]
+        # not support Meta/fields, see piblib.drf.views_set_mixins
+        # list_serializer_class = DictSerializer

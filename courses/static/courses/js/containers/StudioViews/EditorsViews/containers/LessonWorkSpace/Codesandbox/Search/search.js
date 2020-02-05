@@ -1,4 +1,25 @@
 import { createGlobalStyle, css } from 'styled-components'
+import { makeStyles } from '@material-ui/core/styles'
+
+export const materialUIStyles = makeStyles({
+  input: {
+    background: props => props.background2(), // props == theme here
+    width: '100%',
+    color: 'white',
+    outline: 'none'
+  },
+  inputLabel: {
+    color: 'white',
+    '&$focused': {
+      color: 'white'
+    }
+  },
+  inputLabelFocused: {
+    color: 'white'
+  }
+})
+
+// old codesanbox styles
 
 const styles = css`
   .ais-SearchBox-form {
