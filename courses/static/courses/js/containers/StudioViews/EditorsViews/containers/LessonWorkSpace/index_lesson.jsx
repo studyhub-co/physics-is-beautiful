@@ -9,7 +9,7 @@ import Select from '@material-ui/core/Select'
 import Edit from '@material-ui/icons/Edit'
 import Slideshow from '@material-ui/icons/Slideshow'
 
-import loadable from '../../../../../utils/loadable.jsx'
+// import loadable from '../../../../../utils/loadable.jsx'
 
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 

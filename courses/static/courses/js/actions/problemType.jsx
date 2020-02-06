@@ -1,34 +1,34 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import {
-  PROBLEM_TYPES_FETCH_LIST_REQUEST, PROBLEM_TYPES_RECEIVE_LIST
+  PROBLEM_TYPES_FETCH_PAGINATED_LIST_OBJECT_REQUEST, PROBLEM_TYPES_RECEIVE_PAGINATED_LIST_OBJECT
 
 } from '../constants'
 
 import { API_PREFIX as BASE_API_PREFIX } from '../utils/config'
 
-const API_PREFIX = BASE_API_PREFIX + '/studio/material-problem-type/'
+const API_PREFIX = BASE_API_PREFIX + 'studio/material-problem-type/'
 
-export function receiveProblemTypeList (problemTypesList) {
+export function receiveProblemPaginatedListObject (problemTypesPaginatedListObject) {
   return {
-    type: PROBLEM_TYPES_RECEIVE_LIST,
+    type: PROBLEM_TYPES_RECEIVE_PAGINATED_LIST_OBJECT,
     payload: {
-      problemTypesList
+      problemTypesPaginatedListObject: problemTypesPaginatedListObject
     }
   }
 }
-export function fetchProblemTypeListRequest () {
+export function fetchProblemTypePaginatedListObject () {
   return {
-    type: PROBLEM_TYPES_FETCH_LIST_REQUEST
+    type: PROBLEM_TYPES_FETCH_PAGINATED_LIST_OBJECT_REQUEST
   }
 }
 
 export function fetchProblemTypes () {
   return (dispatch, state) => {
-    dispatch(fetchProblemTypeListRequest())
+    dispatch(fetchProblemTypePaginatedListObject())
     return getAxios().get(API_PREFIX)
       .then(checkHttpStatus)
       .then((response) => {
-
+        dispatch(receiveProblemPaginatedListObject(response.data))
       })
   }
 }

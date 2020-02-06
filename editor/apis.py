@@ -19,7 +19,7 @@ from editor.serializers import CurriculumSerializer, UnitSerializer, \
 from editor.permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, IsModuleOwnerOrCollaborator, \
     IsLessonOwnerOrCollaborator, IsQuestionOwnerOrCollaborator, IsAnswerOwnerOrCollaborator
 
-# TODO add pagiantion to api views! or block load listview for Units/Lessons at least
+# TODO add pagination to api views! or block load listview for Units/Lessons at least
 
 
 class TagAddRemoveViewMixin(object):

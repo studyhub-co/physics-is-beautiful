@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState, memo } from 'react';
 import { connect } from 'react-redux'
-import { bindActionCreators, compose } from 'redux'
+import { Dispatch, bindActionCreators, compose } from 'redux'
+// import {Dispatch} from '../../../../../../../ts/types/redux'
 import qs from 'qs';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -11,6 +12,8 @@ import { ThemeProvider } from 'styled-components';
 
 import MaxWidth from '../common/components/flex/MaxWidth';
 import Margin from '../common/components/spacing/Margin';
+
+import * as problemTypeActionsCreators from '../../../../../../../actions/problemType'
 
 // NOTE: we create overmind store in
 // courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/Editor/index.jsx
@@ -24,6 +27,8 @@ import { Container, Content, Main, StyledTitle } from './elements';
 import Filters from './Filters';
 import Results from './Results';
 import Styles, { materialUIStyles } from './search';
+import PropTypes from 'prop-types'
+import { Pagination } from '../../../../../../../components/react-bootstrap/pagination'
 
 
 // import {
@@ -59,7 +64,12 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (location, searchState) =>
   searchState ? `${location.pathname}${createURL(searchState)}` : '';
 
-const Search: React.FC<ISearchProps> = ({ history, location }) => {
+const Search: React.FC<ISearchProps> = ({
+      // history,
+      // location,
+      problemTypeActions,
+      problemTypesPaginatedListObject
+}) => {
   // const {
   //   actions: { searchMounted },
   // } = useOvermind();
@@ -73,6 +83,10 @@ const Search: React.FC<ISearchProps> = ({ history, location }) => {
   // useEffect(() => {
   //   searchMounted();
   // }, [searchMounted]);
+
+  useEffect(() => {
+    problemTypeActions.fetchProblemTypes();
+  }, []);
 
   // useEffect(() => {
   //   const unlisten = history.listen((loc, action) => {
@@ -118,7 +132,6 @@ const Search: React.FC<ISearchProps> = ({ history, location }) => {
 
   const useMaterialUIStyles = materialUIStyles(theme);
 
-
   return (
     <ThemeProvider theme={theme}>
     <Container>
@@ -158,16 +171,17 @@ const Search: React.FC<ISearchProps> = ({ history, location }) => {
                     <Input
                       className={useMaterialUIStyles.input}
                       id="filled-search"
-                      label="Search field"
+                      // label="Search field"
                       type="search"
-                      variant="filled" />
+                      // variant="filled"
+                    />
                    </FormControl>
                   {/*<div>SearchBox</div>*/}
                   {/*<SearchBox*/}
                     {/*autoFocus*/}
                     {/*translations={{ placeholder: 'Search Sandboxes...' }}*/}
                   {/*/>*/}
-                  <Results />
+                  <Results resultsObj={problemTypesPaginatedListObject} />
                 </div>
                 <Filters />
               </Main>
@@ -183,16 +197,31 @@ const Search: React.FC<ISearchProps> = ({ history, location }) => {
 // eslint-disable-next-line import/no-default-export
 // export default Search;
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
+
+  console.log('state');
+  console.log(state);
+  
   return {
-    // searchResult: state.studio.materialTypes.searchResult
+    problemTypesPaginatedListObject: state.problemType.problemTypesPaginatedListObject
   }
 }
 
-export function mapDispatchToProps(dispatch) {
+// TODO
+//interface StateProps {
+//   propFromReduxStore: string
+// }
+//
+// interface DispatchProps {
+//   onSomeEvent: () => void
+// }
+//
+// type Props = StateProps & DispatchProps & OwnProps
+// function mapDispatchToProps(dispatch: Redux.Dispatch<any>, ownProps: OwnProps): DispatchProps {
+export function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {
     // onChangeUsername: evt => dispatch(changeUsername(evt.target.value)),
-    assignmentActions: bindActionCreators(assignmentCreators, dispatch)
+    problemTypeActions: bindActionCreators(problemTypeActionsCreators, dispatch)
   }
 }
 

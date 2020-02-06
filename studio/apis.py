@@ -7,6 +7,7 @@ from django.db import transaction
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, status, mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
 
@@ -26,8 +27,11 @@ from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
     IsMaterialProblemTypeAuthor
 
 
-# TODO add pagiantion to api views! or block load listview for Units/Lessons at least
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
 
+
+# TODO add pagination to api views! or block load listview for Units/Lessons at least
 class TagAddRemoveViewMixin(object):
     # @action(methods=['POST', 'DELETE'],
     #         detail=True,
@@ -197,12 +201,16 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
                                  mixins.ListModelMixin,
                                  viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
+    pagination_class = StandardResultsSetPagination
     serializer_class = MaterialMaterialProblemTypeSerializer
     serializer_class_cache = MaterialProblemTypeSandboxCacheSerializer
     serializer_class_module = MaterialProblemTypeSandboxModuleSerializer
     queryset = MaterialProblemType.objects.\
-        select_related('author__user').\
-        prefetch_related('modules__author__user').all()
+        select_related('author__user__profile'). \
+        prefetch_related('modules__author__user__profile',
+                         'directories',
+                         'modules'
+                         ).all()
     # permission_classes = [IsAuthenticated|ReadOnly]
     lookup_field = 'uuid'
 
