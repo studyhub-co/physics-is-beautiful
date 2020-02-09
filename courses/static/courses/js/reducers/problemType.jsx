@@ -10,9 +10,6 @@ const initialState = {
 export default function problemType (state = initialState, action) {
   switch (action.type) {
     case PROBLEM_TYPES_RECEIVE_PAGINATED_LIST_OBJECT:
-      
-      console.log(action);
-      
       return Object.assign({}, state, {
         problemTypesPaginatedListObject: action.payload.problemTypesPaginatedListObject,
         isFetching: false

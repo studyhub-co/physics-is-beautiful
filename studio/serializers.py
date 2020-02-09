@@ -421,7 +421,7 @@ class MaterialMaterialProblemTypeSerializer(BaseSerializer):
         model = MaterialProblemType
         # fields = ['uuid', 'name', 'data', 'created_on', 'updated_on']
         fields = '__all__'
-        read_only_fields = ('author', 'last_edit_user', 'forked_from_sandbox')
+        read_only_fields = ('author', 'last_edit_user', 'forked_from_sandbox', 'slug')
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
@@ -443,10 +443,11 @@ class MaterialSerializer(BaseSerializer):
         return Lesson.objects.get(uuid=value)
 
     def update(self, instance, validated_data):
-        # ???
+        # update lesson
         if 'lesson' in validated_data:
             validated_data['lesson'] = validated_data['lesson']['uuid']
 
+        # update postion
         if 'position' in validated_data and instance.position != validated_data['position']:
             Material.objects.filter(position__gte=validated_data['position'],
                                     lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)

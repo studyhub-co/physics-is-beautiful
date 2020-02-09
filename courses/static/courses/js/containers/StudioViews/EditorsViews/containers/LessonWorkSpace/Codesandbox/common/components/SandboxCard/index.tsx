@@ -71,6 +71,7 @@ const kFormatter = (num: number): number | string => {
 export default class SandboxCard extends React.PureComponent<Props> {
   toggleOpen = () => {
     // this.props.selectSandbox({ ...this.props.sandbox });
+    this.props.selectMaterialType();
   };
 
   handleKeyUp = e => {

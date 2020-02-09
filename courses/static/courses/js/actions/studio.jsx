@@ -9,6 +9,8 @@ import history from '../history'
 
 // TODO replace all $.ajax with request
 import request from '../utils/request'
+import { checkHttpError, getAxios } from '../../../../../resources/static/resources/js/utils'
+import { API_DJEDDIT_PREFIX } from '../../../../../resources/static/resources/js/utils/config'
 
 export const API_PREFIX = '/api/v1/studio/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
@@ -1284,25 +1286,39 @@ export function loadMaterial (uuid) {
   }
 }
 
-// FIXME fixed: I do not like to store full versions of all materials in memory
+export function setMaterialProblemType (material, materialProblemType) {
+  return (dispatch, state) => {
+    return getAxios()
+      .post(
+        API_PREFIX + 'materials/' + material.uuid + '/set_material_problem_type/',
+        materialProblemType
+      )
+      .catch(checkHttpError)
+      .then((response) => {
+        dispatch(materialLoaded(response.data))
+      })
+  }
+}
 
-// export function loadMaterialIfNeeded (uuid) {
-//   return (dispatch, getState) => {
-//     if (
-//       !(uuid in getState().studio.materials) ||
-//       getState().studio.materials[uuid].completelyLoaded === false
-//     ) {
-//       // load full version of a material
-//       $.ajax({
-//         async: true,
-//         url: API_PREFIX + 'materials/' + uuid + '/',
-//         success: function (data, status, jqXHR) {
-//           dispatch(materialLoaded(data))
-//         }
-//       })
-//     }
-//   }
-// }
+// TODO replace with updateMaterial all below
+export function updateMaterial (material) {
+  return (dispatch, state) => {
+    return getAxios().patch(API_PREFIX + 'materials/' + material.uuid + '/', material)
+      .catch(checkHttpError)
+      .then((response) => {
+        dispatch(materialLoaded(response.data))
+      })
+
+    // $.ajax({
+    //   url: API_PREFIX + 'materials/' + uuid + '/',
+    //   type: 'PATCH',
+    //   data: {name: newText},
+    //   success: function (data, status, jqXHR) {
+    //     dispatch(materialLoaded(data))
+    //   }
+    // })
+  }
+}
 
 export function changeMaterialName (uuid, newText) {
   return function (dispatch) {
@@ -1380,6 +1396,8 @@ export function changeMaterialHint (uuid, newHint) {
     })
   }
 }
+
+// END of TODO: replace with updateMaterial
 
 export function goToMaterial (uuid, lessonUuid) {
   return dispatch => {

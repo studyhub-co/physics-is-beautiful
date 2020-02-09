@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState, memo } from 'react';
-import { connect } from 'react-redux'
+import { connect, useSelector, useDispatch } from 'react-redux'
 import { Dispatch, bindActionCreators, compose } from 'redux'
 // import {Dispatch} from '../../../../../../../ts/types/redux'
 import qs from 'qs';
+import { useActions } from './hooks'
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
@@ -14,6 +15,7 @@ import MaxWidth from '../common/components/flex/MaxWidth';
 import Margin from '../common/components/spacing/Margin';
 
 import * as problemTypeActionsCreators from '../../../../../../../actions/problemType'
+import * as studioActionsCreators from '../../../../../../../actions/studio'
 
 // NOTE: we create overmind store in
 // courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/Editor/index.jsx
@@ -67,17 +69,31 @@ const searchStateToUrl = (location, searchState) =>
 const Search: React.FC<ISearchProps> = ({
       // history,
       // location,
-      problemTypeActions,
-      problemTypesPaginatedListObject
+      //actions
+      // problemTypeActions,
+      // studioActions,
+      //state
+      // problemTypesPaginatedListObject,
+      // currentMaterial
 }) => {
   // const {
   //   actions: { searchMounted },
   // } = useOvermind();
 
+  // redux store
+  const problemTypesPaginatedListObject =
+     useSelector(state => state.problemType.problemTypesPaginatedListObject)
+  const currentMaterial =
+     useSelector(state => state.studio.currentMaterial)
+
+  const problemTypeActions = useActions(problemTypeActionsCreators)
+  const studioActions = useActions(studioActionsCreators)
+
   // urls search navigation, no need now
   const [searchState, setSearchState] = useState(
     // qs.parse(location.search.slice(1))
   );
+
   const debouncedSetState = useRef(null);
 
   // useEffect(() => {
@@ -119,10 +135,10 @@ const Search: React.FC<ISearchProps> = ({
       clearTimeout(debouncedSetState.current);
 
       debouncedSetState.current = setTimeout(() => {
-        history.push(
-          searchStateToUrl(location, newSearchState),
-          newSearchState
-        );
+        // history.push(
+        //   searchStateToUrl(location, newSearchState),
+        //   newSearchState
+        // );
       }, updateAfter);
 
       setSearchState(newSearchState);
@@ -130,7 +146,15 @@ const Search: React.FC<ISearchProps> = ({
     [history, location]
   );
 
+  const selectMaterialType = (materialType) => {
+    // set materialType to current material
+    studioActions.setMaterialProblemType(currentMaterial, materialType)
+  }
+
   const useMaterialUIStyles = materialUIStyles(theme);
+  const fetchNextPage = (nextHref: string) => {
+    problemTypeActions.fetchProblemTypes(nextHref);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -181,7 +205,11 @@ const Search: React.FC<ISearchProps> = ({
                     {/*autoFocus*/}
                     {/*translations={{ placeholder: 'Search Sandboxes...' }}*/}
                   {/*/>*/}
-                  <Results resultsObj={problemTypesPaginatedListObject} />
+                  <Results
+                    selectMaterialType={selectMaterialType}
+                    resultsObj={problemTypesPaginatedListObject}
+                    fetchNextPage={fetchNextPage}
+                  />
                 </div>
                 <Filters />
               </Main>
@@ -197,15 +225,12 @@ const Search: React.FC<ISearchProps> = ({
 // eslint-disable-next-line import/no-default-export
 // export default Search;
 
-const mapStateToProps = (state: any) => {
-
-  console.log('state');
-  console.log(state);
-  
-  return {
-    problemTypesPaginatedListObject: state.problemType.problemTypesPaginatedListObject
-  }
-}
+// const mapStateToProps = (state: any) => {
+//   return {
+//     problemTypesPaginatedListObject: state.problemType.problemTypesPaginatedListObject,
+//     currentMaterial: state.studio.currentMaterial
+//   }
+// }
 
 // TODO
 //interface StateProps {
@@ -218,19 +243,21 @@ const mapStateToProps = (state: any) => {
 //
 // type Props = StateProps & DispatchProps & OwnProps
 // function mapDispatchToProps(dispatch: Redux.Dispatch<any>, ownProps: OwnProps): DispatchProps {
-export function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {
-    // onChangeUsername: evt => dispatch(changeUsername(evt.target.value)),
-    problemTypeActions: bindActionCreators(problemTypeActionsCreators, dispatch)
-  }
-}
+// export function mapDispatchToProps(dispatch: Dispatch<any>) {
+//   return {
+//     problemTypeActions: bindActionCreators(problemTypeActionsCreators, dispatch),
+//     studioActions: bindActionCreators(studioActionsCreators, dispatch)
+//   }
+// }
+//
+// const withConnect = connect(
+//   mapStateToProps,
+//   mapDispatchToProps,
+// )
+//
+// export default compose(
+//   withConnect,
+//   memo, // no need with useSelector
+// )(Search)
 
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
-
-export default compose(
-  withConnect,
-  memo,
-)(Search)
+export default Search

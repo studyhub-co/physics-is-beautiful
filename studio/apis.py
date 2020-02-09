@@ -189,6 +189,23 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin, SeparateListObjectSer
     def tags(self, request, *args, **kwargs):
         return super(MaterialViewSet, self).tags(request, args, kwargs)
 
+    @action(methods=['POST'],
+            detail=True,
+            permission_classes=[IsMaterialOwnerOrCollaborator, ], )
+    def set_material_problem_type(self, request, *args, **kwargs):
+        material = self.get_object()
+        try:
+            material_problem_type = MaterialProblemType.objects.get(uuid=request.data.get('uuid', None))
+        except MaterialProblemType.DoesNotExist:
+            raise NotFound('material_problem_type not found')
+
+        material.material_problem_type = material_problem_type
+        material.save()
+
+        serializer = self.serializer_class(material, context={'request': request})
+
+        return Response(serializer.data)
+
     def get_queryset(self):
         return Material.objects.filter(Q(lesson__module__unit__course__author=self.request.user.profile) |
                                        Q(lesson__module__unit__course__collaborators=self.request.user.profile)).\

@@ -22,10 +22,21 @@ export function fetchProblemTypePaginatedListObject () {
   }
 }
 
-export function fetchProblemTypes () {
+export function fetchProblemTypes (nextHref, searchString) {
   return (dispatch, state) => {
     dispatch(fetchProblemTypePaginatedListObject())
-    return getAxios().get(API_PREFIX)
+
+    let url = API_PREFIX
+
+    if (searchString) {
+      url = API_PREFIX + '?query=' + searchString
+    }
+
+    if (nextHref) {
+      url = nextHref
+    }
+
+    return getAxios().get(url)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveProblemPaginatedListObject(response.data))
