@@ -186,6 +186,8 @@ function currentMaterial (state = null, action) {
     //   } else {
     //     return null
     //   }
+    case ActionTypes.MATERIAL_LOADED: // load full version of material
+      return action.material
     case ActionTypes.GOTO_MATERIAL:
       return action.material
     case ActionTypes.MATERIAL_ADDED:

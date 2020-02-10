@@ -15,11 +15,8 @@ import InfiniteScroll from 'react-infinite-scroller'
 // const selectSandbox = ({ alias, git, objectID }) =>
 //   window.open(sandboxUrl({ alias, id: objectID, git }))
 
-// TODO replace with InfiniteScroll ??
-//  editor/static/editor/js/containers/browseCurricula/search/lessons.jsx
-
 const Results = ({
-  resultsObj, fetchNextPage, selectMaterialType
+  resultsObj, fetchNextPage, selectMaterialType, resetResultsObj
 }) => {
   // console.log(resultsObj)
   const [nextHref, setNextHref] = useState(null)
@@ -41,10 +38,19 @@ const Results = ({
 
       setItems([...items, ...itemsToAppend])
     }
-    return () => {
-      // on ummount
-    }
   }, [resultsObj])
+
+  useEffect(() => {
+    // on ummount
+    return () => {
+      // reset redux store
+      resetResultsObj()
+      // reset state
+      setItems([])
+      setHasMoreItems(false)
+      setNextHref(null)
+    }
+  }, [])
 
   return (
     <Container>

@@ -208,6 +208,7 @@ const Search: React.FC<ISearchProps> = ({
                   <Results
                     selectMaterialType={selectMaterialType}
                     resultsObj={problemTypesPaginatedListObject}
+                    resetResultsObj={problemTypeActions.resetProblemTypes}
                     fetchNextPage={fetchNextPage}
                   />
                 </div>

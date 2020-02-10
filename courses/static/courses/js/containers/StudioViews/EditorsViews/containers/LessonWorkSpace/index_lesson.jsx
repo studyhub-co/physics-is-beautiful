@@ -53,17 +53,13 @@ export class Lesson extends React.Component {
 
   async componentDidMount () {
     this.props.loadLessonIfNeeded(this.props.uuid)
-    // TODO add material url support
-    // if (this.props.currentMaterial) {
-    //   console.log(this.props);
-    // }
 
     // TODO make editor loadable
     // export default loadable(() => import('./index'), {
     //   LoadingComponent: LoadingIndicator,	  fallback: <LoadingIndicator />,
     // });
-    // let editor = await asyncEditor()
-    // this.setState({editor: editor})
+    let editor = await asyncEditor()
+    this.setState({editor: editor})
   }
 
   handleDeleteClick (e) {
@@ -127,7 +123,18 @@ export class Lesson extends React.Component {
         [name]: event.target.value
       })
     }
-    // console.log(this.props.currentMaterial)
+
+    const currentMaterialHasType = () => {
+      if (
+        this.props.currentMaterial &&
+        this.props.currentMaterial.hasOwnProperty('material_problem_type') && // show only if a full version of material loaded
+        !this.props.currentMaterial.material_problem_type
+      ) {
+        return false
+      } else {
+        return true
+      }
+    }
 
     return (
       <Grid container>
@@ -181,8 +188,10 @@ export class Lesson extends React.Component {
         {/* Present mode on */}
         <Grid container item xs={12} spacing={4}>
           {/* Materials list */}
-          { this.state.layout === 'present' && <React.Fragment>
-            <Grid item xs={2}>
+          {/* { this.state.layout === 'present' && <React.Fragment> */}
+          {/* <React.Fragment> */}
+          {this.state.layout === 'present'
+            ? <Grid item xs={ 2 }>
               <div style={{ display: 'flex', maxHeight: '80vh', flexDirection: 'column' }}>
                 <div
                   style={{ overflowY: 'auto',
@@ -215,28 +224,35 @@ export class Lesson extends React.Component {
                   {/* {this.props.currentMaterial && */}
                 </div>
               </div>
-            </Grid>
-            <Grid
-              item xs={10}>
-              {/* Search if sanbox does not exist in curent Material */}
-              {this.props.currentMaterial && !this.props.currentMaterial.material_problem_type
-                ? <Search />
-                : null
-              }
-            </Grid>
-          </React.Fragment>
+            </Grid> : null }
+          <Grid
+            item xs={this.state.layout === 'present' ? 10 : 12}>
+            {/* Search if sanbox does not exist in curent Material */}
+            {!this.props.loading && !currentMaterialHasType()
+              ? <Search />
+              : null
+            }
+            <div
+              style={{
+                // display: this.state.layout === 'edit' ? 'flex' : 'none',
+                display: currentMaterialHasType() ? 'flex' : 'none', // display only if material problem type is set
+                height: '100vh'
+              }}>
+              {editorComponent}
+            </div>
+          </Grid>
+          {/* </React.Fragment> */}
           }
           {/* Present mode off */}
-          {/* Material editor */}
-          <Grid
-            item xs={12}
-            style={{
-              display: this.state.layout === 'edit' ? 'flex' : 'none',
-              height: '100vh'
-            }}>
-            {/*{editorComponent}*/}
-          </Grid>
-
+          {/* Material editor - 'Edit mode' */}
+          {/* <Grid */}
+          {/* item xs={12} */}
+          {/* style={{ */}
+          {/* display: this.state.layout === 'edit' ? 'flex' : 'none', */}
+          {/* height: '100vh' */}
+          {/* }}> */}
+          {/* {editorComponent} */}
+          {/* </Grid> */}
         </Grid>
       </Grid>
     )

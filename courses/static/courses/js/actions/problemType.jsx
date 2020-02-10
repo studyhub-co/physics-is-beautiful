@@ -43,3 +43,9 @@ export function fetchProblemTypes (nextHref, searchString) {
       })
   }
 }
+
+export function resetProblemTypes () {
+  return (dispatch, state) => {
+    dispatch(receiveProblemPaginatedListObject(null))
+  }
+}
