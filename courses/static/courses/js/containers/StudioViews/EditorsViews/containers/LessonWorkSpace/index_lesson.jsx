@@ -42,6 +42,7 @@ export class Lesson extends React.Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleMaterialDroppedBefore = this.handleMaterialDroppedBefore.bind(this)
     this.onMenuItemChange = this.onMenuItemChange.bind(this)
+    this.currentMaterialHasType = this.currentMaterialHasType.bind(this)
 
     this.state = {
       editor: <div></div>,
@@ -50,6 +51,9 @@ export class Lesson extends React.Component {
     // this.handlePreviousMaterialClick = this.handlePreviousMaterialClick.bind(this)
     // this.handleNextMaterialClick = this.handleNextMaterialClick.bind(this)
   }
+
+  // memo:
+  // this.props.currentMaterial.material_problem_type = null
 
   async componentDidMount () {
     this.props.loadLessonIfNeeded(this.props.uuid)
@@ -75,8 +79,8 @@ export class Lesson extends React.Component {
     }
   }
 
-  handleMaterialDroppedBefore (maaterialUuid, beforeMaterialUuid) {
-    this.props.moveMaterial(maaterialUuid, beforeMaterialUuid)
+  handleMaterialDroppedBefore (materialUuid, beforeMaterialUuid) {
+    this.props.moveMaterial(materialUuid, beforeMaterialUuid)
   }
 
   onMenuItemChange (e, menuId) {
@@ -87,6 +91,24 @@ export class Lesson extends React.Component {
     if (menuId === 'view.edit') {
       this.setState({layout: 'edit'})
     }
+  }
+
+  currentMaterialHasType () {
+    if (
+      this.props.currentMaterial &&
+      this.props.currentMaterial.hasOwnProperty('material_problem_type') && // show only if a full version of material loaded
+      this.props.currentMaterial.material_problem_type
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  materialTypePropsInMaterial () {
+    // this mean we have no material loaded, need to wait for Material Type
+    return this.props.currentMaterial &&
+      this.props.currentMaterial.hasOwnProperty('material_problem_type')
   }
 
   render () {
@@ -122,18 +144,6 @@ export class Lesson extends React.Component {
         ...this.state,
         [name]: event.target.value
       })
-    }
-
-    const currentMaterialHasType = () => {
-      if (
-        this.props.currentMaterial &&
-        this.props.currentMaterial.hasOwnProperty('material_problem_type') && // show only if a full version of material loaded
-        !this.props.currentMaterial.material_problem_type
-      ) {
-        return false
-      } else {
-        return true
-      }
     }
 
     return (
@@ -228,21 +238,25 @@ export class Lesson extends React.Component {
           <Grid
             item xs={this.state.layout === 'present' ? 10 : 12}>
             {/* Search if sanbox does not exist in curent Material */}
-            {!this.props.loading && !currentMaterialHasType()
+            {!this.props.loading && // loading lesson
+            this.materialTypePropsInMaterial() && // loading material
+            !this.currentMaterialHasType() //
               ? <Search />
               : null
             }
             <div
               style={{
                 // display: this.state.layout === 'edit' ? 'flex' : 'none',
-                display: currentMaterialHasType() ? 'flex' : 'none', // display only if material problem type is set
+                display:
+                  this.materialTypePropsInMaterial() && this.currentMaterialHasType()
+                    ? 'flex'
+                    : 'none', // display only if material problem type is set
                 height: '100vh'
               }}>
               {editorComponent}
             </div>
           </Grid>
           {/* </React.Fragment> */}
-          }
           {/* Present mode off */}
           {/* Material editor - 'Edit mode' */}
           {/* <Grid */}
@@ -272,7 +286,7 @@ Lesson.propTypes = {
   name: PropTypes.string,
   materials: PropTypes.array,
   module: PropTypes.string,
-  loading: PropTypes.bool
+  loading: PropTypes.bool // this is lesson loading mark
 }
 
 const mapStateToProps = (state, ownProps) => {

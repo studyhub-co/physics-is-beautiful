@@ -1,5 +1,11 @@
 import * as React from 'react'
 import SplitPane from 'react-split-pane'
+// import { connect } from 'react-redux'
+
+import { Skeleton } from '../app/components/Skeleton'
+
+import store from '../../../../../../../store/store'
+
 import { inject, observer } from '../app/componentConnectors'
 import styled, { ThemeProvider } from 'styled-components'
 import { templateColor } from '../app/utils/template-color'
@@ -35,8 +41,36 @@ class ContentSplit extends React.Component {
       colors: {},
       vscodeTheme: codesandbox
     },
-    customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme
+    customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme,
+    currentMaterialProblemType: {id: 'new'}
   };
+
+  getMaterialProblemTypeFromReduxStore (state) {
+    if (state.studio.currentMaterial &&
+      state.studio.currentMaterial.material_problem_type) {
+      return state.studio.currentMaterial.material_problem_type
+    } else {
+      return null
+    }
+  }
+
+  constructor (props) {
+    super(props)
+    this.setState({ currentMaterialProblemType: null })
+    // subscribe for material changed
+    this.unSubscribeStore = store.subscribe(() => {
+      const newSandbox = this.getMaterialProblemTypeFromReduxStore(store.getState())
+      if (newSandbox && this.state.currentMaterialProblemType.id !== newSandbox.id) {
+        this.setState({
+          currentMaterialProblemType: newSandbox
+        }, this.fetchReactSandbox)
+      }
+    })
+  }
+
+  componentWillUnmount () {
+    this.unSubscribeStore()
+  }
 
   componentWillMount () {
     this.fetchReactSandbox()
@@ -47,27 +81,34 @@ class ContentSplit extends React.Component {
   }
 
   fetchReactSandbox = () => {
+    // console.log(this.state.currentMaterialProblemType)
+
+    this.props.signals.editor.sandboxChanged(this.state.currentMaterialProblemType)
+
     // const { id } = this.props.match.params;
     // load custom sanbox if we have problem_type_uuid in param
-    let id
+    // let id
+    // if (this.props.hasOwnProperty('problem_type_uuid') &&
+    //    this.props.problem_type_uuid) {
+    //   id = this.props.problem_type_uuid
+    // } else {
+    //   // th default react template of sandbox
+    //   id = 'new'
+    // }
+    // this.props.signals.editor.sandboxChanged({ id })
+  }
 
-    if (this.props.hasOwnProperty('problem_type_uuid')) {
-      id = this.props.problem_type_uuid
-    } else {
-      // th default react template of sandbox
-      id = 'new'
-    }
-
-    this.props.signals.editor.sandboxChanged({ id })
-  };
-
-  componentDidUpdate () {
+  componentDidUpdate (prevProps) {
     if (
       this.props.store.preferences.settings.customVSCodeTheme !==
       this.state.customVSCodeTheme
     ) {
       this.loadTheme()
     }
+
+    // if (prevProps.problem_type_uuid !== this.props.problem_type_uuid) {
+    //   this.fetchSandbox();
+    // }
   }
 
   loadTheme = async () => {
@@ -83,7 +124,19 @@ class ContentSplit extends React.Component {
 
   render () {
     const { signals, store, match } = this.props
+
     const sandbox = store.editor.currentSandbox
+
+    if (!sandbox || store.editor.isLoading) {
+      return (<div>Loading problem type...</div>)
+      // return (<Skeleton
+      //   titles={[
+      //     {
+      //       content: 'Loading Sandbox',
+      //       delay: 0.6
+      //     }]}
+      // />)
+    }
 
     // Force MobX to update this component by observing the following value
     this.props.store.preferences.settings.customVSCodeTheme; // eslint-disable-line
@@ -196,5 +249,18 @@ class ContentSplit extends React.Component {
     )
   }
 }
+
+// const mapStateToProps = (state, ownProps) => {
+//     return {}
+// }
+//
+// const mapDispatchToProps = (dispatch, ownProps) => {
+//   return {}
+// }
+//
+//
+// // Connect PIB store
+// const contentSplit = connect(mapStateToProps, mapDispatchToProps)(ContentSplit)
+// export default inject('signals', 'store')(observer(contentSplit))
 
 export default inject('signals', 'store')(observer(ContentSplit))

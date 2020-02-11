@@ -189,7 +189,8 @@ function currentMaterial (state = null, action) {
     case ActionTypes.MATERIAL_LOADED: // load full version of material
       return action.material
     case ActionTypes.GOTO_MATERIAL:
-      return action.material
+      // console.log(action.material);
+      return action.material // remove current material
     case ActionTypes.MATERIAL_ADDED:
       // return action.material.uuid
       return action.material

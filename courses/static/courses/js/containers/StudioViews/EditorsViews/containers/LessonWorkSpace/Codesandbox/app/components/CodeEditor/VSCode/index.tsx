@@ -611,6 +611,9 @@ export class VSCode extends React.Component<Props> implements Editor {
     new Promise(resolve => {
       this.sandbox = newSandbox;
       this.dependencies = dependencies;
+      
+      // console.log(newCurrentModule);
+      
       this.changeModule(newCurrentModule, [], []);
 
       // Do in setTimeout, since disposeModules is async
@@ -1033,6 +1036,9 @@ export class VSCode extends React.Component<Props> implements Editor {
         this.sandbox.directories,
         module.id
       );
+
+      // reopen file (when changebox reload with the same path)
+      // this.editor.openFile(path);
 
       if (path && this.getCurrentModelPath() !== path) {
         this.editor.openFile(path);

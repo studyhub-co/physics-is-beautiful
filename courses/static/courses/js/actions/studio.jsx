@@ -1399,16 +1399,17 @@ export function changeMaterialHint (uuid, newHint) {
 
 // END of TODO: replace with updateMaterial
 
-export function goToMaterial (uuid, lessonUuid) {
+export function goToMaterial (materialUuid, lessonUuid) {
   return dispatch => {
     dispatch({
       type: ActionTypes.GOTO_MATERIAL,
-      material: {uuid: uuid},
+      // we can navigate to loaded
+      material: {uuid: materialUuid},
       lesson: {uuid: lessonUuid}
     })
     // dispatch(loadMaterialIfNeeded(uuid))
     // get fresh version every time we navigate to material, we can cache it in the future
-    dispatch(loadMaterial(uuid))
+    dispatch(loadMaterial(materialUuid))
   }
 }
 

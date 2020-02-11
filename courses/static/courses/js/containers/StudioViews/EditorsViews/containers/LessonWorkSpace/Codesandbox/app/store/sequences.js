@@ -509,7 +509,6 @@ export const signInCli = [
   },
 ];
 
-// export const loadSandbox = factories.withLoadApp([
 export const loadSandbox = factories.withLoadApp([
 
   actions.setIdFromAlias,

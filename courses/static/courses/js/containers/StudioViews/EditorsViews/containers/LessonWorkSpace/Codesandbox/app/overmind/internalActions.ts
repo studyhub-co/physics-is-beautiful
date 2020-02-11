@@ -203,7 +203,11 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
     dirty: true,
   };
 
+  // closeTabByIndex(state, 0)
+  state.editor.tabs = []
+  console.log(state.editor.tabs);
   state.editor.tabs = [newTab];
+  // state.editor.tabs = [newTab];
 
   state.preferences.showPreview =
     sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;

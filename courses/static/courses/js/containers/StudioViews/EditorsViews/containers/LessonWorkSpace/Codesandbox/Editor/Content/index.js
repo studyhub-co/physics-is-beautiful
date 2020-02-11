@@ -101,6 +101,9 @@ class EditorPreview extends React.Component {
       newSandbox => {
         isChangingSandbox = !!editor.changeSandbox
 
+        // console.log(newSandbox);
+        // console.log(editor.changeSandbox);
+
         // Put in a timeout so we allow the actions after the fork to execute first as well.
         setTimeout(() => {
           if (editor.changeSandbox) {
