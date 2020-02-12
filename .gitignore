@@ -102,6 +102,7 @@ db.sqlite3
 
 # npm
 /node_modules/
+/courses/sandbox-eval-project/node_modules
 
 # webpack
 # webpack-stats.json
@@ -126,5 +127,8 @@ sh.exe.stackdump
 .vscode/settings.json
 /whoosh_index/
 pip-selfcheck.json
+
+# sandbox-eval bundles files
+/courses/sandbox-eval-project/www/
 
 webpack-stats.json

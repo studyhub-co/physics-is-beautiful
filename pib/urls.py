@@ -70,11 +70,10 @@ if settings.DEBUG:
 
 from django.views.generic.base import TemplateView
 
-# TODO add material id / move to courses urls
-urlpatterns += [
-    # url(r'^material-iframe/$', TemplateView.as_view(template_name='courses/material-iframe.html'), name='material-iframe'),
-    url(r'^material-frame/$', TemplateView.as_view(template_name='courses/frame.html'), name='material-frame'),
-]
+# # add material id / move to courses urls
+# urlpatterns += [
+#     url(r'^material/$', TemplateView.as_view(template_name='courses/iframe.html'), name='material-frame'),
+# ]
 # catch all urls in main SPA app
 # (.*?) - fix for string non ending with slash
-urlpatterns += [url(r'^(.*?)/$', include('courses.urls', namespace='main')), ]
+urlpatterns += [url(r'^(.*?)/', include('courses.urls', namespace='main')), ]

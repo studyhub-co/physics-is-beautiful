@@ -119,6 +119,7 @@ library_test
 
 # exclude source of SPA
 /courses/static/courses/js/
+# if needed: comment below to temporarily disable vscode extensions publishing due to long time uploading
 !/courses/static/courses/js/codesandbox-apps/
 
 # emacs
