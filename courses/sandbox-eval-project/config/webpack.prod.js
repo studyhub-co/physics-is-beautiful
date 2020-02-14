@@ -1,5 +1,7 @@
 /* eslint-disable global-require */
 
+// import VERSION from '@codesandbox/common/lib/version'
+
 // const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const merge = require('webpack-merge');
 const webpack = require('webpack');

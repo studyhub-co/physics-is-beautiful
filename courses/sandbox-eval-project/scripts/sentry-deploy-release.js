@@ -1,5 +1,5 @@
 const childProcess = require('child_process');
-const VERSION = require('@codesandbox/common/lib/version').default;
+const VERSION = require('@codesandbox/common/lib/src/version').default;
 
 console.log('Marking this release as deployed in Sentry');
 try {

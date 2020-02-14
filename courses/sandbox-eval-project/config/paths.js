@@ -11,8 +11,6 @@ const path = require('path')
 // It will then be used by Webpack configs.
 // Jest doesn’t need this because it already handles `NODE_PATH` out of the box.
 
-console.log(resolveApp('node_modules'))
-
 const nodePaths = (process.env.NODE_PATH || '')
   .split(process.platform === 'win32' ? ';' : ':')
   .filter(Boolean)
@@ -23,11 +21,15 @@ function resolveApp (relativePath) {
 }
 
 const src = resolveApp('src')
-const common = path.resolve('../common')
+// const common = path.resolve('../common')
+// courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common
+const common = path.resolve('../static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common')
 const appSrc = path.join(src, 'app')
 const sandboxSrc = path.join(src, 'sandbox')
 const embedSrc = path.join(src, 'embed')
 const homepageSrc = path.join(src, 'homepage')
+
+console.log(common);
 
 // config after eject: we're in ./config/
 module.exports = {

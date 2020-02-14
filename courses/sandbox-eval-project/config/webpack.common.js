@@ -1,34 +1,34 @@
 /* eslint-disable global-require */
-const webpack = require('webpack');
-const path = require('path');
-const fs = require('fs');
-const paths = require('./paths');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const threadLoader = require('thread-loader');
-const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const env = require('@codesandbox/common/lib/config/env');
-const getHost = require('@codesandbox/common/lib/utils/host');
-const postcssNormalize = require('postcss-normalize');
+const webpack = require('webpack')
+const path = require('path')
+const fs = require('fs')
+const paths = require('./paths')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
+const threadLoader = require('thread-loader')
+const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin')
+const env = require('@codesandbox/common/lib/config/env')
+const getHost = require('@codesandbox/common/lib/utils/host')
+const postcssNormalize = require('postcss-normalize')
 
-const babelDev = require('./babel.dev');
-const babelProd = require('./babel.prod');
+const babelDev = require('./babel.dev')
+const babelProd = require('./babel.prod')
 
-const NODE_ENV = JSON.parse(env.default['process.env.NODE_ENV']);
-const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
-const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
-const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
+const NODE_ENV = JSON.parse(env.default['process.env.NODE_ENV'])
+const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY
+const __DEV__ = NODE_ENV === 'development' // eslint-disable-line no-underscore-dangle
+const __PROD__ = NODE_ENV === 'production' // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
-const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd;
-let publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/';
+const babelConfig = __DEV__ && !SANDBOX_ONLY ? babelDev : babelProd
+let publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost.default() + '/'
 // dev/compile for PIB switch
-const PIB_PROD = !!process.env.PIB_PROD; // PIB used for prod mode
-const PIB_DEV = !!process.env.PIB_DEV; // PIB used for dev mode
-publicPath = PIB_PROD ? '/proxy/static/courses/js/codesandbox-apps/eval/' : publicPath;
-publicPath = PIB_DEV ? '/static/courses/js/codesandbox-apps/eval/' : publicPath;
+const PIB_PROD = !!process.env.PIB_PROD // PIB used for prod mode
+const PIB_DEV = !!process.env.PIB_DEV // PIB used for dev mode
+publicPath = PIB_PROD ? '/proxy/static/courses/js/codesandbox-apps/eval/' : publicPath
+publicPath = PIB_DEV ? '/static/courses/js/codesandbox-apps/eval/' : publicPath
 
-const isLint = 'LINT' in process.env;
+const isLint = 'LINT' in process.env
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -36,11 +36,11 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
     __DEV__ && require.resolve('style-loader'),
     __PROD__ && {
       loader: MiniCssExtractPlugin.loader,
-      options: {},
+      options: {}
     },
     {
       loader: require.resolve('css-loader'),
-      options: cssOptions,
+      options: cssOptions
     },
     {
       // Options for PostCSS as we reference these options twice
@@ -55,37 +55,37 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
           require('postcss-flexbugs-fixes'),
           require('postcss-preset-env')({
             autoprefixer: {
-              flexbox: 'no-2009',
+              flexbox: 'no-2009'
             },
-            stage: 3,
+            stage: 3
           }),
           // Adds PostCSS Normalize as the reset css with default options,
           // so that it honors browserslist config in package.json
           // which in turn let's users customize the target behavior as per their needs.
-          postcssNormalize(),
+          postcssNormalize()
         ],
-        sourceMap: __PROD__,
-      },
-    },
-  ].filter(Boolean);
+        sourceMap: __PROD__
+      }
+    }
+  ].filter(Boolean)
   if (preProcessor) {
     loaders.push(
       {
         loader: require.resolve('resolve-url-loader'),
         options: {
-          sourceMap: __PROD__,
-        },
+          sourceMap: __PROD__
+        }
       },
       {
         loader: require.resolve(preProcessor),
         options: {
-          sourceMap: true,
-        },
+          sourceMap: true
+        }
       }
-    );
+    )
   }
-  return loaders;
-};
+  return loaders
+}
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -93,8 +93,8 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
     .readdirSync(
       path.join(
         __dirname,
-        '..',
-        '..',
+        // '..',
+        // '..',
         '..',
         'node_modules',
         'eslint-plugin-vue',
@@ -104,57 +104,57 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
     )
     .filter(filename => path.extname(filename) === '.js')
     .map(filename => {
-      const ruleId = path.basename(filename, '.js');
-      return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${filename}"),`;
+      const ruleId = path.basename(filename, '.js')
+      return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${filename}"),`
     })
     .join('\n')}
   },
   processors: {
       ".vue": require("eslint-plugin-vue/lib/processor")
   }
-}`;
+}`
 
-const sepRe = `\\${path.sep}`; // path separator regex
+const sepRe = `\\${path.sep}` // path separator regex
 
 const threadPoolConfig = {
-  workers: 2,
-};
+  workers: 2
+}
 
 if (!isLint) {
-  threadLoader.warmup(threadPoolConfig, ['babel-loader']);
+  threadLoader.warmup(threadPoolConfig, ['babel-loader'])
 }
 
 module.exports = {
   entry: SANDBOX_ONLY
     ? {
-        sandbox: [
-          require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
-        ],
-        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
-      }
+      sandbox: [
+        require.resolve('./polyfills'),
+        path.join(paths.sandboxSrc, 'index.js')
+      ],
+      'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js')
+    }
     : {
-        app: [
-          require.resolve('./polyfills'),
-          path.join(paths.appSrc, 'index.js'),
-        ],
-        sandbox: [
-          require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
-        ],
-        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
-        embed: [
-          require.resolve('./polyfills'),
-          path.join(paths.embedSrc, 'index.js'),
-        ],
-      },
+      app: [
+        require.resolve('./polyfills'),
+        path.join(paths.appSrc, 'index.js')
+      ],
+      sandbox: [
+        require.resolve('./polyfills'),
+        path.join(paths.sandboxSrc, 'index.js')
+      ],
+      'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
+      embed: [
+        require.resolve('./polyfills'),
+        path.join(paths.embedSrc, 'index.js')
+      ]
+    },
   target: 'web',
   mode: 'development',
 
   node: {
     setImmediate: false,
     module: 'empty',
-    child_process: 'empty',
+    child_process: 'empty'
   },
 
   output: {
@@ -163,7 +163,7 @@ module.exports = {
     globalObject: 'this',
     jsonpFunction: 'csbJsonP', // So we don't conflict with webpack generated libraries in the sandbox
     pathinfo: false,
-    futureEmitAssets: true,
+    futureEmitAssets: true
   },
 
   module: {
@@ -171,14 +171,14 @@ module.exports = {
       {
         test: /\.wasm$/,
         loader: 'file-loader',
-        type: 'javascript/auto',
+        type: 'javascript/auto'
       },
       {
         test: /\.scss$/,
         use: getStyleLoaders(
           {
             importLoaders: 2,
-            sourceMap: true,
+            sourceMap: true
           },
           'sass-loader'
         ),
@@ -186,7 +186,7 @@ module.exports = {
         // containing package claims to have no side effects.
         // Remove this when webpack adds a warning or an error for this.
         // See https://github.com/webpack/webpack/issues/6571
-        sideEffects: true,
+        sideEffects: true
       },
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
@@ -205,7 +205,7 @@ module.exports = {
           ),
           new RegExp(
             `${sepRe}node_modules${sepRe}babel-plugin-transform-vue-jsx`
-          ),
+          )
         ],
         loader: 'babel-loader',
         query: {
@@ -216,13 +216,13 @@ module.exports = {
               {
                 targets: {
                   ie: 11,
-                  esmodules: true,
+                  esmodules: true
                 },
                 modules: 'umd',
-                useBuiltIns: false,
-              },
+                useBuiltIns: false
+              }
             ],
-            '@babel/preset-react',
+            '@babel/preset-react'
           ],
           plugins: [
             '@babel/plugin-transform-template-literals',
@@ -230,9 +230,9 @@ module.exports = {
             '@babel/plugin-transform-async-to-generator',
             '@babel/plugin-proposal-object-rest-spread',
             '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-transform-runtime',
-          ],
-        },
+            '@babel/plugin-transform-runtime'
+          ]
+        }
       },
       {
         test: /\.(j|t)sx?$/,
@@ -240,20 +240,20 @@ module.exports = {
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
-          /\.no-webpack\./,
+          /\.no-webpack\./
         ],
         use: [
           !isLint
             ? {
-                loader: 'thread-loader',
-                options: threadPoolConfig,
-              }
+              loader: 'thread-loader',
+              options: threadPoolConfig
+            }
             : false,
           {
             loader: 'babel-loader',
-            options: babelConfig,
-          },
-        ].filter(Boolean),
+            options: babelConfig
+          }
+        ].filter(Boolean)
       },
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
@@ -263,8 +263,8 @@ module.exports = {
         options: {
           search: '[\\s\\S]+', // whole file.
           replace: ESLINT_PLUGIN_VUE_INDEX,
-          flags: 'g',
-        },
+          flags: 'g'
+        }
       },
       // `eslint` has some dynamic `require(...)`.
       // Delete those.
@@ -274,8 +274,8 @@ module.exports = {
         options: {
           search: '(?:\\|\\||(\\())\\s*require\\(.+?\\)',
           replace: '$1',
-          flags: 'g',
-        },
+          flags: 'g'
+        }
       },
       // `vue-eslint-parser` has `require(parserOptions.parser || "espree")`.
       // Modify it by a static importing.
@@ -285,8 +285,8 @@ module.exports = {
         options: {
           search: 'require(parserOptions.parser || "espree")',
           replace:
-            '(parserOptions.parser === "babel-eslint" ? require("babel-eslint") : require("espree"))',
-        },
+            '(parserOptions.parser === "babel-eslint" ? require("babel-eslint") : require("espree"))'
+        }
       },
       // Patch for `babel-eslint`
       {
@@ -296,8 +296,8 @@ module.exports = {
           search: '[\\s\\S]+', // whole file.
           replace:
             'module.exports.parseForESLint = require("./parse-with-scope")',
-          flags: 'g',
-        },
+          flags: 'g'
+        }
       },
       // Remove dynamic require in jest circus
       {
@@ -305,8 +305,8 @@ module.exports = {
         loader: 'string-replace-loader',
         options: {
           search: `assert = require.call(null, 'assert');`,
-          replace: `throw new Error('module assert not found')`,
-        },
+          replace: `throw new Error('module assert not found')`
+        }
       },
       // Remove dynamic require in jest circus
       {
@@ -314,8 +314,8 @@ module.exports = {
         loader: 'string-replace-loader',
         options: {
           search: `_require(`,
-          replace: `self.require(`,
-        },
+          replace: `self.require(`
+        }
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -326,18 +326,18 @@ module.exports = {
         test: /\.css$/,
         loaders: getStyleLoaders({
           importLoaders: 1,
-          sourceMap: true,
+          sourceMap: true
         }),
         // Don't consider CSS imports dead code even if the
         // containing package claims to have no side effects.
         // Remove this when webpack adds a warning or an error for this.
         // See https://github.com/webpack/webpack/issues/6571
-        sideEffects: true,
+        sideEffects: true
       },
       // For importing README.md
       {
         test: /\.md$/,
-        loader: 'raw-loader',
+        loader: 'raw-loader'
       },
       // "file" loader makes sure those assets get served by WebpackDevServer.
       // When you `import` an asset, you get its (virtual) filename.
@@ -348,19 +348,19 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: 'static/media/[name].[hash:8].[ext]',
-            },
+              name: 'static/media/[name].[hash:8].[ext]'
+            }
           },
-          { loader: 'svgo-loader' },
-        ],
+          { loader: 'svgo-loader' }
+        ]
       },
       {
         test: /\.(ico|jpg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
         exclude: [/\/favicon.ico$/],
         loader: 'file-loader',
         options: {
-          name: 'static/media/[name].[hash:8].[ext]',
-        },
+          name: 'static/media/[name].[hash:8].[ext]'
+        }
       },
       // A special case for favicon.ico to place it into build root directory.
       {
@@ -368,8 +368,8 @@ module.exports = {
         include: [paths.src],
         loader: 'file-loader',
         options: {
-          name: 'favicon.ico?[hash:8]',
-        },
+          name: 'favicon.ico?[hash:8]'
+        }
       },
       // "url" loader works just like "file" loader but it also embeds
       // assets smaller than specified size as data URLs to avoid requests.
@@ -378,9 +378,9 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]',
-        },
-      },
+          name: 'static/media/[name].[hash:8].[ext]'
+        }
+      }
     ],
 
     noParse: [
@@ -389,8 +389,8 @@ module.exports = {
       /browserfs\.js/,
       /browserfs\.min\.js/,
       /standalone-packages\/codesandbox-browserfs/,
-      /standalone-packages\/vscode\//,
-    ],
+      /standalone-packages\/vscode\//
+    ]
   },
 
   externals: ['jsdom', 'prettier', 'cosmiconfig'],
@@ -400,7 +400,7 @@ module.exports = {
     modules: [
       'node_modules',
       path.resolve(__dirname, '../src'),
-      'standalone-packages',
+      'standalone-packages'
     ],
 
     extensions: ['.js', '.json', '.ts', '.tsx'],
@@ -414,111 +414,116 @@ module.exports = {
       bufferGlobal: 'codesandbox-browserfs/dist/shims/bufferGlobal.js',
       bfsGlobal: require.resolve(
         path.join(
+          // '..',
+          // '..',
           '..',
           '..',
-          '..',
-          'standalone-packages',
+          'static',
+          'courses',
+          'js',
+          'codesandbox-apps',
+          // 'standalone-packages',
           'codesandbox-browserfs',
           'build',
           __DEV__ ? 'browserfs.js' : 'browserfs.min.js'
         )
-      ),
-    },
+      )
+    }
   },
 
   plugins: [
     ...(SANDBOX_ONLY
       ? [
-          new HtmlWebpackPlugin({
-            inject: true,
-            chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
-            filename: 'frame.html',
-            pib_prod: PIB_PROD,
-            pib_dev: PIB_DEV,
-            template: paths.sandboxHtml,
-            minify: __PROD__ && {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            },
-          }),
-        ]
+        new HtmlWebpackPlugin({
+          inject: true,
+          chunks: ['sandbox-startup', 'vendors~sandbox', 'sandbox'],
+          filename: 'frame.html',
+          pib_prod: PIB_PROD,
+          pib_dev: PIB_DEV,
+          template: paths.sandboxHtml,
+          minify: __PROD__ && {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true
+          }
+        })
+      ]
       : [
-          // Generates an `index.html` file with the <script> injected.
-          new HtmlWebpackPlugin({
-            inject: true,
-            chunks: __PROD__ ? ['common-sandbox', 'common', 'app'] : ['app'],
-            chunksSortMode: 'manual',
-            filename: 'app.html',
-            template: paths.appHtml,
-            minify: __PROD__ && {
-              removeComments: false,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            },
-          }),
-          new HtmlWebpackPlugin({
-            inject: true,
-            chunks: __PROD__
-              ? [
-                  'sandbox-startup',
-                  'common-sandbox',
-                  'vendors~sandbox',
-                  'sandbox',
-                ]
-              : ['sandbox-startup', 'sandbox'],
-            chunksSortMode: 'manual',
-            filename: 'frame.html',
-            template: paths.sandboxHtml,
-            minify: __PROD__ && {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            },
-          }),
-          new HtmlWebpackPlugin({
-            inject: true,
-            chunks: __PROD__
-              ? ['common-sandbox', 'common', 'embed']
-              : ['embed'],
-            chunksSortMode: 'manual',
-            filename: 'embed.html',
-            template: path.join(paths.embedSrc, 'index.html'),
-            minify: __PROD__ && {
-              removeComments: false,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            },
-          }),
-        ]),
+        // Generates an `index.html` file with the <script> injected.
+        new HtmlWebpackPlugin({
+          inject: true,
+          chunks: __PROD__ ? ['common-sandbox', 'common', 'app'] : ['app'],
+          chunksSortMode: 'manual',
+          filename: 'app.html',
+          template: paths.appHtml,
+          minify: __PROD__ && {
+            removeComments: false,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true
+          }
+        }),
+        new HtmlWebpackPlugin({
+          inject: true,
+          chunks: __PROD__
+            ? [
+              'sandbox-startup',
+              'common-sandbox',
+              'vendors~sandbox',
+              'sandbox'
+            ]
+            : ['sandbox-startup', 'sandbox'],
+          chunksSortMode: 'manual',
+          filename: 'frame.html',
+          template: paths.sandboxHtml,
+          minify: __PROD__ && {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true
+          }
+        }),
+        new HtmlWebpackPlugin({
+          inject: true,
+          chunks: __PROD__
+            ? ['common-sandbox', 'common', 'embed']
+            : ['embed'],
+          chunksSortMode: 'manual',
+          filename: 'embed.html',
+          template: path.join(paths.embedSrc, 'index.html'),
+          minify: __PROD__ && {
+            removeComments: false,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true
+          }
+        })
+      ]),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env.default),
@@ -555,7 +560,7 @@ module.exports = {
         // Options similar to the same options in webpackOptions.output
         // both options are optional
         filename: 'static/css/[name].[contenthash:8].css',
-        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-      }),
-  ].filter(Boolean),
-};
+        chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+      })
+  ].filter(Boolean)
+}

@@ -103,6 +103,8 @@ db.sqlite3
 # npm
 /node_modules/
 /courses/sandbox-eval-project/node_modules
+/courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common/node_modules
+/courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common/lib
 
 # webpack
 # webpack-stats.json

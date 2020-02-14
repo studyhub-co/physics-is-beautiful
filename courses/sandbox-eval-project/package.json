@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "sandox-eval",
   "version": "0.1.1",
   "private": true,
   "repository": {
@@ -73,6 +73,7 @@
     "@cerebral/mobx-state-tree": "^3.0.0",
     "@codesandbox/executors": "^0.1.0",
     "@codesandbox/template-icons": "^1.0.1",
+    "@codesandbox/common": "file:../static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common",
     "@emmetio/codemirror-plugin": "^0.3.5",
     "@samuelmeuli/font-manager": "^1.2.0",
     "@sentry/webpack-plugin": "^1.8.0",
