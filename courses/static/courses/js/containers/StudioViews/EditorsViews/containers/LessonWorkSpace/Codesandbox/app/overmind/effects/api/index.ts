@@ -1,4 +1,4 @@
-import { Module, Sandbox } from '../../../../common/types'
+import { Module, Sandbox } from '../../../../common/src/types'
 import { IModuleAPIResponse, SandboxAPIResponse } from './types'
 import { transformModule, transformSandbox } from '../utils/sandbox'
 

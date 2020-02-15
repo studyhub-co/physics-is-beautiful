@@ -1,7 +1,7 @@
 import {
   getGlobal,
   commonPostMessage,
-} from '../../../../common/utils/global';
+} from '../../../../common/src/utils/global';
 import {
   IModule,
   IManager,

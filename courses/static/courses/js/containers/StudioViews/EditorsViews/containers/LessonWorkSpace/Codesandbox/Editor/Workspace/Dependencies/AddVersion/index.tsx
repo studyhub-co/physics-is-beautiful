@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOvermind } from '../../../../app/overmind';
 
-import { Button } from '../../../../common/components/Button';
+import { Button } from '../../../../common/src/components/Button';
 
 import { ButtonContainer } from './elements';
 

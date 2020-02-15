@@ -1,4 +1,4 @@
-import { HIDDEN_DIRECTORIES } from '../../../../../common/templates/constants/files'
+import { HIDDEN_DIRECTORIES } from '../../../../../common/src/templates/constants/files'
 import { inject, observer } from '../../../../../app/componentConnectors'
 import { sortBy } from 'lodash-es'
 import * as React from 'react'

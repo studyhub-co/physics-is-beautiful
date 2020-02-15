@@ -6,7 +6,7 @@
 //
 // import { MdChevronRight as ChevronRight } from 'react-icons/md';
 //
-// import theme from '../../../../../../common/theme';
+// import theme from '../../../../../../common/src/theme';
 //
 // import MonacoEditor from 'app/components/CodeEditor/Monaco/MonacoReactComponent';
 // import defineTheme from 'app/components/CodeEditor/Monaco/define-theme';
@@ -15,7 +15,7 @@
 //   ARROW_UP,
 //   ARROW_DOWN,
 //   ENTER,
-// } from '../../../../../../common/utils/keycodes';
+// } from '../../../../../../common/src/utils/keycodes';
 //
 // import { IconContainer } from './elements';
 //

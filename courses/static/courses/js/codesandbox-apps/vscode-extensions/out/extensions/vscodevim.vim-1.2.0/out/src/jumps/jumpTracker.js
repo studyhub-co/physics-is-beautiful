@@ -12,7 +12,7 @@ const fs_1 = require("fs");
 const util = require("util");
 const vscode = require("vscode");
 const file_1 = require("./../cmd_line/commands/file");
-const position_1 = require("./../common/motion/position");
+const position_1 = require("./../common/src/motion/position");
 const jump_1 = require("./jump");
 const util_1 = require("../util/util");
 /**

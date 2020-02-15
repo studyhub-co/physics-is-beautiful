@@ -14,8 +14,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const position_1 = require("./../common/motion/position");
-const range_1 = require("./../common/motion/range");
+const position_1 = require("./../common/src/motion/position");
+const range_1 = require("./../common/src/motion/range");
 const mode_1 = require("./../mode/mode");
 const register_1 = require("./../register/register");
 const textEditor_1 = require("./../textEditor");

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 // import BaseSearchIcon from 'react-icons/lib/go/search';
-import Relative from '../../common/components/Relative';
+import Relative from '../../common/src/components/Relative';
 
 export const Container = styled(Relative)`
   display: flex;

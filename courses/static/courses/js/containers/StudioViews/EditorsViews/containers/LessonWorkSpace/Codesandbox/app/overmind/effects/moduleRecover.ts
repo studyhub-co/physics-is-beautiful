@@ -1,4 +1,4 @@
-import { Module } from '../../../common/types';
+import { Module } from '../../../common/src/types';
 
 const getKey = (id, moduleShortid) => `recover:${id}:${moduleShortid}:code`;
 

@@ -1,4 +1,4 @@
-import { Sandbox, Module, Directory } from '../../../../common/types';
+import { Sandbox, Module, Directory } from '../../../../common/src/types';
 import { createFile, createDirectoryWithFiles } from '..';
 
 export default async function createZip(

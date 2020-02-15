@@ -19,7 +19,7 @@ var SneakForward_1, SneakBackward_1;
 const vscode = require("vscode");
 const configuration_1 = require("./../../configuration/configuration");
 const base_1 = require("./../base");
-const position_1 = require("../../common/motion/position");
+const position_1 = require("../../common/src/motion/position");
 const motion_1 = require("../motion");
 let SneakForward = SneakForward_1 = class SneakForward extends motion_1.BaseMovement {
     constructor() {

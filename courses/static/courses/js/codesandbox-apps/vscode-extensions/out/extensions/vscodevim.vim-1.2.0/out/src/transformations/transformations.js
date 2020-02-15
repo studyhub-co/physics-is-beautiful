@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const range_1 = require("./../common/motion/range");
+const range_1 = require("./../common/src/motion/range");
 exports.isTextTransformation = (x) => {
     return (x.type === 'insertText' ||
         x.type === 'replaceText' ||

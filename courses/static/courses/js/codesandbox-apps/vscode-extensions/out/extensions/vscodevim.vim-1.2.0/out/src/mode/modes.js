@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("../util/logger");
 const mode_1 = require("./mode");
-const position_1 = require("./../common/motion/position");
+const position_1 = require("./../common/src/motion/position");
 const searchState_1 = require("../state/searchState");
 const mode_2 = require("./mode");
 var VisualBlockInsertionType;

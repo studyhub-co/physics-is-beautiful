@@ -1,4 +1,4 @@
-import Tooltip from '../../../common/components/Tooltip';
+import Tooltip from '../../../common/src/components/Tooltip';
 import React from 'react';
 
 import { ChangeContainer, Entry } from './elements';

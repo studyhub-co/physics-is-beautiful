@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const position_1 = require("./../../../common/motion/position");
+const position_1 = require("./../../../common/src/motion/position");
 const configuration_1 = require("./../../../configuration/configuration");
 const textEditor_1 = require("./../../../textEditor");
 const markerGenerator_1 = require("./markerGenerator");

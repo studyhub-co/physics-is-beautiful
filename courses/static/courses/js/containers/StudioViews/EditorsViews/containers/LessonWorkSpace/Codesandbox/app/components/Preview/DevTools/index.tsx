@@ -4,11 +4,11 @@ import { TweenMax, Elastic } from 'gsap';
 import { FaAngleUp as FaAngleUp } from 'react-icons/fa';
 import store from 'store/dist/store.modern';
 
-import { TemplateType } from '../../../../common/templates';
-import { ViewConfig } from '../../../../common/templates/template';
-// import track from '../../../../common/utils/analytics';
+import { TemplateType } from '../../../../common/src/templates';
+import { ViewConfig } from '../../../../common/src/templates/template';
+// import track from '../../../../common/src/utils/analytics';
 
-import { DevToolsTabPosition } from '../../../../common/types';
+import { DevToolsTabPosition } from '../../../../common/src/types';
 import { console } from './Console';
 import { DevToolTabs } from './Tabs';
 import { problems } from './Problems';

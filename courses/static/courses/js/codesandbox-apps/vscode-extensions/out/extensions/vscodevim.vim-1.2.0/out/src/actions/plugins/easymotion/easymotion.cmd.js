@@ -14,7 +14,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const position_1 = require("./../../../common/motion/position");
+const position_1 = require("./../../../common/src/motion/position");
 const configuration_1 = require("./../../../configuration/configuration");
 const mode_1 = require("./../../../mode/mode");
 const base_1 = require("./../../base");

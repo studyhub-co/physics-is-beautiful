@@ -1,8 +1,8 @@
 import React from 'react';
 // import CrossIcon from 'react-icons/lib/md/clear';
-import Margin from '../../../../common/components/spacing/Margin';
-import Tooltip from '../../../../common/components/Tooltip';
-import { Button } from '../../../../common/components/Button';
+import Margin from '../../../../common/src/components/spacing/Margin';
+import Tooltip from '../../../../common/src/components/Tooltip';
+import { Button } from '../../../../common/src/components/Button';
 import { Details, Heading, Info, Action } from './elements';
 
 interface IDetailInfoProps {

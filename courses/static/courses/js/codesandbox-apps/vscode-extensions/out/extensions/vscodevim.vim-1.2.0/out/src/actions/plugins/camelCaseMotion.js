@@ -17,7 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const textobject_1 = require("../textobject");
 const base_1 = require("../base");
 const mode_1 = require("../../mode/mode");
-const position_1 = require("../../common/motion/position");
+const position_1 = require("../../common/src/motion/position");
 const motion_1 = require("../motion");
 const textEditor_1 = require("../../textEditor");
 const configuration_1 = require("../../configuration/configuration");

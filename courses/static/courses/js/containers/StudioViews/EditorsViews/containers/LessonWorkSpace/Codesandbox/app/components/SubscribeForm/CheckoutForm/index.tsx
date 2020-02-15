@@ -4,8 +4,8 @@ import {
   CardElement,
   ReactStripeElements,
 } from 'react-stripe-elements';
-import { Button } from '../../../../common/components/Button';
-import { logError } from '../../../../common/utils/analytics';
+import { Button } from '../../../../common/src/components/Button';
+import { logError } from '../../../../common/src/utils/analytics';
 
 import { CardContainer, StripeInput, ErrorText, Label } from './elements';
 

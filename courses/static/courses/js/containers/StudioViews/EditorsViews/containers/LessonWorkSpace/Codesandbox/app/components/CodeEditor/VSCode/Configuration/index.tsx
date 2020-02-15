@@ -1,7 +1,7 @@
-import { ConfigurationFile } from '../../common/templates/configuration/types';
-// import getUI from '../../../../../common/templates/configuration/ui';
-import theme from '../../../../../common/theme';
-import { Module } from '../../../../common/types';
+import { ConfigurationFile } from '../../common/src/templates/configuration/types';
+// import getUI from '../../../../../common/src/templates/configuration/ui';
+import theme from '../../../../../common/src/theme';
+import { Module } from '../../../../common/src/types';
 import { TextOperation } from 'ot';
 import React from 'react';
 

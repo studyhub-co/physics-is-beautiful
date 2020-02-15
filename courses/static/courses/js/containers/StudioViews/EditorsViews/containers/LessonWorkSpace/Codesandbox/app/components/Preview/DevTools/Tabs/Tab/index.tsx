@@ -10,7 +10,7 @@ import {
 // import CrossIcon from 'react-icons/lib/md/clear';
 import { MdClear as CrossIcon } from 'react-icons/md';
 
-import { DevToolsTabPosition } from '../../../../../../common/types';
+import { DevToolsTabPosition } from '../../../../../../common/src/types';
 import { Tab, CloseTab } from './elements';
 import { IViewType, Status } from '../..';
 import { UnreadDevToolsCount } from './UnreadDevToolsCount';

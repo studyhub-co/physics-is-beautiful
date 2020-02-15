@@ -1,4 +1,4 @@
-import { STRIPE_API_KEY } from '../../../common/utils/config';
+import { STRIPE_API_KEY } from '../../../common/src/utils/config';
 
 function loadScript(path: string) {
   return new Promise(resolve => {

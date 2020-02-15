@@ -1,3 +1,3 @@
-import Input from '../../common/components/Input';
+import Input from '../../common/src/components/Input';
 
 export const TextArea = Input.withComponent('textarea');

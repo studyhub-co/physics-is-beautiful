@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { sortBy, takeRight } from 'lodash-es';
 
-import AutosizeTextArea from '../../../common/components/AutosizeTextArea';
-import { ENTER } from '../../../common/utils/keycodes';
+import AutosizeTextArea from '../../../common/src/components/AutosizeTextArea';
+import { ENTER } from '../../../common/src/utils/keycodes';
 import { useOvermind } from 'app/overmind';
 
 const Container = styled.div`

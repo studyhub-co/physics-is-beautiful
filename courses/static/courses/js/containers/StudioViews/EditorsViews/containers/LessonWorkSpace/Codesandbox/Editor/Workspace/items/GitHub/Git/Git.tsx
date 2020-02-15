@@ -1,9 +1,9 @@
-import Margin from '../../../../../common/components/spacing/Margin';
-import { Button } from '../../../../../common/components/Button';
-import GithubBadge from '../../../../../common/components/GithubBadge';
-import Input, { TextArea } from '../../../../../common/components/Input';
-import Notice from '../../../../../common/components/Notice';
-import { githubRepoUrl } from '../../../../../common/utils/url-generator';
+import Margin from '../../../../../common/src/components/spacing/Margin';
+import { Button } from '../../../../../common/src/components/Button';
+import GithubBadge from '../../../../../common/src/components/GithubBadge';
+import Input, { TextArea } from '../../../../../common/src/components/Input';
+import Notice from '../../../../../common/src/components/Notice';
+import { githubRepoUrl } from '../../../../../common/src/utils/url-generator';
 import React, { ChangeEvent, FunctionComponent, useEffect } from 'react';
 
 import { useOvermind } from '../../../../../app/overmind';

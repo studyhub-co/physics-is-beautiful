@@ -1,13 +1,13 @@
 import React from 'react';
 
-import Centered from '../../../common/components/flex/Centered';
-import Margin from '../../../common/components/spacing/Margin';
-import Tooltip from '../../../common/components/Tooltip';
-import { getModulePath } from '../../../common/sandbox/modules';
-import getDefinition from '../../../common/templates';
-// import getUI from '../../../common/templates/configuration/ui';
-import { Sandbox } from '../../../common/types';
-import isImage from '../../../common/utils/is-image';
+import Centered from '../../../common/src/components/flex/Centered';
+import Margin from '../../../common/src/components/spacing/Margin';
+import Tooltip from '../../../common/src/components/Tooltip';
+import { getModulePath } from '../../../common/src/sandbox/modules';
+import getDefinition from '../../../common/src/templates';
+// import getUI from '../../../common/src/templates/configuration/ui';
+import { Sandbox } from '../../../common/src/types';
+import isImage from '../../../common/src/utils/is-image';
 import { SubTitle } from '../../../app/components/SubTitle';
 import { Title } from '../../../app/components/Title';
 import Loadable from '../../../app/utils/Loadable';

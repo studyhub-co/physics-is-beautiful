@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Sandbox, NetlifySite } from '../../../common/types';
-import getTemplate from '../../../common/templates';
+import { Sandbox, NetlifySite } from '../../../common/src/types';
+import getTemplate from '../../../common/src/templates';
 import getNetlifyConfig from '../../../app/utils/getNetlifyConfig';
 
 const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.io/site';

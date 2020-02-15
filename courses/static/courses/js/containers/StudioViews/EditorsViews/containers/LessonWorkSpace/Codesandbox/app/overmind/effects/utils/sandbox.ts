@@ -1,4 +1,4 @@
-import { Module, Directory } from '../../../../common/types';
+import { Module, Directory } from '../../../../common/src/types';
 import {
   IModuleAPIResponse,
   SandboxAPIResponse,

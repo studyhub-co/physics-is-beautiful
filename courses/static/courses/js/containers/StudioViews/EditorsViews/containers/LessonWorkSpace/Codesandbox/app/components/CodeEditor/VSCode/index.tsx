@@ -7,22 +7,22 @@ import * as fs from 'fs';
 import {
   getModulePath,
   resolveModule,
-} from '../../../../common/sandbox/modules';
+} from '../../../../common/src/sandbox/modules';
 import { listen, actions, dispatch } from '../../../../app/codesandbox-api/codesandbox';
 
 import prettify from '../../../../app/utils/prettify';
-import DEFAULT_PRETTIER_CONFIG from '../../../../common/prettify-default-config';
-// import getUI from '../../../../common/templates/configuration/ui';
+import DEFAULT_PRETTIER_CONFIG from '../../../../common/src/prettify-default-config';
+// import getUI from '../../../../common/src/templates/configuration/ui';
 
-import getTemplate from '../../../../common/templates';
-import theme from '../../../../common/theme';
+import getTemplate from '../../../../common/src/templates';
+import theme from '../../../../common/src/theme';
 import {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from '../../../../common/types';
-import { getTextOperation } from '../../../../common/utils/diff';
+} from '../../../../common/src/types';
+import { getTextOperation } from '../../../../common/src/utils/diff';
 
 /* eslint-disable import/no-webpack-loader-syntax, import/default */
 // @ts-ignore

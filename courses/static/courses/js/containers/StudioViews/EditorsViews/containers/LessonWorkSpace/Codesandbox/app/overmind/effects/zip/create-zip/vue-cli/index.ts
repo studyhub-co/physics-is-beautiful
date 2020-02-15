@@ -1,4 +1,4 @@
-import { Sandbox, Module, Directory } from '../../../../common/types';
+import { Sandbox, Module, Directory } from '../../../../common/src/types';
 // @ts-ignore
 import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
 import { createFile, createDirectoryWithFiles } from '..';

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import Tags from '../../../common/components/Tags';
-import getTemplateDefinition from '../../../common/templates';
+import Tags from '../../../common/src/components/Tags';
+import getTemplateDefinition from '../../../common/src/templates';
 
 import { clone } from '../../../app/componentConnectors';
 import { EditableTags } from '../../../app/components/EditableTags';

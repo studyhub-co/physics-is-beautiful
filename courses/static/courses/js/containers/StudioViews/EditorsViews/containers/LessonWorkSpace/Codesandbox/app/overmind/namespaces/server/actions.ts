@@ -3,10 +3,10 @@ import {
   ServerStatus,
   ServerContainerStatus,
   ServerPort,
-} from '../../../../common/types';
+} from '../../../../common/src/types';
 // import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { getDevToolsTabPosition } from '../../../../app/overmind/utils/server';
-import { ViewTab } from '../../../../common/templates/template';
+import { ViewTab } from '../../../../common/src/templates/template';
 
 export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');

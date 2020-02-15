@@ -1,9 +1,9 @@
-import folderSvg from '../../../../../../common/components/icons/folder.svg'
-import folderOpenSvg from '../../../../../../common/components/icons/folder-open.svg'
-import fileSvg from '../../../../../../common/components/icons/file.svg'
-import imageSvg from '../../../../../../common/components/icons/image.svg'
-import codesandboxSvg from '../../../../../../common/components/icons/codesandbox.svg'
-import nowSvg from '../../../../../../common/components/icons/now.svg'
+import folderSvg from '../../../../../../common/src/components/icons/folder.svg'
+import folderOpenSvg from '../../../../../../common/src/components/icons/folder-open.svg'
+import fileSvg from '../../../../../../common/src/components/icons/file.svg'
+import imageSvg from '../../../../../../common/src/components/icons/image.svg'
+import codesandboxSvg from '../../../../../../common/src/components/icons/codesandbox.svg'
+import nowSvg from '../../../../../../common/src/components/icons/now.svg'
 
 function imageExists (url) {
   return new Promise((resolve, reject) => {

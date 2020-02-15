@@ -11,8 +11,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const AppDirectory = require("appdirectory");
 const logger_1 = require("./logger");
-const position_1 = require("../common/motion/position");
-const range_1 = require("../common/motion/range");
+const position_1 = require("../common/src/motion/position");
+const range_1 = require("../common/src/motion/range");
 const child_process_1 = require("child_process");
 /**
  * This is certainly quite janky! The problem we're trying to solve

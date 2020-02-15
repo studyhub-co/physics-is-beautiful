@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import BaseNotice from '../../../common/components/Notice';
+import BaseNotice from '../../../common/src/components/Notice';
 import { FaAngleUp as BaseUp } from 'react-icons/fa';
 import { FaAngleDown as BaseDown } from 'react-icons/fa';
 

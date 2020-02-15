@@ -2,9 +2,9 @@
 import React, { Component } from 'react'
 import { inject, observer } from '../../../app/componentConnectors'
 
-import BasePreview from '../../../common/components/Preview';
-import RunOnClick from '../../../common/components/RunOnClick';
-import getTemplate from '../../../common/templates';
+import BasePreview from '../../../common/src/components/Preview';
+import RunOnClick from '../../../common/src/components/RunOnClick';
+import getTemplate from '../../../common/src/templates';
 
 type Props = {
   hidden?: boolean;

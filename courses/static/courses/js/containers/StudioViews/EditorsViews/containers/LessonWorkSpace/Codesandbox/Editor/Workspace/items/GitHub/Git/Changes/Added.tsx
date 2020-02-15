@@ -1,4 +1,4 @@
-import theme from '../../../common/theme';
+import theme from '../../../common/src/theme';
 import React from 'react';
 import AddedIcon from 'react-icons/lib/go/diff-added';
 

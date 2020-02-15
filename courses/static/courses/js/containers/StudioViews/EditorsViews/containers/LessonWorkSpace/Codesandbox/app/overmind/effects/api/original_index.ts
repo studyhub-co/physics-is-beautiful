@@ -1,4 +1,4 @@
-import { TemplateType } from '../../../../common/templates';
+import { TemplateType } from '../../../../common/src/templates';
 import {
   // CurrentUser,
   CustomTemplate,
@@ -18,7 +18,7 @@ import {
   SandboxPick,
   UploadedFilesInfo,
   UserSandbox,
-} from '../../../../common/types';
+} from '../../../../common/src/types';
 import { client } from 'app/graphql/client';
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries';
 

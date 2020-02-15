@@ -1,4 +1,4 @@
-import { resolveModule } from '../../../../common/sandbox/modules';
+import { resolveModule } from '../../../../common/src/sandbox/modules';
 import { isEqual } from 'lodash-es';
 
 let nextOptimisticId = 0;

@@ -1,7 +1,7 @@
 // @flow
 
-import Margin from '../../../common/components/spacing/Margin';
-import getDefinition from '../../../common/templates';
+import Margin from '../../../common/src/components/spacing/Margin';
+import getDefinition from '../../../common/src/templates';
 import React, { FunctionComponent } from 'react';
 import { useOvermind } from '../../../app/overmind';
 import { WorkspaceSubtitle } from '../elements';

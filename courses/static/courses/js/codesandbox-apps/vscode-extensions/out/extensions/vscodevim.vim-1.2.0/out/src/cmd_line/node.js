@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const token = require("./token");
 const vscode = require("vscode");
-const position_1 = require("../common/motion/position");
+const position_1 = require("../common/src/motion/position");
 class LineRange {
     constructor() {
         this.left = [];

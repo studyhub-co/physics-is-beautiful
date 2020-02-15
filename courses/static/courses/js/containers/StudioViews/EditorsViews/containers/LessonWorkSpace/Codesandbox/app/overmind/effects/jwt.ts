@@ -1,4 +1,4 @@
-import { identify, resetUserId } from '../../../common/utils/analytics';
+import { identify, resetUserId } from '../../../common/src/utils/analytics';
 import store from 'store/dist/store.modern';
 
 export default {

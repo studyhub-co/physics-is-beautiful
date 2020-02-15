@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import Select from '../../../../common/components/Select';
+import Select from '../../../../common/src/components/Select';
 import { EntryContainer } from '../../elements';
 
 export const Version = styled.div<{ hovering?: boolean }>`

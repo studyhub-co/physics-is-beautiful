@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const textEditor_1 = require("./../textEditor");
-const range_1 = require("../common/motion/range");
+const range_1 = require("../common/src/motion/range");
 /**
  * Return open text documents, with a given file at the top of the list.
  * @param startingFileName File that will be first in the array, typically current file

@@ -1,4 +1,4 @@
-import getTemplate from '../../../../common/templates';
+import getTemplate from '../../../../common/src/templates';
 
 export interface INavigationItem {
   id: string;

@@ -1,6 +1,6 @@
 import { clone } from 'mobx-state-tree'
-import { getModulePath } from '../../../../common/sandbox/modules'
-import getDefinition from '../../../../common/templates'
+import { getModulePath } from '../../../../common/src/sandbox/modules'
+import getDefinition from '../../../../common/src/templates'
 import { chunk } from 'lodash-es'
 // import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text'
 // import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize'

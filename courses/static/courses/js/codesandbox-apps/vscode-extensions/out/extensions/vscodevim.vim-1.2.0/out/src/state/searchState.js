@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const configuration_1 = require("../configuration/configuration");
-const position_1 = require("./../common/motion/position");
+const position_1 = require("./../common/src/motion/position");
 const mode_1 = require("./../mode/mode");
 const textEditor_1 = require("./../textEditor");
 var SearchDirection;

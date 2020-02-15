@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const util = require("util");
 const vscode = require("vscode");
 const logger_1 = require("../util/logger");
-const position_1 = require("./../common/motion/position");
+const position_1 = require("./../common/src/motion/position");
 const register_1 = require("../register/register");
 const textEditor_1 = require("../textEditor");
 const configuration_1 = require("../configuration/configuration");

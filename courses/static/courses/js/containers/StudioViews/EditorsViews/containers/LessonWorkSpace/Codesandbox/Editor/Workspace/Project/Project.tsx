@@ -1,12 +1,12 @@
-import GithubBadge from '../../../common/components/GithubBadge';
-import Tooltip from '../../../common/components/Tooltip';
-import getTemplateDefinition from '../../../common/templates';
-import { getSandboxName } from '../../../common/utils/get-sandbox-name';
+import GithubBadge from '../../../common/src/components/GithubBadge';
+import Tooltip from '../../../common/src/components/Tooltip';
+import getTemplateDefinition from '../../../common/src/templates';
+import { getSandboxName } from '../../../common/src/utils/get-sandbox-name';
 import {
   githubRepoUrl,
   patronUrl,
   sandboxUrl,
-} from '../../../common/utils/url-generator';
+} from '../../../common/src/utils/url-generator';
 import { PrivacyStatus } from '../../../app/components/PrivacyStatus';
 import { Stats } from '../../../app/pages/common/Stats';
 import React from 'react';

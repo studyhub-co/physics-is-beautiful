@@ -1,4 +1,4 @@
-import { Contributor } from '../../common/types';
+import { Contributor } from '../../common/src/types';
 import { json, IState, IDerive } from 'overmind';
 import { AsyncAction } from '.';
 

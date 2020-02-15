@@ -5,7 +5,7 @@ import {
   // Notification,
   Sandbox,
   UploadFile,
-} from '../../common/types';
+} from '../../common/src/types';
 import { Derive } from '.';
 
 type State = {

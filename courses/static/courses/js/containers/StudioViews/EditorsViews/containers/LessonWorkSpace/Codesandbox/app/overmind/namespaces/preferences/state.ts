@@ -1,7 +1,7 @@
-import { Settings } from '../../../../common/types';
-import { isIOS } from '../../../../common/utils/platform';
+import { Settings } from '../../../../common/src/types';
+import { isIOS } from '../../../../common/src/utils/platform';
 import { Derive } from '../../../../app/overmind';
-import { KEYBINDINGS } from '../../../../common/utils/keybindings';
+import { KEYBINDINGS } from '../../../../common/src/utils/keybindings';
 
 type State = {
   settings: Settings;

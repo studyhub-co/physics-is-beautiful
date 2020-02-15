@@ -1,4 +1,4 @@
-import { getModulePath } from '../../../common/sandbox/modules'
+import { getModulePath } from '../../../common/src/sandbox/modules'
 import { inject, observer } from '../../../app/componentConnectors'
 import * as React from 'react'
 

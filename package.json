@@ -108,6 +108,7 @@
     "console": "^0.7.2",
     "console-feed": "github:CompuIves/console-feed#build2",
     "copy-to-clipboard": "^3.0.8",
+    "core-js": "2",
     "create-react-class": "^15.6.3",
     "css-modules-loader-core": "^1.1.0",
     "error-polyfill": "^0.1.2",

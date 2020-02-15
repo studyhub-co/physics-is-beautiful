@@ -11,8 +11,8 @@ import FormControl from '@material-ui/core/FormControl';
 
 import { ThemeProvider } from 'styled-components';
 
-import MaxWidth from '../common/components/flex/MaxWidth';
-import Margin from '../common/components/spacing/Margin';
+import MaxWidth from '../common/src/components/flex/MaxWidth';
+import Margin from '../common/src/components/spacing/Margin';
 
 import * as problemTypeActionsCreators from '../../../../../../../actions/problemType'
 import * as studioActionsCreators from '../../../../../../../actions/studio'
@@ -23,7 +23,7 @@ import * as studioActionsCreators from '../../../../../../../actions/studio'
 
 // import { useOvermind } from '../app/overmind';
 
-import theme from '../common/theme';
+import theme from '../common/src/theme';
 
 import { Container, Content, Main, StyledTitle } from './elements';
 import Filters from './Filters';

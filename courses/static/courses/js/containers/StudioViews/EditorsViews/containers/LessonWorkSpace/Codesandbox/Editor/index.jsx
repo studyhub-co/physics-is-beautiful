@@ -3,7 +3,7 @@ import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import { Provider as ActualOvermindProvider } from 'overmind-react'
 import { Provider as OvermindProvider } from '../app/overmind/Provider'
-import theme from '../common/theme'
+import theme from '../common/src/theme'
 
 import Editor from './editor'
 import PropTypes from 'prop-types'

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Row from '../common/components/flex/Row'
+import Row from '../common/src/components/flex/Row'
 import { Title } from '../app/components/Title'
 
 export const Content = styled.div`

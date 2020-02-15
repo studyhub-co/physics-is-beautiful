@@ -1,3 +1,3 @@
-import themes from '../../../common/themes';
+import themes from '../../../common/src/themes';
 
 export default themes;

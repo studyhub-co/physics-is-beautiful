@@ -1,7 +1,7 @@
 // import {
 //   NotificationType,
 //   convertTypeToStatus,
-// } from '../../common/utils/notifications';
+// } from '../../common/src/utils/notifications';
 
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';

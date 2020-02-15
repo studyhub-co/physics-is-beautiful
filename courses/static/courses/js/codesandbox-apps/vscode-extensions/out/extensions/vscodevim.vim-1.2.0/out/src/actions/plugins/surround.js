@@ -16,8 +16,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandSurroundAddToReplacement_1;
 "use strict";
-const matcher_1 = require("./../../common/matching/matcher");
-const range_1 = require("./../../common/motion/range");
+const matcher_1 = require("./../../common/src/matching/matcher");
+const range_1 = require("./../../common/src/motion/range");
 const configuration_1 = require("./../../configuration/configuration");
 const mode_1 = require("./../../mode/mode");
 const textEditor_1 = require("./../../textEditor");

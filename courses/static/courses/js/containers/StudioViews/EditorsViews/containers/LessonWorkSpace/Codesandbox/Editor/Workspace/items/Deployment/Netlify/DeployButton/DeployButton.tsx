@@ -1,4 +1,4 @@
-// import track from '../../../../../common/utils/analytics';
+// import track from '../../../../../common/src/utils/analytics';
 import React, { FunctionComponent } from 'react';
 
 import { DeploymentIntegration } from '../../../../../../app/components/DeploymentIntegration';

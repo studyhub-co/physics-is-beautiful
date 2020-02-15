@@ -1,7 +1,7 @@
 import {
   notificationState,
   convertTypeToStatus,
-} from '../../../common/utils/notifications';
+} from '../../../common/src/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,

@@ -1,4 +1,4 @@
-import getTemplate from '../../../common/templates';
+import getTemplate from '../../../common/src/templates';
 import React, { FunctionComponent } from 'react';
 
 import { useOvermind } from '../../../app/overmind';

@@ -3,10 +3,10 @@ import { dirname } from 'path';
 import {
   getDirectoryPath,
   getModulePath,
-} from '../../../../common//sandbox/modules';
-import getTemplate from '../../../../common//templates';
-import { generateFileFromSandbox } from '../../../../common//templates/configuration/package-json';
-import { getPreviewTabs } from '../../../../common//templates/devtools';
+} from '../../../../common/src//sandbox/modules';
+import getTemplate from '../../../../common/src//templates';
+import { generateFileFromSandbox } from '../../../../common/src//templates/configuration/package-json';
+import { getPreviewTabs } from '../../../../common/src//templates/devtools';
 import {
   DiffTab,
   EditorSelection,
@@ -18,12 +18,12 @@ import {
   Tabs,
   WindowOrientation,
   DevToolsTabPosition,
-} from '../../../../common//types';
-import { getSandboxOptions } from '../../../../common/url';
+} from '../../../../common/src//types';
+import { getSandboxOptions } from '../../../../common/src/url';
 import { Derive } from '../../../../app/overmind';
 import immer from 'immer';
 
-import { ViewConfig } from '../../../../common/templates/template';
+import { ViewConfig } from '../../../../common/src/templates/template';
 import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 

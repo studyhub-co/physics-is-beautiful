@@ -1,6 +1,6 @@
-import { GitInfo } from '../../../common/types';
-import { sandboxUrl } from '../../../common/utils/url-generator';
-import { getSandboxOptions } from '../../../common/url';
+import { GitInfo } from '../../../common/src/types';
+import { sandboxUrl } from '../../../common/src/utils/url-generator';
+import { getSandboxOptions } from '../../../common/src/url';
 import history from '../../utils/history';
 
 export default {

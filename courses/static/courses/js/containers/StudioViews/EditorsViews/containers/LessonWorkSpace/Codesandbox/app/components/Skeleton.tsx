@@ -1,6 +1,6 @@
 import React from 'react';
-import Fullscreen from '../../common/components/flex/Fullscreen';
-import Centered from '../../common/components/flex/Centered';
+import Fullscreen from '../../common/src/components/flex/Fullscreen';
+import Centered from '../../common/src/components/flex/Centered';
 import { Title } from '../../app/components/Title';
 import { SubTitle } from '../../app/components/SubTitle';
 

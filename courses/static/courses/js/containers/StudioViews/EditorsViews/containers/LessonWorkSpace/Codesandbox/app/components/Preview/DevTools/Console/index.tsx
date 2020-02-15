@@ -1,5 +1,5 @@
-import Select from '../../../../../common/components/Select';
-import theme from '../../../../../common/theme';
+import Select from '../../../../../common/src/components/Select';
+import theme from '../../../../../common/src/theme';
 import { listen, dispatch } from '../../../../codesandbox-api/codesandbox';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
 import update from 'immutability-helper';

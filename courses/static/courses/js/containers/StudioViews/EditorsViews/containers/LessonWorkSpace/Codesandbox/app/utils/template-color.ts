@@ -1,5 +1,5 @@
-import { decorateSelector } from '../../common/theme';
-import { Sandbox, Template } from '../../common/types';
+import { decorateSelector } from '../../common/src/theme';
+import { Sandbox, Template } from '../../common/src/types';
 
 export const templateColor = (sandbox: Sandbox, templateDef: Template) => {
   if (sandbox && sandbox.customTemplate) {

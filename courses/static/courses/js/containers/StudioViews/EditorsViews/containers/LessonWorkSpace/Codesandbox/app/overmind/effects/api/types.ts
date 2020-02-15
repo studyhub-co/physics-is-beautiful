@@ -1,4 +1,4 @@
-import { Sandbox } from '../../../../common/types';
+import { Sandbox } from '../../../../common/src/types';
 
 export interface IModuleAPIResponse {
   id: string;

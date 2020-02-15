@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const jumpTracker_1 = require("../jumps/jumpTracker");
 const mode_1 = require("../mode/mode");
-const position_1 = require("../common/motion/position");
+const position_1 = require("../common/src/motion/position");
 const historyFile_1 = require("../history/historyFile");
 const searchState_1 = require("./searchState");
 /**

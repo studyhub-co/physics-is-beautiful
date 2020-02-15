@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 
-import { ESC, ENTER } from '../../../../../../common/utils/keycodes';
+import { ESC, ENTER } from '../../../../../../common/src/utils/keycodes';
 
 import { InputContainer, InputError } from './elements';
 

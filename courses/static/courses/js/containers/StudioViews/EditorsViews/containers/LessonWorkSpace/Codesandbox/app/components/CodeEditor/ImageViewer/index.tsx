@@ -1,6 +1,6 @@
 import React from 'react';
-import Input from '../../../../common/components/Input';
-import { Button } from '../../../../common/components/Button';
+import Input from '../../../../common/src/components/Input';
+import { Button } from '../../../../common/src/components/Button';
 import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 
 import { Props } from '../types'; // eslint-disable-line

@@ -7,7 +7,7 @@ import SubWorkLoader from 'worker-loader?publicPath=/static/js/bundles/&name=sub
 
 import { EXTENSIONS_LOCATION } from '../../constants';
 
-import { initializeAll } from '../common/global';
+import { initializeAll } from '../common/src/global';
 
 declare const __DEV__: boolean;
 

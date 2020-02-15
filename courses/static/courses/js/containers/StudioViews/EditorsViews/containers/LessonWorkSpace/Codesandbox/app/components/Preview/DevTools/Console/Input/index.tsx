@@ -5,7 +5,7 @@
 //
 // // import ChevronRight from 'react-icons/lib/md/chevron-right';
 // import { MdChevronRight as ChevronRight } from 'react-icons/md';
-// import theme from '../../../../../../common/theme';
+// import theme from '../../../../../../common/src/theme';
 //
 // import { getCodeMirror } from 'app/utils/codemirror';
 //
@@ -13,7 +13,7 @@
 //   ARROW_UP,
 //   ARROW_DOWN,
 //   ENTER,
-// } from '../../../../../../common/utils/keycodes';
+// } from '../../../../../../common/src/utils/keycodes';
 //
 // import { IconContainer, CodeMirrorContainer } from './elements';
 //

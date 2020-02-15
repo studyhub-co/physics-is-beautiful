@@ -1,4 +1,4 @@
-import { messages } from '../../../../../common/utils/jest-lite';
+import { messages } from '../../../../../common/src/utils/jest-lite';
 import { actions, dispatch, listen } from '../../../../codesandbox-api/codesandbox';
 import immer from 'immer';
 import { debounce } from 'lodash-es';

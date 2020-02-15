@@ -1,4 +1,4 @@
-import theme from '../../../../../common/theme';
+import theme from '../../../../../common/src/theme';
 import { ContextMenu, Item } from '../../../../../app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';

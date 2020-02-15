@@ -1,4 +1,4 @@
-import addListener from '../../../common/connection-manager';
+import addListener from '../../../common/src/connection-manager';
 
 const listeners = new Map();
 

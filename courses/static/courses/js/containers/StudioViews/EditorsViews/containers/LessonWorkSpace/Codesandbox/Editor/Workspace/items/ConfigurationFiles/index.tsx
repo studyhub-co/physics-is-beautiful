@@ -1,8 +1,8 @@
 import React from 'react';
-import getDefinition from '../../../../common/templates';
-import getUI from '../../../../common/templates/configuration/ui';
-import { Module, Configuration } from '../../../../common/types';
-import { resolveModule } from '../../../../common/sandbox/modules';
+import getDefinition from '../../../../common/src/templates';
+import getUI from '../../../../common/src/templates/configuration/ui';
+import { Module, Configuration } from '../../../../common/src/types';
+import { resolveModule } from '../../../../common/src/sandbox/modules';
 
 import { useOvermind } from '../../../../app/overmind';
 
@@ -11,7 +11,7 @@ import { MdDvr as UIIcon, MdLibraryBooks as BookIcon } from 'react-icons/md';
 // import BookIcon from 'react-icons/lib/md/library-books';
 // import UIIcon from 'react-icons/lib/md/dvr';
 
-import Tooltip from '../../../../common/components/Tooltip';
+import Tooltip from '../../../../common/src/components/Tooltip';
 
 import { Description, WorkspaceSubtitle } from '../../elements';
 import {

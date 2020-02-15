@@ -1,4 +1,4 @@
-import { ModuleCorrection, ModuleError } from '../../common/types';
+import { ModuleCorrection, ModuleError } from '../../common/src/types';
 // import { CorrectionClearAction } from 'codesandbox-api/dist/types/actions/correction';
 // import { ErrorClearAction } from 'codesandbox-api/dist/types/actions/error';
 

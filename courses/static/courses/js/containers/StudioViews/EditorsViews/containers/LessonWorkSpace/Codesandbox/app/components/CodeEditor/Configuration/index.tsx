@@ -1,11 +1,11 @@
 import React from 'react';
 //import { TextOperation } from 'ot';
-import { Module } from '../../common/types';
-// import getUI from '../../common/templates/configuration/ui';
+import { Module } from '../../common/src/types';
+// import getUI from '../../common/src/templates/configuration/ui';
 import getType from '../../../../app/utils/get-type';
 // import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import Tooltip from '../../../../common/components/Tooltip';
-import { ConfigurationFile } from '../../common/templates/configuration/types';
+import Tooltip from '../../../../common/src/components/Tooltip';
+import { ConfigurationFile } from '../../common/src/templates/configuration/types';
 
 // import CodeIcon from 'react-icons/lib/md/code';
 

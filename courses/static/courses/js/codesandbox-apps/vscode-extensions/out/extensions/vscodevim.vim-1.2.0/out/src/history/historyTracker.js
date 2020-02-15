@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const DiffMatchPatch = require("diff-match-patch");
 const _ = require("lodash");
 const vscode = require("vscode");
-const position_1 = require("./../common/motion/position");
+const position_1 = require("./../common/src/motion/position");
 const logger_1 = require("./../util/logger");
 const textEditor_1 = require("./../textEditor");
 const diffEngine = new DiffMatchPatch.diff_match_patch();

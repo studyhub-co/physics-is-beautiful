@@ -1,7 +1,7 @@
 // This is the base worker that launches the extension host
 
-import _debug from '../../../../common/utils/debug';
-import { commonPostMessage } from '../../../../common/utils/global';
+import _debug from '../../../../common/src/utils/debug';
+import { commonPostMessage } from '../../../../common/src/utils/global';
 import loader from '../../dev-bootstrap';
 import { initializeBrowserFS } from '../common/fs';
 import { EXTENSIONS_LOCATION } from '../../constants';

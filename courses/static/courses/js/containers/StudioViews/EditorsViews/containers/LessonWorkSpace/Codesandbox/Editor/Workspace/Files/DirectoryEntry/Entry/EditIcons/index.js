@@ -12,7 +12,7 @@ import { MdFileDownload as DownloadIcon } from 'react-icons/md'
 // import UploadFileIcon from 'react-icons/lib/md/file-upload'
 // import DownloadIcon from 'react-icons/lib/md/file-download'
 
-import Tooltip from '../../../../../../common/components/Tooltip'
+import Tooltip from '../../../../../../common/src/components/Tooltip'
 
 import { Icon } from '../../../../elements'
 import { Container } from './elements'
