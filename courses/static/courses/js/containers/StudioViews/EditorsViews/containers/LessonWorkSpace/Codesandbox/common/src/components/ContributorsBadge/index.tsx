@@ -1,5 +1,6 @@
 import React from 'react';
 // import IconBase from 'react-icons/lib/IconBase';
+import {IconBase} from 'react-icons/lib/esm/iconBase'
 import Tooltip from '../../components/Tooltip';
 
 import { isContributor } from './is-contributor';
@@ -55,11 +56,13 @@ export default class ContributorsBadge extends React.Component<Props, State> {
           content="Open Source Contributor to CodeSandbox"
         >
           <IconBase
-            style={style}
-            width="1em"
-            height="0.67em"
-            viewBox="0 0 284 192"
-            fill="none"
+            attr={{
+              style:{style},
+              width:"1em",
+              height:"0.67em",
+              viewBox:"0 0 284 192",
+              fill:"none"
+            }}
           >
             <path
               d="M276 30.9916C229.5 58.0917 180.5 77.5917 130 79.5917C59.1265 79.5917 0 61.5917 0 34.0917C0 15.5917 41 -0.408325 114.803 2.99163C185.677 2.99163 314.5 -13.5084 276 30.9916Z"

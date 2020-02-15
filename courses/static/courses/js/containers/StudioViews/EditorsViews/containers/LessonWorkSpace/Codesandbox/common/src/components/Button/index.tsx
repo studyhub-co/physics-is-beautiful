@@ -20,6 +20,7 @@ export type Props = {
 function ButtonComponent({ style = {}, ...props }: Props) {
   // Link
   if (props.to) {
+    // @ts-ignore
     return <LinkButton style={style} {...props} />;
   }
 

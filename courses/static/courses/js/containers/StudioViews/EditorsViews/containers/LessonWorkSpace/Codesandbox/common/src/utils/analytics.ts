@@ -1,7 +1,7 @@
 import VERSION from '../version';
 import _debug from '../utils/debug';
 
-import hash from './hash';
+// import hash from './hash';
 
 const debug = _debug('cs:analytics');
 
@@ -78,6 +78,7 @@ function getSentry() {
 }
 
 // node/ie func -> need for vscode
+// @ts-ignore
 window.setImmediate = (func, delay) => setTimeout(func, delay);
 
 window.addEventListener('unhandledrejection', e => {
@@ -192,7 +193,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export function getHashedUserId(userId: string) {
-  return hash(userId);
+  // return hash(userId);
 }
 
 export async function setUserId(userId: string) {

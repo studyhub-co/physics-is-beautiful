@@ -1,34 +1,33 @@
-"use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const diff = __importStar(require(".."));
+import * as diff from '..';
+
 describe('Diffing', () => {
-    it('can diff two strings', () => {
-        expect(diff.findDiff('aaa', 'aba')).toMatchSnapshot();
-        expect(diff.findDiff('aaaaa', 'aba')).toMatchSnapshot();
-    });
-    it('can generate an operation from a diff', () => {
-        const textA = 'I like pizza';
-        const textB = 'They like cookies';
-        const op = diff.getTextOperation(textA, textB);
-        expect(op.toJSON()).toMatchSnapshot();
-        expect(op.apply(textA)).toBe('They like cookies');
-    });
-    it('can generate with many deletions', () => {
-        const textA = 'I like pizza';
-        const textB = ' I';
-        const op = diff.getTextOperation(textA, textB);
-        expect(op.toJSON()).toMatchSnapshot();
-        expect(op.apply(textA)).toBe(' I');
-    });
-    it('can generate an operation on real code', () => {
-        const textA = `
+  it('can diff two strings', () => {
+    expect(diff.findDiff('aaa', 'aba')).toMatchSnapshot();
+    expect(diff.findDiff('aaaaa', 'aba')).toMatchSnapshot();
+  });
+
+  it('can generate an operation from a diff', () => {
+    const textA = 'I like pizza';
+    const textB = 'They like cookies';
+
+    const op = diff.getTextOperation(textA, textB);
+
+    expect(op.toJSON()).toMatchSnapshot();
+    expect(op.apply(textA)).toBe('They like cookies');
+  });
+
+  it('can generate with many deletions', () => {
+    const textA = 'I like pizza';
+    const textB = ' I';
+
+    const op = diff.getTextOperation(textA, textB);
+
+    expect(op.toJSON()).toMatchSnapshot();
+    expect(op.apply(textA)).toBe(' I');
+  });
+
+  it('can generate an operation on real code', () => {
+    const textA = `
     import React from 'react'
     import ReactDOM from 'react-dom'
 
@@ -47,7 +46,7 @@ describe('Diffing', () => {
     const rootElement = document.getElementById('main-app')
     ReactDOM.render(<App />, rootElement)
     `;
-        const textB = `
+    const textB = `
     import React from "react";
     import ReactDOM from "react-dom";
 
@@ -66,29 +65,37 @@ describe('Diffing', () => {
     const rootElement = document.getElementById("root");
     ReactDOM.render(<App />, rootElement);
     `;
-        const op = diff.getTextOperation(textA, textB);
-        expect(op.toJSON()).toMatchSnapshot();
-        expect(op.apply(textA)).toBe(textB);
-    });
-    it('can work with big files', () => {
-        const A = Array.from({ length: 10000 })
-            .map(() => 'a')
-            .join('');
-        const B = A.split('')
-            .map((c, i) => (i > 2000 && i < 2050 ? 'b' : c))
-            .join('');
-        const op = diff.getTextOperation(A, B);
-        expect(op.apply(A)).toEqual(B);
-    });
-    it('falls back to stupid diff really big files', () => {
-        const A = Array.from({ length: 15000 })
-            .map(() => 'a')
-            .join('');
-        const B = A.split('')
-            .map((c, i) => (i > 2000 && i < 2050 ? 'b' : c))
-            .join('');
-        const op = diff.getTextOperation(A, B);
-        expect(op).toMatchSnapshot();
-        expect(op.apply(A)).toEqual(B);
-    });
+
+    const op = diff.getTextOperation(textA, textB);
+
+    expect(op.toJSON()).toMatchSnapshot();
+    expect(op.apply(textA)).toBe(textB);
+  });
+
+  it('can work with big files', () => {
+    const A = Array.from({ length: 10000 })
+      .map(() => 'a')
+      .join('');
+    const B = A.split('')
+      .map((c, i) => (i > 2000 && i < 2050 ? 'b' : c))
+      .join('');
+
+    const op = diff.getTextOperation(A, B);
+
+    expect(op.apply(A)).toEqual(B);
+  });
+
+  it('falls back to stupid diff really big files', () => {
+    const A = Array.from({ length: 15000 })
+      .map(() => 'a')
+      .join('');
+    const B = A.split('')
+      .map((c, i) => (i > 2000 && i < 2050 ? 'b' : c))
+      .join('');
+
+    const op = diff.getTextOperation(A, B);
+
+    expect(op).toMatchSnapshot();
+    expect(op.apply(A)).toEqual(B);
+  });
 });

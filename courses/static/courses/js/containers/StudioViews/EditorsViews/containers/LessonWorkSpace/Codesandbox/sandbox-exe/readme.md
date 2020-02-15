@@ -1,1 +1,0 @@
-We do not use this app. We use build version of sandbox https://github.com/physics-is-beautiful/codesanbox/tree/master/packages/app/src/sandbox .

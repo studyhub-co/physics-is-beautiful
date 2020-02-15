@@ -48,6 +48,7 @@ export interface Sandbox {
 }
 /* eslint-enable */
 export interface Props {
+  selectMaterialType: () => void;
   sandbox: Sandbox;
   small?: boolean;
   noHeight?: boolean;

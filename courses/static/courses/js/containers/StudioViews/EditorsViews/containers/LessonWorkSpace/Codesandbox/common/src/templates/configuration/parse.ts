@@ -1,4 +1,4 @@
-// import toml from 'markty-toml';
+import toml from 'markty-toml';
 import { parse } from '../../forked-vendors/jsonlint.browser';
 import { ConfigurationFile } from '../../templates/configuration/types';
 import { ParsedConfigurationFiles } from '../template';

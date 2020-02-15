@@ -48,7 +48,7 @@ const GithubBadge: FunctionComponent<BadgeProps> = ({
     <DivOrA {...props} href={url}>
       <BorderRadius hasUrl={Boolean(url)}>
         <Icon>
-          <GithubIcon />
+          {/*<GithubIcon />*/}
         </Icon>
         <Text>
           {username}/{repo}

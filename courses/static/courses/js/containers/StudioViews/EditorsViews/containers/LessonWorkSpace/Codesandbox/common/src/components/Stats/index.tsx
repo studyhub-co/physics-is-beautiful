@@ -27,27 +27,27 @@ function StatsComponent({
 }: StatsComponentProps) {
   return (
     <Stats vertical={vertical} {...props}>
-      <Stat
-        text={text ? 'views' : undefined}
-        textOne={text ? 'view' : undefined}
-        vertical={vertical}
-        Icon={<EyeIcon />}
-        count={viewCount}
-      />
-      <Stat
-        text={text ? 'likes' : undefined}
-        textOne={text ? 'like' : undefined}
-        vertical={vertical}
-        Icon={<LikeHeart />}
-        count={likeCount}
-      />
-      <Stat
-        text={text ? 'forks' : undefined}
-        textOne={text ? 'fork' : undefined}
-        vertical={vertical}
-        Icon={<ForkIcon />}
-        count={forkCount}
-      />
+      {/*<Stat*/}
+        {/*text={text ? 'views' : undefined}*/}
+        {/*textOne={text ? 'view' : undefined}*/}
+        {/*vertical={vertical}*/}
+        {/*Icon={<EyeIcon />}*/}
+        {/*count={viewCount}*/}
+      {/*/>*/}
+      {/*<Stat*/}
+        {/*text={text ? 'likes' : undefined}*/}
+        {/*textOne={text ? 'like' : undefined}*/}
+        {/*vertical={vertical}*/}
+        {/*Icon={<LikeHeart />}*/}
+        {/*count={likeCount}*/}
+      {/*/>*/}
+      {/*<Stat*/}
+        {/*text={text ? 'forks' : undefined}*/}
+        {/*textOne={text ? 'fork' : undefined}*/}
+        {/*vertical={vertical}*/}
+        {/*Icon={<ForkIcon />}*/}
+        {/*count={forkCount}*/}
+      {/*/>*/}
     </Stats>
   );
 }

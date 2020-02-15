@@ -12,6 +12,7 @@
     "target": "ES6",
     "resolveJsonModule": true,
     "jsx": "react",
+    "types": ["react", "jest", "node"],
     "lib": ["es2015", "dom"],
     "outDir": "lib",
     "declaration": true,

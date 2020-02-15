@@ -12,7 +12,7 @@ const RunOnClick = ({ onClick }) => (
     onClick={onClick}
   >
     <Centered horizontal vertical>
-      <img width={170} height={170} src={playSVG} alt="Run Sandbox" />
+      {/*<img width={170} height={170} src={playSVG} alt="Run Sandbox" />*/}
       <div
         style={{
           color: theme.red(),

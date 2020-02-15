@@ -1,5 +1,6 @@
 import React from 'react';
 // import IconBase from 'react-icons/lib/IconBase';
+import {IconBase} from 'react-icons/lib/esm/iconBase'
 import Color from 'color';
 import styled from 'styled-components';
 import Tooltip from '../Tooltip';
@@ -38,11 +39,12 @@ export default ({ style, sandboxesNumber, template }) => {
       }`}
     >
       <IconBase
-        style={style}
-        width="1em"
-        height="0.67em"
-        viewBox="0 0 204 320"
-        fill="none"
+        attr={{
+          style:{style},
+          width:"1em",
+          height:"0.67em",
+          viewBox:"0 0 204 320",
+          fill:"none"}}
       >
         <path d="M162.478 320V182H102v104.895L162.478 320z" fill={color} />
         <path
