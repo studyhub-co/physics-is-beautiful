@@ -165,6 +165,7 @@
     "react-markdown": "^4.0.6",
     "react-mathjax": "^1.0.1",
     "react-mathjax2": "0.0.2",
+    "react-mde": "7.3.2",
     "react-modal": "^3.11.1",
     "react-moment": "^0.7.9",
     "react-pdf-js": "github:physics-is-beautiful/react-pdf-js#0.7",

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import delay from '../../../../../common/src/utils/delay';
 import { initialize } from 'react-devtools-inline/frontend';
-import { dispatch, actions } from '../../../../codesandbox-api/codesandbox';
+import { dispatch, actions } from '../../../../../codesandbox-api/codesandbox';
 import { ThemeContext } from 'styled-components';
 
 import { Container } from './elements';

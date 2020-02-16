@@ -1,10 +1,11 @@
-import * as templates from '../../../common/src/templates';
-import getIcon from '../../../common/src/templates/icons';
-import { ColorIcons as Icons } from '../../../../../../../../../../../codesandbox-apps/template-icons';
+import * as templates from '../../../../../common/src/templates';
+import getIcon from '../../../../../common/src/templates/icons';
+// import { ColorIcons as Icons } from '../../../../../../../../../../../codesandbox-apps/template-icons';
+import { ColorIcons as Icons } from '../../../../../common/src/template-icons';
 import React, { FunctionComponent, useState } from 'react';
 import { usePopoverState } from 'reakit/Popover';
 
-import { useOvermind } from '../../../../app/overmind';
+import { useOvermind } from '../../../../../app/overmind';
 
 import { Item, PropertyName } from '../../elements';
 import {

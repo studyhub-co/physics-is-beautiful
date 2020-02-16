@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { dispatch, actions } from '../../../../codesandbox-api/codesandbox';
+import { dispatch, actions } from '../../../../../codesandbox-api/codesandbox';
 
 // import NoticeIcon from 'react-icons/lib/md/info';
 // import ErrorIcon from 'react-icons/lib/md/error';

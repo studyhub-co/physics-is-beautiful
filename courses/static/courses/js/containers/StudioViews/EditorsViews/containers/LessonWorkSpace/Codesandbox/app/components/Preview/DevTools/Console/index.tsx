@@ -1,6 +1,6 @@
 import Select from '../../../../../common/src/components/Select';
 import theme from '../../../../../common/src/theme';
-import { listen, dispatch } from '../../../../codesandbox-api/codesandbox';
+import { listen, dispatch } from '../../../../../codesandbox-api/codesandbox';
 import { Decode, Console as ConsoleFeed } from 'console-feed';
 import update from 'immutability-helper';
 import { debounce } from 'lodash-es';

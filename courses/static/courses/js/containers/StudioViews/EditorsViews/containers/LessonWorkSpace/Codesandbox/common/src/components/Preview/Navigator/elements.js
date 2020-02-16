@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components'
 
 export const Container = styled.div`
   display: flex;
@@ -12,11 +12,11 @@ export const Container = styled.div`
   min-height: 35px;
   box-sizing: border-box;
   z-index: 2;
-`;
+`
 
 export const Icons = styled.div`
   display: flex;
-`;
+`
 
 export const Icon = styled.button`
   display: inline-block;
@@ -28,8 +28,8 @@ export const Icon = styled.button`
         ? 'rgba(0, 0, 0, 0.3)'
         : 'rgba(255, 255, 255, 0.3)'
       : props.theme.light
-      ? 'rgba(0, 0, 0, 0.5)'
-      : 'rgba(255, 255, 255, 0.6)'};
+        ? 'rgba(0, 0, 0, 0.5)'
+        : 'rgba(255, 255, 255, 0.6)'};
   font-size: 1.5rem;
   line-height: 0.5;
   margin: 0 0.1rem;
@@ -44,8 +44,8 @@ export const Icon = styled.button`
     &:hover {
       cursor: pointer;
       color: ${
-        props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'
-      };
+  props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'
+};
     }`};
 
   ${props =>
@@ -53,14 +53,14 @@ export const Icon = styled.button`
     css`
       color: ${props.theme.templateColor || props.theme.secondary};
     `};
-`;
+`
 
 export const AddressBarContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   margin: 0 0.5rem;
-`;
+`
 
 export const SwitchContainer = styled.div`
   flex: 0 0 3.5rem;
-`;
+`

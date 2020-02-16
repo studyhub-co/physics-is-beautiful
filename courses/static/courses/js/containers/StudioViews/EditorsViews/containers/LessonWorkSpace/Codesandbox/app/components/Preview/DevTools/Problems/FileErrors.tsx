@@ -1,5 +1,5 @@
 import Tooltip from '../../../../../common/src/components/Tooltip';
-import { dispatch, actions } from '../../../../codesandbox-api/codesandbox';
+import { dispatch, actions } from '../../../../../codesandbox-api/codesandbox';
 import { sortBy } from 'lodash';
 import React from 'react';
 // import FileIcon from 'react-icons/lib/md/insert-drive-file';

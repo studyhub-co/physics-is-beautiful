@@ -1,8 +1,9 @@
+import React from 'react';
+
 import { messages } from '../../../../../common/src/utils/jest-lite';
-import { actions, dispatch, listen } from '../../../../codesandbox-api/codesandbox';
+import { actions, dispatch, listen } from '../../../../../codesandbox-api/codesandbox';
 import immer from 'immer';
 import { debounce } from 'lodash-es';
-import React from 'react';
 import SplitPane from 'react-split-pane';
 
 import { DevToolProps } from '..';

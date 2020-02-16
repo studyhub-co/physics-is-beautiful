@@ -1,12 +1,12 @@
-import { listen } from '../../../../codesandbox-api/codesandbox';
+import { listen } from '../../../../../codesandbox-api/codesandbox';
 import {
   CorrectionAction,
   CorrectionClearAction,
-} from '../../../../codesandbox-api/actions/correction';
+} from '../../../../../codesandbox-api/actions/correction';
 import {
   ErrorAction,
   ErrorClearAction,
-} from '../../../../codesandbox-api/actions/error';
+} from '../../../../../codesandbox-api/actions/error';
 import immer from 'immer';
 import React from 'react';
 

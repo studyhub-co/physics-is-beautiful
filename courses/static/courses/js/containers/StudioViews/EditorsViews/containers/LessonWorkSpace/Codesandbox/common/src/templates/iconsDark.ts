@@ -25,7 +25,7 @@ import {
   JavaScriptIconDark,
   VuePressIconDark,
   UnibitIconDark,
-} from '../../../../../../../../../codesandbox-apps/template-icons';
+} from '../template-icons';
 
 import {
   adonis,

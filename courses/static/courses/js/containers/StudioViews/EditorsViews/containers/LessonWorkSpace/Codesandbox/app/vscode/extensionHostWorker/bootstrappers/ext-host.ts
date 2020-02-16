@@ -10,7 +10,7 @@ import TSWorker from 'worker-loader?publicPath=/static/js/bundles/&name=typescri
 import VueWorker from 'worker-loader?publicPath=/static/js/bundles/&name=vue-worker.[hash:8].worker.js!./vue-worker';
 // @ts-ignore
 import SvelteWorker from 'worker-loader?publicPath=/static/js/bundles/&name=svelte-worker.[hash:8].worker.js!./svelte-worker';
-import { initializeAll } from '../common/src/global';
+import { initializeAll } from '../common/global';
 
 childProcess.addDefaultForkHandler(DefaultWorkLoader);
 childProcess.addForkHandler(

@@ -11900,6 +11900,11 @@ react-mathjax@^1.0.1:
   dependencies:
     load-script "^1.0.0"
 
+react-mde@7.3.2:
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/react-mde/-/react-mde-7.3.2.tgz#8954a8122a68a12ca77a821fc88b1f59615d59cd"
+  integrity sha512-IvqelDuGFdSf1CfMbBd9dcsx23dLf/9ZusfvgLpu2Cmggbt+N52Rz/WB1fOBdAfJGw5p2JiMkWTigTl8aIbipA==
+
 react-mde@^7.3.2:
   version "7.9.0"
   resolved "https://registry.yarnpkg.com/react-mde/-/react-mde-7.9.0.tgz#620a8fe0265883b7eba52077e8cf847c2f55d19d"
