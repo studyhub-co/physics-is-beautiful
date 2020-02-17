@@ -58,6 +58,41 @@ CustomToggle.propTypes = {
   unReadCount: PropTypes.object
 }
 
+// fix for future versions https://github.com/react-bootstrap/react-bootstrap/issues/4841
+
+// // The forwardRef is important!!
+// // Dropdown needs access to the DOM node in order to position the Menu
+// const CustomToggle = React.forwardRef(({ children, onClick, unReadCount }, ref) => {
+//   if (unReadCount && unReadCount['count']) {
+//     if (unReadCount['count'] > 99) {
+//       unReadCount = '99+'
+//     } else {
+//       unReadCount = '' + unReadCount['count']
+//     }
+//   }
+//
+//   return (
+//     <span
+//       ref={ref}
+//       onClick={onClick}
+//       style={{
+//         padding: '1rem',
+//         cursor: 'pointer'
+//       }}>
+//       <FaInbox
+//         title={''}
+//         style={{fontSize: '2rem'}} />
+//       { unReadCount
+//         ? <Badge
+//           variant='danger'
+//           style={{left: '2rem', position: 'absolute'}}
+//         >{unReadCount}</Badge>
+//         : null }
+//     </span>
+//   )
+// }
+// )
+
 class IndexView extends React.Component {
   componentWillMount () {
     this.props.notificationsActions.fetchUnReadCount()
@@ -66,7 +101,9 @@ class IndexView extends React.Component {
   render () {
     return (
       <Dropdown>
-        <Dropdown.Toggle unReadCount={this.props.unReadCount} as={CustomToggle} id='dropdown-custom-components'>
+        <Dropdown.Toggle
+          unReadCount={this.props.unReadCount}
+          as={CustomToggle} id='dropdown-custom-components'>
         Custom toggle
         </Dropdown.Toggle>
         <Dropdown.Menu alignRight>

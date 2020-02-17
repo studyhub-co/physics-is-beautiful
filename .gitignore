@@ -134,3 +134,7 @@ pip-selfcheck.json
 /courses/sandbox-eval-project/www/
 
 webpack-stats.json
+
+# yarn
+yarn.lock
+yarn-error.log
