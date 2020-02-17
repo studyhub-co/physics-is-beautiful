@@ -24,14 +24,15 @@ create database pib_development;
 exit;
 ```
 
-* install npm:
+* install yarn:
 ```
-brew install node
+brew install npm
+brew install yarn
 ```
 
 * get packages (from root directory):
 ```
-npm install
+yarn install
 ```
 
 ## To run locally
@@ -40,24 +41,13 @@ npm install
 DJANGO_SETTINGS_MODULE=pib.local_settings
 ``` 
 * Build the front-end
+development watch mode
 ```
-./node_modules/.bin/webpack --config webpack.config.js
+yarn run watch
 ```
-or
+or (prepare production bundle)
 ```
-npm run prod
-```
-(if you want to reload automatically when changes are made, you can run):
-```
-./node_modules/.bin/webpack --config webpack.config.js --watch
-```
-(if you want to use redux-devtools (hotkey: ctrl+h), Redux DevTools chrome extension, redux-logger)
-```
-./node_modules/.bin/webpack --config webpack.config.js --watch --env.NODE_ENV=develop
-```
-or
-```
-npm run dev
+yarn run prod
 ```
 
 * Setup the db:
