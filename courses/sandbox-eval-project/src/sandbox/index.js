@@ -1,17 +1,17 @@
-import { camelizeKeys } from 'humps';
-import { isStandalone, listen, dispatch } from 'codesandbox-api';
-import { activate, initialize } from 'react-devtools-inline/backend';
-import _debug from '@codesandbox/common/lib/utils/debug';
+import { camelizeKeys } from 'humps'
+import { isStandalone, listen, dispatch } from 'codesandbox-api'
+import { activate, initialize } from 'react-devtools-inline/backend'
+import _debug from '@codesandbox/common/lib/utils/debug'
 
-import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
-import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
-import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
-import setupConsole from 'sandbox-hooks/console';
-import setupHistoryListeners from 'sandbox-hooks/url-listeners';
+import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker'
+import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills'
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules'
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json'
+import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator'
+import setupConsole from 'sandbox-hooks/console'
+import setupHistoryListeners from 'sandbox-hooks/url-listeners'
 
-import compile, { getCurrentManager } from './compile';
+import compile, { getCurrentManager } from './compile'
 
 // var util = require('util')
 //   , Agent = require('http').Agent
@@ -20,108 +20,106 @@ import compile, { getCurrentManager } from './compile';
 //   , AgentSSL = require('https').Agent
 
 // Call this before importing React (or any other packages that might import React).
-initialize(window);
+initialize(window)
 
-const host = process.env.CODESANDBOX_HOST;
-const debug = _debug('cs:sandbox');
+const host = process.env.CODESANDBOX_HOST
+const debug = _debug('cs:sandbox')
 
 export const SCRIPT_VERSION =
-  document.currentScript && document.currentScript.src;
+  document.currentScript && document.currentScript.src
 
-debug('Booting sandbox');
+debug('Booting sandbox')
 
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js', {});
+  registerServiceWorker('/sandbox-service-worker.js', {})
 
-  function sendReady() {
-    dispatch({ type: 'initialized' });
+  function sendReady () {
+    dispatch({ type: 'initialized' })
   }
 
-  async function handleMessage(data, source) {
+  async function handleMessage (data, source) {
     if (source) {
       if (data.type === 'compile') {
         // console.log(data);
-        compile(data);
+        compile(data)
       } else if (data.type === 'get-transpiler-context') {
-        const manager = getCurrentManager();
+        const manager = getCurrentManager()
 
         if (manager) {
-          const context = await manager.getTranspilerContext();
+          const context = await manager.getTranspilerContext()
           dispatch({
             type: 'transpiler-context',
-            data: context,
-          });
+            data: context
+          })
         } else {
           dispatch({
             type: 'transpiler-context',
-            data: {},
-          });
+            data: {}
+          })
         }
       }
     }
   }
 
   if (!isStandalone) {
+    listen(handleMessage)
 
-    listen(handleMessage);
+    sendReady()
 
-    sendReady();
-    
     if (!window.opener) {
-
       // Means we're in the editor
-      setupHistoryListeners();
-      setupConsole();
+      setupHistoryListeners()
+      setupConsole()
       window.addEventListener('message', ({ data }) => {
         switch (data.type) {
           case 'activate':
-            activate(window);
-            break;
+            activate(window)
+            break
           default:
-            break;
+            break
         }
-      });
+      })
     }
   }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
     try {
-      const id = getSandboxId();
+      const id = getSandboxId()
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
     window
       .fetch(host + `/api/v1/sandboxes/${id}`, {
-        credentials: 'include',
+        credentials: 'include'
       })
       .then(res => res.json())
       .then(res => {
-        const camelized = camelizeKeys(res);
-        camelized.data.npmDependencies = res.data.npm_dependencies;
+        const camelized = camelizeKeys(res)
+        camelized.data.npmDependencies = res.data.npm_dependencies
 
-        return camelized;
+        return camelized
       })
       .then(x => {
-        const moduleObject = {};
+        const moduleObject = {}
 
         // We convert the modules to a format the manager understands
 
         // console.log(x);
 
         x.data.modules.forEach(m => {
-          const path = getModulePath(x.data.modules, x.data.directories, m.id);
+          const path = getModulePath(x.data.modules, x.data.directories, m.id)
           moduleObject[path] = {
             path,
-            code: m.code,
-          };
-        });
+            code: m.code
+          }
+        })
 
         if (!moduleObject['/package.json']) {
           moduleObject['/package.json'] = {
             code: generateFileFromSandbox(x.data),
-            path: '/package.json',
-          };
+            path: '/package.json'
+          }
         }
 
         const data = {
@@ -135,10 +133,10 @@ requirePolyfills().then(() => {
           version: 3,
           disableDependencyPreprocessing: document.location.search.includes(
             'csb-dynamic-download'
-          ),
-        };
+          )
+        }
 
-        compile(data);
-      });
+        compile(data)
+      })
   }
-});
+})

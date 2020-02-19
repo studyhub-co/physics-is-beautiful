@@ -400,14 +400,15 @@ module.exports = {
     modules: [
       'node_modules',
       path.resolve(__dirname, '../src'),
-      'standalone-packages'
+      path.resolve(__dirname, '../../config'),
+      path.resolve(__dirname, '../../static/courses/js/codesandbox-apps/')
+      // 'standalone-packages'
     ],
 
     extensions: ['.js', '.json', '.ts', '.tsx'],
 
     alias: {
       moment: 'moment/moment.js',
-
       fs: 'codesandbox-browserfs/dist/shims/fs.js',
       buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
       processGlobal: 'codesandbox-browserfs/dist/shims/process.js',

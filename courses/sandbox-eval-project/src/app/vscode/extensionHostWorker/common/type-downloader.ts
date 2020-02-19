@@ -5,7 +5,7 @@ import {
 import {
   IModule,
   IManager,
-} from '../../../../../../../standalone-packages/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
+} from '../../../../../../static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/node/backend/CodeSandboxFS';
 
 const ctx = getGlobal();
 

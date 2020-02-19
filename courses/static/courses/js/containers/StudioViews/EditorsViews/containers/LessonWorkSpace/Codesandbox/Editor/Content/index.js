@@ -103,7 +103,7 @@ class EditorPreview extends React.Component {
         // Put in a timeout so we allow the actions after the fork to execute first as well.
         setTimeout(() => {
           if (editor.changeSandbox) {
-            console.log(store.editor.parsedConfigurations)
+            // console.log(store.editor.parsedConfigurations)
 
             const { parsed } = store.editor.parsedConfigurations.package
             editor
@@ -400,8 +400,6 @@ class EditorPreview extends React.Component {
     const { width: editorWidth, height: editorHeight } = this.state
 
     // template - create-react-app, vue, etc
-    
-    console.log(sandbox);
 
     const template = getTemplateDefinition(sandbox.template)
 
