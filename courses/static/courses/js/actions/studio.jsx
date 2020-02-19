@@ -1134,7 +1134,7 @@ export function lessonAvailable (lesson) {
   }
 }
 
-export function loadLessonIfNeeded (uuid) {
+export function loadLessonIfNeeded (uuid, materialUuid) {
   return (dispatch, getState) => {
     if (!(uuid in getState().studio.lessons) || !getState().studio.lessons[uuid].materials) {
       $.ajax({
@@ -1142,7 +1142,14 @@ export function loadLessonIfNeeded (uuid) {
         url: API_PREFIX + 'lessons/' + uuid + '/',
         success: function (data, status, jqXHR) {
           dispatch(lessonLoaded(data))
-          dispatch(redirectTo1stMaterial(data))
+          if (materialUuid) {
+            // dispatch(loadMaterial(materialUuid))
+            // select current material (got from url)
+            dispatch(goToMaterial(materialUuid, uuid))
+          } else {
+            // select 1st material
+            dispatch(redirectTo1stMaterial(data))
+          }
         },
         error: function (xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {

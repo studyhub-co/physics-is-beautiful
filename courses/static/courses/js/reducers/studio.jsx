@@ -174,7 +174,7 @@ function materials (state = {}, action) {
   }
 }
 
-// currentMaterial (Got with lesson loaded)
+// currentMaterial (Got with material loaded)
 function currentMaterial (state = null, action) {
   switch (action.type) {
     // move to actions (redirect)

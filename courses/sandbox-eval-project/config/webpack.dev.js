@@ -1,21 +1,21 @@
-const merge = require('webpack-merge');
+const merge = require('webpack-merge')
 // const webpack = require('webpack');
-const WebpackBar = require('webpackbar');
-const commonConfig = require('./webpack.common');
+const WebpackBar = require('webpackbar')
+const commonConfig = require('./webpack.common')
 
 const devEntries = [
   // 'react-hot-loader/patch',
-  'webpack-dev-server/client?/',
+  'webpack-dev-server/client?/'
   // 'webpack/hot/only-dev-server',
-];
+]
 
 module.exports = merge(
   // these go first, because "react-hot-loader/patch" has to be the first entry
   {
     entry: {
       app: devEntries,
-      embed: devEntries,
-    },
+      embed: devEntries
+    }
   },
   commonConfig,
   {
@@ -23,16 +23,16 @@ module.exports = merge(
     mode: 'development',
     output: {
       filename: 'static/js/[name].js',
-      pathinfo: true,
+      pathinfo: true
     },
     optimization: {
       removeAvailableModules: false,
       removeEmptyChunks: false,
-      splitChunks: false,
+      splitChunks: false
     },
     plugins: [
-      new WebpackBar(),
+      new WebpackBar()
       // new webpack.HotModuleReplacementPlugin(),
-    ],
+    ]
   }
-);
+)

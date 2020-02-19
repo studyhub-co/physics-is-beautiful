@@ -42,7 +42,9 @@ class ContentSplit extends React.Component {
       vscodeTheme: codesandbox
     },
     customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme,
-    currentMaterialProblemType: {id: 'new'}
+
+    currentMaterialProblemType: this.getMaterialProblemTypeFromReduxStore(store.getState())
+    // currentMaterialProblemType: {id: 'new'}
   };
 
   getMaterialProblemTypeFromReduxStore (state) {
@@ -56,11 +58,13 @@ class ContentSplit extends React.Component {
 
   constructor (props) {
     super(props)
-    this.setState({ currentMaterialProblemType: null })
     // subscribe for material changed
     this.unSubscribeStore = store.subscribe(() => {
       const newSandbox = this.getMaterialProblemTypeFromReduxStore(store.getState())
-      if (newSandbox && this.state.currentMaterialProblemType.id !== newSandbox.id) {
+      if (newSandbox &&
+        // if prevSandbox == null || Sandbox has newId
+        (!this.state.currentMaterialProblemType || this.state.currentMaterialProblemType.id !== newSandbox.id)
+      ) {
         this.setState({
           currentMaterialProblemType: newSandbox
         }, this.fetchReactSandbox)
@@ -81,8 +85,6 @@ class ContentSplit extends React.Component {
   }
 
   fetchReactSandbox = () => {
-    // console.log(this.state.currentMaterialProblemType)
-
     this.props.signals.editor.sandboxChanged(this.state.currentMaterialProblemType)
 
     // const { id } = this.props.match.params;
@@ -127,16 +129,16 @@ class ContentSplit extends React.Component {
 
     const sandbox = store.editor.currentSandbox
 
-    if (!sandbox || store.editor.isLoading) {
-      return (<div>Loading problem type...</div>)
-      // return (<Skeleton
-      //   titles={[
-      //     {
-      //       content: 'Loading Sandbox',
-      //       delay: 0.6
-      //     }]}
-      // />)
-    }
+    // if (!sandbox || store.editor.isLoading) {
+    //   return (<div>Loading problem type...</div>)
+    //   // return (<Skeleton
+    //   //   titles={[
+    //   //     {
+    //   //       content: 'Loading Sandbox',
+    //   //       delay: 0.6
+    //   //     }]}
+    //   // />)
+    // }
 
     // Force MobX to update this component by observing the following value
     this.props.store.preferences.settings.customVSCodeTheme; // eslint-disable-line

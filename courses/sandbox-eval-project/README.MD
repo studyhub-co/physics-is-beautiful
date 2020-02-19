@@ -1,6 +1,6 @@
-This is Material evalution JS application.
+This is Material problem type evaluation JS application.
 
 1) Uses by Lesson workspace Editor via iframe    
-2) Can load with material uuid in url (see courses/urls.py for details)
+2) This can run with material problem type / material uuid in url (see courses/urls.py for details)
 
-TODO create new project and use as git submodule 
+TODO use as git submodule 

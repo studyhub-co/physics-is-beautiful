@@ -204,9 +204,9 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   };
 
   // closeTabByIndex(state, 0)
-  state.editor.tabs = []
-  console.log(state.editor.tabs);
-  state.editor.tabs = [newTab];
+  // state.editor.tabs = []
+  // console.log(state.editor.tabs);
+  // state.editor.tabs = [newTab];
   // state.editor.tabs = [newTab];
 
   state.preferences.showPreview =

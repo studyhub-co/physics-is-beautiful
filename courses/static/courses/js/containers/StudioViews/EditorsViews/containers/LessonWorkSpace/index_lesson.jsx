@@ -56,7 +56,7 @@ export class Lesson extends React.Component {
   // this.props.currentMaterial.material_problem_type = null
 
   async componentDidMount () {
-    this.props.loadLessonIfNeeded(this.props.uuid)
+    this.props.loadLessonIfNeeded(this.props.uuid, this.props.materialUrlUuid)
 
     // TODO make editor loadable
     // export default loadable(() => import('./index'), {
@@ -158,7 +158,6 @@ export class Lesson extends React.Component {
           <Grid item xs={8}>
             <div>
               <h1>
-                {/* TODO add problem type name */}
                 <EditableLabel
                   value={this.props.name}
                   onChange={this.props.onNameChange}
@@ -262,6 +261,7 @@ export class Lesson extends React.Component {
           {/* <Grid */}
           {/* item xs={12} */}
           {/* style={{ */}
+          {/* // display: this.state.layout === 'edit' ? 'flex' : 'none', */}
           {/* display: this.state.layout === 'edit' ? 'flex' : 'none', */}
           {/* height: '100vh' */}
           {/* }}> */}
@@ -291,11 +291,14 @@ Lesson.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
+  const materialUuid = null
+  if (ownProps.match.params.hasOwnProperty('material_uuid')) {
+    const materialUuid = ownProps.match.params.material_uuid
+  }
 
   const lesson = state.studio.lessons[uuid]
   if (lesson) {
     // let previousMaterial, nextMaterial
-
     const currentMaterial = state.studio.currentMaterial
 
     // set material nexp/prev buttons
@@ -311,6 +314,7 @@ const mapStateToProps = (state, ownProps) => {
 
     return {
       uuid: uuid,
+      materialUrlUuid: materialUuid,
       loading: false,
       name: lesson.name,
       image: lesson.image,
@@ -324,6 +328,7 @@ const mapStateToProps = (state, ownProps) => {
   } else {
     return {
       uuid: uuid,
+      materialUrlUuid: materialUuid,
       loading: true
     }
   }

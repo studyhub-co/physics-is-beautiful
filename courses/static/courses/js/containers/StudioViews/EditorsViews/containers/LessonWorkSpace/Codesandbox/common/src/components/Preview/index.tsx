@@ -1,11 +1,14 @@
 import React from 'react';
+
+// TODO fix import
 import {
   listen,
   dispatch,
   actions,
   registerFrame,
   resetState,
-} from '../../../../../Codesandbox/codesandbox-api/codesandbox';
+// } from 'codesandbox-api'; // common build lib variant
+} from '../../../../../Codesandbox/codesandbox-api/codesandbox'; // to import from main app
 import debounce from 'lodash/debounce';
 import { Spring } from 'react-spring/renderprops.cjs';
 import { Sandbox, Module } from '../../types';
@@ -201,16 +204,18 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   currentUrl = () => {
-    // TODO Do need url with sandox id?
-    if (window.location.hostname=='127.0.0.1')
-    {
-      return 'http://127.0.0.1:8000/material-frame/';
-    }
-    else {
-      return 'http://pib-dev.us-east-1.elasticbeanstalk.com/material-frame/';
-    }
-
     const { url, sandbox } = this.props;
+
+    if (sandbox && sandbox.hasOwnProperty('id')) {
+      // TODO add material id to work with data
+      if (window.location.hostname == '127.0.0.1') {
+        return `http://127.0.0.1:8000/evaluation/${sandbox.id}/`;
+      } else {
+        return `http://pib-dev.us-east-1.elasticbeanstalk.com/evaluation/${sandbox.id}/`;
+      }
+    }
+    else {return ''}
+
     if (url && !url.startsWith('/')) {
       // An absolute url is given, just return that
       return url;

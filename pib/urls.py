@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.conf.urls import include
+from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
@@ -76,4 +76,7 @@ from django.views.generic.base import TemplateView
 # ]
 # catch all urls in main SPA app
 # (.*?) - fix for string non ending with slash
-urlpatterns += [url(r'^(.*?)/', include('courses.urls', namespace='main')), ]
+# urlpatterns += [url(r'^(.*?)/', include('courses.urls', namespace='main')), ]
+# urlpatterns += [re_path(r'^(.*?)/', include('courses.urls', namespace='main')), ]
+urlpatterns += [path(r'', include('courses.urls', namespace='main')), ]
+
