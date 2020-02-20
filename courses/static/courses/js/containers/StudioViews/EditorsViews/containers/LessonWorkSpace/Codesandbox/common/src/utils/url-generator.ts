@@ -188,14 +188,22 @@ export function getSandboxId() {
   }
 
   let result: string;
-  [csbHost, sandboxHost[csbHost]].filter(Boolean).forEach(tryHost => {
-    const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
-    const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
-    const matches = document.location.host.match(sandboxRegex);
-    if (matches) {
-      result = matches[1];
-    }
-  });
+  // [csbHost, sandboxHost[csbHost]].filter(Boolean).forEach(tryHost => {
+  //   const hostRegex = tryHost.replace(/https?:\/\//, '').replace(/\./g, '\\.');
+  //   const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
+  //   const matches = document.location.host.match(sandboxRegex);
+  //   if (matches) {
+  //     result = matches[1];
+  //   }
+  // });
+
+  // document.location.pathname
+  // /evaluation/03bc1a2d-febe-4a0b-9028-1957eed68bd2/03bc1a2d-febe-4a0b-9028-1957eed68bd2/
+  //              ^ sandbox uuid                         ^ material uuid (optional)
+  const segments = document.location.pathname.split('/')
+  if (segments.length > 2) {
+    result = segments[2]
+  }
 
   if (!result) {
     throw new Error(`Can't detect sandbox ID from the current URL`);

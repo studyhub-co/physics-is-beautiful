@@ -84,19 +84,22 @@ requirePolyfills().then(() => {
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
+    let id
     try {
-      const id = getSandboxId()
+      id = getSandboxId()
     } catch (e) {
       console.log(e)
     }
     window
-      .fetch(host + `/api/v1/sandboxes/${id}`, {
+      // .fetch(host + `/api/v1/sandboxes/${id}`, {
+      .fetch(host + `/api/v1/studio/material-problem-type/${id}/`, {
         credentials: 'include'
       })
       .then(res => res.json())
       .then(res => {
         const camelized = camelizeKeys(res)
-        camelized.data.npmDependencies = res.data.npm_dependencies
+        // camelized.data.npmDependencies = res.data.npm_dependencies
+        camelized.npmDependencies = res.npm_dependencies
 
         return camelized
       })
@@ -107,8 +110,16 @@ requirePolyfills().then(() => {
 
         // console.log(x);
 
-        x.data.modules.forEach(m => {
-          const path = getModulePath(x.data.modules, x.data.directories, m.id)
+        // x.data.modules.forEach(m => {
+        //   const path = getModulePath(x.data.modules, x.data.directories, m.id)
+        //   moduleObject[path] = {
+        //     path,
+        //     code: m.code
+        //   }
+        // })
+
+        x.modules.forEach(m => {
+          const path = getModulePath(x.modules, x.directories, m.id)
           moduleObject[path] = {
             path,
             code: m.code
@@ -117,19 +128,33 @@ requirePolyfills().then(() => {
 
         if (!moduleObject['/package.json']) {
           moduleObject['/package.json'] = {
-            code: generateFileFromSandbox(x.data),
+            // code: generateFileFromSandbox(x.data),
+            code: generateFileFromSandbox(x),
             path: '/package.json'
           }
         }
 
+        // const data = {
+        //   sandboxId: id,
+        //   modules: moduleObject,
+        //   entry: '/' + x.data.entry,
+        //   externalResources: x.data.externalResources,
+        //   dependencies: x.data.npmDependencies,
+        //   hasActions: false,
+        //   template: x.data.template,
+        //   version: 3,
+        //   disableDependencyPreprocessing: document.location.search.includes(
+        //     'csb-dynamic-download'
+        //   )
+        // }
         const data = {
           sandboxId: id,
           modules: moduleObject,
-          entry: '/' + x.data.entry,
-          externalResources: x.data.externalResources,
-          dependencies: x.data.npmDependencies,
+          entry: '/' + x.entry,
+          externalResources: x.externalResources,
+          dependencies: x.npmDependencies,
           hasActions: false,
-          template: x.data.template,
+          template: x.template,
           version: 3,
           disableDependencyPreprocessing: document.location.search.includes(
             'csb-dynamic-download'

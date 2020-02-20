@@ -1,0 +1,1 @@
+TODO: move to courses/static/courses/js/codesandbox-apps

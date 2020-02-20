@@ -1,13 +1,13 @@
 import React from 'react';
 
-// TODO fix import
+// TODO import
 import {
   listen,
   dispatch,
   actions,
   registerFrame,
   resetState,
-// } from 'codesandbox-api'; // common build lib variant
+//} from 'codesandbox-api'; // common build lib variant
 } from '../../../../../Codesandbox/codesandbox-api/codesandbox'; // to import from main app
 import debounce from 'lodash/debounce';
 import { Spring } from 'react-spring/renderprops.cjs';
@@ -311,24 +311,6 @@ class BasePreview extends React.Component<Props, State> {
       }
 
     const { type } = data;
-
-    //  TODO: remove, too many issues with transpiling in the same origin
-    // 1. compile sanbox
-    // console.log(type);
-    //
-    // switch (type) {
-    //    case 'pib_compile': {
-    //      this.pibExecuteCodeImmediately();
-    //      break;
-    //    }
-    //  }
-    // 2. upload to backend
-    // (TODO separete this:
-    // 2.1. compile online (codesandbox)
-    // 2.2. upload on Save
-    //  )
-    // 3. SSE message from server to refresh iframe
-
 
     //  !======== codesandbox iframe communication code below ======
       // source will destroy after 1st touch
