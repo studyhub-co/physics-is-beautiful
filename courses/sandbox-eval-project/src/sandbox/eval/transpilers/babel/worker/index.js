@@ -1,6 +1,7 @@
 import loadPolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 
-require('config/polyfills');
+// TODO fix this
+// require('app/config/polyfills');
 
 self.importScripts(
   `${process.env.CODESANDBOX_HOST}/static/browserfs5/browserfs.min.js`

@@ -122,6 +122,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'templates', 'allauth'),  # not sure that we need it
             os.path.join(BASE_DIR, 'node_modules', '@vermus', 'django-react-djeddit-client', 'dist'),
+            os.path.join(BASE_DIR, 'courses', 'sandbox-eval-project', 'www', 'courses', 'js'), # 'codesandbox-apps', 'eval'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -208,6 +209,7 @@ STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT')
 # STATIC_ROOT or syncs them to whatever storage we use.
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'courses', 'sandbox-eval-project', 'www'),
 )
 
 SITE_ID = 1

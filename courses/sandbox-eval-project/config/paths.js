@@ -16,6 +16,7 @@ const nodePaths = (process.env.NODE_PATH || '')
   .filter(Boolean)
   .map(p => path.resolve(p))
 
+// ???
 function resolveApp (relativePath) {
   return path.resolve(relativePath)
 }
@@ -33,7 +34,8 @@ console.log(common);
 
 // config after eject: we're in ./config/
 module.exports = {
-  appBuild: resolveApp('www'),
+  // appBuild: resolveApp('www'),
+  appBuild: path.resolve('www', 'courses', 'js', 'codesandbox-apps', 'eval'),
   appHtml: path.join(appSrc, 'index.html'),
   sandboxHtml: path.join(sandboxSrc, 'index.html'),
   appPackageJson: resolveApp('package.json'),
