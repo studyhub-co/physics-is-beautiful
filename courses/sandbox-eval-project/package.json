@@ -15,7 +15,7 @@
     "build:sandbox": "cross-env NODE_ENV=production SANDBOX_ONLY=true node scripts/build.js",
     "build:sandbox_pib": "cross-env NODE_ENV=production SANDBOX_ONLY=true PIB_PROD=true node scripts/build.js",
     "build:sandbox_pib_dev": "cross-env NODE_ENV=production SANDBOX_ONLY=true PIB_DEV=true node scripts/build.js",
-    "watch:sandbox_pib_dev": "cross-env SANDBOX_ONLY=true PIB_DEV=true node scripts/watch.js",
+    "watch:sandbox_pib_dev": "cross-env NODE_ENV=development SANDBOX_ONLY=true PIB_DEV=true node scripts/watch.js",
     "copy-assets": "cross-env NODE_ENV=production node scripts/copy-assets.js",
     "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "lint": "npm run lint:app && npm run lint:embed && npm run lint:sandbox",
