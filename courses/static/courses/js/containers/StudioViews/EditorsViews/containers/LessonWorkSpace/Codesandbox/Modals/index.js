@@ -6,7 +6,8 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates'
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json'
 
 import { inject, observer } from '../app/componentConnectors'
-import Modal from '../app/app/components/Modal'
+import Modal from '../app/components/Modal'
+import getVSCodeTheme from '../Editor/utils/get-vscode-theme'
 // import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 // import Loadable from '../app/utils/Loadable'
 import { templateColor } from '../app/utils/template-color'

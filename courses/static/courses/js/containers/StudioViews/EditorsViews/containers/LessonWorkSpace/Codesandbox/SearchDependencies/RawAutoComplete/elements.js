@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export const AutoCompleteInput = styled.input`
   width: 100%;
@@ -14,7 +14,7 @@ export const AutoCompleteInput = styled.input`
     props.theme.light ? props.theme.black : props.theme.white};
   padding: 0.75em 1em;
   z-index: 2;
-`;
+`
 
 export const SuggestionInput = styled(AutoCompleteInput)`
   position: absolute;
@@ -25,4 +25,4 @@ export const SuggestionInput = styled(AutoCompleteInput)`
   background-color: transparent;
   z-index: 1;
   pointer-events: none;
-`;
+`

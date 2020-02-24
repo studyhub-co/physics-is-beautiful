@@ -4,7 +4,7 @@ module.exports = {
       'targets': { 'chrome': 41 },
       'useBuiltIns': 'entry',
       'debug': false,
-      "corejs": "2",
+      'corejs': '2'
     }],
     '@babel/preset-flow',
     '@babel/preset-react',

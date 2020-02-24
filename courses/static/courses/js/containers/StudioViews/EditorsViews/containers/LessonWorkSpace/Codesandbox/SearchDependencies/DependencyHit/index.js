@@ -1,12 +1,14 @@
-import React from 'react';
-import HomeIcon from 'react-icons/lib/io/home';
-import SearchIcon from 'react-icons/lib/go/search';
-import { Highlight } from 'react-instantsearch/dom';
-import compareVersions from 'compare-versions';
+import React from 'react'
+// import HomeIcon from 'react-icons/lib/io/home'
+// import SearchIcon from 'react-icons/lib/go/search'
+import { IoIosHome as HomeIcon } from 'react-icons/io'
+import { GoSearch as SearchIcon } from 'react-icons/go'
+import { Highlight } from 'react-instantsearch/dom'
+import compareVersions from 'compare-versions'
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip'
 
-import formatDownloads from '../formatDownloads';
+import formatDownloads from '../formatDownloads'
 
 import {
   Container,
@@ -19,79 +21,79 @@ import {
   IconLink,
   StyledSelect,
   StyledUserWithAvatar,
-  GitHubLogoStyled,
-} from './elements';
+  GitHubLogoStyled
+} from './elements'
 
 const getDefaultSelectedVersion = tags => {
   if (!tags) {
-    return '';
+    return ''
   }
 
   if (!tags.latest) {
-    return '';
+    return ''
   }
 
-  return tags.latest;
-};
+  return tags.latest
+}
 
 export default class DependencyHit extends React.PureComponent {
   state = {
-    selectedVersion: getDefaultSelectedVersion(this.props.hit.tags),
+    selectedVersion: getDefaultSelectedVersion(this.props.hit.tags)
   };
 
-  makeGitHubRepoUrl(repo) {
-    return `https://github.com/${repo.user}/${repo.project}`;
+  makeGitHubRepoUrl (repo) {
+    return `https://github.com/${repo.user}/${repo.project}`
   }
 
-  makeSearchUrl(hitName) {
+  makeSearchUrl (hitName) {
     return `${
       process.env.CODESANDBOX_HOST
-    }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`;
+    }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`
   }
 
-  stopPropagation(e) {
-    e.stopPropagation();
+  stopPropagation (e) {
+    e.stopPropagation()
   }
 
   handleVersionChange = e => {
-    const selectedVersion = e.target.value;
-    this.setState({ selectedVersion });
-    this.props.onVersionChange(selectedVersion);
+    const selectedVersion = e.target.value
+    this.setState({ selectedVersion })
+    this.props.onVersionChange(selectedVersion)
   };
 
-  render() {
-    const { highlighted, hit, onClick } = this.props;
+  render () {
+    const { highlighted, hit, onClick } = this.props
 
     if (!hit.versions) {
       if (hit.version) {
-        hit.versions = [hit.version];
+        hit.versions = [hit.version]
       } else {
-        return null;
+        return null
       }
     }
 
     const versions = Object.keys(hit.versions).sort((a, b) => {
       try {
-        return compareVersions(b, a);
+        return compareVersions(b, a)
       } catch (e) {
-        return 0;
+        return 0
       }
-    });
+    })
 
     const getTagName = (tags, version) =>
-      Object.keys(tags).find(key => tags[key] === version);
+      Object.keys(tags).find(key => tags[key] === version)
 
     const validDescription = description =>
       description &&
       !description.includes('&lt') &&
       !description.includes('&gt') &&
-      !description.includes('[![');
+      !description.includes('[![')
 
     return (
       <Container highlighted={highlighted} onClick={onClick}>
         <Left>
           <Row>
-            <Highlight attribute="name" hit={hit} />
+            <Highlight attribute='name' hit={hit} />
             <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
             {hit.license && <License>{hit.license}</License>}
           </Row>
@@ -111,8 +113,8 @@ export default class DependencyHit extends React.PureComponent {
               <Tooltip content={`GitHub repository of ${hit.name}`}>
                 <IconLink
                   href={this.makeGitHubRepoUrl(hit.githubRepo)}
-                  target="_blank"
-                  rel="noreferrer noopener"
+                  target='_blank'
+                  rel='noreferrer noopener'
                   onClick={this.stopPropagation}
                 >
                   <GitHubLogoStyled />
@@ -123,8 +125,8 @@ export default class DependencyHit extends React.PureComponent {
               <Tooltip content={`Homepage of ${hit.name}`}>
                 <IconLink
                   href={hit.homepage}
-                  target="_blank"
-                  rel="noreferrer noopener"
+                  target='_blank'
+                  rel='noreferrer noopener'
                   onClick={this.stopPropagation}
                 >
                   <HomeIcon />
@@ -134,8 +136,8 @@ export default class DependencyHit extends React.PureComponent {
             <Tooltip content={`Search for sandboxes using ${hit.name}`}>
               <IconLink
                 href={this.makeSearchUrl(hit.name)}
-                target="_blank"
-                rel="noreferrer noopener"
+                target='_blank'
+                rel='noreferrer noopener'
                 onClick={this.stopPropagation}
               >
                 <SearchIcon />
@@ -148,18 +150,18 @@ export default class DependencyHit extends React.PureComponent {
                 value={this.state.selectedVersion}
               >
                 {versions.map(v => {
-                  const tagName = getTagName(hit.tags, v);
+                  const tagName = getTagName(hit.tags, v)
                   return (
                     <option value={v} key={v}>
                       {v} {tagName && `- ${tagName}`}
                     </option>
-                  );
+                  )
                 })}
               </StyledSelect>
             )}
           </Row>
         </Right>
       </Container>
-    );
+    )
   }
 }

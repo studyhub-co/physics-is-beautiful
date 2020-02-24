@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components'
 
 export default createGlobalStyle`
 .ReactModal__Content div[class^='Modal__ModalBody'] {
@@ -13,7 +13,7 @@ export default createGlobalStyle`
 
   .ais-Pagination {
     color: ${props =>
-      props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+    props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
     background-color: ${props => props.theme['sideBar.background']};
     border-radius: 0;
     display: flex;
@@ -23,7 +23,7 @@ export default createGlobalStyle`
 
   .ais-Pagination-link {
       color: ${props =>
-        props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
+    props.theme.light ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'};
   }
 
   .ais-Pagination-item--selected {
@@ -37,9 +37,9 @@ export default createGlobalStyle`
 
   .ais-PoweredBy-link svg path:nth-child(4) {
         fill: ${props =>
-          props.theme.light
-            ? 'rgba(0, 0, 0, 0.8)'
-            : 'rgba(255, 255, 255, 0.8)'} !important;
+    props.theme.light
+      ? 'rgba(0, 0, 0, 0.8)'
+      : 'rgba(255, 255, 255, 0.8)'} !important;
   }
 
   footer {
@@ -48,9 +48,9 @@ export default createGlobalStyle`
 
     .ais-PoweredBy {
           color: ${props =>
-            props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
+    props.theme.light ? 'rgba(0, 0, 0, 1)' : 'rgba(255, 255, 255, 1)'};
 
     }
   }
 }
-`;
+`

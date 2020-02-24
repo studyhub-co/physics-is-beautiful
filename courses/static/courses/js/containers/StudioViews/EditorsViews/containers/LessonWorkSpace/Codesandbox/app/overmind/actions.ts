@@ -80,7 +80,7 @@ export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
   { modal, message }
 ) => {
-  effects.analytics.track('Open Modal', { modal });
+  // effects.analytics.track('Open Modal', { modal });
   state.currentModalMessage = message;
   state.currentModal = modal;
 };

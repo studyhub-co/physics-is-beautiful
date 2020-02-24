@@ -1,59 +1,58 @@
-import React from 'react';
-import { InstantSearch, Configure, PoweredBy } from 'react-instantsearch/dom';
-import { connectAutoComplete } from 'react-instantsearch/connectors';
+import React from 'react'
+import { InstantSearch, Configure, PoweredBy } from 'react-instantsearch/dom'
+import { connectAutoComplete } from 'react-instantsearch/connectors'
 
-import Style from 'app/pages/Search/search';
-import DependenciesCSS from './dependencies';
+import Style from '../Search/search'
+import DependenciesCSS from './dependencies'
+import RawAutoComplete from './RawAutoComplete'
 
-import RawAutoComplete from './RawAutoComplete';
-
-const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete);
+const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete)
 
 export default class SearchDependencies extends React.PureComponent {
   hitToVersionMap = new Map();
 
   handleSelect = hit => {
-    let version = this.hitToVersionMap.get(hit);
+    let version = this.hitToVersionMap.get(hit)
 
     if (!version && hit.tags) {
-      version = hit.tags.latest;
+      version = hit.tags.latest
     }
 
-    this.props.onConfirm(hit.name, version);
+    this.props.onConfirm(hit.name, version)
   };
 
   handleManualSelect = hitName => {
     if (!hitName) {
-      return;
+      return
     }
 
-    const isScoped = hitName.startsWith('@');
-    let version = 'latest';
+    const isScoped = hitName.startsWith('@')
+    let version = 'latest'
 
-    const splittedName = hitName.split('@');
+    const splittedName = hitName.split('@')
 
     if (splittedName.length > (isScoped ? 2 : 1)) {
-      version = splittedName.pop();
+      version = splittedName.pop()
     }
 
-    const depName = splittedName.join('@');
+    const depName = splittedName.join('@')
 
-    this.props.onConfirm(depName, version);
+    this.props.onConfirm(depName, version)
   };
 
   handleHitVersionChange = (hit, version) => {
-    this.hitToVersionMap.set(hit, version);
+    this.hitToVersionMap.set(hit, version)
   };
 
-  render() {
+  render () {
     return (
-      <div className="search-dependencies">
+      <div className='search-dependencies'>
         <Style />
         <DependenciesCSS />
         <InstantSearch
-          appId="OFCNCOG2CU"
-          apiKey="00383ecd8441ead30b1b0ff981c426f5"
-          indexName="npm-search"
+          appId='OFCNCOG2CU'
+          apiKey='00383ecd8441ead30b1b0ff981c426f5'
+          indexName='npm-search'
         >
           <Configure
             analyticsTags={['codesandbox-dependencies']}
@@ -69,6 +68,6 @@ export default class SearchDependencies extends React.PureComponent {
           </footer>
         </InstantSearch>
       </div>
-    );
+    )
   }
 }

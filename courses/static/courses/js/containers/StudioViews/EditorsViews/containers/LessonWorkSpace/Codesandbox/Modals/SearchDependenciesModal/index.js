@@ -1,18 +1,18 @@
-import React from 'react';
-import { useOvermind } from 'app/overmind';
-import SearchDependencies from 'app/pages/Sandbox/SearchDependencies';
+import React from 'react'
+import { useOvermind } from '../../app/overmind'
+import SearchDependencies from '../../SearchDependencies'
 
-function SearchDependenciesModal() {
+function SearchDependenciesModal () {
   const {
     actions: {
-      editor: { addNpmDependency },
-    },
-  } = useOvermind();
+      editor: { addNpmDependency }
+    }
+  } = useOvermind()
   return (
     <SearchDependencies
       onConfirm={(name, version) => addNpmDependency({ name, version })}
     />
-  );
+  )
 }
 
-export default SearchDependenciesModal;
+export default SearchDependenciesModal

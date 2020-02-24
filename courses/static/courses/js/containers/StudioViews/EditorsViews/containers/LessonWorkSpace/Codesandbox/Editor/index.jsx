@@ -3,10 +3,10 @@ import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import { Provider as ActualOvermindProvider } from 'overmind-react'
 import { Provider as OvermindProvider } from '../app/overmind/Provider'
-import theme from '../common/src/theme'
 
+import Modals from '../Modals'
+import theme from '../common/src/theme'
 import Editor from './editor'
-import PropTypes from 'prop-types'
 import { initialize } from './init'
 
 let Index = class Index extends React.Component {
@@ -19,6 +19,7 @@ let Index = class Index extends React.Component {
             <Editor {...this.props}>
               {/* {this.props.children} */}
             </Editor>
+            <Modals />
           </ThemeProvider>
           {/* </HooksProvider> */}
         </OvermindProvider>

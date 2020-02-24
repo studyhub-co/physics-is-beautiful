@@ -1,5 +1,6 @@
 import React from 'react';
 // import IconBase from 'react-icons/IconBase';
+import {IconBase} from 'react-icons/lib/esm/iconBase';
 
 export const GitHubLogo: React.FC<React.SVGAttributes<SVGElement>> = props => (
   <IconBase viewBox="0 0 40 40" {...props}>

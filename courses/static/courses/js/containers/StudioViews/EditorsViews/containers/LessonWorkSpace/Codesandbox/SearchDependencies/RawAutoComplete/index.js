@@ -1,99 +1,98 @@
-import React from 'react';
-import Downshift from 'downshift';
+import React from 'react'
+import Downshift from 'downshift'
 
-import { Pagination } from 'react-instantsearch/dom';
+import { Pagination } from 'react-instantsearch/dom'
 
-import { ENTER, ARROW_RIGHT } from '@codesandbox/common/lib/utils/keycodes';
+import { ENTER, ARROW_RIGHT } from '@codesandbox/common/lib/utils/keycodes'
 
-import DependencyHit from '../DependencyHit';
-import { AutoCompleteInput, SuggestionInput } from './elements';
+import DependencyHit from '../DependencyHit'
+import { AutoCompleteInput, SuggestionInput } from './elements'
 
 /* eslint-disable no-param-reassign */
-function getName(value: string) {
-  const scope = value[0] === '@' ? '@' : '';
-  value = scope ? value.substr(1) : value;
+function getName (value: string) {
+  const scope = value[0] === '@' ? '@' : ''
+  value = scope ? value.substr(1) : value
 
-  return scope + value.split('@')[0];
+  return scope + value.split('@')[0]
 }
 
-function isExplicitVersion(value: string) {
-  const scope = value[0] === '@' ? '@' : '';
-  value = scope ? value.substr(1) : value;
+function isExplicitVersion (value: string) {
+  const scope = value[0] === '@' ? '@' : ''
+  value = scope ? value.substr(1) : value
 
-  return value.includes('@');
+  return value.includes('@')
 }
 
-function getVersion(value: string, hit) {
+function getVersion (value: string, hit) {
   if (value.indexOf('@') > 0) {
-    return value.split('@')[1];
+    return value.split('@')[1]
   }
   if (hit) {
-    return hit.version;
+    return hit.version
   }
 
-  return null;
+  return null
 }
 
-function getIsValid(value: string, hit, version: string) {
+function getIsValid (value: string, hit, version: string) {
   return Boolean(
     hit &&
       hit.tags &&
       hit.versions &&
       hit.name.startsWith(getName(value)) &&
       (version in hit.tags || version in hit.versions)
-  );
+  )
 }
 
-function getHit(value: string, hits) {
-  return value && hits.find(hit => hit.name.startsWith(value));
+function getHit (value: string, hits) {
+  return value && hits.find(hit => hit.name.startsWith(value))
 }
 
 class RawAutoComplete extends React.Component {
   state = {
-    value: '',
+    value: ''
   };
 
-  render() {
+  render () {
     const {
       onSelect,
       onManualSelect,
       onHitVersionChange,
       hits,
       refine,
-      currentRefinement,
-    } = this.props;
+      currentRefinement
+    } = this.props
 
-    const hit = getHit(currentRefinement, hits);
-    const version = getVersion(this.state.value, hit);
-    const isValid = getIsValid(this.state.value, hit, version);
+    const hit = getHit(currentRefinement, hits)
+    const version = getVersion(this.state.value, hit)
+    const isValid = getIsValid(this.state.value, hit, version)
 
     const autoCompletedQuery = noName => {
-      if (isExplicitVersion(this.state.value)) return null;
+      if (isExplicitVersion(this.state.value)) return null
 
-      if (hit && isValid)
-        return noName ? '@' + hit.version : hit.name + '@' + hit.version;
+      if (hit && isValid) { return noName ? '@' + hit.version : hit.name + '@' + hit.version }
 
-      return null;
-    };
+      return null
+    }
 
     const getRefinement = () => {
-      if (isExplicitVersion(this.state.value)) return this.state.value;
+      if (isExplicitVersion(this.state.value)) return this.state.value
 
-      if (hit) return hit.name;
+      if (hit) return hit.name
 
-      return currentRefinement;
-    };
+      return currentRefinement
+    }
 
     return (
       <Downshift itemToString={h => (h ? h.name : h)} onSelect={onSelect}>
         {({ getInputProps, getItemProps, highlightedIndex }) => (
           <div>
             {highlightedIndex == null && (
-              <SuggestionInput as="div">
+              <SuggestionInput as='div'>
                 {getRefinement()}
                 <span
                   css={{
-                    color: 'var(--color-white-3)',
+                    color: 'var(--color-white-3)'
                   }}
                 >
                   {autoCompletedQuery(true)}
@@ -103,13 +102,13 @@ class RawAutoComplete extends React.Component {
             <AutoCompleteInput
               autoFocus
               {...getInputProps({
-                innerRef(ref) {
+                innerRef (ref) {
                   if (ref) {
                     if (
                       document.activeElement &&
                       document.activeElement.tagName !== 'SELECT'
                     ) {
-                      ref.focus();
+                      ref.focus()
                     }
                   }
                 },
@@ -117,35 +116,35 @@ class RawAutoComplete extends React.Component {
                 placeholder: 'Search or enter npm dependency',
 
                 onChange: e => {
-                  const name = e.target.value;
+                  const name = e.target.value
 
                   this.setState({ value: name }, () => {
                     if (name.indexOf('@') === 0) {
-                      const parts = name.split('@');
+                      const parts = name.split('@')
 
-                      refine(`@${parts[1]}`);
-                      return;
+                      refine(`@${parts[1]}`)
+                      return
                     }
 
-                    const parts = name.split('@');
+                    const parts = name.split('@')
 
                     requestAnimationFrame(() => {
-                      refine(`${parts[0]}`);
-                    });
-                  });
+                      refine(`${parts[0]}`)
+                    })
+                  })
                 },
 
                 onKeyUp: e => {
                   // If enter with no selection
                   if (e.keyCode === ENTER) {
-                    onManualSelect(autoCompletedQuery() || e.target.value);
+                    onManualSelect(autoCompletedQuery() || e.target.value)
                   } else if (
                     autoCompletedQuery() &&
                     e.keyCode === ARROW_RIGHT
                   ) {
-                    this.setState({ value: autoCompletedQuery() });
+                    this.setState({ value: autoCompletedQuery() })
                   }
-                },
+                }
               })}
             />
             <Pagination />
@@ -160,9 +159,9 @@ class RawAutoComplete extends React.Component {
                     highlighted: highlightedIndex === index,
                     hit: h,
                     // Downshift supplies onClick
-                    onVersionChange(v) {
-                      onHitVersionChange(h, v);
-                    },
+                    onVersionChange (v) {
+                      onHitVersionChange(h, v)
+                    }
                   })}
                 />
               ))}
@@ -170,8 +169,8 @@ class RawAutoComplete extends React.Component {
           </div>
         )}
       </Downshift>
-    );
+    )
   }
 }
 
-export default RawAutoComplete;
+export default RawAutoComplete
