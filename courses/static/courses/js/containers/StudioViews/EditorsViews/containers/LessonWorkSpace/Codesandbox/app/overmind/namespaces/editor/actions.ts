@@ -624,6 +624,9 @@ export const previewActionReceived: Action<{
       break;
     }
     case 'source.module.rename': {
+      
+      console.log('source.module.rename');
+      
       const sandbox = state.editor.currentSandbox;
       const module = effects.utils.resolveModule(
         action.path.replace(/^\//, ''),
@@ -658,6 +661,9 @@ export const renameModule: AsyncAction<{
   moduleShortid: string;
 }> = withOwnedSandbox(
   async ({ state, effects, actions }, { title, moduleShortid }) => {
+
+    // working code for this function at app/overmind/namespaces/files/actions.ts
+
     const sandbox = state.editor.currentSandbox;
     const module = sandbox.modules.find(
       moduleItem => moduleItem.shortid === moduleShortid
@@ -678,12 +684,13 @@ export const renameModule: AsyncAction<{
         title
       );
 
-      if (state.live.isCurrentEditor) {
-        effects.live.sendModuleUpdate(module);
-      }
+      // if (state.live.isCurrentEditor) {
+      //   effects.live.sendModuleUpdate(module);
+      // }
     } catch (error) {
       module.title = oldTitle;
-      effects.notificationToast.error('Could not rename file');
+      console.log('Could not rename file');
+      // effects.notificationToast.error('Could not rename file');
     }
   }
 );

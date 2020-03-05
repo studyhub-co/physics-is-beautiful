@@ -103,8 +103,6 @@ export const withOwnedSandbox = <T>(
     }
   }
 
-  // console.log(payload);
-
   return continueAction(context, payload);
 };
 

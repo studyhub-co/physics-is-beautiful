@@ -36,12 +36,13 @@ export const moduleRenamed: AsyncAction<{
     try {
       await effects.api.saveModuleTitle(sandbox.id, moduleShortid, title);
 
-      if (state.live.isCurrentEditor) {
-        effects.live.sendModuleUpdate(module);
-      }
+      // if (state.live.isCurrentEditor) {
+      //   effects.live.sendModuleUpdate(module);
+      // }
     } catch (error) {
       module.title = oldTitle;
-      effects.notificationToast.error('Could not rename file');
+      console.log('Could not rename file:' + error);
+      // effects.notificationToast.error('Could not rename file');
     }
   }
 );

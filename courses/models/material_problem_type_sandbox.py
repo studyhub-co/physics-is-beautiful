@@ -1,9 +1,10 @@
-# import uuid
 import hashlib
 
 from django.db import models
 # from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import JSONField
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 # from profiles.models import Profile
 
@@ -324,9 +325,6 @@ class MaterialProblemTypeSandboxCache(models.Model):
     class Meta:
         unique_together = [['sandbox', 'version']]
 
-from django.db.models.signals import  pre_save
-from django.dispatch import receiver
-
 
 def to_short_id(text):
     return hashlib.sha1(str(text).encode('utf-8')).hexdigest()[:8]
@@ -334,10 +332,14 @@ def to_short_id(text):
 
 @receiver(pre_save, sender=MaterialProblemTypeSandboxModule)
 def module_will_change(sender, instance, **kwargs):
-    instance.shortid = to_short_id(instance.name)
+    # generate only is not exist
+    if not instance.shortid:
+        instance.shortid = to_short_id(instance.name)
 
 
 @receiver(pre_save, sender=MaterialProblemTypeSandboxDirectory)
 def directory_will_change(sender, instance, **kwargs):
-    instance.shortid = to_short_id(instance.name)
+    # generate only is not exist
+    if not instance.shortid:
+        instance.shortid = to_short_id(instance.name)
 

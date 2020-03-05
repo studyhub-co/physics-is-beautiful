@@ -57,10 +57,6 @@ export function setIdFromAlias ({ props, state }) {
     id => sandboxUrl(sandboxes[id]) === `${editorUrl()}${props.id}`
   )
 
-  console.log(matchingSandbox);
-  console.log(matchingSandbox);
-  console.log(matchingSandbox);
-
   if (matchingSandbox) {
     return { id: matchingSandbox }
   }

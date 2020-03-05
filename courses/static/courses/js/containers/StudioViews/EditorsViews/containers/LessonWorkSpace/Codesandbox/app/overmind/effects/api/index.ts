@@ -44,9 +44,17 @@ export default {
   },
   saveModules(sandboxId: string, modules: Module[]) {
     // return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
-    return api.put(`/studio/material-problem-type/${sandboxId}/modules/mupdate/`, {
+    /* is this works? */
+    return api.put(`/studio/material-problem-type/${sandboxId}/modules/`, {
       modules,
     });
   },
-
+  saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
+    return api.put<IModuleAPIResponse>(
+      `/studio/material-problem-type/${sandboxId}/modules/${moduleShortid}/`,
+      {
+        module: { name: title },
+      }
+    );
+  },
 };
