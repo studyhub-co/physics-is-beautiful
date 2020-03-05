@@ -14,7 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from courses.models import Course, Unit, Module, Lesson, Material, CourseUserDashboard
 
-from .serializers_public import PublicCourseSerializer, PublicUnitSerializer, PublicModuleSerializer, \
+from ..serializers_public import PublicCourseSerializer, PublicUnitSerializer, PublicModuleSerializer, \
     PublicLessonSerializer, PublicMaterialSerializer
 
 

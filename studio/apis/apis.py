@@ -1,6 +1,5 @@
 import json
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count
 from django.db import transaction
 
@@ -16,13 +15,13 @@ from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
     SANDOX_TEMPLATE_REACT_JSON_STRING, MaterialProblemTypeSandboxCache
 
-from .serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
+from ..serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
     LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer, \
     MaterialProblemTypeSandboxCacheSerializer, MaterialProblemTypeSandboxModuleSerializer, \
     MaterialListSerializer
 
 
-from .permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
+from ..permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
     IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator,\
     IsMaterialProblemTypeAuthor
 
@@ -216,12 +215,14 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin, SeparateListObjectSer
 class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
                                  mixins.UpdateModelMixin,
                                  mixins.ListModelMixin,
-                                 viewsets.GenericViewSet):
+                                 # MaterialTypeModulesMixin,
+                                 viewsets.GenericViewSet,
+                                 ):
     permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
     pagination_class = StandardResultsSetPagination
     serializer_class = MaterialMaterialProblemTypeSerializer
     serializer_class_cache = MaterialProblemTypeSandboxCacheSerializer
-    serializer_class_module = MaterialProblemTypeSandboxModuleSerializer
+    # serializer_class_module = MaterialProblemTypeSandboxModuleSerializer
     queryset = MaterialProblemType.objects.\
         select_related('author__user__profile'). \
         prefetch_related('modules__author__user__profile',
@@ -316,29 +317,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
             module.save()
 
         return initial_sandbox
-
-    # sanbox modules API
-    # /api/v1/sandboxes/06zqu/modules/5QyoA ==> /api/v1/material-problem-type/06zqu/modules/5QyoA
-    #                   ^^^^^ material-problem-type id                                      ^^^^^ module id
-    @action(methods=['PUT'],
-            detail=True,
-            permission_classes=[permissions.IsAuthenticated, ],  # TODO add
-            url_path='modules/(?P<module_shortid>[^/.]+)'
-            )
-    def module_update(self, request, *args, **kwargs):
-        material_problem_type = self.get_object()
-        try:
-            # we need to store shortid in model
-            module = material_problem_type.modules.get(shortid=kwargs['module_shortid'])
-        except ObjectDoesNotExist:
-            raise NotFound('Module not found')
-
-        serializer = self.serializer_class_module(module, data=request.data.get('module'), partial=True)
-
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-
-        return Response(serializer.data)
 
     # fork sandbox/MaterialProblemType
     @action(methods=['POST'],

@@ -1,5 +1,5 @@
 import { Module, Sandbox } from '../../../../common/src/types'
-import { IModuleAPIResponse, SandboxAPIResponse } from './types'
+import { IDirectoryAPIResponse, IModuleAPIResponse, SandboxAPIResponse } from './types'
 import { transformModule, transformSandbox } from '../utils/sandbox'
 
 import { camelizeKeys, decamelizeKeys } from 'humps'
@@ -50,11 +50,37 @@ export default {
     });
   },
   saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
-    return api.put<IModuleAPIResponse>(
+    // return api.put<IModuleAPIResponse>(
+    return api.patch<IModuleAPIResponse>( // we need use patch for partial updates!
       `/studio/material-problem-type/${sandboxId}/modules/${moduleShortid}/`,
       {
         module: { name: title },
       }
     );
   },
+  createModule(sandboxId: string, module: Module): Promise<Module> {
+    return api
+      .post<IModuleAPIResponse>(`/studio/material-problem-type/${sandboxId}/modules/`, {
+        module: {
+          title: module.title,
+          directoryShortid: module.directoryShortid,
+          code: module.code,
+          isBinary: module.isBinary === undefined ? false : module.isBinary,
+        },
+      })
+      .then(transformModule);
+  },
+  // TODO add directories API
+  // saveDirectoryTitle(
+  //   sandboxId: string,
+  //   directoryShortid: string,
+  //   title: string
+  // ) {
+  //   return api.put<IDirectoryAPIResponse>(
+  //     `/sandboxes/${sandboxId}/directories/${directoryShortid}`,
+  //     {
+  //       directory: { title },
+  //     }
+  //   );
+  // },
 };
