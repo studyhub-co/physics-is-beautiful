@@ -9,7 +9,10 @@ import history from '../history'
 
 // TODO replace all $.ajax with request
 import request from '../utils/request'
-import { checkHttpError, getAxios } from '../../../../../resources/static/resources/js/utils'
+import {
+  checkHttpError,
+  getAxios
+} from '../../../../../resources/static/resources/js/utils'
 import { API_DJEDDIT_PREFIX } from '../../../../../resources/static/resources/js/utils/config'
 
 export const API_PREFIX = '/api/v1/studio/'
@@ -62,7 +65,7 @@ export const ActionTypes = Object.freeze({
 })
 
 export function courseAdded (course) {
-  return {type: ActionTypes.COURSE_ADDED, course: course}
+  return { type: ActionTypes.COURSE_ADDED, course: course }
 }
 
 export function changeStudioSelectedTab (selectedTab, tabNamespace) {
@@ -174,7 +177,7 @@ export function addMaterialTag (uuid, tag) {
         'X-CSRFToken': getCookie('csrftoken')
       },
       body: JSON.stringify({ tag: tag.text })
-    }).then((value) => {
+    }).then(value => {
       $.ajax({
         async: true,
         url: API_PREFIX + 'materials/' + uuid + '/',
@@ -182,8 +185,7 @@ export function addMaterialTag (uuid, tag) {
           dispatch(materialLoaded(data))
         }
       })
-    }
-    )
+    })
   }
 }
 
@@ -198,7 +200,7 @@ export function deleteMaterialTag (uuid, tag) {
         'X-CSRFToken': getCookie('csrftoken')
       },
       body: JSON.stringify({ tag: tag.text })
-    }).then((value) => {
+    }).then(value => {
       $.ajax({
         async: true,
         url: API_PREFIX + 'materials/' + uuid + '/',
@@ -239,8 +241,7 @@ export function addCourseToDashboard (uuid) {
       async: true,
       url: API_PREFIX + 'public/courses/' + uuid + '/add_to_dashboard/',
       method: 'POST',
-      success: function (data, status, jqXHR) {
-      },
+      success: function (data, status, jqXHR) {},
       error: function (xhr, ajaxOptions, thrownError) {
         if (xhr.status === 403) {
           // TODO implement with pop up messages/alerts
@@ -257,8 +258,7 @@ export function removeCourseFromDashboard (uuid) {
       async: true,
       url: API_PREFIX + 'public/courses/' + uuid + '/remove_from_dashboard/',
       method: 'POST',
-      success: function (data, status, jqXHR) {
-      }
+      success: function (data, status, jqXHR) {}
     })
   }
 }
@@ -282,7 +282,7 @@ function extract (object, prop) {
   for (var k in object[prop]) {
     ids.push(k)
   }
-  Object.assign(object, {[prop]: ids})
+  Object.assign(object, { [prop]: ids })
   return ret
 }
 
@@ -318,7 +318,7 @@ export function loadMyCourses () {
       url: API_PREFIX + 'courses/',
       context: this,
       success: function (data, status, jqXHR) {
-        dispatch((data) => {
+        dispatch(data => {
           return {
             type: ActionTypes.COURSES_LOADED,
             courses: data
@@ -342,7 +342,11 @@ export function loadAllCourses (url, filter, ordering) {
     var paramsString = ''
 
     if (Object.keys(GETParams).length !== 0) {
-      paramsString = '?' + Object.entries(GETParams).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&')
+      paramsString =
+        '?' +
+        Object.entries(GETParams)
+          .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+          .join('&')
     }
     $.ajax({
       async: true,
@@ -546,7 +550,7 @@ export function renameCourse (uuid, newName) {
     $.ajax({
       url: API_PREFIX + 'courses/' + uuid + '/',
       type: 'PATCH',
-      data: {name: newName},
+      data: { name: newName },
       success: function (data, status, jqXHR) {
         dispatch(courseLoaded(data))
       }
@@ -559,7 +563,7 @@ export function saveCourseDescription (uuid, newText) {
     $.ajax({
       url: API_PREFIX + 'courses/' + uuid + '/',
       type: 'PATCH',
-      data: {description: newText},
+      data: { description: newText },
       success: function (data, status, jqXHR) {
         dispatch(courseLoaded(data))
       }
@@ -686,7 +690,7 @@ export function unitAdded (courseUuid, data) {
 }
 
 export function addUnit (courseUuid, unit) {
-  var data = {name: 'New unit', course: courseUuid}
+  var data = { name: 'New unit', course: courseUuid }
   if (unit) {
     data['prototype'] = unit.uuid
     data['name'] = unit.name
@@ -715,7 +719,8 @@ export function addUnit (courseUuid, unit) {
 
 export function addToNewCourse (type, value) {
   return dispatch => {
-    $.ajax({ // create course
+    $.ajax({
+      // create course
       async: true,
       url: API_PREFIX + 'courses/',
       method: 'POST',
@@ -723,7 +728,7 @@ export function addToNewCourse (type, value) {
         name: 'New course'
       },
       success: function (data, status, jqXHR) {
-        var unitData = {name: 'New unit', course: data.uuid}
+        var unitData = { name: 'New unit', course: data.uuid }
 
         if (type === 'unit') {
           unitData['prototype'] = value.uuid
@@ -742,7 +747,7 @@ export function addToNewCourse (type, value) {
               history.push('/studio/editor/courses/' + unitData.course + '/')
             } else {
               // create module
-              var moduleData = {name: 'New module', unit: data.uuid}
+              var moduleData = { name: 'New module', unit: data.uuid }
 
               if (type === 'module') {
                 moduleData['prototype'] = value.uuid
@@ -761,7 +766,7 @@ export function addToNewCourse (type, value) {
                     history.push('/studio/editor/modules/' + data.uuid + '/')
                   } else {
                     // create lesson
-                    var lessonData = {name: 'New lesson', module: data.uuid}
+                    var lessonData = { name: 'New lesson', module: data.uuid }
 
                     if (type === 'lesson') {
                       // lesson prototype
@@ -786,10 +791,15 @@ export function addToNewCourse (type, value) {
                           //   materials: materials,
                           //   answers: extractAll(materials, 'answers')
                           // })
-                          history.push('/studio/editor/lessons/' + data.uuid + '/')
+                          history.push(
+                            '/studio/editor/lessons/' + data.uuid + '/'
+                          )
                         } else {
                           // add material
-                          var materialData = {name: 'New material', lesson: data.uuid}
+                          var materialData = {
+                            name: 'New material',
+                            lesson: data.uuid
+                          }
 
                           if (type === 'material') {
                             // material prototype
@@ -803,7 +813,9 @@ export function addToNewCourse (type, value) {
                             url: API_PREFIX + 'materials/',
                             data: materialData,
                             success: function (data, status, jqXHR) {
-                              history.push('/studio/editor/lessons/' + data.lesson + '/')
+                              history.push(
+                                '/studio/editor/lessons/' + data.lesson + '/'
+                              )
                             }
                           })
                         }
@@ -848,7 +860,7 @@ export function renameUnit (uuid, newName) {
     $.ajax({
       url: API_PREFIX + 'units/' + uuid + '/',
       type: 'PATCH',
-      data: {name: newName},
+      data: { name: newName },
       success: function (data, status, jqXHR) {
         dispatch(unitLoaded(data))
       }
@@ -895,7 +907,7 @@ export function moveUnit (uuid, beforeUuid) {
       async: true,
       url: API_PREFIX + 'units/' + uuid + '/',
       method: 'PATCH',
-      data: {position: newPosition},
+      data: { position: newPosition },
       success: function (data, status, jqXHR) {
         loadCourse(data.course, dispatch)
       }
@@ -912,7 +924,7 @@ export function moduleAdded (data) {
 }
 
 export function addModule (unitUuid, module) {
-  var data = {name: 'New module', unit: unitUuid}
+  var data = { name: 'New module', unit: unitUuid }
   if (module) {
     data['prototype'] = module.uuid
     data['name'] = module.name
@@ -945,7 +957,7 @@ export function renameModule (uuid, newName) {
     $.ajax({
       url: API_PREFIX + 'modules/' + uuid + '/',
       type: 'PATCH',
-      data: {name: newName},
+      data: { name: newName },
       success: function (data, status, jqXHR) {
         dispatch(moduleLoaded(data))
       }
@@ -979,7 +991,8 @@ export function moveModule (uuid, toUnitUuid, beforeUuid) {
     if (beforeUuid) {
       newPosition = state.modules[beforeUuid].position
     } else if (toUnit.modules.length > 0) {
-      newPosition = state.modules[toUnit.modules[toUnit.modules.length - 1]].position + 1
+      newPosition =
+        state.modules[toUnit.modules[toUnit.modules.length - 1]].position + 1
     } else {
       newPosition = 1
     }
@@ -1037,8 +1050,10 @@ export function deleteModule (moduleUuid) {
 
 export function loadModuleIfNeeded (uuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().studio.modules) ||
-      !('lessons' in getState().studio.modules[uuid])) {
+    if (
+      !(uuid in getState().studio.modules) ||
+      !('lessons' in getState().studio.modules[uuid])
+    ) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'modules/' + uuid + '/',
@@ -1056,7 +1071,7 @@ export function loadModuleIfNeeded (uuid) {
 }
 
 export function addLesson (moduleUuid, lesson) {
-  var data = {name: 'New lesson', module: moduleUuid}
+  var data = { name: 'New lesson', module: moduleUuid }
   if (lesson) {
     data['prototype'] = lesson.uuid
     data['name'] = lesson.name
@@ -1136,12 +1151,16 @@ export function lessonAvailable (lesson) {
 
 export function loadLessonIfNeeded (uuid, materialUuid) {
   return (dispatch, getState) => {
-    if (!(uuid in getState().studio.lessons) || !getState().studio.lessons[uuid].materials) {
+    if (
+      !(uuid in getState().studio.lessons) ||
+      !getState().studio.lessons[uuid].materials
+    ) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'lessons/' + uuid + '/',
         success: function (data, status, jqXHR) {
           dispatch(lessonLoaded(data))
+
           if (materialUuid) {
             // dispatch(loadMaterial(materialUuid))
             // select current material (got from url)
@@ -1168,7 +1187,7 @@ export function renameLesson (uuid, newName) {
     $.ajax({
       url: API_PREFIX + 'lessons/' + uuid + '/',
       type: 'PATCH',
-      data: {name: newName},
+      data: { name: newName },
       success: function (data, status, jqXHR) {
         dispatch(lessonLoaded(data))
       }
@@ -1227,7 +1246,9 @@ export function moveLesson (uuid, toModuleUuid, beforeLessonUuid) {
     if (beforeLessonUuid) {
       newPosition = state.lessons[beforeLessonUuid].position
     } else if (toModule && toModule.lessons.length > 0) {
-      newPosition = state.lessons[toModule.lessons[toModule.lessons.length - 1]].position + 1
+      newPosition =
+        state.lessons[toModule.lessons[toModule.lessons.length - 1]].position +
+        1
     } else {
       newPosition = 1
     }
@@ -1297,11 +1318,14 @@ export function setMaterialProblemType (material, materialProblemType) {
   return (dispatch, state) => {
     return getAxios()
       .post(
-        API_PREFIX + 'materials/' + material.uuid + '/set_material_problem_type/',
+        API_PREFIX +
+          'materials/' +
+          material.uuid +
+          '/set_material_problem_type/',
         materialProblemType
       )
       .catch(checkHttpError)
-      .then((response) => {
+      .then(response => {
         dispatch(materialLoaded(response.data))
       })
   }
@@ -1310,9 +1334,10 @@ export function setMaterialProblemType (material, materialProblemType) {
 // TODO replace with updateMaterial all below
 export function updateMaterial (material) {
   return (dispatch, state) => {
-    return getAxios().patch(API_PREFIX + 'materials/' + material.uuid + '/', material)
+    return getAxios()
+      .patch(API_PREFIX + 'materials/' + material.uuid + '/', material)
       .catch(checkHttpError)
-      .then((response) => {
+      .then(response => {
         dispatch(materialLoaded(response.data))
       })
 
@@ -1332,7 +1357,7 @@ export function changeMaterialName (uuid, newText) {
     $.ajax({
       url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
-      data: {name: newText},
+      data: { name: newText },
       success: function (data, status, jqXHR) {
         dispatch(materialLoaded(data))
       }
@@ -1345,7 +1370,7 @@ export function changeMaterialSolutionText (uuid, newSolutionText) {
     $.ajax({
       url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
-      data: {solution_text: newSolutionText},
+      data: { solution_text: newSolutionText },
       success: function (data, status, jqXHR) {
         dispatch(materialLoaded(data))
       }
@@ -1396,7 +1421,7 @@ export function changeMaterialHint (uuid, newHint) {
     $.ajax({
       url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
-      data: {hint: newHint},
+      data: { hint: newHint },
       success: function (data, status, jqXHR) {
         dispatch(materialLoaded(data))
       }
@@ -1411,8 +1436,8 @@ export function goToMaterial (materialUuid, lessonUuid) {
     dispatch({
       type: ActionTypes.GOTO_MATERIAL,
       // we can navigate to loaded
-      material: {uuid: materialUuid},
-      lesson: {uuid: lessonUuid}
+      material: { uuid: materialUuid },
+      lesson: { uuid: lessonUuid }
     })
     // dispatch(loadMaterialIfNeeded(uuid))
     // get fresh version every time we navigate to material, we can cache it in the future
@@ -1421,7 +1446,7 @@ export function goToMaterial (materialUuid, lessonUuid) {
 }
 
 export function addMaterial (lessonUuid, material) {
-  var data = {name: 'New material', lesson: lessonUuid}
+  var data = { name: 'New material', lesson: lessonUuid }
   if (material) {
     data['prototype'] = material.uuid
   }
@@ -1437,7 +1462,7 @@ export function addMaterial (lessonUuid, material) {
           dispatch({
             type: ActionTypes.MATERIAL_ADDED,
             material: data,
-            lesson: {uuid: lessonUuid}
+            lesson: { uuid: lessonUuid }
           })
         } else {
           console.log('material was not saved')
@@ -1457,13 +1482,15 @@ export function moveMaterial (uuid, beforeUuid) {
       newPosition = state.materials[beforeUuid].position
     } else {
       var lesson = state.lessons[lessonUuid]
-      newPosition = state.materials[lesson.materials[lesson.materials.length - 1]].position + 1
+      newPosition =
+        state.materials[lesson.materials[lesson.materials.length - 1]]
+          .position + 1
     }
     $.ajax({
       async: true,
       url: API_PREFIX + 'materials/' + uuid + '/',
       method: 'PATCH',
-      data: {position: newPosition},
+      data: { position: newPosition },
       success: function (data, status, jqXHR) {
         dispatch({
           type: ActionTypes.MATERIAL_MOVED,

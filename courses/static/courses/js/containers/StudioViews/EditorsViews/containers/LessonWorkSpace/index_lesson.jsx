@@ -56,7 +56,8 @@ export class Lesson extends React.Component {
   // this.props.currentMaterial.material_problem_type = null
 
   async componentDidMount () {
-    this.props.loadLessonIfNeeded(this.props.uuid, this.props.materialUrlUuid)
+    console.log(this.props.materialUrlUuid);
+    this.props.loadLessonIfNeeded(this.props.materialUrlUuid)
 
     // TODO make editor loadable
     // export default loadable(() => import('./index'), {
@@ -276,6 +277,7 @@ export class Lesson extends React.Component {
 Lesson.propTypes = {
   uuid: PropTypes.string.isRequired,
   currentMaterial: PropTypes.object,
+  materialUrlUuid: PropTypes.string,
   loadLessonIfNeeded: PropTypes.func.isRequired,
   onImageChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,
@@ -291,9 +293,10 @@ Lesson.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
-  const materialUuid = null
+  let materialUuid = null
+
   if (ownProps.match.params.hasOwnProperty('material_uuid')) {
-    const materialUuid = ownProps.match.params.material_uuid
+    materialUuid = ownProps.match.params.material_uuid
   }
 
   const lesson = state.studio.lessons[uuid]
@@ -340,7 +343,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onImageChange: image => dispatch(changeLessonImage(uuid, image)),
     onNameChange: name => dispatch(renameLesson(uuid, name)),
     onDeleteClick: () => dispatch(deleteLesson(uuid)),
-    loadLessonIfNeeded: () => dispatch(loadLessonIfNeeded(uuid)),
+    loadLessonIfNeeded: (materialUuid) => dispatch(loadLessonIfNeeded(uuid, materialUuid)),
     onAddMaterialClick: () => dispatch(addMaterial(uuid)),
     moveMaterial: (materialUuid, materialBeforeUuid) =>
       dispatch(moveMaterial(materialUuid, materialBeforeUuid))
