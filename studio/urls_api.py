@@ -20,7 +20,7 @@ simple_nested_router.register(r'material-problem-type',
 material_problem_type_modules_router = \
     nested_routers.NestedSimpleRouter(simple_nested_router,
                                       r'material-problem-type',
-                                      lookup='modules')
+                                      lookup='material_problem_type')
 material_problem_type_modules_router.register(r'modules',
                                               material_type_modules.MaterialTypeModulesViewSet,
                                               basename='material_problem_type_modules')

@@ -13,7 +13,8 @@ from rest_framework.exceptions import ValidationError, NotFound
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
-    SANDOX_TEMPLATE_REACT_JSON_STRING, MaterialProblemTypeSandboxCache
+    MaterialProblemTypeSandboxCache
+    # SANDOX_TEMPLATE_REACT_JSON_STRING,
 
 from ..serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
     LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer, \
@@ -232,27 +233,27 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
     # permission_classes = [IsAuthenticated|ReadOnly]
     lookup_field = 'uuid'
 
-    def create_new_from_json(self, request, *args, **kwargs):
-        data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-        from pib_auth.models import User
-        superuser = User.objects.filter(is_superuser=True).first()
-        # TODO check profile
-        if superuser:
-            author = superuser.profile
-        else:
-            author = request.user.profile
-
-        # data['name'] = 'Material problem type name'
-        # fixme - not good, if we remove object with 'new' slug,
-        #  this will create new objects with new-2, new-3, etc...
-        #   create fixtures
-        data['name'] = 'New'  # don't chage 'new' slug!
-
-        serializer = self.serializer_class(data=data)
-        if serializer.is_valid(raise_exception=True):
-            instance = serializer.save_from_tree_data(author=author,
-                                                      official=True)
-            return instance
+    # def create_new_from_json(self, request, *args, **kwargs):
+    #     data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
+    #     from pib_auth.models import User
+    #     superuser = User.objects.filter(is_superuser=True).first()
+    #     # TODO check profile
+    #     if superuser:
+    #         author = superuser.profile
+    #     else:
+    #         author = request.user.profile
+    #
+    #     # data['name'] = 'Material problem type name'
+    #     # fixme - not good, if we remove object with 'new' slug,
+    #     #  this will create new objects with new-2, new-3, etc...
+    #     #   create fixtures
+    #     data['name'] = 'New'  # don't chage 'new' slug!
+    #
+    #     serializer = self.serializer_class(data=data)
+    #     if serializer.is_valid(raise_exception=True):
+    #         instance = serializer.save_from_tree_data(author=author,
+    #                                                   official=True)
+    #         return instance
 
     # override RetrieveModelMixin
     def retrieve(self, request, *args, **kwargs):
@@ -261,10 +262,9 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
             try:
                 instance = self.queryset.get(slug='new')
             except MaterialProblemType.DoesNotExist:
-                # fixme - not good, if we remove object with 'new' slug,
-                #  this will create new objects with new-2, new-3, etc...
-                #   create fixtures
-                instance = self.create_new_from_json(request)
+                assert False, 'You need to create a sanbdox with "new" slug berofe using this app! ' \
+                              '(manage.py loaddata from fixtures)'
+                # instance = self.create_new_from_json(request)
         else:
             # regular instance
             instance = self.get_object()

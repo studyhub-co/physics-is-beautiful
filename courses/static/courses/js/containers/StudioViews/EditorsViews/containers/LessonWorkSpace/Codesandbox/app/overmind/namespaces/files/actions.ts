@@ -403,13 +403,14 @@ export const moduleCreated: AsyncAction<{
 
       actions.editor.internal.setCurrentModule(module);
 
-      if (state.live.isCurrentEditor) {
-        effects.live.sendModuleCreated(module);
-      }
+      // if (state.live.isCurrentEditor) {
+      //   effects.live.sendModuleCreated(module);
+      // }
     } catch (error) {
       sandbox.modules.splice(sandbox.modules.indexOf(module), 1);
       actions.editor.internal.setCurrentModule(state.editor.mainModule);
-      effects.notificationToast.error('Unable to save new file');
+      console.log('Unable to save new file:' + error);
+      // effects.notificationToast.error('Unable to save new file');
     }
   }
 );
@@ -428,12 +429,13 @@ export const moduleDeleted: AsyncAction<{
   try {
     await effects.api.deleteModule(sandbox.id, moduleShortid);
 
-    if (state.live.isCurrentEditor) {
-      effects.live.sendModuleDeleted(moduleShortid);
-    }
+    // if (state.live.isCurrentEditor) {
+    //   effects.live.sendModuleDeleted(moduleShortid);
+    // }
   } catch (error) {
     sandbox.modules.push(removedModule);
-    effects.notificationToast.error('Could not delete file');
+    console.log('Could not delete file:' + error);
+    // effects.notificationToast.error('Could not delete file');
   }
 };
 

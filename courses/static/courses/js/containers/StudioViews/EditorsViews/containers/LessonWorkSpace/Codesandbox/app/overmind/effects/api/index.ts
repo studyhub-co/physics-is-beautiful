@@ -1,24 +1,28 @@
 import { Module, Sandbox } from '../../../../common/src/types'
-import { IDirectoryAPIResponse, IModuleAPIResponse, SandboxAPIResponse } from './types'
+import {
+  IDirectoryAPIResponse,
+  IModuleAPIResponse,
+  SandboxAPIResponse,
+} from './types'
 import { transformModule, transformSandbox } from '../utils/sandbox'
 
 import { camelizeKeys, decamelizeKeys } from 'humps'
-import apiFactory, { Api, ApiConfig } from './apiFactory';
+import apiFactory, { Api, ApiConfig } from './apiFactory'
 
 import { API_PREFIX } from '../../../../../../../../../../actions/studio'
 
-let api: Api;
+let api: Api
 
 export default {
   initialize(config: ApiConfig) {
-    api = apiFactory(config);
+    api = apiFactory(config)
   },
   async getSandbox(id: string): Promise<Sandbox> {
-    const url = `/studio/material-problem-type/${id}/`;
-    const sandbox = await api.get<SandboxAPIResponse>(url);
+    const url = `/studio/material-problem-type/${id}/`
+    const sandbox = await api.get<SandboxAPIResponse>(url)
 
     // We need to add client side properties for tracking
-    return transformSandbox(camelizeKeys(sandbox));
+    return transformSandbox(camelizeKeys(sandbox))
   },
 
   async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
@@ -26,49 +30,59 @@ export default {
     //   ? `/sandboxes/fork/${id}`
     //   : `/sandboxes/${id}/fork`;
 
-    const url = `/studio/material-problem-type/${id}/fork/`;
+    const url = `/studio/material-problem-type/${id}/fork/`
 
-    const sandbox = await api.post<SandboxAPIResponse>(url, body || {});
-    return transformSandbox(sandbox);
+    const sandbox = await api.post<SandboxAPIResponse>(url, body || {})
+    return transformSandbox(sandbox)
   },
   saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
     return api
-      .put<IModuleAPIResponse>(
+      .patch<IModuleAPIResponse>(
         // `/sandboxes/${sandboxId}/modules/${module.shortid}`,
         `/studio/material-problem-type/${sandboxId}/modules/${module.shortid}/`,
         {
-          module: { code: module.code },
-        }
+          code: module.code,
+        },
       )
-      .then(transformModule);
+      .then(transformModule)
   },
   saveModules(sandboxId: string, modules: Module[]) {
+    return alert('saveModules not implemented')
     // return api.put(`/sandboxes/${sandboxId}/modules/mupdate`, {
-    /* is this works? */
-    return api.put(`/studio/material-problem-type/${sandboxId}/modules/`, {
-      modules,
-    });
+    // return api.put(`/studio/material-problem-type/${sandboxId}/modules/`, {
+    //   modules,
+    // })
   },
   saveModuleTitle(sandboxId: string, moduleShortid: string, title: string) {
     // return api.put<IModuleAPIResponse>(
     return api.patch<IModuleAPIResponse>( // we need use patch for partial updates!
       `/studio/material-problem-type/${sandboxId}/modules/${moduleShortid}/`,
       {
-        module: { name: title },
-      }
-    );
+        name: title,
+      },
+    )
   },
   createModule(sandboxId: string, module: Module): Promise<Module> {
     return api
-      .post<IModuleAPIResponse>(`/studio/material-problem-type/${sandboxId}/modules/`, {
-        module: {
+      .post<IModuleAPIResponse>(
+        `/studio/material-problem-type/${sandboxId}/modules/`,
+        {
+          // module: {
+          name: module.title,
           title: module.title,
           directoryShortid: module.directoryShortid,
           code: module.code,
           isBinary: module.isBinary === undefined ? false : module.isBinary,
+          // },
         },
-      })
-      .then(transformModule);
+      )
+      .then(transformModule)
+  },
+  async deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
+    await api.delete<IModuleAPIResponse>(
+      `/studio/material-problem-type/${sandboxId}/modules/${moduleShortid}/`,
+      // `/sandboxes/${sandboxId}/modules/${moduleShortid}`
+    );
   },
   // TODO add directories API
   // saveDirectoryTitle(
@@ -83,4 +97,4 @@ export default {
   //     }
   //   );
   // },
-};
+}

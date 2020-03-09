@@ -5,7 +5,7 @@ from django.db import transaction
 from django.core.files.images import get_image_dimensions
 
 from rest_framework import serializers
-from rest_framework.fields import empty
+# from rest_framework.fields import empty
 
 # from tagging.models import Tag
 from taggit_serializer.serializers import (TagListSerializerField,
@@ -305,7 +305,7 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
         fields.extend(['directory_shortid', 'title', 'id', 'shortid'])
-        read_only_fields = ('author', 'last_edit_user')
+        read_only_fields = ('author', 'last_edit_user', 'shortid')
 
 
 class MaterialMaterialProblemTypeSerializer(BaseSerializer):
