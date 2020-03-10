@@ -308,7 +308,7 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
         read_only_fields = ('author', 'last_edit_user', 'shortid')
 
 
-class MaterialMaterialProblemTypeSerializer(BaseSerializer):
+class MaterialProblemTypeSerializer(BaseSerializer):
     directories = MaterialProblemTypeSandboxDirectorySerializer(many=True, read_only=True)
     modules = MaterialProblemTypeSandboxModuleSerializer(many=True, read_only=True)
     title = serializers.SerializerMethodField()
@@ -316,7 +316,8 @@ class MaterialMaterialProblemTypeSerializer(BaseSerializer):
     owned = serializers.SerializerMethodField()
 
     def get_owned(self, obj):
-        if self.context['request'].user.profile.id == obj.author_id \
+        if hasattr(self.context['request'].user, 'profile') and \
+                self.context['request'].user.profile.id == obj.author_id \
                 or self.context['request'].user.is_superuser:
             return True
         else:
@@ -328,94 +329,94 @@ class MaterialMaterialProblemTypeSerializer(BaseSerializer):
     def get_title(self, obj):
         return obj.name
 
-    # TODO not sure we need save_from_tree_data create_from_tree_data
-    def save_from_tree_data(self, **kwargs):
-        assert not hasattr(self, 'save_object'), (
-            'Serializer `%s.%s` has old-style version 2 `.save_object()` '
-            'that is no longer compatible with REST framework 3. '
-            'Use the new-style `.create()` and `.update()` methods instead.' %
-            (self.__class__.__module__, self.__class__.__name__)
-        )
+    # # TODO not sure we need save_from_tree_data create_from_tree_data
+    # def save_from_tree_data(self, **kwargs):
+    #     assert not hasattr(self, 'save_object'), (
+    #         'Serializer `%s.%s` has old-style version 2 `.save_object()` '
+    #         'that is no longer compatible with REST framework 3. '
+    #         'Use the new-style `.create()` and `.update()` methods instead.' %
+    #         (self.__class__.__module__, self.__class__.__name__)
+    #     )
+    #
+    #     assert hasattr(self, '_errors'), (
+    #         'You must call `.is_valid()` before calling `.save()`.'
+    #     )
+    #
+    #     assert not self.errors, (
+    #         'You cannot call `.save()` on a serializer with invalid data.'
+    #     )
+    #
+    #     # Guard against incorrect use of `serializer.save(commit=False)`
+    #     assert 'commit' not in kwargs, (
+    #         "'commit' is not a valid keyword argument to the 'save()' method. "
+    #         "If you need to access data before committing to the database then "
+    #         "inspect 'serializer.validated_data' instead. "
+    #         "You can also pass additional keyword arguments to 'save()' if you "
+    #         "need to set extra attributes on the saved model instance. "
+    #         "For example: 'serializer.save(owner=request.user)'.'"
+    #     )
+    #
+    #     assert not hasattr(self, '_data'), (
+    #         "You cannot call `.save()` after accessing `serializer.data`."
+    #         "If you need to access data before committing to the database then "
+    #         "inspect 'serializer.validated_data' instead. "
+    #     )
+    #
+    #     validated_data = dict(
+    #         list(self.validated_data.items()) +
+    #         list(kwargs.items())
+    #     )
+    #
+    #     if self.instance is not None:
+    #         self.instance = self.update(self.instance, validated_data)
+    #         assert self.instance is not None, (
+    #             '`update()` did not return an object instance.'
+    #         )
+    #     else:
+    #         self.instance = self.create_from_tree_data(validated_data)
+    #         assert self.instance is not None, (
+    #             '`create()` did not return an object instance.'
+    #         )
+    #
+    #     return self.instance
 
-        assert hasattr(self, '_errors'), (
-            'You must call `.is_valid()` before calling `.save()`.'
-        )
-
-        assert not self.errors, (
-            'You cannot call `.save()` on a serializer with invalid data.'
-        )
-
-        # Guard against incorrect use of `serializer.save(commit=False)`
-        assert 'commit' not in kwargs, (
-            "'commit' is not a valid keyword argument to the 'save()' method. "
-            "If you need to access data before committing to the database then "
-            "inspect 'serializer.validated_data' instead. "
-            "You can also pass additional keyword arguments to 'save()' if you "
-            "need to set extra attributes on the saved model instance. "
-            "For example: 'serializer.save(owner=request.user)'.'"
-        )
-
-        assert not hasattr(self, '_data'), (
-            "You cannot call `.save()` after accessing `serializer.data`."
-            "If you need to access data before committing to the database then "
-            "inspect 'serializer.validated_data' instead. "
-        )
-
-        validated_data = dict(
-            list(self.validated_data.items()) +
-            list(kwargs.items())
-        )
-
-        if self.instance is not None:
-            self.instance = self.update(self.instance, validated_data)
-            assert self.instance is not None, (
-                '`update()` did not return an object instance.'
-            )
-        else:
-            self.instance = self.create_from_tree_data(validated_data)
-            assert self.instance is not None, (
-                '`create()` did not return an object instance.'
-            )
-
-        return self.instance
-
-    @transaction.atomic
-    def create_from_tree_data(self, validated_data):
-        modules_data = self.initial_data.pop('modules')
-        directories_data = self.initial_data.pop('directories')
-        material_problem_type = super().create(validated_data)
-        # material_problem_type = MaterialProblemType.objects.create(**validated_data)
-
-        # directory shortid / instance src dict
-        directory_ids = {}
-
-        # create directories
-        # TODO this code don't support descendants dirs
-        for directory_data in directories_data:
-            # directory_data['author'] = validated_data['author'].pk
-            directory_data['name'] = directory_data['title']
-            directory_data['sandbox'] = material_problem_type.uuid
-            serializer = MaterialProblemTypeSandboxDirectorySerializer(data=directory_data)
-            if serializer.is_valid(raise_exception=True):
-                instance = serializer.save(author=material_problem_type.author)
-                directory_ids[directory_data['shortid']] = instance
-
-        # create modules (and place it in directory)
-        for module_data in modules_data:
-            # module_data['author'] = validated_data['author'].pk
-            module_data['name'] = module_data['title']
-            module_data['sandbox'] = material_problem_type.uuid
-
-            # try to find module directory
-            if module_data['directory_shortid']:
-                if module_data['directory_shortid'] in directory_ids:
-                    module_data['directory'] = directory_ids[module_data['directory_shortid']].pk
-
-            serializer = MaterialProblemTypeSandboxModuleSerializer(data=module_data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(author=material_problem_type.author)
-
-        return material_problem_type
+    # @transaction.atomic
+    # def create_from_tree_data(self, validated_data):
+    #     modules_data = self.initial_data.pop('modules')
+    #     directories_data = self.initial_data.pop('directories')
+    #     material_problem_type = super().create(validated_data)
+    #     # material_problem_type = MaterialProblemType.objects.create(**validated_data)
+    #
+    #     # directory shortid / instance src dict
+    #     directory_ids = {}
+    #
+    #     # create directories
+    #     # TODO this code don't support descendants dirs
+    #     for directory_data in directories_data:
+    #         # directory_data['author'] = validated_data['author'].pk
+    #         directory_data['name'] = directory_data['title']
+    #         directory_data['sandbox'] = material_problem_type.uuid
+    #         serializer = MaterialProblemTypeSandboxDirectorySerializer(data=directory_data)
+    #         if serializer.is_valid(raise_exception=True):
+    #             instance = serializer.save(author=material_problem_type.author)
+    #             directory_ids[directory_data['shortid']] = instance
+    #
+    #     # create modules (and place it in directory)
+    #     for module_data in modules_data:
+    #         # module_data['author'] = validated_data['author'].pk
+    #         module_data['name'] = module_data['title']
+    #         module_data['sandbox'] = material_problem_type.uuid
+    #
+    #         # try to find module directory
+    #         if module_data['directory_shortid']:
+    #             if module_data['directory_shortid'] in directory_ids:
+    #                 module_data['directory'] = directory_ids[module_data['directory_shortid']].pk
+    #
+    #         serializer = MaterialProblemTypeSandboxModuleSerializer(data=module_data)
+    #         if serializer.is_valid(raise_exception=True):
+    #             serializer.save(author=material_problem_type.author)
+    #
+    #     return material_problem_type
 
     class Meta:
         model = MaterialProblemType
@@ -437,7 +438,7 @@ class MaterialProblemTypeSandboxCacheSerializer(serializers.ModelSerializer):
 class MaterialSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
     tags = TagListSerializerField(read_only=True)
-    material_problem_type = MaterialMaterialProblemTypeSerializer(read_only=True)
+    material_problem_type = MaterialProblemTypeSerializer(read_only=True)
 
     def validate_lesson(self, value):
         return Lesson.objects.get(uuid=value)

@@ -17,7 +17,7 @@ from courses.models import Course, Unit, Module, Lesson, Material, MaterialProbl
     # SANDOX_TEMPLATE_REACT_JSON_STRING,
 
 from ..serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
-    LessonSerializer, MaterialSerializer, MaterialMaterialProblemTypeSerializer, \
+    LessonSerializer, MaterialSerializer, MaterialProblemTypeSerializer, \
     MaterialProblemTypeSandboxCacheSerializer, MaterialProblemTypeSandboxModuleSerializer, \
     MaterialListSerializer
 
@@ -219,9 +219,9 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
                                  # MaterialTypeModulesMixin,
                                  viewsets.GenericViewSet,
                                  ):
-    permission_classes = (permissions.IsAuthenticated, IsMaterialProblemTypeAuthor)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMaterialProblemTypeAuthor)
     pagination_class = StandardResultsSetPagination
-    serializer_class = MaterialMaterialProblemTypeSerializer
+    serializer_class = MaterialProblemTypeSerializer
     serializer_class_cache = MaterialProblemTypeSandboxCacheSerializer
     # serializer_class_module = MaterialProblemTypeSandboxModuleSerializer
     queryset = MaterialProblemType.objects.\

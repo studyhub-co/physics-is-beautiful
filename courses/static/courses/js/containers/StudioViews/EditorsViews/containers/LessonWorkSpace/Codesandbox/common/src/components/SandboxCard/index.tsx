@@ -1,16 +1,16 @@
-import React from 'react';
+import React from 'react'
 // import ForkIcon from 'react-icons/lib/go/repo-forked';
 // import EyeIcon from 'react-icons/lib/go/eye';
 // import LikeIcon from 'react-icons/lib/go/heart';
 
-import { GoRepoForked as ForkIcon } from 'react-icons/go';
-import { GoHeart as LikeIcon } from 'react-icons/go';
-import { GoEye as EyeIcon } from 'react-icons/go';
+import { GoRepoForked as ForkIcon } from 'react-icons/go'
+import { GoHeart as LikeIcon } from 'react-icons/go'
+import { GoEye as EyeIcon } from 'react-icons/go'
 
-import getIcon from '../../templates/icons';
-import getTemplate, { TemplateType } from '../../templates';
-import { profileUrl } from '../../utils/url-generator';
-import { ENTER } from '../../utils/keycodes';
+import getIcon from '../../templates/icons'
+import getTemplate, { TemplateType } from '../../templates'
+import { profileUrl } from '../../utils/url-generator'
+import { ENTER } from '../../utils/keycodes'
 
 import {
   Container,
@@ -24,62 +24,62 @@ import {
   SandboxImage,
   SandboxInfo,
   TemplateIcon,
-} from './elements';
-import Tags from '../Tags';
+} from './elements'
+import Tags from '../Tags'
 
 const getScreenshot = (id: string) =>
-  `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;
+  `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`
 
 /* eslint-disable camelcase */
 export interface Sandbox {
-  title: string;
-  description: string;
-  tags: string[];
-  id: string;
-  screenshot_url: string;
-  template: TemplateType;
-  view_count: number;
-  fork_count: number;
-  like_count: number;
+  title: string
+  description: string
+  tags: string[]
+  id: string
+  screenshot_url: string
+  template: TemplateType
+  view_count: number
+  fork_count: number
+  like_count: number
   author: {
-    username: string;
-    avatar_url: string;
-  };
+    username: string
+    avatar_url: string
+  }
 }
 /* eslint-enable */
 export interface Props {
-  selectMaterialType: () => void;
-  sandbox: Sandbox;
-  small?: boolean;
-  noHeight?: boolean;
-  defaultHeight?: number;
-  noMargin?: boolean;
-  selectSandbox: (params: Sandbox) => void;
+  selectMaterialType: () => void
+  sandbox: Sandbox
+  small?: boolean
+  noHeight?: boolean
+  defaultHeight?: number
+  noMargin?: boolean
+  selectSandbox: (params: Sandbox) => void
 }
 
 const kFormatter = (num: number): number | string => {
   if (num > 999999) {
-    return (num / 1000000).toFixed(1) + 'M';
+    return (num / 1000000).toFixed(1) + 'M'
   }
 
   if (num > 999) {
-    return (num / 1000).toFixed(1) + 'K';
+    return (num / 1000).toFixed(1) + 'K'
   }
 
-  return num;
-};
+  return num
+}
 
 export default class SandboxCard extends React.PureComponent<Props> {
   toggleOpen = () => {
     // this.props.selectSandbox({ ...this.props.sandbox });
-    this.props.selectMaterialType();
-  };
+    this.props.selectMaterialType()
+  }
 
   handleKeyUp = e => {
     if (e.keyCode === ENTER) {
-      this.toggleOpen();
+      this.toggleOpen()
     }
-  };
+  }
 
   render() {
     const {
@@ -88,17 +88,17 @@ export default class SandboxCard extends React.PureComponent<Props> {
       noMargin,
       noHeight,
       defaultHeight = 152,
-    } = this.props;
+    } = this.props
     if (!sandbox) {
       return (
         <Container style={{}}>
           <SandboxImage as="div" style={{ border: 0, height: 150 }} />
           <SandboxInfo />
         </Container>
-      );
+      )
     }
-    const template = getTemplate(sandbox.template);
-    const Icon = getIcon(sandbox.template);
+    const template = getTemplate(sandbox.template)
+    const Icon = getIcon(sandbox.template)
     return (
       <Container
         noMargin={noMargin}
@@ -110,12 +110,13 @@ export default class SandboxCard extends React.PureComponent<Props> {
         onKeyUp={this.handleKeyUp}
       >
         <Image>
-          {/*<SandboxImage*/}
-            {/*alt={sandbox.title}*/}
-            {/*src={sandbox.screenshot_url || getScreenshot(sandbox.id)}*/}
-            {/*color={template.color()}*/}
-            {/*style={{ height: defaultHeight }}*/}
-          {/*/>*/}
+          <SandboxImage
+            alt={sandbox.title}
+            src={'/evaluation/' + sandbox.id + '/screenshot.png'}
+            // src={sandbox.screenshot_url || getScreenshot(sandbox.id)}
+            color={template.color()}
+            style={{ height: defaultHeight }}
+          />
 
           <Overlay>
             <SandboxDescription>{sandbox.description}</SandboxDescription>
@@ -151,6 +152,6 @@ export default class SandboxCard extends React.PureComponent<Props> {
           )}
         </SandboxStats>
       </Container>
-    );
+    )
   }
 }

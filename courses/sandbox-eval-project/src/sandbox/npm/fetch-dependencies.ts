@@ -21,6 +21,8 @@ const BUCKET_URL =
     ? 'https://d1jyvh0kxilfa7.cloudfront.net'
     : 'https://dev-packager-packages.codesandbox.io';
 
+// const BUCKET_URL = 'https://d1jyvh0kxilfa7.cloudfront.net'
+
 const NEW_PACKAGER_URL =
   'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';
 
