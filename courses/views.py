@@ -38,6 +38,7 @@ async def get_screen(screenshot_url):
     await page.goto(screenshot_url, {'waitUntil': 'networkidle2', 'timeout': 0})
     await page.waitForSelector('#root')
     screen = await page.screenshot()
+    await page.close()
     await browser.close()
 
     return screen
@@ -45,7 +46,9 @@ async def get_screen(screenshot_url):
 
 def get_sandbox_image(request, pt_uuid):
     # TODO cache it (or save in sandbox model)
-    screenshot_url = 'http://127.0.0.1:8000' + reverse('courses:material-frame', args=[pt_uuid, ])
+    screenshot_url = '{}://{}{}'.format(request.scheme,
+                                        request.META.get('HTTP_HOST'),
+                                        reverse('courses:material-frame', args=[pt_uuid, ]))
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     screenshot = loop.run_until_complete(get_screen(screenshot_url))
