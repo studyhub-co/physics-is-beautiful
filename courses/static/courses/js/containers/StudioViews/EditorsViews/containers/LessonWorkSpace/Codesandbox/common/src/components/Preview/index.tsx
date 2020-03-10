@@ -208,11 +208,7 @@ class BasePreview extends React.Component<Props, State> {
 
     if (sandbox && sandbox.hasOwnProperty('id')) {
       // TODO add material id to work with data
-      if (window.location.hostname == '127.0.0.1') {
-        return `http://127.0.0.1:8000/evaluation/${sandbox.id}/`;
-      } else {
-        return `http://pib-dev.us-east-1.elasticbeanstalk.com/evaluation/${sandbox.id}/`;
-      }
+      return `${window.location.origin}/evaluation/${sandbox.id}/`
     }
     else {return ''}
 
