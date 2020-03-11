@@ -99,13 +99,13 @@ db.sqlite3
 /media/
 
 # npm
-/node_modules/
+node_modules/
 
 # webpack
 # webpack-stats.json
 
 # dev bundles
-static/bundles/
+# static/bundles/
 
 
 # Elastic Beanstalk Files
@@ -119,8 +119,13 @@ library_test
 
 # exclude source of SPA
 /courses/static/courses/js/
+
 # if needed: comment below to temporarily disable vscode extensions publishing due to long time uploading
-!/courses/static/courses/js/codesandbox-apps/
+# !/courses/static/courses/js/codesandbox-apps/
+
+# exclude source of eval project
+/courses/sandbox-eval-project/
+!/courses/sandbox-eval-project/www/
 
 # emacs
 *~
