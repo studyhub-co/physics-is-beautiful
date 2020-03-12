@@ -6,7 +6,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common"
+      "courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common",
+      "courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/codesandbox-api"
     ]
   },
   "scripts": {

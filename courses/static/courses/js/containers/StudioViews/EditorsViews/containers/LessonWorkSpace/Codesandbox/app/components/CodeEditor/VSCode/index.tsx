@@ -8,7 +8,7 @@ import {
   getModulePath,
   resolveModule,
 } from '../../../../common/src/sandbox/modules';
-import { listen, actions, dispatch } from '../../../../codesandbox-api/codesandbox';
+import { listen, actions, dispatch } from 'codesandbox-api';
 
 import prettify from '../../../../app/utils/prettify';
 import DEFAULT_PRETTIER_CONFIG from '../../../../common/src/prettify-default-config';

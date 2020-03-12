@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { messages } from '../../../../../common/src/utils/jest-lite';
-import { actions, dispatch, listen } from '../../../../../codesandbox-api/codesandbox';
+import { actions, dispatch, listen } from 'codesandbox-api';
 import immer from 'immer';
 import { debounce } from 'lodash-es';
 import SplitPane from 'react-split-pane';

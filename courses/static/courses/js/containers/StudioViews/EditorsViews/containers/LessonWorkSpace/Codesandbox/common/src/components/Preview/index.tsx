@@ -8,7 +8,7 @@ import {
   registerFrame,
   resetState,
 } from 'codesandbox-api'; // common build lib variant
-//} from '../../../../../Codesandbox/codesandbox-api/codesandbox'; // to import from main app
+
 import debounce from 'lodash/debounce';
 import { Spring } from 'react-spring/renderprops.cjs';
 import { Sandbox, Module } from '../../types';

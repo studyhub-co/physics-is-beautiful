@@ -1,4 +1,4 @@
-import { listen } from '../../../../../codesandbox-api/codesandbox';
+import { listen } from 'codesandbox-api';
 import {
   CorrectionAction,
   CorrectionClearAction,

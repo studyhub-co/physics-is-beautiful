@@ -106,6 +106,10 @@ db.sqlite3
 /courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common/node_modules
 /courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common/lib
 
+/courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/codesandbox-api/node_modules
+/courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/codesandbox-api/dist
+
+
 # webpack
 # webpack-stats.json
 
