@@ -23,7 +23,7 @@ mysqlclient==1.4.2
 psycopg2-binary==2.7.5
 #Pillow==4.0.0
 Pillow==5.4.1
-raven==6.0.0
+raven==6.10.0
 Jinja2==2.9.5
 MarkupSafe==0.23
 #numpy==1.15.4
