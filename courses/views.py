@@ -28,6 +28,19 @@ import asyncio
 from pyppeteer import launch, errors
 
 
+def get_mock_png():
+    img = Image.new('RGB', (648, 480), color=(255, 255, 255, 255))
+
+    d = ImageDraw.Draw(img)
+    font = ImageFont.truetype("arial.ttf", 32)
+    d.text((100, 200), "The screenshot temporary unavailable", fill=(0, 0, 0, 255), font=font)
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format='PNG')
+    img = img_byte_arr.getvalue()
+
+    return img
+
+
 async def get_screen(screenshot_url):
     browser = await launch(
         handleSIGINT=False,
@@ -39,18 +52,21 @@ async def get_screen(screenshot_url):
         # args=['--disable-dev-shm-usage', ] - docker setting
     )
     page = await browser.newPage()
-    await page.goto(screenshot_url, {'waitUntil': 'networkidle2', 'timeout': 0})
+    await page.goto(screenshot_url, {'waitUntil': 'networkidle2', 'timeout': 30})
     try:
         await page.waitForSelector('#root')
     except errors.TimeoutError:
         img = Image.new('RGB', (648, 480), color=(255, 255, 255, 255))
 
         d = ImageDraw.Draw(img)
-        font = ImageFont.truetype("arial.ttf", 32)
+        font = ImageFont.truetype("DejaVuSans.ttf", 32)
         d.text((100, 200), "The screenshot is not available", fill=(0, 0, 0, 255), font=font)
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
         img = img_byte_arr.getvalue()
+
+        await page.close()
+        await browser.close()
 
         return img
 
@@ -63,12 +79,13 @@ async def get_screen(screenshot_url):
 
 def get_sandbox_image(request, pt_uuid):
     # TODO cache it (or save in sandbox model)
-    screenshot_url = '{}://{}{}'.format(request.scheme,
-                                        request.META.get('HTTP_HOST'),
-                                        reverse('courses:material-frame', args=[pt_uuid, ]))
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    screenshot = loop.run_until_complete(get_screen(screenshot_url))
+    # screenshot_url = '{}://{}{}'.format(request.scheme,
+    #                                     request.META.get('HTTP_HOST'),
+    #                                     reverse('courses:material-frame', args=[pt_uuid, ]))
+    # loop = asyncio.new_event_loop()
+    # asyncio.set_event_loop(loop)
+    # screenshot = loop.run_until_complete(get_screen(screenshot_url))
+    screenshot = get_mock_png()
     response = HttpResponse(content_type="image/png")
     response.write(screenshot)
     return response
