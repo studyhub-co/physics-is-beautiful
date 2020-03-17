@@ -19,8 +19,7 @@ var API_KEY = 'AIzaSyBNaX7xo_Vo08-myCDEzY4AKZkkfyJYIc8'
 // included, separated by spaces.
 const SCOPES = 'https://www.googleapis.com/auth/classroom.courses.readonly' +
   ' https://www.googleapis.com/auth/classroom.rosters.readonly' +
-  ' https://www.googleapis.com/auth/classroom.profile.emails' +
-  ' https://www.googleapis.com/auth/plus.me'
+  ' https://www.googleapis.com/auth/classroom.profile.emails'
 
 // var DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest']
 

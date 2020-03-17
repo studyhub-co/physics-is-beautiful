@@ -9,19 +9,16 @@ Requires Python 3.5, recommended to run in a virtual environment (virtualenv, co
 pip install -r requirements.txt
 ```
 
-Requires MySql
+Requires PostgreSQL
 
 * install mysql:
 ```
-brew install mysql
+brew install postgresql
 ```
-* create a db named `pib_development` (either use mysql command line or sequel pro - like program: https://www.sequelpro.com, ex:
+* create a db named `pib`:  ex:
 
 ```
-mysql.server start
-mysql -h 127.0.0.1 -u root
-create database pib_development;
-exit;
+createdb pib
 ```
 
 * install yarn:
@@ -50,20 +47,20 @@ or (prepare production bundle)
 yarn run prod
 ```
 
+* Activate your virtual environment
+
 * Setup the db:
 ```
 ./manage.py migrate
 ```
 
-* Activate your virtual environment
+* Create an admin account by running `/manage.py createsuperuser`
+
 * Run:
 ```
 ./manage.py runserver
 ```
-
 * You should find the site running on `http://localhost:8000`
-
-* To create an admin account run `/manage.py createsuperuser`
 
 * To login to the admin account go to `http://localhost:8000/admin`
 
@@ -98,7 +95,8 @@ brew install awscli
 ```
 brew install awsebcli
 ```
-* run `eb init`
+* run `aws configure` 
+* run `eb init` (you'll need the access id/key
 * on git `develop` branch run `eb use pib-dev`
 * on git `master` branch run `eb use pib-prod`
 
