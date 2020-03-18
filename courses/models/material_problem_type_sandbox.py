@@ -164,7 +164,8 @@ class MaterialProblemTypeSandbox(BaseItemModel):
 
     # "screenshot_url": "https://screenshots.codesandbox.io/new.png",
     # TODO migrate to FileField
-    screenshot_url = models.URLField(null=True, blank=True)
+    # screenshot_url = models.URLField(null=True, blank=True)
+    screenshot_url = models.ImageField(null=True, blank=True, upload_to='mpt_images')
 
     # "view_count": 4020046,
     # TODO calculated field
