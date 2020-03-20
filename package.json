@@ -87,7 +87,7 @@
     "@sentry/browser": "^5.7.1",
     "@svgr/core": "^2.4.1",
     "@tippy.js/react": "^3.1.1",
-    "@vermus/django-react-djeddit-client": "^1.0.72",
+    "@vermus/django-react-djeddit-client": "^1.0.74",
     "ansi-html": "0.0.7",
     "axios": "^0.17.1",
     "babel-code-frame": "^6.26.0",

@@ -50,7 +50,7 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
             this.props.resource.metadata.data.hasOwnProperty('volumeInfo') &&
           this.props.resource.metadata.data.volumeInfo.hasOwnProperty('imageLinks') &&
           this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail
-            ? <Image fluid src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail} />
+            ? <Image fluid src={this.props.resource.metadata.data.volumeInfo.imageLinks.thumbnail.replace(/^http:\/\//i, 'https://')} />
             : <FaImage size={'10em'} /> }
         </div>
         <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.5rem', cursor: 'pointer'}}>
