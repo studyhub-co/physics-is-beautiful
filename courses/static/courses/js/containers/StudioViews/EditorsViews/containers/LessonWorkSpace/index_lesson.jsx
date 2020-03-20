@@ -1,3 +1,4 @@
+// TODO refactor this
 import React from 'react'
 
 import { connect } from 'react-redux'
@@ -61,7 +62,6 @@ export class Lesson extends React.Component {
   // this.props.currentMaterial.material_problem_type = null
 
   async componentDidMount () {
-    console.log(this.props.materialUrlUuid)
     this.props.loadLessonIfNeeded(this.props.materialUrlUuid)
 
     // TODO make editor loadable
@@ -126,6 +126,54 @@ export class Lesson extends React.Component {
        return `${window.location.origin}/evaluation/${mpt.id}/`
      } else { return '' }
    }
+
+   onLoadIframe = (e) => {
+     // callback executed when canvas was found
+     function handleRoot (root) {
+       console.log(root);
+       console.log(root);
+       console.log(root);
+     }
+
+     console.log(e)
+     console.log(e)
+     console.log(e)
+
+     let iframeDoc = this.frameRef
+
+     // set up the mutation observer
+     var observer = new MutationObserver(function (mutations, me) {
+       // `mutations` is an array of mutations that occurred
+       // `me` is the MutationObserver instance
+       console.log(mutations);
+       let root = iframeDoc.getElementById('root')
+       if (root) {
+         handleRoot(root)
+         me.disconnect() // stop observing
+       }
+     })
+
+     // start observing
+     observer.observe(iframeDoc.body, {
+       childList: true,
+       subtree: true
+     })
+     // var checkRootExist = setInterval(function () {
+     //   let root = this.frameRef.getElementById('root')
+     //   if (root) {
+     //     console.log('todo make screenshot!')
+     //     clearInterval(checkRootExist)
+     //   }
+     // }, 100) // check every 100ms
+     //
+     // checkRootExist()
+   }
+
+   setFrameRef = node =>
+     (this.frameRef =
+        ((!node || !node.contentWindow) && null) ||
+         node.contentWindow.document
+     )
 
    render () {
      if (this.props.loading) {
@@ -291,7 +339,11 @@ export class Lesson extends React.Component {
                }}
              >
                {this.currentMaterialHasType() &&
-               <StyledIframe src={this.mptEvalUrl(this.props.currentMaterial.material_problem_type)}/> }
+               <StyledIframe
+                 ref={this.setFrameRef}
+                 onLoad={this.onLoadIframe}
+                 src={this.mptEvalUrl(this.props.currentMaterial.material_problem_type)}/>
+               }
              </div>
              {/* Editor Mode */}
              <div

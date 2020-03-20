@@ -75,10 +75,10 @@ def get_sandbox_image(request, pt_uuid):
     from .models import MaterialProblemType
     mpt = get_object_or_404(MaterialProblemType, uuid=pt_uuid)
 
-    # generate image in the background
-    t = threading.Thread(target=save_img, args=[screenshot_url, mpt])
-    t.setDaemon(True)
-    t.start()
+    # # generate image in the background
+    # t = threading.Thread(target=save_img, args=[screenshot_url, mpt])
+    # t.setDaemon(True)
+    # t.start()
 
     # return that we have
     if mpt.screenshot_url:
