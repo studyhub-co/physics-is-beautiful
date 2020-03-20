@@ -10,6 +10,7 @@ router = routers.DefaultRouter()
 
 router.register(r'', ProfileViewSet, base_name='profiles')
 
+
 urlpatterns = [
     url(r'me/$', ProfileViewSetMe.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
     url(r'find/$', find_user),

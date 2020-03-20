@@ -51,7 +51,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@vermus/django-react-djeddit-client": "^1.0.72",
+    "@vermus/django-react-djeddit-client": "^1.0.74",
     "axios": "^0.17.1",
     "connected-react-router": "^6.5.2",
     "copy-to-clipboard": "^3.0.8",
@@ -62,7 +62,7 @@
     "mathjs": "^3.20.2",
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",
-    "react": "^16.8.5",
+    "react": "^16.8.6",
     "react-ace": "^7.0.2",
     "react-adsense": "0.0.6",
     "react-bootstrap": "^1.0.0-beta.9",
