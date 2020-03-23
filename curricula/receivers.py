@@ -39,7 +39,7 @@ def transfer_lesson_progress(request, user, **kwargs):
             UserResponse.objects.create(
                 profile=profile,
                 question_id=response['question'],
-                # content_type=response.content_type,
+                content_type=ContentType.objects.get(pk=content_type),
                 content=content,
                 is_correct=response['is_correct'],
                 answered_on=response['answered_on'],

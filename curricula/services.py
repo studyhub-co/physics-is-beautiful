@@ -167,6 +167,9 @@ class AnonymousProgressService(ProgressServiceBase):
     def __init__(self, request, session, current_lesson=None):
         super(AnonymousProgressService, self).__init__(request, current_lesson=current_lesson)
         self.session = session
+        # self.lessons_store is dict as:
+        # { lesson.pk: lesson_store based on DEFAULT_LESSON_STORE,
+        #   lesson2.pk: lesson_store2 based on DEFAULT_LESSON_STORE }
 
     @cached_property
     def lessons_store(self):

@@ -26,7 +26,7 @@ class BaseSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         if isinstance(data, str):
-            print(self.Meta.model.objects.get(**{self.lookup_field: data}))
+            # print(self.Meta.model.objects.get(**{self.lookup_field: data}))
             return self.Meta.model.objects.get(**{self.lookup_field: data})
         else:
             return super(BaseSerializer, self).to_internal_value(data)
@@ -126,9 +126,17 @@ class UserResponseSerializer(BaseSerializer):
             'question', 'vector',  'mathematical_expression', 'unit_conversion', 'text', 'my_sql',
             'profile',
             'answer', 'answers_list',
-            'answered_on'
+            'answered_on',
+            # temporary, need to store content type session / todo remove
+            'content_type', 'content', 'is_correct'
         ]
+        read_only_fields = ['content_type', 'content', 'is_correct']  # temporary, need to store content type session / todo remove
         extra_kwargs = {'profile': {'required': False}}
+
+    # temporary, need to store content type session / todo remove
+    content = serializers.SerializerMethodField()
+    def get_content(self, obj):
+        return AnswerSerializer.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data
 
     vector = VectorSerializer(required=False)
     mathematical_expression = MathematicalExpressionSerializer(required=False)
