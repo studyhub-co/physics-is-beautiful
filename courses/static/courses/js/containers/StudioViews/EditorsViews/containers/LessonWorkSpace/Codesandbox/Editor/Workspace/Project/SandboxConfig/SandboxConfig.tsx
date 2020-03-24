@@ -1,4 +1,4 @@
-import getTemplateDefinition from '../../../common/src/templates';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, MouseEvent } from 'react';
 import TrashIcon from 'react-icons/lib/fa/trash';
 

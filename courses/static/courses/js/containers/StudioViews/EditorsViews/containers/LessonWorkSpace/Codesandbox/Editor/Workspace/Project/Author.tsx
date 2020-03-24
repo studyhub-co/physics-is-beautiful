@@ -1,6 +1,6 @@
-import { UserWithAvatar } from '../../../common/src/components/UserWithAvatar';
-import { User } from '../../../common/src/types';
-import { profileUrl } from '../../../common/src/utils/url-generator';
+import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
+import { User } from '@codesandbox/common/lib/types';
+import { profileUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React, { FunctionComponent } from 'react';
 
 import { Item, UserLink } from './elements';

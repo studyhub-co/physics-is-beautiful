@@ -1,4 +1,4 @@
-import Tooltip from '../../../../../common/src/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { dispatch, actions } from 'codesandbox-api';
 import { sortBy } from 'lodash';
 import React from 'react';

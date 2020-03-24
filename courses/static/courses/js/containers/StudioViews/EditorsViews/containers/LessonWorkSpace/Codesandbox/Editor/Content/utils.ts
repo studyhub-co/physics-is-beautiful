@@ -2,8 +2,8 @@ import immer from 'immer';
 import {
   ViewConfig,
   ViewTab,
-} from '../../common/src/templates/template';
-import { DevToolsTabPosition } from '../../common/src/types';
+} from '@codesandbox/common/lib/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 
 const isEqual = (prevPos: DevToolsTabPosition, nextPos: DevToolsTabPosition) =>
   prevPos.devToolIndex === nextPos.devToolIndex &&

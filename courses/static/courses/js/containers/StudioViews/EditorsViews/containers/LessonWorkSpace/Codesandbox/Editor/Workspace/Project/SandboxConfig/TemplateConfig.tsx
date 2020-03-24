@@ -1,6 +1,6 @@
-import Switch from '../../../common/src/components/Switch';
-import Tooltip from '../../../common/src/components/Tooltip';
-import * as templates from '../../../common/src/templates';
+import Switch from '@codesandbox/common/lib/components/Switch';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import * as templates from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import { Link } from 'react-router-dom';

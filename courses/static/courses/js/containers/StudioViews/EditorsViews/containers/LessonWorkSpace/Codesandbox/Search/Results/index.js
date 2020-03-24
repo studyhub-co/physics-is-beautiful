@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 // import { Hits, Pagination } from 'react-instantsearch/dom'
 
-import Centered from '../../common/src/components/flex/Centered'
-import SandboxCard from '../../common/src/components/SandboxCard'
-import Margin from '../../common/src/components/spacing/Margin'
-import { getSandboxName } from '../../common/src/utils/get-sandbox-name'
-import { sandboxUrl } from '../../common/src/utils/url-generator'
+import Centered from '@codesandbox/common/lib/components/flex/Centered'
+import SandboxCard from '@codesandbox/common/lib/components/SandboxCard'
+import Margin from '@codesandbox/common/lib/components/spacing/Margin'
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name'
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator'
 // import { Pagination } from '../../../../../../../../components/react-bootstrap/pagination'
 
 import ResultInfo from '../ResultInfo'

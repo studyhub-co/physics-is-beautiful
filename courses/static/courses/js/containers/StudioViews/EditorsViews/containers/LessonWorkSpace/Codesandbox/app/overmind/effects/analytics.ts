@@ -1,7 +1,7 @@
 import track, {
   identify,
   setUserId,
-} from '../../../common/src/utils/analytics';
+} from '@codesandbox/common/lib/utils/analytics';
 
 export default (() => {
   const trackedEvents = {};

@@ -5,7 +5,7 @@ import { reaction } from 'mobx'
 import React from 'react'
 import { DropTarget } from 'react-dnd'
 import { NativeTypes } from 'react-dnd-html5-backend'
-import { getChildren } from '../../../../common/src/sandbox/modules'
+import { getChildren } from '@codesandbox/common/lib/sandbox/modules'
 
 import DirectoryChildren from './DirectoryChildren'
 import { EntryContainer, Opener, Overlay } from './elements'

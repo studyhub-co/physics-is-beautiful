@@ -1,11 +1,17 @@
 from __future__ import unicode_literals
 
 from django.db import connection
-from django.apps import AppConfig
+# from django.apps import AppConfig
+from django.contrib.staticfiles.apps import StaticFilesConfig
 
 
-class CoursesConfig(AppConfig):
+class CoursesConfig(StaticFilesConfig):
     name = 'courses'
+
+    # # ignore node_modules folders
+    # def __init__(self, app_name, app_module):
+    #     self.ignore_patterns += ['js']
+    #     super(CoursesConfig, self).__init__(app_name, app_module)
 
     def ready(self):
         import courses.receivers

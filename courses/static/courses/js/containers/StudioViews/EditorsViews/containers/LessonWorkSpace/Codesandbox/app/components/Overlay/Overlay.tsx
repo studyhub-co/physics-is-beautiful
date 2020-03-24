@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import { useTransition, animated, config } from 'react-spring';
-import track from '../../../common/src/utils/analytics';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Container } from './elements';
 
 interface IOverlayProps {

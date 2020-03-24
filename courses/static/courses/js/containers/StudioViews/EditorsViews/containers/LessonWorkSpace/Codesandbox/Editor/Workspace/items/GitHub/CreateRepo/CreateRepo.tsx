@@ -1,7 +1,7 @@
-import { Button } from '../../../../../common/src/components/Button';
-import Input from '../../../../../common/src/components/Input';
-import Margin from '../../../../../common/src/components/spacing/Margin';
-import track from '../../../../../common/src/utils/analytics';
+import { Button } from '@codesandbox/common/lib/components/Button';
+import Input from '@codesandbox/common/lib/components/Input';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import track from '@codesandbox/common/lib/utils/analytics';
 import React, { ChangeEvent, FunctionComponent, HTMLAttributes } from 'react';
 
 import { useOvermind } from '../../../../../app/overmind';

@@ -1,12 +1,12 @@
 import { fromPairs, toPairs, sortBy, mapValues } from 'lodash-es';
-import slugify from '../../../../common/src/utils/slugify';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 import { clone } from 'mobx-state-tree';
 import { dispatch } from 'codesandbox-api';
 
 import { vscode } from 'app/vscode';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 
-import getTemplate from '../../../../common/src/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import {
   addDevToolsTab as addDevToolsTabUtil,

@@ -1,4 +1,4 @@
-// import { ZeitDeploymentState } from '../../../../common/src/types';
+// import { ZeitDeploymentState } from '@codesandbox/common/lib/types';
 import styled, { css } from 'styled-components';
 
 import { WorkspaceInputContainer } from '../../elements';

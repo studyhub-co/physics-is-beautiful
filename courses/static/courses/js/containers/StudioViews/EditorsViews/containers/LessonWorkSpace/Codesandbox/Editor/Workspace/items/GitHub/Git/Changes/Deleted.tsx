@@ -1,4 +1,4 @@
-import theme from '../../../common/src/theme';
+import theme from '@codesandbox/common/lib/theme';
 import React from 'react';
 import RemovedIcon from 'react-icons/lib/go/diff-removed';
 

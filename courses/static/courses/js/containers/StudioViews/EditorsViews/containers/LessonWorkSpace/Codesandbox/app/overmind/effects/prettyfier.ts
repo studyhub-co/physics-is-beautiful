@@ -1,5 +1,5 @@
 import prettify from '../../../app/utils/prettify';
-import { PrettierConfig, Module } from '../../../common/src/types';
+import { PrettierConfig, Module } from '@codesandbox/common/lib/types';
 
 type Options = {
   getPrettierConfig(): PrettierConfig;

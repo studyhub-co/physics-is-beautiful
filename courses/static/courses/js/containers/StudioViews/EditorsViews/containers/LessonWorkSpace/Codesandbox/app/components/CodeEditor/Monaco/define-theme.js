@@ -1,5 +1,5 @@
 import Color from 'color';
-//import { notificationState } from '../../common/src/utils/notifications';
+//import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 // import { NotificationStatus } from '@codesandbox/notifications';
 
 const sanitizeColor = color => {

@@ -1,4 +1,4 @@
-import { commonPostMessage } from '../../../../common/src/utils/global';
+import { commonPostMessage } from '@codesandbox/common/lib/utils/global';
 import { FileSystemConfiguration } from '../../../../../../../../../../codesandbox-apps/codesandbox-browserfs';
 import { getTypeFetcher } from './type-downloader';
 import { EXTENSIONS_LOCATION } from '../../constants';

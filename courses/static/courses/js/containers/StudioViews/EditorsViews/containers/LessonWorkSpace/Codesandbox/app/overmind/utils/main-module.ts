@@ -1,5 +1,5 @@
-import { Sandbox } from '../../../common/src/types';
-import getDefinition from '../../../common/src/templates';
+import { Sandbox } from '@codesandbox/common/lib/types';
+import getDefinition from '@codesandbox/common/lib/templates';
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 
 export function mainModule(sandbox: Sandbox, parsedConfigurations: any) {

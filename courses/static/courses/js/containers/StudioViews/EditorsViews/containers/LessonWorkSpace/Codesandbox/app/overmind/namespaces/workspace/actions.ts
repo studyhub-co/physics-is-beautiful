@@ -1,6 +1,6 @@
-import getTemplate from '../../../../common/src/templates';
-import { CustomTemplate } from '../../../../common/src/types';
-import slugify from '../../../../common/src/utils/slugify';
+import getTemplate from '@codesandbox/common/lib/templates';
+import { CustomTemplate } from '@codesandbox/common/lib/types';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from '../../../../app/overmind';
 import { withOwnedSandbox } from '../../../../app/overmind/factories';
 

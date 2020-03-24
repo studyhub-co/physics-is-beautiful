@@ -1,7 +1,7 @@
 // @ts-check
-// import { notificationState } from '../../../../common/src/utils/notifications';
+// import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 // import { NotificationStatus } from '../../../../notifications';
-import { ViewConfig } from '../../../../common/src/templates/template';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 
 import { INITIAL_SERVER_STATE } from './state';
 

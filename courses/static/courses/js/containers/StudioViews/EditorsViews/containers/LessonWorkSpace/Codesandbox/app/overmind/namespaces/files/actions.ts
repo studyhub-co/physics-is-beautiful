@@ -1,6 +1,6 @@
-import { getModulePath } from '../../../../common/src/sandbox/modules';
-import getDefinition from '../../../../common/src/templates';
-import { ModuleTab } from '../../../../common/src/types';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import getDefinition from '@codesandbox/common/lib/templates';
+import { ModuleTab } from '@codesandbox/common/lib/types';
 import { AsyncAction } from '../../../../app/overmind';
 import { withOwnedSandbox } from '../../../../app/overmind/factories';
 import { createOptimisticModule } from '../../../../app/overmind/utils/common';

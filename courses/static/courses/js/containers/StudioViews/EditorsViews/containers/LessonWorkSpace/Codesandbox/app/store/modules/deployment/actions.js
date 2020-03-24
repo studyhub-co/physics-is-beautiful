@@ -1,6 +1,6 @@
 import { omit } from 'lodash-es';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
-import getTemplate from '../../../../common/src/templates';
+import getTemplate from '@codesandbox/common/lib/templates';
 import pollUntilDone from '../../utils/pollUntilDone';
 
 export function createZip({ utils, state }) {

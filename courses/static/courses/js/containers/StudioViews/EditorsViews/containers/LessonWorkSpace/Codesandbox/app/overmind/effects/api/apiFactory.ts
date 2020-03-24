@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
-import { logError } from '../../../../common/src/utils/analytics';
+import { logError } from '@codesandbox/common/lib/utils/analytics';
 import { values } from 'lodash-es';
 import { camelizeKeys, decamelizeKeys } from 'humps';
-import { Module } from '../../../../common/src/types';
+import { Module } from '@codesandbox/common/lib/types';
 
 export const API_ROOT = '/api/v1';
 

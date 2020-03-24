@@ -1,12 +1,12 @@
-import GithubBadge from '../../../common/src/components/GithubBadge';
-import Tooltip from '../../../common/src/components/Tooltip';
-import getTemplateDefinition from '../../../common/src/templates';
-import { getSandboxName } from '../../../common/src/utils/get-sandbox-name';
+import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import getTemplateDefinition from '@codesandbox/common/lib/templates';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import {
   githubRepoUrl,
   patronUrl,
   sandboxUrl,
-} from '../../../common/src/utils/url-generator';
+} from '@codesandbox/common/lib/utils/url-generator';
 import { PrivacyStatus } from '../../../app/components/PrivacyStatus';
 import { Stats } from '../../../app/pages/common/Stats';
 import React from 'react';

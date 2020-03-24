@@ -7,22 +7,22 @@ import * as fs from 'fs';
 import {
   getModulePath,
   resolveModule,
-} from '../../../../common/src/sandbox/modules';
+} from '@codesandbox/common/lib/sandbox/modules';
 import { listen, actions, dispatch } from 'codesandbox-api';
 
 import prettify from '../../../../app/utils/prettify';
-import DEFAULT_PRETTIER_CONFIG from '../../../../common/src/prettify-default-config';
-// import getUI from '../../../../common/src/templates/configuration/ui';
+import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
+// import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 
-import getTemplate from '../../../../common/src/templates';
-import theme from '../../../../common/src/theme';
+import getTemplate from '@codesandbox/common/lib/templates';
+import theme from '@codesandbox/common/lib/theme';
 import {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from '../../../../common/src/types';
-import { getTextOperation } from '../../../../common/src/utils/diff';
+} from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 
 /* eslint-disable import/no-webpack-loader-syntax, import/default */
 // @ts-ignore

@@ -1,12 +1,12 @@
 import { clone } from 'mobx-state-tree'
-import { getModulePath } from '../../../../common/src/sandbox/modules'
-import getDefinition from '../../../../common/src/templates'
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules'
+import getDefinition from '@codesandbox/common/lib/templates'
 import { chunk } from 'lodash-es'
 // import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text'
 // import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize'
-// import track from '@codesandbox/common/utils/analytics'
+// import track from '@codesandbox/common/lib/utils/analytics'
 // import { NotificationStatus } from '@codesandbox/notifications'
-// import { notificationState } from '@codesandbox/common/utils/notifications'
+// import { notificationState } from '@codesandbox/common/lib/utils/notifications'
 
 const MAX_FILE_SIZE = 5
 

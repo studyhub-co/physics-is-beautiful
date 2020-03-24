@@ -2,7 +2,7 @@ import { Provider } from 'cerebral';
 import {
   KEYBINDINGS,
   normalizeKey,
-} from '../../../common/src/utils/keybindings';
+} from '@codesandbox/common/lib/utils/keybindings';
 
 const isIOS =
   typeof navigator !== 'undefined' &&

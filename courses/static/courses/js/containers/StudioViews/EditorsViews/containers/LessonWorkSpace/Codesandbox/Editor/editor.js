@@ -9,9 +9,9 @@ import store from '../../../../../../../store/store'
 import { inject, observer } from '../app/componentConnectors'
 import styled, { ThemeProvider } from 'styled-components'
 import { templateColor } from '../app/utils/template-color'
-import Fullscreen from '../common/src/components/flex/Fullscreen'
-import getTemplateDefinition from '../common/src/templates'
-import codesandbox from '../common/src/themes/codesandbox.json'
+import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen'
+import getTemplateDefinition from '@codesandbox/common/lib/templates'
+import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json'
 
 import { MenuBar } from './MenuBar'
 

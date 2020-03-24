@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Button } from '../../../../common/src/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { PropertyValue } from '../elements';
 
 export const Container = styled.div`

@@ -1,5 +1,5 @@
 import { Socket } from 'phoenix';
-import _debug from '../../../../common/src/utils/debug';
+import _debug from '@codesandbox/common/lib/utils/debug';
 import uuid from 'uuid';
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
@@ -9,8 +9,8 @@ import {
   RoomInfo,
   LiveMessageEvent,
   Sandbox,
-} from '../../../../common/src/types';
-import { getTextOperation } from '../../../../common/src/utils/diff';
+} from '@codesandbox/common/lib/types';
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import clientsFactory from './clients';
 import { transformSandbox } from '../utils/sandbox';
 import { SandboxAPIResponse } from '../api/types';

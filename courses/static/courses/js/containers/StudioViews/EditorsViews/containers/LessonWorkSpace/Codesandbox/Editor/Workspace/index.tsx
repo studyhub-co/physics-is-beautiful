@@ -1,4 +1,4 @@
-// import VERSION from '../../../common/src/version';
+// import VERSION from '@codesandbox/common/lib/version';
 import React, { FunctionComponent } from 'react';
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line

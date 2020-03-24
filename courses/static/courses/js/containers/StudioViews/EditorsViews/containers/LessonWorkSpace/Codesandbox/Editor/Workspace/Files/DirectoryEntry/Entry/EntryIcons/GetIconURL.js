@@ -1,9 +1,9 @@
-import folderSvg from '../../../../../../common/src/components/icons/folder.svg'
-import folderOpenSvg from '../../../../../../common/src/components/icons/folder-open.svg'
-import fileSvg from '../../../../../../common/src/components/icons/file.svg'
-import imageSvg from '../../../../../../common/src/components/icons/image.svg'
-import codesandboxSvg from '../../../../../../common/src/components/icons/codesandbox.svg'
-import nowSvg from '../../../../../../common/src/components/icons/now.svg'
+import folderSvg from '@codesandbox/common/lib/components/icons/folder.svg'
+import folderOpenSvg from '@codesandbox/common/lib/components/icons/folder-open.svg'
+import fileSvg from '@codesandbox/common/lib/components/icons/file.svg'
+import imageSvg from '@codesandbox/common/lib/components/icons/image.svg'
+import codesandboxSvg from '@codesandbox/common/lib/components/icons/codesandbox.svg'
+import nowSvg from '@codesandbox/common/lib/components/icons/now.svg'
 
 function imageExists (url) {
   return new Promise((resolve, reject) => {

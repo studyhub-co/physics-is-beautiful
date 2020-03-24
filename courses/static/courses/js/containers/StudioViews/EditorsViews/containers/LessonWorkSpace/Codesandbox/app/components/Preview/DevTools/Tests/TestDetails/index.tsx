@@ -5,7 +5,7 @@ import * as React from 'react';
 import { MdInsertDriveFile as FileIcon } from 'react-icons/md';
 import { GoPlay as PlayIcon } from 'react-icons/go';
 
-import Tooltip from '../../../../../../common/src/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { File, Status } from '..';
 
 import { Action, TestName, TestTitle, Blocks, ErrorNotice } from './elements';

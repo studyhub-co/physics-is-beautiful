@@ -1,5 +1,5 @@
-import { getSandboxName } from '../../../common/src/utils/get-sandbox-name';
-import { ESC, ENTER } from '../../../common/src/utils/keycodes';
+import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
+import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import React, { FunctionComponent, useState } from 'react';
 
 import { useOvermind } from '../../../../app/overmind';

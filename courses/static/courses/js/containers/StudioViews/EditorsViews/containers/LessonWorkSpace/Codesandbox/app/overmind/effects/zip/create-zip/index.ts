@@ -1,14 +1,14 @@
 // import JSZip from 'jszip';
 // import { saveAs } from 'file-saver';
-// import { Sandbox, Module, Directory } from '../../../../common/src/types';
+// import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
 // import {
 //   react,
 //   reactTs,
 //   vue,
 //   preact,
 //   svelte,
-// } from '../../../../common/src/templates/index';
-// import { resolveModule } from '../../../../common/src/sandbox/modules';
+// } from '@codesandbox/common/lib/templates/index';
+// import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 //
 // export const BLOB_ID = 'blob-url://';
 //

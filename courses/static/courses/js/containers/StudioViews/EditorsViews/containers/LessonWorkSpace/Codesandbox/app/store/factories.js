@@ -1,11 +1,11 @@
 import { sequence, parallel } from 'cerebral'
 import { set, when } from 'cerebral/operators'
 import { state, props } from 'cerebral/tags'
-// import trackAnalytics from '@codesandbox/common/utils/analytics'
+// import trackAnalytics from '@codesandbox/common/lib/utils/analytics'
 import {
   // notificationState,
   convertTypeToStatus
-} from '@codesandbox/common/utils/notifications'
+} from '@codesandbox/common/lib/utils/notifications'
 import * as actions from './actions'
 // import { initializeNotifications } from './modules/user-notifications/sequences'
 import { setupCodeSandboxAPIListener } from './modules/server/actions'

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import getTemplate from '../../common/src/templates'
-// import { ALGOLIA_DEFAULT_INDEX } from '../../common/src/utils/config'
+import getTemplate from '@codesandbox/common/lib/templates'
+// import { ALGOLIA_DEFAULT_INDEX } from '@codesandbox/common/lib/utils/config'
 
 import { Container } from './elements'
 import Filter from './Filter'

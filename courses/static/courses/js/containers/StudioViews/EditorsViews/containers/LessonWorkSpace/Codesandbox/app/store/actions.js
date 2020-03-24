@@ -2,17 +2,17 @@ import axios from 'axios'
 import { client } from 'app/graphql/client'
 import { LIST_TEMPLATES } from 'app/pages/Dashboard/queries'
 
-import { generateFileFromSandbox } from '@codesandbox/common/templates/configuration/package-json'
-import { parseSandboxConfigurations } from '@codesandbox/common/templates/configuration/parse-sandbox-configurations'
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json'
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations'
 import track, {
   identify,
   setUserId
-} from '@codesandbox/common/utils/analytics'
+} from '@codesandbox/common/lib/utils/analytics'
 import {
   sandboxUrl,
   editorUrl
-} from '@codesandbox/common/utils/url-generator'
-import { notificationState } from '@codesandbox/common/utils/notifications'
+} from '@codesandbox/common/lib/utils/url-generator'
+import { notificationState } from '@codesandbox/common/lib/utils/notifications'
 import { NotificationStatus } from '@codesandbox/notifications'
 
 import { mainModule, defaultOpenedModule } from './utils/main-module'

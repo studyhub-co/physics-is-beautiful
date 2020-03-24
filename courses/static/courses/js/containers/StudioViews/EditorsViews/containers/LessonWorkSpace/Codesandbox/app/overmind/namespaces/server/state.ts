@@ -2,7 +2,7 @@ import {
   ServerStatus,
   ServerContainerStatus,
   ServerPort,
-} from '../../../../common/src/types';
+} from '@codesandbox/common/lib/types';
 
 type State = {
   status: ServerStatus;

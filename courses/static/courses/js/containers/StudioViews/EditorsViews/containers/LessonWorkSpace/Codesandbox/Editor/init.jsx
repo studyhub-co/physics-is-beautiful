@@ -21,7 +21,7 @@ import * as childProcess from '../node-services/lib/child_process'
 import {
   initializeSentry,
   // logError
-} from '../common/src/utils/analytics'
+} from '@codesandbox/common/lib/utils/analytics'
 
 if (process.env.NODE_ENV === 'production') {
   try {

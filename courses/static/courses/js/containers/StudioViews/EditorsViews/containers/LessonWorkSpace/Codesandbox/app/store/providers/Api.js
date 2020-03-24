@@ -1,7 +1,7 @@
-import track, { logError } from '@codesandbox/common/utils/analytics';
-import { notificationState } from '@codesandbox/common/utils/notifications';
+import track, { logError } from '@codesandbox/common/lib/utils/analytics';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
-import { patronUrl } from '@codesandbox/common/utils/url-generator';
+import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { values } from 'lodash-es';
 
 import { camelizeKeys, decamelizeKeys } from 'humps';

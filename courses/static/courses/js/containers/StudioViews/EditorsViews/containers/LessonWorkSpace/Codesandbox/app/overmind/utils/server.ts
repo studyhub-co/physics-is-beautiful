@@ -1,8 +1,8 @@
 // import {
 //   ViewConfig,
 //   ViewTab,
-// } from '../../common/src/templates/template';
-// import { DevToolsTabPosition } from '../../common/src/types';
+// } from '@codesandbox/common/lib/templates/template';
+// import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 //
 // // eslint-disable-next-line consistent-return
 // export function getDevToolsTabPosition({

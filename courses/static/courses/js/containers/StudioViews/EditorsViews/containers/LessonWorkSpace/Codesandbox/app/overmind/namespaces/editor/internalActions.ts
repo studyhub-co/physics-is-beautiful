@@ -6,15 +6,15 @@ import {
   TabType,
   ServerContainerStatus,
   Sandbox,
-} from '../../../../common/src//types';
-import getTemplateDefinition from '../../../../common/src//templates';
+} from '@codesandbox/common/lib//types';
+import getTemplateDefinition from '@codesandbox/common/lib//templates';
 // import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { sortObjectByKeys } from '../../../../app/overmind/utils/common';
-import slugify from '../../../../common/src/utils/slugify';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
   sandboxUrl,
   editorUrl,
-} from '../../../../common/src/utils/url-generator';
+} from '@codesandbox/common/lib/utils/url-generator';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {

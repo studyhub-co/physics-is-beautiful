@@ -1,7 +1,7 @@
-import * as templates from '../../../../../common/src/templates';
-import getIcon from '../../../../../common/src/templates/icons';
+import * as templates from '@codesandbox/common/lib/templates';
+import getIcon from '@codesandbox/common/lib/templates/icons';
 // import { ColorIcons as Icons } from '../../../../../../../../../../../codesandbox-apps/template-icons';
-import { ColorIcons as Icons } from '../../../../../common/src/template-icons';
+import { ColorIcons as Icons } from '@codesandbox/common/lib/template-icons';
 import React, { FunctionComponent, useState } from 'react';
 import { usePopoverState } from 'reakit/Popover';
 

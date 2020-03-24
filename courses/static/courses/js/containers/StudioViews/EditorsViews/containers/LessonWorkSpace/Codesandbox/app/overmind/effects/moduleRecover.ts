@@ -1,4 +1,4 @@
-import { Module } from '../../../common/src/types';
+import { Module } from '@codesandbox/common/lib/types';
 
 const getKey = (id, moduleShortid) => `recover:${id}:${moduleShortid}:code`;
 

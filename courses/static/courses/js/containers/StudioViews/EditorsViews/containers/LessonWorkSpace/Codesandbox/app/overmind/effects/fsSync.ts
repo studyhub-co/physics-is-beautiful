@@ -1,6 +1,6 @@
-import { getAbsoluteDependencies } from '../../../common/src/utils/dependencies';
-import { getGlobal } from '../../../common/src/utils/global';
-import { protocolAndHost } from '../../../common/src/utils/url-generator';
+import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
+import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { json } from 'overmind';
 
 const global = getGlobal() as Window & { BrowserFS: any };

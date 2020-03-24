@@ -63,8 +63,12 @@ urlpatterns = [
 
 if settings.DEBUG:
     import debug_toolbar
+    from django.views.generic import RedirectView
+
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),
+        url(r'^favicon.ico$',
+            RedirectView.as_view(url='/static/curricula/images/favicon/favicon.ico')),
     ] + urlpatterns
 
 

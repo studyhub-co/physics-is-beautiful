@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '../../../../common/src/components/Button';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { FontPicker } from './FontPicker/index';
 import { Container } from './elements';
 

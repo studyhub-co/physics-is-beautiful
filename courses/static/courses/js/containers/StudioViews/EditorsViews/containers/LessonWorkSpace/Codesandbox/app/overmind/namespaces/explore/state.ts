@@ -3,7 +3,7 @@ import {
   PopularSandboxes,
   PickedSandboxes,
   PickedSandboxDetails,
-} from '../../../../common/src//types';
+} from '@codesandbox/common/lib//types';
 
 type State = {
   pickedSandboxesIndexes: string[];

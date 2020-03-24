@@ -1,4 +1,4 @@
-import { sandboxUrl } from '@codesandbox/common/utils/url-generator';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 export function saveSandboxPrivacy({ api, state, props }) {
   const id = state.get('editor.currentId');

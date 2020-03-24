@@ -4,8 +4,8 @@ import {
   Sandbox,
   ZeitDeployment,
   ZeitConfig,
-} from '@codesandbox/common/types';
-import getTemplate from '@codesandbox/common/templates';
+} from '@codesandbox/common/lib/types';
+import getTemplate from '@codesandbox/common/lib/templates';
 import { omit } from 'lodash-es';
 
 type Options = {

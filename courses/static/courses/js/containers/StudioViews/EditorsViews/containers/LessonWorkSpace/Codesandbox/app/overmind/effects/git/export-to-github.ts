@@ -1,5 +1,5 @@
 // TODO we can need this
-// import { Sandbox } from '../../../../common/src/types';
+// import { Sandbox } from '@codesandbox/common/lib/types';
 // import JSZip from 'jszip';
 // import { createZip, BLOB_ID } from '../zip/create-zip';
 //

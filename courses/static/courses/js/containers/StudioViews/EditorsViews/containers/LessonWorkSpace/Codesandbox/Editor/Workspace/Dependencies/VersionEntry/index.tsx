@@ -10,8 +10,8 @@ import { MdRefresh as RefreshIcon } from 'react-icons/md';
 // import ArrowDropUp from 'react-icons/lib/md/keyboard-arrow-up';
 import algoliasearch from 'algoliasearch/lite';
 import compareVersions from 'compare-versions';
-import Tooltip from '../../../../common/src/components/Tooltip';
-import { CSB_PKG_PROTOCOL } from '../../../../common/src/utils/ci';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';

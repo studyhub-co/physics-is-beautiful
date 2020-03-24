@@ -1,4 +1,4 @@
-import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '../../common/src/templates/configuration/package-json';
+import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import {
   ModuleTab,
   NotificationButton,
@@ -6,8 +6,8 @@ import {
   ServerContainerStatus,
   ServerStatus,
   TabType,
-} from '../../common/src/types';
-import { identify, setUserId } from '../../common/src/utils/analytics';
+} from '@codesandbox/common/lib/types';
+import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
 
 import { createOptimisticModule } from './utils/common';
 import getItems from './utils/items';

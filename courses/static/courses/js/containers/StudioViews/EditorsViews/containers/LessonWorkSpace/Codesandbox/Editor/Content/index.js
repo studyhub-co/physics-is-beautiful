@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import { Prompt } from 'react-router-dom'
 import { TextOperation } from 'ot'
 import { inject, observer, clone } from '../../app/componentConnectors'
-import getTemplateDefinition from '../../common/src/templates'
+import getTemplateDefinition from '@codesandbox/common/lib/templates'
 import SplitPane from 'react-split-pane'
 
 import { CodeEditor } from '../../app/components/CodeEditor'

@@ -6,7 +6,7 @@ import {
   Settings,
   ModuleTab,
   DiffTab,
-} from '../../common/src/types';
+} from '@codesandbox/common/lib/types';
 
 export interface Editor {
   changeSandbox?: (

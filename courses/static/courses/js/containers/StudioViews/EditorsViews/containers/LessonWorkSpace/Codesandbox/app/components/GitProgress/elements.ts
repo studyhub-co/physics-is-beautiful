@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from 'styled-components';
-import delayInEffect from '../../../common/src/utils/animation/delay-effect';
+import delayInEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 import { OpaqueLogo as BaseOpaqueLogo } from '../../../app/components/OpaqueLogo';
 import { GitHubLogo as BaseGitHubLogo } from '../../../app/components/GitHubLogo';
 import { Cube as BaseCube } from '../Cube';

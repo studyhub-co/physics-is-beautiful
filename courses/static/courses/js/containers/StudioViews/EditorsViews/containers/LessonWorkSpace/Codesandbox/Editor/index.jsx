@@ -5,7 +5,7 @@ import { Provider as ActualOvermindProvider } from 'overmind-react'
 import { Provider as OvermindProvider } from '../app/overmind/Provider'
 
 import Modals from '../Modals'
-import theme from '../common/src/theme'
+import theme from '@codesandbox/common/lib/theme'
 import Editor from './editor'
 import { initialize } from './init'
 

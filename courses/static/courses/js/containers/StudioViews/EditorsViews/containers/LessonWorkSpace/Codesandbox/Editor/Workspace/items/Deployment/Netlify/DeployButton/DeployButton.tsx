@@ -1,4 +1,4 @@
-// import track from '../../../../../common/src/utils/analytics';
+// import track from '@codesandbox/common/lib/utils/analytics';
 import React, { FunctionComponent } from 'react';
 
 import { DeploymentIntegration } from '../../../../../../app/components/DeploymentIntegration';

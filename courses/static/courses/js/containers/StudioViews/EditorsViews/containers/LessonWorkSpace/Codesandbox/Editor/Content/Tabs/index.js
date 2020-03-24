@@ -2,7 +2,7 @@ import React from 'react'
 import { inject, observer } from '../../../app/componentConnectors'
 
 // import { canPrettify } from '../../../app/utils/prettify';
-import Tooltip from '../../../common/src/components/Tooltip'
+import Tooltip from '@codesandbox/common/lib/components/Tooltip'
 
 import TabContainer from './TabContainer'
 import PreviewIcon from './PreviewIcon'

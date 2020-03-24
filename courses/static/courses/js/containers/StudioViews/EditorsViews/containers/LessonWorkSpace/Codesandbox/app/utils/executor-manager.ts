@@ -4,10 +4,10 @@ import {
   SandboxExecutor,
 } from '../../executors';
 import { IFiles } from '../../executors/executor';
-import { Sandbox } from '../../common/src/types';
-import getDefinition from '../../common/src/templates';
-import { getModulePath } from '../../common/src/sandbox/modules';
-import { generateFileFromSandbox } from '../../common/src/templates/configuration/package-json';
+import { Sandbox } from '@codesandbox/common/lib/types';
+import getDefinition from '@codesandbox/common/lib/templates';
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 
 function getExecutorType(isServer: boolean) {
   // if (isServer) {

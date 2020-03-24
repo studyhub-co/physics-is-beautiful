@@ -1,4 +1,4 @@
-import { Sandbox } from '../../../../common/src/types';
+import { Sandbox } from '@codesandbox/common/lib/types';
 
 export default {
   create(sandbox: Sandbox) {

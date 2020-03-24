@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { messages } from '../../../../../common/src/utils/jest-lite';
+import { messages } from '@codesandbox/common/lib/utils/jest-lite';
 import { actions, dispatch, listen } from 'codesandbox-api';
 import immer from 'immer';
 import { debounce } from 'lodash-es';

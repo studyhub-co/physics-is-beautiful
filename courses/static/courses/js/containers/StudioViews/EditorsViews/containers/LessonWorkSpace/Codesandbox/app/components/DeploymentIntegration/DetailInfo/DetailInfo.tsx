@@ -1,6 +1,6 @@
 import React from 'react';
-import Margin from '../../../../common/src/components/spacing/Margin';
-import { Button } from '../../../../common/src/components/Button';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import { Button } from '@codesandbox/common/lib/components/Button';
 import { Details, Info } from './elements';
 
 interface IDetailInfoProps {

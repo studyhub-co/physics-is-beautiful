@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 // import FullHeartIcon from 'react-icons/lib/fa/heart';
 // import EyeIcon from 'react-icons/lib/fa/eye';
 // import ForkIcon from 'react-icons/lib/go/repo-forked';
-import { sandboxUrl } from '../../../common/src/utils/url-generator';
-import getIcon from '../../../common/src/templates/icons';
-import { SmallSandbox } from '../../common/src/types';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import getIcon from '@codesandbox/common/lib/templates/icons';
+import { SmallSandbox } from '@codesandbox/common/lib/types';
 import { DeleteSandboxButton } from '../DeleteSandboxButton';
 import { PrivacyStatus } from '../PrivacyStatus';
 import {

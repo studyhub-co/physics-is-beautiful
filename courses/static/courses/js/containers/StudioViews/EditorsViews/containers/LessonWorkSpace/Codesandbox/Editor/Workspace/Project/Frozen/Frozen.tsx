@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
-import Switch from '../../../../common/src/components/Switch';
-import Tooltip from '../../../../common/src/components/Tooltip';
+import Switch from '@codesandbox/common/lib/components/Switch';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { useOvermind } from '../../../../app/overmind';
 import { Item, PropertyValue, PropertyName, Icon } from '../elements';
 import { FreezeContainer, FrozenWarning } from './elements';

@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+SITE_ID = 1
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -212,7 +213,18 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'courses', 'sandbox-eval-project', 'www'),
 )
 
-SITE_ID = 1
+STATICFILES_FINDERS = [
+    # by default
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'npm.finders.NpmFinder'
+]
+
+NPM_ROOT_PATH = BASE_DIR
+NPM_STATIC_FILES_PREFIX = os.path.join('js', 'npm')
+NPM_FILE_PATTERNS = {
+    os.path.join('@vermus', 'django-react-djeddit-client'): [os.path.join('dist', '*')]
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = 'Physics is Beautiful <no-reply@physicsisbeautiful.com>'
@@ -250,20 +262,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
-}
-
-STATICFILES_FINDERS = [
-    # by default
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'npm.finders.NpmFinder'
-    # 'piblib.finders.NpmFinder'
-]
-
-NPM_ROOT_PATH = BASE_DIR
-NPM_STATIC_FILES_PREFIX = os.path.join('js', 'npm')
-NPM_FILE_PATTERNS = {
-    os.path.join('@vermus', 'django-react-djeddit-client'): [os.path.join('dist', '*')]
 }
 
 WEBPACK_LOADER = {

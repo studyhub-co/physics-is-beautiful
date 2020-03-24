@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Spring } from 'react-spring/renderprops';
-import Portal from '../../../common/src/components/Portal';
+import Portal from '@codesandbox/common/lib/components/Portal';
 
-import { ENTER } from '../../../common/src/utils/keycodes';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 import { Container, Item, ItemContainer } from './elements';
 

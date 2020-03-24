@@ -1,7 +1,7 @@
 import {
   resolveModule,
   resolveDirectory,
-} from '@codesandbox/common/sandbox/modules';
+} from '@codesandbox/common/lib/sandbox/modules';
 
 export const resolveModuleWrapped = sandbox => (path: string) => {
   try {

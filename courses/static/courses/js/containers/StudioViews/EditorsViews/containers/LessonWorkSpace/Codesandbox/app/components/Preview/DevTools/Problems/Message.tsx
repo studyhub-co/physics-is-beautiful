@@ -10,7 +10,7 @@ import { MdInfo as NoticeIcon } from 'react-icons/md';
 import { MdError as ErrorIcon } from 'react-icons/md';
 import { MdWarning as WarningIcon } from 'react-icons/md';
 
-import theme from '../../../../../common/src/theme';
+import theme from '@codesandbox/common/lib/theme';
 import {
   MessageContainer,
   MessageIconContainer,

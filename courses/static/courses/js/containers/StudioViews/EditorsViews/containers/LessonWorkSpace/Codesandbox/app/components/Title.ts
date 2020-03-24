@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import delayEffect from '../../common/src/utils/animation/delay-effect';
+import delayEffect from '@codesandbox/common/lib/utils/animation/delay-effect';
 
 export const Title = styled.h1<{ delay?: number | null }>`
   ${({ delay = 0 }) => css`

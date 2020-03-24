@@ -1,4 +1,4 @@
-import { STRIPE_API_KEY } from '../../../common/src/utils/config';
+import { STRIPE_API_KEY } from '@codesandbox/common/lib/utils/config';
 
 function loadScript(path: string) {
   return new Promise(resolve => {

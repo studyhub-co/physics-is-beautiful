@@ -1,4 +1,4 @@
-import { ESC } from '../../../common/src/utils/keycodes';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import React, { FunctionComponent, useState } from 'react';
 
 import { useOvermind } from '../../../../app/overmind';

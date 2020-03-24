@@ -1,14 +1,14 @@
 import { dirname } from 'path';
 import immer from 'immer';
-import { generateFileFromSandbox } from '../../../../common/src/templates/configuration/package-json';
-import { parseSandboxConfigurations } from '../../../../common/src/templates/configuration/parse-sandbox-configurations';
-import getTemplate from '../../../../common/src/templates';
-import { getPreviewTabs } from '../../../../common/src/templates/devtools';
-import { getSandboxOptions } from '../../../../common/src/url';
+import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { parseSandboxConfigurations } from '@codesandbox/common/lib/templates/configuration/parse-sandbox-configurations';
+import getTemplate from '@codesandbox/common/lib/templates';
+import { getPreviewTabs } from '@codesandbox/common/lib/templates/devtools';
+import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import {
   getModulePath,
   getDirectoryPath,
-} from '@codesandbox/common/sandbox/modules';
+} from '@codesandbox/common/lib/sandbox/modules';
 import { mainModule as getMainModule } from '../../utils/main-module';
 
 export function currentSandbox() {

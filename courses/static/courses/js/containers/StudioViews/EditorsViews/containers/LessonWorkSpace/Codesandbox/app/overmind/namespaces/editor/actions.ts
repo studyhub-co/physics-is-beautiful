@@ -1,12 +1,12 @@
-import { resolveModule } from '../../../../common/src//sandbox/modules';
-// import { getHashedUserId } from '../../../../common/src//utils/analytics';
+import { resolveModule } from '@codesandbox/common/lib//sandbox/modules';
+// import { getHashedUserId } from '@codesandbox/common/lib//utils/analytics';
 import {
   EnvironmentVariable,
   ModuleCorrection,
   ModuleError,
   ModuleTab,
   WindowOrientation,
-} from '../../../../common/src//types';
+} from '@codesandbox/common/lib//types';
 import { Action, AsyncAction } from '../../../../app/overmind';
 import { withLoadApp, withOwnedSandbox } from '../../../../app/overmind/factories';
 import { sortObjectByKeys } from '../../../../app/overmind/utils/common';

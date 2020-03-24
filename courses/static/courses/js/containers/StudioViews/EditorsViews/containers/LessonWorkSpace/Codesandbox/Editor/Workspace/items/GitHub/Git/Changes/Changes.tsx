@@ -1,4 +1,4 @@
-import Tooltip from '../../../common/src/components/Tooltip';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import React from 'react';
 
 import { ChangeContainer, Entry } from './elements';

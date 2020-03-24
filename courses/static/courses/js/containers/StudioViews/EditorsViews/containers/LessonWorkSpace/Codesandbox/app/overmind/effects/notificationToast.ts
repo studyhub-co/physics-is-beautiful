@@ -1,7 +1,7 @@
 import {
   notificationState,
   convertTypeToStatus,
-} from '../../../common/src/utils/notifications';
+} from '@codesandbox/common/lib/utils/notifications';
 import {
   NotificationMessage,
   NotificationStatus,

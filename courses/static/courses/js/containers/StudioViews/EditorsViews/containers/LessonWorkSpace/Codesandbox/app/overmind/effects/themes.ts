@@ -1,3 +1,3 @@
-import themes from '../../../common/src/themes';
+import themes from '@codesandbox/common/lib/themes';
 
 export default themes;
