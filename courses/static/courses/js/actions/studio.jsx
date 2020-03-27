@@ -7,7 +7,7 @@ import history from '../history'
 // import { validateQuantityUnit, splitQuantityUnit
 // } from '../utils/units'
 
-// TODO replace all $.ajax with request
+// TODO replace all $.ajax with axios
 import request from '../utils/request'
 import {
   checkHttpError,

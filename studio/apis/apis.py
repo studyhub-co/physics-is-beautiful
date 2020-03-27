@@ -211,6 +211,7 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin, SeparateListObjectSer
                                        Q(lesson__module__unit__course__collaborators=self.request.user.profile)).\
                                 distinct()
 
+from rest_framework.parsers import MultiPartParser, JSONParser
 
 # class MaterialProblemTypeViewSet(ModelViewSet):
 class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
@@ -219,6 +220,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
                                  # MaterialTypeModulesMixin,
                                  viewsets.GenericViewSet,
                                  ):
+    parser_classes = [MultiPartParser, JSONParser]
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMaterialProblemTypeAuthor)
     pagination_class = StandardResultsSetPagination
     serializer_class = MaterialProblemTypeSerializer

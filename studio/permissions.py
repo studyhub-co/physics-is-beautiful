@@ -66,7 +66,7 @@ class IsMaterialProblemTypeAuthor(IsOwnerOrCollaboratorBase):
 
     # only author can change
     def has_object_permission(self, request, view, obj):
-        if request.method not in ('POST', 'PUT', 'PATCH'):
+        if request.method not in ('POST', 'PUT', 'PATCH') or request.user.is_superuser:
             return True
 
         if not hasattr(request.user, 'profile'):

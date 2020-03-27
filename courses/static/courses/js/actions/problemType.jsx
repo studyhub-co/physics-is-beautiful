@@ -49,3 +49,17 @@ export function resetProblemTypes () {
     dispatch(receiveProblemPaginatedListObject(null))
   }
 }
+
+export function updateProblemTypeImage (problemType, canvas) {
+  return (dispatch, state) => {
+    let data = new window.FormData()
+    canvas.toBlob(function (blob) {
+      data.append('screenshot_url', blob, 'screenshot.png')
+      getAxios().patch(`${API_PREFIX}${problemType.uuid}/`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    })
+  }
+}

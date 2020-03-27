@@ -9,6 +9,7 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Edit from '@material-ui/icons/Edit'
 import Slideshow from '@material-ui/icons/Slideshow'
+import html2canvas from 'html2canvas'
 
 // import loadable from '../../../../../utils/loadable.jsx'
 
@@ -22,6 +23,10 @@ import {
   addMaterial,
   moveMaterial
 } from '../../../../../actions/studio'
+
+import {
+  updateProblemTypeImage
+} from '../../../../../actions/problemType'
 
 import { DockableDropTarget, DragItemTypes } from '../../../../../dnd'
 
@@ -127,25 +132,27 @@ export class Lesson extends React.Component {
      } else { return '' }
    }
 
-   onLoadIframe = (e) => {
+   onLoadIframe = (e, mpt) => {
+     // let iframeDoc = this.frameRef
+     let iframeDoc = this.frameRef.contentWindow.document
      // callback executed when canvas was found
+
+     const onUpdateProblemTypeImage = this.props.onUpdateProblemTypeImage
+
      function handleRoot (root) {
-       console.log(root);
-       console.log(root);
-       console.log(root);
+       // get screenshot of iframe
+       setTimeout(function () {
+         // console.log('get screenshot')
+         html2canvas(iframeDoc.body).then(function (canvas) {
+           onUpdateProblemTypeImage(canvas, mpt)
+         })
+       }, 2000)
      }
 
-     console.log(e)
-     console.log(e)
-     console.log(e)
-
-     let iframeDoc = this.frameRef
-
      // set up the mutation observer
-     var observer = new MutationObserver(function (mutations, me) {
+     var observer = new window.MutationObserver(function (mutations, me) {
        // `mutations` is an array of mutations that occurred
        // `me` is the MutationObserver instance
-       console.log(mutations);
        let root = iframeDoc.getElementById('root')
        if (root) {
          handleRoot(root)
@@ -158,21 +165,13 @@ export class Lesson extends React.Component {
        childList: true,
        subtree: true
      })
-     // var checkRootExist = setInterval(function () {
-     //   let root = this.frameRef.getElementById('root')
-     //   if (root) {
-     //     console.log('todo make screenshot!')
-     //     clearInterval(checkRootExist)
-     //   }
-     // }, 100) // check every 100ms
-     //
-     // checkRootExist()
    }
 
    setFrameRef = node =>
      (this.frameRef =
         ((!node || !node.contentWindow) && null) ||
-         node.contentWindow.document
+         node // we want a reference to an iframe
+         // node.contentWindow.document // not data copy
      )
 
    render () {
@@ -341,7 +340,7 @@ export class Lesson extends React.Component {
                {this.currentMaterialHasType() &&
                <StyledIframe
                  ref={this.setFrameRef}
-                 onLoad={this.onLoadIframe}
+                 onLoad={e => this.onLoadIframe(e, this.props.currentMaterial.material_problem_type)}
                  src={this.mptEvalUrl(this.props.currentMaterial.material_problem_type)}/>
                }
              </div>
@@ -376,6 +375,7 @@ Lesson.propTypes = {
   onDeleteClick: PropTypes.func.isRequired,
   onAddMaterialClick: PropTypes.func.isRequired,
   moveMaterial: PropTypes.func.isRequired,
+  onUpdateProblemTypeImage: PropTypes.func.isRequired,
   image: PropTypes.string,
   name: PropTypes.string,
   materials: PropTypes.array,
@@ -432,6 +432,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
   return {
+    onUpdateProblemTypeImage: (canvas, pt) =>
+      dispatch(updateProblemTypeImage(pt, canvas)),
     onImageChange: image => dispatch(changeLessonImage(uuid, image)),
     onNameChange: name => dispatch(renameLesson(uuid, name)),
     onDeleteClick: () => dispatch(deleteLesson(uuid)),
