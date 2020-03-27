@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
 
 from django.db import connection
-# from django.apps import AppConfig
-from django.contrib.staticfiles.apps import StaticFilesConfig
+from django.apps import AppConfig
+# from django.contrib.staticfiles.apps import StaticFilesConfig
 
 
-class CoursesConfig(StaticFilesConfig):
+# class CoursesConfig(StaticFilesConfig):
+class CoursesConfig(AppConfig):
     name = 'courses'
 
     # # ignore node_modules folders

@@ -38,7 +38,7 @@ class Material(BaseItemModel):
     material_problem_type = models.ForeignKey(
         MaterialProblemType, related_name='materials', on_delete=models.CASCADE,
         null=True, blank=True  # we can create empty Material w/o type selected
-                                              )
+    )
     # this is a data that uses by material_problem_type
     data = JSONField(default=dict)  # only Postgresql support!
 

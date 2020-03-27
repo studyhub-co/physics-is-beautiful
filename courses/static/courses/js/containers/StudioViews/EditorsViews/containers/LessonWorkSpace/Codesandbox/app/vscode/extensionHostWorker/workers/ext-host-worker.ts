@@ -40,7 +40,7 @@ self.addEventListener('message', async e => {
         },
       });
       debug('Initialized BrowserFS', data.data.env);
-      console.log('Initialized BrowserFS from ext end', data.data.env);
+      // console.log('Initialized BrowserFS from ext end', data.data.env);
 
       const process = ctx.BrowserFS.BFSRequire('process');
       process.cwd = () => data.data.cwd || '/sandbox';

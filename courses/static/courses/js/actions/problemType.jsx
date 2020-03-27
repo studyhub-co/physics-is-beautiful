@@ -59,6 +59,8 @@ export function updateProblemTypeImage (problemType, canvas) {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
+      }).catch(error => {
+        console.log(error.response)
       })
     })
   }

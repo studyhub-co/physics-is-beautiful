@@ -10,7 +10,7 @@ from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionSt
     MathConversionWidget
 
 from .models import (
-    Course, Unit, Module, Lesson, Material, MySQL
+    Course, Unit, Module, Lesson, Material, MySQL, MaterialProblemType
 )
 
 from pint import UnitRegistry
@@ -23,8 +23,6 @@ admin.AdminSite.site_title = admin.AdminSite.site_header
 def link_to_obj(name):
     def link(obj):
         return format_html('<a href="{}">{}</a>', obj.get_admin_url(), str(obj))
-        # return '<a href="{}">{}</a>'.format(obj.get_admin_url(), str(obj))
-    # link.allow_tags = True  # depricated
     link.short_description = name
     return link
 
@@ -34,8 +32,6 @@ def link_to_field(field_name):
     def link(obj):
         field = getattr(obj, field_name)
         return format_html('<a href="{}">{}</a>', field.get_admin_url(), escape(field))
-        # return '<a href="{}">{}</a>'.format(field.get_admin_url(), escape(field))
-    # link.allow_tags = True  # depricated
     link.short_description = field_name
     return link
 
@@ -106,35 +102,6 @@ class LessonInline(NestedTabularInline):
              'all': ("courses/admin/css/custom_admin.css",)
         }
 
-# class SpecialAnswerFormMixin(object):
-#
-#     def __init__(self, *args, **kwargs):
-#         super(SpecialAnswerFormMixin, self).__init__(*args, **kwargs)
-#         if self.instance.id:
-#             for field in self.FIELDS:
-#                 self.initial[field] = getattr(self.instance.content, field)
-#
-#     def save(self, commit=True):
-#         """
-#         Overriding save to create Answer sub-object.
-#
-#         NOTE: We ignore the commit flag.
-#         """
-#         instance = super(SpecialAnswerFormMixin, self).save(commit=False)
-#         if not instance.id and instance.material:
-#             instance.position = instance.material.answers.count()
-#         if not instance.object_id:
-#             kwargs = {field: self.cleaned_data[field] for field in self.FIELDS}
-#             content = self.SPECIAL_MODEL(**kwargs)
-#         else:
-#             content = self.instance.content
-#             for field in self.FIELDS:
-#                 setattr(content, field, self.cleaned_data[field])
-#         content.save()
-#         instance.content = content
-#         instance.save()
-#         return instance
-#
 # class MySQLAnswerForm(SpecialAnswerFormMixin, forms.ModelForm):
 #
 #     FIELDS = ['']
@@ -270,9 +237,10 @@ class MaterialAdmin(NestedModelAdmin):
         # MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline, TextAnswerInline
     ]
     fields = [
-        'lesson', _backlink_to_lesson, 'text',
-        'hint', 'image', 'answer_type'  # 'material_type', 'published_on','position'
+        'lesson', _backlink_to_lesson, 'material_workflow_type', 'material_problem_type',
+        'position', 'data', 'author'
     ]
+    autocomplete_fields = ['author', 'material_problem_type']
     readonly_fields = [_backlink_to_lesson]  # , 'position'
     inline_map = {
         # material.AnswerType.VECTOR: [VectorAnswerInline],
@@ -288,46 +256,60 @@ class MaterialAdmin(NestedModelAdmin):
         # material.AnswerType.MYSQL: [MySQLAnswerInline]
     }
 
-    def response_change(self, request, obj):
-        if "_continue" in request.POST:
-            from urllib import parse
-            request.path += '?' + parse.urlencode(request.GET)
-        return super(MaterialAdmin, self).response_change(request, obj)
+    # def response_change(self, request, obj):
+    #     if "_continue" in request.POST:
+    #         from urllib import parse
+    #         request.path += '?' + parse.urlencode(request.GET)
+    #     return super(MaterialAdmin, self).response_change(request, obj)
+    #
+    # def get_inline_instances(self, request, obj=None):
+    #     inline_classes = []
+    #     if obj:
+    #         db_instance = obj.instance_from_db()
+    #         if db_instance.answer_type == obj.answer_type:
+    #             inlines = self.inline_map.get(obj.answer_type, [])
+    #             for inline in inlines:
+    #                 if inline and inline not in inline_classes:
+    #                     inline_classes.append(inline)
+    #     return filter(
+    #         lambda i: inline_classes and isinstance(i, tuple(inline_classes)),
+    #         super(MaterialAdmin, self).get_inline_instances(request)
+    #     )
+    #
+    # def get_formsets(self, request, obj=None):
+    #     for inline in self.get_inline_instances(request, obj):
+    #         yield inline.get_formset(request, obj)
+    #
+    # def _create_formsets(self, request, obj, change):
+    #     formsets, inline_instances = super(MaterialAdmin, self)._create_formsets(request, obj, change)
+    #
+    #     if request.method == 'POST':
+    #         if obj.answer_type == 100:  # multiple choice
+    #             count_of_answers = 0
+    #             if len(formsets) > 0:
+    #                 if hasattr(formsets[0], 'cleaned_data'):
+    #                     for cleaned_data_formset in formsets[0].cleaned_data:
+    #                         if 'is_correct' in cleaned_data_formset and cleaned_data_formset['is_correct'] and not cleaned_data_formset['DELETE']:
+    #                             count_of_answers += 1
+    #
+    #                 if count_of_answers != 1:
+    #                     formsets[0]._non_form_errors = ("This material type allows only one correct answer")
+    #
+    #     return formsets, inline_instances
 
-    def get_inline_instances(self, request, obj=None):
-        inline_classes = []
-        if obj:
-            db_instance = obj.instance_from_db()
-            if db_instance.answer_type == obj.answer_type:
-                inlines = self.inline_map.get(obj.answer_type, [])
-                for inline in inlines:
-                    if inline and inline not in inline_classes:
-                        inline_classes.append(inline)
-        return filter(
-            lambda i: inline_classes and isinstance(i, tuple(inline_classes)),
-            super(MaterialAdmin, self).get_inline_instances(request)
-        )
 
-    def get_formsets(self, request, obj=None):
-        for inline in self.get_inline_instances(request, obj):
-            yield inline.get_formset(request, obj)
+# class ModuleAdmin(NestedModelAdmin):
+#
+#     inlines = [LessonInline]
+#     fields = ['unit', _backlink_to_material, 'name', 'image']  # 'published_on', 'position'
+#     readonly_fields = [_backlink_to_material]
+#
+#
+# _backlink_to_material = link_to_field('material')
 
-    def _create_formsets(self, request, obj, change):
-        formsets, inline_instances = super(MaterialAdmin, self)._create_formsets(request, obj, change)
-
-        if request.method == 'POST':
-            if obj.answer_type == 100:  # multiple choice
-                count_of_answers = 0
-                if len(formsets) > 0:
-                    if hasattr(formsets[0], 'cleaned_data'):
-                        for cleaned_data_formset in formsets[0].cleaned_data:
-                            if 'is_correct' in cleaned_data_formset and cleaned_data_formset['is_correct'] and not cleaned_data_formset['DELETE']:
-                                count_of_answers += 1
-
-                    if count_of_answers != 1:
-                        formsets[0]._non_form_errors = ("This material type allows only one correct answer")
-
-        return formsets, inline_instances
+class MaterialProblemTypeAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+    autocomplete_fields = ['author', 'last_edit_user']
 
 
 admin.site.register(Course, CourseAdmin)
@@ -335,3 +317,5 @@ admin.site.register(Unit, UnitAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Material, MaterialAdmin)
+admin.site.register(MaterialProblemType, MaterialProblemTypeAdmin)
+
