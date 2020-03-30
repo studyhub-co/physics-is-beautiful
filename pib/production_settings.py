@@ -49,12 +49,13 @@ AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
     'Cache-Control': 'max-age=94608000',
 }
 
-RAVEN_CONFIG = {
-    'dsn': os.getenv('RAVEN_DSN'),
-    # If you are using git, you can also automatically configure the
-    # release based on the git info.
-    # 'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
-}
+# depicated
+# RAVEN_CONFIG = {
+#     'dsn': os.getenv('RAVEN_DSN'),
+#     # If you are using git, you can also automatically configure the
+#     # release based on the git info.
+#     # 'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+# }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = bool(os.getenv('SESSION_COOKIE_SECURE', True))
