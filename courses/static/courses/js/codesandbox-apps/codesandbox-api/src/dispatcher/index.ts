@@ -48,6 +48,12 @@ export function resetState() {
 export function dispatch(message: any) {
   if (!message) return;
 
+  // if (message.hasOwnProperty('type')) {
+  //   if (message.type==='pib_edit_mode') {
+  //     console.log('pib_edit_mode message');
+  //   }
+  // }
+
   const newMessage = { ...message, codesandbox: true };
   notifyListeners(newMessage);
   notifyFrames(newMessage);
@@ -95,6 +101,10 @@ export function notifyListeners(data: object, source?: MessageEvent['source']) {
 }
 
 function notifyFrames(message: object) {
+
+  // console.log(message);
+  // console.log(bundlers);
+
   const rawMessage = JSON.parse(JSON.stringify(message));
   bundlers.forEach((origin, frame) => {
     if (frame && frame.postMessage) {
@@ -106,13 +116,9 @@ function notifyFrames(message: object) {
 function eventListener(e: MessageEvent) {
   const { data } = e;
 
-  // console.log('notifyListeners');
-  // console.log(parentOrigin);
-  // console.log(data);
-
   if (data && data.codesandbox && (parentOrigin === null || e.origin === parentOrigin)) {
-    
-    // console.log('notifyListeners');
+    //
+    // console.log(e);
     // console.log(window.location.href);
     
     notifyListeners(data, e.source);

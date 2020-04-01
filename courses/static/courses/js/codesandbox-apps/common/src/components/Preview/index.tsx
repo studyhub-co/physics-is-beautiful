@@ -1,6 +1,5 @@
 import React from 'react';
 
-// TODO !!! import
 import {
   listen,
   dispatch,

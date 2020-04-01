@@ -11,6 +11,8 @@ import Edit from '@material-ui/icons/Edit'
 import Slideshow from '@material-ui/icons/Slideshow'
 import html2canvas from 'html2canvas'
 
+import { dispatch as csDispatch } from 'codesandbox-api'
+
 // import loadable from '../../../../../utils/loadable.jsx'
 
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
@@ -98,9 +100,17 @@ export class Lesson extends React.Component {
     // main menu click
     if (menuId === 'view.present') {
       this.setState({ layout: 'present' })
+      csDispatch({
+        type: 'pib_edit_mode',
+        data: 'present'
+      })
     }
     if (menuId === 'view.edit') {
       this.setState({ layout: 'edit' })
+      csDispatch({
+        type: 'pib_edit_mode',
+        data: 'edit'
+      })
     }
   }
 
@@ -209,6 +219,11 @@ export class Lesson extends React.Component {
      const editorComponent = this.state.editor
 
      const handleLayoutChange = name => event => {
+       csDispatch({
+         type: 'pib_edit_mode',
+         data: event.target.value
+       })
+
        this.setState({
          ...this.state,
          [name]: event.target.value

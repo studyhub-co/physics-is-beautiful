@@ -35,6 +35,7 @@ export default {
     return executorsManager.updateFiles(sandbox);
   },
   isServer() {
-    return executorsManager.isServer();
+    return false;
+    // return executorsManager.isServer();
   },
 };

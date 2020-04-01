@@ -87,9 +87,9 @@ export class ExecutorsManager {
     return this.getExecutor().setup();
   }
 
-  isServer() {
-    return this.executor instanceof ServerExecutor;
-  }
+  // isServer() {
+  //   return this.executor instanceof ServerExecutor;
+  // }
 
   updateFiles(sandbox: Sandbox) {
     const modules = getModulesToSend(sandbox);
