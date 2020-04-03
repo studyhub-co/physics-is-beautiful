@@ -84,6 +84,14 @@ export default {
       // `/sandboxes/${sandboxId}/modules/${moduleShortid}`
     );
   },
+  updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
+    // return api.put(`/sandboxes/${sandboxId}`, {
+    //   sandbox: data,
+    // });
+    return api.patch(`/studio/material-problem-type/${sandboxId}/`,
+      { ...data, name: data.title }
+    );
+  },
   // TODO add directories API
   // saveDirectoryTitle(
   //   sandboxId: string,

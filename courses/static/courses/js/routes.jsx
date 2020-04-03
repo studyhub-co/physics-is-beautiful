@@ -28,7 +28,7 @@ export default(
     <Route exact path={'/studio/editor/lessons/:uuid/materials/:material_uuid'} component={EditLessonView} />
 
     {/* TODO remove this url? */}
-    <Route exact path={'/studio/editor/material-problem-type/:problem_type_uuid'} component={ProblemTypeEditorView} />
+    {/* <Route exact path={'/studio/editor/material-problem-type/:problem_type_uuid'} component={ProblemTypeEditorView} />* /}
     {/* <Route exact path={'/studio/editor/questions/:uuid'} component={QuestionApp} /> */}
     {/* <Route path={BASE_URL + '/course/profile/:uuid'} component={CourseProfileView} /> */}
 

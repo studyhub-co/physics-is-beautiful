@@ -115,11 +115,12 @@ export const SandboxName: FunctionComponent = () => {
           <Form onSubmit={submitNameChange}>
             <NameInput
               autoFocus
-              innerRef={(el: HTMLInputElement) => {
-                if (el) {
-                  el.focus();
-                }
-              }}
+              // TODO: fix this
+              // innerRef={(el: HTMLInputElement) => {
+              //   if (el) {
+              //     el.focus();
+              //   }
+              // }}
               onBlur={handleBlur}
               onChange={handleInputUpdate}
               onKeyUp={handleKeyUp}

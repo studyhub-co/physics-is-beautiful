@@ -103,7 +103,7 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
         event = 'Description';
       }
 
-      effects.analytics.track(`Sandbox - Update ${event}`);
+      // effects.analytics.track(`Sandbox - Update ${event}`);
 
       sandbox.title = project.title;
       sandbox.description = project.description;
@@ -133,7 +133,7 @@ export const externalResourceAdded: AsyncAction<{
     await effects.api.createResource(state.editor.currentId, resource);
   } catch (error) {
     externalResources.splice(externalResources.indexOf(resource), 1);
-    effects.notificationToast.error('Could not save external resource');
+    // effects.notificationToast.error('Could not save external resource');
   }
 });
 
