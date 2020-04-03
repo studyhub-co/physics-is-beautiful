@@ -2,7 +2,7 @@ import * as React from 'react'
 import SplitPane from 'react-split-pane'
 // import { connect } from 'react-redux'
 
-import { Skeleton } from '../app/components/Skeleton'
+// import { Skeleton } from '../app/components/Skeleton'
 
 import store from '../../../../../../../store/store'
 
@@ -16,8 +16,7 @@ import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json'
 import { MenuBar } from './MenuBar'
 
 // import ForkFrozenSandboxModal from './ForkFrozenSandboxModal'
-import { Container } from './elements'
-import { HeaderContainer, HeaderLeft } from './elements'
+import { Container, HeaderCentered, HeaderContainer, HeaderLeft } from './elements'
 import { Workspace } from './Workspace'
 import Content from './Content'
 // import { Header } from './Header'
@@ -26,6 +25,8 @@ import Content from './Content'
 import getVSCodeTheme from './utils/get-vscode-theme'
 
 import * as fs from 'fs'
+
+import { SandboxName } from './SandboxName'
 
 const STATUS_BAR_SIZE = 22
 
@@ -172,7 +173,15 @@ class ContentSplit extends React.Component {
           {/* <HeaderContainer> */}
           {/* <HeaderLeft> */}
           <div>
-            <MenuBar/>
+            <HeaderContainer>
+              <HeaderLeft>
+                <MenuBar/>
+              </HeaderLeft>
+              {sandbox
+                ? <HeaderCentered>
+                  <SandboxName />
+                </HeaderCentered> : null }
+            </HeaderContainer>
           </div>
           {/* </HeaderLeft> */}
           {/* </HeaderContainer> */}
