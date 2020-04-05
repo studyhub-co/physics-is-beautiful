@@ -135,8 +135,13 @@ class UserResponseSerializer(BaseSerializer):
 
     # temporary, need to store content type session / todo remove
     content = serializers.SerializerMethodField()
+
     def get_content(self, obj):
-        return AnswerSerializer.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data
+        # return AnswerSerializer.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data
+        try:
+            return AnswerSerializer.CONTENT_SERIALIZER_MAP[obj.content.__class__.__name__.lower()](obj.content).data
+        except KeyError:
+            return AnswerSerializer(obj.content).data
 
     vector = VectorSerializer(required=False)
     mathematical_expression = MathematicalExpressionSerializer(required=False)
