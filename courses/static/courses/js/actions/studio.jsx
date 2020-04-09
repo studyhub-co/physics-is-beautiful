@@ -49,6 +49,7 @@ export const ActionTypes = Object.freeze({
   LESSON_LOADED: 'LESSON_LOADED',
   LESSON_AVAILABLE: 'LESSON_AVAILABLE',
   LESSON_ADDED: 'LESSON_ADDED',
+  GOTO_LESSON: 'GOTO_LESSON',
   DELETE_LESSON: 'DELETE_LESSON',
   MATERIAL_LOADED: 'MATERIAL_LOADED',
   MATERIAL_ADDED: 'MATERIAL_ADDED',
@@ -1106,7 +1107,6 @@ function redirectTo1stMaterial (lesson) {
     // materials: Array(5)
     // 0: "3ecaf3d9-87d4-4496-b9f1-79f9f22b8b83"
     // 1: "2b5b3dc9-d6f8-4786-b589-d911ac4a8e36"
-    // 2: "81754bbd-eaa1-420a-916f-7d2c662c9bcc"
     // NOTE: materials is array of uuids after 'extract' data,
     // I think we need to remove this useless 'extract' data function at all in the future
     if (lesson.materials && lesson.materials.length > 0) {
@@ -1161,9 +1161,11 @@ export function loadLessonIfNeeded (uuid, materialUuid) {
         success: function (data, status, jqXHR) {
           dispatch(lessonLoaded(data))
 
-          if (materialUuid) {
-            // dispatch(loadMaterial(materialUuid))
-            // select current material (got from url)
+          if (
+            materialUuid && // if we have materialUuid to move on
+            getState().studio.lessons[uuid].materials.includes(materialUuid) // and materialUuid exist in materials list
+          ) {
+            // select current material
             dispatch(goToMaterial(materialUuid, uuid))
           } else {
             // select 1st material
@@ -1428,25 +1430,37 @@ export function changeMaterialHint (uuid, newHint) {
     })
   }
 }
-
 // END of TODO: replace with updateMaterial
 
 export function goToMaterial (materialUuid, lessonUuid) {
-  return dispatch => {
-    dispatch({
-      type: ActionTypes.GOTO_MATERIAL,
-      // we can navigate to loaded
-      material: { uuid: materialUuid },
-      lesson: { uuid: lessonUuid }
-    })
-    // dispatch(loadMaterialIfNeeded(uuid))
-    // get fresh version every time we navigate to material, we can cache it in the future
-    dispatch(loadMaterial(materialUuid))
+  return (dispatch, getState) => {
+    const currentMaterialUuid = getState().studio.currentMaterial?.uuid
+    if (currentMaterialUuid === materialUuid) {
+      // if materialUuid == state.materialUuid do nothing
+      return null
+    }
+
+    if (materialUuid) {
+      // navigate to load a full version
+      dispatch({
+        type: ActionTypes.GOTO_MATERIAL,
+        material: { uuid: materialUuid },
+        lesson: { uuid: lessonUuid }
+      })
+      // get fresh version every time we navigate to material, we can cache it in the future
+      dispatch(loadMaterial(materialUuid))
+    } else {
+      // navigate to empty lesson
+      dispatch({
+        type: ActionTypes.GOTO_LESSON,
+        lesson: { uuid: lessonUuid }
+      })
+    }
   }
 }
 
 export function addMaterial (lessonUuid, material) {
-  var data = { name: 'New material', lesson: lessonUuid }
+  let data = { name: 'New material', lesson: lessonUuid }
   if (material) {
     data['prototype'] = material.uuid
   }
@@ -1505,16 +1519,18 @@ export function moveMaterial (uuid, beforeUuid) {
 
 export function deleteMaterial (uuid) {
   return (dispatch, getState) => {
-    var state = getState().studio
-    var currentLesson = state.lessons[state.materials[uuid].lesson]
-    var idx = currentLesson.materials.indexOf(uuid)
-    var willGoToMaterial
-    if (idx < currentLesson.materials.length - 1) {
-      willGoToMaterial = currentLesson.materials[idx + 1]
-    } else if (idx > 0) {
-      willGoToMaterial = currentLesson.materials[idx - 1]
-    } else {
-      willGoToMaterial = null
+    let state = getState().studio
+    let currentLesson = state.lessons[state.materials[uuid].lesson]
+
+    const index = currentLesson.materials.indexOf(uuid)
+
+    let willGoToMaterialUuid = null // null we have no existing materials
+    if (typeof currentLesson.materials[index + 1] !== 'undefined') {
+      // tryng to jump next
+      willGoToMaterialUuid = currentLesson.materials[index + 1]
+    } else if (typeof currentLesson.materials[index - 1] !== 'undefined') {
+      // tryng to jump prev
+      willGoToMaterialUuid = currentLesson.materials[index - 1]
     }
 
     $.ajax({
@@ -1525,11 +1541,9 @@ export function deleteMaterial (uuid) {
         dispatch({
           type: ActionTypes.DELETE_MATERIAL,
           material: uuid,
-          lesson: state.materials[uuid].lesson,
-          goToMaterial: goToMaterial
+          lesson: state.materials[uuid].lesson
         })
-        // dispatch(loadMaterialIfNeeded(goToMaterial))
-        dispatch(goToMaterial(willGoToMaterial.uuid, currentLesson.uuid))
+        dispatch(goToMaterial(willGoToMaterialUuid, currentLesson.uuid))
       }
     })
   }

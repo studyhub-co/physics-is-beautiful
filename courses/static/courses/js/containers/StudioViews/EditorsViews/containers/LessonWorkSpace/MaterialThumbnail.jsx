@@ -24,36 +24,35 @@ function collect (connect, monitor) {
   }
 }
 
-class MaterialThumbnailComponent extends React.Component {
-  constructor (props) {
-    super(props)
-    this.handleDeleteClick = this.handleDeleteClick.bind(this)
-  }
-  handleDeleteClick (e) {
+const MaterialThumbnailComponent = props => {
+  const {
+    onDeleteClick, selected, isDragging, onClick,
+    connectDragSource, shortText, connectDragPreview
+  } = props
+
+  function handleDeleteClick (e) {
     e.preventDefault()
-    if (confirm('Are you sure you want to delete this material?')) {
-      this.props.onDeleteClick()
+    if (window.confirm('Are you sure you want to delete this material?')) {
+      onDeleteClick()
     }
   }
 
-  render () {
-    return this.props.connectDragPreview(
-      <div
-        className={
-          'question-thumbnail draggable' +
-          (this.props.selected ? ' selected' : '')
-        }
-        style={{ display: this.props.isDragging ? 'none' : 'block' }}
-        onClick={this.props.onClick}
-      >
-        <div className='question-thumbnail-inner'>
-          {this.props.connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)}
-          <span>{this.props.shortText}</span>
-        </div>
-        <FaTimes className='btn-delete' onClick={this.handleDeleteClick} />
+  return connectDragPreview(
+    <div
+      className={
+        'question-thumbnail draggable' +
+          (selected ? ' selected' : '')
+      }
+      style={{ display: isDragging ? 'none' : 'block' }}
+      onClick={onClick}
+    >
+      <div className='question-thumbnail-inner'>
+        {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)}
+        <span>{shortText}</span>
       </div>
-    )
-  }
+      <FaTimes className='btn-delete' onClick={handleDeleteClick} />
+    </div>
+  )
 }
 
 MaterialThumbnailComponent.propTypes = {

@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux'
 
-// import { LOCATION_CHANGE } from 'react-router-redux'
-import { ActionTypes, goToMaterial } from '../actions/studio'
+import { ActionTypes } from '../actions/studio'
 
 function courses (state = {}, action) {
+  let ret
+
   switch (action.type) {
     case ActionTypes.COURSES_LOADED:
       return action.courses
@@ -12,15 +13,15 @@ function courses (state = {}, action) {
         [action.course.uuid]: action.course
       })
     case ActionTypes.DELETE_COURSE:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       delete ret[action.uuid]
       return ret
     case ActionTypes.UNIT_ADDED:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       ret[action.courseUuid].units.push(action.unit.uuid)
       return ret
     case ActionTypes.DELETE_UNIT:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       ret[action.courseUuid].units.splice(
         ret[action.courseUuid].units.indexOf(action.uuid),
         1
@@ -49,6 +50,8 @@ function search (state = {}, action) {
 }
 
 function units (state = {}, action) {
+  let ret
+
   switch (action.type) {
     case ActionTypes.COURSES_LOADED:
       return action.units
@@ -58,15 +61,15 @@ function units (state = {}, action) {
     case ActionTypes.UNIT_LOADED:
       return Object.assign({}, state, { [action.unit.uuid]: action.unit })
     case ActionTypes.DELETE_UNIT:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       delete ret[action.uuid]
       return ret
     case ActionTypes.MODULE_ADDED:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       ret[action.module.unit].modules.push(action.module.uuid)
       return ret
     case ActionTypes.DELETE_MODULE:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       if (action.unitUuid in ret) {
         ret[action.unitUuid].modules.splice(
           ret[action.unitUuid].modules.indexOf(action.uuid),
@@ -80,6 +83,8 @@ function units (state = {}, action) {
 }
 
 function modules (state = {}, action) {
+  let ret
+
   switch (action.type) {
     case ActionTypes.UNIT_LOADED:
     case ActionTypes.UNIT_ADDED:
@@ -90,20 +95,18 @@ function modules (state = {}, action) {
     case ActionTypes.MODULE_LOADED:
       return Object.assign({}, state, { [action.module.uuid]: action.module })
     case ActionTypes.DELETE_MODULE:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       delete ret[action.uuid]
       return ret
     case ActionTypes.LESSON_ADDED:
-      var ret = Object.assign({}, state)
-      ret[action.lesson.module].lessons = ret[
-        action.lesson.module
-      ].lessons.slice()
+      ret = Object.assign({}, state)
+      ret[action.lesson.module].lessons = ret[action.lesson.module].lessons.slice()
       ret[action.lesson.module].lessons.push(action.lesson.uuid)
       return ret
     case ActionTypes.DELETE_LESSON:
-      var ret = Object.assign({}, state)
+      ret = Object.assign({}, state)
       if (!ret[action.moduleUuid]) return ret
-      var newLessons = ret[action.moduleUuid].lessons.slice()
+      let newLessons = ret[action.moduleUuid].lessons.slice()
       newLessons.splice(newLessons.indexOf(action.uuid), 1)
       ret[action.moduleUuid].lessons = newLessons
       return ret
@@ -113,6 +116,8 @@ function modules (state = {}, action) {
 }
 
 function lessons (state = {}, action) {
+  let toReturn
+
   switch (action.type) {
     case ActionTypes.MODULE_LOADED:
     case ActionTypes.MODULE_ADDED:
@@ -121,33 +126,32 @@ function lessons (state = {}, action) {
     case ActionTypes.LESSON_ADDED:
       return Object.assign({}, state, { [action.lesson.uuid]: action.lesson })
     case ActionTypes.DELETE_LESSON:
-      var ret = Object.assign({}, state)
-      delete ret[action.uuid]
-      return ret
+      toReturn = Object.assign({}, state)
+      delete toReturn[action.uuid]
+      return toReturn
     case ActionTypes.MATERIAL_ADDED:
-      var ret = Object.assign({}, state)
-      ret[action.material.lesson].materials = ret[
-        action.material.lesson
-      ].materials.slice()
-      ret[action.material.lesson].materials.push(action.material.uuid)
-      return ret
+      toReturn = Object.assign({}, state)
+      toReturn[action.material.lesson].materials =
+        toReturn[action.material.lesson].materials.slice()
+      toReturn[action.material.lesson].materials.push(action.material.uuid)
+      return toReturn
     case ActionTypes.DELETE_MATERIAL:
-      var ret = Object.assign({}, state)
-      ret[action.lesson].materials = ret[action.lesson].materials.slice()
-      ret[action.lesson].materials.splice(
-        ret[action.lesson].materials.indexOf(action.material),
+      toReturn = Object.assign({}, state)
+      toReturn[action.lesson].materials = toReturn[action.lesson].materials.slice()
+      toReturn[action.lesson].materials.splice(
+        toReturn[action.lesson].materials.indexOf(action.material),
         1
       )
-      return ret
+      return toReturn
     case ActionTypes.MATERIAL_MOVED:
-      var ret = Object.assign({}, state)
-      var les = Object.assign({}, ret[action.lessonUuid])
-      var qs = les.materials.slice()
+      toReturn = Object.assign({}, state)
+      let les = Object.assign({}, toReturn[action.lessonUuid])
+      let qs = les.materials.slice()
       qs.splice(qs.indexOf(action.uuid), 1)
       if (action.beforeUuid) { qs.splice(qs.indexOf(action.beforeUuid), 0, action.uuid) } else qs.push(action.uuid)
       les.materials = qs
-      ret[action.lessonUuid] = les
-      return ret
+      toReturn[action.lessonUuid] = les
+      return toReturn
 
     default:
       return state
@@ -163,7 +167,7 @@ function materials (state = {}, action) {
         Object.assign({}, action.material, {completelyLoaded: true})
       })
     case ActionTypes.DELETE_MATERIAL:
-      var ret = Object.assign({}, state)
+      let ret = Object.assign({}, state)
       delete ret[action.material]
       return ret
     case ActionTypes.LESSON_LOADED:
@@ -174,28 +178,17 @@ function materials (state = {}, action) {
   }
 }
 
-// currentMaterial (Got with material loaded)
+// currentMaterial (Got with material loaded - full version of material)
 function currentMaterial (state = null, action) {
   switch (action.type) {
-    // move to actions (redirect)
-    // case ActionTypes.LESSON_LOADED:
-    // case ActionTypes.LESSON_ADDED:
-    // case ActionTypes.LESSON_AVAILABLE:
-    //   if (action.lesson.materials.length > 0) {
-    //     return null
-    //   } else {
-    //     return null
-    //   }
-    case ActionTypes.MATERIAL_LOADED: // load full version of material
+    case ActionTypes.MATERIAL_LOADED:
       return action.material
     case ActionTypes.GOTO_MATERIAL:
-      // console.log(action.material);
-      return action.material // remove current material
-    case ActionTypes.MATERIAL_ADDED:
-      // return action.material.uuid
       return action.material
-    case ActionTypes.DELETE_MATERIAL:
-      return action.goToMaterial
+    case ActionTypes.MATERIAL_ADDED:
+      return action.material
+    case ActionTypes.MATERIAL_DELETED:
+      return null
     default:
       return state
   }
@@ -210,7 +203,7 @@ function currentMaterial (state = null, action) {
 //         [action.material.uuid]: action.material
 //       })
 //     case ActionTypes.DELETE_MATERIAL:
-//       var ret = Object.assign({}, state)
+//       let ret = Object.assign({}, state)
 //       delete ret[action.material]
 //       return ret
 //     case ActionTypes.LESSON_LOADED:

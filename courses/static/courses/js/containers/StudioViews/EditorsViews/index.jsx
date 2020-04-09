@@ -5,7 +5,7 @@ import EditCourseView1 from './containers/course'
 import EditModuleView1 from './containers/module'
 // import EditLessonView1 from './containers/lesson'
 // import EditLessonView1 from './containers/LessonWorkSpace/index'
-import EditLessonView1 from './containers/LessonWorkSpace/index_lesson'
+import EditLessonView1 from './containers/LessonWorkSpace/index'
 // import ProblemTypeEditorView1 from './containers/LessonWorkSpace/index_problem_type'
 
 export class EditCourseView extends React.Component {

@@ -7,6 +7,10 @@ const routingMiddleware = store => next => action => {
     history.push('/studio/editor/lessons/' + action.lesson.uuid + '/materials/' + action.material.uuid)
     return next(action)
   }
+  if (action.type === studioActions.GOTO_LESSON) {
+    history.push('/studio/editor/lessons/' + action.lesson.uuid)
+    return next(action)
+  }
   return next(action)
 }
 
