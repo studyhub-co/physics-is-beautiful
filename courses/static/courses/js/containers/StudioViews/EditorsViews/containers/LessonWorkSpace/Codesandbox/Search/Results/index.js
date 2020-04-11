@@ -23,7 +23,6 @@ const Results = ({
   const [hasMoreItems, setHasMoreItems] = useState(false)
   const [items, setItems] = useState([])
 
-  // on mount
   useEffect(() => {
     if (resultsObj && resultsObj.results) {
       let itemsToAppend = []
@@ -34,9 +33,12 @@ const Results = ({
       if (resultsObj.next) {
         setHasMoreItems(true)
         setNextHref(resultsObj.next)
+        // set next page items
+        setItems([...items, ...itemsToAppend])
+      } else {
+        // set first page items
+        setItems(itemsToAppend)
       }
-
-      setItems([...items, ...itemsToAppend])
     }
   }, [resultsObj])
 

@@ -244,17 +244,19 @@ html, body {
     height: 93px;
 }
 
-.question-thumbnail {
-    border: 0 none;
-    box-shadow: none;
-    margin-bottom: 0vh;
-}
+/* FIXME: remove? */
+/*.question-thumbnail {*/
+    /*border: 0 none;*/
+    /*box-shadow: none;*/
+    /*margin-bottom: 0vh;*/
+/*}*/
 
-.question-thumbnail > img {
-    max-width: 100%;
-    display: block;
-    max-height: 43vh;
-}
+/*.question-thumbnail > img {*/
+    /*max-width: 100%;*/
+    /*display: block;*/
+    /*max-height: 43vh;*/
+/*}*/
+
 img.grayed-out-img {
     filter: grayscale(100%) brightness(134%);
 }

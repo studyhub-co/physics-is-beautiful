@@ -147,32 +147,66 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
 
 /**/
 
-.editor .lesson-nav-materials .drop-target .dock-site {
-    display:none;
-}
-.editor .lesson-nav-materials .drop-target.drag-over {
+/*.editor .lesson-nav-materials .dock-site {*/
+    /*display:none;*/
+/*}*/
+
+/* Drag'n'Drop line */
+
+.editor .lesson-nav-materials .drop-target.drag-over .dock-site {
+  padding-bottom: 1.5rem;
   border-top: 0.3rem solid rgba(101, 179, 255, 0);
   border-left-width: 0;
   border-right-width: 0;
   border-image: linear-gradient(to right, #9fddfb, #bceaff, white 90%) 1 stretch;
 }
 
-.editor .question-thumbnail {
-    background: #FCFCFC;
-    border: 1px solid #DDD;
-    border-radius: 5px;
-    margin: 1rem;
-    padding: 0 5px;
-    height: 5rem;
-    max-width: 90%;
-    /*width: 15rem;*/
+/*.editor .lesson-nav-materials .drop-target.drag-over {*/
+  /*border-top: 0.3rem solid rgba(101, 179, 255, 0);*/
+  /*border-left-width: 0;*/
+  /*border-right-width: 0;*/
+  /*border-image: linear-gradient(to right, #9fddfb, #bceaff, white 90%) 1 stretch;*/
+/*}*/
+
+/* insied MaterialUI Paper */
+.editor .material-thumbnail {
+    /*background: #FCFCFC;*/
+    /*border: 1px solid #DDD;*/
+    /*border-radius: 5px;*/
+    /*margin: 1rem;*/
+    /*padding: 0 5px;*/
+    /*margin: 1rem;*/
+    /*padding: 1rem;*/
+    height: 7em;
+    text-align: center;
+    justify-content: center;
+    /*max-width: 90%;*/
+    /*width: 100%;*/
     /*max-width: 15rem;*/
     cursor: pointer;
 }
-.editor .question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}
-.editor .question-thumbnail.selected { background: #f0fafe; border:1px solid #9fddfb; }
-.editor .question-thumbnail .btn-delete { position:absolute; right:-7px; top:-7px; cursor:pointer; }
-.editor .question-thumbnail .question-thumbnail-inner { overflow:hidden; height:100%;}
+/*.editor .material-thumbnail .drag-handle { width: 10px; height: 10px; display: inline-block; margin-right: 5px;}*/
+.editor .material-thumbnail .drag-handle { position: absolute; left: -0.5rem; top: -1rem; }
+.editor .material-thumbnail.selected { border: 1px solid #9fddfb; }
+.editor .material-thumbnail .btn-delete { position: absolute; right: -7px; top: -7px; cursor: pointer; }
+.editor .material-thumbnail .thumbnail-inner { overflow: hidden; height: 100%;}
+
+/*.editor .question-thumbnail {*/
+    /*background: #FCFCFC;*/
+    /*border: 1px solid #DDD;*/
+    /*border-radius: 5px;*/
+    /*margin: 1rem;*/
+    /*padding: 0 5px;*/
+    /*height: 5rem;*/
+    /*max-width: 90%;*/
+    /*!*width: 15rem;*!*/
+    /*!*max-width: 15rem;*!*/
+    /*cursor: pointer;*/
+/*}*/
+/*.editor .question-thumbnail .drag-handle { width:10px; height:10px; display:inline-block; margin-right:5px;}*/
+/*.editor .question-thumbnail.selected { background: #f0fafe; border:1px solid #9fddfb; }*/
+/*.editor .question-thumbnail .btn-delete { position:absolute; right:-7px; top:-7px; cursor:pointer; }*/
+/*.editor .question-thumbnail .question-thumbnail-inner { overflow:hidden; height:100%;}*/
 
 /*.editor .lesson-questions .btn { height: 65px; vertical-align: top; margin: 5px;}
 .editor .lesson-questions .btn-arrow { padding:22px 10px;}

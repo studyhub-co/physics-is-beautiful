@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
 import MenuItem from '@material-ui/core/MenuItem'
+import Paper from '@material-ui/core/Paper'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Edit from '@material-ui/icons/Edit'
@@ -77,6 +78,7 @@ const Lesson = props => {
   // menu
   const [layoutMode, setLayoutMode] = useLayoutMode('present')
 
+  // fixme: decompose into multiple state variables based on which values tend to change together.
   const [state, setState] = React.useState({
     editor: <div></div>
   })
@@ -112,27 +114,51 @@ const Lesson = props => {
     return <div>Loading...</div>
   }
 
+  const addMaterialButton = (
+    <Grid item>
+      <DockableDropTarget
+        onDrop={dropSource =>
+          useHandleMaterialDroppedBefore(dropSource.uuid, null, moveMaterial)
+        }
+        itemType={DragItemTypes.MATERIAL}
+      >
+        <Paper elevation={3} className={'material-thumbnail draggable'}>
+          <div
+            onClick={onAddMaterialClick}
+            // className='btn btn-light btn-add'
+          >
+            <FaPlusCircle />
+            <br />
+          Add material
+          </div>
+        </Paper>
+      </DockableDropTarget>
+    </Grid>
+  )
+
   // materials list
   const navMaterials = materials.map((materialUuid) => {
     return (
-      <DockableDropTarget
-        key={materialUuid}
-        onDrop={dropSource =>
-          useHandleMaterialDroppedBefore(dropSource.uuid, materialUuid, moveMaterial)
-        }
-        itemType={DragItemTypes.MATERIAL}
-        selfUuid={materialUuid}
-      >
-        <MaterialThumbnail
+      <Grid item alignContent={'center'}>
+        <DockableDropTarget
           key={materialUuid}
-          uuid={materialUuid}
-          lessonUuid={uuid}
-          selected={
-            currentMaterial &&
-            currentMaterial.uuid === materialUuid
+          onDrop={dropSource =>
+            useHandleMaterialDroppedBefore(dropSource.uuid, materialUuid, moveMaterial)
           }
-        />
-      </DockableDropTarget>
+          itemType={DragItemTypes.MATERIAL}
+          selfUuid={materialUuid}
+        >
+          <MaterialThumbnail
+            key={materialUuid}
+            uuid={materialUuid}
+            lessonUuid={uuid}
+            selected={
+              currentMaterial &&
+            currentMaterial.uuid === materialUuid
+            }
+          />
+        </DockableDropTarget>
+      </Grid>
     )
   })
 
@@ -193,47 +219,18 @@ const Lesson = props => {
         {/* Materials list */}
         {layoutMode === 'present' ? (
           <Grid item xs={2}>
-            <div
-              style={{
-                display: 'flex',
-                maxHeight: '80vh',
-                flexDirection: 'column'
-              }}
+            <Grid
+              container
+              direction='column'
+              justify='center'
+              alignItems='stretch'
+              spacing={3}
+              className={'lesson-nav-materials'}
+              style={{paddingTop: '1rem'}}
             >
-              <div
-                style={{
-                  overflowY: 'auto',
-                  /* for Firefox */
-                  flexGrow: 1,
-                  minHeight: 0
-                }}
-                className={'lesson-nav-materials'}
-              >
-                <DockableDropTarget
-                  onDrop={dropSource =>
-                    useHandleMaterialDroppedBefore(dropSource.uuid, null, moveMaterial)
-                  }
-                  itemType={DragItemTypes.MATERIAL}
-                >
-                  <div className={'question-thumbnail draggable'}>
-                    <div
-                      onClick={onAddMaterialClick}
-                      className='btn btn-light btn-add'
-                      style={{
-                        cursor: 'pointer',
-                        width: '100%',
-                        height: '100%'
-                      }}
-                    >
-                      <FaPlusCircle />
-                      <br />
-                      Add material
-                    </div>
-                  </div>
-                </DockableDropTarget>
-                {navMaterials}
-              </div>
-            </div>
+              {addMaterialButton}
+              {navMaterials}
+            </Grid>
           </Grid>
         ) : null}
         <Grid item xs={layoutMode === 'present' ? 10 : 12}>

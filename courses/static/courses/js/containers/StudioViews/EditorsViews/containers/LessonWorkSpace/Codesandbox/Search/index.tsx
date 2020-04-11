@@ -29,8 +29,8 @@ import { Container, Content, Main, StyledTitle } from './elements';
 import Filters from './Filters';
 import Results from './Results';
 import Styles, { materialUIStyles } from './search';
-import PropTypes from 'prop-types'
-import { Pagination } from '../../../../../../../components/react-bootstrap/pagination'
+
+// import { Pagination } from '../../../../../../../components/react-bootstrap/pagination'
 
 
 // import {
@@ -68,13 +68,6 @@ const searchStateToUrl = (location, searchState) =>
 
 const Search: React.FC<ISearchProps> = ({
       // history,
-      // location,
-      //actions
-      // problemTypeActions,
-      // studioActions,
-      //state
-      // problemTypesPaginatedListObject,
-      // currentMaterial
 }) => {
   // const {
   //   actions: { searchMounted },

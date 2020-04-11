@@ -1,13 +1,12 @@
-import { connect } from 'react-redux'
-
-import { goToMaterial, deleteMaterial } from '../../../../../actions/studio'
-
 import React from 'react'
+import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
 import { DragSource } from 'react-dnd'
 import { FaGripHorizontal, FaTimes } from 'react-icons/fa'
+import Paper from '@material-ui/core/Paper'
 
+import { goToMaterial, deleteMaterial } from '../../../../../actions/studio'
 import { DragItemTypes } from '../../../../../dnd'
 
 export const dragSource = {
@@ -37,22 +36,24 @@ const MaterialThumbnailComponent = props => {
     }
   }
 
-  return connectDragPreview(
-    <div
-      className={
-        'question-thumbnail draggable' +
+  return (<Paper
+    onClick={onClick}
+    elevation={3}
+    className={
+      'material-thumbnail draggable' +
           (selected ? ' selected' : '')
-      }
-      style={{ display: isDragging ? 'none' : 'block' }}
-      onClick={onClick}
-    >
-      <div className='question-thumbnail-inner'>
+    }> {connectDragPreview(
+      <div
+        style={{ display: isDragging ? 'none' : 'block' }}
+      >
         {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)}
-        <span>{shortText}</span>
+        <div className='thumbnail-inner'>
+          <span>{shortText}</span>
+        </div>
+        <FaTimes className='btn-delete' onClick={handleDeleteClick} />
       </div>
-      <FaTimes className='btn-delete' onClick={handleDeleteClick} />
-    </div>
-  )
+    )
+    } </Paper>)
 }
 
 MaterialThumbnailComponent.propTypes = {

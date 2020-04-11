@@ -12,6 +12,7 @@ export const useIframeLoaded = () => {
       setTimeout(function () {
         html2canvas(iframeDoc.body).then(function (canvas) {
           onUpdateProblemTypeImage(canvas, mpt)
+          // TODO we can save the same Screen for current material
         })
       }, 2000)
     }
