@@ -373,6 +373,15 @@ class Vector(BaseModel):
             return False
 
     def for_display(self):
+
+        if self.is_null:
+            return {
+                'angle': 0,
+                'magnitude': 0,
+                'x_component': 0,
+                'y_component': 0,
+            }
+
         angle = self.angle
         mag = self.magnitude
         x = self.x_component
