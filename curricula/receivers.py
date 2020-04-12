@@ -37,17 +37,23 @@ def transfer_lesson_progress(request, user, **kwargs):
 
             content_classes[content_type] = content_class
             if content_class == Answer:
-                content = Answer.objects.get(**response['content'])
+                # content = Answer.objects.get(**response['content'])
+                # just pass if for now (
+                # the main problem is that we store content type on the user side!
+                # I'm not sure why content_class == Answer, but it is not good in any case.
+                # It fixed in newest release which based on on Anon session id.
+                # )
+                continue
             else:
                 content = content_class.objects.create(**response['content'])
-            UserResponse.objects.create(
-                profile=profile,
-                question_id=response['question'],
-                content_type=ContentType.objects.get(pk=content_type),
-                content=content,
-                is_correct=response['is_correct'],
-                answered_on=response['answered_on'],
-            )
+                UserResponse.objects.create(
+                    profile=profile,
+                    question_id=response['question'],
+                    content_type=ContentType.objects.get(pk=content_type),
+                    content=content,
+                    is_correct=response['is_correct'],
+                    answered_on=response['answered_on'],
+                )
     # clear the session
     request.session['lessons'] = {}
 
