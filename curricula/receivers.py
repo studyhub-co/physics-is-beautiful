@@ -27,10 +27,14 @@ def transfer_lesson_progress(request, user, **kwargs):
         content_classes = {}
         for response in service.get_lesson_responses_store(lesson):
             content_type = response['content_type']
-            content_class = (
-                content_classes.get(content_type) or
-                ContentType.objects.get(pk=content_type).model_class()
-            )
+            try:
+                content_class = (
+                    content_classes.get(content_type) or
+                    ContentType.objects.get(pk=content_type).model_class()
+                )
+            except ContentType.DoesNotExist:
+                continue  # fix for sentry 1603959048
+
             content_classes[content_type] = content_class
             if content_class == Answer:
                 content = Answer.objects.get(**response['content'])
