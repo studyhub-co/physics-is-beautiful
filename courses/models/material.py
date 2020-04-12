@@ -1,14 +1,24 @@
+import os
+from io import BytesIO
+
+from PIL import Image
+
 from enum import Enum
 
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 
 from taggit.managers import TaggableManager
 from djeddit.models import Thread
 
 from . import Lesson, BaseItemModel, MaterialProblemType
+from .storage import OverwriteStorage
 from .utils import UUIDTaggedItem
 
 try:
@@ -25,11 +35,20 @@ class MaterialWorkflowType(Enum):
     QA_MYSQL = 90
 
 
-class Material(BaseItemModel):
+def uuid_as_name(instance, filename):
+    try:
+        file_extension = os.path.splitext(filename)[1]
+    except IndexError:
+        file_extension = '.png'
+    # TODO add lesson subfolder?
+    return 'materials_images/{0}{1}'.format(instance.pk, file_extension)
 
+
+class Material(BaseItemModel):
     # class MaterialWorkflowType(models.IntegerChoices): # Django 3.0
     lesson = models.ForeignKey(Lesson, related_name='materials', on_delete=models.CASCADE)
     # material_workflow_type = models.IntegerField(choices=MaterialWorkflowType.choices) # Django 3.0
+    screenshot = models.ImageField(null=True, blank=True, storage=OverwriteStorage(), upload_to=uuid_as_name)
     material_workflow_type = models.IntegerField(
         default=MaterialWorkflowType.COMMON.value,
         choices=[(type, type.value) for type in MaterialWorkflowType]
@@ -50,6 +69,51 @@ class Material(BaseItemModel):
         # TODO return correct data
         return []
 
+    # def save(self, *args, **kwargs):
+    #     # Opening the uploaded image
+    #     img = Image.open(self.image)
+    #
+    #     if img.height > 250 or img.width > 250:
+    #         output_size = (250, 250)
+    #         img.thumbnail(output_size)
+    #         img = img.convert('RGB')
+    #
+    #         output = BytesIO()
+    #         img.save(output, format='PNG')
+    #         output.seek(0)
+    #
+    #         # change the imagefield value to be the newley modifed image value
+    #         self.image = InMemoryUploadedFile(output, 'ImageField',
+    #                                           f'{self.image.name.split(".")[0]}.jpg',
+    #                                           'image/jpeg', sys.getsizeof(output),
+    #                                           None)
+    #
+    #     super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['position']
 
+
+@receiver(pre_save, sender=Material)
+def resize_screenshot(sender, instance, **kwargs):
+    output_size = (300, 300)
+
+    image = Image.open(instance.screenshot.file.file)
+
+    if image.height > output_size[0] or image.width > output_size[1]:
+        # do not resize if already resized
+        image.thumbnail(size=output_size)
+        image_file = BytesIO()
+        image.save(image_file, image.format)
+
+        instance.screenshot.save(
+            instance.screenshot.name,
+            InMemoryUploadedFile(
+                image_file,
+                None, '',
+                instance.screenshot.file.content_type,
+                image.size,
+                instance.screenshot.file.charset,
+            ),
+            save=False
+        )

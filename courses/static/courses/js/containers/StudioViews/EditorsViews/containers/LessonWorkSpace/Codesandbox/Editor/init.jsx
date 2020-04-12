@@ -25,9 +25,8 @@ import {
 
 if (process.env.NODE_ENV === 'production') {
   try {
-    // tod is this secure?
     initializeSentry(
-      'https://dfee93ca50204a9e9b3f91680ad8a8ff@sentry.io/142243'
+      'https://9a656a69250b44a899e03709c402b2c4@o66737.ingest.sentry.io/5197510'
     )
   } catch (error) {
     console.error(error)

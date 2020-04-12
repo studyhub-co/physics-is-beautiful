@@ -177,6 +177,7 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
     /*padding: 0 5px;*/
     /*margin: 1rem;*/
     /*padding: 1rem;*/
+    overflow: inherit;
     height: 7em;
     text-align: center;
     justify-content: center;

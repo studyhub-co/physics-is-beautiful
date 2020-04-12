@@ -26,7 +26,8 @@ function collect (connect, monitor) {
 const MaterialThumbnailComponent = props => {
   const {
     onDeleteClick, selected, isDragging, onClick,
-    connectDragSource, shortText, connectDragPreview
+    connectDragSource, shortText, screenshot,
+    connectDragPreview
   } = props
 
   function handleDeleteClick (e) {
@@ -44,11 +45,14 @@ const MaterialThumbnailComponent = props => {
           (selected ? ' selected' : '')
     }> {connectDragPreview(
       <div
-        style={{ display: isDragging ? 'none' : 'block' }}
+        style={{ display: isDragging ? 'none' : 'block', overflow: 'hidden' }}
       >
         {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)}
         <div className='thumbnail-inner'>
-          <span>{shortText}</span>
+          {screenshot
+            ? <img src={screenshot} style={{height: '100%', width: '100%'}}/>
+            : <span>{shortText}</span>
+          }
         </div>
         <FaTimes className='btn-delete' onClick={handleDeleteClick} />
       </div>
@@ -58,6 +62,7 @@ const MaterialThumbnailComponent = props => {
 
 MaterialThumbnailComponent.propTypes = {
   shortText: PropTypes.string,
+  screenshot: PropTypes.string,
   onClick: PropTypes.func,
   uuid: PropTypes.string, // material uuid
   lessonUuid: PropTypes.string.isRequired, // leeeson uuid
@@ -72,7 +77,8 @@ const mapStateToProps = (state, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
   var q = state.studio.materials[uuid]
   return {
-    shortText: q.name
+    shortText: q.name,
+    screenshot: q.screenshot
   }
 }
 

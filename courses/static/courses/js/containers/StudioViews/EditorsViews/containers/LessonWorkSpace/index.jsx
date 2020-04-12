@@ -18,7 +18,8 @@ import {
   loadLessonIfNeeded,
   deleteLesson,
   addMaterial,
-  moveMaterial
+  moveMaterial,
+  updateMaterialImage
 } from '../../../../../actions/studio'
 
 import {
@@ -55,6 +56,7 @@ const Lesson = props => {
     onNameChange,
     // materials
     materials, materialUrlUuid, moveMaterial, currentMaterial, onAddMaterialClick,
+    onUpdateMaterialImage,
     // material problem type
     onUpdateProblemTypeImage
   } = props
@@ -257,7 +259,9 @@ const Lesson = props => {
                ref={setFrameRef}
                onLoad={e => onLoadIframe(e,
                  currentMaterial.material_problem_type,
+                 currentMaterial,
                  onUpdateProblemTypeImage,
+                 onUpdateMaterialImage,
                  executionFrameRef
                )}
                src={mptEvalUrl(currentMaterial.material_problem_type)}/>
@@ -294,10 +298,10 @@ Lesson.propTypes = {
   onAddMaterialClick: PropTypes.func.isRequired,
   moveMaterial: PropTypes.func.isRequired,
   onUpdateProblemTypeImage: PropTypes.func.isRequired,
+  onUpdateMaterialImage: PropTypes.func.isRequired,
   image: PropTypes.string,
   name: PropTypes.string,
   materials: PropTypes.array,
-  module: PropTypes.string,
   loading: PropTypes.bool // this is lesson loading mark
 }
 
@@ -352,6 +356,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onUpdateProblemTypeImage: (canvas, pt) =>
       dispatch(updateProblemTypeImage(pt, canvas)),
+    onUpdateMaterialImage: (canvas, material) =>
+      dispatch(updateMaterialImage(material, canvas)),
     onImageChange: image => dispatch(changeLessonImage(uuid, image)),
     onNameChange: name => dispatch(renameLesson(uuid, name)),
     onDeleteClick: () => dispatch(deleteLesson(uuid)),

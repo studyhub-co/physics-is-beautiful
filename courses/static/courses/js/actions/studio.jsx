@@ -1549,6 +1549,25 @@ export function deleteMaterial (uuid) {
   }
 }
 
+// TODO conver to updateMaterial ?
+export function updateMaterialImage (materail, canvas) {
+  return (dispatch, state) => {
+    let data = new window.FormData()
+    canvas.toBlob(function (blob) {
+      data.append('screenshot', blob, 'screenshot.png')
+      getAxios().patch(`${API_PREFIX}materials/${materail.uuid}/`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        dispatch(materialLoaded(response.data))
+      }).catch(error => {
+        console.log(error.response)
+      })
+    })
+  }
+}
+
 // export function answerLoaded (data) {
 //   return {
 //     type: ActionTypes.ANSWER_LOADED,

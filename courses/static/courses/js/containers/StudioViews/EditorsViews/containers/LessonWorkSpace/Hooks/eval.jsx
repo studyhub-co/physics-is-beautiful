@@ -2,8 +2,9 @@
 import html2canvas from 'html2canvas'
 
 export const useIframeLoaded = () => {
-  return (e, mpt, onUpdateProblemTypeImage, executionFrameRef) => {
-
+  return (e, mpt, currentMaterial,
+    onUpdateProblemTypeImage, onUpdateMaterialImage,
+    executionFrameRef) => {
     let iframeDoc = executionFrameRef.contentWindow.document
     // callback executed when canvas was found
 
@@ -12,7 +13,8 @@ export const useIframeLoaded = () => {
       setTimeout(function () {
         html2canvas(iframeDoc.body).then(function (canvas) {
           onUpdateProblemTypeImage(canvas, mpt)
-          // TODO we can save the same Screen for current material
+          // can save the same Screen for current material
+          onUpdateMaterialImage(canvas, currentMaterial)
         })
       }, 2000)
     }
