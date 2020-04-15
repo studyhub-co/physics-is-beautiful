@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -10,108 +10,69 @@ import Badge from 'react-bootstrap/Badge'
 import NotificationsListView from './notificationsList'
 import * as notificationsCreators from '../../actions/notifications'
 
-class CustomToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
+// class IndexView extends React.Component {
+const IndexView = props => {
+  const {
+    unReadCount, onClick, notificationsActions
+  } = props
 
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    let unReadCount = null
-    if (this.props.unReadCount && this.props.unReadCount['count']) {
-      if (this.props.unReadCount['count'] > 99) {
-        unReadCount = '99+'
-      } else {
-        unReadCount = '' + this.props.unReadCount['count']
-      }
-    }
-
+  // The forwardRef is important!!
+  // Dropdown needs access to the DOM node in order to position the Menu
+  const CustomToggle = React.forwardRef(({ children, onClick }, ref) => {
     return (
       <span
-        onClick={this.handleClick}
+        ref={ref}
+        onClick={(e) => {
+          e.preventDefault()
+          onClick(e)
+        }}
         style={{
           padding: '1rem',
           cursor: 'pointer'
         }}>
-        <FaInbox
-          title={''}
-          style={{fontSize: '2rem'}} />
-        { unReadCount
-          ? <Badge
-            variant='danger'
-            style={{left: '2rem', position: 'absolute'}}
-          >{unReadCount}</Badge>
-          : null }
+        {children}
       </span>
     )
   }
-}
+  )
 
-CustomToggle.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  unReadCount: PropTypes.object
-}
+  useEffect(() => {
+    notificationsActions.fetchUnReadCount()
+  }, [])
 
-// fix for future versions https://github.com/react-bootstrap/react-bootstrap/issues/4841
+  let unReadCountString = unReadCount
 
-// // The forwardRef is important!!
-// // Dropdown needs access to the DOM node in order to position the Menu
-// const CustomToggle = React.forwardRef(({ children, onClick, unReadCount }, ref) => {
-//   if (unReadCount && unReadCount['count']) {
-//     if (unReadCount['count'] > 99) {
-//       unReadCount = '99+'
-//     } else {
-//       unReadCount = '' + unReadCount['count']
-//     }
-//   }
-//
-//   return (
-//     <span
-//       ref={ref}
-//       onClick={onClick}
-//       style={{
-//         padding: '1rem',
-//         cursor: 'pointer'
-//       }}>
-//       <FaInbox
-//         title={''}
-//         style={{fontSize: '2rem'}} />
-//       { unReadCount
-//         ? <Badge
-//           variant='danger'
-//           style={{left: '2rem', position: 'absolute'}}
-//         >{unReadCount}</Badge>
-//         : null }
-//     </span>
-//   )
-// }
-// )
-
-class IndexView extends React.Component {
-  componentWillMount () {
-    this.props.notificationsActions.fetchUnReadCount()
+  if (unReadCount && unReadCount['count']) {
+    if (unReadCount['count'] > 99) {
+      unReadCountString = '99+'
+    } else {
+      unReadCountString = '' + unReadCount['count']
+    }
   }
 
-  render () {
-    return (
-      <Dropdown>
-        <Dropdown.Toggle
-          unReadCount={this.props.unReadCount}
-          as={CustomToggle} id='dropdown-custom-components'>
-        Custom toggle
-        </Dropdown.Toggle>
-        <Dropdown.Menu alignRight>
-          <NotificationsListView />
-        </Dropdown.Menu>
-      </Dropdown>
-    )
-  }
+  return (
+    <Dropdown>
+      <Dropdown.Toggle
+        as={CustomToggle} id='dropdown-custom-components'>
+        <span>
+          <FaInbox
+            title={''}
+            style={{fontSize: '2rem'}} />
+          { unReadCountString
+            ? <Badge
+              variant='danger'
+              style={{left: '2rem', position: 'absolute'}}
+            >{unReadCountString}</Badge>
+            : null }
+        </span>
+      </Dropdown.Toggle>
+      <Dropdown.Menu
+        // as={this.CustomMenu}
+        alignRight>
+        <NotificationsListView />
+      </Dropdown.Menu>
+    </Dropdown>
+  )
 }
 
 IndexView.propTypes = {
@@ -136,3 +97,77 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(IndexView)
 export { IndexView as IndexViewNotConnected }
+
+// 2 remove
+// CustomMenu = React.forwardRef(
+//   ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
+//
+//     return (
+//       <div
+//         ref={ref}
+//         style={style}
+//         className={className}
+//         aria-labelledby={labeledBy}
+//       >
+//         <FormControl
+//           autoFocus
+//           className='mx-3 my-2 w-auto'
+//           placeholder='Type to filter...'
+//         />
+//         <ul className='list-unstyled'>
+//         fsdfsdfsdfsd
+//         </ul>
+//       </div>
+//     )
+//   }
+// );
+
+// class CustomToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     let unReadCount = null
+//     if (this.props.unReadCount && this.props.unReadCount['count']) {
+//       if (this.props.unReadCount['count'] > 99) {
+//         unReadCount = '99+'
+//       } else {
+//         unReadCount = '' + this.props.unReadCount['count']
+//       }
+//     }
+//
+//     return (
+//       <span
+//         onClick={this.handleClick}
+//         style={{
+//           padding: '1rem',
+//           cursor: 'pointer'
+//         }}>
+//         <FaInbox
+//           title={''}
+//           style={{fontSize: '2rem'}} />
+//         { unReadCount
+//           ? <Badge
+//             variant='danger'
+//             style={{left: '2rem', position: 'absolute'}}
+//           >{unReadCount}</Badge>
+//           : null }
+//       </span>
+//     )
+//   }
+// }
+
+// CustomToggle.propTypes = {
+//   onClick: PropTypes.func.isRequired,
+//   unReadCount: PropTypes.object
+// }
+
+// fix for future versions https://github.com/react-bootstrap/react-bootstrap/issues/4841

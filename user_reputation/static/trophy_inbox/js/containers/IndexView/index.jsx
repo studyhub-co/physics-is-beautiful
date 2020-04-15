@@ -2,7 +2,7 @@ import React from 'react'
 
 // import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { FaTrophy } from 'react-icons/fa'
 // import Badge from 'react-bootstrap/Badge'
@@ -10,60 +10,62 @@ import { FaTrophy } from 'react-icons/fa'
 import TrophyListView from './trophyList'
 // import * as reputationCreators from '../../actions/reputation'
 
-class CustomToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
+// CustomToggle.propTypes = {
+//   onClick: PropTypes.func.isRequired
+// }
 
-    this.handleClick = this.handleClick.bind(this)
-  }
+// class IndexView extends React.Component {
+const IndexView = props => {
+  // render () {
 
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
+  const CustomToggle = React.forwardRef(({ children, onClick }, ref) => {
+  // constructor (props, context) {
+  //   super(props, context)
+  //
+  //   this.handleClick = this.handleClick.bind(this)
+  // }
 
-  render () {
-    // let unReadCount = null
-    // if (this.props.unReadCount && this.props.unReadCount['count']) {
-    //   if (this.props.unReadCount['count'] > 99) {
-    //     unReadCount = '99+'
-    //   } else {
-    //     unReadCount = '' + this.props.unReadCount['count']
-    //   }
-    // }
+  // handleClick (e) {
+  //   e.preventDefault()
+  //   this.props.onClick(e)
+  // }
 
+  // render () {
     return (
       <span
-        onClick={this.handleClick}
+        ref={ref}
+        onClick={(e) => {
+          e.preventDefault()
+          onClick(e)
+        }}
         style={{
           padding: '1rem',
           cursor: 'pointer'
         }}>
-        <FaTrophy
-          title={''}
-          style={{fontSize: '2rem'}} />
+        {children}
       </span>
     )
-  }
-}
+  // }
+  })
 
-CustomToggle.propTypes = {
-  onClick: PropTypes.func.isRequired
-}
-
-class IndexView extends React.Component {
-  render () {
-    return (
-      <Dropdown>
-        <Dropdown.Toggle as={CustomToggle} id='dropdown-custom-components'>
-        Custom toggle
-        </Dropdown.Toggle>
-        <Dropdown.Menu alignRight>
-          <TrophyListView />
-        </Dropdown.Menu>
-      </Dropdown>
-    )
-  }
+  return (
+    <Dropdown>
+      <Dropdown.Toggle
+        as={CustomToggle}
+        id='dropdown-custom-components'>
+        <span>
+          <FaTrophy
+            title={''}
+            style={{fontSize: '2rem'}} />
+        </span>
+      </Dropdown.Toggle>
+      <Dropdown.Menu
+        alignRight>
+        <TrophyListView />
+      </Dropdown.Menu>
+    </Dropdown>
+  )
+  // }
 }
 
 IndexView.propTypes = {
@@ -81,7 +83,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatch,
+    dispatch
     // reputationActions: bindActionCreators(reputationCreators, dispatch)
   }
 }

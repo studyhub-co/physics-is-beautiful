@@ -15,7 +15,7 @@ export function receiveProfileMe (me) {
 
 export function fetchProfileMe () {
   return (dispatch, state) => {
-    return getAxios().get(API_PROFILE_PREFIX + 'me')
+    return getAxios().get(API_PROFILE_PREFIX + 'me/')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveProfileMe(response.data))
