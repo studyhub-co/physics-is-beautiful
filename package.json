@@ -51,7 +51,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@vermus/django-react-djeddit-client": "^1.0.74",
+    "@vermus/django-react-djeddit-client": "^1.0.78",
     "axios": "^0.17.1",
     "connected-react-router": "^6.5.2",
     "copy-to-clipboard": "^3.0.8",
@@ -65,7 +65,7 @@
     "react": "^16.8.6",
     "react-ace": "^7.0.2",
     "react-adsense": "0.0.6",
-    "react-bootstrap": "^1.0.0-beta.9",
+    "react-bootstrap": "1.0.0-beta.9",
     "react-clipboard.js": "^2.0.7",
     "react-countdown-clock": "^2.5.0",
     "react-data-table-component": "^1.7.1",
@@ -84,7 +84,7 @@
     "react-mathjax": "^1.0.1",
     "react-mathjax2": "0.0.2",
     "react-moment": "^0.7.9",
-    "react-pdf-js": "github:physics-is-beautiful/react-pdf-js#0.7",
+    "react-pdf-js": "github:physics-is-beautiful/react-pdf-js#0.12",
     "react-redux": "^7.1.0",
     "react-responsive": "^1.3.0",
     "react-router-dom": "^5.0.1",

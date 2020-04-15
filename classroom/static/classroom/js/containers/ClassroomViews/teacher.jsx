@@ -49,6 +49,9 @@ class TeacherClassroomView extends React.Component {
     this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
     this.hideCopiedToolTip = this.hideCopiedToolTip.bind(this)
 
+    this.refOverlay1 = React.createRef()
+    this.refOverlay2 = React.createRef()
+
     this.state = {
       showCreateAssigment: false,
       showAssingment: false,
@@ -109,8 +112,10 @@ class TeacherClassroomView extends React.Component {
   }
 
   hideCopiedToolTip () {
-    if (this.refs.overlay1) { this.refs.overlay1.hide() }
-    if (this.refs.overlay2) { this.refs.overlay2.hide() }
+    // if (this.refs.overlay1) { this.refs.overlay1.hide() }
+    // if (this.refs.overlay2) { this.refs.overlay2.hide() }
+    if (this.refOverlay1) { this.refOverlay1.hide() }
+    if (this.refOverlay2) { this.refOverlay2.hide() }
   }
 
   render () {
@@ -195,7 +200,8 @@ class TeacherClassroomView extends React.Component {
                       <span className={'gray-text pointer'}>
                         <OverlayTrigger
                           delayShow={300}
-                          ref='overlay1'
+                          // ref='overlay1'
+                          ref={this.refOverlay1}
                           trigger='click'
                           placement='top'
                           overlay={copiedTooltip}>
@@ -222,7 +228,8 @@ class TeacherClassroomView extends React.Component {
                         <span className={'gray-text pointer'}>
                           <OverlayTrigger
                             delayShow={300}
-                            ref='overlay1'
+                            // ref='overlay1'
+                            ref={this.refOverlay1}
                             trigger='click'
                             placement='top'
                             overlay={copiedTooltip}>
@@ -247,7 +254,8 @@ class TeacherClassroomView extends React.Component {
                               delayShow={300}
                               trigger='click'
                               placement='top'
-                              ref='overlay2'
+                              // ref='overlay2'
+                              ref={this.refOverlay2}
                               overlay={copiedTooltip}>
                               <span onClick={() => { setTimeout(this.hideCopiedToolTip, 3000) }}>Copy</span>
                             </OverlayTrigger>
@@ -331,7 +339,8 @@ class TeacherClassroomView extends React.Component {
                 ? <Modal
                   show={this.state.showCreateAssigment}
                   onHide={this.handleCreateAssigment}
-                  container={this} >
+                  // container={this}
+                >
                   <Modal.Header closeButton>
                     <Modal.Title>{this.state.createNewAssigment ? 'Create' : 'Edit'}  an assignment</Modal.Title>
                   </Modal.Header>
