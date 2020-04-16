@@ -6,7 +6,8 @@ import { json } from 'overmind';
 const global = getGlobal() as Window & { BrowserFS: any };
 
 const fs = global.BrowserFS.BFSRequire('fs');
-const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
+// const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
+const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
 
 let lastMTime = new Date(0);
 
@@ -77,9 +78,12 @@ async function syncDependencyTypings(
           'https:'
         );
 
+        const dependencyQuery = encodeURIComponent(`${depName}@${depVersion}`);
+
         try {
           const fetchRequest = await fetch(
-            `${SERVICE_URL}/${depName}@${depVersion}.json`
+            // `${SERVICE_URL}/${depName}@${depVersion}.json`
+             `${SERVICE_URL}/${dependencyQuery}.json`
           );
 
           if (!fetchRequest.ok) {
