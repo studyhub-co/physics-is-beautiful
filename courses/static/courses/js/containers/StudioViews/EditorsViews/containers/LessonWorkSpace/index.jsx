@@ -97,6 +97,36 @@ const Lesson = props => {
     asyncEditorStartUp()
   }, [])
 
+  // materials list
+  let navMaterials = []
+
+  if (materials) {
+    navMaterials = materials.map((materialUuid) => {
+      return (
+        <Grid item alignContent={'center'}>
+          <DockableDropTarget
+            key={materialUuid}
+            onDrop={dropSource =>
+              useHandleMaterialDroppedBefore(dropSource.uuid, materialUuid, moveMaterial)
+            }
+            itemType={DragItemTypes.MATERIAL}
+            selfUuid={materialUuid}
+          >
+            <MaterialThumbnail
+              key={materialUuid}
+              uuid={materialUuid}
+              lessonUuid={uuid}
+              selected={
+                currentMaterial &&
+                  currentMaterial.uuid === materialUuid
+              }
+            />
+          </DockableDropTarget>
+        </Grid>
+      )
+    })
+  }
+
   const onMenuLayoutChange = (e, menuId) => {
     // main menu click
     if (menuId === 'view.present') { setLayoutMode('present') }
@@ -137,32 +167,6 @@ const Lesson = props => {
       </DockableDropTarget>
     </Grid>
   )
-
-  // materials list
-  const navMaterials = materials.map((materialUuid) => {
-    return (
-      <Grid item alignContent={'center'}>
-        <DockableDropTarget
-          key={materialUuid}
-          onDrop={dropSource =>
-            useHandleMaterialDroppedBefore(dropSource.uuid, materialUuid, moveMaterial)
-          }
-          itemType={DragItemTypes.MATERIAL}
-          selfUuid={materialUuid}
-        >
-          <MaterialThumbnail
-            key={materialUuid}
-            uuid={materialUuid}
-            lessonUuid={uuid}
-            selected={
-              currentMaterial &&
-            currentMaterial.uuid === materialUuid
-            }
-          />
-        </DockableDropTarget>
-      </Grid>
-    )
-  })
 
   const editorComponent = state.editor
 

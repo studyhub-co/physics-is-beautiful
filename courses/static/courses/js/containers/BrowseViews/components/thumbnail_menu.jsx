@@ -13,29 +13,29 @@ import {
 import { Overlay } from '../../../components/fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
 
-class MenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '1.5rem'}}>
-        {this.props.children}
-      </FaEllipsisV>
-    )
-  }
-}
-
-MenuToggle.propTypes = {
-  onClick: PropTypes.func
-}
+// class MenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '1.5rem'}}>
+//         {this.props.children}
+//       </FaEllipsisV>
+//     )
+//   }
+// }
+//
+// MenuToggle.propTypes = {
+//   onClick: PropTypes.func
+// }
 
 // TODO replace action and redux store with courseNavigation
 
@@ -77,6 +77,21 @@ class ThumbnailMenu extends React.Component {
       selectedLesson: null,
       showSpinnerOverlay: false
     }
+
+    this.MenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      return (
+        <FaEllipsisV
+          ref={ref}
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+          }}
+          style={{fontSize: '1.5rem'}}>
+          {children}
+        </FaEllipsisV>
+      )
+    })
+
   }
 
   onLearnSelect () {
@@ -298,7 +313,7 @@ class ThumbnailMenu extends React.Component {
         onToggle={this.onToggle}
         show={this.state.menuOpen}
       >
-        <Dropdown.Toggle as={MenuToggle} />
+        <Dropdown.Toggle as={this.MenuToggle} />
         <Dropdown.Menu
           // rootCloseEvent={'click'}
         >

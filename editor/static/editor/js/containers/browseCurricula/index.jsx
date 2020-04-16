@@ -189,16 +189,20 @@ class BrowseCurriculaView extends React.Component {
 
   doTabsSearch () {
     if (this.state.selectedTab === 'Units') {
-      this.searchUnitsView.getWrappedInstance().doSearch()
+      // this.searchUnitsView.getWrappedInstance().doSearch()
+      this.searchUnitsView.doSearch()
     }
     if (this.state.selectedTab === 'Modules') {
-      this.searchModulesView.getWrappedInstance().doSearch()
+      // this.searchModulesView.getWrappedInstance().doSearch()
+      this.searchModulesView.doSearch()
     }
     if (this.state.selectedTab === 'Lessons') {
-      this.searchLessonsView.getWrappedInstance().doSearch()
+      // this.searchLessonsView.getWrappedInstance().doSearch()
+      this.searchLessonsView.doSearch()
     }
     if (this.state.selectedTab === 'Questions') {
-      this.searchQuestionsView.getWrappedInstance().doSearch()
+      // this.searchQuestionsView.getWrappedInstance().doSearch()
+      this.searchQuestionsView.doSearch()
     }
   }
 

@@ -15,30 +15,6 @@ import { Overlay } from '../fullscreen_overlay'
 import { store } from '../../app'
 import { RingLoader } from 'react-spinners'
 
-class CurriculumMenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
-        {this.props.children}
-      </FaEllipsisV>
-    )
-  }
-}
-
-CurriculumMenuToggle.propTypes = {
-  onClick: PropTypes.func
-}
-
 export class CurriculumThumbnail extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -49,7 +25,25 @@ export class CurriculumThumbnail extends React.Component {
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
     this.state = {showSpinnerOverlay: false}
+
+    this.CurriculumMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      return (
+        <FaEllipsisV
+          ref={ref}
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+          }}
+          style={{fontSize: '2rem'}}>
+          {children}
+        </FaEllipsisV>
+      )
+    })
   }
+
+  // CurriculumMenuToggle.propTypes = {
+  //   onClick: PropTypes.func
+  // }
 
   onEditContentSelect (e) {
     this.props.onClick()
@@ -106,8 +100,10 @@ export class CurriculumThumbnail extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            {/* <CurriculumMenuToggle bsRole='toggle' /> */}
-            <Dropdown.Toggle as={CurriculumMenuToggle} />
+            <Dropdown.Toggle
+              as={this.CurriculumMenuToggle}
+              id='dropdown-curriculum'
+            />
             <Dropdown.Menu rootCloseEvent={'click'}>
               <DropdownItem onSelect={this.onEditContentSelect} eventKey='1'>
                 {/* <Glyphicon glyph='edit' /> Edit content */}
@@ -147,18 +143,18 @@ export class CurriculumThumbnail extends React.Component {
             </Moment>
           </div>
           {/* tags that can be use in the future */}
-          {/*<div style={{textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>*/}
-            {/*<div className='ReactTags__tags react-tags-wrapper'>*/}
-              {/*<div className='ReactTags__selected'>*/}
-                {/*{this.props.tags.map((tag, i) => {*/}
-                  {/*return <span key={i} className='tag-wrapper ReactTags__tag' style={{ opacity: 1, cursor: 'auto' }}>*/}
-                    {/*{tag}*/}
-                  {/*</span>*/}
-                {/*})*/}
-                {/*}*/}
-              {/*</div>*/}
-            {/*</div>*/}
-          {/*</div>*/}
+          {/* <div style={{textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}> */}
+          {/* <div className='ReactTags__tags react-tags-wrapper'> */}
+          {/* <div className='ReactTags__selected'> */}
+          {/* {this.props.tags.map((tag, i) => { */}
+          {/* return <span key={i} className='tag-wrapper ReactTags__tag' style={{ opacity: 1, cursor: 'auto' }}> */}
+          {/* {tag} */}
+          {/* </span> */}
+          {/* }) */}
+          {/* } */}
+          {/* </div> */}
+          {/* </div> */}
+          {/* </div> */}
         </div>
       </Col>
     )

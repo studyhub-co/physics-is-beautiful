@@ -96,7 +96,7 @@ class BrowseStudioDashboard extends React.Component {
                 : <div>
                   <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit
-                  the <a href='javascript:void(0)' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.
+                  the <a href='' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.
                   Tutorial and additional help here. {/* TODO help link? */}
                   </div>
                   <StudioCoursesIndexView

@@ -335,7 +335,8 @@ class TeacherClassroomView extends React.Component {
                 ? <Modal
                   show={this.state.showCreateAssigment}
                   onHide={this.handleCreateAssigment}
-                  container={this} >
+                  // container={this}
+                >
                   <Modal.Header closeButton>
                     <Modal.Title>{this.state.createNewAssigment ? 'Create' : 'Edit'}  an assignment</Modal.Title>
                   </Modal.Header>

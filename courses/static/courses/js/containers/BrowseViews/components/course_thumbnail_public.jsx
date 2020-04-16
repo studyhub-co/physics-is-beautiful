@@ -13,36 +13,36 @@ import {
 
 import history from '../../../history'
 import {
-  addCourse, addCourseToDashboard, loadSearchCourses, removeCourseFromDashboard,
+  addCourse, addCourseToDashboard, loadSearchCourses, removeCourseFromDashboard
 } from '../../../actions/studio'
 import { Thumbnail } from '../../../components/thumbnail'
 import { Overlay } from '../../../components/fullscreen_overlay'
 import { connect } from 'react-redux'
 import { BASE_URL } from '../../../utils/config'
 
-class CourseMenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
-        {this.props.children}
-      </FaEllipsisV>
-    )
-  }
-}
-
-CourseMenuToggle.propTypes = {
-  onClick: PropTypes.func
-}
+// class CourseMenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
+//         {this.props.children}
+//       </FaEllipsisV>
+//     )
+//   }
+// }
+//
+// CourseMenuToggle.propTypes = {
+//   onClick: PropTypes.func
+// }
 
 export class CourseThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -55,6 +55,17 @@ export class CourseThumbnailPublic extends React.Component {
     this.onAddToDashboardSelect = this.onAddToDashboardSelect.bind(this)
     this.onRemoveFromDashboardSelect = this.onRemoveFromDashboardSelect.bind(this)
     this.state = {showSpinnerOverlay: false}
+
+    this.CourseMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      return (
+        <FaEllipsisV onClick={(e) => {
+          e.preventDefault()
+          onClick(e)
+        }} style={{fontSize: '2rem'}}>
+          {children}
+        </FaEllipsisV>
+      )
+    })
   }
 
   onLearnSelect () {
@@ -149,7 +160,7 @@ export class CourseThumbnailPublic extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            <Dropdown.Toggle as={CourseMenuToggle} />
+            <Dropdown.Toggle as={this.CourseMenuToggle} />
             <DropdownMenu />
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
@@ -196,7 +207,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatch,
     addCourseToDashboard: (uuid) => dispatch(addCourseToDashboard(uuid)),
     addCourse: (uuid) => dispatch(addCourse(uuid)),
-    removeCourseFromDashboard: (uuid) => dispatch(removeCourseFromDashboard(uuid)),
+    removeCourseFromDashboard: (uuid) => dispatch(removeCourseFromDashboard(uuid))
   }
 }
 

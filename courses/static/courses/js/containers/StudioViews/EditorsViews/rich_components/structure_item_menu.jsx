@@ -17,28 +17,28 @@ import {
 } from '../../../../actions/studio'
 import { Overlay } from '../../../../components/fullscreen_overlay'
 
-class MenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    e.stopPropagation() // stop parents onClicks if exist
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <div onClick={this.handleClick}>{this.props.children}</div>
-    )
-  }
-}
-
-MenuToggle.propTypes = {
-  onClick: PropTypes.func
-}
+// class MenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     e.stopPropagation() // stop parents onClicks if exist
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <div onClick={this.handleClick}>{this.props.children}</div>
+//     )
+//   }
+// }
+//
+// MenuToggle.propTypes = {
+//   onClick: PropTypes.func
+// }
 
 class StructureItemMenu extends React.Component {
   constructor (props, context) {
@@ -65,6 +65,19 @@ class StructureItemMenu extends React.Component {
       baseName = 'material'
       uuid = props.material.uuid
     }
+
+    this.MenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      return (
+        <div
+          ref={ref}
+          onClick={(e) => {
+            console.log(onClick)
+            e.preventDefault()
+            e.stopPropagation() // stop parents onClicks if exist
+            onClick(e)
+          }}>{children}</div>
+      )
+    })
 
     let level = 1
 
@@ -295,7 +308,8 @@ class StructureItemMenu extends React.Component {
         onToggle={this.onToggle}
         show={this.state.menuOpen}
       >
-        <Dropdown.Toggle as={MenuToggle}>
+        <Dropdown.Toggle
+          as={this.MenuToggle}>
           {this.props.children}
         </Dropdown.Toggle>
         <Dropdown.Menu

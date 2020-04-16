@@ -11,29 +11,29 @@ import { BASE_URL } from '../../../../utils/config'
 import { Thumbnail } from '../../../../components/thumbnail'
 import { Overlay } from '../../../../components/fullscreen_overlay'
 
-class CourseMenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
-        {this.props.children}
-      </FaEllipsisV>
-    )
-  }
-}
-
-CourseMenuToggle.propTypes = {
-  onClick: PropTypes.func
-}
+// class CourseMenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
+//         {this.props.children}
+//       </FaEllipsisV>
+//     )
+//   }
+// }
+//
+// CourseMenuToggle.propTypes = {
+//   onClick: PropTypes.func
+// }
 
 export default class CourseThumbnail extends React.Component {
   constructor (props, context) {
@@ -45,6 +45,20 @@ export default class CourseThumbnail extends React.Component {
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
     this.state = {showSpinnerOverlay: false}
+
+    this.CourseMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      return (
+        <FaEllipsisV
+          ref={ref}
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+          }}
+          style={{fontSize: '2rem'}}>
+          {children}
+        </FaEllipsisV>
+      )
+    })
   }
 
   onEditContentSelect (e) {
@@ -102,7 +116,7 @@ export default class CourseThumbnail extends React.Component {
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
             {/* <CourseMenuToggle bsRole='toggle' /> */}
-            <Dropdown.Toggle as={CourseMenuToggle} />
+            <Dropdown.Toggle as={this.CourseMenuToggle} />
             <Dropdown.Menu rootCloseEvent={'click'}>
               <DropdownItem onSelect={this.onEditContentSelect} eventKey='1'>
                 <FaEdit /> Edit content

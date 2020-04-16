@@ -14,32 +14,29 @@ import { Thumbnail } from './../thumbnail'
 import { store } from '../../app'
 import { Overlay } from '../fullscreen_overlay'
 
-class CurriculumMenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
+// class CurriculumMenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
+//         {this.props.children}
+//       </FaEllipsisV>
+//     )
+//   }
+// }
 
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    { /* <Glyphicon glyph={'option-vertical'} onClick={this.handleClick} style={{fontSize: '2rem'}}> */ }
-    { /* {this.props.children} */ }
-    { /* </Glyphicon> */ }
-    return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
-        {this.props.children}
-      </FaEllipsisV>
-    )
-  }
-}
-
-CurriculumMenuToggle.propTypes = {
-  onClick: PropTypes.func
-}
+// CurriculumMenuToggle.propTypes = {
+//   onClick: PropTypes.func
+// }
 
 export class CurriculumThumbnailPublic extends React.Component {
   constructor (props, context) {
@@ -52,6 +49,19 @@ export class CurriculumThumbnailPublic extends React.Component {
     this.onAddToDashboardSelect = this.onAddToDashboardSelect.bind(this)
     this.onRemoveFromDashboardSelect = this.onRemoveFromDashboardSelect.bind(this)
     this.state = {showSpinnerOverlay: false}
+    this.CurriculumMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      return (
+        <FaEllipsisV
+          ref={ref}
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+          }}
+          style={{fontSize: '2rem'}}>
+          {children}
+        </FaEllipsisV>
+      )
+    })
   }
 
   onLearnSelect () {
@@ -146,7 +156,7 @@ export class CurriculumThumbnailPublic extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            <Dropdown.Toggle as={CurriculumMenuToggle} />
+            <Dropdown.Toggle as={this.CurriculumMenuToggle} />
             <DropdownMenu />
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>

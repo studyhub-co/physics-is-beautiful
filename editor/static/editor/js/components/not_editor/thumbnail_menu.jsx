@@ -10,29 +10,29 @@ import { addUnit, addToNewCurriculum, addModule, addLesson, addQuestion, loadMod
 import { Overlay } from '../fullscreen_overlay'
 import { RingLoader } from 'react-spinners'
 
-class MenuToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <FaEllipsisV onClick={this.handleClick} style={{fontSize: '1.5rem'}}>
-        {this.props.children}
-      </FaEllipsisV>
-    )
-  }
-}
-
-MenuToggle.propTypes = {
-  onClick: PropTypes.func
-}
+// class MenuToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '1.5rem'}}>
+//         {this.props.children}
+//       </FaEllipsisV>
+//     )
+//   }
+// }
+//
+// MenuToggle.propTypes = {
+//   onClick: PropTypes.func
+// }
 
 // TODO replace action and redux store with courseNavigation
 
@@ -77,10 +77,24 @@ class ThumbnailMenu extends React.Component {
       selectedLesson: null,
       showSpinnerOverlay: false
     }
+
+    this.MenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      return (
+        <FaEllipsisV
+          ref={ref}
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+          }}
+          style={{fontSize: '1.5rem'}}>
+          {children}
+        </FaEllipsisV>
+      )
+    })
   }
 
   onLearnSelect () {
-    //window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
+    // window.open('/curriculum/units/' + this.props.unit.uuid + '/', '_blank')
     if (this.state.baseName === 'question') { // open lesson view
       window.open('/curriculum/lessons/' + this.props[this.state.baseName].lesson.uuid + '/', '_self')
     } else {
@@ -183,15 +197,15 @@ class ThumbnailMenu extends React.Component {
         copyText = 'Copy link to lesson'
       }
       menus.push(<Dropdown.Item onSelect={this.onLearnSelect} key='1' eventKey='1'>
-        {/*<Glyphicon glyph='education' />*/}
+        {/* <Glyphicon glyph='education' /> */}
         <FaGraduationCap />
         &nbsp;{learnText}</Dropdown.Item>)
       menus.push(<Dropdown.Item onSelect={this.onForkSelect} key='3' eventKey='3'>
-        {/*<Glyphicon glyph='export' />*/}
+        {/* <Glyphicon glyph='export' /> */}
         <FaCodeBranch />
         &nbsp;Fork to curriculum studio</Dropdown.Item>)
       menus.push(<Dropdown.Item onSelect={this.onCopyShareableLink} key='4' eventKey='4'>
-        {/*<Glyphicon glyph='share-alt' />*/}
+        {/* <Glyphicon glyph='share-alt' /> */}
         <FaShareAlt />
         &nbsp;{copyText}</Dropdown.Item>)
     }
@@ -220,7 +234,7 @@ class ThumbnailMenu extends React.Component {
       }
 
       menus.push(<Dropdown.Item onSelect={this.addElementToNewCurriculum} key='4' eventKey='4' style={{color: 'blue'}}>
-        {/*<Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum*/}
+        {/* <Glyphicon glyph='plus' /> Add {this.state.baseName} to new curriculum */}
         <FaPlus /> Add {this.state.baseName} to new curriculum
       </Dropdown.Item>)
     }
@@ -301,7 +315,7 @@ class ThumbnailMenu extends React.Component {
         onToggle={this.onToggle}
         show={this.state.menuOpen}
       >
-        <Dropdown.Toggle as={MenuToggle} />
+        <Dropdown.Toggle as={this.MenuToggle} />
         <Dropdown.Menu
           // rootCloseEvent={'click'}
         >
@@ -316,7 +330,7 @@ class ThumbnailMenu extends React.Component {
 ThumbnailMenu.propTypes = {
   unit: PropTypes.object,
   lesson: PropTypes.object,
-  module: PropTypes.object,
+  module: PropTypes.object
   // curricula: PropTypes.object,
   // uuid: PropTypes.string
 }
