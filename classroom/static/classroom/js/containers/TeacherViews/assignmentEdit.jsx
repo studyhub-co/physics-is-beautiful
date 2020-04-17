@@ -174,6 +174,12 @@ class AssignmentEdit extends React.Component {
   }
 
   validateAssignment () {
+    // TODO add validation errors info for user
+    let dueDateTime = new Date(this.state.dueDate)
+    if (this.state.dueTime) {
+      dueDateTime.setHours(this.state.dueTime.getHours(), this.state.dueTime.getMinutes())
+    }
+
     if (!this.state.startDate ||
         !this.state.dueDate ||
         this.state.startTime == null ||
@@ -181,12 +187,13 @@ class AssignmentEdit extends React.Component {
         !this.state.assignmentName ||
         this.state.selectedLessons.length === 0 ||
         this.state.startDate > this.state.dueDate || // if start date > due date
-        new Date(this.state.dueDate) < new Date()) { // if due date < date now
+        dueDateTime < new Date()) { // if due date+time < date+time now
       this.setState({assignmentIsValid: false})
     } else {
       this.setState({assignmentIsValid: true})
     }
   }
+
 
   saveAssignment () {
     var lessonsUuids = []
@@ -376,12 +383,10 @@ class AssignmentEdit extends React.Component {
         : <Container fluid>
           <Row>
             <Col sm={12} md={12} style={{margin: '0 40% 0 40%'}}>
-              {/*<div className='sweet-loading'>*/}
               <RingLoader
                 color={'#1caff6'}
                 loading={this.state.loading}
               />
-              {/*</div>*/}
             </Col>
           </Row>
         </Container>}
