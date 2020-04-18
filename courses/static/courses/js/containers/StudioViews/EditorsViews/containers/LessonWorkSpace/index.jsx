@@ -85,10 +85,7 @@ const Lesson = props => {
     editor: <div></div>
   })
 
-  // did mount
   useEffect(() => {
-    loadLessonIfNeeded(materialUrlUuid)
-
     // async load editor after Lesson component did mount
     async function asyncEditorStartUp () {
       let editor = await asyncEditor()
@@ -96,6 +93,11 @@ const Lesson = props => {
     }
     asyncEditorStartUp()
   }, [])
+
+  useEffect(() => {
+    console.log(materialUrlUuid);
+    loadLessonIfNeeded(materialUrlUuid)
+  }, [materialUrlUuid])
 
   // materials list
   let navMaterials = []

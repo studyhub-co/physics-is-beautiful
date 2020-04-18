@@ -1488,7 +1488,6 @@ export function addMaterial (lessonUuid, material) {
 
 export function moveMaterial (uuid, beforeUuid) {
   return (dispatch, getState) => {
-    // console.log(beforeUuid)
     var state = getState().studio
     var lessonUuid = state.materials[uuid].lesson
     var newPosition
@@ -1500,6 +1499,7 @@ export function moveMaterial (uuid, beforeUuid) {
         state.materials[lesson.materials[lesson.materials.length - 1]]
           .position + 1
     }
+
     $.ajax({
       async: true,
       url: API_PREFIX + 'materials/' + uuid + '/',

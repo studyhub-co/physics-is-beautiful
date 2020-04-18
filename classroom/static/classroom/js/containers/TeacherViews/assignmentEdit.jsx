@@ -194,7 +194,6 @@ class AssignmentEdit extends React.Component {
     }
   }
 
-
   saveAssignment () {
     var lessonsUuids = []
 

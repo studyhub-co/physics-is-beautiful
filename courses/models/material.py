@@ -17,7 +17,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from taggit.managers import TaggableManager
 from djeddit.models import Thread
 
-from . import Lesson, BaseItemModel, MaterialProblemType
+from . import Lesson, BaseItemModel, MaterialProblemType, get_earliest_gap
 from .storage import OverwriteStorage
 from .utils import UUIDTaggedItem
 
@@ -69,27 +69,6 @@ class Material(BaseItemModel):
         # TODO return correct data
         return []
 
-    # def save(self, *args, **kwargs):
-    #     # Opening the uploaded image
-    #     img = Image.open(self.image)
-    #
-    #     if img.height > 250 or img.width > 250:
-    #         output_size = (250, 250)
-    #         img.thumbnail(output_size)
-    #         img = img.convert('RGB')
-    #
-    #         output = BytesIO()
-    #         img.save(output, format='PNG')
-    #         output.seek(0)
-    #
-    #         # change the imagefield value to be the newley modifed image value
-    #         self.image = InMemoryUploadedFile(output, 'ImageField',
-    #                                           f'{self.image.name.split(".")[0]}.jpg',
-    #                                           'image/jpeg', sys.getsizeof(output),
-    #                                           None)
-    #
-    #     super().save(*args, **kwargs)
-
     class Meta:
         ordering = ['position']
 
@@ -98,22 +77,32 @@ class Material(BaseItemModel):
 def resize_screenshot(sender, instance, **kwargs):
     output_size = (300, 300)
 
-    image = Image.open(instance.screenshot.file.file)
+    if instance.screenshot:
+        image = Image.open(instance.screenshot.file.file)
 
-    if image.height > output_size[0] or image.width > output_size[1]:
-        # do not resize if already resized
-        image.thumbnail(size=output_size)
-        image_file = BytesIO()
-        image.save(image_file, image.format)
+        if image.height > output_size[0] or image.width > output_size[1]:
+            # do not resize if already resized
+            image.thumbnail(size=output_size)
+            image_file = BytesIO()
+            image.save(image_file, image.format)
 
-        instance.screenshot.save(
-            instance.screenshot.name,
-            InMemoryUploadedFile(
-                image_file,
-                None, '',
-                instance.screenshot.file.content_type,
-                image.size,
-                instance.screenshot.file.charset,
-            ),
-            save=False
+            instance.screenshot.save(
+                instance.screenshot.name,
+                InMemoryUploadedFile(
+                    image_file,
+                    None, '',
+                    instance.screenshot.file.content_type,
+                    image.size,
+                    instance.screenshot.file.charset,
+                ),
+                save=False
+            )
+
+
+@receiver(pre_save, sender=Material)
+def set_position(sender, instance, **kwargs):
+    if instance.position is None:
+        taken_positions = list(
+            Material.objects.filter(lesson=instance.lesson).values_list('position', flat=True)
         )
+        instance.position = get_earliest_gap(taken_positions)
