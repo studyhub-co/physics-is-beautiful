@@ -207,13 +207,13 @@ class ContentSplit extends React.Component {
                 minSize={0}
                 onDragStarted={() => signals.editor.resizingStarted()}
                 onDragFinished={() => signals.editor.resizingStopped()}
-                // onChange={size => {
-                //   if (size > 0 && store.workspace.workspaceHidden) {
-                //     signals.workspace.setWorkspaceHidden({ hidden: false })
-                //   } else if (size === 0 && !store.workspace.workspaceHidden) {
-                //     signals.workspace.setWorkspaceHidden({ hidden: true })
-                //   }
-                // }}
+                onChange={size => {
+                  if (size > 0 && store.workspace.workspaceHidden) {
+                    signals.workspace.setWorkspaceHidden({ hidden: false })
+                  } else if (size === 0 && !store.workspace.workspaceHidden) {
+                    signals.workspace.setWorkspaceHidden({ hidden: true })
+                  }
+                }}
                 pane1Style={{
                   visibility: store.workspace.workspaceHidden
                     ? 'hidden'
