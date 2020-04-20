@@ -78,7 +78,7 @@ class Resource(models.Model):
             return '/resources/{}/{}/'.\
                 format(slugify(self.metadata.data['volumeInfo']['title'])
                        , self.uuid)
-        except (KeyError, ResourceMetaData.DoesNotExist):
+        except (KeyError, AttributeError, ResourceMetaData.DoesNotExist):
             return '/resources/{}/{}/'.format('unknown-resource', self.uuid)
 
     class Moderator:
@@ -158,7 +158,7 @@ class ResourceProblem(models.Model):
                 slugify(self.textbook_section.resource.metadata.data['volumeInfo']['title']),
                 slugify(self.title),
                 self.uuid)
-        except (KeyError, ResourceMetaData.DoesNotExist):
+        except (KeyError, AttributeError, ResourceMetaData.DoesNotExist):
             return '/resources/{}/problems/{}/{}/'.format(
                 'unknown-resource',
                 slugify(self.title),
@@ -218,7 +218,7 @@ class TextBookSolution(VoteModel, models.Model):
                 slugify(self.textbook_problem.title),
                 slugify(self.title),
                 self.uuid)
-        except (KeyError, ResourceMetaData.DoesNotExist):
+        except (KeyError, AttributeError, ResourceMetaData.DoesNotExist):
             return '/resources/{}/problems/{}/solutions/{}/{}/'.format(
                 'unknown-resource',
                 slugify(self.textbook_problem.title),
