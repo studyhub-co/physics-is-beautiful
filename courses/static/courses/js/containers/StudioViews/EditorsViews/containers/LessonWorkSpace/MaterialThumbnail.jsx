@@ -4,7 +4,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { DragSource } from 'react-dnd'
 import { FaGripHorizontal, FaTimes } from 'react-icons/fa'
+
 import Paper from '@material-ui/core/Paper'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 
 import { goToMaterial, deleteMaterial } from '../../../../../actions/studio'
 import { DragItemTypes } from '../../../../../dnd'
@@ -23,12 +26,33 @@ function collect (connect, monitor) {
   }
 }
 
+const initialState = {
+  // context menu
+  mouseX: null,
+  mouseY: null
+}
+
 const MaterialThumbnailComponent = props => {
   const {
     onDeleteClick, selected, isDragging, onClick,
     connectDragSource, shortText, screenshot, position,
     connectDragPreview
   } = props
+
+  const [state, setState] = React.useState(initialState)
+
+  // context menu
+  const handleMaterialThumbnailClick = event => {
+    event.preventDefault()
+    setState({
+      mouseX: event.clientX - 2,
+      mouseY: event.clientY - 4
+    })
+  }
+
+  const handleContextMenuClose = () => {
+    setState(initialState)
+  }
 
   function handleDeleteClick (e) {
     e.preventDefault()
@@ -39,6 +63,7 @@ const MaterialThumbnailComponent = props => {
 
   return (<Paper
     onClick={onClick}
+    onContextMenu={handleMaterialThumbnailClick}
     elevation={3}
     className={
       'material-thumbnail draggable' +
@@ -56,6 +81,20 @@ const MaterialThumbnailComponent = props => {
           }
         </div>
         <FaTimes className='btn-delete' onClick={handleDeleteClick} />
+        <Menu
+          keepMounted
+          open={state.mouseY !== null}
+          onClose={handleContextMenuClose}
+          anchorReference='anchorPosition'
+          anchorPosition={
+            state.mouseY !== null && state.mouseX !== null
+              ? { top: state.mouseY, left: state.mouseX }
+              : undefined
+          }
+        >
+          <MenuItem onClick={handleContextMenuClose}>Fork</MenuItem>
+          <MenuItem onClick={handleContextMenuClose}>Delete</MenuItem>
+        </Menu>
       </div>
     )
     } </Paper>)
@@ -67,7 +106,7 @@ MaterialThumbnailComponent.propTypes = {
   onClick: PropTypes.func,
   uuid: PropTypes.string, // material uuid
   position: PropTypes.string, // material position
-  lessonUuid: PropTypes.string.isRequired, // leeeson uuid
+  lessonUuid: PropTypes.string.isRequired, // lesson uuid
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
