@@ -26,7 +26,7 @@ function collect (connect, monitor) {
 const MaterialThumbnailComponent = props => {
   const {
     onDeleteClick, selected, isDragging, onClick,
-    connectDragSource, shortText, screenshot,
+    connectDragSource, shortText, screenshot, position,
     connectDragPreview
   } = props
 
@@ -48,6 +48,7 @@ const MaterialThumbnailComponent = props => {
         style={{ display: isDragging ? 'none' : 'block', overflow: 'hidden' }}
       >
         {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)}
+        <span className='position'>{position}</span>
         <div className='thumbnail-inner'>
           {screenshot
             ? <img src={screenshot} style={{height: '100%', width: '100%'}}/>
@@ -65,6 +66,7 @@ MaterialThumbnailComponent.propTypes = {
   screenshot: PropTypes.string,
   onClick: PropTypes.func,
   uuid: PropTypes.string, // material uuid
+  position: PropTypes.string, // material position
   lessonUuid: PropTypes.string.isRequired, // leeeson uuid
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
@@ -78,7 +80,8 @@ const mapStateToProps = (state, ownProps) => {
   var q = state.studio.materials[uuid]
   return {
     shortText: q.name,
-    screenshot: q.screenshot
+    screenshot: q.screenshot,
+    position: q.position
   }
 }
 
