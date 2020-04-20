@@ -188,6 +188,7 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
 }
 /*.editor .material-thumbnail .drag-handle { width: 10px; height: 10px; display: inline-block; margin-right: 5px;}*/
 .editor .material-thumbnail .drag-handle { position: absolute; left: -0.5rem; top: -1rem; }
+.editor .material-thumbnail .position { position: absolute; left: -0.5rem; top: 1rem; }
 .editor .material-thumbnail.selected { border: 1px solid #9fddfb; }
 .editor .material-thumbnail .btn-delete { position: absolute; right: -7px; top: -7px; cursor: pointer; }
 .editor .material-thumbnail .thumbnail-inner { overflow: hidden; height: 100%;}
