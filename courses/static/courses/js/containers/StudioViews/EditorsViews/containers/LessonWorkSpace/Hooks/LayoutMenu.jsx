@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { dispatch as csDispatch } from 'codesandbox-api'
 
 export function useLayoutMode () {
-  const [layout, setLayout] = useState('present')
+  const [layout, setLayout] = useState('student')
 
   function setLayoutMode (mode) {
     // dispatch event to Editor API

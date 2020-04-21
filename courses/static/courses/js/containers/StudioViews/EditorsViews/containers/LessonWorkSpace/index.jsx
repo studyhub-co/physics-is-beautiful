@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Edit from '@material-ui/icons/Edit'
+import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode'
 import Slideshow from '@material-ui/icons/Slideshow'
 
 import { FaTimes, FaPlusCircle } from 'react-icons/fa'
@@ -46,7 +47,7 @@ import {
   useCurrentMaterialHasType, useMaterialTypePropIsInMaterial, useHandleMaterialDroppedBefore
 } from './Hooks/materials'
 import { useHandleDeleteLessonClick } from './Hooks/lesson'
-import { useLayoutMode } from './Hooks/menu'
+import { useLayoutMode } from './Hooks/LayoutMenu'
 import { useIframeLoaded } from './Hooks/eval'
 
 const Lesson = props => {
@@ -78,7 +79,12 @@ const Lesson = props => {
   let handleDeleteLessonClick = (e) => { useHandleDeleteLessonClick(e, onDeleteClick, name) }
 
   // menu
-  const [layoutMode, setLayoutMode] = useLayoutMode('present')
+
+  // Layout Modes:
+  // 1) Student view ('student')
+  // 2) Content edit mode ('edit')
+  // 2) Material type edit mode ('type')
+  const [layoutMode, setLayoutMode] = useLayoutMode('student')
 
   // fixme: decompose into multiple state variables based on which values tend to change together.
   const [state, setState] = React.useState({
@@ -129,10 +135,12 @@ const Lesson = props => {
     })
   }
 
-  const onMenuLayoutChange = (e, menuId) => {
-    // main menu click
-    if (menuId === 'view.present') { setLayoutMode('present') }
-    if (menuId === 'view.edit') { setLayoutMode('edit') }
+  // main menu click
+  const onWorkspaceMenuChange = (e, menuId) => {
+    const [section, action] = menuId.split('.')
+    if (section === 'view') {
+      setLayoutMode(action)
+    }
   }
 
   // TODO make it reusable
@@ -193,20 +201,24 @@ const Lesson = props => {
             </h1>
           </div>
           <div>
-            <WorkspaceMenu onChange={onMenuLayoutChange} />
+            <WorkspaceMenu onChange={onWorkspaceMenuChange} />
           </div>
         </Grid>
         <Grid item xs={3}>
+          {/* TODO move to component */}
           <FormControl variant='outlined'>
             <Select
               value={layoutMode}
               onChange={e => { setLayoutMode(e.target.value) }}
             >
-              <MenuItem value={'present'}>
-                <Slideshow /> Present
+              <MenuItem value={'student'}>
+                <Slideshow />&nbsp;Student view
               </MenuItem>
               <MenuItem value={'edit'}>
-                <Edit /> Edit mode
+                <Edit />&nbsp;Content edit mode
+              </MenuItem>
+              <MenuItem value={'type'}>
+                <ChromeReaderModeIcon />&nbsp;Material type edit mode
               </MenuItem>
             </Select>
           </FormControl>
@@ -225,7 +237,7 @@ const Lesson = props => {
       {/* Present mode on */}
       <Grid container item xs={12} spacing={4}>
         {/* Materials list */}
-        {layoutMode === 'present' ? (
+        {['student', 'edit'].includes(layoutMode) ? (
           <Grid item xs={2}>
             <Grid
               container
@@ -241,18 +253,18 @@ const Lesson = props => {
             </Grid>
           </Grid>
         ) : null}
-        <Grid item xs={layoutMode === 'present' ? 10 : 12}>
+        <Grid item xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}>
           {/* Search if sanbox does not exist in curent Material */}
           {!loading && // loading lesson
           materialTypePropIsInMaterial && // loading material
           !currentMaterialHasType ? ( //
               <Search />
             ) : null}
-          {/* Present Mode */}
+          {/* student view */}
           <div
             style={{
               display:
-                layoutMode === 'present' &&
+                ['student', 'edit'].includes(layoutMode) &&
                 materialTypePropIsInMaterial &&
                 currentMaterialHasType
                   ? 'flex'
@@ -277,7 +289,7 @@ const Lesson = props => {
           <div
             style={{
               display:
-                layoutMode !== 'present' &&
+                !['student', 'edit'].includes(layoutMode) &&
                 materialTypePropIsInMaterial &&
                 currentMaterialHasType
                   ? 'flex'

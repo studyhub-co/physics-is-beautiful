@@ -42,6 +42,7 @@ const MaterialThumbnailComponent = props => {
   const [state, setState] = React.useState(initialState)
 
   // context menu
+  // TODO we have this bug now , fix this later https://github.com/mui-org/material-ui/issues/19145
   const handleMaterialThumbnailClick = event => {
     event.preventDefault()
     setState({

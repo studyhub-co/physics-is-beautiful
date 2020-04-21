@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button'
 import ListItemText from '@material-ui/core/ListItemText'
 
 import Edit from '@material-ui/icons/Edit'
+import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode'
 import Slideshow from '@material-ui/icons/Slideshow'
 
 import { StyledListItemIcon, StyledMenu, StyledMenuItem } from './StyledComponents'
@@ -41,17 +42,23 @@ export default function ViewMenu ({onChange}) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.present')}>
+        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.student')}>
           <StyledListItemIcon>
             <Slideshow />
           </StyledListItemIcon>
-          <ListItemText primary='Present' />
+          <ListItemText primary='Student view' />
         </StyledMenuItem>
         <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.edit')}>
           <StyledListItemIcon>
             <Edit />
           </StyledListItemIcon>
-          <ListItemText primary='Edit mode' />
+          <ListItemText primary='Content edit mode' />
+        </StyledMenuItem>
+        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.type')}>
+          <StyledListItemIcon>
+            <ChromeReaderModeIcon />
+          </StyledListItemIcon>
+          <ListItemText primary='Material type edit mode' />
         </StyledMenuItem>
       </StyledMenu>
     </React.Fragment>
