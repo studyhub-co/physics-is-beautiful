@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
 import { DragSource } from 'react-dnd'
-import { FaGripHorizontal, FaTimes } from 'react-icons/fa'
+// import { FaGripHorizontal, FaTimes } from 'react-icons/fa'
 
 import Paper from '@material-ui/core/Paper'
 import Menu from '@material-ui/core/Menu'
@@ -51,16 +51,22 @@ const MaterialThumbnailComponent = props => {
     })
   }
 
-  const handleContextMenuClose = () => {
+  const handleContextMenuClose = (event, menuName) => {
+    event.preventDefault()
     setState(initialState)
-  }
-
-  function handleDeleteClick (e) {
-    e.preventDefault()
-    if (window.confirm('Are you sure you want to delete this material?')) {
-      onDeleteClick()
+    if (menuName === 'delete') {
+      if (window.confirm('Are you sure you want to delete this material?')) {
+        onDeleteClick()
+      }
     }
   }
+
+  // function handleDeleteClick (e) {
+  //   e.preventDefault()
+  //   if (window.confirm('Are you sure you want to delete this material?')) {
+  //     onDeleteClick()
+  //   }
+  // }
 
   return (<Paper
     onClick={onClick}
@@ -69,11 +75,11 @@ const MaterialThumbnailComponent = props => {
     className={
       'material-thumbnail draggable' +
           (selected ? ' selected' : '')
-    }> {connectDragPreview(
+    }> {connectDragPreview(connectDragSource(
       <div
         style={{ display: isDragging ? 'none' : 'block', overflow: 'hidden' }}
       >
-        {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)}
+        {/* {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)} */}
         <span className='position'>{position}</span>
         <div className='thumbnail-inner'>
           {screenshot
@@ -81,7 +87,7 @@ const MaterialThumbnailComponent = props => {
             : <span>{shortText}</span>
           }
         </div>
-        <FaTimes className='btn-delete' onClick={handleDeleteClick} />
+        {/* <FaTimes className='btn-delete' onClick={handleDeleteClick} /> */}
         <Menu
           keepMounted
           open={state.mouseY !== null}
@@ -93,11 +99,11 @@ const MaterialThumbnailComponent = props => {
               : undefined
           }
         >
-          <MenuItem onClick={handleContextMenuClose}>Fork</MenuItem>
-          <MenuItem onClick={handleContextMenuClose}>Delete</MenuItem>
+          {/* <MenuItem onClick={(e) => { handleContextMenuClose(e, 'fork') }}>Fork</MenuItem> */}
+          <MenuItem onClick={(e) => { handleContextMenuClose(e, 'delete') }}>Delete</MenuItem>
         </Menu>
       </div>
-    )
+    ))
     } </Paper>)
 }
 
