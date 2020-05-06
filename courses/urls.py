@@ -11,7 +11,7 @@ urlpatterns = [
          name='get-sandbox-image'),
     path('evaluation/<uuid:pt_uuid>/',
          TemplateView.as_view(template_name='codesandbox-apps/eval/frame.html'),
-         name='material-frame'),
+         name='material-type-frame'),
     path('evaluation/<uuid:pt_uuid>/<uuid:material_uuid>/',
          TemplateView.as_view(template_name='codesandbox-apps/eval/frame.html'),
          name='material-frame'),
