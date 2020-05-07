@@ -67,7 +67,7 @@ def get_sandbox_image(request, pt_uuid):
     # TODO cache it (or save in sandbox model)
     screenshot_url = '{}://{}{}'.format(request.scheme,
                                         request.META.get('HTTP_HOST'),
-                                        reverse('courses:material-frame', args=[pt_uuid, ]))
+                                        reverse('courses:material-type-frame', args=[pt_uuid, ]))
     # loop = asyncio.new_event_loop()
     # asyncio.set_event_loop(loop)
     # screenshot = loop.run_until_complete(get_screen(screenshot_url))

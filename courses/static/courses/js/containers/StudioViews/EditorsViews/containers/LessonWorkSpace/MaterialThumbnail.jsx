@@ -77,14 +77,15 @@ const MaterialThumbnailComponent = props => {
           (selected ? ' selected' : '')
     }> {connectDragPreview(connectDragSource(
       <div
-        style={{ display: isDragging ? 'none' : 'block', overflow: 'hidden' }}
+        style={{ display: isDragging ? 'none' : 'block', overflow: 'hidden', height: '100%'}}
       >
         {/* {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)} */}
-        <span className='position'>{position}</span>
-        <div className='thumbnail-inner'>
+        {/* TODO: we need to rewrite server side logic of index/position (this is not consecutive now) */}
+        {/*<span className='position'>{position}</span>*/}
+        <div className='thumbnail-inner' style={{height: '100%'}}>
           {screenshot
             ? <img src={screenshot} style={{height: '100%', width: '100%'}}/>
-            : <span>{shortText}</span>
+            : <div style={{height: '100%'}}>{shortText}</div>
           }
         </div>
         {/* <FaTimes className='btn-delete' onClick={handleDeleteClick} /> */}
