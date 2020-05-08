@@ -1,14 +1,27 @@
+import os
 import hashlib
+from io import BytesIO
+
+from PIL import Image
 
 from django.db import models
 # from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 # from profiles.models import Profile
 
 from . import BaseItemModel
+
+
+def uuid_as_name(instance, filename):
+    try:
+        file_extension = os.path.splitext(filename)[1]
+    except IndexError:
+        file_extension = '.png'
+    return 'mpt_images/{0}{1}'.format(instance.pk, file_extension)
 
 
 class MaterialProblemTypeSandbox(BaseItemModel):
@@ -52,7 +65,7 @@ class MaterialProblemTypeSandbox(BaseItemModel):
     # "screenshot_url": "https://screenshots.codesandbox.io/new.png",
     # TODO migrate to FileField
     # screenshot_url = models.URLField(null=True, blank=True)
-    screenshot_url = models.ImageField(null=True, blank=True, upload_to='mpt_images')
+    screenshot_url = models.ImageField(null=True, blank=True, upload_to=uuid_as_name)
 
     # "view_count": 4020046,
     # TODO calculated field
@@ -231,6 +244,37 @@ def directory_will_change(sender, instance, **kwargs):
         instance.shortid = to_short_id(instance.name)
 
 
+@receiver(pre_save, sender=MaterialProblemTypeSandbox)
+def resize_and_delete_old_screenshot(sender, instance, **kwargs):
+    output_size = (500, 500)
+
+    if instance.screenshot_url:
+        image = Image.open(instance.screenshot_url.file.file)
+
+        if image.height > output_size[0] or image.width > output_size[1]:
+            # remove old screen:
+            old_material = MaterialProblemTypeSandbox.objects.get(pk=instance.pk)
+            old_material.screenshot_url.delete()
+
+            # do not resize if already resized
+            image.thumbnail(size=output_size)
+            image_file = BytesIO()
+            image.save(image_file, image.format)
+
+            instance.screenshot_url.save(
+                instance.screenshot_url.name,
+                InMemoryUploadedFile(
+                    image_file,
+                    None, '',
+                    instance.screenshot_url.file.content_type,
+                    image.size,
+                    instance.screenshot_url.file.charset,
+                ),
+                save=False
+            )
+
+
+# TODO remove
 # {"data": }
 # SANDOX_TEMPLATE_REACT_JSON_STRING = r"""{
 #    "version":66,

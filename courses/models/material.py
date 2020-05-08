@@ -48,6 +48,7 @@ class Material(BaseItemModel):
     # class MaterialWorkflowType(models.IntegerChoices): # Django 3.0
     lesson = models.ForeignKey(Lesson, related_name='materials', on_delete=models.CASCADE)
     # material_workflow_type = models.IntegerField(choices=MaterialWorkflowType.choices) # Django 3.0
+    # OverwriteStorage replaced with pre_save resize_and_delete_old_screenshot due S3
     screenshot = models.ImageField(null=True, blank=True, upload_to=uuid_as_name)  # storage=OverwriteStorage(),
     material_workflow_type = models.IntegerField(
         default=MaterialWorkflowType.COMMON.value,
@@ -74,13 +75,17 @@ class Material(BaseItemModel):
 
 
 @receiver(pre_save, sender=Material)
-def resize_screenshot(sender, instance, **kwargs):
+def resize_and_delete_old_screenshot(sender, instance, **kwargs):
     output_size = (300, 300)
 
     if instance.screenshot:
         image = Image.open(instance.screenshot.file.file)
 
         if image.height > output_size[0] or image.width > output_size[1]:
+            # remove old screen:
+            old_material = Material.objects.get(pk=instance.pk)
+            old_material.screenshot.delete()
+
             # do not resize if already resized
             image.thumbnail(size=output_size)
             image_file = BytesIO()
