@@ -101,7 +101,7 @@ const Lesson = props => {
   }, [])
 
   useEffect(() => {
-    console.log(materialUrlUuid);
+    console.log(materialUrlUuid)
     loadLessonIfNeeded(materialUrlUuid)
   }, [materialUrlUuid])
 
@@ -166,6 +166,7 @@ const Lesson = props => {
       >
         <Paper elevation={3} className={'material-thumbnail draggable'}>
           <div
+            style={{height: '100%'}}
             onClick={onAddMaterialClick}
             // className='btn btn-light btn-add'
           >

@@ -34,8 +34,8 @@ class Course(BaseItemModel):
 
     # name = models.CharField(max_length=200, db_index=True)
     published_on = models.DateTimeField('date published', null=True, blank=True)
-    image = models.ImageField(blank=True)
-    cover_photo = models.ImageField(blank=True)
+    image = models.ImageField(null=True, blank=True, upload_to='courses_images')
+    cover_photo = models.ImageField(null=True, blank=True, upload_to='courses_covers')
     description = models.TextField(blank=True, null=True, default='')
     number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 

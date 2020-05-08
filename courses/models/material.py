@@ -18,7 +18,7 @@ from taggit.managers import TaggableManager
 from djeddit.models import Thread
 
 from . import Lesson, BaseItemModel, MaterialProblemType, get_earliest_gap
-from .storage import OverwriteStorage
+# from .storage import OverwriteStorage
 from .utils import UUIDTaggedItem
 
 try:
@@ -48,7 +48,7 @@ class Material(BaseItemModel):
     # class MaterialWorkflowType(models.IntegerChoices): # Django 3.0
     lesson = models.ForeignKey(Lesson, related_name='materials', on_delete=models.CASCADE)
     # material_workflow_type = models.IntegerField(choices=MaterialWorkflowType.choices) # Django 3.0
-    screenshot = models.ImageField(null=True, blank=True, storage=OverwriteStorage(), upload_to=uuid_as_name)
+    screenshot = models.ImageField(null=True, blank=True, upload_to=uuid_as_name)  # storage=OverwriteStorage(),
     material_workflow_type = models.IntegerField(
         default=MaterialWorkflowType.COMMON.value,
         choices=[(type, type.value) for type in MaterialWorkflowType]
