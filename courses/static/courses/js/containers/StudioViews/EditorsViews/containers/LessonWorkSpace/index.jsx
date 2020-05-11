@@ -3,6 +3,8 @@ import React, { useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
+import GridList from '@material-ui/core/GridList'
+import GridListTile from '@material-ui/core/GridListTile'
 import MenuItem from '@material-ui/core/MenuItem'
 import Paper from '@material-ui/core/Paper'
 import FormControl from '@material-ui/core/FormControl'
@@ -62,6 +64,8 @@ const Lesson = props => {
     onUpdateProblemTypeImage
   } = props
 
+  window.document.body.style.position = 'fixed'
+
   // eval iframe
   let executionFrameRef = useRef(null)
   const onLoadIframe = useIframeLoaded() // TODO move setFrameRef to Hook
@@ -109,9 +113,10 @@ const Lesson = props => {
   let navMaterials = []
 
   if (materials) {
-    navMaterials = materials.map((materialUuid) => {
+    navMaterials = materials.map((materialUuid, index) => {
       return (
-        <Grid item alignContent={'center'}>
+        <GridListTile key={'' + index}>
+          {/* <Grid item alignContent={'center'}> */}
           <DockableDropTarget
             key={materialUuid}
             onDrop={dropSource =>
@@ -124,13 +129,15 @@ const Lesson = props => {
               key={materialUuid}
               uuid={materialUuid}
               lessonUuid={uuid}
+              index={index + 1}
               selected={
                 currentMaterial &&
                   currentMaterial.uuid === materialUuid
               }
             />
           </DockableDropTarget>
-        </Grid>
+          {/* </Grid> */}
+        </GridListTile>
       )
     })
   }
@@ -157,7 +164,7 @@ const Lesson = props => {
   }
 
   const addMaterialButton = (
-    <Grid item>
+    <GridListTile key='add_material' cols={1}>
       <DockableDropTarget
         onDrop={dropSource =>
           useHandleMaterialDroppedBefore(dropSource.uuid, null, moveMaterial)
@@ -176,10 +183,13 @@ const Lesson = props => {
           </div>
         </Paper>
       </DockableDropTarget>
-    </Grid>
+    </GridListTile>
   )
 
   const editorComponent = state.editor
+
+  // FIXME not so good
+  const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
   return (
     <Grid container>
@@ -240,18 +250,20 @@ const Lesson = props => {
         {/* Materials list */}
         {['student', 'edit'].includes(layoutMode) ? (
           <Grid item xs={2}>
-            <Grid
-              container
-              direction='column'
-              justify='center'
-              alignItems='stretch'
-              spacing={3}
-              className={'lesson-nav-materials'}
-              style={{paddingTop: '1rem'}}
-            >
+            {/* <Grid */}
+            {/* container */}
+            {/* direction='column' */}
+            {/* justify='center' */}
+            {/* alignItems='stretch' */}
+            {/* spacing={3} */}
+            {/* className={'lesson-nav-materials'} */}
+            {/* style={{paddingTop: '1rem'}} */}
+            {/* > */}
+            <GridList className={'lesson-nav-materials'} cellHeight={'7em'} spacing={1} cols={1} style={{maxHeight: (vh - 300) + 'px'}}>
               {addMaterialButton}
               {navMaterials}
-            </Grid>
+            </GridList>
+            {/* </Grid> */}
           </Grid>
         ) : null}
         <Grid item xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}>

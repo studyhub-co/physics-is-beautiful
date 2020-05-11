@@ -36,7 +36,7 @@ const MaterialThumbnailComponent = props => {
   const {
     onDeleteClick, selected, isDragging, onClick,
     connectDragSource, shortText, screenshot, position,
-    connectDragPreview
+    connectDragPreview, index
   } = props
 
   const [state, setState] = React.useState(initialState)
@@ -82,6 +82,7 @@ const MaterialThumbnailComponent = props => {
         {/* {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)} */}
         {/* TODO: we need to rewrite server side logic of index/position (this is not consecutive now) */}
         {/*<span className='position'>{position}</span>*/}
+        <span className='position'>{index}</span>
         <div className='thumbnail-inner' style={{height: '100%'}}>
           {screenshot
             ? <img src={screenshot} style={{height: '100%', width: '100%'}}/>
@@ -113,7 +114,8 @@ MaterialThumbnailComponent.propTypes = {
   screenshot: PropTypes.string,
   onClick: PropTypes.func,
   uuid: PropTypes.string, // material uuid
-  position: PropTypes.string, // material position
+  // position: PropTypes.string, // material position
+  index: PropTypes.number, // material index
   lessonUuid: PropTypes.string.isRequired, // lesson uuid
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
