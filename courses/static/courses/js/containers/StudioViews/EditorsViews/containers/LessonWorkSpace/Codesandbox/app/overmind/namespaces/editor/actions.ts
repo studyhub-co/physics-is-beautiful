@@ -30,7 +30,8 @@ export const addNpmDependency: AsyncAction<{
   isDev?: boolean;
 }> = withOwnedSandbox(
   async ({ effects, actions, state }, { name, version, isDev }) => {
-    effects.analytics.track('Add NPM Dependency');
+    // effects.analytics.track('Add NPM Dependency');
+    // console.log('addNpmDependency');
     state.currentModal = null;
     let newVersion = version;
 
@@ -38,6 +39,8 @@ export const addNpmDependency: AsyncAction<{
       const dependency = await effects.api.getDependency(name);
       newVersion = dependency.version;
     }
+    
+    console.log(newVersion);
 
     await actions.editor.internal.addNpmDependencyToPackageJson({
       name,

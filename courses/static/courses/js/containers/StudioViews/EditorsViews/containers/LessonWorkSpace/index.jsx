@@ -64,8 +64,6 @@ const Lesson = props => {
     onUpdateProblemTypeImage
   } = props
 
-  window.document.body.style.position = 'fixed'
-
   // eval iframe
   let executionFrameRef = useRef(null)
   const onLoadIframe = useIframeLoaded() // TODO move setFrameRef to Hook
@@ -188,9 +186,6 @@ const Lesson = props => {
 
   const editorComponent = state.editor
 
-  // FIXME not so good
-  const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-
   return (
     <Grid container>
       <Grid container item xs={12}>
@@ -259,7 +254,12 @@ const Lesson = props => {
             {/* className={'lesson-nav-materials'} */}
             {/* style={{paddingTop: '1rem'}} */}
             {/* > */}
-            <GridList className={'lesson-nav-materials'} cellHeight={'7em'} spacing={1} cols={1} style={{maxHeight: (vh - 300) + 'px'}}>
+            <GridList
+              className={'lesson-nav-materials'}
+              cellHeight={'7em'}
+              spacing={1}
+              cols={1}
+              style={{maxHeight: '85vh'}}>
               {addMaterialButton}
               {navMaterials}
             </GridList>
