@@ -1,10 +1,7 @@
-from django.core.exceptions import ObjectDoesNotExist
-
 from rest_framework import permissions, status, mixins, viewsets
-from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.exceptions import NotFound, ValidationError, APIException
+from rest_framework.decorators import api_view, permission_classes
 
 from courses.models import MaterialProblemTypeSandboxModule, MaterialProblemType, MaterialProblemTypeSandboxDirectory
 
@@ -54,3 +51,24 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+REGISTRY_URL = 'https://registry.npmjs.org/'
+
+
+@api_view()
+@permission_classes((permissions.AllowAny,))
+def npm_dependencies(request, package):
+    import requests
+    # package == '@physicsisbeautiful/pib-eval-library@latest'
+    # TODO add split validation
+    [name, version] = package.rsplit('@', 1)
+    if version != 'latest':
+        raise ValidationError('only @latest version supports')
+    r = requests.get('{}{}'.format(REGISTRY_URL, name))
+    if r.status_code != 200:
+        raise APIException('npmjs registry error')
+    # TODO maybe betto to get from versions list?
+    latest_version = r.json()['dist-tags']['latest']
+    """https://registry.npmjs.org/@physicsisbeautiful/pib-eval-library """
+    return Response({"data": {"version": "{}".format(latest_version)}})

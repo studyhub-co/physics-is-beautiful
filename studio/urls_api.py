@@ -1,3 +1,4 @@
+from django.urls import path
 from django.conf.urls import url, include
 
 from rest_framework import routers
@@ -36,6 +37,7 @@ public_router.register(r'materials', apis_public.MaterialViewSet, basename='publ
 
 urlpatterns = [
     url(r'^public/', include(public_router.urls)),
+    path('npm/dependencies/<path:package>', material_type_modules.npm_dependencies),
 ]
 
 urlpatterns += router.urls
