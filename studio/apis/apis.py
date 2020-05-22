@@ -303,7 +303,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
             new_old_dir_pks[old_dir_pk] = new_dir_pk
 
         # resave parent
-        for dir in initial_sandbox.directories.all():
+        for directory in initial_sandbox.directories.all():
             if directory.directory:
                 directory.directory_id = new_old_dir_pks[directory.directory_id]
                 directory.save()
