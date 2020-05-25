@@ -26,6 +26,7 @@ class BaseItemModel(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = [['slug_prefix', 'slug_suffix']]
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_on = models.DateTimeField(auto_now_add=True)

@@ -9,6 +9,9 @@ class MaterialProblemType(MaterialProblemTypeSandbox):  # MaterialProblemTypeSan
     # sanbox reverse field (see material_sandbox)
     official = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = []  # reset unique_together from BaseItemModel
+
 
 
 
