@@ -256,7 +256,7 @@ const Lesson = props => {
             {/* > */}
             <GridList
               className={'lesson-nav-materials'}
-              // cellHeight={'7em'}
+              cellHeight={'auto'}
               spacing={1}
               cols={1}
               style={{maxHeight: '85vh'}}>

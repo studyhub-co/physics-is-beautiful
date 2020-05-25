@@ -44,7 +44,8 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
 
         request.data['sandbox'] = self.kwargs['material_problem_type_uuid']
         request.data['code'] = ''
-        request.data['directory'] = mpt_directory.uuid
+        if mpt_directory:
+            request.data['directory'] = mpt_directory.uuid
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
