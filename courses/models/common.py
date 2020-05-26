@@ -55,6 +55,7 @@ class BaseItemModel(models.Model):
     # published_on = models.DateTimeField('date published', null=True, blank=True)
 
     def gen_slug(self):
+        # TODO add tests for this function
         title = self.name
         max_lengh = self.__class__._meta.get_field('slug').max_length
 
@@ -65,13 +66,18 @@ class BaseItemModel(models.Model):
             aggregate(Max('slug_suffix'))['slug_suffix__max']
 
         if max_slug_suffix is None:
-            # first slug
-            slug = slug_prefix
+            # slug = slug_prefix # old version
+            # we need to add suffix at any case
+            # title => title
+            # title 1 => title-1
+            # title => title-1 (got the same slug as above)
             slug_suffix = 0
+            slug = slugify("{} {}".format(title, slug_suffix))[:max_lengh]
         else:
             # last slug
             slug = slugify("{} {}".format(title, max_slug_suffix + 1))[:max_lengh]
             slug_suffix = max_slug_suffix + 1
+        # TODO check a slug uniqueness,
 
         return slug, slug_prefix, slug_suffix
 
