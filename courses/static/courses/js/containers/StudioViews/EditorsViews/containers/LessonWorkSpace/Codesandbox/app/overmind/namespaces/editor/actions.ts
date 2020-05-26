@@ -40,7 +40,7 @@ export const addNpmDependency: AsyncAction<{
       newVersion = dependency.version;
     }
     
-    console.log(newVersion);
+    // console.log(newVersion);
 
     await actions.editor.internal.addNpmDependencyToPackageJson({
       name,

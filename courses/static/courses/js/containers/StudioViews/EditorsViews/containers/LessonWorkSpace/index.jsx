@@ -100,10 +100,12 @@ const Lesson = props => {
       setState({ ...state, editor: editor })
     }
     asyncEditorStartUp()
+    // add temaplate wide styles
+    document.body.style.overflow = 'hidden'
   }, [])
 
   useEffect(() => {
-    console.log(materialUrlUuid)
+    // console.log(materialUrlUuid)
     loadLessonIfNeeded(materialUrlUuid)
   }, [materialUrlUuid])
 
@@ -186,9 +188,12 @@ const Lesson = props => {
 
   const editorComponent = state.editor
 
+  // viewport - header - menu - toolbar
+  const bottomsPanelsHeight = 'calc(100vh - 51px - 88px - 35px)'
+
   return (
     <Grid container>
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={{padding: '1rem'}}>
         <Grid item xs={1}>
           <EditableThumbnail
             image={image}
@@ -241,29 +246,23 @@ const Lesson = props => {
         <ToolBar />
       </Grid>
       {/* Present mode on */}
-      <Grid container item xs={12} spacing={4}>
+      <Grid container item xs={12}>
         {/* Materials list */}
         {['student', 'edit'].includes(layoutMode) ? (
           <Grid item xs={2}>
-            {/* <Grid */}
-            {/* container */}
-            {/* direction='column' */}
-            {/* justify='center' */}
-            {/* alignItems='stretch' */}
-            {/* spacing={3} */}
-            {/* className={'lesson-nav-materials'} */}
-            {/* style={{paddingTop: '1rem'}} */}
-            {/* > */}
             <GridList
               className={'lesson-nav-materials'}
               cellHeight={'auto'}
               spacing={1}
               cols={1}
-              style={{maxHeight: '85vh'}}>
+              style={{
+                maxHeight: bottomsPanelsHeight,
+                background: 'white',
+                padding: '0.5rem'
+              }}>
               {addMaterialButton}
               {navMaterials}
             </GridList>
-            {/* </Grid> */}
           </Grid>
         ) : null}
         <Grid item xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}>
@@ -282,7 +281,7 @@ const Lesson = props => {
                 currentMaterialHasType
                   ? 'flex'
                   : 'none', // display only if material problem type is set
-              height: '100vh'
+              height: bottomsPanelsHeight
             }}
           >
             {currentMaterialHasType &&
@@ -307,7 +306,7 @@ const Lesson = props => {
                 currentMaterialHasType
                   ? 'flex'
                   : 'none', // display only if material problem type is set
-              height: '100vh'
+              height: bottomsPanelsHeight
             }}
           >
             {editorComponent}

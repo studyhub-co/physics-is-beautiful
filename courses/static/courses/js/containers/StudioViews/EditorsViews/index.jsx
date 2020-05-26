@@ -34,10 +34,9 @@ export class EditModuleView extends React.Component {
 export class EditLessonView extends React.Component {
   render () {
     return (
-      <Sheet>
-        <div className={'editor'}>
-          <EditLessonView1 {...this.props} />
-        </div></Sheet>
+      <div className={'editor'}>
+        <EditLessonView1 {...this.props} />
+      </div>
     )
   }
 }

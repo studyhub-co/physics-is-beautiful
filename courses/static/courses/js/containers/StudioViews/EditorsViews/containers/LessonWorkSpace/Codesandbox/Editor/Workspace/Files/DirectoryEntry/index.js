@@ -146,8 +146,7 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   renameDirectory = (directoryShortid, title) => {
-    console.log(directoryShortid, title);
-    
+    // console.log(directoryShortid, title);
     this.props.signals.files.directoryRenamed({ title, directoryShortid })
   };
 
