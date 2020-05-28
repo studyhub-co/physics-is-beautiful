@@ -4,6 +4,7 @@ import { compose } from 'redux'
 import Toolbar from '@material-ui/core/Toolbar'
 import Badge from '@material-ui/core/Badge'
 import MailIcon from '@material-ui/icons/MailOutline'
+import AddBoxIcon from '@material-ui/icons/AddBox'
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -13,6 +14,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Theme from '../Styles'
 import withConnect from './MenuActions'
 import { StyledIconButton } from './StyledComponents'
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles(theme => ({
   sectionDesktop: {
@@ -39,6 +41,7 @@ export const StyledToolbar = withStyles(theme => ({
 function WorkspaceToolBar ({
   // username,
   // loading,
+  handleAddMaterial
 }) {
   const classes = useStyles()
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
@@ -64,60 +67,46 @@ function WorkspaceToolBar ({
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <StyledIconButton aria-label='show 4 new mails' color='inherit'>
-          <Badge badgeContent={4} color='secondary'>
-            <MailIcon />
+      <MenuItem onClick={handleAddMaterial}>
+        <StyledIconButton aria-label='Add material' color='inherit'>
+          <Badge color='secondary'>
+            <AddBoxIcon />
           </Badge>
         </StyledIconButton>
-        <p>Messages</p>
       </MenuItem>
-      <MenuItem>
-        <StyledIconButton aria-label='show 11 new notifications' color='inherit'>
-          <Badge badgeContent={11} color='secondary'>
-            <NotificationsIcon />
-          </Badge>
-        </StyledIconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem>
-        <StyledIconButton aria-label='show 4 new mails' color='inherit'>
-          <Badge badgeContent={4} color='secondary'>
-            <MailIcon />
-          </Badge>
-        </StyledIconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <StyledIconButton aria-label='show 11 new notifications' color='inherit'>
-          <Badge badgeContent={11} color='secondary'>
-            <NotificationsIcon />
-          </Badge>
-        </StyledIconButton>
-        <p>Notifications</p>
-      </MenuItem>
+      {/* <MenuItem> */}
+      {/* <StyledIconButton aria-label='show 11 new notifications' color='inherit'> */}
+      {/* <Badge badgeContent={11} color='secondary'> */}
+      {/* <NotificationsIcon /> */}
+      {/* </Badge> */}
+      {/* </StyledIconButton> */}
+      {/* <p>Notifications</p> */}
+      {/* </MenuItem> */}
     </Menu>
   )
 
   return (<Theme>
     <StyledToolbar>
       <div className={classes.sectionDesktop}>
-        <StyledIconButton aria-label='show 4 new mails' color='inherit' >
-          <MailIcon />
-        </StyledIconButton>
         <StyledIconButton
-          aria-label='show 17 new notifications'
-          color='inherit'>
-          <NotificationsIcon />
+          onClick={handleAddMaterial}
+          aria-label='Add material'
+          color='inherit' >
+          <AddBoxIcon />
         </StyledIconButton>
-        <StyledIconButton aria-label='show 4 new mails' color='inherit' >
-          <MailIcon />
-        </StyledIconButton>
-        <StyledIconButton aria-label='show 17 new notifications' color='inherit' >
-          <Badge badgeContent={17} color='secondary'>
-            <NotificationsIcon />
-          </Badge>
-        </StyledIconButton>
+        {/* <StyledIconButton */}
+        {/* aria-label='show 17 new notifications' */}
+        {/* color='inherit'> */}
+        {/* <NotificationsIcon /> */}
+        {/* </StyledIconButton> */}
+        {/* <StyledIconButton aria-label='show 4 new mails' color='inherit' > */}
+        {/* <MailIcon /> */}
+        {/* </StyledIconButton> */}
+        {/* <StyledIconButton aria-label='show 17 new notifications' color='inherit' > */}
+        {/* <Badge badgeContent={17} color='secondary'> */}
+        {/* <NotificationsIcon /> */}
+        {/* </Badge> */}
+        {/* </StyledIconButton> */}
       </div>
       <div className={classes.sectionMobile}>
         <StyledIconButton
@@ -137,7 +126,7 @@ function WorkspaceToolBar ({
 }
 
 WorkspaceToolBar.propTypes = {
-
+  handleAddMaterial: PropTypes.func.isRequired
 }
 
 export default compose(

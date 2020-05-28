@@ -10,7 +10,8 @@ function WorkspaceMenu (props) {
   return (
     <Theme>
       {/* TODO hide menu for Mobile */}
-      <FileMenu />
+      {/* TODO not so good use the same pros for both */}
+      <FileMenu {...props}/>
       <ViewMenu {...props}/>
     </Theme>
   )

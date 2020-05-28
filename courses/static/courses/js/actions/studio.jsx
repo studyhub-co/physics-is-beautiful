@@ -278,6 +278,7 @@ export function coursesLoaded (data) {
 
 function extract (object, prop) {
   // This function change object! :(
+  // TODO remove this!
   var ret = object[prop]
   var ids = []
   for (var k in object[prop]) {
@@ -1089,14 +1090,26 @@ export function addLesson (moduleUuid, lesson) {
       method: 'POST',
       data: data,
       success: function (data, status, jqXHR) {
-        var materials = extract(data, 'materials')
+        // remove this ugly procces
+        // var materials = extract(data, 'materials')
+
+        // todo move to the new func - see lessonLoaded
+        // copy list of materials
+        var materials = {}
+        data['materials'].forEach(material => {
+          materials[material.uuid] = material
+        })
+
+        // convert list of materials to list of uuid
+        data['materials'] = data['materials'].map(item => item.uuid)
+
         dispatch({
           type: ActionTypes.LESSON_ADDED,
           lesson: data,
           materials: materials
         })
-        // history.push('/studio/editor/lessons/' + data.uuid + '/')
         dispatch(redirectTo1stMaterial(data))
+        // history.push('/studio/editor/lessons/' + data.uuid + '/')
       }
     })
   }

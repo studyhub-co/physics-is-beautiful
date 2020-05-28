@@ -4,10 +4,14 @@ import ListItemText from '@material-ui/core/ListItemText'
 
 import Title from '@material-ui/icons/Title'
 import SaveAlt from '@material-ui/icons/SaveAlt'
+import AddBoxIcon from '@material-ui/icons/AddBox'
 
 import { StyledListItemIcon, StyledMenu, StyledMenuItem } from './StyledComponents'
+import PropTypes from 'prop-types'
 
-export default function FileMenu () {
+export default function FileMenu ({
+  handleAddMaterial
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = event => {
@@ -35,12 +39,18 @@ export default function FileMenu () {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem>
+        <StyledMenuItem onClick={() => { handleClose(); handleAddMaterial() }}>
           <StyledListItemIcon>
-            <Title />
+            <AddBoxIcon />
           </StyledListItemIcon>
-          <ListItemText primary='Rename material' />
+          <ListItemText primary='Add material' />
         </StyledMenuItem>
+        {/* <StyledMenuItem> */}
+        {/* <StyledListItemIcon> */}
+        {/* <Title /> */}
+        {/* </StyledListItemIcon> */}
+        {/* <ListItemText primary='Rename material' /> */}
+        {/* </StyledMenuItem> */}
         <StyledMenuItem>
           <StyledListItemIcon>
             <SaveAlt />
@@ -53,5 +63,5 @@ export default function FileMenu () {
 }
 
 FileMenu.propTypes = {
-
+  handleAddMaterial: PropTypes.func.isRequired
 }

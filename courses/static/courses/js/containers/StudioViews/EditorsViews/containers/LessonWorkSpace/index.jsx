@@ -100,7 +100,7 @@ const Lesson = props => {
       setState({ ...state, editor: editor })
     }
     asyncEditorStartUp()
-    // add temaplate wide styles
+    // disable scroll
     document.body.style.overflow = 'hidden'
   }, [])
 
@@ -163,28 +163,28 @@ const Lesson = props => {
     return <div>Loading...</div>
   }
 
-  const addMaterialButton = (
-    <GridListTile key='add_material' cols={1}>
-      <DockableDropTarget
-        onDrop={dropSource =>
-          useHandleMaterialDroppedBefore(dropSource.uuid, null, moveMaterial)
-        }
-        itemType={DragItemTypes.MATERIAL}
-      >
-        <Paper elevation={3} className={'material-thumbnail draggable'}>
-          <div
-            style={{height: '100%'}}
-            onClick={onAddMaterialClick}
-            // className='btn btn-light btn-add'
-          >
-            <FaPlusCircle />
-            <br />
-          Add material
-          </div>
-        </Paper>
-      </DockableDropTarget>
-    </GridListTile>
-  )
+  // const addMaterialButton = (
+  //   <GridListTile key='add_material' cols={1}>
+  //     <DockableDropTarget
+  //       onDrop={dropSource =>
+  //         useHandleMaterialDroppedBefore(dropSource.uuid, null, moveMaterial)
+  //       }
+  //       itemType={DragItemTypes.MATERIAL}
+  //     >
+  //       <Paper elevation={3} className={'material-thumbnail draggable'}>
+  //         <div
+  //           style={{height: '100%'}}
+  //           onClick={onAddMaterialClick}
+  //           // className='btn btn-light btn-add'
+  //         >
+  //           <FaPlusCircle />
+  //           <br />
+  //         Add material
+  //         </div>
+  //       </Paper>
+  //     </DockableDropTarget>
+  //   </GridListTile>
+  // )
 
   const editorComponent = state.editor
 
@@ -212,7 +212,10 @@ const Lesson = props => {
             </h1>
           </div>
           <div>
-            <WorkspaceMenu onChange={onWorkspaceMenuChange} />
+            <WorkspaceMenu
+              onChange={onWorkspaceMenuChange}
+              handleAddMaterial={onAddMaterialClick}
+            />
           </div>
         </Grid>
         <Grid item xs={3}>
@@ -243,13 +246,13 @@ const Lesson = props => {
           borderBottom: '1px solid #dadce0'
         }}
       >
-        <ToolBar />
+        <ToolBar handleAddMaterial={onAddMaterialClick}/>
       </Grid>
       {/* Present mode on */}
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={{height: bottomsPanelsHeight }}>
         {/* Materials list */}
         {['student', 'edit'].includes(layoutMode) ? (
-          <Grid item xs={2}>
+          <Grid item xs={2} style={{background: 'white'}}>
             <GridList
               className={'lesson-nav-materials'}
               cellHeight={'auto'}
@@ -257,10 +260,9 @@ const Lesson = props => {
               cols={1}
               style={{
                 maxHeight: bottomsPanelsHeight,
-                background: 'white',
                 padding: '0.5rem'
               }}>
-              {addMaterialButton}
+              {/* {addMaterialButton} */}
               {navMaterials}
             </GridList>
           </Grid>

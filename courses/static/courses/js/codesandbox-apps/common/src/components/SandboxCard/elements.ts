@@ -18,13 +18,13 @@ export const Overlay = styled.div`
   transition: opacity 200ms ease;
 `;
 
+// min-width: 300px;
 export const Container = styled.div<{ small?: boolean; noMargin?: boolean }>`
   transition: 0.3s ease all;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   position: relative;
   flex: 1;
-  min-width: 300px;
 
   flex-grow: 1;
   width: 100%;
