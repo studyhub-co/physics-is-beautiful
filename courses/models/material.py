@@ -81,27 +81,27 @@ def resize_and_delete_old_screenshot(sender, instance, **kwargs):
     if instance.screenshot:
         image = Image.open(instance.screenshot.file.file)
 
-        if image.height > output_size[0] or image.width > output_size[1]:
-            # remove old screen:
-            old_material = Material.objects.get(pk=instance.pk)
-            old_material.screenshot.delete()
+        # remove old screen:
+        old_material = Material.objects.get(pk=instance.pk)
+        old_material.screenshot.delete()
 
-            # do not resize if already resized
+        # do not resize if already resized
+        if image.height > output_size[0] or image.width > output_size[1]:
             image.thumbnail(size=output_size)
             image_file = BytesIO()
             image.save(image_file, image.format)
 
-            instance.screenshot.save(
-                instance.screenshot.name,
-                InMemoryUploadedFile(
-                    image_file,
-                    None, '',
-                    instance.screenshot.file.content_type,
-                    image.size,
-                    instance.screenshot.file.charset,
-                ),
-                save=False
-            )
+        instance.screenshot.save(
+            instance.screenshot.name,
+            InMemoryUploadedFile(
+                image_file,
+                None, '',
+                instance.screenshot.file.content_type,
+                image.size,
+                instance.screenshot.file.charset,
+            ),
+            save=False
+        )
 
 
 @receiver(pre_save, sender=Material)

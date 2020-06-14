@@ -1,7 +1,4 @@
-import json
-
 from django.db.models import Q, Count
-from django.db import transaction
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions, status, mixins, viewsets
@@ -9,17 +6,18 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.parsers import MultiPartParser, JSONParser
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
-    MaterialProblemTypeSandboxCache
+    MaterialProblemTypeSandboxCache, JsonDataImage
     # SANDOX_TEMPLATE_REACT_JSON_STRING,
 
 from ..serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
     LessonSerializer, MaterialSerializer, MaterialProblemTypeSerializer, \
     MaterialProblemTypeSandboxCacheSerializer, MaterialProblemTypeSandboxModuleSerializer, \
-    MaterialListSerializer
+    MaterialListSerializer, JsonDataImageSerializer
 
 
 from ..permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
@@ -211,7 +209,6 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin, SeparateListObjectSer
                                        Q(lesson__module__unit__course__collaborators=self.request.user.profile)).\
                                 distinct()
 
-from rest_framework.parsers import MultiPartParser, JSONParser
 
 # class MaterialProblemTypeViewSet(ModelViewSet):
 class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
@@ -239,7 +236,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
     #     data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
     #     from pib_auth.models import User
     #     superuser = User.objects.filter(is_superuser=True).first()
-    #     # TODO check profile
     #     if superuser:
     #         author = superuser.profile
     #     else:
@@ -363,3 +359,8 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
         return Response(serializer.data)
 
+
+# material JSONData media store
+class MaterialImageViewSet(ModelViewSet):
+    queryset = JsonDataImage.objects.all()
+    serializer_class = JsonDataImageSerializer

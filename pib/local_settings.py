@@ -12,8 +12,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
-# debug_toolbar
+# allow study hub eval lib app to access apis
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000',
+# )
 
+# debug_toolbar
 INSTALLED_APPS.extend(['debug_toolbar', 'django_extensions'])
 MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 INTERNAL_IPS = ALLOWED_HOSTS

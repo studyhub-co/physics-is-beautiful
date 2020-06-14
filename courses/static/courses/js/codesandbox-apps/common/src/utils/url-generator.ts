@@ -176,16 +176,16 @@ export const privacyUrl = () => `/legal/privacy`;
 export function getSandboxId() {
   const csbHost = process.env.CODESANDBOX_HOST;
 
-  if (process.env.LOCAL_SERVER) {
-    return document.location.hash.replace('#', '');
-  }
+  // if (process.env.LOCAL_SERVER) {
+  //   return document.location.hash.replace('#', '');
+  // }
 
-  if (process.env.STAGING) {
-    const segments = csbHost.split('//')[1].split('.');
-    const first = segments.shift();
-    const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
-    return document.location.host.match(re)[1];
-  }
+  // if (process.env.STAGING) {
+  //   const segments = csbHost.split('//')[1].split('.');
+  //   const first = segments.shift();
+  //   const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
+  //   return document.location.host.match(re)[1];
+  // }
 
   let result: string;
   // [csbHost, sandboxHost[csbHost]].filter(Boolean).forEach(tryHost => {

@@ -16,12 +16,13 @@ const debug = _debug('cs:sandbox:packager');
 
 const VERSION = 1;
 
-const BUCKET_URL =
-  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
-    ? 'https://d1jyvh0kxilfa7.cloudfront.net'
-    : 'https://dev-packager-packages.codesandbox.io';
+// https://dev-packager-packages.codesandbox.io is not work w\o auth anymore
+// const BUCKET_URL =
+//   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test'
+//     ? 'https://d1jyvh0kxilfa7.cloudfront.net'
+//     : 'https://dev-packager-packages.codesandbox.io';
 
-// const BUCKET_URL = 'https://d1jyvh0kxilfa7.cloudfront.net'
+const BUCKET_URL = 'https://d1jyvh0kxilfa7.cloudfront.net'
 
 const NEW_PACKAGER_URL =
   'https://aiwi8rnkp5.execute-api.eu-west-1.amazonaws.com/prod/packages';

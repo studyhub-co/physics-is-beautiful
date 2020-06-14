@@ -12,6 +12,7 @@ from .user_reaction import UserReaction
 from .lesson_progress import LessonProgress, LessonProgressStatus
 from .user_related import CourseUserDashboard
 from .badges import ModuleAwards, LessonAwards
+from .media_store import JsonDataImage
 
 __all__ = ["get_earliest_gap", "BaseItemModel",
            "Course", "Unit", "Module", "Lesson",
@@ -24,7 +25,7 @@ __all__ = ["get_earliest_gap", "BaseItemModel",
            "MySQL",
            "LessonProgress", "LessonProgressStatus",
            "CourseUserDashboard",
-           "ModuleAwards", "LessonAwards",
+           "ModuleAwards", "LessonAwards", "JsonDataImage"
            ]
 
 from ..meta_badges import *

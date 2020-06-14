@@ -14,11 +14,10 @@ ALLOWED_HOSTS = [
     '.compute-1.amazonaws.com',
 ]
 
-# allow mobile app to access apis
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8080'
+    # allow mobile app to access apis
+    'localhost:8080',
 )
-
 
 from pib.common_settings import *  # noqa: E402, F401
 

@@ -15,7 +15,7 @@ from expander import ExpanderSerializerMixin
 
 from courses.models import (
     Course, Unit, Module, Lesson, Material, MaterialProblemType, MaterialProblemTypeSandboxDirectory,
-    MaterialProblemTypeSandboxModule, MaterialProblemTypeSandboxCache
+    MaterialProblemTypeSandboxModule, MaterialProblemTypeSandboxCache, JsonDataImage
 )
 # from courses.models import MySQL
 from courses.serializers import BaseSerializer
@@ -478,9 +478,15 @@ class MaterialSerializer(BaseSerializer):
     class Meta:
         model = Material
         fields = ['uuid', 'lesson', 'tags', 'name', 'slug', 'material_workflow_type',
-                  'material_problem_type', 'screenshot', 'position'
+                  'material_problem_type', 'screenshot', 'position', 'data'
                   # 'hint', 'text', 'solution_text', 'hint', 'image', 'position',
                   # 'answer_type', 'answers', 'vectors',
                   ]
         # not support Meta/fields, see piblib.drf.views_set_mixins
         # list_serializer_class = DictSerializer
+
+
+class JsonDataImageSerializer(BaseSerializer):
+    class Meta:
+        model = JsonDataImage
+        fields = '__all__'
