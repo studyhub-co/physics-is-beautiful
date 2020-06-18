@@ -36,20 +36,23 @@ def resize_img(sender, instance, **kwargs):
     if instance.image:
         image = JsonDataImage.open(instance.image.file.file)
 
+        # todo fix this (if instance.screenshot in memory (a new one),
+        #  then remove existing + save new, elso none)
+
         # do not resize if already resized
         if image.height > output_size[0] or image.width > output_size[1]:
             image.thumbnail(size=output_size)
             image_file = BytesIO()
             image.save(image_file, image.format)
 
-        instance.image.save(
-            instance.image.name,
-            InMemoryUploadedFile(
-                image_file,
-                None, '',
-                instance.image.file.content_type,
-                image.size,
-                instance.image.file.charset,
-            ),
-            save=False
-        )
+            instance.image.save(
+                instance.image.name,
+                InMemoryUploadedFile(
+                    image_file,
+                    None, '',
+                    instance.image.file.content_type,
+                    image.size,
+                    instance.image.file.charset,
+                ),
+                save=False
+            )

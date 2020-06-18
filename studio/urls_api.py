@@ -13,6 +13,9 @@ router.register(r'modules', apis.ModuleViewSet, basename='module')
 router.register(r'lessons', apis.LessonViewSet, basename='lesson')
 router.register(r'materials', apis.MaterialViewSet, basename='material')
 
+# TODO maybe it's need more better url
+router.register(r'images', apis.JsonDataImageViewSet, basename='json-data-image')
+
 
 simple_nested_router = nested_routers.SimpleRouter()
 simple_nested_router.register(r'material-problem-type',

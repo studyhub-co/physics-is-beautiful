@@ -53,8 +53,8 @@ class MaterialViewSet(ModelViewSet):
         return super(MaterialViewSet, self).retrieve(request, *args, **kwargs)
 
     def user_response(self, request, uuid):
-        question = self.get_object()  # self is an instance of the question with the matching uuid
-        data = {'question': question.pk, 'answered_on': timezone.now()}
+        material = self.get_object()  # self is an instance of the material with the matching uuid
+        data = {'material': material.pk, 'answered_on': timezone.now()}
         data.update(request.data)
         sr = UserResponseSerializer(data=data)
         sr.is_valid(raise_exception=True)
@@ -67,7 +67,7 @@ class MaterialViewSet(ModelViewSet):
             session = request.session
             kwargs['anon_session_key'] = session.session_key
         user_response = sr.get_response(**kwargs)
-        service = get_progress_service(request, question.lesson)
+        service = get_progress_service(request, material.lesson)
         try:
             is_correct = service.check_user_response(user_response)
         except LessonLocked as e:
@@ -113,30 +113,30 @@ class LessonViewSet(ModelViewSet):
         context['progress_service'] = get_progress_service(context['request'])
         return context
 
-    # def get_next_question(self, request, uuid):
-    #     lesson = self.get_object()
-    #     service = get_progress_service(request, lesson)
-    #     previous_question = None
-    #     previous_question_uuid = request.query_params.get('previous_question')
-    #     if previous_question_uuid:
-    #         previous_question = Material.objects.filter(uuid=previous_question_uuid).first()
-    #     try:
-    #         question = service.get_next_question(previous_question)
-    #     except LessonLocked as e:
-    #         raise serializers.ValidationError(e)
-    #     if question:
-    #         new_thread = create_thread(question)
-    #         if new_thread:
-    #             Material.objects.filter(pk=question.pk).update(thread=new_thread)
-    #             question.thread = new_thread
-    #         data = {}
-    #         # data = QuestionSerializer(question, context={'progress_service': service}).data
-    #         # TODO: it might make more sense for these fields to be on the
-    #         # lesson. Or a separate lesson_progress object.
-    #         data.update(LessonProgressSerializer(service.current_lesson_progress).data)
-    #         data['required_score'] = service.COMPLETION_THRESHOLD
-    #         return Response(data)
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_next_material(self, request, uuid):
+        lesson = self.get_object()
+        service = get_progress_service(request, lesson)
+        previous_material = None
+        previous_material_uuid = request.query_params.get('previous_material')
+        if previous_material_uuid:
+            previous_material = Material.objects.filter(uuid=previous_material_uuid).first()
+        try:
+            material = service.get_next_material(previous_material)
+        except LessonLocked as e:
+            raise serializers.ValidationError(e)
+        if material:
+            new_thread = create_thread(material)
+            if new_thread:
+                Material.objects.filter(pk=material.pk).update(thread=new_thread)
+                material.thread = new_thread
+            # data = {}
+            data = MaterialSerializer(material, context={'progress_service': service}).data
+            # TODO: it might make more sense for these fields to be on the
+            # lesson. Or a separate lesson_progress object.
+            data.update(LessonProgressSerializer(service.current_lesson_progress).data)
+            data['required_score'] = service.COMPLETION_THRESHOLD
+            return Response(data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # @api_view(['GET'])

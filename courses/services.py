@@ -34,17 +34,17 @@ class ProgressServiceBase(object):
         self.user_responses = []
         self._dirty_lesson_progresses = {}
 
-    def get_next_question(self, current_question=None):
-        qs = self.current_lesson.questions
-        if current_question:
-            qs = qs.filter(position__gt=current_question.position)
-        question = qs.order_by('position').first()
-        if not question:
-            question = self.current_lesson.questions.first()
-        elif question.position == 0:
+    def get_next_material(self, current_material=None):
+        qs = self.current_lesson.materials
+        if current_material:
+            qs = qs.filter(position__gt=current_material.position)
+        material = qs.order_by('position').first()
+        if not material:
+            material = self.current_lesson.materials.first()
+        elif material.position == 0:
             self.current_lesson_progress.score = 0
             self.save()
-        return question
+        return material
 
     def _allow_override(self, lesson):
         return True  # Set this to True if you want all users to have all lessons unlocked

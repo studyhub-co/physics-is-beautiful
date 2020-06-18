@@ -148,7 +148,7 @@ class LessonSerializer(BaseSerializer):
 class MaterialSerializer(BaseSerializer):
     # unit_conversion = serializers.SerializerMethodField()
     lesson = LessonSerializer()
-    my_sql = serializers.SerializerMethodField()
+    # my_sql = serializers.SerializerMethodField()
 
     def get_unit_conversion(self, obj):
         if obj.answer_type == Material.MaterialWorkflowType.UNIT_CONVERSION:
@@ -177,7 +177,9 @@ class MaterialSerializer(BaseSerializer):
     class Meta:
         model = Material
         fields = [
-            'uuid', 'thread'
+            'uuid', 'thread', 'lesson', 'name', 'slug', 'material_workflow_type',
+            'material_problem_type', 'screenshot', 'position', 'data'
+            # 'tags', TODO
             # 'uuid', 'text', 'solution_text', 'hint', 'image', 'vectors', 'answer_type', 'choices',  # 'question_type',
             # 'lesson', 'unit_conversion', 'thread', 'my_sql'
         ]

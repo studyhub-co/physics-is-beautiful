@@ -361,6 +361,8 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
 
 # material JSONData media store
-class MaterialImageViewSet(ModelViewSet):
+class JsonDataImageViewSet(ModelViewSet):
     queryset = JsonDataImage.objects.all()
     serializer_class = JsonDataImageSerializer
+    # TODO what additional perrmission do we need here?
+    permission_classes = permissions.IsAuthenticatedOrReadOnly
