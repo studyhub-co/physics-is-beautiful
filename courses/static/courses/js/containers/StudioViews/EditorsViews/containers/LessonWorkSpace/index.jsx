@@ -100,8 +100,6 @@ const Lesson = props => {
       setState({ ...state, editor: editor })
     }
     asyncEditorStartUp()
-    // disable scroll
-    document.body.style.overflow = 'hidden'
   }, [])
 
   useEffect(() => {
@@ -163,33 +161,10 @@ const Lesson = props => {
     return <div>Loading...</div>
   }
 
-  // const addMaterialButton = (
-  //   <GridListTile key='add_material' cols={1}>
-  //     <DockableDropTarget
-  //       onDrop={dropSource =>
-  //         useHandleMaterialDroppedBefore(dropSource.uuid, null, moveMaterial)
-  //       }
-  //       itemType={DragItemTypes.MATERIAL}
-  //     >
-  //       <Paper elevation={3} className={'material-thumbnail draggable'}>
-  //         <div
-  //           style={{height: '100%'}}
-  //           onClick={onAddMaterialClick}
-  //           // className='btn btn-light btn-add'
-  //         >
-  //           <FaPlusCircle />
-  //           <br />
-  //         Add material
-  //         </div>
-  //       </Paper>
-  //     </DockableDropTarget>
-  //   </GridListTile>
-  // )
-
   const editorComponent = state.editor
 
   // viewport - header - menu - toolbar
-  const bottomsPanelsHeight = 'calc(100vh - 51px - 88px - 35px)'
+  const bottomsPanelsHeight = 'calc(100vh - 51px - 108px - 35px)'
 
   return (
     <Grid container>
@@ -249,7 +224,7 @@ const Lesson = props => {
         <ToolBar handleAddMaterial={onAddMaterialClick}/>
       </Grid>
       {/* Present mode on */}
-      <Grid container item xs={12} style={{height: bottomsPanelsHeight }}>
+      <Grid container item xs={12} style={{ height: bottomsPanelsHeight }}>
         {/* Materials list */}
         {['student', 'edit'].includes(layoutMode) ? (
           <Grid item xs={2} style={{background: 'white'}}>
@@ -267,7 +242,10 @@ const Lesson = props => {
             </GridList>
           </Grid>
         ) : null}
-        <Grid item xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}>
+        <Grid
+          item
+          xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}
+          style={{height: bottomsPanelsHeight, overflow: 'auto'}}>
           {/* Search if sanbox does not exist in curent Material */}
           {!loading && // loading lesson
           materialTypePropIsInMaterial && // loading material

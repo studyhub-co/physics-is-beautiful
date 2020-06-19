@@ -63,6 +63,19 @@ class SimpleModuleSerializer(BaseSerializer):
 # TODO its load all material now - add pagination
 class MaterialListSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
+    screenshot = serializers.SerializerMethodField()
+
+    def get_screenshot(self, instance):
+        request = self.context.get('request')
+
+        try:
+            screenshot_url = instance.screenshot.url
+        except (AttributeError, ValueError):
+            return None
+
+        url = request.build_absolute_uri(screenshot_url)
+        screen_hash = hash(instance.updated_on)
+        return '{}?{}'.format(url, screen_hash)
 
     def create(self, validated_data):
         validated_data['lesson'] = validated_data['lesson']['uuid']
@@ -439,6 +452,14 @@ class MaterialSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
     tags = TagListSerializerField(read_only=True)
     material_problem_type = MaterialProblemTypeSerializer(read_only=True)
+    screenshot = serializers.SerializerMethodField()
+
+    def get_screenshot(self, instance):
+        request = self.context.get('request')
+        screenshot_url = instance.screenshot.url
+        url = request.build_absolute_uri(screenshot_url)
+        screen_hash = hash(instance.updated_on)
+        return '{}?{}'.format(url, screen_hash)
 
     def validate_lesson(self, value):
         return Lesson.objects.get(uuid=value)

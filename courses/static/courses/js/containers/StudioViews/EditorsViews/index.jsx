@@ -34,7 +34,7 @@ export class EditModuleView extends React.Component {
 export class EditLessonView extends React.Component {
   render () {
     return (
-      <div className={'editor'}>
+      <div className={'editor'} style={{ backgroundColor: 'white' }}>
         <EditLessonView1 {...this.props} />
       </div>
     )

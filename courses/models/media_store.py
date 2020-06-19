@@ -36,8 +36,7 @@ def resize_img(sender, instance, **kwargs):
     if instance.image:
         image = JsonDataImage.open(instance.image.file.file)
 
-        # todo fix this (if instance.screenshot in memory (a new one),
-        #  then remove existing + save new, elso none)
+        # TODO do we need removing old file?
 
         # do not resize if already resized
         if image.height > output_size[0] or image.width > output_size[1]:
