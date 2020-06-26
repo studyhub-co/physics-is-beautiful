@@ -67,8 +67,8 @@ class Material(BaseItemModel):
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_materials')
 
     def get_correct_data(self):
-        # TODO return correct data
-        return []
+        # return correct data
+        return self.data
 
     class Meta:
         ordering = ['position']

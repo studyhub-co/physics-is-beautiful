@@ -456,7 +456,12 @@ class MaterialSerializer(BaseSerializer):
 
     def get_screenshot(self, instance):
         request = self.context.get('request')
-        screenshot_url = instance.screenshot.url
+
+        try:
+            screenshot_url = instance.screenshot.url
+        except (AttributeError, ValueError):
+            return None
+
         url = request.build_absolute_uri(screenshot_url)
         screen_hash = hash(instance.updated_on)
         return '{}?{}'.format(url, screen_hash)

@@ -61,7 +61,7 @@ class MySQLAnswerReturnedSerializer(BaseSerializer):
         fields = ['query_SQL', 'expected_output_json']
 
 
-class UserResponseSerializer(BaseSerializer):
+class UserReactionSerializer(BaseSerializer):
 
     class Meta:
         model = UserReaction
@@ -71,54 +71,60 @@ class UserResponseSerializer(BaseSerializer):
         #     'answer', 'answers_list',
         #     'answered_on'
         # ]
-        extra_kwargs = {'profile': {'required': False}}
+        fields = ['profile', 'data',  'answered_on', 'material', 'anon_session_key']
+        extra_kwargs = {
+            'profile': {'required': False, 'write_only': True},
+            'anon_session_key': {'required': False, 'write_only': True}
+        }
 
-    my_sql = MySQLAnswerSerializer(required=False)
+
+        # my_sql = MySQLAnswerSerializer(required=False)
     # multiple or multi select field
 
-    def validate(self, data):
-        # fields is the list of fields from above, with values as serializers, eg. {'vector': VectorSerializer()... }
-        fields = set(self.fields.keys()) - {'question', 'profile', 'answered_on'}
-        # Filter the provided fields (data.keys()) by unioning with the allowed fields (fields) to get, e.g. {'answer'}
-        provided_fields = set(data.keys()) & fields
-        # Only one answer type (provided field) should be specified. E.g. can't have both a vector and unit conversion
-        if len(provided_fields) != 1:
-            raise ValidationError('Must specify exactly one of ({})'.format(', '.join(fields)))
-        # Define a new property called field_name why?
-        self.field_name = provided_fields.pop()
-        return data
+    # def validate(self, data):
+    #     # fields is the list of fields from above, with values as serializers, eg. {'vector': VectorSerializer()... }
+    #     fields = set(self.fields.keys()) - {'question', 'profile', 'answered_on'}
+    #     # Filter the provided fields (data.keys()) by unioning with the allowed fields (fields) to get, e.g. {'answer'}
+    #     provided_fields = set(data.keys()) & fields
+    #     # Only one answer type (provided field) should be specified. E.g. can't have both a vector and unit conversion
+    #     if len(provided_fields) != 1:
+    #         raise ValidationError('Must specify exactly one of ({})'.format(', '.join(fields)))
+    #     # Define a new property called field_name why?
+    #     self.field_name = provided_fields.pop()
+    #     return data
 
-    def get_response(self, **kwargs):
-        assert hasattr(self, '_errors'), (
-            'You must call `.is_valid()` before calling `.get_response()`.'
-        )
-        content = self.validated_data.pop(self.field_name)
-        answers_list = []
-        if isinstance(content, dict):
-            # Answers map to objects, everything else maps to dictionaries for
-            # objects to be created. Here we create those sub-objects
-            serializer_class = self.fields[self.field_name].__class__
-            sr = serializer_class(data=content)
-            sr.is_valid(raise_exception=True)
-            content = sr.Meta.model(**sr.validated_data)
-        if isinstance(content, list):
-            serializer_class = self.fields[self.field_name].__class__
-            sr = serializer_class(data=content, child=AnswerSerializer())
-            sr.is_valid(raise_exception=True)
-            # content = sr.Meta.model(**sr.validated_data)
-            content = None
-
-            answers_uuids = []
-
-            for answer_data in sr.validated_data:
-                answers_uuids.append(answer_data.get('uuid', 0))
-            # answers_list = Answer.objects.filter(uuid__in=answers_uuids)
-
-        self.validated_data['content'] = content
-        self.validated_data.update(kwargs)
-        instance = self.Meta.model(**self.validated_data)
-        instance.answers_list = answers_list
-        return instance
+    # not need now, todo remove
+    # def get_response(self, **kwargs):
+    #     assert hasattr(self, '_errors'), (
+    #         'You must call `.is_valid()` before calling `.get_response()`.'
+    #     )
+    #     content = self.validated_data.pop(self.field_name)
+    #     answers_list = []
+    #     if isinstance(content, dict):
+    #         # Answers map to objects, everything else maps to dictionaries for
+    #         # objects to be created. Here we create those sub-objects
+    #         serializer_class = self.fields[self.field_name].__class__
+    #         sr = serializer_class(data=content)
+    #         sr.is_valid(raise_exception=True)
+    #         content = sr.Meta.model(**sr.validated_data)
+    #     if isinstance(content, list):
+    #         serializer_class = self.fields[self.field_name].__class__
+    #         sr = serializer_class(data=content, child=AnswerSerializer())
+    #         sr.is_valid(raise_exception=True)
+    #         # content = sr.Meta.model(**sr.validated_data)
+    #         content = None
+    #
+    #         answers_uuids = []
+    #
+    #         for answer_data in sr.validated_data:
+    #             answers_uuids.append(answer_data.get('uuid', 0))
+    #         # answers_list = Answer.objects.filter(uuid__in=answers_uuids)
+    #
+    #     self.validated_data['content'] = content
+    #     self.validated_data.update(kwargs)
+    #     instance = self.Meta.model(**self.validated_data)
+    #     instance.answers_list = answers_list
+    #     return instance
 
 
 class LessonSerializer(BaseSerializer):
@@ -150,29 +156,29 @@ class MaterialSerializer(BaseSerializer):
     lesson = LessonSerializer()
     # my_sql = serializers.SerializerMethodField()
 
-    def get_unit_conversion(self, obj):
-        if obj.answer_type == Material.MaterialWorkflowType.UNIT_CONVERSION:
-            try:
-                answer = obj.answers.all()[0]
-            except IndexError:
-                return None
-
-            # if type(answer.content) == UnitConversion:
-            #     return UnitConversionSerializer(answer.content).data
-
-        return None
-
-    def get_my_sql(self, obj):
-        if obj.answer_type == Material.MaterialWorkflowType.MYSQL:
-            try:
-                answer = obj.answers.all()[0]
-            except IndexError:
-                return None
-
-            if type(answer.content) == MySQL:
-                    return MySQLQuestionSerializer(answer.content).data
-
-            return None
+    # def get_unit_conversion(self, obj):
+    #     if obj.answer_type == Material.MaterialWorkflowType.UNIT_CONVERSION:
+    #         try:
+    #             answer = obj.answers.all()[0]
+    #         except IndexError:
+    #             return None
+    #
+    #         # if type(answer.content) == UnitConversion:
+    #         #     return UnitConversionSerializer(answer.content).data
+    #
+    #     return None
+    #
+    # def get_my_sql(self, obj):
+    #     if obj.answer_type == Material.MaterialWorkflowType.MYSQL:
+    #         try:
+    #             answer = obj.answers.all()[0]
+    #         except IndexError:
+    #             return None
+    #
+    #         if type(answer.content) == MySQL:
+    #                 return MySQLQuestionSerializer(answer.content).data
+    #
+    #         return None
 
     class Meta:
         model = Material

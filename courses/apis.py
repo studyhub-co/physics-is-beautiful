@@ -15,7 +15,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Course, Unit, Module, Lesson, Material, MaterialProblemType
 from .services import get_progress_service, LessonLocked, LessonProgress
 
-from .serializers import MaterialSerializer, UserResponseSerializer, \
+from .serializers import MaterialSerializer, UserReactionSerializer, \
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
     CourseSerializer, LessonProgressSerializer
 
@@ -33,7 +33,7 @@ class MaterialViewSet(ModelViewSet):
 
     serializer_class = MaterialSerializer
     queryset = Material.objects.all()
-    permission_classes = []
+    permission_classes = []  # TODO
     lookup_field = 'uuid'
 
     def retrieve(self, request, *args, **kwargs):
@@ -52,24 +52,31 @@ class MaterialViewSet(ModelViewSet):
 
         return super(MaterialViewSet, self).retrieve(request, *args, **kwargs)
 
-    def user_response(self, request, uuid):
+    def user_reaction(self, request, uuid):
         material = self.get_object()  # self is an instance of the material with the matching uuid
         data = {'material': material.pk, 'answered_on': timezone.now()}
         data.update(request.data)
-        sr = UserResponseSerializer(data=data)
-        sr.is_valid(raise_exception=True)
-        kwargs = {}
+
+        # kwargs = {}
+        # authenticated user
         if request.user.is_authenticated:
-            kwargs['profile'] = request.user.profile
+            # kwargs['profile'] = request.user.profile
+            data['profile'] = request.user.profile.pk
         else:
+            # anon user
             if not request.session.session_key:
                 request.session.create()
             session = request.session
-            kwargs['anon_session_key'] = session.session_key
-        user_response = sr.get_response(**kwargs)
+            # kwargs['anon_session_key'] = session.session_key
+            data['anon_session_key'] = session.session_key
+
+        user_reaction_serializer = UserReactionSerializer(data=data)
+        user_reaction_serializer.is_valid(raise_exception=True)
+        # user_reaction = user_reaction_serializer.get_response(**kwargs)
+        user_reaction = user_reaction_serializer.save()
         service = get_progress_service(request, material.lesson)
         try:
-            is_correct = service.check_user_response(user_response)
+            is_correct = service.check_user_reaction(user_reaction)
         except LessonLocked as e:
             raise serializers.ValidationError(e)
         data = LessonProgressSerializer(service.current_lesson_progress).data
@@ -78,11 +85,12 @@ class MaterialViewSet(ModelViewSet):
 
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
-        # if not is_correct:
-            # if user_response.content:
-            #     data['correct_data'] = AnswerSerializer(user_response.get_correct_data()).data
-            # elif user_response.answers_list:
-            #     data['correct_data'] = AnswerSerializer(user_response.get_correct_data(), many=True).data
+        if not is_correct:
+            data['correct_data'] = material.data
+            # if user_reaction.content:
+            #     data['correct_data'] = AnswerSerializer(user_reaction.get_correct_data()).data
+            # elif user_reaction.answers_list:
+            #     data['correct_data'] = AnswerSerializer(user_reaction.get_correct_data(), many=True).data
         return Response(data)
 
     def service_request(self, request, uuid):
@@ -100,6 +108,29 @@ class MaterialViewSet(ModelViewSet):
 
         else:
             raise NotFound
+
+
+def remove_hidden_data(data):
+    if not isinstance(data, dict):
+        return data
+
+    # remove 'hiddenFields' from data
+    for key in data.keys():
+        if isinstance(data[key], list):
+            # replace fields in lists
+            for index, sub_data in enumerate(data[key]):
+                data[key][index] = remove_hidden_data(sub_data)
+        # replace fields in child object
+        data[key] = remove_hidden_data(data[key])
+
+    if 'hiddenFields' in data:
+        # dict with key / default (reseted) value
+        if isinstance(data['hiddenFields'], dict):
+            for key in data['hiddenFields'].keys():
+                # replace date with reseted value
+                data[key] = data['hiddenFields'][key]
+                # data[hidden_field] = None
+    return data
 
 
 class LessonViewSet(ModelViewSet):
@@ -135,6 +166,8 @@ class LessonViewSet(ModelViewSet):
             # lesson. Or a separate lesson_progress object.
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
             data['required_score'] = service.COMPLETION_THRESHOLD
+            # remove hidden fields data (i.g. selected choice) from JSON DATA
+            data['data'] = remove_hidden_data(data['data'])
             return Response(data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

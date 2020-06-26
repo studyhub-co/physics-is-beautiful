@@ -19,7 +19,8 @@ class UserReaction(models.Model):
     is_correct = models.BooleanField(default=False)
 
     def check_reaction(self):
-        # TODO
+        # TODO run validate.js from material type
+
         return True
 
     def get_correct_data(self):

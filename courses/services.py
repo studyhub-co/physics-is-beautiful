@@ -31,7 +31,7 @@ class ProgressServiceBase(object):
         self.request = request
         self.user = request.user
         self.current_lesson = current_lesson
-        self.user_responses = []
+        self.user_reactions = []
         self._dirty_lesson_progresses = {}
 
     def get_next_material(self, current_material=None):
@@ -100,8 +100,8 @@ class ProgressServiceBase(object):
                         return self.unlock_lesson(lesson).status
         return lesson_progress.status
 
-    def check_user_response(self, user_response):
-        is_correct = user_response.check_response()
+    def check_user_reaction(self, user_reaction):
+        is_correct = user_reaction.check_reaction()
         if is_correct:
             self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
             if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
@@ -116,7 +116,8 @@ class ProgressServiceBase(object):
                 0, self.current_lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
             )
 
-        self.user_responses.append(user_response)
+        # Why user_reactions is list?
+        self.user_reactions.append(user_reaction)
         self.save()
         return is_correct
 
@@ -139,15 +140,19 @@ class ProgressService(ProgressServiceBase):
         return True
 
     def save(self):
-        for response in self.user_responses:
-            if response.content:
-                obj = response.content
-                obj.save()
-                response.content = obj
-                response.save()
+        # for response in self.user_reactions:
+        #     if response.content:
+        #         obj = response.content
+        #         obj.save()
+        #         response.content = obj
+        #         response.save()
+
+        for reaction in self.user_reactions:
+            reaction.save()
+
         for lesson_progress in self._dirty_lesson_progresses.values():
             lesson_progress.save()
-        self.user_responses = []
+        self.user_reactions = []
         self.current_lesson_progress.save()
 
     @staticmethod
