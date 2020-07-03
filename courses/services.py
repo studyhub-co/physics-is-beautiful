@@ -102,6 +102,11 @@ class ProgressServiceBase(object):
 
     def check_user_reaction(self, user_reaction):
         is_correct = user_reaction.check_reaction()
+
+        # problem with validate.js
+        if is_correct is None:
+            return is_correct
+
         if is_correct:
             self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
             if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:

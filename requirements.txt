@@ -48,7 +48,7 @@ django-modeladmin-reorder==0.3.1
 django-crispy-forms>=1.6.1
 django-mptt>=0.8.7
 awesome-slugify==1.6.5
-django-ipware
+django-ipware==2.1.0
 django-meta
 django-gravatar2==1.4.2
 # django-pagedown==1.0.6
@@ -66,5 +66,7 @@ future==0.17.1
 django-taggit==1.1.0
 django-taggit-serializer==0.1.7
 django-npm==1.0.0
-pyppeteer==0.0.25
+# pyppeteer==0.0.25
 websockets==6.0
+# v8eval==0.3.0
+py-mini-racer==0.3.0

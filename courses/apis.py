@@ -79,6 +79,10 @@ class MaterialViewSet(ModelViewSet):
             is_correct = service.check_user_reaction(user_reaction)
         except LessonLocked as e:
             raise serializers.ValidationError(e)
+
+        if is_correct is None:
+            raise serializers.NotFound('validate.js for this material problem type was not found')
+
         data = LessonProgressSerializer(service.current_lesson_progress).data
 
         check_classroom_progress(service, self.request.user)

@@ -19,9 +19,25 @@ class UserReaction(models.Model):
     is_correct = models.BooleanField(default=False)
 
     def check_reaction(self):
-        # TODO run validate.js from material type
+        # run validate.js from material type
+        # 1. get validate.js from material sanbox
+        mpt = self.material.material_problem_type
+        if not mpt:
+            return None
 
-        return True
+        validate_js_module = mpt.modules.filter(name='validate.js').first()
+
+        if not validate_js_module:
+            return None
+
+        from py_mini_racer import py_mini_racer
+        ctx = py_mini_racer.MiniRacer()
+        ctx.eval(validate_js_module.code)
+
+        # call validation function
+        validation_result = ctx.call("validate")
+
+        return validation_result
 
     def get_correct_data(self):
         return self.material.get_correct_data()

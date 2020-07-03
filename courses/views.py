@@ -9,7 +9,7 @@ from django.core import files
 
 from PIL import Image, ImageDraw, ImageFont
 
-from pyppeteer import launch, errors
+# from pyppeteer import launch, errors
 
 
 def get_mock_png():

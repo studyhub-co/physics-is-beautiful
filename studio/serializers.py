@@ -161,7 +161,7 @@ class ModuleSerializer(TaggitSerializer, BaseSerializer):
     class Meta:
         model = Module
         fields = ['uuid', 'name', 'image', 'position', 'unit', 'course', 'url', 'lessons', 'tags']
-        read_only_fields = ('uuid', )
+        # read_only_fields = ('uuid', ) set in baseserializer
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
@@ -285,7 +285,7 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
         fields.extend(['shortid', 'title', 'id', 'directory_shortid'])
-        read_only_fields = ('author', 'last_edit_user')
+        read_only_fields = ['author', 'last_edit_user']
 
 
 class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
@@ -313,12 +313,12 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
         else:
             return None
 
-    class Meta:
+    class Meta(BaseSerializer.Meta):
         model = MaterialProblemTypeSandboxModule
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
         fields.extend(['directory_shortid', 'title', 'id', 'shortid'])
-        read_only_fields = ('author', 'last_edit_user', 'shortid')
+        read_only_fields = BaseSerializer.Meta.read_only_fields + ['author', 'last_edit_user', 'shortid']
 
 
 class MaterialProblemTypeSerializer(BaseSerializer):
@@ -431,11 +431,12 @@ class MaterialProblemTypeSerializer(BaseSerializer):
     #
     #     return material_problem_type
 
-    class Meta:
+    class Meta(BaseSerializer.Meta):
         model = MaterialProblemType
         # fields = ['uuid', 'name', 'data', 'created_on', 'updated_on']
         fields = '__all__'
-        read_only_fields = ('author', 'last_edit_user', 'forked_from_sandbox', 'slug')
+        read_only_fields = \
+            BaseSerializer.Meta.read_only_fields + ['author', 'last_edit_user', 'forked_from_sandbox', 'slug']
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
