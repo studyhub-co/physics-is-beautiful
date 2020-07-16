@@ -36,6 +36,8 @@ class Classroom(models.Model):
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+    # TODO migrate to course
+    # course = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
     code = models.CharField(unique=True, max_length=6)
 
     def __str__(self):

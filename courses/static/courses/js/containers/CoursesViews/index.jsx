@@ -7,3 +7,5 @@ import LessonApp from './Apps/Lesson'
 export {
   CoursesIndexView, CoursesRoutes, CourseApp, ModuleApp, LessonApp
 }
+
+// Fixme CoursesIndexView not used now

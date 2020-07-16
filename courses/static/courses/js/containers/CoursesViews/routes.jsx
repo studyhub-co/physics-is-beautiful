@@ -12,15 +12,19 @@ export default class CoursesRouter extends React.Component {
     return (
       <div className={'course'}>
         <Switch>
+          {/* TODO it seems we need to remove this.props.match.path */}
           <Route exact path={this.props.match.path + 'lessons/:currentId/'} component={LessonApp} />
           <Route exact path={this.props.match.path + 'modules/:currentId/'} component={ModuleApp} />
 
-          {/* FixMe Not need or redirect to a first module in Unit */}
+          {/* TODO ADD Material url */}
+          {/*<Route exact path={this.props.match.path + 'material/:currentId/'} component={ModuleApp} />*/}
+
+          {/* FixMe Not need (not used for now) or redirect to a first module in Unit */}
           {/* <Route path='/units/:currentId' component={UnitsApp} /> */}
           {/* <Route path='/games/:uuid/:slug' component={GamesApp} /> */}
-          <Route exact path={this.props.match.path + ':currentId/'} component={CourseApp} />
+          <Route exact path='' component={CourseApp} />
+          <Route exact path={this.props.match.path + ':courseUuid/'} component={CourseApp} />
           <Route path='*' component={NotFoundView} />
-          {/*<Route path='/' component={CourseApp} />*/}
         </Switch>
       </div>
     )

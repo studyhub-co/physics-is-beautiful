@@ -35,7 +35,10 @@ class UserReaction(models.Model):
         ctx.eval(validate_js_module.code)
 
         # call validation function
-        validation_result = ctx.call("validate")
+        # const validate = (correctData, userReactionData) => {
+        #   ...
+        # };
+        validation_result = ctx.call("validate", self.material.data, self.data)
 
         return validation_result
 

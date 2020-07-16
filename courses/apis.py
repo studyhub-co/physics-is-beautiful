@@ -293,7 +293,9 @@ class CourseViewSet(ModelViewSet):
             elif filter_by == 'other':
                 queryset = queryset.exclude(author=self.request.user)
             elif filter_by == 'default':
-                queryset = queryset.filter(author__pk=2)  # Physics Is Beautiful
+                # we have
+                # queryset = queryset.filter(author__pk=2)
+                queryset = queryset.filter(is_default=True)
 
         return queryset
 
@@ -304,7 +306,9 @@ class CourseViewSet(ModelViewSet):
 
     def get_object(self):
         lookup_id = self.kwargs.get(self.lookup_url_kwarg or self.lookup_field)
-        if lookup_id and lookup_id.lower() == 'default':
+        # if lookup_id and lookup_id.lower() == 'default':
+        # let's UUID('00000000-0000-0000-0000-000000000000') will be default
+        if lookup_id and lookup_id.int == 0:
             user = None
             if self.request.user.is_authenticated:
                 user = self.request.user

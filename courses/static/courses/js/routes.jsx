@@ -4,8 +4,10 @@ import { Route, Switch } from 'react-router'
 import { CoursesRoutes } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
 import {
-  EditCourseView, EditModuleView, EditLessonView, ProblemTypeEditorView
+  EditCourseView, EditModuleView, EditLessonView
 } from './containers/StudioViews/EditorsViews'
+
+import HomeIndex from './containers/homeIndex'
 
 import NotFoundView from './components/NotFoundView'
 
@@ -34,6 +36,8 @@ export default(
 
     {/* fixme */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}
+    {/* TODO to complete home page */}
+    <Route path='/' component={HomeIndex} />
     <Route path='*' component={NotFoundView} />
   </Switch>
 )

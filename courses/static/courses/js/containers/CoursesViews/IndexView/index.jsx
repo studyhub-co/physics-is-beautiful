@@ -1,3 +1,5 @@
+// Todo redirect to Course from this view?
+
 import React from 'react'
 
 // import { bindActionCreators } from 'redux'

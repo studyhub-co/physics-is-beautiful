@@ -47,6 +47,9 @@ export default class CourseThumbnail extends React.Component {
     this.state = {showSpinnerOverlay: false}
 
     this.CourseMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
+      { /* TODO fix this. it's raises warning: */ }
+      { /* Function components cannot be given refs. Attempts to access this ref will fail. */ }
+      { /* Did you mean to use React.forwardRef() */ }
       return (
         <FaEllipsisV
           ref={ref}

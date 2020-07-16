@@ -298,9 +298,10 @@ WEBPACK_LOADER = {
 REPUTATION_STAGE_1_POINTS = 5
 REPUTATION_STAGE_2_POINTS = 10
 
-
 DJEDDIT_USER_FIELDS = ['display_name', ]
 DJEDDIT_DISPLAY_USERNAME_FIELD = 'display_name'
+
+# studyhub-co settings
 
 # We don't want to use Django generic relations due we lose the consistency and integrity of database
 # and count of sql queries will be increases
@@ -315,4 +316,3 @@ DJEDDIT_RELATED_FIELDS = {
 DJEDDIT_STATIC_FILES_URL_PREFIX = 'js/npm/@vermus/django-react-djeddit-client/dist'
 
 SYSTEM_USER_ID = 2
-
