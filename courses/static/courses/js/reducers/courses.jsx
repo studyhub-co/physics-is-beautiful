@@ -3,7 +3,7 @@ import {
 } from '../constants'
 
 const initialState = {
-  isFetching: false
+  course: { isFetching: false, uuid: null }
 }
 
 export default function courses (state = initialState, action) {
@@ -11,13 +11,12 @@ export default function courses (state = initialState, action) {
     case COURSE_FETCHING:
       return {
         ...state,
-        isFetching: true
+        course: { isFetching: true }
       }
     case COURSE_FETCHING_SUCCESS:
       return {
         ...state,
-        isFetching: false,
-        ...action.course
+        course: { isFetching: false, ...action.course }
       }
     default:
       return state

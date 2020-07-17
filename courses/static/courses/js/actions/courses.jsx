@@ -22,7 +22,7 @@ export function fetchCourse (uuid) {
     if (uuid) {
       courseUuid = uuid
     }
-    const url = `${API_COURSES_PREFIX}courses/${courseUuid}/`
+    const url = `${API_COURSES_PREFIX}courses/${courseUuid}/?expand=units.modules`
     return getAxios().get(url)
       .then(checkHttpStatus)
       .then((response) => {
