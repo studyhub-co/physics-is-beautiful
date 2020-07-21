@@ -1,33 +1,38 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+
+import * as modulesActionCreators from '../../../actions/modules'
+
+import { Sheet } from '../../../components/Sheet'
+
+import { RingLoader } from 'react-spinners'
 import { SectionSheet } from '../SectionSheet'
 
-export default class ModuleApp extends React.Component {
-  constructor (obj) {
-    super()
-    this.state = {
-      currentId: obj.match.params.currentId || 'default',
-      sections: []
-    }
-    this.fetchState()
+const Module = props => {
+  const { match, fetchModule, currentModule } = props
 
-    this.course = null
-    this.module = null
-  }
+  // currentId: obj.match.params.currentId || 'default',
+  const [state, setState] = useState({
+    moduleUuid: match.params.moduleUuid || '00000000-0000-0000-0000-000000000000', // todo add url param
+    sections: []
+  })
 
-  componentDidMount () {
+  useEffect(() => {
+    fetchModule(state.moduleUuid)
+
     window.parent.postMessage({
       'message': 'canGoBack',
-      'data': true
+      'data': false
     }, '*')
-  }
+  }, [])
 
-  load () {
-    if (!this.module) {
-      return
-    }
+  useEffect(() => {
+    if (!currentModule.uuid) { return }
     var items = []
-    for (var lessonIndex = 0; lessonIndex < this.module.lessons.length; lessonIndex++) {
-      var lesson = this.module.lessons[lessonIndex]
+    for (var lessonIndex = 0; lessonIndex < currentModule.lessons.length; lessonIndex++) {
+      var lesson = currentModule.lessons[lessonIndex]
       let href
       // if (lesson.lesson_type === 'GAME') {
       //   // href = '/games/' + lesson.game_slug;
@@ -45,25 +50,28 @@ export default class ModuleApp extends React.Component {
       })
     }
     var sections = [{
-      name: this.module.name,
+      name: currentModule.name,
       items: items,
-      uuid: this.module.uuid
+      uuid: currentModule.uuid
     }]
 
     var backLink = '/'
 
     // If we are using the mobile app, make the query persist.
+    // TODO do we need support this now?
     if (window.IS_MOBILE_APP) backLink += '?pib_mobile=true'
 
     if (window.IS_MOBILE_APP) {
-      this.setState({
+      setState({
+        ...state,
         sections: sections,
         question: null,
         progress: 0,
         answer: null
       })
     } else {
-      this.setState({
+      setState({
+        ...state,
         sections: sections,
         backLink: backLink,
         question: null,
@@ -71,27 +79,45 @@ export default class ModuleApp extends React.Component {
         answer: null
       })
     }
-  }
+  }, [
+    currentModule
+  ])
 
-  fetchState () {
-    $.ajax({
-      async: true,
-      url: '/api/v1/courses/modules/' + this.state.currentId,
-      data: {'expand': 'lessons'},
-      context: this,
-      success: function (data, status, jqXHR) {
-        this.module = data
-        this.load()
+  return (
+    <div>
+      {currentModule && !currentModule.isFetching && currentModule.uuid
+        ? <div>
+          <SectionSheet
+            sections={state.sections}
+            backLink={state.backLink}
+          /></div>
+        : <Sheet>
+          <div className='sweet-loading'>
+            <RingLoader
+              color={'#1caff6'}
+              loading={currentModule.isFetching}
+            />
+          </div>
+        </Sheet>
       }
-    })
-  }
+    </div>
+  )
+}
 
-  render () {
-    return (
-      <SectionSheet
-        backLink={this.state.backLink}
-        sections={this.state.sections}
-      />
-    )
+Module.propTypes = {}
+
+const mapStateToProps = function (store) {
+  // console.log(store);
+  return {
+    currentModule: store.modules.module
   }
 }
+
+export default connect(
+  mapStateToProps,
+  dispatch => {
+    return bindActionCreators(modulesActionCreators, dispatch)
+    // return {
+    //   // deleteModule: (uuid) => dispatch(deleteModule(uuid))
+    // }
+  })(Module)

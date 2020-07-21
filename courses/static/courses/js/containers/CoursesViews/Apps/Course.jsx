@@ -150,12 +150,12 @@ const Course = props => {
   return (
     <div> This is course index: <br/>
       TODO: <br/>
-      1. Get default course<br/>
-      2. Show default course<br/>
+      {/*1. Get default course<br/>*/}
+      {/*2. Show default course<br/>*/}
       3. Support courseId navigation<br/>
       4. Add iframe execution<br/>
       5. Iframe execution navigation (move to the next material)<br/>
-      6. ADD spiiner while course isFetching
+      {/*6. Spinner while course isFetching*/}
       {currentCourse && !currentCourse.isFetching && currentCourse.uuid
         ? <div>
           <CourseInfoPanel currentCourse={currentCourse}/>
