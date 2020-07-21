@@ -184,6 +184,7 @@ function currentMaterial (state = null, action) {
     case ActionTypes.MATERIAL_LOADED:
       return action.material
     case ActionTypes.GOTO_MATERIAL:
+      // see /courses/js/middleware/routing.jsx for details about URL navigation due GOTO MATERIAL PROCCESS
       return action.material
     case ActionTypes.MATERIAL_ADDED:
       return action.material

@@ -46,6 +46,19 @@ class ProgressServiceBase(object):
             self.save()
         return material
 
+    def get_current_material(self, current_material_uuid):
+        qs = self.current_lesson.materials
+        try:
+            material = qs.get(uuid=current_material_uuid)
+        except material.DoesNotExist:
+            return None
+
+        # reset lessonn progress
+        if material.position == 0:
+            self.current_lesson_progress.score = 0
+            self.save()
+        return material
+
     def _allow_override(self, lesson):
         return True  # Set this to True if you want all users to have all lessons unlocked
 

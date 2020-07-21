@@ -151,14 +151,34 @@ class LessonViewSet(ModelViewSet):
     def get_next_material(self, request, uuid):
         lesson = self.get_object()
         service = get_progress_service(request, lesson)
+        # fixme not so good approach, I think
+        # we need able to get material by uuid, and add material.prev/material.next
+        # to the the material data (pagination analog)
+
+        material = None
+
         previous_material = None
         previous_material_uuid = request.query_params.get('previous_material')
+        material_uuid = request.query_params.get('material_uuid', None)
+
         if previous_material_uuid:
-            previous_material = Material.objects.filter(uuid=previous_material_uuid).first()
-        try:
-            material = service.get_next_material(previous_material)
-        except LessonLocked as e:
-            raise serializers.ValidationError(e)
+            # get current material with prev uuid
+            if previous_material_uuid:
+                previous_material = Material.objects.filter(uuid=previous_material_uuid).first()
+            try:
+                material = service.get_next_material(previous_material)
+            except LessonLocked as e:
+                raise serializers.ValidationError(e)
+        elif material_uuid:
+            # get current material by uuid
+            try:
+                material = service.get_current_material(material_uuid)
+            except LessonLocked as e:
+                raise serializers.ValidationError(e)
+
+        if not material:
+            material = service.get_next_material(None)
+
         if material:
             new_thread = create_thread(material)
             if new_thread:
