@@ -13,9 +13,9 @@ export default class CoursesRouter extends React.Component {
       <div className={'course'}>
         <Switch>
           {/* TODO it seems we need to remove this.props.match.path */}
-          <Route exact path={this.props.match.path + 'lessons/:lessonUuid/'} component={LessonApp} />
-          <Route exact path={this.props.match.path + 'lessons/:lessonUuid/materials/:materialUuid/'} component={LessonApp} />
-          <Route exact path={this.props.match.path + 'modules/:moduleUuid/'} component={ModuleApp} />
+          <Route exact path={this.props.match.path + 'lessons/:lessonUuid'} component={LessonApp} />
+          <Route exact path={this.props.match.path + 'lessons/:lessonUuid/materials/:materialUuid'} component={LessonApp} />
+          <Route exact path={this.props.match.path + 'modules/:moduleUuid'} component={ModuleApp} />
 
           {/* TODO ADD Material url */}
           {/*<Route exact path={this.props.match.path + 'material/:currentId/'} component={ModuleApp} />*/}

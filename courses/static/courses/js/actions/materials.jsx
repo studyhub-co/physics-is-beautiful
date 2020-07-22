@@ -35,13 +35,18 @@ export function fetchMaterial (lessonUuid, materialUuid, prevMaterialUuid) {
       // get material with by prev material uuid
       url = `${url}?previous_material=${prevMaterialUuid}`
     }
+
+    console.log(materialUuid)
+
     return getAxios().get(url)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(fetchingMaterialSuccess(response.data))
-        // todo we need to exclude redirect if url was firstly loaded...
-        // we can't redirect before material loaded, because we load 1st material in lesson w\o materialUuid
-        dispatch(redirect2Material(lessonUuid, response.data.uuid))
+
+        // if load 1st material in lesson redirect / see routingMiddleware for details
+        if (!materialUuid && !prevMaterialUuid) {
+          dispatch(redirect2Material(lessonUuid, response.data.uuid))
+        }
       })
   }
 }
