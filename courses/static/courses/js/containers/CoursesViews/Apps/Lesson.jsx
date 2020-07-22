@@ -33,7 +33,7 @@ const Lesson = props => {
   // TODO make it reusable
   // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
   const materialEvalUrl = (material) => {
-    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/`
+    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/?standalone`
   }
 
   useEffect(() => {
