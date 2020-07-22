@@ -8,9 +8,8 @@ import * as materialsActionCreators from '../../../actions/materials'
 import { Sheet } from '../../../components/Sheet'
 
 import { RingLoader } from 'react-spinners'
-import { StyledIframe } from '../../StudioViews/EditorsViews/containers/LessonWorkSpace/Styles'
+import { StyledIframe } from '../Styles'
 // import { SectionSheet } from '../SectionSheet'
-
 
 const Lesson = props => {
   // const { match, fetchModule, currentModule } = props
@@ -30,7 +29,6 @@ const Lesson = props => {
     iframeUrl: ''
   })
 
-  // TODO make it reusable
   // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
   const materialEvalUrl = (material) => {
     return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/?standalone`
@@ -69,16 +67,17 @@ const Lesson = props => {
   }, [])
 
   return (
-    <Sheet>
-      TODO <br />
-      {/*1) Get lesson id via url, <br />*/}
-      {/*2) get next material API CALL, (we don't know materail.uuid at this stage that we need to use in url) <br />*/}
-      {/*3) redirect to courses/lessons/lessonUuid/materials/materialUuid ? we need to know lessonUuid to make getNextMaterialCall <br />*/}
-      4) Should we use materials API direct from iframe? <br />
-      5) iframe execution<br/>
-      6) Iframe execution navigation (move to the next material)<br/>
+    <div>
+      {/* 1) Get lesson id via url, <br /> */}
+      {/* 2) get next material API CALL, (we don't know materail.uuid at this stage that we need to use in url) <br /> */}
+      {/* 3) redirect to courses/lessons/lessonUuid/materials/materialUuid ? we need to know lessonUuid to make getNextMaterialCall <br /> */}
+      {/* TODO <br /> */}
+      {/* 4) Should we use materials API direct from iframe? <br /> */}
+      {/* 5) iframe execution<br/> */}
+      {/* 6) Iframe execution navigation (move to the next material)<br/> */}
       {state.iframeUrl
         ? <StyledIframe
+          // height='100%' width='100%'
           ref={setFrameRef}
           // onLoad={e => onLoadIframe(e,
           //   currentMaterial.material_problem_type,
@@ -94,7 +93,7 @@ const Lesson = props => {
           // loading={currentModule.isFetching}
           />
         </div> }
-    </Sheet>
+    </div>
   )
 }
 

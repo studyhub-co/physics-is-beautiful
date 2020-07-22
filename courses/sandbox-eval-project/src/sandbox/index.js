@@ -31,6 +31,7 @@ export const SCRIPT_VERSION =
 debug('Booting sandbox')
 
 requirePolyfills().then(() => {
+  // TODO this do not work.
   registerServiceWorker('/sandbox-service-worker.js', {})
 
   function sendReady () {
