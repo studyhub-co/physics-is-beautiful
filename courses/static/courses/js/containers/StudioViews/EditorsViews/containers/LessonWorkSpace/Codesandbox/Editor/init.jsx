@@ -47,7 +47,7 @@ export const initialize = (component, callback1) => {
     //   : 'localhost:3031',
     devtools: false,
     name:
-      'PIB material editor - ' +
+      'studyhub material editor - ' +
       (navigator.userAgent.indexOf('Chrome/76') > 0 ? 'Chrome' : 'Canary'),
     logProxies: true
   })
@@ -61,9 +61,6 @@ export const initialize = (component, callback1) => {
 
   window.getState = getState
   window.getSignal = getSignal
-
-  // console.log('getState');
-  // console.log(getState);
 
   // Configures BrowserFS to use the LocalStorage file system.
   window.BrowserFS.configure(

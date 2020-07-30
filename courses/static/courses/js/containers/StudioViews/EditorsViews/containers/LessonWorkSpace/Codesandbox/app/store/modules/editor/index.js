@@ -24,6 +24,8 @@ export default Module({
     sessionFrozen: true,
     sandboxes: {},
     currentId: null,
+    // currentMaterialUuid: null,
+    // currentLessonUuid: null,
     isForkingSandbox: false,
     currentModuleShortid: null,
     mainModuleShortid: null,

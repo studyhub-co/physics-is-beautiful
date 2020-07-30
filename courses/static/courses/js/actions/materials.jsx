@@ -36,7 +36,7 @@ export function fetchMaterial (lessonUuid, materialUuid, prevMaterialUuid) {
       url = `${url}?previous_material=${prevMaterialUuid}`
     }
 
-    console.log(materialUuid)
+    // console.log(materialUuid)
 
     return getAxios().get(url)
       .then(checkHttpStatus)

@@ -90,6 +90,9 @@ requirePolyfills().then(() => {
     } catch (e) {
       console.log(e)
     }
+
+    // console.log(host);
+
     window
       // .fetch(host + `/api/v1/sandboxes/${id}`, {
       .fetch(host + `/api/v1/studio/material-problem-type/${id}/`, {

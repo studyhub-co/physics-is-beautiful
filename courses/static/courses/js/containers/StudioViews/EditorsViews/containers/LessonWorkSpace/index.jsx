@@ -151,8 +151,7 @@ const Lesson = props => {
   // TODO make it reusable
   const mptEvalUrl = (mpt) => {
     if (mpt && mpt.hasOwnProperty('id')) {
-      // TODO add material id to work with data
-      return `${window.location.origin}/evaluation/${mpt.id}/`
+      return `${window.location.origin}/evaluation/${mpt.id}/${currentMaterial.uuid}/${uuid}/`
     } else { return '' }
   }
 
@@ -246,7 +245,7 @@ const Lesson = props => {
           item
           xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}
           style={{height: bottomsPanelsHeight, overflow: 'auto'}}>
-          {/* Search if sanbox does not exist in curent Material */}
+          {/* Search if sanbox does not exist in current Material */}
           {!loading && // loading lesson
           materialTypePropIsInMaterial && // loading material
           !currentMaterialHasType ? ( //

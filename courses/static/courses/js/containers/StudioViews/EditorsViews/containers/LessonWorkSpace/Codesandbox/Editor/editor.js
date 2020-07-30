@@ -44,11 +44,14 @@ class ContentSplit extends React.Component {
     },
     customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme,
 
-    currentMaterialProblemType: this.getMaterialProblemTypeFromReduxStore(store.getState())
+    currentMaterialProblemType: this.getMaterialProblemTypeFromReduxStore(store.getState()),
+    // currentMaterial: store.getState().studio.currentMaterial
     // currentMaterialProblemType: {id: 'new'}
   };
 
   getMaterialProblemTypeFromReduxStore (state) {
+    // TODO we need to get lesson uuid and material uuid also
+    // console.log(state)
     if (state.studio.currentMaterial &&
       state.studio.currentMaterial.material_problem_type) {
       return state.studio.currentMaterial.material_problem_type
@@ -87,6 +90,7 @@ class ContentSplit extends React.Component {
 
   fetchReactSandbox = () => {
     this.props.signals.editor.sandboxChanged(this.state.currentMaterialProblemType)
+    // this.props.signals.editor.materialChanged()
 
     // const { id } = this.props.match.params;
     // load custom sanbox if we have problem_type_uuid in param

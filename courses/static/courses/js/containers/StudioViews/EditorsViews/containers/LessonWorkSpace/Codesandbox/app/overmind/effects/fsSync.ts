@@ -33,7 +33,12 @@ function getTypesInfo() {
     return typeInfoPromise;
   }
 
-  typeInfoPromise = fetch('https://unpkg.com/types-registry@latest/index.json')
+  typeInfoPromise = fetch(
+    'https://unpkg.com/types-registry@latest/index.json',
+    // This falls back to etag caching, ensuring we always have latest version
+    // https://hacks.mozilla.org/2016/03/referrer-and-cache-control-apis-for-fetch/
+    { cache: 'no-cache' }
+  )
     .then(x => x.json())
     .then(x => x.entries);
 
@@ -83,7 +88,7 @@ async function syncDependencyTypings(
         try {
           const fetchRequest = await fetch(
             // `${SERVICE_URL}/${depName}@${depVersion}.json`
-             `${SERVICE_URL}/${dependencyQuery}.json`
+            `${SERVICE_URL}/${dependencyQuery}.json`
           );
 
           if (!fetchRequest.ok) {

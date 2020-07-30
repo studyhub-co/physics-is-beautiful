@@ -8,7 +8,7 @@ import * as materialsActionCreators from '../../../actions/materials'
 import { Sheet } from '../../../components/Sheet'
 
 import { RingLoader } from 'react-spinners'
-import { StyledIframe } from '../Styles'
+import { StyledIframe } from './Styles'
 // import { SectionSheet } from '../SectionSheet'
 
 const Lesson = props => {
@@ -31,7 +31,7 @@ const Lesson = props => {
 
   // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
   const materialEvalUrl = (material) => {
-    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/?standalone`
+    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/${state.lessonUuid}/?standalone`
   }
 
   useEffect(() => {

@@ -71,7 +71,7 @@ class StructureItemMenu extends React.Component {
         <div
           ref={ref}
           onClick={(e) => {
-            console.log(onClick)
+            // console.log(onClick)
             e.preventDefault()
             e.stopPropagation() // stop parents onClicks if exist
             onClick(e)

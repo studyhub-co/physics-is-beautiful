@@ -205,17 +205,30 @@ class BasePreview extends React.Component<Props, State> {
   currentUrl = () => {
     const { url, sandbox } = this.props;
 
-    if (sandbox && sandbox.hasOwnProperty('id')) {
-      // TODO add material id to work with data
-      return `${window.location.origin}/evaluation/${sandbox.id}/`
-    }
-    else {return ''}
+    // if (this.props.currentMaterialUuid) {
+    //   console.log(this.props);
+    // }
+
+    // console.log(window.location);
+    // get path from cuurent material path.
+    // try to find lesson uuid and material uuid
+    const path = document.location.pathname;
+    const lessonIdRegex = /lessons\/([^\/]+)\//;
+    const lessonUuid = path.match(lessonIdRegex)[1];
+    const materialIdRegex = /materials\/([^\/]+)\/?/;
+    const materialUuid = path.match(materialIdRegex)[1];
 
     if (url && !url.startsWith('/')) {
       // An absolute url is given, just return that
       return url;
+    } else if (sandbox && sandbox.hasOwnProperty('id')) {
+      //  add material id to work with data
+      return `${window.location.origin}/evaluation/${sandbox.id}/${materialUuid}/${lessonUuid}/`;
+    } else {
+      return '';
     }
 
+    // TODO fix this code
     // url may be a relative path (/test), so start with that
     const initialPath = url || this.props.initialPath || '';
 

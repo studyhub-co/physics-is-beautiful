@@ -184,10 +184,14 @@ class PreviewComponent extends Component<Props, State> {
 
     const completelyHidden = !store.editor.previewWindowVisible
 
+    // console.log(store.editor)
+
     return this.state.running ? (
       <BasePreview
         onInitialized={this.onPreviewInitialized}
         sandbox={store.editor.currentSandbox}
+        currentMaterialUuid={store.editor.currentMaterialUuid}
+        currentLessonUuid={store.editor.currentLessonUuid}
         currentModule={store.editor.currentModule}
         settings={store.preferences.settings}
         initialPath={store.editor.initialPath}

@@ -92,7 +92,7 @@ export default {
       { ...data, name: data.title }
     );
   },
-  // TODO create backed to resolve last version of the package
+  // call backend API to resolve last version of the package
   getDependency(name: string): Promise<Dependency> {
     // return api.get(`/dependencies/${name}@latest`);
     return api.get(`/studio/npm/dependencies/${name}@latest`);

@@ -431,9 +431,13 @@ class EditorPreview extends React.Component {
         options.port || options.title
           ? `Browser (${options.title || `:${options.port}`})`
           : `Browser`,
-      Content: ({ hidden, options }) => (
-        <Preview options={options} hidden={hidden} width='100%' height='100%' />
-      ),
+      Content: ({ hidden, options }) => {
+        // console.log(`${window.location.origin}`)
+        // options.url = 'http://127.0.0.1:8000'
+        return (
+          <Preview options={options} hidden={hidden} width='100%' height='100%' />
+        )
+      },
       actions: []
     }
 

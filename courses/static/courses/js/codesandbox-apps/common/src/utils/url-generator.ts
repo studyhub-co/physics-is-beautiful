@@ -198,8 +198,8 @@ export function getSandboxId() {
   // });
 
   // document.location.pathname
-  // /evaluation/03bc1a2d-febe-4a0b-9028-1957eed68bd2/03bc1a2d-febe-4a0b-9028-1957eed68bd2/
-  //              ^ sandbox uuid                         ^ material uuid (optional)
+  // /evaluation/03bc1a2d-febe-4a0b-9028-1957eed68bd2/03bc1a2d-febe-4a0b-9028-1957eed68bd2/03bc1a2d-febe-4a0b-9028-1957eed68bd2/
+  //              ^ sandbox uuid                         ^ material uuid (optional)         lesson uuid
   const segments = document.location.pathname.split('/')
   if (segments.length > 2) {
     result = segments[2]
