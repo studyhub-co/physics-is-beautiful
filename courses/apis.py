@@ -85,10 +85,13 @@ class MaterialViewSet(ModelViewSet):
 
         data = LessonProgressSerializer(service.current_lesson_progress).data
 
+        next_material = service.get_next_material(material)
+
         check_classroom_progress(service, self.request.user)
 
         data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
+        data['next_material_uuid'] = next_material.uuid
         if not is_correct:
             data['correct_data'] = material.data
             # if user_reaction.content:

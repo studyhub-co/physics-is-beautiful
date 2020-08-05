@@ -9,6 +9,7 @@ import { Sheet } from '../../../components/Sheet'
 
 import { RingLoader } from 'react-spinners'
 import { StyledIframe } from './Styles'
+import history from '../../../history'
 // import { SectionSheet } from '../SectionSheet'
 
 const Lesson = props => {
@@ -28,6 +29,15 @@ const Lesson = props => {
     materialUuid: match.params.materialUuid || null,
     iframeUrl: ''
   })
+
+  useEffect(() => {
+    // TODO catch lesson id?
+    // TODO reset currentMaterial before fetch
+    if (match.params.materialUuid !== state.materialUuid) {
+      // reload new material
+      fetchMaterial(state.lessonUuid, match.params.materialUuid)
+    }
+  }, [match])
 
   // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
   const materialEvalUrl = (material) => {
@@ -49,7 +59,8 @@ const Lesson = props => {
       // we don't have materialUuid at this stage
       fetchMaterial(state.lessonUuid)
     } else {
-      // console.log('load material that selected by uuid')
+      // moved to match catching, see upper
+      // 'load material that selected by uuid'
       fetchMaterial(state.lessonUuid, state.materialUuid)
     }
 
@@ -59,6 +70,17 @@ const Lesson = props => {
     // } else {
     //   gotoMaterial(state.lessonUuid, state.materialUuid)
     // }
+
+    window.addEventListener('message', ({ data }) => {
+      if (data.hasOwnProperty('type')) {
+        if (data.type === 'redirect_to_material') {
+          // listener from iframe when continue button clicked
+          // console.log(data.data.nextMaterialUuid)
+          const {lessonUuid, nextMaterialUuid} = data.data
+          history.push(`/courses/lessons/${lessonUuid}/materials/${nextMaterialUuid}`)
+        }
+      }
+    }, false)
 
     window.parent.postMessage({
       'message': 'canGoBack',

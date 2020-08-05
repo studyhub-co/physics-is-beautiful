@@ -7,7 +7,7 @@ export function useLayoutMode () {
   function setLayoutMode (mode) {
     // dispatch event to Editor API
     csDispatch({
-      type: 'pib_edit_mode',
+      type: 'edit_mode',
       data: mode
     })
     setLayout(mode)

@@ -48,12 +48,6 @@ export function resetState() {
 export function dispatch(message: any) {
   if (!message) return;
 
-  // if (message.hasOwnProperty('type')) {
-  //   if (message.type==='pib_edit_mode') {
-  //     console.log('pib_edit_mode message');
-  //   }
-  // }
-
   const newMessage = { ...message, codesandbox: true };
   notifyListeners(newMessage);
   notifyFrames(newMessage);
