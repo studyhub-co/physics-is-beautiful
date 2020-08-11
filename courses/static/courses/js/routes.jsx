@@ -18,7 +18,7 @@ export default(
     {/* TODO lazy load components (see units/loadable.jsx for details) */}
 
     {/* student views */}
-    <Route path={'/courses/'} component={CoursesRoutes} />
+    <Route path={'/courses/:courseUuid?'} component={CoursesRoutes} />
 
     {/* browse courses */}
     <Route exact path={'/browse/'} component={BrowseStudioDashboard} />

@@ -92,9 +92,8 @@ const CourseInfoPanel = props => {
 const Course = props => {
   const { match, fetchCourse, currentCourse } = props
 
-  // currentId: obj.match.params.currentId || 'default',
   const [state, setState] = useState({
-    courseUuid: match.params.courseUuid || '00000000-0000-0000-0000-000000000000', // todo add url param
+    courseUuid: match.params.courseUuid || '00000000-0000-0000-0000-000000000000',
     sections: []
   })
 
@@ -149,11 +148,6 @@ const Course = props => {
 
   return (
     <div>
-      {/*This is course index: <br/>*/}
-      {/* 1. Get default course<br/> */}
-      {/* 2. Show default course<br/> */}
-      TODO 3. Support courseId navigation<br/>
-      {/* 6. Spinner while course isFetching */}
       {currentCourse && !currentCourse.isFetching && currentCourse.uuid
         ? <div>
           <CourseInfoPanel currentCourse={currentCourse}/>
@@ -174,7 +168,6 @@ const Course = props => {
 Course.propTypes = {}
 
 const mapStateToProps = function (store) {
-  // console.log(store);
   return {
     currentCourse: store.courses.course
   }
@@ -184,7 +177,4 @@ export default connect(
   mapStateToProps,
   dispatch => {
     return bindActionCreators(coursesActionCreators, dispatch)
-    // return {
-    //   // deleteCourse: (uuid) => dispatch(deleteCourse(uuid))
-    // }
   })(Course)
