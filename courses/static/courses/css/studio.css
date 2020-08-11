@@ -224,7 +224,7 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
 .editor .lesson-questions .btn-arrow { padding:22px 10px;}
 .editor .lesson-questions .btn-add { padding-top:16px; }*/
 
-.editor  .editor-common-button {
+.editor-common-button {
     background-color: rgb(8, 209, 255);
     border-radius: 2rem;
     border-width: 1px;

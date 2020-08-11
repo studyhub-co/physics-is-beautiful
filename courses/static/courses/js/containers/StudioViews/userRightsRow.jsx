@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
-import { FormGroup, DropdownButton, InputGroup } from 'react-bootstrap'
+import { FormGroup, DropdownButton, InputGroup, Dropdown } from 'react-bootstrap'
 
 import { MultiSelect } from 'react-selectize'
 
@@ -22,23 +22,23 @@ class UserRightsRow extends React.Component {
   onAddCollaboratorsClick () {
     if (this.state.selectedUsers.length > 0) {
       // this.props.addCollaborators(this.state.selectedUsers)
-      var curriculum = {uuid: this.props.curriculum.uuid}
+      var course = {uuid: this.props.course.uuid}
       var collaboratorsIds = []
 
       for (var i = 0; i < this.state.selectedUsers.length; i++) {
         collaboratorsIds.push(this.state.selectedUsers[i]['id'])
       }
       // append existing collaborators
-      for (i = 0; i < this.props.curriculum.collaborators.length; i++) {
-        var id = this.props.curriculum.collaborators[i]['id']
+      for (i = 0; i < this.props.course.collaborators.length; i++) {
+        var id = this.props.course.collaborators[i]['id']
         if (collaboratorsIds.indexOf(id) === -1) {
           collaboratorsIds.push(id)
         }
       }
 
-      curriculum['collaborators_ids'] = collaboratorsIds
+      course['collaborators_ids'] = collaboratorsIds
 
-      this.props.updateCourse(curriculum)
+      this.props.updateCourse(course)
       this.setState({selectedUsers: []})
     }
   }
@@ -158,13 +158,13 @@ UserRightsRow.propTypes = {
   // data
   foundUsers: PropTypes.object,
   findUserRequest: PropTypes.bool,
-  curriculum: PropTypes.object.isRequired // not reducer data
+  course: PropTypes.object.isRequired // not reducer data
 }
 
 const mapStateToProps = (state) => {
   return {
-    foundUsers: state.users.foundUsers,
-    findUserRequest: state.users.findUserRequest,
+    foundUsers: state.studio.users.foundUsers,
+    findUserRequest: state.studio.users.findUserRequest,
   }
 }
 

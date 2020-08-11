@@ -28,10 +28,10 @@ class BrowseStudioDashboard extends React.Component {
   }
 
   componentWillMount () {
-    if (this.props.match.path === 'browse/' && this.props.match.isExact) {
+    if (this.props.match.path.endsWith('browse/') && this.props.match.isExact) {
       this.props.changeTab('browse', 'tab')
     }
-    if (this.props.match.path === 'studio/' && this.props.match.isExact) {
+    if (this.props.match.path.endsWith('studio/') && this.props.match.isExact) {
       this.props.changeTab('studio', 'tab')
     }
     if (this.props.location.pathname.lastIndexOf('studio/profile/', 0) === 0) {
@@ -91,9 +91,9 @@ class BrowseStudioDashboard extends React.Component {
               <BrowseIndexView />
             </TabContent>
             <TabContent for='studio'>
-              {!this.state.showEditCourseProfile &&
-               // ? <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
-                <div>
+              {this.state.showEditCourseProfile
+                ? <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} />
+                : <div>
                   <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit
                   the <a href='' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.

@@ -9,7 +9,7 @@ import { Container, Row, Col, Modal, Button } from 'react-bootstrap'
 import UserRightsRow from './userRightsRow'
 import StaffUserRow from './staffUserRow'
 import { updateCourse, deleteCourse } from '../../actions/studio'
-import { history } from '../../history'
+import history from '../../history'
 
 // TODO move to lib app
 class SettingRow extends React.Component {

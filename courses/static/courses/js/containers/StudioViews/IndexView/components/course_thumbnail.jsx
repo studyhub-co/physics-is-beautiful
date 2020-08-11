@@ -7,6 +7,8 @@ import { Col, Dropdown } from 'react-bootstrap'
 import { FaEllipsisV, FaEdit, FaPen, FaCodeBranch, FaShareAlt, FaTrash } from 'react-icons/fa'
 import copy from 'copy-to-clipboard'
 
+import history from '../../../../history'
+
 import { BASE_URL } from '../../../../utils/config'
 import { Thumbnail } from '../../../../components/thumbnail'
 import { Overlay } from '../../../../components/fullscreen_overlay'
@@ -145,7 +147,7 @@ export default class CourseThumbnail extends React.Component {
             {this.props.name}
           </div>
           <div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            <a href={this.props.author.get_absolute_url}>
+            <a href={''} onClick={() => { history.push(this.props.author.get_absolute_url) }}>
               {this.props.author.display_name}
             </a> ∙ {this.props.count_lessons } lessons ∙ { this.props.number_of_learners } learners
           </div>

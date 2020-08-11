@@ -70,12 +70,6 @@ export class CourseThumbnailPublic extends React.Component {
           }}>
           {children}
         </span>
-        // <FaEllipsisV onClick={(e) => {
-        //   e.preventDefault()
-        //   onClick(e)
-        // }} style={{fontSize: '2rem'}}>
-        //   {children}
-        // </FaEllipsisV>
       )
     })
   }

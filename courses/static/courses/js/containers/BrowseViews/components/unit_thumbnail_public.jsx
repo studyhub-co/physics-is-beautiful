@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Col } from 'react-bootstrap'
 
+import history from '../../../history'
 import { Thumbnail } from '../../../components/thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
 

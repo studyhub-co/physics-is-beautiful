@@ -6,7 +6,7 @@ import ReactCrop from 'react-image-crop'
 import { connect } from 'react-redux'
 import { FaPencilAlt, FaChevronLeft } from 'react-icons/fa'
 
-import { history } from '../../history'
+import history from '../../history'
 import { Image as ImageBs, Container, Row, Col } from 'react-bootstrap'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
@@ -87,10 +87,6 @@ class PencilImageUpload extends React.Component { // TODO move to utils
 
   render () {
     return <div className={'selectable-image'} style={{height: '100%'}}>
-      {/*<Glyphicon*/}
-        {/*glyph={'pencil'}*/}
-        {/*// onClick={this.imageUpload}*/}
-        {/*style={{fontSize: '2rem', top: '1rem'}} />*/}
       <FaPencilAlt style={{fontSize: '1.5rem', marginTop: '0.75rem'}} />
       <input
         type='file' name='image' accept='image/*'
@@ -139,11 +135,6 @@ class EditCourseProfileView extends React.Component {
     this.props.loadCourse(this.props.match.params.uuid)
   }
 
-  // hideCopiedToolTip () {
-  //   if (this.refs.overlay1) { this.refs.overlay1.hide() }
-  //   if (this.refs.overlay2) { this.refs.overlay2.hide() }
-  // }
-
   handleSelectTab (tabname, tabspace) {
     if (tabname === 'edit') {
       history.push('/studio/editor/courses/' + this.props.match.params.uuid + '/')
@@ -154,7 +145,8 @@ class EditCourseProfileView extends React.Component {
   }
 
   startCourse () {
-    window.open('/course/' + this.props.match.params.uuid + '/', '_self')
+    // window.open('/course/' + this.props.match.params.uuid + '/', '_self')
+    history.push('/courses/' + this.props.match.params.uuid + '/')
   }
 
   // ==== description
@@ -228,12 +220,6 @@ class EditCourseProfileView extends React.Component {
   }
 
   render () {
-    // var copiedTooltip = (
-    //   <Tooltip id='copiedTooltip'>
-    //     Copied!
-    //   </Tooltip>
-    // )
-
     var selectedCourse = this.props.courses[this.props.match.params.uuid]
 
     if (!selectedCourse) return null
@@ -241,7 +227,6 @@ class EditCourseProfileView extends React.Component {
     return (
       <div className={'pop-up-window'}>
         <a className={'back-button'} onClick={() => { history.push('/studio/') }} >
-          {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
           <FaChevronLeft />
             My courses
         </a>
@@ -378,10 +363,6 @@ class EditCourseProfileView extends React.Component {
                     }
                     <span style={{position: 'relative', paddingLeft: '1rem'}}>
                       <span className={'base-circle-edit'}>
-                        {/*<Glyphicon*/}
-                          {/*glyph={'pencil'}*/}
-                          {/*onClick={this.editDescriptionClick}*/}
-                          {/*style={{fontSize: '2rem', lineHeight: '2'}} />*/}
                         <FaPencilAlt
                           onClick={this.editDescriptionClick}
                           style={{fontSize: '1.5rem', marginTop: '0.75rem'}} />
@@ -413,7 +394,7 @@ EditCourseProfileView.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    courses: state.courses
+    courses: state.studio.courses
   }
 }
 
