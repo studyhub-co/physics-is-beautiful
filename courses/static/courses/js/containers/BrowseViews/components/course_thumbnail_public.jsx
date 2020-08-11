@@ -20,31 +20,7 @@ import { Overlay } from '../../../components/fullscreen_overlay'
 import { connect } from 'react-redux'
 import { BASE_URL } from '../../../utils/config'
 
-// class CourseMenuToggle extends React.Component {
-//   constructor (props, context) {
-//     super(props, context)
-//     this.handleClick = this.handleClick.bind(this)
-//   }
-//
-//   handleClick (e) {
-//     e.preventDefault()
-//     this.props.onClick(e)
-//   }
-//
-//   render () {
-//     return (
-//       <FaEllipsisV onClick={this.handleClick} style={{fontSize: '2rem'}}>
-//         {this.props.children}
-//       </FaEllipsisV>
-//     )
-//   }
-// }
-//
-// CourseMenuToggle.propTypes = {
-//   onClick: PropTypes.func
-// }
-
-export class CourseThumbnailPublic extends React.Component {
+class CourseThumbnailPublic extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onTitleClick = this.onTitleClick.bind(this)
@@ -87,10 +63,12 @@ export class CourseThumbnailPublic extends React.Component {
   }
 
   onCopyShareableLink (e) {
+    // todo it's beter to replace with history's generated url here
     copy(window.location.origin + BASE_URL + 'courses/' + this.props.course.uuid + '/')
   }
 
   onAddToDashboardSelect (e) {
+    console.log(this.props)
     this.props.addCourseToDashboard(this.props.course.uuid)
     if (this.props.slidesListName !== 'recentSlides') {
       this.props.onAddRemoveFromDashboardSildes('add', this.props.course)

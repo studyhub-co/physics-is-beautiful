@@ -6,7 +6,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 import Slider from 'react-slick'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
-import { CourseThumbnailPublic } from '../components/course_thumbnail_public'
+import CourseThumbnailPublic from '../components/course_thumbnail_public'
 import CoursesSearchView from './search/courses'
 import UnitsSearchView from './search/units'
 import ModulesSearchView from './search/modules'
