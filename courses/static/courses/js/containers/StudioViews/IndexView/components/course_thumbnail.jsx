@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { RingLoader } from 'react-spinners'
-import { Col, Dropdown, DropdownItem } from 'react-bootstrap'
+import { Col, Dropdown } from 'react-bootstrap'
 import { FaEllipsisV, FaEdit, FaPen, FaCodeBranch, FaShareAlt, FaTrash } from 'react-icons/fa'
 import copy from 'copy-to-clipboard'
 
@@ -47,19 +47,19 @@ export default class CourseThumbnail extends React.Component {
     this.state = {showSpinnerOverlay: false}
 
     this.CourseMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
-      { /* TODO fix this. it's raises warning: */ }
-      { /* Function components cannot be given refs. Attempts to access this ref will fail. */ }
-      { /* Did you mean to use React.forwardRef() */ }
       return (
-        <FaEllipsisV
+        <span
           ref={ref}
           onClick={(e) => {
             e.preventDefault()
             onClick(e)
           }}
-          style={{fontSize: '2rem'}}>
+          style={{
+            padding: '1rem',
+            cursor: 'pointer'
+          }}>
           {children}
-        </FaEllipsisV>
+        </span>
       )
     })
   }
@@ -119,23 +119,26 @@ export default class CourseThumbnail extends React.Component {
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
             {/* <CourseMenuToggle bsRole='toggle' /> */}
-            <Dropdown.Toggle as={this.CourseMenuToggle} />
+            <Dropdown.Toggle as={this.CourseMenuToggle} id='dropdown-toggle'>
+              <FaEllipsisV style={{fontSize: '2rem'}}>
+              </FaEllipsisV>
+            </Dropdown.Toggle>
             <Dropdown.Menu rootCloseEvent={'click'}>
-              <DropdownItem onSelect={this.onEditContentSelect} eventKey='1'>
+              <Dropdown.Item onSelect={this.onEditContentSelect} eventKey='1'>
                 <FaEdit /> Edit content
-              </DropdownItem>
-              <DropdownItem onSelect={this.onEditCourseSelect} eventKey='2'>
+              </Dropdown.Item>
+              <Dropdown.Item onSelect={this.onEditCourseSelect} eventKey='2'>
                 <FaPen /> Edit profile and settings
-              </DropdownItem>
-              <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
+              </Dropdown.Item>
+              <Dropdown.Item onSelect={this.onForkSelect} eventKey='3'>
                 <FaCodeBranch /> Fork
-              </DropdownItem>
-              <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
+              </Dropdown.Item>
+              <Dropdown.Item onSelect={this.onCopyShareableLink} eventKey='4'>
                 <FaShareAlt /> Copy shareable link
-              </DropdownItem>
-              <DropdownItem onSelect={this.onDeleteCourse} eventKey='5'>
+              </Dropdown.Item>
+              <Dropdown.Item onSelect={this.onDeleteCourse} eventKey='5'>
                 <FaTrash /> Delete
-              </DropdownItem>
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>

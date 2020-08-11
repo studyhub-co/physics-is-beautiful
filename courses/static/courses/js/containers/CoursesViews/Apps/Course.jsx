@@ -149,25 +149,23 @@ const Course = props => {
 
   return (
     <div>
-      This is course index: <br/>
-      {/*1. Get default course<br/>*/}
-      {/*2. Show default course<br/>*/}
-      3. Support courseId navigation<br/>
-      {/*6. Spinner while course isFetching*/}
+      {/*This is course index: <br/>*/}
+      {/* 1. Get default course<br/> */}
+      {/* 2. Show default course<br/> */}
+      TODO 3. Support courseId navigation<br/>
+      {/* 6. Spinner while course isFetching */}
       {currentCourse && !currentCourse.isFetching && currentCourse.uuid
         ? <div>
           <CourseInfoPanel currentCourse={currentCourse}/>
           <SectionSheet
             sections={state.sections}
           /></div>
-        : <Sheet>
-          <div className='sweet-loading'>
-            <RingLoader
-              color={'#1caff6'}
-              loading={currentCourse.isFetching}
-            />
-          </div>
-        </Sheet>
+        : <div className='sweet-loading'>
+          <RingLoader
+            color={'#1caff6'}
+            loading={currentCourse.isFetching}
+          />
+        </div>
       }
     </div>
   )

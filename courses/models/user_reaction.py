@@ -38,7 +38,11 @@ class UserReaction(models.Model):
         # const validate = (correctData, userReactionData) => {
         #   ...
         # };
-        validation_result = ctx.call("validate", self.material.data, self.data)
+        try:
+            validation_result = ctx.call("validate", self.material.data, self.data)
+        except py_mini_racer.JSEvalException:
+            # validate function not found
+            return None
 
         return validation_result
 

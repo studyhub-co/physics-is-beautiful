@@ -91,7 +91,6 @@ class ThumbnailMenu extends React.Component {
         </FaEllipsisV>
       )
     })
-
   }
 
   onLearnSelect () {

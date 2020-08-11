@@ -87,9 +87,9 @@ export async function saveCache(
   }
 
   if (shouldSaveOnlineCache(firstRun, changes) && SCRIPT_VERSION) {
-    
-    console.log(managerState);
-    
+
+    // console.log(managerState);
+
     const stringifiedManagerState = JSON.stringify(managerState);
 
     if (stringifiedManagerState.length > MAX_CACHE_SIZE) {

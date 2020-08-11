@@ -10,7 +10,7 @@ import history from '../history'
 import { changeStudioSelectedTab, deleteCourse } from '../actions/studio'
 
 import StudioCoursesIndexView from '../containers/StudioViews/IndexView/index'
-// import EditCourseProfileView from '../containers/courseStudio/editProfile'
+import EditCourseProfileView from '../containers/StudioViews/editProfile'
 import { BrowseIndexView } from '../containers/BrowseViews/index'
 import { Sheet } from '../components/Sheet'
 
@@ -91,9 +91,9 @@ class BrowseStudioDashboard extends React.Component {
               <BrowseIndexView />
             </TabContent>
             <TabContent for='studio'>
-              {this.state.showEditCourseProfile
-                ? <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
-                : <div>
+              {!this.state.showEditCourseProfile &&
+               // ? <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} /> // todo move to root routes?
+                <div>
                   <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit
                   the <a href='' onClick={() => this.props.changeTab('browse', 'tab')}>Browse Courses</a> tab.

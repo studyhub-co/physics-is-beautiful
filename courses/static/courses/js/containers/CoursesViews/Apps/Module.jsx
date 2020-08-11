@@ -91,14 +91,12 @@ const Module = props => {
             sections={state.sections}
             backLink={state.backLink}
           /></div>
-        : <Sheet>
-          <div className='sweet-loading'>
-            <RingLoader
-              color={'#1caff6'}
-              loading={currentModule.isFetching}
-            />
-          </div>
-        </Sheet>
+        : <div className='sweet-loading'>
+          <RingLoader
+            color={'#1caff6'}
+            loading={currentModule.isFetching}
+          />
+        </div>
       }
     </div>
   )

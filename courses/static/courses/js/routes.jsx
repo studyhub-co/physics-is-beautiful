@@ -10,6 +10,7 @@ import {
 import HomeIndex from './containers/homeIndex'
 
 import NotFoundView from './components/NotFoundView'
+import EditCourseProfileView from './containers/StudioViews/editProfile'
 
 export default(
   <Switch>
@@ -28,6 +29,7 @@ export default(
     <Route exact path={'/studio/editor/modules/:uuid'} component={EditModuleView} />
     <Route exact path={'/studio/editor/lessons/:uuid'} component={EditLessonView} />
     <Route exact path={'/studio/editor/lessons/:uuid/materials/:material_uuid'} component={EditLessonView} />
+    <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} />
 
     {/* TODO remove this url? */}
     {/* <Route exact path={'/studio/editor/material-problem-type/:problem_type_uuid'} component={ProblemTypeEditorView} />* /}

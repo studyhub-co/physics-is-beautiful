@@ -3,7 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Dropdown, DropdownItem } from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 import { RingLoader } from 'react-spinners'
 import copy from 'copy-to-clipboard'
 import {
@@ -58,12 +58,24 @@ export class CourseThumbnailPublic extends React.Component {
 
     this.CourseMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
       return (
-        <FaEllipsisV onClick={(e) => {
-          e.preventDefault()
-          onClick(e)
-        }} style={{fontSize: '2rem'}}>
+        <span
+          ref={ref}
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+          }}
+          style={{
+            padding: '1rem',
+            cursor: 'pointer'
+          }}>
           {children}
-        </FaEllipsisV>
+        </span>
+        // <FaEllipsisV onClick={(e) => {
+        //   e.preventDefault()
+        //   onClick(e)
+        // }} style={{fontSize: '2rem'}}>
+        //   {children}
+        // </FaEllipsisV>
       )
     })
   }
@@ -121,25 +133,25 @@ export class CourseThumbnailPublic extends React.Component {
     const DropdownMenu = () =>
       ReactDOM.createPortal(
         <Dropdown.Menu rootCloseEvent={'mousedown'}>
-          <DropdownItem onSelect={this.onLearnSelect} eventKey='1'>
+          <Dropdown.Item onSelect={this.onLearnSelect} eventKey='1'>
             <FaGraduationCap /> Learn
-          </DropdownItem>
-          <DropdownItem onSelect={this.onViewProfileSelect} eventKey='2'>
+          </Dropdown.Item>
+          <Dropdown.Item onSelect={this.onViewProfileSelect} eventKey='2'>
             <FaInfoCircle /> View profile
-          </DropdownItem>
-          <DropdownItem onSelect={this.onForkSelect} eventKey='3'>
+          </Dropdown.Item>
+          <Dropdown.Item onSelect={this.onForkSelect} eventKey='3'>
             <FaCodeBranch /> Fork to course studio
-          </DropdownItem>
-          <DropdownItem onSelect={this.onCopyShareableLink} eventKey='4'>
+          </Dropdown.Item>
+          <Dropdown.Item onSelect={this.onCopyShareableLink} eventKey='4'>
             <FaShareAlt /> Copy shareable link
-          </DropdownItem>
+          </Dropdown.Item>
           { this.props.slidesListName === 'recentSlides'
-            ? <DropdownItem onSelect={this.onRemoveFromDashboardSelect} eventKey='5'>
+            ? <Dropdown.Item onSelect={this.onRemoveFromDashboardSelect} eventKey='5'>
               <FaMinus /> Remove from dashboard
-            </DropdownItem>
-            : <DropdownItem onSelect={this.onAddToDashboardSelect} eventKey='5'>
+            </Dropdown.Item>
+            : <Dropdown.Item onSelect={this.onAddToDashboardSelect} eventKey='5'>
               <FaPlus /> Add to dashboard
-            </DropdownItem>
+            </Dropdown.Item>
           }
         </Dropdown.Menu>,
         document.getElementById('browse-app')
@@ -160,7 +172,9 @@ export class CourseThumbnailPublic extends React.Component {
           <Dropdown
             style={{float: 'right'}}
             id='dropdown-custom-menu'>
-            <Dropdown.Toggle as={this.CourseMenuToggle} />
+            <Dropdown.Toggle as={this.CourseMenuToggle}>
+              <FaEllipsisV style={{fontSize: '2rem'}} />
+            </Dropdown.Toggle>
             <DropdownMenu />
           </Dropdown>
           <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
