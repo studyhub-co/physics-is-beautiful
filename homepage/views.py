@@ -30,19 +30,19 @@ def Terms(request):
     return render(request, 'homepage/terms.html')
 
 
-def Contact(request):
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = ContactForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # send an email
-            ContactSerializer.send_email(form.cleaned_data)
-            return render(request, 'homepage/contact-success.html', {'form': form})
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = ContactForm()
-
-    return render(request, 'homepage/contact.html', {'form': form})
+# def Contact(request):
+#     if request.method == 'POST':
+#         # create a form instance and populate it with data from the request:
+#         form = ContactForm(request.POST)
+#         # check whether it's valid:
+#         if form.is_valid():
+#             # send an email
+#             ContactSerializer.send_email(form.cleaned_data)
+#             return render(request, 'homepage/contact-success.html', {'form': form})
+#
+#     # if a GET (or any other method) we'll create a blank form
+#     else:
+#         form = ContactForm()
+#
+#     return render(request, 'homepage/contact.html', {'form': form})
 

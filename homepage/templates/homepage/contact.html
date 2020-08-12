@@ -1,42 +1,42 @@
-{% extends "navbar.html" %}
-{% load static %}
-
-{% block extrahead %}
-    <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}" />
-{% endblock %}
-
-{% block body_content %}
-
-{% block content %}
-    <div class="container">
-        <div class = "border-bottom">
-            <h1 class="blog-title">
-                CONTACT US
-            </h1>
-        </div>
-        <h3 style="text-align: center">
-            Please fill out this contact form. A member of our team will be in touch with you shortly.
-        </h3>
-        <br>
-
-        <form action="{{ request.get_full_path }}" method="post">
-            {% csrf_token %}
-            {{ form.errors }}
-            <div class="form-group">
-                <label for="exampleFormControlInput1">Name</label>
-                <input name="name" type="text" class="form-control" placeholder="Name" maxlength="100">
-            </div>
-            <div class="form-group">
-              <label for="exampleFormControlInput1">Email address</label>
-              <input name="email" type="email" class="form-control" placeholder="name@example.com" maxlength="100">
-            </div>
-
-            <div class="form-group">
-              <label for="exampleFormControlTextarea1">Message</label>
-              <textarea name="message" class="form-control" id="exampleFormControlTextarea1" rows="5" maxlength="10000"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
-{% endblock %}
-{% endblock %}
+{#{% extends "navbar.html" %}#}
+{#{% load static %}#}
+{##}
+{#{% block extrahead %}#}
+{#    <link rel="stylesheet" type="text/css" href="{% static 'homepage/style.css' %}" />#}
+{#{% endblock %}#}
+{##}
+{#{% block body_content %}#}
+{##}
+{#{% block content %}#}
+{#    <div class="container">#}
+{#        <div class = "border-bottom">#}
+{#            <h1 class="blog-title">#}
+{#                CONTACT US#}
+{#            </h1>#}
+{#        </div>#}
+{#        <h3 style="text-align: center">#}
+{#            Please fill out this contact form. A member of our team will be in touch with you shortly.#}
+{#        </h3>#}
+{#        <br>#}
+{##}
+{#        <form action="{{ request.get_full_path }}" method="post">#}
+{#            {% csrf_token %}#}
+{#            {{ form.errors }}#}
+{#            <div class="form-group">#}
+{#                <label for="exampleFormControlInput1">Name</label>#}
+{#                <input name="name" type="text" class="form-control" placeholder="Name" maxlength="100">#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#              <label for="exampleFormControlInput1">Email address</label>#}
+{#              <input name="email" type="email" class="form-control" placeholder="name@example.com" maxlength="100">#}
+{#            </div>#}
+{##}
+{#            <div class="form-group">#}
+{#              <label for="exampleFormControlTextarea1">Message</label>#}
+{#              <textarea name="message" class="form-control" id="exampleFormControlTextarea1" rows="5" maxlength="10000"></textarea>#}
+{#            </div>#}
+{#            <button type="submit" class="btn btn-primary">Submit</button>#}
+{#        </form>#}
+{#    </div>#}
+{#{% endblock %}#}
+{#{% endblock %}#}
