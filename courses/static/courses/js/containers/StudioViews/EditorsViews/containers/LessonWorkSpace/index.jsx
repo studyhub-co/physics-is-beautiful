@@ -146,9 +146,24 @@ const Lesson = props => {
     if (section === 'view') {
       setLayoutMode(action)
     }
+    if (section === 'actions') {
+      // todo make obsolete with 'history'
+      if (currentMaterialHasType) {
+        if (action === 'learn_lesson') {
+          window.open(`${window.location.origin}/beta/courses/lessons/${uuid}/`, '_blank')
+        }
+        if (action === 'learn_material') {
+          window.open(`${window.location.origin}/beta/courses/lessons/${uuid}/materials/${currentMaterial.uuid}/`, '_blank')
+        }
+        if (action === 'standalone_material') {
+          window.open(mptEvalUrl(currentMaterial.material_problem_type), '_blank')
+        }
+      }
+    }
   }
 
   // TODO make it reusable
+  // Fixme replace mpt with currentMaterial.material_problem_type?
   const mptEvalUrl = (mpt) => {
     if (mpt && mpt.hasOwnProperty('id')) {
       return `${window.location.origin}/evaluation/${mpt.id}/${currentMaterial.uuid}/${uuid}/`

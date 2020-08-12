@@ -2,14 +2,13 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import ListItemText from '@material-ui/core/ListItemText'
 
-import Edit from '@material-ui/icons/Edit'
-import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode'
-import Slideshow from '@material-ui/icons/Slideshow'
+import AllInbox from '@material-ui/icons/AllInbox'
+import Inbox from '@material-ui/icons/Inbox'
 
-import { StyledListItemIcon, StyledMenu, StyledMenuItem } from './StyledComponents'
+import { StyledListItemIcon, StyledMenu, StyledMenuItem } from '../StyledComponents'
 import PropTypes from 'prop-types'
 
-export default function ViewMenu ({onChange}) {
+export default function ActionsMenu ({onChange}) {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = event => {
@@ -28,43 +27,43 @@ export default function ViewMenu ({onChange}) {
   return (
     <React.Fragment>
       <Button
-        aria-controls='view-menu'
+        aria-controls='action-menu'
         aria-haspopup='true'
         onClick={handleClick}
         color='default'
       >
-        View
+        Actions
       </Button>
       <StyledMenu
-        id='view-menu'
+        id='action-menu'
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.student')}>
+        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'actions.learn_lesson')}>
           <StyledListItemIcon>
-            <Slideshow />
+            <AllInbox />
           </StyledListItemIcon>
-          <ListItemText primary='Student view' />
+          <ListItemText primary='Learn lesson' />
         </StyledMenuItem>
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.edit')}>
+        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'actions.learn_material')}>
           <StyledListItemIcon>
-            <Edit />
+            <Inbox />
           </StyledListItemIcon>
-          <ListItemText primary='Content edit mode' />
+          <ListItemText primary='Learn selected material' />
         </StyledMenuItem>
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.type')}>
+        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'actions.standalone_material')}>
           <StyledListItemIcon>
-            <ChromeReaderModeIcon />
+            <Inbox />
           </StyledListItemIcon>
-          <ListItemText primary='Material type edit mode' />
+          <ListItemText primary='Stanalone selected material' />
         </StyledMenuItem>
       </StyledMenu>
     </React.Fragment>
   )
 }
 
-ViewMenu.propTypes = {
+ActionsMenu.propTypes = {
   onChange: PropTypes.func.isRequired
 }

@@ -98,8 +98,6 @@ const Course = props => {
   })
 
   useEffect(() => {
-    // fetch state.courseUuid
-    // console.log(state.courseUuid)
     fetchCourse(state.courseUuid)
 
     window.parent.postMessage({

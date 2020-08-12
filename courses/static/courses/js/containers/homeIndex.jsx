@@ -2,7 +2,7 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 
-// import history from '../history'
+import history from '../history'
 
 import { Sheet } from '../components/Sheet'
 
@@ -10,9 +10,9 @@ const HomeIndex = props => {
   return (
     <Sheet>
       Homepage
-      <div><a href={'courses/'}>Student course view</a></div>
-      <div><a href={'browse/'}>Browse view</a></div>
-      <div><a href={'studio/'}>Editor view</a></div>
+      <div><a href={''} onClick={() => { history.push('/courses/') }}>Student course view</a></div>
+      <div><a href={''} onClick={() => { history.push('/browse/') }}>Browse view</a></div>
+      <div><a href={''} onClick={() => { history.push('/studio/') }}>Editor view</a></div>
     </Sheet>
   )
 }

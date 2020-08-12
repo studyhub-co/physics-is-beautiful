@@ -6,7 +6,7 @@ import Title from '@material-ui/icons/Title'
 import SaveAlt from '@material-ui/icons/SaveAlt'
 import AddBoxIcon from '@material-ui/icons/AddBox'
 
-import { StyledListItemIcon, StyledMenu, StyledMenuItem } from './StyledComponents'
+import { StyledListItemIcon, StyledMenu, StyledMenuItem } from '../StyledComponents'
 import PropTypes from 'prop-types'
 
 export default function FileMenu ({

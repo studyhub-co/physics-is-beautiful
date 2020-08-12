@@ -91,8 +91,9 @@ class BrowseStudioDashboard extends React.Component {
               <BrowseIndexView />
             </TabContent>
             <TabContent for='studio'>
+              <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} />
               {this.state.showEditCourseProfile
-                ? <Route path={'/studio/profile/:uuid/' } component={EditCourseProfileView} />
+                ? null
                 : <div>
                   <div className={'lightgrey-round-background-studio'}>Create a new course from scratch below.
                   Or, to add content from other courses or to fork a course visit
