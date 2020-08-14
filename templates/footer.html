@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-12 col-md">
                     <img class="mb-2" src="{% static 'homepage/images/favicon/favicon-32x32.png' %}" alt="" width="24" height="24">
-                    <small class="d-block mb-3 text-muted">© 2017-2018</small>
+                    <small class="d-block mb-3 text-muted">© 2017-{% now "Y" %}</small>
                 </div>
                 <div class="col-6 col-md">
                     <h5>Resources</h5>
@@ -22,7 +22,7 @@
                         <li><a class="text-muted" href="{% url 'homepage:about' %}">Team</a></li>
                         <li><a class="text-muted" href="{% url 'homepage:privacy' %}">Privacy Policy</a></li>
                         <li><a class="text-muted" href="{% url 'homepage:terms' %}">Terms of Service</a></li>
-                        <li><a class="text-muted" href="{% url 'homepage:contact' %}">Contact Us</a></li>
+{#                        <li><a class="text-muted" href="{% url 'homepage:contact' %}">Contact Us</a></li>#}
                     </ul>
                 </div>
             </div>

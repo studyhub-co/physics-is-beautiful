@@ -91,8 +91,6 @@ requirePolyfills().then(() => {
       console.log(e)
     }
 
-    // console.log(host);
-
     window
       // .fetch(host + `/api/v1/sandboxes/${id}`, {
       .fetch(host + `/api/v1/studio/material-problem-type/${id}/`, {
@@ -135,6 +133,8 @@ requirePolyfills().then(() => {
           }
         }
 
+        console.log(moduleObject)
+
         const data = {
           sandboxId: id,
           modules: moduleObject,
@@ -150,6 +150,9 @@ requirePolyfills().then(() => {
         }
 
         compile(data)
+
+        // const manager = getCurrentManager()
+        // console.log(manager.getTranspilerContext())
       })
   }
 })

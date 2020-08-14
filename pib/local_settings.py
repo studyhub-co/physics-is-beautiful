@@ -20,9 +20,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 # )
 
 # debug_toolbar
+# + https://django-extensions.readthedocs.io/en/latest/graph_models.html
 INSTALLED_APPS.extend(['debug_toolbar', 'django_extensions'])
 MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 INTERNAL_IPS = ALLOWED_HOSTS
+
+# disable high load panels
+DEBUG_TOOLBAR_CONFIG = {
+    "DISABLE_PANELS": ["debug_toolbar.panels.staticfiles.StaticFilesPanel",
+                       "debug_toolbar.panels.profiling.ProfilingPanel",
+                       "debug_toolbar.panels.sql.SQLPanel"],
+    # "SHOW_TEMPLATE_CONTEXT": True,
+}
 
 STATIC_ROOT = 'static_dev/'
 MEDIA_ROOT = 'media/'

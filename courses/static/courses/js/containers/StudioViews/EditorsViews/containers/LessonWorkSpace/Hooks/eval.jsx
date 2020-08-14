@@ -16,7 +16,7 @@ export const useIframeLoaded = () => {
           // can save the same Screen for current material
           onUpdateMaterialImage(canvas, currentMaterial)
         })
-      }, 2000)
+      }, 10000) // set 10 sec to ensure component load data from backend API
     }
 
     // set up the mutation observer

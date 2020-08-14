@@ -1,22 +1,22 @@
 // Responsible for consuming and syncing with the server/local cache
-import localforage from 'localforage';
-import _debug from '@codesandbox/common/lib/utils/debug';
-import Manager from './manager';
-import { SCRIPT_VERSION } from '..';
+import localforage from 'localforage'
+import _debug from '@codesandbox/common/lib/utils/debug'
+import Manager from './manager'
+import { SCRIPT_VERSION } from '..'
 
-const debug = _debug('cs:compiler:cache');
+const debug = _debug('cs:compiler:cache')
 
 // const host = process.env.CODESANDBOX_HOST;
-const host = ''; // the same host for now
+const host = '' // the same host for now
 
-const MAX_CACHE_SIZE = 1024 * 1024 * 7;
-let APICacheUsed = false;
+const MAX_CACHE_SIZE = 1024 * 1024 * 7
+let APICacheUsed = false
 
-function getCookie(name) {
-    var matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ))
-    return matches ? decodeURIComponent(matches[1]) : undefined
+function getCookie (name) {
+  var matches = document.cookie.match(new RegExp(
+    '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
+  ))
+  return matches ? decodeURIComponent(matches[1]) : undefined
 }
 
 try {
@@ -24,33 +24,33 @@ try {
     name: 'CodeSandboxApp',
     storeName: 'sandboxes', // Should be alphanumeric, with underscores.
     description:
-      'Cached transpilations of the sandboxes, for faster initialization time.',
-  });
+      'Cached transpilations of the sandboxes, for faster initialization time.'
+  })
 
   // Prewarm store
-  localforage.keys();
+  localforage.keys()
 } catch (e) {
-  console.warn('Problems initializing IndexedDB store.');
-  console.warn(e);
+  console.warn('Problems initializing IndexedDB store.')
+  console.warn(e)
 }
 
-function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
+function shouldSaveOnlineCache (firstRun: boolean, changes: number) {
   if (!firstRun || changes > 0) {
-    return false;
+    return false
   }
 
   if (!(window as any).__SANDBOX_DATA__) {
-    return true;
+    return true
   }
 
-  return false;
+  return false
 }
 
-export function clearIndexedDBCache() {
-  return localforage.clear();
+export function clearIndexedDBCache () {
+  return localforage.clear()
 }
 
-export async function saveCache(
+export async function saveCache (
   sandboxId: string,
   managerModuleToTranspile: any,
   manager: Manager,
@@ -58,7 +58,7 @@ export async function saveCache(
   firstRun: boolean
 ) {
   if (!sandboxId) {
-    return Promise.resolve(false);
+    return Promise.resolve(false)
   }
 
   const managerState = {
@@ -66,9 +66,9 @@ export async function saveCache(
       entryPath: managerModuleToTranspile
         ? managerModuleToTranspile.path
         : null,
-      optimizeForSize: true,
-    })),
-  };
+      optimizeForSize: true
+    }))
+  }
 
   try {
     if (process.env.NODE_ENV === 'development') {
@@ -76,145 +76,145 @@ export async function saveCache(
         'Saving cache of ' +
           (JSON.stringify(managerState).length / 1024).toFixed(2) +
           'kb to indexedDB'
-      );
+      )
     }
-    await localforage.setItem(manager.id, managerState);
+    await localforage.setItem(manager.id, managerState)
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
-      console.error(e);
+      console.error(e)
     }
-    manager.clearCache();
+    manager.clearCache()
   }
 
   if (shouldSaveOnlineCache(firstRun, changes) && SCRIPT_VERSION) {
-
     // console.log(managerState);
 
-    const stringifiedManagerState = JSON.stringify(managerState);
+    const stringifiedManagerState = JSON.stringify(managerState)
 
     if (stringifiedManagerState.length > MAX_CACHE_SIZE) {
-      return Promise.resolve(false);
+      return Promise.resolve(false)
     }
 
     debug(
       'Saving cache of ' +
         (stringifiedManagerState.length / 1024).toFixed(2) +
         'kb to CodeSandbox API'
-    );
+    )
 
     return window
       // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
-    .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`, {
+      .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`, {
         method: 'POST',
         body: JSON.stringify({
           version: SCRIPT_VERSION,
-          data: stringifiedManagerState,
+          data: stringifiedManagerState
         }),
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken') || '',
-        },
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        }
       })
       .then(x => x.json())
       .catch(e => {
         if (process.env.NODE_ENV === 'development') {
-          console.error('Something went wrong while saving cache.');
-          console.error(e);
+          console.error('Something went wrong while saving cache.')
+          console.error(e)
         }
-      });
+      })
   }
 
-  return Promise.resolve(false);
+  return Promise.resolve(false)
 }
 
-export function deleteAPICache(sandboxId: string): Promise<any> {
+export function deleteAPICache (sandboxId: string): Promise<any> {
   if (APICacheUsed) {
-    debug('Deleting cache of API');
+    debug('Deleting cache of API')
     return window
       // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
-    .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`, {
+      .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`, {
         method: 'DELETE',
         body: JSON.stringify({
-          version: SCRIPT_VERSION,
+          version: SCRIPT_VERSION
         }),
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken') || '',
-        },
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        }
       })
       .then(x => x.json())
       .catch(e => {
-        console.error('Something went wrong while deleting cache.');
-        console.error(e);
-      });
+        console.error('Something went wrong while deleting cache.')
+        console.error(e)
+      })
   }
 
-  return Promise.resolve(false);
+  return Promise.resolve(false)
 }
 
-function findCacheToUse(cache1, cache2) {
+function findCacheToUse (cache1, cache2) {
   if (!cache1 && !cache2) {
-    return null;
+    return null
   }
 
   if (cache1 && !cache2) {
-    return cache1;
+    return cache1
   }
 
   if (cache2 && !cache1) {
-    return cache2;
+    return cache2
   }
 
-  return cache2.timestamp > cache1.timestamp ? cache2 : cache1;
+  return cache2.timestamp > cache1.timestamp ? cache2 : cache1
 }
 
-export function ignoreNextCache() {
+export function ignoreNextCache () {
   try {
-    localStorage.setItem('ignoreCache', 'true');
+    localStorage.setItem('ignoreCache', 'true')
   } catch (e) {
-    console.warn(e);
+    console.warn(e)
   }
 }
 
-export async function consumeCache(manager: Manager) {
+export async function consumeCache (manager: Manager) {
   try {
-    const shouldIgnoreCache = localStorage.getItem('ignoreCache');
+    const shouldIgnoreCache = localStorage.getItem('ignoreCache')
     if (shouldIgnoreCache) {
-      localStorage.removeItem('ignoreCache');
+      localStorage.removeItem('ignoreCache')
 
-      return false;
+      return false
     }
 
-    const cacheData = (window as any).__SANDBOX_DATA__;
-    const localData = await localforage.getItem(manager.id);
+    const cacheData = (window as any).__SANDBOX_DATA__
+    const localData = await localforage.getItem(manager.id)
 
-    const cache = findCacheToUse(cacheData && cacheData.data, localData);
+    const cache = findCacheToUse(cacheData && cacheData.data, localData)
     if (cache) {
-      const version = SCRIPT_VERSION;
+      const version = SCRIPT_VERSION
 
       if (cache.version === version) {
         if (cache === localData) {
-          APICacheUsed = false;
+          APICacheUsed = false
         } else {
-          APICacheUsed = true;
+          APICacheUsed = true
         }
 
-        debug(
-          `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
-          cache
-        );
+        // debug(
+        //   `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
+        //   cache
+        // )
+        console.log(`Loading cache from ${cache === localData ? 'localStorage' : 'API'}`)
 
-        await manager.load(cache);
+        await manager.load(cache)
 
-        return true;
+        return true
       }
     }
 
-    return false;
+    return false
   } catch (e) {
-    console.warn('Problems consuming cache');
-    console.warn(e);
+    console.warn('Problems consuming cache')
+    console.warn(e)
 
-    return false;
+    return false
   }
 }

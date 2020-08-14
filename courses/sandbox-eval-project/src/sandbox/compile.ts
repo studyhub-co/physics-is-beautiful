@@ -332,6 +332,7 @@ async function updateManager(
   }
 
   if (firstLoad && newManager) {
+    console.log('consume Cache');
     // We save the state of transpiled modules, and load it here again. Gives
     // faster initial loads.
     await consumeCache(manager);

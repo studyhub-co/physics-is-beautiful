@@ -57,7 +57,7 @@ export default function ActionsMenu ({onChange}) {
           <StyledListItemIcon>
             <Inbox />
           </StyledListItemIcon>
-          <ListItemText primary='Stanalone selected material' />
+          <ListItemText primary='Standalone selected material' />
         </StyledMenuItem>
       </StyledMenu>
     </React.Fragment>

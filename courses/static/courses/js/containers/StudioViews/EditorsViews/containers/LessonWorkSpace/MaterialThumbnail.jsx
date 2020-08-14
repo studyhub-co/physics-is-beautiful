@@ -81,11 +81,13 @@ const MaterialThumbnailComponent = props => {
       >
         {/* {connectDragSource(<span className='drag-handle'><FaGripHorizontal /></span>)} */}
         {/* TODO: we need to rewrite server side logic of index/position (this is not consecutive now) */}
-        {/*<span className='position'>{position}</span>*/}
+        {/* <span className='position'>{position}</span> */}
         <span className='position'>{index}</span>
         <div className='thumbnail-inner' style={{height: '100%'}}>
           {screenshot
-            ? <img src={screenshot} style={{height: '100%', width: '100%'}}/>
+            ? <img
+              src={screenshot + '?' + Math.random().toString(36).substring(2, 15)}
+              style={{height: '100%', width: '100%'}}/>
             : <div style={{height: '100%'}}>{shortText}</div>
           }
         </div>

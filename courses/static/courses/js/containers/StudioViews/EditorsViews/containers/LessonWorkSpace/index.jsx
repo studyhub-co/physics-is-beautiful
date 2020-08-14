@@ -166,7 +166,8 @@ const Lesson = props => {
   // Fixme replace mpt with currentMaterial.material_problem_type?
   const mptEvalUrl = (mpt) => {
     if (mpt && mpt.hasOwnProperty('id')) {
-      return `${window.location.origin}/evaluation/${mpt.id}/${currentMaterial.uuid}/${uuid}/`
+      // return `${window.location.origin}/evaluation/${mpt.id}/${currentMaterial.uuid}/${uuid}/`
+      return `${window.location.origin}/evaluation/${mpt.id}/${currentMaterial.uuid}/${uuid}/?standalone`
     } else { return '' }
   }
 
@@ -280,6 +281,7 @@ const Lesson = props => {
           >
             {currentMaterialHasType &&
              <StyledIframe
+               id={'student_view_iframe'}
                ref={setFrameRef}
                onLoad={e => onLoadIframe(e,
                  currentMaterial.material_problem_type,

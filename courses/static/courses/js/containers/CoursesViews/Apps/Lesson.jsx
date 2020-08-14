@@ -37,7 +37,9 @@ const Lesson = props => {
       // reload new material
       fetchMaterial(state.lessonUuid, match.params.materialUuid)
     }
-  }, [match])
+  }, []) // let's disable reload material for now - this will be happen in the frame,
+  // we only change url to able users load the material page from scretch
+  //   }, [match])
 
   // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
   const materialEvalUrl = (material) => {
@@ -45,6 +47,7 @@ const Lesson = props => {
   }
 
   useEffect(() => {
+    /* it will reload iframe completly */
     if (currentMaterial && !currentMaterial.isFetching && currentMaterial.uuid) {
       setState({
         ...state,
@@ -67,7 +70,7 @@ const Lesson = props => {
     window.addEventListener('message', ({ data }) => {
       if (data.hasOwnProperty('type')) {
         if (data.type === 'redirect_to_material') {
-          // listener from iframe when continue button clicked
+          // listen iframe when continue button clicked
           const {lessonUuid, nextMaterialUuid} = data.data
           history.push(`/courses/lessons/${lessonUuid}/materials/${nextMaterialUuid}`)
         }

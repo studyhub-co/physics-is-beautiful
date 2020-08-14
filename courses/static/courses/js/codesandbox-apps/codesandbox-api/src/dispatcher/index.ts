@@ -114,7 +114,7 @@ function eventListener(e: MessageEvent) {
     //
     // console.log(e);
     // console.log(window.location.href);
-    
+
     notifyListeners(data, e.source);
   }
 }
