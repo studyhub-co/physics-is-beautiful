@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from django.conf import settings
-from django.core.mail import EmailMessage
-
-from .forms import ContactForm
-from .serializers import ContactSerializer
+# from django.conf import settings
+# from django.core.mail import EmailMessage
+#
+# from .forms import ContactForm
+# from .serializers import ContactSerializer
 
 
 def homepage(request):

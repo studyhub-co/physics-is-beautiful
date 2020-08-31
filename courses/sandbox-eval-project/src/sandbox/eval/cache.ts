@@ -187,6 +187,8 @@ export async function consumeCache (manager: Manager) {
     const cacheData = (window as any).__SANDBOX_DATA__
     const localData = await localforage.getItem(manager.id)
 
+    console.log(cacheData);
+
     const cache = findCacheToUse(cacheData && cacheData.data, localData)
     if (cache) {
       const version = SCRIPT_VERSION

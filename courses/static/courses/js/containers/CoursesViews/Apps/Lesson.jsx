@@ -83,6 +83,8 @@ const Lesson = props => {
     }, '*')
   }, [])
 
+  // console.log(currentMaterial)
+
   return (
     <div>
       {/* 1) Get lesson id via url, <br /> */}
@@ -92,29 +94,42 @@ const Lesson = props => {
       {/* 4) Should we use materials API direct from iframe? <br /> */}
       {/* 5) iframe execution<br/> */}
       {/* 6) Iframe execution navigation (move to the next material)<br/> */}
-      {currentMaterial && currentMaterial.material_problem_type
-        ? state.iframeUrl
-          ? <StyledIframe
+
+      {/* material loading */}
+      {!currentMaterial || currentMaterial.isFetching ? <div className='sweet-loading'>
+        <RingLoader
+          color={'#1caff6'}
+          // loading={currentModule.isFetching}
+        />
+      </div> : null
+      }
+
+      {/* material loaded */}
+      {currentMaterial &&
+      !currentMaterial.isFetching &&
+      currentMaterial.material_problem_type &&
+      state.iframeUrl &&
+        <StyledIframe
           // height='100%' width='100%'
-            ref={setFrameRef}
-            // onLoad={e => onLoadIframe(e,
-            //   currentMaterial.material_problem_type,
-            //   currentMaterial,
-            //   onUpdateProblemTypeImage,
-            //   onUpdateMaterialImage,
-            //   executionFrameRef
-            // )}
-            src={state.iframeUrl}/>
-          : <div className='sweet-loading'>
-            <RingLoader
-              color={'#1caff6'}
-              // loading={currentModule.isFetching}
-            />
-          </div>
-        : <Sheet><h2>
-          {/* TODO not sure it's best solution, need to explore */}
-          Material has no source code, please report current url to site administration.
-        </h2></Sheet>
+          ref={setFrameRef}
+          // onLoad={e => onLoadIframe(e,
+          //   currentMaterial.material_problem_type,
+          //   currentMaterial,
+          //   onUpdateProblemTypeImage,
+          //   onUpdateMaterialImage,
+          //   executionFrameRef
+          // )}
+          src={state.iframeUrl}/>
+      }
+
+      {/* material has no problem type */}
+      {currentMaterial &&
+      !currentMaterial.isFetching &&
+      !currentMaterial.material_problem_type &&
+      <Sheet>
+        {/* TODO not sure it's best solution, need to explore */}
+        <h2>'Material has no source code, please report current url to site administration.'</h2>
+      </Sheet>
       }
     </div>
   )
