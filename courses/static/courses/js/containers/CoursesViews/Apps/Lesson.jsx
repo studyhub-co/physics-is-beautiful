@@ -3,13 +3,16 @@ import React, { useState, useEffect, useRef } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import history from '../../../history'
+
 import * as materialsActionCreators from '../../../actions/materials'
 
 import { Sheet } from '../../../components/Sheet'
+import Footer from '../components/footer'
 
 import { RingLoader } from 'react-spinners'
 import { StyledIframe } from './Styles'
-import history from '../../../history'
+
 // import { SectionSheet } from '../SectionSheet'
 
 const Lesson = props => {
@@ -62,11 +65,12 @@ const Lesson = props => {
       // we don't have materialUuid at this stage
       fetchMaterial(state.lessonUuid)
     } else {
-      // moved to match catching, see upper
+      // fixme, do we really need material if we have materialUuid?
       // 'load material that selected by uuid'
       fetchMaterial(state.lessonUuid, state.materialUuid)
     }
 
+    // catch event from iframe for change main window url
     window.addEventListener('message', ({ data }) => {
       if (data.hasOwnProperty('type')) {
         if (data.type === 'redirect_to_material') {
@@ -77,6 +81,7 @@ const Lesson = props => {
       }
     }, false)
 
+    // not sure we need this, it's something related to mobile version
     window.parent.postMessage({
       'message': 'canGoBack',
       'data': false
@@ -109,17 +114,15 @@ const Lesson = props => {
       !currentMaterial.isFetching &&
       currentMaterial.material_problem_type &&
       state.iframeUrl &&
-        <StyledIframe
-          // height='100%' width='100%'
-          ref={setFrameRef}
-          // onLoad={e => onLoadIframe(e,
-          //   currentMaterial.material_problem_type,
-          //   currentMaterial,
-          //   onUpdateProblemTypeImage,
-          //   onUpdateMaterialImage,
-          //   executionFrameRef
-          // )}
-          src={state.iframeUrl}/>
+        <div style={{paddingBottom: '200px'}}>
+          <StyledIframe
+            // height='100%' width='100%'
+            // style={{marginBottom: document.getElementById('student_view_iframe').style.height}}
+            id={'student_view_iframe'}
+            ref={setFrameRef}
+            src={state.iframeUrl}/>
+          <Footer />
+        </div>
       }
 
       {/* material has no problem type */}
@@ -148,7 +151,4 @@ export default connect(
   mapStateToProps,
   dispatch => {
     return bindActionCreators(materialsActionCreators, dispatch)
-    // return {
-    //   // deleteModule: (uuid) => dispatch(deleteModule(uuid))
-    // }
   })(Lesson)

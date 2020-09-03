@@ -86,24 +86,7 @@ export class Footer extends React.Component {
       checkMarks = (<FaTimesCircle id='incorrect' className='pull-right' style={{fontSize: '35px'}} />)
       backgroundColor = '#ffd3d1'
       correctMessage = <div>Incorrect</div>
-      // if (Array.isArray(this.props.correct_answer)) {
-      //   var message = 'Incorrect, the correct answers are:'
-      //   if (this.props.correct_answer.length == 1) {
-      //     message = 'Incorrect, the correct answer is:'
-      //   }
-      //   correctMessage = <div>
-      //     <span>{message}<br /></span>
-      //     {this.props.correct_answer.map((answer, i) => <span key={i}>
-      //       {!!i && ', '}
-      //       <Answer key={i} answer={answer} />
-      //     </span>)}
-      //   </div>
-      // } else {
-      //   correctMessage = <div>
-      //     <span>Incorrect, the correct answer is: <br /></span>
-      //     <Answer ckey={1} answer={this.props.correct_answer} />
-      //   </div>
-      // }
+
       if (Array.isArray(this.props.correct_answer)) {
         correctAnswer = this.props.correct_answer.map((answer, i) => <span key={i}>
           {!!i && ', '}
