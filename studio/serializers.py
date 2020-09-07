@@ -124,7 +124,7 @@ class LessonSerializer(BaseSerializer):
         list_serializer_class = DictSerializer
         fields = [
             'uuid', 'module', 'name', 'image', 'position',
-            'url', 'materials'
+            'url', 'materials', 'complete_boundary'
         ]
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}

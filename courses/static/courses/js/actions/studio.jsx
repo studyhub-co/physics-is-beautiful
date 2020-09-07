@@ -1210,6 +1210,19 @@ export function renameLesson (uuid, newName) {
   }
 }
 
+export function changeCompleteBoundary (uuid, value) {
+  return function (dispatch) {
+    $.ajax({
+      url: API_PREFIX + 'lessons/' + uuid + '/',
+      type: 'PATCH',
+      data: { complete_boundary: value },
+      success: function (data, status, jqXHR) {
+        dispatch(lessonLoaded(data))
+      }
+    })
+  }
+}
+
 export function changeLessonImage (uuid, image) {
   return dispatch => {
     var formData = new FormData()

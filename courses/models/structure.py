@@ -1,12 +1,14 @@
-from enum import Enum
+# from enum import Enum
 from builtins import setattr
 
 from django.db import models, connection
+
 from taggit.managers import TaggableManager
 
 from profiles.models import Profile
 
 from . import BaseItemModel, get_earliest_gap
+from ..settings import LESSON_COMPLETE_BOUNDARY
 from .utils import UUIDTaggedItem
 
 
@@ -232,6 +234,8 @@ class Lesson(BaseItemModel):
     published_on = models.DateTimeField('date published', null=True, blank=True)
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+    complete_boundary = models.PositiveSmallIntegerField("Lesson complete boundary (percent)",
+                                                                default=LESSON_COMPLETE_BOUNDARY)
 
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_lessons')
 

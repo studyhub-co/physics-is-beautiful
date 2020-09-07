@@ -13,6 +13,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import CheckContinueButton from './checkContinueButton'
 import Button from 'react-bootstrap/Button'
 import { FaCheckCircle } from 'react-icons/fa'
+import history from '../../../history'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface FooterProps {
@@ -34,17 +35,29 @@ const Footer: React.FC<FooterProps> = props => {
     // updateMaterial,
     // checkUserMaterialReaction,
     // componentData,
-    // userReactionState,
+    userReactionState
     // moveToNextComponent
   } = props
 
   const [showCommentsModal, setShowCommentsModal] = useState(false)
   // todo userReactionStateHook + to make sure it's good place for init
-  const [userReactionState, setUserReactionState] = useState('start') // 'start', 'reaction', etc
+
+  const [disabledCheck, setDisabledCheck] = useState(true)
 
   const handleShowComments = (): void => {
     setShowCommentsModal(!showCommentsModal)
   }
+
+  useEffect(() => {
+    window.addEventListener('message', ({ data }) => {
+      if (data.hasOwnProperty('type')) {
+        // disabled_check_button received from iframe
+        if (data.type === 'disabled_check_button') {
+          setDisabledCheck(data.data)
+        }
+      }
+    }, false)
+  }, [])
 
   // console.log(userReactionState);
 
@@ -56,7 +69,7 @@ const Footer: React.FC<FooterProps> = props => {
   return (
     <div id='footer' style={{
       backgroundColor: backgroundColor,
-      padding: '1rem 0 1rem 0',
+      padding: '1rem 0 0 0',
       // fixme do we need this?
       position: (window.IS_IOS && window.IS_MOBILE_APP) ? 'relative' : 'fixed'}}
     >
@@ -85,8 +98,8 @@ const Footer: React.FC<FooterProps> = props => {
             // componentData={componentData}
             // checkUserMaterialReaction={checkUserMaterialReaction}
             // currentMaterial={currentMaterial}
-            // disabledCheck={disabledCheck}
-            // updateMaterial={updateMaterial}
+              disabledCheck={disabledCheck}
+              // updateMaterial={updateMaterial}
               userReactionState={userReactionState}
             />
           </Col>

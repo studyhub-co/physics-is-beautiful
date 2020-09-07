@@ -2,18 +2,25 @@ import React, { useEffect, useRef } from 'react'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+
 import Grid from '@material-ui/core/Grid'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 import MenuItem from '@material-ui/core/MenuItem'
-import Paper from '@material-ui/core/Paper'
+// import Paper from '@material-ui/core/Paper'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Edit from '@material-ui/icons/Edit'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode'
 import Slideshow from '@material-ui/icons/Slideshow'
 
-import { FaTimes, FaPlusCircle } from 'react-icons/fa'
+import { FaTimes } from 'react-icons/fa' // FaPlusCircle
 
 import {
   renameLesson,
@@ -22,7 +29,8 @@ import {
   deleteLesson,
   addMaterial,
   moveMaterial,
-  updateMaterialImage
+  updateMaterialImage,
+  changeCompleteBoundary
 } from '../../../../../actions/studio'
 
 import {
@@ -55,8 +63,8 @@ import { useIframeLoaded } from './Hooks/eval'
 const Lesson = props => {
   const {
     // lesson data + actions
-    uuid, name, image, loading, loadLessonIfNeeded, onImageChange, onDeleteClick,
-    onNameChange,
+    uuid, name, image, loading, completeBoundary,
+    loadLessonIfNeeded, onImageChange, onDeleteClick, onNameChange, onCompleteBoundaryChange,
     // materials
     materials, materialUrlUuid, moveMaterial, currentMaterial, onAddMaterialClick,
     onUpdateMaterialImage,
@@ -93,6 +101,21 @@ const Lesson = props => {
     editor: <div></div>
   })
 
+  console.log('completeBoundary: ' + completeBoundary)
+
+  // todo move to separate hook
+  const [lessonSettingsDialogOpen, setLessonSettingsDialogOpen] = React.useState(false)
+  const [lessonCompleteBoundary, setLessonCompleteBoundary] = React.useState(completeBoundary || 70)
+
+  useEffect(() => {
+    // loaded from server
+    setLessonCompleteBoundary(completeBoundary)
+  }, [completeBoundary])
+
+  const handleSettingsDialog = (value) => {
+    setLessonSettingsDialogOpen(value)
+  }
+
   useEffect(() => {
     // async load editor after Lesson component did mount
     async function asyncEditorStartUp () {
@@ -103,7 +126,6 @@ const Lesson = props => {
   }, [])
 
   useEffect(() => {
-    // console.log(materialUrlUuid)
     loadLessonIfNeeded(materialUrlUuid)
   }, [materialUrlUuid])
 
@@ -160,6 +182,10 @@ const Lesson = props => {
         }
       }
     }
+    if (section === 'lesson') {
+      // console.log(action)
+      setLessonSettingsDialogOpen(true)
+    }
   }
 
   // TODO make it reusable
@@ -204,8 +230,39 @@ const Lesson = props => {
           <div>
             <WorkspaceMenu
               onChange={onWorkspaceMenuChange}
-              handleAddMaterial={onAddMaterialClick}
+              handleAddMaterial={onAddMaterialClick} // why it's outside from 'onChange'?
             />
+            <Dialog
+              fullWidth
+              open={lessonSettingsDialogOpen}
+              onClose={() => { handleSettingsDialog(false) }}
+              aria-labelledby='lesson-settings-dialog-title'>
+              <DialogTitle id='lesson-settings-dialog-title'>Lesson settings</DialogTitle>
+              <DialogContent>
+                <TextField
+                  onChange= {event => { setLessonCompleteBoundary(event.target.value) }}
+                  value={lessonCompleteBoundary}
+                  autoFocus
+                  margin='dense'
+                  id='boundary'
+                  label='Lesson complete boundary (percent)'
+                  type='number'
+                  fullWidth
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => { handleSettingsDialog(false) }} color='primary'>
+            Cancel
+                </Button>
+                <Button onClick={() => {
+                  // TODO validate value
+                  onCompleteBoundaryChange(lessonCompleteBoundary)
+                  handleSettingsDialog(false)
+                }} color='primary'>
+            Save
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         </Grid>
         <Grid item xs={3}>
@@ -317,7 +374,9 @@ Lesson.propTypes = {
   uuid: PropTypes.string.isRequired,
   currentMaterial: PropTypes.object,
   materialUrlUuid: PropTypes.string,
+  completeBoundary: PropTypes.number,
   loadLessonIfNeeded: PropTypes.func.isRequired,
+  onCompleteBoundaryChange: PropTypes.func.isRequired,
   onImageChange: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
@@ -360,6 +419,7 @@ const mapStateToProps = (state, ownProps) => {
       materialUrlUuid: materialUuid,
       loading: false,
       name: lesson.name,
+      completeBoundary: lesson.complete_boundary,
       image: lesson.image,
       module: lesson.module, // fixme do we need this?
       materials: lesson.materials, // this is uuids list
@@ -385,6 +445,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onUpdateMaterialImage: (canvas, material) =>
       dispatch(updateMaterialImage(material, canvas)),
     onImageChange: image => dispatch(changeLessonImage(uuid, image)),
+    onCompleteBoundaryChange: value => dispatch(changeCompleteBoundary(uuid, value)),
     onNameChange: name => dispatch(renameLesson(uuid, name)),
     onDeleteClick: () => dispatch(deleteLesson(uuid)),
     loadLessonIfNeeded: materialUuid =>

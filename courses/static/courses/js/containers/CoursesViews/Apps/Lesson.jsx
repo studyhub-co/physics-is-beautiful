@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import UserStateEnum from './const'
 import history from '../../../history'
 
 import * as materialsActionCreators from '../../../actions/materials'
@@ -19,7 +20,6 @@ const Lesson = props => {
   // const { match, fetchModule, currentModule } = props
   const { match, fetchMaterial, gotoMaterial, currentMaterial } = props
 
-  // Todo, it seem wee need comminacte with iframe, e.g. for change current url
   let executionFrameRef = useRef(null)
   const setFrameRef = node =>
     (executionFrameRef =
@@ -32,6 +32,11 @@ const Lesson = props => {
     materialUuid: match.params.materialUuid || null,
     iframeUrl: null
   })
+
+  const [userReactionState, setUserReactionState] = useState(UserStateEnum.start)
+
+  // TODO we have twice loaded material (in SPA and in the iframe)
+  const [currentMaterialState, setCurrentMaterialState] = useState(currentMaterial)
 
   useEffect(() => {
     // TODO catch lesson id?
@@ -50,15 +55,19 @@ const Lesson = props => {
   }
 
   useEffect(() => {
-    /* it will reload iframe completly */
-    if (currentMaterial && !currentMaterial.isFetching && currentMaterial.uuid) {
+    setCurrentMaterialState(currentMaterial)
+  }, [currentMaterial])
+
+  useEffect(() => {
+    /* it will reload iframe completely */
+    if (currentMaterialState && !currentMaterialState.isFetching && currentMaterialState.uuid) {
       setState({
         ...state,
-        materialUuid: currentMaterial.uuid,
-        iframeUrl: materialEvalUrl(currentMaterial)
+        materialUuid: currentMaterialState.uuid,
+        iframeUrl: materialEvalUrl(currentMaterialState)
       })
     }
-  }, [currentMaterial])
+  }, [currentMaterialState])
 
   useEffect(() => {
     if (state.materialUuid == null) {
@@ -78,6 +87,10 @@ const Lesson = props => {
           const {lessonUuid, nextMaterialUuid} = data.data
           history.push(`/courses/lessons/${lessonUuid}/materials/${nextMaterialUuid}`)
         }
+        // current material was received from iframe
+        if (data.type === 'current_material') {
+          setCurrentMaterialState(data.data)
+        }
       }
     }, false)
 
@@ -87,8 +100,6 @@ const Lesson = props => {
       'data': false
     }, '*')
   }, [])
-
-  // console.log(currentMaterial)
 
   return (
     <div>
@@ -101,7 +112,7 @@ const Lesson = props => {
       {/* 6) Iframe execution navigation (move to the next material)<br/> */}
 
       {/* material loading */}
-      {!currentMaterial || currentMaterial.isFetching ? <div className='sweet-loading'>
+      {!currentMaterialState || currentMaterialState.isFetching ? <div className='sweet-loading'>
         <RingLoader
           color={'#1caff6'}
           // loading={currentModule.isFetching}
@@ -110,29 +121,30 @@ const Lesson = props => {
       }
 
       {/* material loaded */}
-      {currentMaterial &&
-      !currentMaterial.isFetching &&
-      currentMaterial.material_problem_type &&
+      {currentMaterialState &&
+      !currentMaterialState.isFetching &&
+      currentMaterialState.material_problem_type &&
       state.iframeUrl &&
-        <div style={{paddingBottom: '200px'}}>
+        <div style={{paddingBottom: '20rem'}}>
           <StyledIframe
             // height='100%' width='100%'
             // style={{marginBottom: document.getElementById('student_view_iframe').style.height}}
             id={'student_view_iframe'}
             ref={setFrameRef}
             src={state.iframeUrl}/>
-          <Footer />
+          <Footer userReactionState={userReactionState}/>
         </div>
       }
 
-      {/* material has no problem type */}
-      {currentMaterial &&
-      !currentMaterial.isFetching &&
-      !currentMaterial.material_problem_type &&
-      <Sheet>
-        {/* TODO not sure it's best solution, need to explore */}
-        <h2>'Material has no source code, please report current url to site administration.'</h2>
-      </Sheet>
+      {/*/!* material has no problem type *!/*/}
+      {/* toto move to lib */}
+      {/*{currentMaterialState &&*/}
+      {/*!currentMaterialState.isFetching &&*/}
+      {/*!currentMaterialState.material_problem_type &&*/}
+      {/*<Sheet>*/}
+      {/*  /!* TODO not sure it's best solution, need to explore *!/*/}
+      {/*  <h2>Material has no source code, please report current url to site administration.</h2>*/}
+      {/*</Sheet>*/}
       }
     </div>
   )

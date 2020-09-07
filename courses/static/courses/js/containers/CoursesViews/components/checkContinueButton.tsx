@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import UserStateEnum from '../Apps/const'
 
 // import { Material } from '../../models/'
 
@@ -32,10 +33,8 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
   } = props
 
   const handleSaveDataClick = () => {
-    // todo send event to the iframe to save material
-    // const material: Material = { uuid: currentMaterial.uuid, data: componentData }
-    // updateMaterial(material)
-    console.log('save data')
+    // TODO - we can get data from iframe ann save in SPA, need to explore
+    // send event to the iframe to save material
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
         type: 'save_data'
@@ -45,7 +44,7 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
   }
 
   const handleCheckClick = () => {
-    // todo send event to the iframe to check user reaction
+    // send event to the iframe to check user reaction
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
         type: 'check_user_reaction'
@@ -81,8 +80,8 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
           color='primary'
           onClick={userReactionState === 'start' ? handleCheckClick : handleContinueClick}
         >
-          {userReactionState === 'start' && 'Check'}
-          {userReactionState === 'reaction' && 'Continue'}
+          {userReactionState === UserStateEnum.start && 'Check'}
+          {userReactionState === UserStateEnum.checked && 'Continue'}
         </Button>
       )}
     </div>

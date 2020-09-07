@@ -3,9 +3,10 @@ import React, { memo } from 'react'
 import { compose } from 'redux'
 import withConnect from './MenuActions'
 import Theme from '../Styles'
-import FileMenu from './Sections/FileMenu.jsx'
-import ViewMenu from './Sections/ViewMenu.jsx'
-import ActionsMenu from './Sections/ActionsMenu.jsx'
+import FileMenu from './Sections/FileMenu'
+import ViewMenu from './Sections/ViewMenu'
+import ActionsMenu from './Sections/ActionsMenu'
+import LessonMenu from './Sections/LessonMenu'
 
 function WorkspaceMenu (props) {
   return (
@@ -15,6 +16,7 @@ function WorkspaceMenu (props) {
       <FileMenu {...props}/>
       <ViewMenu {...props}/>
       <ActionsMenu {...props}/>
+      <LessonMenu {...props}/>
     </Theme>
   )
 }
