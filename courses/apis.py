@@ -23,7 +23,9 @@ from .djeddit import create_thread
 
 
 def check_classroom_progress(service, user):
-    if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
+    # TODO replace service.COMPLETION_THRESHOLD with %
+    # if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
+    if user.is_authenticated and service.current_lesson_progress.score >= service.current_lesson.complete_boundary:
         from classroom.models import AssignmentProgress
 
         AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
@@ -70,10 +72,12 @@ class MaterialViewSet(ModelViewSet):
             # kwargs['anon_session_key'] = session.session_key
             data['anon_session_key'] = session.session_key
 
-        user_reaction_serializer = UserReactionSerializer(data=data)
+        user_reaction_serializer = UserReactionSerializer(data=data, context={'request': request})
         user_reaction_serializer.is_valid(raise_exception=True)
         # user_reaction = user_reaction_serializer.get_response(**kwargs)
+
         user_reaction = user_reaction_serializer.save()
+
         service = get_progress_service(request, material.lesson)
         try:
             is_correct = service.check_user_reaction(user_reaction)
@@ -89,7 +93,7 @@ class MaterialViewSet(ModelViewSet):
 
         check_classroom_progress(service, self.request.user)
 
-        data['required_score'] = service.COMPLETION_THRESHOLD
+        # data['required_score'] = service.COMPLETION_THRESHOLD
         data['was_correct'] = is_correct
         data['next_material_uuid'] = next_material.uuid
         if not is_correct:
@@ -192,7 +196,7 @@ class LessonViewSet(ModelViewSet):
             # TODO: it might make more sense for these fields to be on the
             # lesson. Or a separate lesson_progress object.
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
-            data['required_score'] = service.COMPLETION_THRESHOLD
+            # data['required_score'] = service.COMPLETION_THRESHOLD
             # remove hidden fields data (i.g. selected choice) from JSON DATA
             data['data'] = remove_hidden_data(data['data'])
             return Response(data)

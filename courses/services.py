@@ -23,15 +23,17 @@ def get_progress_service(request, current_lesson=None):
 
 class ProgressServiceBase(object):
 
-    COMPLETION_THRESHOLD = 80
-    CORRECT_RESPONSE_VALUE = 10
-    INCORRECT_RESPONSE_VALUE = -5
+    # COMPLETION_THRESHOLD = 80
+    # CORRECT_RESPONSE_VALUE = 10
+    # INCORRECT_RESPONSE_VALUE = -5
+    INCORRECT_RESPONSE_RATIO = 5
 
     def __init__(self, request, current_lesson=None):
         self.request = request
         self.user = request.user
         self.current_lesson = current_lesson
-        self.user_reactions = []
+        # self.user_reactions = []  # depricated
+        self.user_reaction = None
         self._dirty_lesson_progresses = {}
 
     def get_next_material(self, current_material=None):
@@ -53,7 +55,7 @@ class ProgressServiceBase(object):
         except material.DoesNotExist:
             return None
 
-        # reset lessonn progress
+        # reset lesson progress
         if material.position == 0:
             self.current_lesson_progress.score = 0
             self.save()
@@ -113,6 +115,14 @@ class ProgressServiceBase(object):
                         return self.unlock_lesson(lesson).status
         return lesson_progress.status
 
+    def calculate_progress(self):
+        # TODO validate materials w\o sanboxes?
+        number_of_materials = self.current_lesson.materials.count()
+        if self.user:
+            pass
+        else:
+            pass
+
     def check_user_reaction(self, user_reaction):
         is_correct = user_reaction.check_reaction()
 
@@ -120,24 +130,47 @@ class ProgressServiceBase(object):
         if is_correct is None:
             return is_correct
 
-        if is_correct:
-            self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
-            if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
-                self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
+        # if is_correct:
+        #     # self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
+        #     # if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
+        #     #     self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
+        #     #
+        #     #     # unlock the next lesson!
+        #     #     next_lesson = self.current_lesson.get_next_lesson()
+        #     #     if next_lesson:
+        #     #         self.unlock_lesson(next_lesson)
+        # else:
+        #     # self.current_lesson_progress.score = max(
+        #     #     0, self.current_lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
+        #     # )
 
-                # unlock the next lesson!
-                next_lesson = self.current_lesson.get_next_lesson()
-                if next_lesson:
-                    self.unlock_lesson(next_lesson)
-        else:
-            self.current_lesson_progress.score = max(
-                0, self.current_lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
-            )
-
-        # Why user_reactions is list?
-        self.user_reactions.append(user_reaction)
+        # Why user_reactions is list? seems because it was multiple choices == reactions list. not actual
+        # self.user_reactions.append(user_reaction)
+        user_reaction.is_correct = is_correct
+        user_reaction.save(update_fields=["is_correct"])
+        self.user_reaction = user_reaction
         self.save()
+
         return is_correct
+
+        # if is_correct:
+        #     self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
+        #     if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
+        #         self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
+        #
+        #         # unlock the next lesson!
+        #         next_lesson = self.current_lesson.get_next_lesson()
+        #         if next_lesson:
+        #             self.unlock_lesson(next_lesson)
+        # else:
+        #     self.current_lesson_progress.score = max(
+        #         0, self.current_lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
+        #     )
+        #
+        # # Why user_reactions is list? seems because it was multiple choices == reactions list. not actual
+        # self.user_reactions.append(user_reaction)
+        # self.save()
+        # return is_correct
 
     def game_success(self, game, duration=None, score=None):
         self.current_lesson_progress.complete(duration, score)
@@ -165,12 +198,14 @@ class ProgressService(ProgressServiceBase):
         #         response.content = obj
         #         response.save()
 
-        for reaction in self.user_reactions:
-            reaction.save()
+        # for reaction in self.user_reactions:
+        #     reaction.save()
+        # self.reaction.save() # already saved
 
         for lesson_progress in self._dirty_lesson_progresses.values():
             lesson_progress.save()
-        self.user_reactions = []
+
+        # self.user_reactions = []
         self.current_lesson_progress.save()
 
     @staticmethod

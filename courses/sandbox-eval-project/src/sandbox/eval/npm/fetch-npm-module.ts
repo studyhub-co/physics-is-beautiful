@@ -201,7 +201,7 @@ export async function downloadDependency(
     return packages[id];
   }
 
-  console.trace();
+  // console.trace();
 
   const relativePath = path
     .replace(

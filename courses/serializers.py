@@ -1,5 +1,7 @@
+from django.db import transaction
+
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+# from rest_framework.exceptions import ValidationError
 
 from expander import ExpanderSerializerMixin
 
@@ -64,7 +66,35 @@ class MySQLAnswerReturnedSerializer(BaseSerializer):
         fields = ['query_SQL', 'expected_output_json']
 
 
-class UserReactionSerializer(BaseSerializer):
+class UserReactionSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        # find prev reactions and set last_reaction = False
+        with transaction.atomic():
+            try:
+                if request and hasattr(request, "user") and request.user.profile:
+                    # it can be only one due model unqiue constraints
+                    last_reaction = self.Meta.model.objects.get(
+                        profile=request.user.profile,
+                        last_reaction=True,
+                        material=validated_data['material']
+                    )
+                else:  # anon
+                    last_reaction = self.Meta.model.objects.get(
+                        # TODO check it
+                        anon_session_key=validated_data['material'],
+                        last_reaction=True,
+                        material=validated_data['material']
+                    )
+                last_reaction.last_reaction = False
+                last_reaction.save()
+            except self.Meta.model.DoesNotExist:
+                # new reaction
+                pass
+
+            instance = super().create(validated_data)
+        return instance
 
     class Meta:
         model = UserReaction
