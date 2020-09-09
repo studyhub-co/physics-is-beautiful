@@ -3,7 +3,7 @@ from django.utils.functional import cached_property
 # from user_reputation.models import Reputation
 # from notifications.signals import notify
 
-from .models import LessonProgress, LessonProgressStatus
+from .models import LessonProgress, LessonProgressStatus, UserReaction
 
 
 class LessonLocked(Exception):
@@ -118,10 +118,22 @@ class ProgressServiceBase(object):
     def calculate_progress(self):
         # TODO validate materials w\o sanboxes?
         number_of_materials = self.current_lesson.materials.count()
-        if self.user:
-            pass
+        if self.user and self.user.is_authenticated and self.user.profile:
+            correct_reactions = UserReaction.objects.filter(material__lesson=self.current_lesson,
+                                                            is_correct=True,
+                                                            profile=self.user.profile,
+                                                            last_reaction=True)
+            wrong_reactions = UserReaction.objects.filter(material__lesson=self.current_lesson,
+                                                          is_correct=False,
+                                                          profile=self.user.profile,
+                                                          last_reaction=True)
+
+            progress = max(0, (correct_reactions.count() / number_of_materials) * 100 -
+                              (wrong_reactions.count() / number_of_materials) * 100 * self.INCORRECT_RESPONSE_RATIO)
         else:
             pass
+
+        return progress
 
     def check_user_reaction(self, user_reaction):
         is_correct = user_reaction.check_reaction()
@@ -130,25 +142,12 @@ class ProgressServiceBase(object):
         if is_correct is None:
             return is_correct
 
-        # if is_correct:
-        #     # self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
-        #     # if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
-        #     #     self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
-        #     #
-        #     #     # unlock the next lesson!
-        #     #     next_lesson = self.current_lesson.get_next_lesson()
-        #     #     if next_lesson:
-        #     #         self.unlock_lesson(next_lesson)
-        # else:
-        #     # self.current_lesson_progress.score = max(
-        #     #     0, self.current_lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
-        #     # )
-
-        # Why user_reactions is list? seems because it was multiple choices == reactions list. not actual
-        # self.user_reactions.append(user_reaction)
+        # save reaction
         user_reaction.is_correct = is_correct
         user_reaction.save(update_fields=["is_correct"])
         self.user_reaction = user_reaction
+        # calculate progress
+        self.current_lesson_progress.score = self.calculate_progress()
         self.save()
 
         return is_correct

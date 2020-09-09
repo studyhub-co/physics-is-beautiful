@@ -33,8 +33,6 @@ const Lesson = props => {
     iframeUrl: null
   })
 
-  const [userReactionState, setUserReactionState] = useState(UserStateEnum.start)
-
   // TODO we have twice loaded material (in SPA and in the iframe)
   const [currentMaterialState, setCurrentMaterialState] = useState(currentMaterial)
 
@@ -45,6 +43,7 @@ const Lesson = props => {
       // reload new material
       fetchMaterial(state.lessonUuid, match.params.materialUuid)
     }
+
   }, []) // let's disable reload material for now - this will be happen in the frame,
   // we only change url to able users load the material page from scretch
   //   }, [match])
@@ -132,19 +131,19 @@ const Lesson = props => {
             id={'student_view_iframe'}
             ref={setFrameRef}
             src={state.iframeUrl}/>
-          <Footer userReactionState={userReactionState}/>
+          <Footer currentMaterial={currentMaterial}/>
         </div>
       }
 
-      {/*/!* material has no problem type *!/*/}
+      {/* /!* material has no problem type *!/ */}
       {/* toto move to lib */}
-      {/*{currentMaterialState &&*/}
-      {/*!currentMaterialState.isFetching &&*/}
-      {/*!currentMaterialState.material_problem_type &&*/}
-      {/*<Sheet>*/}
-      {/*  /!* TODO not sure it's best solution, need to explore *!/*/}
-      {/*  <h2>Material has no source code, please report current url to site administration.</h2>*/}
-      {/*</Sheet>*/}
+      {/* {currentMaterialState && */}
+      {/*! currentMaterialState.isFetching && */}
+      {/*! currentMaterialState.material_problem_type && */}
+      {/* <Sheet> */}
+      {/*  /!* TODO not sure it's best solution, need to explore *!/ */}
+      {/*  <h2>Material has no source code, please report current url to site administration.</h2> */}
+      {/* </Sheet> */}
       }
     </div>
   )

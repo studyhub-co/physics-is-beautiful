@@ -28,7 +28,7 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
     // updateMaterial,
     // checkUserMaterialReaction,
     // componentData,
-    userReactionState,
+    userReactionResult,
     moveToNextComponent
   } = props
 
@@ -59,12 +59,14 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
   const handleContinueClick = () => {
     // todo send event to the iframe to movetothe next component
     // todo change current URL see redirect_to_material event from iframe for now
+    console.log('continue')
     // if (currentMaterial.uuid) {
     //   moveToNextComponent(currentMaterial.uuid)
     // }
   }
 
-  console.log(userReactionState)
+  // console.log(userReactionState)
+  // console.log(disabledCheck)
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -78,10 +80,10 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
           style={disabledCheck ? checkSaveButtonStyleDisabled : checkSaveButtonStyle}
           variant='contained'
           color='primary'
-          onClick={userReactionState === 'start' ? handleCheckClick : handleContinueClick}
+          onClick={userReactionResult.state === 'start' ? handleCheckClick : handleContinueClick}
         >
-          {userReactionState === UserStateEnum.start && 'Check'}
-          {userReactionState === UserStateEnum.checked && 'Continue'}
+          {userReactionResult.state === UserStateEnum.start && 'Check'}
+          {userReactionResult.state === UserStateEnum.checked && 'Continue'}
         </Button>
       )}
     </div>

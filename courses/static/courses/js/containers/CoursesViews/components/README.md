@@ -27,6 +27,11 @@ Send and recieve EventMessages from evaluation iframe (id='student_view_iframe')
 ```javascript 
  {
   type: 'user_reaction_state',
-  data: 'checked',
+  data: { 
+        state: 'checked',
+        userLessonScore: 20,
+        wasCorrect: true,
+        },
  }
-``` 
+```
+ 

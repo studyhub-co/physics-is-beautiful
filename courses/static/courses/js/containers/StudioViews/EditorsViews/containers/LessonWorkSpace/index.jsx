@@ -101,7 +101,6 @@ const Lesson = props => {
     editor: <div></div>
   })
 
-
   // todo move to separate hook
   const [lessonSettingsDialogOpen, setLessonSettingsDialogOpen] = React.useState(false)
   const [lessonCompleteBoundary, setLessonCompleteBoundary] = React.useState(completeBoundary || 70)

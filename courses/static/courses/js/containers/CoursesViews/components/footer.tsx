@@ -12,8 +12,9 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 // import { QAData as IQAData } from '../qaChoices/IData/index'
 import CheckContinueButton from './checkContinueButton'
 import Button from 'react-bootstrap/Button'
-import { FaCheckCircle } from 'react-icons/fa'
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import history from '../../../history'
+import UserStateEnum from '../Apps/const'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface FooterProps {
@@ -29,18 +30,29 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = props => {
   const {
-    // currentMaterial,
+    currentMaterial
     // editMode,
     // disabledCheck,
     // updateMaterial,
     // checkUserMaterialReaction,
     // componentData,
-    userReactionState
+    // userReactionState
     // moveToNextComponent
   } = props
 
   const [showCommentsModal, setShowCommentsModal] = useState(false)
   // todo userReactionStateHook + to make sure it's good place for init
+
+  // data: {
+  //   state: 'checked',
+  //   user_lesson_score: 20,
+  //   was_correct: true,
+  // },
+  const [userReactionResult, setUserReactionState] = useState({
+    state: UserStateEnum.start,
+    userLessonScore: undefined,
+    wasCorrect: undefined
+  })
 
   const [disabledCheck, setDisabledCheck] = useState(true)
 
@@ -48,23 +60,61 @@ const Footer: React.FC<FooterProps> = props => {
     setShowCommentsModal(!showCommentsModal)
   }
 
+  console.log(userReactionResult)
+
   useEffect(() => {
-    window.addEventListener('message', ({ data }) => {
+    const messageListener = ({ data }) => {
       if (data.hasOwnProperty('type')) {
         // disabled_check_button received from iframe
         if (data.type === 'disabled_check_button') {
           setDisabledCheck(data.data)
         }
+        // reaction state
+        if (data.type === 'user_reaction_state') {
+          console.log(data)
+          setUserReactionState(data.data)
+          console.log(calculateProgress(data.data.userLessonScore))
+          setPercentCompleted(calculateProgress(data.data.userLessonScore))
+        // data: {
+        //   state: 'checked',
+        //   userLessonScore: 20,
+        //   wasCorrect: true,
+        // },
+        }
       }
-    }, false)
+    }
+
+    window.addEventListener('message', messageListener, false)
+
+    return () => {
+      window.removeEventListener('message', messageListener)
+    }
   }, [])
 
-  // console.log(userReactionState);
+  // console.log(currentMaterial);
 
-  const backgroundColor = '#dbdbdb'
-  const reactionResultIcon = <FaCheckCircle id='correct' className='pull-right' style={{fontSize: '35px'}} />
-  const correctMessage = 'Correct'
-  const percentCompleted = 60
+  const calculateProgress = (currentPercent: number) => {
+    if (currentMaterial.lesson?.complete_boundary) {
+      // shrink boundary to 100%
+      return (currentPercent * 100 / currentMaterial.lesson.complete_boundary)
+    } else {
+      return currentPercent
+    }
+  }
+
+  let backgroundColor = '#dbdbdb'
+  let reactionResultIcon = <FaCheckCircle id='correct' className='pull-right' style={{fontSize: '35px'}} />
+  let correctMessage = 'Correct'
+
+  if (userReactionResult.wasCorrect === false) {
+    reactionResultIcon = (<FaTimesCircle id='incorrect' className='pull-right' style={{ fontSize: '35px' }}/>)
+    backgroundColor = '#ffd3d1'
+    correctMessage = 'Incorrect'
+  }
+
+  // todo calculate with ratio
+  // const percentCompleted = 40
+  const [percentCompleted, setPercentCompleted] = useState(calculateProgress(currentMaterial?.score || 0))
 
   return (
     <div id='footer' style={{
@@ -74,11 +124,11 @@ const Footer: React.FC<FooterProps> = props => {
       position: (window.IS_IOS && window.IS_MOBILE_APP) ? 'relative' : 'fixed'}}
     >
       <Container fluid>
-        <Row className='justify-content-md-center'>
-          <Col md={{span: '3', offset: 3}} xs={{span: '2', offset: 2}}>
+        {userReactionResult.state === UserStateEnum.checked && <Row className='justify-content-md-center'>
+          <Col md={{ span: '3', offset: 3 }} xs={{ span: '2', offset: 2 }}>
             {reactionResultIcon} {correctMessage}
           </Col>
-          <Col md={{span: '3', offset: 3}} xs={{span: '2', offset: 2}}>
+          <Col md={{ span: '3', offset: 3 }} xs={{ span: '2', offset: 2 }}>
             <Button
               onClick={handleShowComments}
               style={{
@@ -86,10 +136,12 @@ const Footer: React.FC<FooterProps> = props => {
                 borderColor: '#8d33d9',
                 borderBottomColor: '#8d33d9',
                 padding: '0.5rem 2rem',
-                borderRadius: '12rem'}}
+                borderRadius: '12rem'
+              }}
             >Comments</Button>
           </Col>
         </Row>
+        }
         <Row>
           <Col md='12'>
             <CheckContinueButton
@@ -100,7 +152,7 @@ const Footer: React.FC<FooterProps> = props => {
             // currentMaterial={currentMaterial}
               disabledCheck={disabledCheck}
               // updateMaterial={updateMaterial}
-              userReactionState={userReactionState}
+              userReactionResult={userReactionResult}
             />
           </Col>
         </Row>
@@ -109,7 +161,8 @@ const Footer: React.FC<FooterProps> = props => {
             <ProgressBar
               style={{height: '2rem'}}
               now={percentCompleted}
-              label={`${percentCompleted}%`} />
+              // label={`${percentCompleted}%`}
+            />
           </Col>
         </Row>
       </Container>

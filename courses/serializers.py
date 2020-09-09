@@ -73,7 +73,7 @@ class UserReactionSerializer(serializers.ModelSerializer):
         # find prev reactions and set last_reaction = False
         with transaction.atomic():
             try:
-                if request and hasattr(request, "user") and request.user.profile:
+                if request and hasattr(request, "user") and request.user.is_authenticated and request.user.profile:
                     # it can be only one due model unqiue constraints
                     last_reaction = self.Meta.model.objects.get(
                         profile=request.user.profile,
@@ -164,7 +164,7 @@ class LessonSerializer(BaseSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['uuid', 'name', 'image', 'module', 'status']  # 'lesson_type', 'game_slug'
+        fields = ['uuid', 'name', 'image', 'module', 'status', 'complete_boundary']  # 'lesson_type', 'game_slug'
 
     module = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
