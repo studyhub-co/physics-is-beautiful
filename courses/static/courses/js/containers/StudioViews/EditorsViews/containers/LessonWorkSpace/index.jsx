@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
+import Fab from '@material-ui/core/Fab'
 import Grid from '@material-ui/core/Grid'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
@@ -59,6 +60,7 @@ import {
 import { useHandleDeleteLessonClick } from './Hooks/lesson'
 import { useLayoutMode } from './Hooks/LayoutMenu'
 import { useIframeLoaded } from './Hooks/eval'
+import { checkSaveButtonStyle } from '../../../../CoursesViews/components/style'
 
 const Lesson = props => {
   const {
@@ -205,6 +207,17 @@ const Lesson = props => {
   // viewport - header - menu - toolbar
   const bottomsPanelsHeight = 'calc(100vh - 51px - 108px - 35px)'
 
+  const handleSaveDataClick = () => {
+    // TODO - we can get data from iframe and save in SPA, need to explore
+    // send event to the iframe to save material
+    document.getElementById('student_view_iframe').contentWindow.postMessage(
+      {
+        type: 'save_data'
+      },
+      '*'
+    )
+  }
+
   return (
     <Grid container>
       <Grid container item xs={12} style={{padding: '1rem'}}>
@@ -347,6 +360,18 @@ const Lesson = props => {
                )}
                src={mptEvalUrl(currentMaterial.material_problem_type)}/>
             }
+            {currentMaterial && layoutMode === 'edit' &&
+            <Fab style={{...checkSaveButtonStyle,
+              position: 'absolute',
+              bottom: '1rem',
+              right: '2rem',
+              width: '10rem'
+            }}
+            variant='contained'
+            color='primary'
+            onClick={handleSaveDataClick}>
+              Save
+            </Fab> }
           </div>
           {/* Editor Mode */}
           <div

@@ -28,7 +28,8 @@ def check_classroom_progress(service, user):
     if user.is_authenticated and service.current_lesson_progress.score >= service.current_lesson.complete_boundary:
         from classroom.models import AssignmentProgress
 
-        AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
+        if isinstance(service.current_lesson, Lesson):
+            AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
 
 
 class MaterialViewSet(ModelViewSet):

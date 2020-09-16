@@ -6,6 +6,8 @@ Send and recieve EventMessages from evaluation iframe (id='student_view_iframe')
 
  * send 'edit_mode' (edit mode was enabled in editor)
  * send 'save_data' (save material data was clicked)
+ * send 'check_user_reaction' (check button was clicked)
+ * send 'continue' (continue button was clicked)
 
 ---
   * recieve 'current_material' (material loaded inside iframe)

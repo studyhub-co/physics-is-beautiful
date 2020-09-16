@@ -3,7 +3,7 @@ from django.utils.functional import cached_property
 # from user_reputation.models import Reputation
 # from notifications.signals import notify
 
-from .models import LessonProgress, LessonProgressStatus, UserReaction
+from .models import LessonProgress, LessonProgressStatus, UserReaction, Material
 
 
 class LessonLocked(Exception):
@@ -26,7 +26,7 @@ class ProgressServiceBase(object):
     # COMPLETION_THRESHOLD = 80
     # CORRECT_RESPONSE_VALUE = 10
     # INCORRECT_RESPONSE_VALUE = -5
-    INCORRECT_RESPONSE_RATIO = 5
+    INCORRECT_RESPONSE_RATIO = 50
 
     def __init__(self, request, current_lesson=None):
         self.request = request
@@ -52,7 +52,7 @@ class ProgressServiceBase(object):
         qs = self.current_lesson.materials
         try:
             material = qs.get(uuid=current_material_uuid)
-        except material.DoesNotExist:
+        except Material.DoesNotExist:
             return None
 
         # reset lesson progress
@@ -128,10 +128,13 @@ class ProgressServiceBase(object):
                                                           profile=self.user.profile,
                                                           last_reaction=True)
 
-            progress = max(0, (correct_reactions.count() / number_of_materials) * 100 -
-                              (wrong_reactions.count() / number_of_materials) * 100 * self.INCORRECT_RESPONSE_RATIO)
+            progress = max(0,
+                           (correct_reactions.count() / number_of_materials) * 100 -
+                           (wrong_reactions.count() / number_of_materials) * 100 * (self.INCORRECT_RESPONSE_RATIO / 100)
+                           )
         else:
-            pass
+            # TODO calculate anon user progress
+            progress = 0
 
         return progress
 

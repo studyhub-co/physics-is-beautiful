@@ -89,6 +89,7 @@ def generate_classroom_code(sender, instance, *args, **kwargs):
 
 class Assignment(models.Model):
     uuid = ShortUUIDField(unique=True)
+    # TODO replace with lesson from courses
     lessons = models.ManyToManyField(Lesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
@@ -157,7 +158,7 @@ class AssignmentProgressManager(models.Manager):
 
     def recalculate_status_by_lesson(self, lesson, user):
         # from classroom.models import Assignment, AssignmentProgress
-        assignments = Assignment.objects.filter(lessons__id=lesson.id)
+        assignments = Assignment.objects.filter(lessons=lesson)
         assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
                                                                      student__user=user,
                                                                      completed_on__isnull=True)

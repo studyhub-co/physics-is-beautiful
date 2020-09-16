@@ -11,7 +11,6 @@ const VECTOR_COLORS = [
   'yellow'
 ]
 
-  
 export class QuestionVectors extends React.Component {
 
   render() {
@@ -30,7 +29,9 @@ export class QuestionVectors extends React.Component {
       v = new CanvasVector(null, pointer, VECTOR_COLORS[i % VECTOR_COLORS.length]);
       v.complete(endPointer)
       objects.push(v)
-    } 
+    }
+
+    console.log(objects)
     
     return (
       <div className="question-vectors">

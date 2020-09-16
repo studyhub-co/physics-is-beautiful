@@ -5,12 +5,13 @@ import UserStateEnum from '../Apps/const'
 
 import Button from '@material-ui/core/Button'
 import { checkSaveButtonStyle, checkSaveButtonStyleDisabled } from './style'
+// import history from '../../../history'
 // import * as materialActionCreators from '../../redux/modules/material'
 // import { QAData as IQAData } from '../qaChoices/IData/index'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface CheckContinueProps {
-  // currentMaterial: materialActionCreators.MaterialRedux;
+  currentMaterial: materialActionCreators.MaterialRedux;
   editMode: boolean;
   disabledCheck: boolean;
   // updateMaterial(material: Material): void;
@@ -29,11 +30,11 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
     // checkUserMaterialReaction,
     // componentData,
     userReactionResult,
-    moveToNextComponent
+    // moveToNextComponent
   } = props
 
   const handleSaveDataClick = () => {
-    // TODO - we can get data from iframe ann save in SPA, need to explore
+    // TODO - we can get data from iframe and save in SPA, need to explore
     // send event to the iframe to save material
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
@@ -52,21 +53,22 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
       },
       '*'
     )
-    // const material: Material = { uuid: currentMaterial.uuid, data: componentData }
-    // checkUserMaterialReaction(material)
   }
 
   const handleContinueClick = () => {
-    // todo send event to the iframe to movetothe next component
+    // send event to the iframe to movetothe next component
     // todo change current URL see redirect_to_material event from iframe for now
-    console.log('continue')
+    document.getElementById('student_view_iframe').contentWindow.postMessage(
+      {
+        type: 'continue'
+        // data: { }
+      },
+      '*'
+    )
     // if (currentMaterial.uuid) {
     //   moveToNextComponent(currentMaterial.uuid)
     // }
   }
-
-  // console.log(userReactionState)
-  // console.log(disabledCheck)
 
   return (
     <div style={{ textAlign: 'center' }}>

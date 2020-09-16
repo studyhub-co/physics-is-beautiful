@@ -1,3 +1,5 @@
+// TODO remove this after migrate to "courses"
+// see also webpack common
 import React from 'react'
 
 var GRID = 50

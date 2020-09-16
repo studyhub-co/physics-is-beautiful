@@ -30,8 +30,8 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = props => {
   const {
-    currentMaterial
-    // editMode,
+    currentMaterial,
+    editMode
     // disabledCheck,
     // updateMaterial,
     // checkUserMaterialReaction,
@@ -60,7 +60,7 @@ const Footer: React.FC<FooterProps> = props => {
     setShowCommentsModal(!showCommentsModal)
   }
 
-  console.log(userReactionResult)
+  // console.log(userReactionResult)
 
   useEffect(() => {
     const messageListener = ({ data }) => {
@@ -71,7 +71,6 @@ const Footer: React.FC<FooterProps> = props => {
         }
         // reaction state
         if (data.type === 'user_reaction_state') {
-          console.log(data)
           setUserReactionState(data.data)
           console.log(calculateProgress(data.data.userLessonScore))
           setPercentCompleted(calculateProgress(data.data.userLessonScore))
@@ -110,6 +109,8 @@ const Footer: React.FC<FooterProps> = props => {
     reactionResultIcon = (<FaTimesCircle id='incorrect' className='pull-right' style={{ fontSize: '35px' }}/>)
     backgroundColor = '#ffd3d1'
     correctMessage = 'Incorrect'
+  } else if (userReactionResult.wasCorrect === true) {
+    backgroundColor = '#bff199'
   }
 
   // todo calculate with ratio
@@ -145,11 +146,11 @@ const Footer: React.FC<FooterProps> = props => {
         <Row>
           <Col md='12'>
             <CheckContinueButton
-            // moveToNextComponent={moveToNextComponent}
-            // editMode={editMode}
-            // componentData={componentData}
-            // checkUserMaterialReaction={checkUserMaterialReaction}
-            // currentMaterial={currentMaterial}
+              // moveToNextComponent={moveToNextComponent}
+              editMode={editMode}
+              // componentData={componentData}
+              // checkUserMaterialReaction={checkUserMaterialReaction}
+              currentMaterial={currentMaterial}
               disabledCheck={disabledCheck}
               // updateMaterial={updateMaterial}
               userReactionResult={userReactionResult}

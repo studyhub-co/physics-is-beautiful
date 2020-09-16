@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 
 import {VectorCanvas, CanvasVector, CanvasText} from 'vector_canvas'
 
+// THIS is the ANSWER VECTOR
+// FOR QUESTION VECTOR SEE static\js\common\vector_canvas.jsx !
 export class VectorAnswer extends React.Component {
   constructor () {
     super()

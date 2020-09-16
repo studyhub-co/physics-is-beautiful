@@ -235,7 +235,7 @@ class Lesson(BaseItemModel):
     image = models.ImageField(blank=True)
     position = models.PositiveSmallIntegerField("Position", null=True, blank=True)
     complete_boundary = models.PositiveSmallIntegerField("Lesson complete boundary (percent)",
-                                                                default=LESSON_COMPLETE_BOUNDARY)
+                                                         default=LESSON_COMPLETE_BOUNDARY)
 
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_lessons')
 
