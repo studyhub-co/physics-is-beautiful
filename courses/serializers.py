@@ -6,7 +6,7 @@ from rest_framework import serializers
 from expander import ExpanderSerializerMixin
 
 from .models import Course, Unit, Module, Lesson, \
-    LessonProgress, MySQL, UserReaction, Material, LessonProgressStatus
+    LessonProgress, MySQL, UserReaction, Material, LessonProgressStatus, MaterialProblemTypeSandboxCache
 
 from profiles.serializers import PublicProfileSerializer, ProfileUserField
 
@@ -302,4 +302,9 @@ class SimpleCourseSerializer(ExpanderSerializerMixin, BaseSerializer):
         model = Course
         fields = ['uuid', 'name', 'description', 'image', 'cover_photo']
 
+
+class MaterialProblemTypeCacheSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialProblemTypeSandboxCache
+        fields = ['data']
 

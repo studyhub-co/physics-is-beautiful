@@ -9,7 +9,8 @@ const debug = _debug('cs:compiler:cache')
 // const host = process.env.CODESANDBOX_HOST;
 const host = '' // the same host for now
 
-const MAX_CACHE_SIZE = 1024 * 1024 * 7
+/* 10mb */
+const MAX_CACHE_SIZE = 1024 * 1024 * 10
 let APICacheUsed = false
 
 function getCookie (name) {
@@ -72,11 +73,11 @@ export async function saveCache (
 
   try {
     if (process.env.NODE_ENV === 'development') {
-      debug(
+      // debug(
+     console.log(
         'Saving cache of ' +
           (JSON.stringify(managerState).length / 1024).toFixed(2) +
-          'kb to indexedDB'
-      )
+          'kb to indexedDB')
     }
     await localforage.setItem(manager.id, managerState)
   } catch (e) {
@@ -86,20 +87,21 @@ export async function saveCache (
     manager.clearCache()
   }
 
-  if (shouldSaveOnlineCache(firstRun, changes) && SCRIPT_VERSION) {
+  if (SCRIPT_VERSION && shouldSaveOnlineCache(firstRun, changes)) {
     // console.log(managerState);
 
     const stringifiedManagerState = JSON.stringify(managerState)
 
     if (stringifiedManagerState.length > MAX_CACHE_SIZE) {
+      console.log(`Saving cache deny, due cache is over ${MAX_CACHE_SIZE} mb`)
       return Promise.resolve(false)
     }
 
-    debug(
+    // debug(
+    console.log(
       'Saving cache of ' +
         (stringifiedManagerState.length / 1024).toFixed(2) +
-        'kb to CodeSandbox API'
-    )
+        'kb to CodeSandbox API')
 
     return window
       // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
@@ -175,6 +177,23 @@ export function ignoreNextCache () {
   }
 }
 
+async function loadCacheFromAPI (sandboxId) {
+  return window
+    .fetch(`${host}/api/v1/courses/material-problem-type/${sandboxId}/cache/?script-version=${SCRIPT_VERSION}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+        // 'X-CSRFToken': getCookie('csrftoken') || ''
+      }
+    })
+    // .then(x => x.json())
+    .then(x => { return x.json() })
+    .catch(e => {
+      console.log('Error while load mtp cache:')
+      console.log(e)
+    })
+}
+
 export async function consumeCache (manager: Manager) {
   try {
     const shouldIgnoreCache = localStorage.getItem('ignoreCache')
@@ -184,12 +203,23 @@ export async function consumeCache (manager: Manager) {
       return false
     }
 
-    const cacheData = (window as any).__SANDBOX_DATA__
+    // it seem this data setting up by server side in sandox
+    // TODO load from API
+    // const cacheData = (window as any).__SANDBOX_DATA__
     const localData = await localforage.getItem(manager.id)
 
-    console.log(cacheData);
+    const cacheApiData = await loadCacheFromAPI(manager.id)
 
-    const cache = findCacheToUse(cacheData && cacheData.data, localData)
+    // console.log(`cacheApiData:`)
+    console.log(JSON.parse(cacheApiData.data))
+    // console.log(`localData`)
+    // console.log(localData)
+
+    // TODO save cacheApiData in IndexedDB
+    // const cache = findCacheToUse(cacheData && cacheData.data, localData)
+    const cache = findCacheToUse(localData, cacheApiData && cacheApiData.data && JSON.parse(cacheApiData.data))
+    // const cache = JSON.parse(cacheApiData.data)
+    // const cache = localData
     if (cache) {
       const version = SCRIPT_VERSION
 

@@ -133,8 +133,6 @@ requirePolyfills().then(() => {
           }
         }
 
-        // console.log(moduleObject)
-
         const data = {
           sandboxId: id,
           modules: moduleObject,

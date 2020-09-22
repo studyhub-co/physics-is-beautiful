@@ -1,6 +1,7 @@
 import datetime
 
 from django.utils import timezone
+from django.core.exceptions import MultipleObjectsReturned
 
 # from django.db.models import Q
 from django.db.models import F
@@ -12,12 +13,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .models import Course, Unit, Module, Lesson, Material, MaterialProblemType
+from .models import Course, Unit, Module, Lesson, Material, MaterialProblemTypeSandboxCache
 from .services import get_progress_service, LessonLocked, LessonProgress
 
 from .serializers import MaterialSerializer, UserReactionSerializer, \
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
-    CourseSerializer, LessonProgressSerializer
+    CourseSerializer, LessonProgressSerializer, MaterialProblemTypeCacheSerializer
 
 from .djeddit import create_thread
 
@@ -303,6 +304,25 @@ class UnitViewSet(ModelViewSet):
     serializer_class = UnitSerializer
     queryset = Unit.objects.all()
     lookup_field = 'uuid'
+
+
+class MaterialProblemTypeCacheViewSet(ModelViewSet):
+    serializer_class = MaterialProblemTypeCacheSerializer
+    queryset = MaterialProblemTypeSandboxCache.objects.all()
+    lookup_field = 'sandbox_id'
+    http_method_names = ['get', ]
+
+    def retrieve(self, request, sandbox_id=None):
+        script_version = request.query_params.get('script-version')
+        if not script_version:
+            raise serializers.ValidationError('script-version param required')
+        try:
+            mpt_cache = self.queryset.get(sandbox_id=sandbox_id, version=script_version)
+        except (MultipleObjectsReturned, MaterialProblemTypeSandboxCache.DoesNotExist):
+            raise NotFound('cache not found')
+
+        serializer = self.get_serializer(mpt_cache)
+        return Response(serializer.data)
 
 
 class CourseViewSet(ModelViewSet):

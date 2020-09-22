@@ -1,7 +1,7 @@
-import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
+import { isStandalone, dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import { absolute } from '@codesandbox/common/lib/utils/path';
-import _debug from '@codesandbox/common/lib/utils/debug';
+// import _debug from '@codesandbox/common/lib/utils/debug';
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
@@ -38,7 +38,7 @@ let initializedResizeListener = false;
 let manager: Manager | null = null;
 let actionsEnabled = false;
 
-const debug = _debug('cs:compiler');
+// const debug = _debug('cs:compiler');
 
 export function areActionsEnabled() {
   return actionsEnabled;
@@ -428,8 +428,6 @@ async function compile({
     type: 'start',
   });
 
-  // console.trace();
-
   const startTime = Date.now();
   try {
     inject();
@@ -540,7 +538,8 @@ async function compile({
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
-    debug(`Transpilation time ${Date.now() - t}ms`);
+    console.log(`Transpilation time ${Date.now() - t}ms`);
+    // debug(`Transpilation time ${Date.now() - t}ms`);
 
     dispatch({ type: 'status', status: 'evaluating' });
     manager.setStage('evaluation');
@@ -605,14 +604,16 @@ async function compile({
 
       const extDate = Date.now();
       await handleExternalResources(externalResources);
-      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+      console.log('Loaded external resources in ' + (Date.now() - extDate) + 'ms')
+      // debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
-      debug(`Evaluation time: ${Date.now() - tt}ms`);
+      // debug(`Evaluation time: ${Date.now() - tt}ms`);
+      console.log(`Evaluation time: ${Date.now() - tt}ms`)
       const domChanged =
         !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
 
@@ -659,7 +660,8 @@ async function compile({
       createCodeSandboxOverlay(modules);
     }
 
-    debug(`Total time: ${Date.now() - startTime}ms`);
+    console.log(`Total time: ${Date.now() - startTime}ms`);
+    // debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({
       type: 'success',
@@ -670,7 +672,8 @@ async function compile({
       managerModuleToTranspile,
       manager,
       changedModuleCount,
-      firstLoad
+      !isStandalone // do not save API cache in standalone student mode
+      //firstLoad
     );
 
     setTimeout(() => {

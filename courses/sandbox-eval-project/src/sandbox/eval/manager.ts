@@ -476,12 +476,12 @@ export default class Manager {
 
     transpiledModule.setIsEntry(true);
     transpiledModule.setIsTestFile(isTestFile);
-    
+
     // console.log(transpiledModule);
 
     const result = await transpiledModule.transpile(this);
     this.getTranspiledModules().forEach(t => t.postTranspile(this));
-    
+
     // console.log(result);
 
     return result;
@@ -1110,10 +1110,11 @@ export default class Manager {
     return dependenciesToQuery(normalizedDependencies);
   }
 
-  async load(data: any) {
+  async load (data: any) {
     try {
       if (data) {
         this.clearCache();
+
         const {
           transpiledModules: serializedTModules,
           cachedPaths,
@@ -1137,6 +1138,7 @@ export default class Manager {
           version === SCRIPT_VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
+
           const newCombinedMetas = {};
           Object.keys(meta).forEach(dir => {
             meta[dir].forEach(file => {
@@ -1165,7 +1167,8 @@ export default class Manager {
 
             tModule.load(serializedTModules[id], tModules, this);
           });
-          debug(`Loaded cache.`);
+          console.log(`Loaded cache.`);
+          // debug(`Loaded cache.`);
         }
       }
     } catch (e) {
