@@ -48,7 +48,7 @@ const Footer: React.FC<FooterProps> = props => {
   //   user_lesson_score: 20,
   //   was_correct: true,
   // },
-  const [userReactionResult, setUserReactionState] = useState({
+  const [userReactionResult, setUserReactionResult] = useState({
     state: UserStateEnum.start,
     userLessonScore: undefined,
     wasCorrect: undefined
@@ -60,8 +60,6 @@ const Footer: React.FC<FooterProps> = props => {
     setShowCommentsModal(!showCommentsModal)
   }
 
-  // console.log(userReactionResult)
-
   useEffect(() => {
     const messageListener = ({ data }) => {
       if (data.hasOwnProperty('type')) {
@@ -69,10 +67,14 @@ const Footer: React.FC<FooterProps> = props => {
         if (data.type === 'disabled_check_button') {
           setDisabledCheck(data.data)
         }
-        // reaction state
+        // user reaction state
         if (data.type === 'user_reaction_state') {
-          setUserReactionState(data.data)
+          setUserReactionResult(data.data)
+
+          console.log(data.data)
+
           console.log(calculateProgress(data.data.userLessonScore))
+
           setPercentCompleted(calculateProgress(data.data.userLessonScore))
         // data: {
         //   state: 'checked',
@@ -84,10 +86,7 @@ const Footer: React.FC<FooterProps> = props => {
     }
 
     window.addEventListener('message', messageListener, false)
-
-    return () => {
-      window.removeEventListener('message', messageListener)
-    }
+    return () => window.removeEventListener('message', messageListener)
   }, [])
 
   // console.log(currentMaterial);
@@ -113,9 +112,10 @@ const Footer: React.FC<FooterProps> = props => {
     backgroundColor = '#bff199'
   }
 
-  // todo calculate with ratio
-  // const percentCompleted = 40
+  // calculate with ratio
   const [percentCompleted, setPercentCompleted] = useState(calculateProgress(currentMaterial?.score || 0))
+
+  // console.log(userReactionResult);
 
   return (
     <div id='footer' style={{

@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import UserStateEnum from './const'
+// import UserStateEnum from './const'
 import history from '../../../history'
 
 import * as materialsActionCreators from '../../../actions/materials'
 
-import { Sheet } from '../../../components/Sheet'
+// import { Sheet } from '../../../components/Sheet'
 import Footer from '../components/footer'
 
 import { RingLoader } from 'react-spinners'
@@ -36,37 +36,45 @@ const Lesson = props => {
   // TODO we have twice loaded material (in SPA and in the iframe)
   const [currentMaterialState, setCurrentMaterialState] = useState(currentMaterial)
 
-  useEffect(() => {
-    // TODO catch lesson id?
-    // TODO reset currentMaterial before fetch
-    if (match.params.materialUuid !== state.materialUuid) {
-      // reload new material
-      fetchMaterial(state.lessonUuid, match.params.materialUuid)
-    }
+  // logic
+  // 1) fetch currentMaterial from url in SPA
+  // 2) generate iframe Uuid from currentMaterial data (we need mpt UUID in iframe)
+  // 3) use old iframeUrl when currentMaterialState is changed
+  // 4) until currentMaterialState.mpt_uuid === currentMaterialFomIframe.mpt_uuid
 
-  }, []) // let's disable reload material for now - this will be happen in the frame,
-  // we only change url to able users load the material page from scretch
-  //   }, [match])
+  const messageListener = useCallback(({ data }) => {
+    if (data.hasOwnProperty('type')) {
+      if (data.hasOwnProperty('type')) {
+        if (data.type === 'redirect_to_material') {
+          // listen iframe when continue button clicked
+          const {lessonUuid, nextMaterialUuid} = data.data
+          history.push(`/courses/lessons/${lessonUuid}/materials/${nextMaterialUuid}`)
+        }
+        // current material was received from iframe
+        if (data.type === 'current_material') {
+          const nextMaterial = data.data
+          setCurrentMaterialState({ ...nextMaterial })
 
-  // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
-  const materialEvalUrl = (material) => {
-    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/${state.lessonUuid}/?standalone`
-  }
-
-  useEffect(() => {
-    setCurrentMaterialState(currentMaterial)
-  }, [currentMaterial])
-
-  useEffect(() => {
-    /* it will reload iframe completely */
-    if (currentMaterialState && !currentMaterialState.isFetching && currentMaterialState.uuid) {
-      setState({
-        ...state,
-        materialUuid: currentMaterialState.uuid,
-        iframeUrl: materialEvalUrl(currentMaterialState)
-      })
+          if (!(currentMaterialState.hasOwnProperty('material_problem_type') &&
+      nextMaterial.hasOwnProperty('material_problem_type') &&
+      currentMaterialState['material_problem_type'] === nextMaterial['material_problem_type']
+          )) {
+            // update only if material_problem_type has been changed
+            setState({
+              ...state,
+              materialUuid: currentMaterialState.uuid,
+              iframeUrl: materialEvalUrl(nextMaterial)
+            })
+          }
+        }
+      }
     }
   }, [currentMaterialState])
+
+  useEffect(() => {
+    window.addEventListener('message', messageListener)
+    return () => window.removeEventListener('message', messageListener)
+  }, [messageListener])
 
   useEffect(() => {
     if (state.materialUuid == null) {
@@ -78,27 +86,53 @@ const Lesson = props => {
       fetchMaterial(state.lessonUuid, state.materialUuid)
     }
 
-    // catch event from iframe for change main window url
-    window.addEventListener('message', ({ data }) => {
-      if (data.hasOwnProperty('type')) {
-        if (data.type === 'redirect_to_material') {
-          // listen iframe when continue button clicked
-          const {lessonUuid, nextMaterialUuid} = data.data
-          history.push(`/courses/lessons/${lessonUuid}/materials/${nextMaterialUuid}`)
-        }
-        // current material was received from iframe
-        if (data.type === 'current_material') {
-          setCurrentMaterialState(data.data)
-        }
-      }
-    }, false)
-
     // not sure we need this, it's something related to mobile version
     window.parent.postMessage({
       'message': 'canGoBack',
       'data': false
     }, '*')
   }, [])
+
+  useEffect(() => {
+    setCurrentMaterialState(currentMaterial)
+
+    if (currentMaterial && !currentMaterial.isFetching && currentMaterial.uuid) {
+      setState({
+        ...state,
+        materialUuid: currentMaterial.uuid,
+        iframeUrl: materialEvalUrl(currentMaterial)
+      })
+    }
+  }, [currentMaterial])
+
+  // useEffect(() => {
+  //   // TODO catch lesson id?
+  //   // TODO reset currentMaterial before fetch
+  //   if (match.params.materialUuid !== state.materialUuid) {
+  //     // reload new material
+  //     fetchMaterial(state.lessonUuid, match.params.materialUuid)
+  //   }
+  // }, []) // let's disable reload material for now - this will be happen in the frame,
+  // we only change url to able users load the material page from scretch
+  //   }, [match])
+
+  // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
+  const materialEvalUrl = (material) => {
+    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/${state.lessonUuid}/?standalone`
+  }
+
+  // useEffect(() => {
+  //   /* it will reload iframe completely */
+  //   console.log(currentMaterialState)
+  //
+  //   if (currentMaterialState && !currentMaterialState.isFetching && currentMaterialState.uuid) {
+  //     setState({
+  //       ...state,
+  //       materialUuid: currentMaterialState.uuid,
+  //       iframeUrl: currentMaterialState?.hasOwnProperty('updateIframeUrl') && materialEvalUrl(currentMaterialState)
+  //     })
+  //   }
+  // }, [currentMaterialState])
 
   return (
     <div>
@@ -131,7 +165,7 @@ const Lesson = props => {
             id={'student_view_iframe'}
             ref={setFrameRef}
             src={state.iframeUrl}/>
-          <Footer currentMaterial={currentMaterial}/>
+          <Footer currentMaterial={currentMaterialState}/>
         </div>
       }
 
@@ -144,7 +178,6 @@ const Lesson = props => {
       {/*  /!* TODO not sure it's best solution, need to explore *!/ */}
       {/*  <h2>Material has no source code, please report current url to site administration.</h2> */}
       {/* </Sheet> */}
-      }
     </div>
   )
 }
@@ -152,7 +185,6 @@ const Lesson = props => {
 Lesson.propTypes = {}
 
 const mapStateToProps = function (store) {
-  // console.log(store);
   return {
     currentMaterial: store.materials.material
   }

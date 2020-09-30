@@ -214,6 +214,7 @@ class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin, SeparateListObjectSer
 class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
                                  mixins.UpdateModelMixin,
                                  mixins.ListModelMixin,
+                                 mixins.DestroyModelMixin,
                                  # MaterialTypeModulesMixin,
                                  viewsets.GenericViewSet,
                                  ):
