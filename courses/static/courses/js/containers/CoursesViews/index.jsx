@@ -1,11 +1,8 @@
-import CoursesIndexView from './IndexView'
 import CoursesRoutes from './routes'
-import CourseApp from './Apps/Course'
-import ModuleApp from './Apps/Module'
-import LessonApp from './Apps/Lesson'
+import CourseApp from './Views/Course'
+import ModuleApp from './Views/Module'
+import LessonApp from './Views/Lesson'
 
 export {
-  CoursesIndexView, CoursesRoutes, CourseApp, ModuleApp, LessonApp
+  CoursesRoutes, CourseApp, ModuleApp, LessonApp
 }
-
-// Fixme CoursesIndexView not used now

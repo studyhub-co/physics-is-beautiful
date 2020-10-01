@@ -44,7 +44,8 @@ class ProgressServiceBase(object):
         if not material:
             material = self.current_lesson.materials.first()
         elif material.position == 0:
-            self.current_lesson_progress.score = 0
+            # TODO we need remove all correct reactions instead this
+            # self.current_lesson_progress.score = 0
             self.save()
         return material
 

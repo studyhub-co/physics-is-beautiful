@@ -1113,7 +1113,9 @@ export default class Manager {
   async load (data: any) {
     try {
       if (data) {
-        this.clearCache();
+        // don't clear cache
+        // TODO clear cache on exit site?
+        // this.clearCache();
 
         const {
           transpiledModules: serializedTModules,
@@ -1138,7 +1140,6 @@ export default class Manager {
           version === SCRIPT_VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
-
           const newCombinedMetas = {};
           Object.keys(meta).forEach(dir => {
             meta[dir].forEach(file => {
@@ -1177,7 +1178,7 @@ export default class Manager {
         console.warn(e);
       }
     }
-    this.clearCache();
+    // this.clearCache();
   }
 
   dispose() {

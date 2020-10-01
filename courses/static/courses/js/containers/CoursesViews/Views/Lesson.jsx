@@ -3,16 +3,15 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-// import UserStateEnum from './const'
 import history from '../../../history'
 
 import * as materialsActionCreators from '../../../actions/materials'
 
-// import { Sheet } from '../../../components/Sheet'
 import Footer from '../components/footer'
 
 import { RingLoader } from 'react-spinners'
 import { StyledIframe } from './Styles'
+import LessonComplete from '../components/LessonComplete'
 
 // import { SectionSheet } from '../SectionSheet'
 
@@ -133,6 +132,11 @@ const Lesson = props => {
   //     })
   //   }
   // }, [currentMaterialState])
+  if (currentMaterialState &&
+      !currentMaterialState.isFetching &&
+      currentMaterialState.score >= 100) {
+    return <LessonComplete />
+  }
 
   return (
     <div>

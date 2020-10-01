@@ -14,7 +14,7 @@ import CheckContinueButton from './checkContinueButton'
 import Button from 'react-bootstrap/Button'
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import history from '../../../history'
-import UserStateEnum from '../Apps/const'
+import UserStateEnum from '../const'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface FooterProps {

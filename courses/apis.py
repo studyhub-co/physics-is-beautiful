@@ -24,13 +24,14 @@ from .djeddit import create_thread
 
 
 def check_classroom_progress(service, user):
-    # TODO replace service.COMPLETION_THRESHOLD with %
     # if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
     if user.is_authenticated and service.current_lesson_progress.score >= service.current_lesson.complete_boundary:
         from classroom.models import AssignmentProgress
 
         if isinstance(service.current_lesson, Lesson):
-            AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
+            pass
+            # TODO uncomment after AssignmentProgress lesson model will be changed
+            # AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
 
 
 class MaterialViewSet(ModelViewSet):
@@ -87,7 +88,7 @@ class MaterialViewSet(ModelViewSet):
             raise serializers.ValidationError(e)
 
         if is_correct is None:
-            raise serializers.NotFound('validate.js for this material problem type was not found')
+            raise NotFound('validate.js for this material problem type was not found')
 
         data = LessonProgressSerializer(service.current_lesson_progress).data
 
