@@ -151,6 +151,11 @@ class ProgressServiceBase(object):
         user_reaction.save(update_fields=["is_correct"])
         self.user_reaction = user_reaction
         # calculate progress
+        # TODO not good place for this
+        # 1) if we will add new material - we will got wrong score.
+        # 2) we need to recalculate score for all students when add new material
+        # 3) so if we want to use denorm score value we need to use backgroud quene (same issue in classroom app)
+        # 4) we can just calculate score for each user request (todo optimize sql query).
         self.current_lesson_progress.score = self.calculate_progress()
         self.save()
 

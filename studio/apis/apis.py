@@ -346,7 +346,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
             # try to get existing cache
             cache = MaterialProblemTypeSandboxCache.objects.get(
                 version=version,
-                sandbox=sandbox.pk
+                sandbox=sandbox
             )
             serializer = self.serializer_class_cache(cache, data=request.data)
         except MaterialProblemTypeSandboxCache.DoesNotExist:

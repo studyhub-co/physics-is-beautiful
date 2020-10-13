@@ -566,9 +566,6 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async transpile(manager: Manager) {
-
-    // console.log(this);
-
     if (this.source) {
       return this;
     }
@@ -640,7 +637,8 @@ export default class TranspiledModule {
             transpiledCode,
             sourceMap,
           } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
-          debug(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
+          // debug(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
+          console.log(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
 
           if (this.errors.length) {
             throw this.errors[0];
@@ -1020,7 +1018,8 @@ export default class TranspiledModule {
       !this.module.stubbed
     ) {
       // Remove the module from the transpiler if it's not used anymore
-      debug(`Removing '${this.getId()}' from manager.`);
+      // debug(`Removing '${this.getId()}' from manager.`);
+      console.log(`Removing '${this.getId()}' from manager.`);
       this.dispose(manager);
     }
   }
@@ -1035,7 +1034,8 @@ export default class TranspiledModule {
           t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
         )
     ) {
-      debug(`Removing '${this.getId()}' cache as it's not cacheable.`);
+      // debug(`Removing '${this.getId()}' cache as it's not cacheable.`);
+      console.log(`Removing '${this.getId()}' cache as it's not cacheable.`);
       this.compilation = null;
     }
   }

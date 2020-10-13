@@ -8,6 +8,12 @@
       "app/*": ["./src/app/*"],
       "embed/*": ["./src/embed/*"],
       "sandbox/*": ["./src/sandbox/*"]
-    }
+    },
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise"
+    ]
   }
 }

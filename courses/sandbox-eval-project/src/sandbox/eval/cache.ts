@@ -101,7 +101,7 @@ export async function saveCache (
     console.log(
       'Saving cache of ' +
         (stringifiedManagerState.length / 1024).toFixed(2) +
-        'kb to CodeSandbox API')
+        'kb to StudyHub API')
 
     return window
       // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
@@ -206,35 +206,45 @@ export async function consumeCache (manager: Manager) {
     // it seem this data setting up by server side in sandox
     // TODO load from API
     // const cacheData = (window as any).__SANDBOX_DATA__
-    const localData = await localforage.getItem(manager.id)
+    // const localData = await localforage.getItem(manager.id)
+    let cache = await localforage.getItem(manager.id)
+    APICacheUsed = false
 
-    const cacheApiData = await loadCacheFromAPI(manager.id)
+    if (!cache) {
+      const cacheApiData = await loadCacheFromAPI(manager.id)
+      if (cacheApiData && cacheApiData.data && JSON.parse(cacheApiData.data)) {
+        cache = JSON.parse(cacheApiData.data)
+        APICacheUsed = true
+      }
+    } else {
+      // todo important!!! get datestamp from API
+      // loadCacheFromAPI(manager.id).then(()=>
+      // if (cacheFromApi.datestamp != localCache.datestap){
+      //    // and ingore localcche in the next time
+      //    ignoreNextCache() // check that this func works
+      //  }
+      // }
+    }
 
-    // console.log(`cacheApiData:`)
-    console.log(JSON.parse(cacheApiData.data))
-    // console.log(`localData`)
-    // console.log(localData)
-
-    // TODO save cacheApiData in IndexedDB
     // const cache = findCacheToUse(cacheData && cacheData.data, localData)
-    const cache = findCacheToUse(localData, cacheApiData && cacheApiData.data && JSON.parse(cacheApiData.data))
-    // const cache = JSON.parse(cacheApiData.data)
-    // const cache = localData
+    // const cache = findCacheToUse(localData, cacheApiData && cacheApiData.data && JSON.parse(cacheApiData.data))
+
     if (cache) {
       const version = SCRIPT_VERSION
 
       if (cache.version === version) {
-        if (cache === localData) {
-          APICacheUsed = false
-        } else {
-          APICacheUsed = true
-        }
+        // if (cache === localData) {
+        //   APICacheUsed = false
+        // } else {
+        //   APICacheUsed = true
+        // }
 
         // debug(
         //   `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
         //   cache
         // )
-        console.log(`Loading cache from ${cache === localData ? 'localStorage' : 'API'}`)
+        console.log(`Loading cache from ${!APICacheUsed ? 'localStorage' : 'API'}`)
+        // console.log(`Loading cache from ${cache === localData ? 'localStorage' : 'API'}`)
 
         await manager.load(cache)
 

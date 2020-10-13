@@ -8,7 +8,7 @@ import { RingLoader } from 'react-spinners'
 import InfiniteScroll from 'react-infinite-scroller'
 
 import { loadSearchCourses } from '../../../../actions/studio'
-import { CourseThumbnailPublic } from '../../components/course_thumbnail_public'
+import CourseThumbnailPublic from '../../components/course_thumbnail_public'
 
 class CoursesSearchView extends React.Component {
   constructor (props) {

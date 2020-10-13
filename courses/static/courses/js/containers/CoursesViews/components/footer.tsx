@@ -71,9 +71,8 @@ const Footer: React.FC<FooterProps> = props => {
         if (data.type === 'user_reaction_state') {
           setUserReactionResult(data.data)
 
-          console.log(data.data)
-
-          console.log(calculateProgress(data.data.userLessonScore))
+          // console.log(data.data)
+          // console.log(calculateProgress(data.data.userLessonScore))
 
           setPercentCompleted(calculateProgress(data.data.userLessonScore))
         // data: {
