@@ -5,7 +5,6 @@ from django.utils.safestring import mark_safe
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
-from jsonfield.fields import JSONFormField
 from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionStepsJSONWidget, \
     MathConversionWidget
 

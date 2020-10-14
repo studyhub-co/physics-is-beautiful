@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 import django_light_enums.db
-import jsonfield.fields
+# import jsonfield.fields
+import django.contrib.postgres.fields
 
 
 class Migration(migrations.Migration):
@@ -17,11 +18,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mysql',
             name='expected_output_json',
-            field=jsonfield.fields.JSONField(default=None),
+            # field=jsonfield.fields.JSONField(default=None),
+            field=django.contrib.postgres.fields.JSONField(default=None),
+
         ),
         migrations.AddField(
             model_name='mysql',
             name='schema_SQL_json',
-            field=jsonfield.fields.JSONField(default=None),
+            # field=jsonfield.fields.JSONField(default=None),
+            field=django.contrib.postgres.fields.JSONField(default=None),
         ),
     ]

@@ -214,13 +214,12 @@ class MaterialProblemTypeSandboxCache(models.Model):
     """
     Transpiled modules data (cache)
     """
+    timestamp = models.DateTimeField(auto_now_add=True)
     version = models.URLField()  # transpiler version
     data = JSONField(default=dict)
     # sandbox = models.OneToOneField(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
     # we can have > 1 of a cache for one sandbox (different versions)
     sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
-
-    # TODO remove old data functional
 
     class Meta:
         unique_together = [['sandbox', 'version']]
@@ -274,7 +273,7 @@ def resize_and_delete_old_screenshot(sender, instance, **kwargs):
             )
 
 
-# TODO remove
+# TODO move to README
 # {"data": }
 # SANDOX_TEMPLATE_REACT_JSON_STRING = r"""{
 #    "version":66,

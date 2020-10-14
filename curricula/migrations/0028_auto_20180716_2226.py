@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 import django_light_enums.db
-import jsonfield.fields
+# import jsonfield.fields
+import django.contrib.postgres.fields
 
 
 class Migration(migrations.Migration):
@@ -32,6 +33,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='unitconversion',
             name='conversion_steps',
-            field=jsonfield.fields.JSONField(blank=True, default=[{'denominator': '', 'numerator': ''}], help_text='Numerator/Denominator steps', null=True),
+            # field=jsonfield.fields.JSONField(blank=True, default=[{'denominator': '', 'numerator': ''}], help_text='Numerator/Denominator steps', null=True),
+            field=django.contrib.postgres.fields.JSONField(blank=True, default=[{'denominator': '', 'numerator': ''}], help_text='Numerator/Denominator steps', null=True),
         ),
     ]

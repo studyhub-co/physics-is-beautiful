@@ -5,7 +5,9 @@ from django.utils.safestring import mark_safe
 
 from nested_admin import NestedTabularInline, NestedModelAdmin
 
-from jsonfield.fields import JSONFormField
+# from jsonfield.fields import JSONFormField
+from django.contrib.postgres.forms import JSONField as JSONFormField
+
 from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionStepsJSONWidget, MathConversionWidget
 
 from .models import (

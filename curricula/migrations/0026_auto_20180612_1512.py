@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.db import migrations, models
-import django_light_enums.db
-import jsonfield.fields
 
 
 class Migration(migrations.Migration):

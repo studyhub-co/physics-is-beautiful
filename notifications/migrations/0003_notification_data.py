@@ -2,7 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import jsonfield.fields
+# import jsonfield.fields
+import django.contrib.postgres.fields
 
 
 class Migration(migrations.Migration):
@@ -15,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='notification',
             name='data',
-            field=jsonfield.fields.JSONField(null=True, blank=True),
+            # field=jsonfield.fields.JSONField(null=True, blank=True),
+            field=django.contrib.postgres.fields.JSONField(null=True, blank=True),
             preserve_default=True,
         ),
     ]

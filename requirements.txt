@@ -42,7 +42,7 @@ tornado==4.4.2
 bokeh==0.12.4
 sympy==1.0
 typing==3.6.1
-jsonfield==2.0.2
+# jsonfield==2.0.2
 pint==0.8.1
 django-modeladmin-reorder==0.3.1
 django-crispy-forms>=1.6.1
