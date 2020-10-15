@@ -13,7 +13,8 @@ type Dependencies = {
 };
 
 const RETRY_COUNT = 60;
-const debug = _debug('cs:sandbox:packager');
+// const debug = _debug('cs:sandbox:packager');
+const debug = console.log;
 
 const VERSION = 2;
 

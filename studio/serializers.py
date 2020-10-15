@@ -443,6 +443,8 @@ class MaterialProblemTypeSerializer(BaseSerializer):
 
 
 class MaterialProblemTypeSandboxCacheSerializer(serializers.ModelSerializer):
+    data = serializers.JSONField()
+
     class Meta:
         model = MaterialProblemTypeSandboxCache
         # fields = '__all__'

@@ -24,7 +24,8 @@ import { splitQueryFromPath } from './utils/query-path';
 
 declare const BrowserFS: any;
 
-const debug = _debug('cs:compiler:transpiled-module');
+// const debug = _debug('cs:compiler:transpiled-module');
+const debug = console.log
 
 export type ChildModule = Module & {
   parent: Module;

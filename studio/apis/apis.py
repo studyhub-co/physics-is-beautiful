@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Q, Count
 
 from rest_framework.viewsets import ModelViewSet
@@ -342,18 +344,24 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
         sandbox = self.get_object()
 
+        json_data = request.data.get('data', None)
+        if not json_data:
+            raise ValidationError('data field not found')
+
+        if type(json_data) is str:
+            json_data = json.loads(json_data)
+
+        data = {'data': json_data, 'version': version}
+
         try:
             # try to get existing cache
             cache = MaterialProblemTypeSandboxCache.objects.get(
                 version=version,
                 sandbox=sandbox
             )
-            serializer = self.serializer_class_cache(cache, data=request.data)
+            serializer = self.serializer_class_cache(cache, data=data)
         except MaterialProblemTypeSandboxCache.DoesNotExist:
-            # data = {'sandbox': sandbox.pk}
-            # data.update(request.data)
-            # serializer = self.serializer_class_cache(data=data)
-            serializer = self.serializer_class_cache(data=request.data)
+            serializer = self.serializer_class_cache(data=data)
 
         if serializer.is_valid(raise_exception=True):
             serializer.save(sandbox=sandbox)

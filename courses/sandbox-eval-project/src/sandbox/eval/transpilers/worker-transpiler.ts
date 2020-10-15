@@ -6,7 +6,8 @@ import { parseWorkerError } from './utils/worker-error-handler';
 import { LoaderContext } from '../transpiled-module';
 import Manager from '../manager';
 
-const debug = _debug('cs:compiler:worker-transpiler');
+// const debug = _debug('cs:compiler:worker-transpiler');
+const debug = console.log
 
 type TranspilerCallback = (
   err: any | undefined,

@@ -4,7 +4,8 @@ import _debug from '@codesandbox/common/lib/utils/debug'
 import Manager from './manager'
 import { SCRIPT_VERSION } from '..'
 
-const debug = _debug('cs:compiler:cache')
+// const debug = _debug('cs:compiler:cache')
+const debug = console.log
 
 // const host = process.env.CODESANDBOX_HOST;
 const host = '' // the same host for now
@@ -74,7 +75,7 @@ export async function saveCache (
   try {
     if (process.env.NODE_ENV === 'development') {
       // debug(
-     console.log(
+      console.log(
         'Saving cache of ' +
           (JSON.stringify(managerState).length / 1024).toFixed(2) +
           'kb to indexedDB')
@@ -129,28 +130,30 @@ export async function saveCache (
 }
 
 export function deleteAPICache (sandboxId: string): Promise<any> {
-  if (APICacheUsed) {
-    debug('Deleting cache of API')
-    return window
-      // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
-      .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`, {
-        method: 'DELETE',
-        body: JSON.stringify({
-          version: SCRIPT_VERSION
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken') || ''
-        }
-      })
-      .then(x => x.json())
-      .catch(e => {
-        console.error('Something went wrong while deleting cache.')
-        console.error(e)
-      })
-  }
-
   return Promise.resolve(false)
+  // not sure we need to remove API cache
+  // if (APICacheUsed) {
+  //   console.log('Deleting cache of API')
+  //   return window
+  //     // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
+  //     .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`, {
+  //       method: 'DELETE',
+  //       body: JSON.stringify({
+  //         version: SCRIPT_VERSION
+  //       }),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'X-CSRFToken': getCookie('csrftoken') || ''
+  //       }
+  //     })
+  //     .then(x => x.json())
+  //     .catch(e => {
+  //       console.error('Something went wrong while deleting cache.')
+  //       console.error(e)
+  //     })
+  // }
+  //
+  // return Promise.resolve(false)
 }
 
 function findCacheToUse (cache1, cache2) {
@@ -212,18 +215,35 @@ export async function consumeCache (manager: Manager) {
 
     if (!cache) {
       const cacheApiData = await loadCacheFromAPI(manager.id)
-      if (cacheApiData && cacheApiData.data && JSON.parse(cacheApiData.data)) {
-        cache = JSON.parse(cacheApiData.data)
+      // if (cacheApiData && cacheApiData.data && JSON.parse(cacheApiData.data)) {
+      if (cacheApiData && cacheApiData.data) {
+        // cache = JSON.parse(cacheApiData.data)
+        cache = cacheApiData.data
         APICacheUsed = true
       }
     } else {
-      // todo important!!! get datestamp from API
-      // loadCacheFromAPI(manager.id).then(()=>
-      // if (cacheFromApi.datestamp != localCache.datestap){
-      //    // and ingore localcche in the next time
-      //    ignoreNextCache() // check that this func works
-      //  }
-      // }
+      // if timestams of cache from API and local are not equals, reset local cache
+      window
+        .fetch(
+          `${host}/api/v1/courses/material-problem-type/${manager.id}/cache/?timestamp-only=true&script-version=${SCRIPT_VERSION}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+        .then(x => { return x.json() })
+        .then(apiTimestamp => {
+          if (apiTimestamp > cache.timestamp) {
+            // if backend API hve a newer version
+            // remove IndexedDB cache of mtp to load for next time the new one
+            localforage.removeItem(manager.id)
+          }
+        })
+        .catch(e => {
+          console.log('Error while load mtp cache timestamp:')
+          console.log(e)
+        })
     }
 
     // const cache = findCacheToUse(cacheData && cacheData.data, localData)

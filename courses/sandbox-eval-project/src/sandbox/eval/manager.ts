@@ -84,7 +84,8 @@ const getShimmedModuleFromPath = (currentPath: string, path: string) => ({
   ...SHIMMED_MODULE,
   path: pathUtils.join(pathUtils.dirname(currentPath), path)
 })
-const debug = _debug('cs:compiler:manager')
+// const debug = _debug('cs:compiler:manager')
+const debug = console.log
 
 export type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
 type Stage = 'transpilation' | 'evaluation';
@@ -303,7 +304,8 @@ export default class Manager {
 
       this.addModule(module)
     })
-    debug(`Loaded manifest.`)
+    // debug(`Loaded manifest.`)
+    const debug = console.log
   }
 
   evaluateModule (

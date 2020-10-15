@@ -322,6 +322,13 @@ class MaterialProblemTypeCacheViewSet(ModelViewSet):
         except (MultipleObjectsReturned, MaterialProblemTypeSandboxCache.DoesNotExist):
             raise NotFound('cache not found')
 
+        timestamp_only = request.query_params.get('timestamp-only')
+
+        if timestamp_only:
+            timestamp = mpt_cache.data['timestamp']
+            if timestamp:
+                return Response(timestamp)
+
         serializer = self.get_serializer(mpt_cache)
         return Response(serializer.data)
 

@@ -23,7 +23,8 @@ import compile, { getCurrentManager } from './compile'
 initialize(window)
 
 const host = process.env.CODESANDBOX_HOST
-const debug = _debug('cs:sandbox')
+// const debug = _debug('cs:sandbox')
+const debug = console.log
 
 export const SCRIPT_VERSION =
   document.currentScript && document.currentScript.src
