@@ -164,6 +164,8 @@ const getFetchProtocol = (depVersion: string, useFallback = false) => {
     return urlProtocols.jsDelivrGH;
   }
 
+  return urlProtocols.jsDelivrNPM;
+
   return useFallback ? urlProtocols.jsDelivrNPM : urlProtocols.unpkg;
 };
 
@@ -200,8 +202,6 @@ export async function downloadDependency(
   if (packages[id]) {
     return packages[id];
   }
-
-  // console.trace();
 
   const relativePath = path
     .replace(
@@ -445,7 +445,9 @@ export default async function fetchModule(
 
   const meta = await getMeta(dependencyName, packageJSONPath, version);
 
-  const normalizeFunction = getFetchProtocol(version).normalizeMeta;
+  // use urlProtocols.jsDelivrNPM; - more stable
+  const normalizeFunction = getFetchProtocol(version, true).normalizeMeta;
+
   const rootPath = packageJSONPath
     ? pathUtils.dirname(packageJSONPath)
     : pathUtils.join('/node_modules', dependencyName);

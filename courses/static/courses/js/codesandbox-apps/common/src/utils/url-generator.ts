@@ -59,21 +59,21 @@ const sandboxGitUrl = (git: {
 
 // export const editorUrl = () => `/s/`;
 // TODO remove/conf-le /beta/
-export const editorUrl = () => `/beta/studio/editor/material-problem-type/`;
-
-export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
-  // TODO ???
-  if (sandboxDetails.git) {
-    const { git } = sandboxDetails;
-    return `${editorUrl()}${sandboxGitUrl(git)}`;
-  }
-
-  if (sandboxDetails.alias) {
-    return `${editorUrl()}${sandboxDetails.alias}`;
-  }
-
-  return `${editorUrl()}${sandboxDetails.id}`;
-};
+// export const editorUrl = () => `/beta/studio/editor/material-problem-type/`;
+//
+// export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
+//   // TODO ???
+//   if (sandboxDetails.git) {
+//     const { git } = sandboxDetails;
+//     return `${editorUrl()}${sandboxGitUrl(git)}`;
+//   }
+//
+//   if (sandboxDetails.alias) {
+//     return `${editorUrl()}${sandboxDetails.alias}`;
+//   }
+//
+//   return `${editorUrl()}${sandboxDetails.id}`;
+// };
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
@@ -121,8 +121,8 @@ export const frameUrl = (
   return `${location.protocol}//${sandbox.id}.${sHost}/${path}`;
 };
 
-export const forkSandboxUrl = (sandbox: Sandbox) =>
-  `${sandboxUrl(sandbox)}/fork`;
+// export const forkSandboxUrl = (sandbox: Sandbox) =>
+//   `${sandboxUrl(sandbox)}/fork`;
 
 export const signInUrl = (extraScopes: boolean = false) =>
   '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');

@@ -11,23 +11,25 @@ import getTemplateDefinition from '@codesandbox/common/lib//templates';
 // import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { sortObjectByKeys } from '../../../../app/overmind/utils/common';
 import slugify from '@codesandbox/common/lib/utils/slugify';
-import {
-  sandboxUrl,
-  editorUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+// import {
+//   sandboxUrl,
+//   editorUrl,
+// } from '@codesandbox/common/lib/utils/url-generator';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
     return id;
   }
 
-  const { sandboxes } = state.editor;
-  const matchingSandboxId = Object.keys(sandboxes).find(
-    // @ts-ignore
-    idItem => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
-  );
+  return id;
 
-  return matchingSandboxId || id;
+  // const { sandboxes } = state.editor;
+  // const matchingSandboxId = Object.keys(sandboxes).find(
+  //   // @ts-ignore
+  //   idItem => sandboxUrl(sandboxes[idItem]) === `${editorUrl()}${id}`
+  // );
+  //
+  // return matchingSandboxId || id;
 };
 
 // export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
@@ -201,19 +203,19 @@ export const updateCurrentTemplate: AsyncAction = async ({
         isBinary: module.isBinary,
       }));
 
-      // TODO: What is a templat really? Two different kinds of templates here, need to fix the types
-      // Talk to Ives and Bogdan
-      const newTemplate =
-        computeTemplate(parsed, modulesByPath) || ('node' as any);
-
-      if (
-        newTemplate !== currentTemplate &&
-        templateDefinition.isServer ===
-          getTemplateDefinition(newTemplate).isServer
-      ) {
-        state.editor.currentSandbox.template = newTemplate;
-        await effects.api.saveTemplate(state.editor.currentId, newTemplate);
-      }
+      // // TODO: What is a templat really? Two different kinds of templates here, need to fix the types
+      // // Talk to Ives and Bogdan
+      // const newTemplate =
+      //   computeTemplate(parsed, modulesByPath) || ('node' as any);
+      //
+      // if (
+      //   newTemplate !== currentTemplate &&
+      //   templateDefinition.isServer ===
+      //     getTemplateDefinition(newTemplate).isServer
+      // ) {
+      //   state.editor.currentSandbox.template = newTemplate;
+      //   await effects.api.saveTemplate(state.editor.currentId, newTemplate);
+      // }
     }
   } catch (e) {
     // We don't want this to be blocking at all, it's low prio
@@ -326,7 +328,7 @@ export const forkSandbox: AsyncAction<{
 
     await actions.internal.setCurrentSandbox(forkedSandbox);
     // effects.notificationToast.success('Forked sandbox!');
-    effects.router.updateSandboxUrl(forkedSandbox);
+    // effects.router.updateSandboxUrl(forkedSandbox);
   } catch (error) {
     console.error(error);
     // effects.notificationToast.error('Sorry, unable to fork this sandbox');

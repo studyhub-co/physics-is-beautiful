@@ -639,7 +639,7 @@ export default class TranspiledModule {
             sourceMap,
           } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
           // debug(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
-          console.log(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
+          // console.log(`Transpiled '${this.getId()}' in ${Date.now() - startTime}ms`);
 
           if (this.errors.length) {
             throw this.errors[0];
