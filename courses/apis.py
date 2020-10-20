@@ -1,7 +1,7 @@
 import datetime
 
 from django.utils import timezone
-from django.core.exceptions import MultipleObjectsReturned
+from django.core.exceptions import MultipleObjectsReturned, ValidationError as DjangoValidationError
 
 # from django.db.models import Q
 from django.db.models import F
@@ -88,7 +88,7 @@ class MaterialViewSet(ModelViewSet):
             raise serializers.ValidationError(e)
 
         if is_correct is None:
-            raise NotFound('validate.js for this material problem type was not found')
+            raise NotFound('validate.js for this material problem type was not found or have incorrect code')
 
         data = LessonProgressSerializer(service.current_lesson_progress).data
 
@@ -177,13 +177,15 @@ class LessonViewSet(ModelViewSet):
                 previous_material = Material.objects.filter(uuid=previous_material_uuid).first()
             try:
                 material = service.get_next_material(previous_material)
-            except LessonLocked as e:
+            # except LessonLocked or UUID is not correct
+            except (LessonLocked, DjangoValidationError) as e:
                 raise serializers.ValidationError(e)
         elif material_uuid:
             # get current material by uuid
             try:
                 material = service.get_current_material(material_uuid)
-            except LessonLocked as e:
+            # except LessonLocked or UUID is not correct
+            except (LessonLocked, DjangoValidationError) as e:
                 raise serializers.ValidationError(e)
 
         if not material:
