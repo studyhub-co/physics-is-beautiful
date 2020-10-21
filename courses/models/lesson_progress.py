@@ -27,7 +27,7 @@ class LessonProgress(models.Model):
     )
     anon_session_key = models.CharField(_('session key'), max_length=40, null=True, blank=True)
     lesson = models.ForeignKey(Lesson, related_name='courses_lessons_progress', on_delete=models.CASCADE)
-    score = models.SmallIntegerField(default=0)  # it's progress in % for now (denormalization of correct usr reactions)
+    score = models.SmallIntegerField(default=0)  # it's progress in % for now (denormalization of correct user reactions)
     completed_on = models.DateTimeField(null=True, blank=True)
     duration = models.DurationField(null=True, blank=True)
     # status = models.IntegerField(choices=Status.choices) # Django 3.0

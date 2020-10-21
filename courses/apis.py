@@ -181,7 +181,7 @@ class LessonViewSet(ModelViewSet):
             except (LessonLocked, DjangoValidationError) as e:
                 raise serializers.ValidationError(e)
         elif material_uuid:
-            # get current material by uuid
+            # get current material with uuid
             try:
                 material = service.get_current_material(material_uuid)
             # except LessonLocked or UUID is not correct
@@ -189,6 +189,7 @@ class LessonViewSet(ModelViewSet):
                 raise serializers.ValidationError(e)
 
         if not material:
+            # get 1st material from lesson
             material = service.get_next_material(None)
 
         if material:

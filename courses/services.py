@@ -40,13 +40,34 @@ class ProgressServiceBase(object):
         qs = self.current_lesson.materials
         if current_material:
             qs = qs.filter(position__gt=current_material.position)
-        material = qs.order_by('position').first()
-        if not material:
+            material = qs.order_by('position').first()
+            if not material:
+                # if we have current_material(gets from uuid).position == 0 then return the first
+                material = self.current_lesson.materials.first()
+        else:
+            # get the first
             material = self.current_lesson.materials.first()
-        elif material.position == 0:
-            # TODO we need remove all correct reactions instead this
-            # self.current_lesson_progress.score = 0
+            # we assume that user have old reactions (for statistics)
+            # mark all last reaction as False to reset current lesson progress
+            user_reactions = UserReaction.objects.filter(profile=self.user.profile,
+                                                         material__in=self.current_lesson.materials.all(),
+                                                         last_reaction=True,
+                                                         )
+            user_reactions.update(last_reaction=False)
+            # reset denorm value
+            self.current_lesson_progress.score = 0
             self.save()
+            # if not material:
+            #     material = self.current_lesson.materials.first()
+            # elif material.position == 0:
+            #     # self.current_lesson_progress.score = 0
+            #     # Temp variant - delete all progress if user request the 1st material in lesson
+            #     # TODO remove from the anon user
+            #     # user_reactions = UserReaction.objects.filter(profile=self.user.profile,
+            #     #                                              material__in=self.current_lesson.materials.all())
+            #     # user_reactions.delete()
+            #     # self.save()
+            #     pass
         return material
 
     def get_current_material(self, current_material_uuid):
@@ -56,10 +77,6 @@ class ProgressServiceBase(object):
         except Material.DoesNotExist:
             return None
 
-        # reset lesson progress
-        if material.position == 0:
-            self.current_lesson_progress.score = 0
-            self.save()
         return material
 
     def _allow_override(self, lesson):

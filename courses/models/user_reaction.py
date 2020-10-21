@@ -59,7 +59,7 @@ class UserReaction(models.Model):
         # };
         try:
             validation_result = ctx.call("validate", self.material.data, self.data)
-        except py_mini_racer.JSEvalException:
+        except py_mini_racer.JSEvalException as e:
             # validate function not found
             return None
 
