@@ -37,16 +37,18 @@ const LessonComplete = props => {
       >
         <h2>You rock! Lesson complete!</h2>
         <Link
-          onClick={() => { history.push(`/courses/modules/${currentMaterial.lesson.module}`) }}
+          href={''}
+          onClick={e => { e.preventDefault(); history.push(`/courses/modules/${currentMaterial.lesson.module}`) }}
           variant='h5'
           underline='none'>
-            Proceed to next level
+            Proceed to next lesson
         </Link>
         <Link
-          onClick={() => { history.push(`/courses/lessons/${currentMaterial.lesson.uuid}`) }}
+          href={''}
+          onClick={e => { e.preventDefault(); history.push(`/courses/lessons/${currentMaterial.lesson.uuid}`) }}
           variant='h5'
           underline='none'>
-            Learn again
+            Learn the lesson again
         </Link>
       </Box>
       <AdSense.Google

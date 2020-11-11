@@ -9,7 +9,6 @@ from django.db import models
 from django.core.exceptions import ValidationError, MultipleObjectsReturned
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-# from django.contrib.postgres.fields import JSONField
 
 # from jsonfield import JSONField
 from django.contrib.postgres.fields import JSONField
@@ -88,6 +87,7 @@ class MathematicalExpressionMixin:
         except Exception:  # TODO too broad exception
             # if we fail to parse it, then it's not valid
             return False
+        temp = trigsimp(simplify(left_side.expand()))
         return trigsimp(simplify(left_side.expand())) == trigsimp(simplify(right_side.expand()))
 
 
@@ -168,6 +168,10 @@ class MathematicalExpression(BaseModel, MathematicalExpressionMixin):
         return 'Mathematical Expression: {}'.format(self.representation)
 
 
+def jsonfield_default_value():
+    return [{'numerator': '', 'denominator': ''}]
+
+
 class UnitConversion(BaseModel, MathematicalExpressionMixin):
     UnitConversionTypes = (
         ('10', 'LEFT SIDE BLANK'),
@@ -202,7 +206,7 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
 
     # conversion_steps = [{"numerator":"", "denominator":""},  {"numerator":"", "denominator":""}, ...]
     conversion_steps = JSONField(blank=True, null=True,
-                                 default=[{'numerator': '', 'denominator': ''}],
+                                 default=jsonfield_default_value,
                                  help_text="Numerator/Denominator steps")
 
     question_number = models.FloatField(blank=True, null=True)
@@ -217,6 +221,10 @@ class UnitConversion(BaseModel, MathematicalExpressionMixin):
                                    max_length=100, help_text="Denominator value with unit: m, s, kg, m/s")
     show_answer = models.BooleanField(default=True,
                                       help_text="Set for showing answer, otherwise show fraction")
+
+    # def conversion_steps_json(self):
+    #     import json
+    #     return json.dumps(str(self.conversion_steps))
 
     def matches(self, obj):
         if isinstance(obj, Answer):

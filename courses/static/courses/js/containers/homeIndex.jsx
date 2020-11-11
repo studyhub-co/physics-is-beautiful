@@ -10,9 +10,9 @@ const HomeIndex = props => {
   return (
     <Sheet>
       Homepage
-      <div><a href={''} onClick={() => { history.push('/courses/') }}>Student course view</a></div>
-      <div><a href={''} onClick={() => { history.push('/browse/') }}>Browse view</a></div>
-      <div><a href={''} onClick={() => { history.push('/studio/') }}>Editor view</a></div>
+      <div><a href={''} onClick={(e) => { e.preventDefault(); history.push('/courses/') }}>Student course view</a></div>
+      <div><a href={''} onClick={(e) => { e.preventDefault(); history.push('/browse/') }}>Browse view</a></div>
+      <div><a href={''} onClick={(e) => { e.preventDefault(); history.push('/studio/') }}>Editor view</a></div>
     </Sheet>
   )
 }

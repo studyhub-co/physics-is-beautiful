@@ -143,7 +143,6 @@ def remove_hidden_data(data):
             for key in data['hiddenFields'].keys():
                 # replace date with reseted value
                 data[key] = data['hiddenFields'][key]
-                # data[hidden_field] = None
     return data
 
 

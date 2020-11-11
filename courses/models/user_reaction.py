@@ -49,6 +49,8 @@ class UserReaction(models.Model):
         if not validate_js_module:
             return None
 
+        # TODO is this safe?
+        # see https://github.com/sqreen/PyMiniRacer/issues/118 for deyails
         from py_mini_racer import py_mini_racer
         ctx = py_mini_racer.MiniRacer()
         ctx.eval(validate_js_module.code)

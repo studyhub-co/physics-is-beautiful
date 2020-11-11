@@ -50,7 +50,12 @@ class VectorSerializer(BaseSerializer):
 
 
 class UnitConversionSerializer(BaseSerializer):
-    conversion_steps = serializers.JSONField()
+    # conversion_steps = serializers.SerializerMethodField()
+
+    # def get_conversion_steps(self, obj):
+    #     import json
+    #     data = json.dumps(obj.conversion_steps)
+    #     return data
 
     class Meta:
         model = UnitConversion
