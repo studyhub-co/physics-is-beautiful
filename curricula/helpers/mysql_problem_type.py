@@ -160,6 +160,7 @@ def clean_my_sql_problem_type(my_SQL_instance, check_query_SQL=None):
 
     # DROP SCHEMA AND USER
     finally:
+        # root_user_connection can be undefined TODO fix this
         if root_user_connection:
             root_user_cursor = root_user_connection.cursor()
             root_user_cursor.execute('DROP SCHEMA IF EXISTS {0}; '.format(database_name))

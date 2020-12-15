@@ -469,6 +469,7 @@ export class UnitConversionBase extends React.Component {
       var parser = math.parser()
       try {
         var value = parser.eval(parsedToValUnit[0])
+        console.log(value);
         if (value && parsedToValUnit[1]) {
           tmpData = value + ' ' + parsedToValUnit[1]
         }

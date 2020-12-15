@@ -112,6 +112,8 @@ class UnitConversionCanvas extends UnitConversionBase {
     var answerSteps = this.state.answersSteps
     var conversionSteps = []
 
+    console.log(answerSteps);
+
     if (this.props.unit_conversion_type === '20') {
       conversionSteps = this.props.conversion_steps
     } else {
@@ -190,7 +192,7 @@ class UnitConversionCanvas extends UnitConversionBase {
       if (typeof numSplitData !== 'undefined' && numSplitData) {
         var numValue = numSplitData[0]
         if (numValue === '') { numValue = 1 }
-
+        console.log(numValue);
         if (numValue || numAnswerData.trim() === '0') {
           answerValue *= numValue
         }

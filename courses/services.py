@@ -49,10 +49,16 @@ class ProgressServiceBase(object):
             material = self.current_lesson.materials.first()
             # we assume that user have old reactions (for statistics)
             # mark all last reaction as False to reset current lesson progress
-            user_reactions = UserReaction.objects.filter(profile=self.user.profile,
-                                                         material__in=self.current_lesson.materials.all(),
-                                                         last_reaction=True,
-                                                         )
+            if self.user.is_authenticated:
+                user_reactions = UserReaction.objects.filter(profile=self.user.profile,
+                                                             material__in=self.current_lesson.materials.all(),
+                                                             last_reaction=True,
+                                                             )
+            else:
+                user_reactions = UserReaction.objects.filter(anon_session_key=self.request.session.session_key,
+                                                             material__in=self.current_lesson.materials.all(),
+                                                             last_reaction=True,
+                                                             )
             user_reactions.update(last_reaction=False)
             # reset denorm value
             self.current_lesson_progress.score = 0

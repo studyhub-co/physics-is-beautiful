@@ -53,7 +53,11 @@ class UserReaction(models.Model):
         # see https://github.com/sqreen/PyMiniRacer/issues/118 for deyails
         from py_mini_racer import py_mini_racer
         ctx = py_mini_racer.MiniRacer()
-        ctx.eval(validate_js_module.code)
+        try:
+            ctx.eval(validate_js_module.code)
+        except py_mini_racer.JSParseException:
+            # validate.js parse exception
+            return None
 
         # call validation function
         # const validate = (correctData, userReactionData) => {

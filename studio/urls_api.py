@@ -4,7 +4,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from rest_framework_nested import routers as nested_routers
 
-from .apis import apis, apis_public, material_type_modules
+from .apis import apis, apis_public, material_type_modules, material_service_request
 
 router = routers.DefaultRouter()
 router.register(r'courses', apis.CourseViewSet, basename='course')
@@ -15,7 +15,6 @@ router.register(r'materials', apis.MaterialViewSet, basename='material')
 
 # TODO maybe it's need more better url
 router.register(r'images', apis.JsonDataImageViewSet, basename='json-data-image')
-
 
 simple_nested_router = nested_routers.SimpleRouter()
 simple_nested_router.register(r'material-problem-type',
@@ -41,6 +40,7 @@ public_router.register(r'materials', apis_public.MaterialViewSet, basename='publ
 urlpatterns = [
     url(r'^public/', include(public_router.urls)),
     path('npm/dependencies/<path:package>', material_type_modules.npm_dependencies),
+    path('material-service-request/', material_service_request.call),
 ]
 
 urlpatterns += router.urls
