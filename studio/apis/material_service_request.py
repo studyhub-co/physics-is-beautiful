@@ -3,19 +3,20 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, ValidationError, APIException
 from rest_framework.decorators import api_view, permission_classes
 
-from courses.helpers.mysql_problem_type import validate_mysql_schema_query
+from courses.helpers.mysql_problem_type import validate_mysql_schema_query\
+    # , get_json_result_from_sql
 
 
 @api_view(http_method_names=['POST'])
 @permission_classes((permissions.AllowAny,))
 def call(request):
     # validate mysql
-    if 'type' in request.query_params and request.query_params['type'] == 'validate_mysql_schema_query':
-        # rewrite \courses\helpers\mysql_problem_type.py without instance
-        # Only check SQLschema and SQLquery if exist
-        # return is_valid or not, if not valid -> save button should be disable
-        # return SQLSchemaJson and expectedOutputJson
-        result = validate_mysql_schema_query(request.data)
-        return Response(result)
+    if 'type' in request.query_params:
+        if request.query_params['type'] == 'validate_mysql_schema_query':
+            # Only check SQLschema and SQLquery if exist
+            # return is_valid or not, if not valid -> save button should be disable
+            # return SQLSchemaJson and expectedOutputJson
+            result = validate_mysql_schema_query(request.data)
+            return Response(result)
     else:
         raise NotFound
