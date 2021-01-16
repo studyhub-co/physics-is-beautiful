@@ -24,7 +24,7 @@ psycopg2-binary==2.7.5
 #Pillow==4.0.0
 Pillow==5.4.1
 #raven==6.10.0
-sentry-sdk==0.14.3
+sentry-sdk==0.19.5
 Jinja2==2.9.5
 MarkupSafe==0.23
 #numpy==1.15.4
