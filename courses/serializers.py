@@ -104,8 +104,9 @@ class UserReactionSerializer(serializers.ModelSerializer):
         #     'answer', 'answers_list',
         #     'answered_on'
         # ]
-        fields = ['profile', 'data',  'answered_on', 'material', 'anon_session_key']
+        fields = ['profile', 'data', 'reaction_start_on', 'reacted_on', 'score', 'material', 'anon_session_key']
         extra_kwargs = {
+            'duration': {'read_only': True},
             'profile': {'required': False, 'write_only': True},
             'anon_session_key': {'required': False, 'write_only': True}
         }

@@ -16,7 +16,9 @@ class UserReaction(models.Model):
     anon_session_key = models.CharField(_('session key'), max_length=40, null=True, blank=True)
     material = models.ForeignKey(Material, related_name='users_reaction', on_delete=models.CASCADE)
     data = JSONField()  # only Postgresql support!
-    answered_on = models.DateTimeField(auto_now_add=True)
+    reaction_start_on = models.DateTimeField()  # time when user got an material / need to get from front end for now
+    reacted_on = models.DateTimeField(auto_now_add=True)  # time when user gave an answer
+    score = models.SmallIntegerField(default=0)  # TODO: what is score for a material?
     is_correct = models.BooleanField(default=False)
 
     # When user give a reaction - we calculate last_reaction flag
@@ -36,6 +38,12 @@ class UserReaction(models.Model):
                                     name='unique__last_reaction_anon',
                                     condition=Q(anon_session_key__isnull=False, last_reaction=True)),
         ]
+
+    # @property # can't use property due annotate duration field in querysets
+    def duration(self):
+        tdelta = self.reacted_on - self.reaction_start_on
+        return tdelta
+        # return tdelta.total_seconds()
 
     def check_reaction(self):
         # run validate.js from material type

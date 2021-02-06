@@ -90,6 +90,7 @@ class MaterialViewSet(ModelViewSet):
         if is_correct is None:
             raise NotFound('validate.js for this material problem type was not found or have incorrect code')
 
+        # with this data we can determine progress of the lesson: progress bar depens on a score of the lesson
         data = LessonProgressSerializer(service.current_lesson_progress).data
 
         next_material = service.get_next_material(material)
@@ -101,10 +102,80 @@ class MaterialViewSet(ModelViewSet):
         data['next_material_uuid'] = next_material.uuid
         if not is_correct:
             data['correct_data'] = material.data
-            # if user_reaction.content:
-            #     data['correct_data'] = AnswerSerializer(user_reaction.get_correct_data()).data
-            # elif user_reaction.answers_list:
-            #     data['correct_data'] = AnswerSerializer(user_reaction.get_correct_data(), many=True).data
+
+        # TODO we have lesson scoreboard too
+        material_scoreboard = request.query_params.get('materialScoreboard')
+
+        if material_scoreboard == 'true':
+            # add scoreboard
+            # TODO we need to get only the one last of the same user reactions?
+            scores = service.get_scoreboard_qs(material).exclude(reacted_on__isnull=True)
+
+            n = 10
+            data_scores_list = []
+            user_already_in_score_list = False
+            for row_num, row in enumerate(scores[:n]):
+                # add score if user in top 10
+                # current registered user
+                # if request.user.is_authenticated:
+                #     if request.user.profile.id == row.profile_id:
+                #         # current_user_score = service.get_score_board_qs(material). \
+                #         #     get(profile__user=request.user)
+                #         setattr(row, 'row_num', row_num + 1)
+                #         setattr(row, 'duration', row.duration())
+                #         data_scores_list.append(row)
+                #         # setattr(current_user_score, 'row_num', row_num + 1)
+                #         # data_scores_list.append(current_user_score)
+                #         user_already_in_score_list = True
+                #         continue
+                # # current anon user
+                # else:
+                #     # add anon user if
+                #     if row.duration > user_reaction.duration():
+                #         if not user_already_in_score_list:
+                #             # current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+                #             setattr(current_user_score, 'row_num', row_num + 1)
+                #             data_scores_list.append(current_user_score)
+                #             user_already_in_score_list = True
+                #             continue
+
+                # add score if user in top 10
+                # current registered user
+                if request.user.is_authenticated:
+                    if row.id == user_reaction.id:
+                        user_already_in_score_list = True
+                # current anon user
+                else:
+                    # add anon user reaction
+                    if row.duration > user_reaction.duration():
+                        if not user_already_in_score_list:
+                            user_already_in_score_list = True
+
+                setattr(row, 'row_num', row_num + 1)
+                # setattr(row, 'duration', row.duration()) already annotate
+                # add row into list
+                data_scores_list.append(row)
+
+            # add score user's record if the user not in top 10
+            if not user_already_in_score_list:
+                # if request.user.is_authenticated:
+                #     current_user_score = service.get_scoreboard_qs(game.lesson).get(profile__user=request.user)
+                # else:
+                #     current_user_score = LessonProgress(score=score, duration=dur, lesson=game.lesson)
+
+                # position = service.get_scoreboard_qs(material).filter(
+                #     duration__lt=user_reaction.duration()).count()
+
+                duration = user_reaction.duration()
+
+                position = service.get_scoreboard_qs(material).filter(
+                     duration__lt=duration).count()
+                setattr(user_reaction, 'row_num', position + 1)
+                # setattr(user_reaction, 'duration', row.duration())
+                data_scores_list.append(user_reaction)
+
+            data['material_scoreboard'] = ScoreBoardSerializer(data_scores_list[:n], many=True).data
+
         return Response(data)
 
     def service_request(self, request, uuid):

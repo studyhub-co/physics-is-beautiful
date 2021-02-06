@@ -239,11 +239,23 @@ class ProgressService(ProgressServiceBase):
         # self.user_reactions = []
         self.current_lesson_progress.save()
 
+    # @staticmethod
+    # def get_score_board_qs(lesson):
+    #     return LessonProgress.objects.filter(
+    #         lesson=lesson, status=LessonProgressStatus.COMPLETE.value
+    #     ).order_by('duration')
+
     @staticmethod
-    def get_score_board_qs(lesson):
-        return LessonProgress.objects.filter(
-            lesson=lesson, status=LessonProgressStatus.COMPLETE.value
-        ).order_by('duration')
+    def get_scoreboard_qs(material):
+        from django.db.models import F, Func
+        from django.db.models import ExpressionWrapper, DurationField
+
+        return UserReaction.objects.filter(
+            material=material
+        ).annotate(
+            # duration=Func(F('reacted_on'), F('reaction_start_on'), function='AGE')
+            duration=ExpressionWrapper(F('reacted_on') - F('reaction_start_on'), output_field=DurationField())
+        ).order_by('-duration')
 
 
 class AnonymousProgressService(ProgressService):
