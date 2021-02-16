@@ -13,13 +13,14 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import CheckContinueButton from './checkContinueButton'
 import Button from 'react-bootstrap/Button'
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
-import history from '../../../history'
+// import history from '../../../history'
 import UserStateEnum from '../const'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface FooterProps {
   // currentMaterial: materialActionCreators.MaterialRedux;
-  editMode: boolean;
+  currentMaterial: any;
+  editMode?: boolean;
   disabledCheck: boolean;
   // updateMaterial(material: Material): void;
   // moveToNextComponent(previousMaterialUuid: string): void;

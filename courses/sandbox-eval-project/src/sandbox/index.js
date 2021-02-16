@@ -118,6 +118,22 @@ requirePolyfills().then(() => {
         //   }
         // })
 
+        let mptKind = 'component'
+
+        if (x.name.includes('game')) {
+          // if name of material problem type contains 'game' word assume that
+          // this MPT is game, send info to parent
+          mptKind = 'game'
+        }
+
+        window.parent.postMessage(
+          {
+            type: 'material_problem_type_kind',
+            data: mptKind
+          },
+          '*'
+        )
+
         x.modules.forEach(m => {
           const path = getModulePath(x.modules, x.directories, m.id)
           moduleObject[path] = {

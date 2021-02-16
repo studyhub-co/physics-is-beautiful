@@ -34,6 +34,7 @@ const Lesson = props => {
 
   // TODO we have twice loaded material (in SPA and in the iframe)
   const [currentMaterialState, setCurrentMaterialState] = useState(currentMaterial)
+  const [showFooter, setShowFooter] = useState(true)
 
   // logic
   // 1) fetch currentMaterial from url in SPA
@@ -43,30 +44,38 @@ const Lesson = props => {
 
   const messageListener = useCallback(({ data }) => {
     if (data.hasOwnProperty('type')) {
-      if (data.hasOwnProperty('type')) {
-        if (data.type === 'redirect_to_material') {
-          // listen iframe when continue button clicked
-          const {lessonUuid, nextMaterialUuid} = data.data
-          history.push(`/courses/lessons/${lessonUuid}/materials/${nextMaterialUuid}`)
-        }
-        // current material was received from iframe
-        if (data.type === 'current_material') {
-          const nextMaterial = data.data
-          setCurrentMaterialState({ ...nextMaterial })
+      // if (data.hasOwnProperty('type')) {
+      if (data.type === 'redirect_to_material') {
+        // listen iframe when continue button clicked
+        const {lessonUuid, nextMaterialUuid} = data.data
+        history.push(`/courses/lessons/${lessonUuid}/materials/${nextMaterialUuid}`)
+      }
+      // current material was received from iframe
+      if (data.type === 'current_material') {
+        const nextMaterial = data.data
+        setCurrentMaterialState({ ...nextMaterial })
 
-          if (!(currentMaterialState.hasOwnProperty('material_problem_type') &&
+        if (!(currentMaterialState.hasOwnProperty('material_problem_type') &&
       nextMaterial.hasOwnProperty('material_problem_type') &&
       currentMaterialState['material_problem_type'] === nextMaterial['material_problem_type']
-          )) {
-            // update only if material_problem_type has been changed
-            setState({
-              ...state,
-              materialUuid: currentMaterialState.uuid,
-              iframeUrl: materialEvalUrl(nextMaterial)
-            })
-          }
+        )) {
+          // update only if material_problem_type has been changed
+          setState({
+            ...state,
+            materialUuid: currentMaterialState.uuid,
+            iframeUrl: materialEvalUrl(nextMaterial)
+          })
         }
       }
+      if (data.type === 'material_problem_type_kind') {
+        if (data.data === 'game') {
+          setShowFooter(false)
+        } else {
+          // not sure that we need this
+          setShowFooter(true)
+        }
+      }
+      // }
     }
   }, [currentMaterialState])
 
@@ -162,14 +171,15 @@ const Lesson = props => {
       !currentMaterialState.isFetching &&
       currentMaterialState.material_problem_type &&
       state.iframeUrl &&
-        <div style={{paddingBottom: '20rem'}}>
+        <div style={{paddingBottom: showFooter ? '20rem' : '0'}}>
           <StyledIframe
             // height='100%' width='100%'
             // style={{marginBottom: document.getElementById('student_view_iframe').style.height}}
             id={'student_view_iframe'}
             ref={setFrameRef}
             src={state.iframeUrl}/>
-          <Footer currentMaterial={currentMaterialState}/>
+          {/* do not show footer if we have Game type material */}
+          {showFooter && <Footer currentMaterial={currentMaterialState}/>}
         </div>
       }
 

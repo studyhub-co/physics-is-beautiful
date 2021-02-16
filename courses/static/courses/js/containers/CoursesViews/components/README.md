@@ -37,3 +37,13 @@ Send and recieve EventMessages from evaluation iframe (id='student_view_iframe')
  }
 ```
  
+# Lesson
+
+* recieve 'material_problem_type_kind' (it's game or component, needs to manage footer on SPA)
+(from sanbox-eval-project)
+```javascript 
+ {
+  type: 'material_problem_type_kind',
+  data: 'game'
+ }
+```
