@@ -12,6 +12,7 @@ from django.contrib.sites.models import Site
 from shortuuidfield import ShortUUIDField
 
 from curricula.models import Curriculum, Lesson
+from courses.models import Course, Lesson as CoursesLesson
 from profiles.models import Profile
 
 from django.db import transaction
@@ -36,8 +37,9 @@ class Classroom(models.Model):
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
-    # TODO migrate to course
-    # course = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+    # migrate to course
+    # TODO remove null=True after data migration, chamnge to on_delete=models.CASCADE
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
     code = models.CharField(unique=True, max_length=6)
 
     def __str__(self):
@@ -89,8 +91,10 @@ def generate_classroom_code(sender, instance, *args, **kwargs):
 
 class Assignment(models.Model):
     uuid = ShortUUIDField(unique=True)
-    # TODO replace with lesson from courses
     lessons = models.ManyToManyField(Lesson)
+    # replace with lesson from courses
+    # TODO remove null=True after data migration, chamnge to on_delete=models.CASCADE
+    courses_lessons = models.ManyToManyField(CoursesLesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(auto_now=True)  # assigned On date
