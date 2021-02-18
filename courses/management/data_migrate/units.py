@@ -1,11 +1,13 @@
 from ...models.structure import Unit
 
+from .modules import copy_module
+
 
 def copy_unit(course, unit):
     # 1. copy data
     new_unit = Unit()
     for field in unit._meta.get_fields():  # True, False?
-        if field.name in ('id', 'uuid', 'modules', 'tagged_items', 'tags'):
+        if field.name in ('id', 'uuid', 'curricula', 'modules', 'tagged_items', 'tags'):
             continue
 
         new_field_value = getattr(unit, field.name)
@@ -20,3 +22,5 @@ def copy_unit(course, unit):
     new_unit.tags.set(*tags, clear=True)
 
     # copy modules
+    for module in unit.modules.all():
+        copy_module(new_unit, module)
