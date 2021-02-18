@@ -1,5 +1,6 @@
 from ...models.structure import Course
 from ...models.user_related import CourseUserDashboard
+from .units import copy_unit
 
 
 def copy_curricula(curricula):
@@ -28,6 +29,7 @@ def copy_curricula(curricula):
     dashboards_list = []
     for dashboard in curricula.curricula_user_dashboard.all():
         dashboards_list.append(CourseUserDashboard(course=new_course, profile=dashboard.profile))
-        # CourseUserDashboard.objects.create(course=new_course, profile=dashboard.profile)
     CourseUserDashboard.objects.bulk_create(dashboards_list)
     # copy units
+    for unit in curricula.units.all():
+        copy_unit(new_course, unit)
