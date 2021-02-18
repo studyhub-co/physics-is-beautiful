@@ -1,6 +1,8 @@
 from ...models.structure import Module
 from ...models.badges import ModuleAwards
 
+from .lessons import copy_lesson
+
 
 def copy_module(unit, module):
     # copy data
@@ -10,6 +12,11 @@ def copy_module(unit, module):
             continue
 
         new_field_value = getattr(module, field.name)
+
+        # new version required 3 symbols in name at least
+        if field.name == 'name' and len(getattr(module, field.name)) <= 3:
+            new_field_value += ' module'
+
         setattr(new_module, field.name, new_field_value)
 
     new_module.unit = unit
@@ -34,4 +41,5 @@ def copy_module(unit, module):
     new_module.tags.set(*tags, clear=True)
 
     # copy lessons
-
+    for lesson in module.lessons.all():
+        copy_lesson(new_module, lesson)

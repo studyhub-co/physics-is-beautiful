@@ -15,6 +15,11 @@ def copy_curricula(curricula):
             new_field_value = getattr(curricula, field.name).profile
         else:
             new_field_value = getattr(curricula, field.name)
+
+        # new version required 3 symbols in name at least
+        if field.name == 'name' and len(getattr(curricula, field.name)) <= 3:
+            new_field_value += ' course'
+
         setattr(new_course, field.name, new_field_value)
 
     new_course.save()

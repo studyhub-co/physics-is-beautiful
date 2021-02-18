@@ -11,6 +11,11 @@ def copy_unit(course, unit):
             continue
 
         new_field_value = getattr(unit, field.name)
+
+        # new version required 3 symbols in name at least
+        if field.name == 'name' and len(getattr(unit, field.name)) <= 3:
+            new_field_value += ' unit'
+
         setattr(new_unit, field.name, new_field_value)
 
     new_unit.course = course
