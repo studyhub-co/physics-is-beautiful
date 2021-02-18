@@ -1,3 +1,5 @@
+// TODO seems it is not work, throw django.jQuery is not a function
+
 django.jQuery(function() {
 
   var listShownIframes = [];

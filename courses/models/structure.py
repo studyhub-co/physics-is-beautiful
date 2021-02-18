@@ -11,6 +11,8 @@ from . import BaseItemModel, get_earliest_gap
 from ..settings import LESSON_COMPLETE_BOUNDARY
 from .utils import UUIDTaggedItem
 
+# TODO it seems we need move published_on to the BaseItemModel from all models here
+
 
 class CourseQuerySet(models.QuerySet):
 

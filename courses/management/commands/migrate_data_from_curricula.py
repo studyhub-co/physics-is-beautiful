@@ -8,5 +8,5 @@ class Command(BaseCommand):
     help = 'migrate data from curricula to courses'
 
     def handle(self, *args, **options):
-        for curricula in Curriculum.objects.all():
+        for curricula in Curriculum.objects.all()[:4]:
             copy_curricula(curricula)

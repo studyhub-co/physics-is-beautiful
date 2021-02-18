@@ -1,6 +1,7 @@
 from ...models.structure import Lesson
 from ...models.badges import LessonAwards
 
+from .materials import copy_question
 
 def copy_lesson(module, lesson):
     # copy data
@@ -42,3 +43,5 @@ def copy_lesson(module, lesson):
     new_lesson.assignment_set.set(lesson.assignment_set.all(), clear=True)
 
     # copy questions
+    for question in lesson.questions.all():
+        copy_question(new_lesson, question)

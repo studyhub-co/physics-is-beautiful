@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.text import slugify
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 
 # from django.urls import reverse
 # from django.core import urlresolvers # django <= 1.11.20
@@ -97,16 +99,15 @@ class BaseItemModel(models.Model):
 
     # def instance_from_db(self):
     #     return self.__class__.objects.get(pk=self.pk)
-    #
-    # def get_admin_url(self):
-    #     content_type = ContentType.objects.get_for_model(self.__class__)
-    #     # return urlresolvers.reverse(
-    #     return reverse(
-    #         'admin:{}_{}_change'.format(
-    #             content_type.app_label,
-    #             content_type.model
-    #         ),
-    #         args=[self.id]
-    #     )
-    #
-    #
+
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        # return urlresolvers.reverse(
+        return reverse(
+            'admin:{}_{}_change'.format(
+                content_type.app_label,
+                content_type.model
+            ),
+            args=[self.uuid]
+            # args=[self.id]
+        )

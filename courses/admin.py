@@ -93,7 +93,7 @@ class LessonInline(NestedTabularInline):
     extra = 0
     # classes = ['collapse']
     classes = []
-    fields = [_link_to_lesson, 'name', 'image', 'lesson_type', 'position']  # 'published_on',
+    fields = [_link_to_lesson, 'name', 'image', 'position', 'published_on']  # 'published_on', 'lesson_type',
     readonly_fields = [_link_to_lesson]
 
     class Media:
@@ -118,7 +118,7 @@ class LessonInline(NestedTabularInline):
 class CourseAdmin(NestedModelAdmin):
     inlines = [UnitInline]
     exclude = ['published_on']
-    autocomplete_fields = ['collaborators', 'author']
+    autocomplete_fields = ['collaborators', 'author', 'last_edit_user']
 
 
 _backlink_to_course = link_to_field('course')
@@ -179,7 +179,10 @@ _backlink_to_lesson = link_to_field('lesson')
 @mark_safe
 def popup_material(name):
     def iframe(obj):
-        return '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">material</a>'.format(obj.get_admin_url(), str(obj))
+        alink = '<a href="javascript:window.open(\'{}\',\'{}\',\'width=1280,height=800\')">material</a>'. \
+            format(obj.get_admin_url(), 'Material')
+            # format(obj.get_admin_url(), str(obj))
+        return alink
     # iframe.allow_tags = True
     iframe.short_description = name
     return iframe
@@ -202,25 +205,27 @@ class MaterialInline(NestedTabularInline):
         }
 
     fields = [
-        _popup_to_material, 'text', 'hint', 'image', 'answer_type', 'position',
-        # 'material_type', 'published_on', 'position'
+        _popup_to_material, 'position', 'name', 'material_problem_type',
+        #'text', 'hint', 'image', 'answer_type', 'position',
+        # 'published_on', 'position', 'name'
     ]
 
 
 class LessonAdmin(NestedModelAdmin):
 
     form = LessonForm
+    # TODO fix and enable MaterialInline
     inlines = [MaterialInline, ]
     fields = [
-        'module', _backlink_to_module, 'name', 'image', 'lesson_type', # 'published_on', 'position',
+        'module', _backlink_to_module, 'name', 'image', 'published_on', 'position',  # 'lesson_type'
     ]
     readonly_fields = [_backlink_to_module] # , 'position'
 
-    def get_fields(self, request, obj=None):
-        extra_fields = []
-        if obj and obj.lesson_type == Lesson.LessonType.GAME:
-            extra_fields.append('game_slug')
-        return self.fields + extra_fields
+    # def get_fields(self, request, obj=None):
+    #     extra_fields = []
+    #     if obj and obj.lesson_type == Lesson.LessonType.GAME:
+    #         extra_fields.append('game_slug')
+    #     return self.fields + extra_fields
 
 
 _backlink_to_lesson = link_to_field('lesson')
@@ -237,7 +242,7 @@ class MaterialAdmin(NestedModelAdmin):
     ]
     fields = [
         'lesson', _backlink_to_lesson, 'material_workflow_type', 'material_problem_type',
-        'position', 'data', 'author'
+        'position', 'data', 'author', 'name'
     ]
     autocomplete_fields = ['author', 'material_problem_type']
     readonly_fields = [_backlink_to_lesson]  # , 'position'

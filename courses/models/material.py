@@ -27,9 +27,11 @@ except (KeyError, AttributeError):
     raise ImproperlyConfigured("Can't find settings.DJEDDIT_RELATED_FIELDS['course_material'] settings")
 
 
+# it's seems we do not need this (only if determining type by 'game' in a material problem title is ugly)
+# TODO resolve
 class MaterialWorkflowType(Enum):
     # TODO create validation schema for all types
-    COMMON = 10  # by defaut
+    COMMON = 10  # by default
     GAME = 20
     QA_COMMON = 80
     QA_MYSQL = 90
@@ -69,6 +71,9 @@ class Material(BaseItemModel):
     def get_correct_data(self):
         # return correct data
         return self.data
+
+    def __str__(self):
+        return 'Material: {}'.format(self.name)
 
     class Meta:
         ordering = ['position']

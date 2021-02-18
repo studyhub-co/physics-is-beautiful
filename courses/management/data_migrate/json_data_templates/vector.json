@@ -1,0 +1,44 @@
+{
+   "question":{
+      "content":{
+         "text":"{{question_text}}",
+         "evaluatedMathText":"",
+         "image":"",
+         "hint":""
+      },
+      "type":"base"
+   },
+   "answer":{
+      "content":{
+         "text":"",
+         "evaluatedMathText":"",
+         "image":"",
+         "hint":""
+      },
+      "type":"base"
+   },
+   "questionTextOnly":false,
+   "questionVectorIsNull":false,
+   "hiddenFields":{
+      "answerVectors":[
+
+      ],
+      "answer":{
+         "content":{
+            "text":"",
+            "evaluatedMathText":"",
+            "image":"",
+            "hint":""
+         },
+         "type":"base"
+      }
+   },
+   "questionVectors":[
+   ],
+   "answerVectors":[
+   ],
+   "answerVectorIsNull":false,
+   "answerTextOnly":false,
+   "answerNullableVector":false,
+   "answerToCheck":10
+}
