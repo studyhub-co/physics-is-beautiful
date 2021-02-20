@@ -54,7 +54,7 @@ class Material(BaseItemModel):
     screenshot = models.ImageField(null=True, blank=True, upload_to=uuid_as_name)  # storage=OverwriteStorage(),
     material_workflow_type = models.IntegerField(
         default=MaterialWorkflowType.COMMON.value,
-        choices=[(type, type.value) for type in MaterialWorkflowType]
+        choices=[(type.value, type) for type in MaterialWorkflowType]
     )
     position = models.PositiveSmallIntegerField('Position', null=True, blank=True)
     material_problem_type = models.ForeignKey(

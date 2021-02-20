@@ -1,44 +1,43 @@
-{
-   "question":{
-      "content":{
-         "text":"{{question_text}}",
+{{
+   "question":{{
+      "content":{{
+         "text":{question_text},
          "evaluatedMathText":"",
          "image":"",
          "hint":""
-      },
+      }},
       "type":"base"
-   },
-   "answer":{
-      "content":{
+   }},
+   "answer":{{
+      "content":{{
          "text":"",
          "evaluatedMathText":"",
          "image":"",
          "hint":""
-      },
+      }},
       "type":"base"
-   },
+   }},
    "questionTextOnly":false,
    "questionVectorIsNull":false,
-   "hiddenFields":{
+   "hiddenFields":{{
       "answerVectors":[
 
       ],
-      "answer":{
-         "content":{
+      "answer":{{
+         "content":{{
             "text":"",
             "evaluatedMathText":"",
             "image":"",
             "hint":""
-         },
+         }},
          "type":"base"
-      }
-   },
-   "questionVectors":[
-   ],
+      }}
+   }},
+   "questionVectors": {question_vectors},
    "answerVectors":[
    ],
    "answerVectorIsNull":false,
    "answerTextOnly":false,
    "answerNullableVector":false,
    "answerToCheck":10
-}
+}}
