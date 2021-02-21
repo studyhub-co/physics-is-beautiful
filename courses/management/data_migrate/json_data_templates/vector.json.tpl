@@ -17,7 +17,7 @@
       }},
       "type":"base"
    }},
-   "questionTextOnly":false,
+   "questionTextOnly":{question_text_only},
    "questionVectorIsNull":false,
    "hiddenFields":{{
       "answerVectors":[
@@ -34,10 +34,9 @@
       }}
    }},
    "questionVectors": {question_vectors},
-   "answerVectors":[
-   ],
+   "answerVectors": {answer_vectors},
    "answerVectorIsNull":false,
-   "answerTextOnly":false,
+   "answerTextOnly":{answer_text_only},
    "answerNullableVector":false,
    "answerToCheck":10
 }}

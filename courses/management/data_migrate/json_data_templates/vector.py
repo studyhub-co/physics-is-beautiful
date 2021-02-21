@@ -61,14 +61,7 @@ def mq(val):
     return val
 
 
-def get_vector_json_data(**kwargs):
-    """
-    Get data from Json template with variables
-
-    :param kwargs:
-        question_text: text of the question.
-    :return: populated JSON data
-    """
+def populate_json_data(**kwargs):
     # args_dict = populate(**kwargs)
 
     module_dir = os.path.dirname(__file__)
@@ -80,9 +73,68 @@ def get_vector_json_data(**kwargs):
     # escape values
     question_text = json.dumps(mq(kwargs['question_text']))
     question_vectors = json.dumps(kwargs['question_vectors'])
-    result = data.format(question_text=question_text, question_vectors=question_vectors)
+    answer_vectors = json.dumps(kwargs['answer_vectors'])
+    answer_text_only = json.dumps(kwargs['answer_text_only'])
+    question_text_only = json.dumps(kwargs['question_text_only'])
+    result = data.format(question_text=question_text,
+                         question_vectors=question_vectors,
+                         answer_text_only=answer_text_only,
+                         answer_vectors=answer_vectors,
+                         question_text_only=question_text_only)
     json_dict = json.loads(result)
     return json_dict
 
     # return insert_values(json_dict, args_dict)
 
+
+def get_vector_json_data(question):
+    """
+    Get data from Json template with variables
+
+    :param question:
+        question: question.
+    :return: populated JSON data
+    """
+
+    # VECTOR_COMPONENTS == Answer text only
+    # VECTOR == Question text only
+    # NULLABLE_VECTOR == Question text only + Checked Nullable vector
+    # + validate - if an answer is null vector - set checked Null vector
+
+    answer_text_only = False
+
+    if question.answer_type_name == 'VECTOR_COMPONENTS':
+        answer_text_only = True
+
+    question_text_only = False
+
+    if question.answer_type_name == 'VECTOR':
+        question_text_only = True
+
+    # question vectors
+    question_vectors = []
+    for vector in question.vectors.all():
+        question_vectors.append({
+            'angle': vector.angle or 0,
+            'xComponent': vector.x_component or 0,
+            'yComponent': vector.y_component or 0,
+            'magnitude': vector.magnitude or 0,
+        })
+
+    answer_vectors = []
+    for answer in question.answers.all():
+        vector = answer.content
+        answer_vectors.append({
+            'angle': vector.angle or 0,
+            'xComponent': vector.x_component or 0,
+            'yComponent': vector.y_component or 0,
+            'magnitude': vector.magnitude or 0,
+        })
+
+    return populate_json_data(**{
+            'question_text': question.text,
+            'question_vectors': question_vectors,
+            'answer_vectors': answer_vectors,
+            'answer_text_only': answer_text_only,
+            'question_text_only': question_text_only
+        })
