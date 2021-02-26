@@ -44,7 +44,7 @@ class BaseSerializer(serializers.ModelSerializer):
             return super(BaseSerializer, self).to_internal_value(data)
 
     class Meta:
-        read_only_fields = ['uuid', 'slug_suffix', 'slug_prefix']
+        read_only_fields = ['uuid', 'slug_suffix', 'slug_prefix', 'last_edit_user', 'author']
 
 
 class MySQLQuestionSerializer(BaseSerializer):

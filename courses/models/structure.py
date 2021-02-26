@@ -47,7 +47,7 @@ class Course(BaseItemModel):
     number_of_learners_denormalized = models.IntegerField(default=0, null=True, blank=True)
 
     # TODO replace with null on delete?
-    #  already exisat on BaseItemModel
+    # already exist in BaseItemModel
     # author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     collaborators = models.ManyToManyField(Profile, related_name='coauthored_courses')
 

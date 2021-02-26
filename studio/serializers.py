@@ -195,7 +195,8 @@ class UnitSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer):
         model = Unit
         list_serializer_class = DictSerializer
         fields = ['uuid', 'name', 'image', 'position', 'url', 'course', 'modules', 'tags']
-        read_only_fields = ('uuid', 'modules')
+        # read_only_fields = ('uuid', 'modules')
+        read_only_fields = BaseSerializer.Meta.read_only_fields + ['modules']
         expandable_fields = {
             'modules': (ModuleSerializer, (), {'many': True}),
         }
@@ -247,7 +248,8 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
                   'setting_units_unlocked', 'setting_modules_unlocked', 'setting_lessons_unlocked',
                   'setting_publically', 'tags', 'slug'
                   ]
-        read_only_fields = ('uuid', 'units', 'created_on', 'updated_on', 'slug')
+        # read_only_fields = ('uuid', 'units', 'created_on', 'updated_on', 'slug')
+        read_only_fields = BaseSerializer.Meta.read_only_fields + ['units', 'created_on', 'updated_on', 'slug']
         expandable_fields = {
             'units': (UnitSerializer, (), {'many': True}),
         }
@@ -285,7 +287,7 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
         fields.extend(['shortid', 'title', 'id', 'directory_shortid'])
-        read_only_fields = ['author', 'last_edit_user']
+        read_only_fields = BaseSerializer.Meta.read_only_fields
 
 
 class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
@@ -318,7 +320,7 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
         fields.extend(['directory_shortid', 'title', 'id', 'shortid'])
-        read_only_fields = BaseSerializer.Meta.read_only_fields + ['author', 'last_edit_user', 'shortid']
+        read_only_fields = BaseSerializer.Meta.read_only_fields + ['shortid']
 
 
 class MaterialProblemTypeSerializer(BaseSerializer):
@@ -436,7 +438,7 @@ class MaterialProblemTypeSerializer(BaseSerializer):
         # fields = ['uuid', 'name', 'data', 'created_on', 'updated_on']
         fields = '__all__'
         read_only_fields = \
-            BaseSerializer.Meta.read_only_fields + ['author', 'last_edit_user', 'forked_from_sandbox', 'slug']
+            BaseSerializer.Meta.read_only_fields + ['forked_from_sandbox', 'slug']
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }
@@ -519,4 +521,6 @@ class MaterialSerializer(BaseSerializer):
 class JsonDataImageSerializer(BaseSerializer):
     class Meta:
         model = JsonDataImage
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ['material', 'image', 'name', 'author', 'uuid']
+        read_only_fields = BaseSerializer.Meta.read_only_fields

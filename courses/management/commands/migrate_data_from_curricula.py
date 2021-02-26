@@ -10,9 +10,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(
             self.style.WARNING(
-                'You need to have all official material problem types in DD before running this command!'
+                'You need to have all official material problem types in DataBase before running this command!'
             )
         )
 
-        for curricula in Curriculum.objects.all()[:4]:
+        for curricula in Curriculum.objects.all():
             copy_curricula(curricula)

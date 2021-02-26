@@ -1,6 +1,7 @@
 from ...models.material import Material, MaterialProblemType
 
 from .json_data_templates.vector import get_vector_json_data
+from .json_data_templates.qa_base import get_qa_base_json_data
 
 
 def copy_question(lesson, question):
@@ -22,17 +23,16 @@ def copy_question(lesson, question):
     new_material.lesson = lesson
     new_material.author = lesson.author  # old units has no author, so use author from lesson
 
-    # TODO add answerToCheck
-    # 10 = 'Full vector match',
-    # 20 = 'Magnitude only',
-    # 10 = 'Angle only',
-
     # set material problem type by name, e.g. 'Vector official' = Vector
     if question.answer_type_name in ('VECTOR_COMPONENTS', 'VECTOR', 'NULLABLE_VECTOR'):
         new_material.data = get_vector_json_data(question)
         mpt = MaterialProblemType.objects.filter(name='Vector official').first()
         if not mpt:
             assert False, 'there is no MaterialProblemType for VECTOR_COMPONENTS or VECTOR or NULLABLE_VECTOR types'
+        new_material.material_problem_type = mpt
+    elif question.answer_type_name in ('MATHEMATICAL_EXPRESSION', 'TEXT'):
+        new_material.data = get_qa_base_json_data(question)
+        mpt = MaterialProblemType.objects.filter(name='Q&A Base official').first()
         new_material.material_problem_type = mpt
     else:
         pass

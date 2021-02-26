@@ -418,9 +418,9 @@ class CourseViewSet(ModelViewSet):
         if filter_by and self.request.user.is_authenticated:
             if filter_by == 'my':
                 # todo do we need to get courses of user classrooms?
-                queryset = queryset.filter(author=self.request.user)
+                queryset = queryset.filter(author=self.request.user.profile)
             elif filter_by == 'other':
-                queryset = queryset.exclude(author=self.request.user)
+                queryset = queryset.exclude(author=self.request.user.profile)
             elif filter_by == 'default':
                 # we have
                 # queryset = queryset.filter(author__pk=2)

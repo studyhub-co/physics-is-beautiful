@@ -1,4 +1,4 @@
-const mockData = {
+{
   question: {
     content: {
       text: '{{question_text}}',
@@ -50,5 +50,5 @@ const mockData = {
   answerVectorIsNull: false,
   answerTextOnly: false,
   answerNullableVector: false,
-  answerToCheck: 10,
+  answerToCheck: 10, // TODO may be it should be inside each answer vector?
 }

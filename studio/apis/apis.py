@@ -373,5 +373,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 class JsonDataImageViewSet(ModelViewSet):
     queryset = JsonDataImage.objects.all()
     serializer_class = JsonDataImageSerializer
-    # TODO what additional perrmission do we need here?
-    permission_classes = permissions.IsAuthenticatedOrReadOnly
+    # TODO what additional permission do we need here?
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    parser_classes = [MultiPartParser]

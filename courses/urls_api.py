@@ -4,7 +4,6 @@ from django.conf.urls import url
 from . import apis
 
 # TODO refactor with routers
-# TODO add /api/v1/courses/games/material_uuid/success
 urlpatterns = [
     url(r'^courses/$', apis.CourseViewSet.as_view({'get': 'list'})),
     path('courses/<uuid:uuid>/', apis.CourseViewSet.as_view({'get': 'retrieve'})),

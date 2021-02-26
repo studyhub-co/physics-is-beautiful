@@ -29,29 +29,30 @@ class JsonDataImage(BaseItemModel):
 
 # TODO add video, files...
 
-@receiver(pre_save, sender=JsonDataImage)
-def resize_img(sender, instance, **kwargs):
-    output_size = (300, 300)
-
-    if instance.image:
-        image = JsonDataImage.open(instance.image.file.file)
-
-        # TODO do we need removing old file?
-
-        # do not resize if already resized
-        if image.height > output_size[0] or image.width > output_size[1]:
-            image.thumbnail(size=output_size)
-            image_file = BytesIO()
-            image.save(image_file, image.format)
-
-            instance.image.save(
-                instance.image.name,
-                InMemoryUploadedFile(
-                    image_file,
-                    None, '',
-                    instance.image.file.content_type,
-                    image.size,
-                    instance.image.file.charset,
-                ),
-                save=False
-            )
+# not sure that we need to resize
+# @receiver(pre_save, sender=JsonDataImage)
+# def resize_img(sender, instance, **kwargs):
+#     output_size = (300, 300)
+#
+#     if instance.image:
+#         image = Image.open(instance.image.file.file)
+#
+#         # TODO do we need to remove old file?
+#
+#         # do not resize if already resized
+#         if image.height > output_size[0] or image.width > output_size[1]:
+#             image.thumbnail(size=output_size)
+#             image_file = BytesIO()
+#             image.save(image_file, image.format)
+#
+#             instance.image.save(
+#                 instance.image.name,
+#                 InMemoryUploadedFile(
+#                     image_file,
+#                     None, '',
+#                     instance.image.file.content_type,
+#                     image.size,
+#                     instance.image.file.charset,
+#                 ),
+#                 save=False
+#             )
