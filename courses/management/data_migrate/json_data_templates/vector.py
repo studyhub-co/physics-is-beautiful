@@ -153,7 +153,8 @@ def get_vector_json_data(question):
     return populate_json_data(**{
             'question_text': question.text,
             'question_hint': question.hint,
-            'question_image': question.image,
+            # 'question_image': question.image,
+            'question_image': '',
             'question_vectors': question_vectors,
             'answer_vectors': answer_vectors,
             'answer_text_only': answer_text_only,

@@ -29,7 +29,7 @@ class JsonDataImage(BaseItemModel):
 
 # TODO add video, files...
 
-# not sure that we need to resize
+# FIXME not sure that we need to resize. Or change it to a greater size?
 # @receiver(pre_save, sender=JsonDataImage)
 # def resize_img(sender, instance, **kwargs):
 #     output_size = (300, 300)
