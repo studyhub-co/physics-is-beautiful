@@ -2,7 +2,7 @@ import json
 
 from django.db.models import Q, Count
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -370,7 +370,8 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
 
 # material JSONData media store
-class JsonDataImageViewSet(ModelViewSet):
+# class JsonDataImageViewSet(ModelViewSet):
+class JsonDataImageViewSet(mixins.CreateModelMixin, GenericViewSet):
     queryset = JsonDataImage.objects.all()
     serializer_class = JsonDataImageSerializer
     # TODO what additional permission do we need here?

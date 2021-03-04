@@ -123,6 +123,7 @@ ADMIN_REORDER = (
     # Reorder app models
     {'app': 'courses', 'models': ('courses.Course', 'courses.Unit', 'courses.Module',
                                   'courses.Lesson', 'courses.Material', 'courses.MaterialProblemType',
+                                  'courses.JsonDataImage'
                                   )},
     {'app': 'curricula', 'models': ('curricula.Curriculum', 'curricula.Unit', 'curricula.Module',
                                     'curricula.Lesson', 'curricula.Question')},

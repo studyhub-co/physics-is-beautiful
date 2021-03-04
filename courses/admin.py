@@ -9,7 +9,7 @@ from .widgets import UnitNameWidget, MathQuillUnitConversionWidget, ConversionSt
     MathConversionWidget
 
 from .models import (
-    Course, Unit, Module, Lesson, Material, MySQL, MaterialProblemType
+    Course, Unit, Module, Lesson, Material, MySQL, MaterialProblemType, JsonDataImage
 )
 
 from pint import UnitRegistry
@@ -240,6 +240,7 @@ class MaterialAdmin(NestedModelAdmin):
         # VectormaterialsInline, VectorAnswerInline,
         # MathematicalExpressionAnswerInline, UnitConversionAnswerInline, ImageWTextAnswerInline, TextAnswerInline
     ]
+    search_fields = ['name', ]
     fields = [
         'lesson', _backlink_to_lesson, 'material_workflow_type', 'material_problem_type',
         'position', 'data', 'author', 'name'
@@ -316,10 +317,16 @@ class MaterialProblemTypeAdmin(admin.ModelAdmin):
     autocomplete_fields = ['author', 'last_edit_user']
 
 
+class JsonDataImageAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['author', 'last_edit_user', 'material']
+
+
+
+# NOTE you need to add Admin Name to settings.ADMIN_REORDER
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Module, ModuleAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Material, MaterialAdmin)
 admin.site.register(MaterialProblemType, MaterialProblemTypeAdmin)
-
+admin.site.register(JsonDataImage, JsonDataImageAdmin)

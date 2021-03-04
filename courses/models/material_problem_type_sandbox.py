@@ -250,6 +250,14 @@ def resize_and_delete_old_screenshot(sender, instance, **kwargs):
     if instance.screenshot_url:
         image = Image.open(instance.screenshot_url.file.file)
 
+        # UPDATE will be removed by django-cleanup
+        # TODO will be removed by management script
+        file_class_name = type(instance.screenshot.file).__name__
+        # # if we have new in memory file, remove old file of screenshot:
+        if file_class_name == 'InMemoryUploadedFile':
+            old_material = MaterialProblemTypeSandbox.objects.get(pk=instance.pk)
+            old_material.screenshot_url.delete()
+
         if image.height > output_size[0] or image.width > output_size[1]:
             # remove old screen:
             old_material = MaterialProblemTypeSandbox.objects.get(pk=instance.pk)

@@ -1,3 +1,5 @@
+import os
+
 from ...models import Material, MaterialProblemType, JsonDataImage
 
 from .json_data_templates.vector import get_vector_json_data

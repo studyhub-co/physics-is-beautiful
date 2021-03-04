@@ -84,7 +84,7 @@ def resize_and_delete_old_screenshot(sender, instance, **kwargs):
     output_size = (300, 300)
 
     if instance.screenshot:
-        image = Image.open(instance.screenshot.file.file)
+        image = Image.open(instance.screenshot_url.file.file)
 
         file_class_name = type(instance.screenshot.file).__name__
 
