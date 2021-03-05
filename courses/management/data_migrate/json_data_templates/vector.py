@@ -83,12 +83,13 @@ def populate_json_data(**kwargs):
     # return insert_values(json_dict, args_dict)
 
 
-def get_vector_json_data(question):
+def get_vector_json_data(question, material_question_image_path):
     """
     Get data from Json template with variables
 
     :param question:
         question: question.
+    :param material_question_image_path: question image path.
     :return: populated JSON data
     """
 
@@ -153,9 +154,7 @@ def get_vector_json_data(question):
     return populate_json_data(**{
             'question_text': question.text,
             'question_hint': question.hint,
-            # 'question_image': question.image,
-            # TODO add image (see unit_conversion)
-            'question_image': '',
+            'question_image': material_question_image_path,
             'question_vectors': question_vectors,
             'answer_vectors': answer_vectors,
             'answer_text_only': answer_text_only,

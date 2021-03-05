@@ -15,8 +15,6 @@ def populate_json_data(**kwargs):
     question_text = json.dumps(mq(kwargs['question_text']))
     answer_text = json.dumps(mq(kwargs['answer_text']))
     question_hint = json.dumps(mq(kwargs['question_hint']))
-    if kwargs['question_image']:
-        pass
     question_image = json.dumps(mq(kwargs['question_image']))
 
     result = data.format(question_text=question_text,

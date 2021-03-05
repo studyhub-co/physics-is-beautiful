@@ -22,5 +22,12 @@ class Command(BaseCommand):
         if os.path.exists(log_file):
             os.remove(log_file)
 
+        # remove old choices_images_not_found.log
+        log_file = os.path.join(module_dir,
+                                '../data_migrate/json_data_templates',
+                                'choices_images_not_found.log')
+        if os.path.exists(log_file):
+            os.remove(log_file)
+
         for curricula in Curriculum.objects.all():
             copy_curricula(curricula)

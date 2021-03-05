@@ -18,14 +18,14 @@ def populate_json_data(**kwargs):
     question_hint = json.dumps(mq(kwargs['question_hint']))
     question_image = json.dumps(mq(kwargs['question_image']))
 
-    question_step_number = json.dumps(mq(kwargs['question_step_number']))
+    question_step_number = json.dumps(kwargs['question_step_number'])
     question_step_unit = json.dumps(mq(kwargs['question_step_unit']))
-    question_step_si = json.dumps(mq(kwargs['question_step_si']))
-    answer_step_number = json.dumps(mq(kwargs['answer_step_number']))
+    question_step_si = json.dumps(kwargs['question_step_si'])
+    answer_step_number = json.dumps(kwargs['answer_step_number'])
     answer_step_unit = json.dumps(mq(kwargs['answer_step_unit']))
-    answer_step_si = json.dumps(mq(kwargs['answer_step_si']))
-    conversion_steps = json.dumps(mq(kwargs['conversion_steps']))
-    conversion_type = json.dumps(mq(kwargs['conversion_type']))
+    answer_step_si = json.dumps(kwargs['answer_step_si'])
+    conversion_steps = json.dumps(kwargs['conversion_steps'])
+    conversion_type = json.dumps(kwargs['conversion_type'])
 
     result = data.format(question_text=question_text,
                          question_hint=question_hint,
@@ -55,17 +55,24 @@ def get_unit_conversion_json_data(question, material_question_image_path):
 
     ureg = UnitRegistry()
     Q_ = ureg.Quantity
-    question_q = Q_('{} {}'.format(
-        question.correct_answer.content.question_number,
-        question.correct_answer.content.question_unit)
-    )
-    question_step_si = question_q.to_base_units().magnitude
 
-    answer_q = Q_('{} {}'.format(
-        question.correct_answer.content.answer_number,
-        question.correct_answer.content.answer_unit)
-    )
-    answer_step_si = answer_q.to_base_units().magnitude
+    question_step_si = ''
+    if question.correct_answer.content.question_number and \
+       question.correct_answer.content.question_unit:
+        question_q = Q_('{} {}'.format(
+            question.correct_answer.content.question_number,
+            question.correct_answer.content.question_unit)
+        )
+        question_step_si = question_q.to_base_units().magnitude
+
+    answer_step_si = ''
+    if question.correct_answer.content.answer_number and \
+       question.correct_answer.content.answer_unit:
+        answer_q = Q_('{} {}'.format(
+            question.correct_answer.content.answer_number,
+            question.correct_answer.content.answer_unit)
+        )
+        answer_step_si = answer_q.to_base_units().magnitude
 
     answer_number = question.correct_answer.content.answer_number
     answer_unit = question.correct_answer.content.answer_unit
@@ -78,15 +85,19 @@ def get_unit_conversion_json_data(question, material_question_image_path):
     #   denominatorSI: denominatorSI,
     # }
     for conversion_step in question.correct_answer.content.conversion_steps:
-        numerator_q = Q_('{}'.format(
-            conversion_step['numerator'],
-        ))
-        numerator_si = numerator_q.to_base_units().magnitude
+        numerator_si = ''
+        if conversion_step['numerator']:
+            numerator_q = Q_('{}'.format(
+                conversion_step['numerator'],
+            ))
+            numerator_si = numerator_q.to_base_units().magnitude
 
-        denominator_q = Q_('{}'.format(
-            conversion_step['denominator'],
-        ))
-        denominator_si = denominator_q.to_base_units().magnitude
+        denominator_si = ''
+        if conversion_step['denominator']:
+            denominator_q = Q_('{}'.format(
+                conversion_step['denominator'],
+            ))
+            denominator_si = denominator_q.to_base_units().magnitude
 
         conversion_steps.append({
            'numerator': conversion_step['numerator'],
@@ -98,13 +109,13 @@ def get_unit_conversion_json_data(question, material_question_image_path):
     return populate_json_data(**{
             'question_text': question.text,
             'question_hint': question.hint,
-            'question_step_number': question.correct_answer.content.question_number,
-            'question_step_unit': question.correct_answer.content.question_unit,
+            'question_step_number': question.correct_answer.content.question_number or '',
+            'question_step_unit': question.correct_answer.content.question_unit or '',
             'question_step_si': question_step_si,
-            'answer_step_number': answer_number,
-            'answer_step_unit': answer_unit,
+            'answer_step_number': answer_number or '',
+            'answer_step_unit': answer_unit or '',
             'answer_step_si': answer_step_si,
             'question_image': material_question_image_path,
             'conversion_steps': conversion_steps,
-            'conversion_type': question.correct_answer.content.unit_conversion_type
+            'conversion_type': int(question.correct_answer.content.unit_conversion_type)
         })
