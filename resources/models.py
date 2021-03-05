@@ -102,9 +102,8 @@ def save_title(sender, instance, *args, **kwargs):
                 .format(instance.standardized_test_info.test_year, instance.test_number.test_number)
             instance.save()
 
+
 # TODO signal for remove djedit Topic onDelete resource
-
-
 class StandardizedTestResource(models.Model):
     resource = models.OneToOneField(Resource, related_name='standardized_test_info', on_delete=models.CASCADE)
     test_number = models.CharField(max_length=100)

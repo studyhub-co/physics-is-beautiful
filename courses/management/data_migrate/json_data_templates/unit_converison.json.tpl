@@ -14,9 +14,9 @@
    "conversionSteps":{conversion_steps},
    "questionStepNumber":{question_step_number},
    "questionStepUnit":{question_step_unit},
-   "questionStepSI":null,
+   "questionStepSI":{question_step_si},
    "answerStepNumber":{answer_step_number},
    "answerStepUnit":{answer_step_unit},
-   "answerStepSI":null,
+   "answerStepSI":{answer_step_si},
    "conversionType":{conversion_type}
 }

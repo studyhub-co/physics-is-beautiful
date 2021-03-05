@@ -4,6 +4,7 @@ from ...models import Material, MaterialProblemType, JsonDataImage
 
 from .json_data_templates.vector import get_vector_json_data
 from .json_data_templates.qa_base import get_qa_base_json_data
+from .json_data_templates.unit_conversion import get_unit_conversion_json_data
 
 
 def copy_question(lesson, question):
@@ -50,8 +51,11 @@ def copy_question(lesson, question):
             # material_question_image.save()
             material_question_image_path = material_question_image.image.url
         except FileNotFoundError:
-            # TODO generate a report for administrators with information about not found files
-            pass
+            # generate a report for administrators with information about not found files
+            module_dir = os.path.dirname(__file__)
+            log_file = os.path.join(module_dir, 'images_not_found.log')
+            with open(log_file, 'a') as new_file:
+                new_file.write('{} / {} / {}\n'.format(question.id, question.uuid, question.image.name))
 
     # set material problem type by name, e.g. 'Vector official' = Vector
     if question.answer_type_name in ('VECTOR_COMPONENTS', 'VECTOR', 'NULLABLE_VECTOR'):
@@ -63,6 +67,10 @@ def copy_question(lesson, question):
     elif question.answer_type_name in ('MATHEMATICAL_EXPRESSION', 'TEXT'):
         new_material.data = get_qa_base_json_data(question, material_question_image_path)
         mpt = MaterialProblemType.objects.filter(name='Q&A Base official').first()
+        new_material.material_problem_type = mpt
+    elif question.answer_type_name in ('UNIT_CONVERSION',):
+        new_material.data = get_unit_conversion_json_data(question, material_question_image_path)
+        mpt = MaterialProblemType.objects.filter(name='Unit Conversion official').first()
         new_material.material_problem_type = mpt
     else:
         pass

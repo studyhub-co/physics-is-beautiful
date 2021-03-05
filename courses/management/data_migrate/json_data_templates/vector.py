@@ -154,6 +154,7 @@ def get_vector_json_data(question):
             'question_text': question.text,
             'question_hint': question.hint,
             # 'question_image': question.image,
+            # TODO add image (see unit_conversion)
             'question_image': '',
             'question_vectors': question_vectors,
             'answer_vectors': answer_vectors,

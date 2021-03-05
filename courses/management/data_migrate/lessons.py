@@ -3,9 +3,14 @@ from ...models.badges import LessonAwards
 
 from .materials import copy_question
 
+
 def copy_lesson(module, lesson):
     # copy data
     new_lesson = Lesson()
+
+    # TODO if lesson is a game - then create new lesson + add new material (Game)
+    # TODO add evaluatedMathText
+
     for field in lesson._meta.get_fields():  # True, False?
         if field.name in ('id', 'uuid', 'module', 'lesson_type', 'game', 'assignment',
                           'lessons', 'tagged_items', 'tags', 'lessonawards'):
