@@ -31,8 +31,8 @@ class Profile(BaseModel):
     sound_enabled = models.BooleanField(default=True)
     all_lessons_unlocked = models.BooleanField(default=False)
     user_avatar = models.ImageField(null=True, blank=True)
-    gravatar_url = models.URLField(null=True, blank=True)
-    google_avatar_url = models.URLField(null=True, blank=True)
+    gravatar_url = models.URLField(null=True, blank=True, max_length=2048)
+    google_avatar_url = models.URLField(null=True, blank=True, max_length=2048)
     selected_avatar = models.CharField(choices=AVATAR_CHOICES, null=True, blank=True, max_length=1)
     profile_views = models.PositiveIntegerField(null=True, blank=True)
 

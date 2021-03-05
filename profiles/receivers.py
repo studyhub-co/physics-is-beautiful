@@ -25,8 +25,10 @@ def create_profile(sender, instance, created, **kwargs):
 @receiver(pre_save, sender=Profile)
 def save_gravatar_url(sender, instance, *args, **kwargs):
     # if has_gravatar(instance.user.email):
-    if not instance.gravatar_url:  # FIXME avatar is not will be refreshed
-        instance.gravatar_url = get_gravatar_url(instance.user.email, default='identicon', size=150)
+    if not instance.gravatar_url:  # FIXME avatar will not be refreshed
+        gravatar_url = get_gravatar_url(instance.user.email, default='identicon', size=150)
+        if len(gravatar_url) <= Profile._meta.get_field('gravatar_url').max_length:
+            instance.gravatar_url = get_gravatar_url(instance.user.email, default='identicon', size=150)
 
 
 # @receiver(user_signed_up) # If we want to save image after user signed in
@@ -35,11 +37,13 @@ def save_gravatar_url(sender, instance, *args, **kwargs):
 def populate_google_image(sender, instance, created, **kwargs):
     user = instance
     # save google photo url in profile
-    if user.profile and not user.profile.google_avatar_url:  # FIXME avatar is not will be refreshed
+    if user.profile and not user.profile.google_avatar_url:  # FIXME avatar will not be refreshed
         try:
             extra_data = user.socialaccount_set.filter(provider='google')[0].extra_data
             if 'picture' in extra_data and extra_data['picture']:
-                user.profile.google_avatar_url = extra_data['picture']
-                user.profile.save()
+                google_avatar_url = extra_data['picture']
+                if len(google_avatar_url) <= Profile._meta.get_field('google_avatar_url').max_length:
+                    user.profile.google_avatar_url = extra_data['picture']
+                    user.profile.save()
         except IndexError:
             pass  # not found google extra_data
