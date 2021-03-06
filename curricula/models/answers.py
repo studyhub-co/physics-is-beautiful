@@ -79,6 +79,10 @@ class Answer(BaseModel):
 class MathematicalExpressionMixin:
     @staticmethod
     def match_math(val1, val2):
+        # remove whitespaces
+        import re
+        val1 = re.sub(r'\\\s', '', val1)
+        val2 = re.sub(r'\\\s', '', val2)
         # parse latex into sympy and then compare (use `.expand`, `simplify`
         # and `trigsimp` to get to a canonical form)
         try:
