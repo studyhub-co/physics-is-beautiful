@@ -55,16 +55,23 @@ def get_qa_choices_json_data(question, material_question_image_path, new_materia
             try:
                 from django.core.files.base import ContentFile, File
 
-                new_image = ContentFile(choice.content.image.read()),
                 new_image_name = choice.content.image.name
+                # Try to find image with the same name
+                existing_image = JsonDataImage.objects.filter(name=new_image_name).first()
 
-                choice_image = JsonDataImage.objects.create(
-                    material=new_material,
-                    author=new_material.author,
-                    name=choice.content.image.name
-                )
-                choice_image.image.save(new_image_name, new_image[0], save=True)
-                choice_image_path = choice_image.image.url
+                if existing_image:
+                    choice_image_path = existing_image.image.url
+                else:
+
+                    new_image = ContentFile(choice.content.image.read()),
+
+                    choice_image = JsonDataImage.objects.create(
+                        # material=new_material,
+                        author=new_material.author,
+                        name=choice.content.image.name
+                    )
+                    choice_image.image.save(new_image_name, new_image[0], save=True)
+                    choice_image_path = choice_image.image.url
             except FileNotFoundError:
                 # generate a report for administrators with information about not found files
                 module_dir = os.path.dirname(__file__)

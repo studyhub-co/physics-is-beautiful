@@ -1,0 +1,23 @@
+{{
+   "question":{{
+      "content":{{
+         "text":{question_text},
+         "evaluatedMathText":"",
+         "image":{question_image},
+         "hint":{question_hint}
+      }},
+      "type":"base"
+   }},
+   "SQLSchemaResultJson":"",
+   "answer":{{
+      "expectedOutput":{expected_output},
+      "expectedOutputJson":{expected_output_json},
+      "SQLQuery":{sql_query},
+      "SQLSchema":{sql_schema},
+      "hiddenFields":{{
+         "expectedOutput":"",
+         "expectedOutputJson":"",
+         "SQLQuery":""
+      }}
+   }}
+}}

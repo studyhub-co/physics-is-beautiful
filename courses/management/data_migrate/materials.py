@@ -37,20 +37,26 @@ def copy_question(lesson, question):
         try:
             from django.core.files.base import ContentFile, File
 
-            new_image = ContentFile(question.image.read()),
             new_image_name = question.image.name
+            # Try to find image with the same name
+            existing_image = JsonDataImage.objects.filter(name=new_image_name).first()
 
-            material_question_image = JsonDataImage.objects.create(
-                material=new_material,
-                # image=new_image,
-                author=new_material.author,
-                name=question.image.name
-            )
-            # material_question_image.image.save(question.image.name, File(open(question.image.url, "w")))
-            # new_image.read()
-            material_question_image.image.save(new_image_name, new_image[0], save=True)
-            # material_question_image.save()
-            material_question_image_path = material_question_image.image.url
+            if existing_image:
+                material_question_image_path = existing_image.image.url
+            else:
+                new_image = ContentFile(question.image.read()),
+
+                material_question_image = JsonDataImage.objects.create(
+                    # material=new_material,
+                    # image=new_image,
+                    author=new_material.author,
+                    name=new_image_name
+                )
+                # material_question_image.image.save(question.image.name, File(open(question.image.url, "w")))
+                # new_image.read()
+                material_question_image.image.save(new_image_name, new_image[0], save=True)
+                # material_question_image.save()
+                material_question_image_path = material_question_image.image.url
         except FileNotFoundError:
             # generate a report for administrators with information about not found files
             module_dir = os.path.dirname(__file__)

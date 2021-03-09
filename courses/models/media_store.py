@@ -23,7 +23,11 @@ class JsonDataImage(BaseItemModel):
     """
     Images of materials JSON data
     """
-    material = models.ForeignKey(Material, related_name='data_images', on_delete=models.CASCADE)
+    # NOTE due JSON data of different materials can contain the same images paths
+    # - we no need store ForeignKey to material, we assume that medias_store - this is separate
+    # media data storage (which it can be in the future)
+
+    # material = models.ForeignKey(Material, related_name='data_images', on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, upload_to=uuid_as_name)  # storage=OverwriteStorage(),
 
     def __str__(self):
@@ -47,8 +51,6 @@ def remove_file(sender, instance, using, **kwargs):
 #
 #     if instance.image:
 #         image = Image.open(instance.image.file.file)
-#
-#         # TODO do we need to remove old file?
 #
 #         # do not resize if already resized
 #         if image.height > output_size[0] or image.width > output_size[1]:

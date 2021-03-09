@@ -318,8 +318,8 @@ class MaterialProblemTypeAdmin(admin.ModelAdmin):
 
 
 class JsonDataImageAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['author', 'last_edit_user', 'material']
-
+    autocomplete_fields = ['author', 'last_edit_user']
+    # autocomplete_fields = ['author', 'last_edit_user', 'material']
 
 
 # NOTE you need to add Admin Name to settings.ADMIN_REORDER
