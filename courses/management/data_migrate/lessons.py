@@ -1,5 +1,6 @@
 from ...models.structure import Lesson
 from ...models.badges import LessonAwards
+from ...models.material import Material, MaterialProblemType
 
 from .materials import copy_question
 
@@ -47,6 +48,20 @@ def copy_lesson(module, lesson):
     # set() classroom's assignment
     new_lesson.assignment_set.set(lesson.assignment_set.all(), clear=True)
 
-    # copy questions
-    for question in lesson.questions.all():
-        copy_question(new_lesson, question)
+    if lesson.lesson_type == 0:  # default
+        # copy questions
+        for question in lesson.questions.all():
+            copy_question(new_lesson, question)
+    elif lesson.lesson_type == 1:   # game
+        # create new game material
+        new_material = Material()
+        new_material.name = lesson.name
+        new_material.lesson = new_lesson
+        new_material.author = module.author
+        new_material.data = {}  # game no need data
+        if lesson.game.slug == 'unit-conversion':
+            mpt = MaterialProblemType.objects.filter(name='Unit conversion game official').first()
+        else:
+            mpt = MaterialProblemType.objects.filter(name='Vector game official').first()
+        new_material.material_problem_type = mpt
+        new_material.save()
