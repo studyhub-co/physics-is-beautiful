@@ -319,6 +319,7 @@ class MaterialProblemTypeAdmin(admin.ModelAdmin):
 
 class JsonDataImageAdmin(admin.ModelAdmin):
     autocomplete_fields = ['author', 'last_edit_user']
+    list_per_page = 1000
     # autocomplete_fields = ['author', 'last_edit_user', 'material']
 
 

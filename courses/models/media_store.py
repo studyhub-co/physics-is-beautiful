@@ -26,7 +26,6 @@ class JsonDataImage(BaseItemModel):
     # NOTE due JSON data of different materials can contain the same images paths
     # - we no need store ForeignKey to material, we assume that medias_store - this is separate
     # media data storage (which it can be in the future)
-
     # material = models.ForeignKey(Material, related_name='data_images', on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, upload_to=uuid_as_name)  # storage=OverwriteStorage(),
 
@@ -40,8 +39,10 @@ class JsonDataImage(BaseItemModel):
 # remove old file on delete, we suppose that JsonDataImage not re-save: only create/delete mode
 @receiver(models.signals.post_delete, sender=JsonDataImage)
 def remove_file(sender, instance, using, **kwargs):
-    # due forking process we can got situation when 1 file will be use in 2 and more materials
     if not JsonDataImage.objects.filter(name=instance.image.name).exists():
+        # NOTE: we can remove file because we delete JsonDataImage directly (e.g. from admin):
+        # without on_delete=models.CASCADE, so if one material will be deleted -
+        # JsonDataImage will be exist until we run remove_unused_media_storage_files manage.py script
         instance.image.delete(save=False)
 
 # FIXME not sure that we need to resize. Or change it to a greater size?

@@ -16,7 +16,7 @@ def populate_json_data(**kwargs):
     # escape values / fixme
     question_text = json.dumps(mq(kwargs['question_text']))
     choices_list = json.dumps(kwargs['choices_list'])
-    question_hint = json.dumps(mq(kwargs['question_hint']))
+    question_hint = json.dumps(kwargs['question_hint'])
     question_image = json.dumps(mq(kwargs['question_image']))
     multi_select_mode = json.dumps(kwargs['multi_select_mode'])
 

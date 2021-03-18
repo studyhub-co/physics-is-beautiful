@@ -15,7 +15,7 @@ def populate_json_data(**kwargs):
 
     # escape values / fixme
     question_text = json.dumps(mq(kwargs['question_text']))
-    question_hint = json.dumps(mq(kwargs['question_hint']))
+    question_hint = json.dumps(kwargs['question_hint'])
     question_image = json.dumps(mq(kwargs['question_image']))
 
     question_step_number = json.dumps(kwargs['question_step_number'])

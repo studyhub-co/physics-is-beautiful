@@ -11,7 +11,7 @@
    "answer":{{
       "content":{{
          "text":{answer_text},
-         "evaluatedMathText":"",
+         "evaluatedMathText":{answer_evaluated_math_text},
          "image":"",
          "hint":""
       }},

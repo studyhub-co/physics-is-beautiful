@@ -64,7 +64,7 @@ def populate_json_data(**kwargs):
     answer_to_check = json.dumps(kwargs['answer_to_check'])
     answer_nullable_vector = json.dumps(kwargs['answer_nullable_vector'])
     answer_vector_is_null = json.dumps(kwargs['answer_vector_is_null'])
-    question_hint = json.dumps(mq(kwargs['question_hint']))
+    question_hint = json.dumps(kwargs['question_hint'])
     question_image = json.dumps(mq(kwargs['question_image']))
     result = data.format(question_text=question_text,
                          question_vectors=question_vectors,
@@ -112,6 +112,7 @@ def get_vector_json_data(question, material_question_image_path):
     answer_vector_is_null = False
 
     if question.answer_type_name == 'NULLABLE_VECTOR':
+        question_text_only = True
         answer_nullable_vector = True
         if question.correct_answer.content.is_null == True:
             answer_vector_is_null = True
@@ -120,14 +121,15 @@ def get_vector_json_data(question, material_question_image_path):
     answer_to_check = 10
 
     # add answerToCheck
-    if question.correct_answer.content.angle\
+    # angle can be 0
+    if question.correct_answer.content.angle is not None\
         and not question.correct_answer.content.x_component\
-        and not question.correct_answer.content.y_component:
+            and not question.correct_answer.content.y_component:
         # 30 = 'Angle only',
         answer_to_check = 30
     if not question.correct_answer.content.angle\
         and question.correct_answer.content.x_component\
-        and question.correct_answer.content.y_component:
+            and question.correct_answer.content.y_component:
         # 20 = 'Magnitude only',
         answer_to_check = 20
 
@@ -144,6 +146,10 @@ def get_vector_json_data(question, material_question_image_path):
     answer_vectors = []
     for answer in question.answers.all():
         vector = answer.content
+        try:
+            vector._fill_out_fields()
+        except TypeError as e:
+            pass
         answer_vectors.append({
             'angle': vector.angle or 0,
             'xComponent': vector.x_component or 0,
