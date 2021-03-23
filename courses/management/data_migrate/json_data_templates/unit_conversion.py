@@ -85,14 +85,14 @@ def get_unit_conversion_json_data(question, material_question_image_path):
     #   denominatorSI: denominatorSI,
     # }
     for conversion_step in question.correct_answer.content.conversion_steps:
-        numerator_si = ''
+        numerator_si = None
         if conversion_step['numerator']:
             numerator_q = Q_('{}'.format(
                 conversion_step['numerator'],
             ))
             numerator_si = numerator_q.to_base_units().magnitude
 
-        denominator_si = ''
+        denominator_si = None
         if conversion_step['denominator']:
             denominator_q = Q_('{}'.format(
                 conversion_step['denominator'],
@@ -109,10 +109,10 @@ def get_unit_conversion_json_data(question, material_question_image_path):
     return populate_json_data(**{
             'question_text': question.text,
             'question_hint': question.hint,
-            'question_step_number': question.correct_answer.content.question_number or '',
+            'question_step_number': str(question.correct_answer.content.question_number) or '',
             'question_step_unit': question.correct_answer.content.question_unit or '',
             'question_step_si': question_step_si,
-            'answer_step_number': answer_number or '',
+            'answer_step_number': str(answer_number) or '',
             'answer_step_unit': answer_unit or '',
             'answer_step_si': answer_step_si,
             'question_image': material_question_image_path,

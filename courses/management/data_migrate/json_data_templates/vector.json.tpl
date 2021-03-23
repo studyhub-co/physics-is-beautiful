@@ -31,7 +31,8 @@
             "hint":""
          }},
          "type":"base"
-      }}
+      }},
+      "answerVectorIsNull":false
    }},
    "questionVectors": {question_vectors},
    "answerVectors": {answer_vectors},

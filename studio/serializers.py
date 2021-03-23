@@ -522,5 +522,14 @@ class JsonDataImageSerializer(BaseSerializer):
     class Meta:
         model = JsonDataImage
         # fields = '__all__'
-        fields = ['material', 'image', 'name', 'author', 'uuid']
+        # fields = ['material', 'image', 'name', 'author', 'uuid']
+        fields = ['image', 'name', 'author', 'uuid']
         read_only_fields = BaseSerializer.Meta.read_only_fields
+
+    def to_representation(self, instance):
+        response = super(JsonDataImageSerializer, self).to_representation(instance)
+        # Use relative url for the images because we storing this url in JSON Data field.
+        # So when we need to migrate media data between domains we need relative record in JSON Data field
+        if instance.image:
+            response['image'] = instance.image.url
+        return response

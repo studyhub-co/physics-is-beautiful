@@ -82,7 +82,7 @@ def get_qa_choices_json_data(question, material_question_image_path, new_materia
         choices_list.append({
             "content": {
                 "image": choice_image_path,
-                "text": choice.content.text
+                "text": mq(choice.content.text)
             },
             "selected": choice.is_correct,
             "hiddenFields": {

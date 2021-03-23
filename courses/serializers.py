@@ -38,6 +38,7 @@ class BaseSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         if isinstance(data, str):
+            # FIXME add comment what this code do
             print(self.Meta.model.objects.get(**{self.lookup_field: data}))
             return self.Meta.model.objects.get(**{self.lookup_field: data})
         else:
