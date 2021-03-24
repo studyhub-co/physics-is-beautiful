@@ -125,7 +125,7 @@ library_test
 # due to long time uploading
 /courses/static/courses/js/codesandbox-apps/
 
-# seems above it's not so effective whit eb deploy, so steps are:
+# seems above it's not so effective whith eb deploy, so steps are:
 # 1) unpack /courses/static/courses/js/codesandbox-apps/vscode-extensions.zip to the current dir
 # 2) deploy application for the first time (will take a long time due 20k extensions files)
 # 3) remove vscode-extensions dir

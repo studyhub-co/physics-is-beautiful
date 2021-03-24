@@ -1,5 +1,7 @@
 import os
 
+from django_s3_storage.storage import S3Error
+
 from ...models import Material, MaterialProblemType, JsonDataImage
 
 from .json_data_templates.vector import get_vector_json_data
@@ -57,7 +59,7 @@ def copy_question(lesson, question):
                 material_question_image.image.save(new_image_name, new_image[0], save=True)
                 # material_question_image.save()
                 material_question_image_path = material_question_image.image.url
-        except FileNotFoundError:
+        except (FileNotFoundError, S3Error):
             # generate a report for administrators with information about not found files
             module_dir = os.path.dirname(__file__)
             log_file = os.path.join(module_dir, 'images_not_found.log')

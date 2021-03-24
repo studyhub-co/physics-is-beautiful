@@ -2,6 +2,8 @@ import os
 import json
 import uuid
 
+from django_s3_storage.storage import S3Error
+
 from .utils import mq
 from ....models import JsonDataImage
 
@@ -72,7 +74,7 @@ def get_qa_choices_json_data(question, material_question_image_path, new_materia
                     )
                     choice_image.image.save(new_image_name, new_image[0], save=True)
                     choice_image_path = choice_image.image.url
-            except FileNotFoundError:
+            except (FileNotFoundError, S3Error):
                 # generate a report for administrators with information about not found files
                 module_dir = os.path.dirname(__file__)
                 log_file = os.path.join(module_dir, 'choices_images_not_found.log')

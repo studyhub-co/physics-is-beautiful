@@ -12,7 +12,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(
             self.style.WARNING(
-                'You need to have all official material problem types in DataBase before running this command!'
+                'You need to have all official material problem types in DataBase before running this command!\n' +
+                'You have to start node server with https://github.com/physics-is-beautiful/JSHelpersAPI app ' +
+                'on 3001 port!'
             )
         )
 
