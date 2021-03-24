@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from ...models.structure import Lesson
 from ...models.badges import LessonAwards
 from ...models.material import Material, MaterialProblemType
@@ -52,13 +54,14 @@ def copy_lesson(module, lesson):
         # copy questions
         for question in lesson.questions.all():
             copy_question(new_lesson, question)
-    elif lesson.lesson_type == 1:   # game
+    elif lesson.lesson_type == 1 and hasattr(lesson, 'game'):   # game
         # create new game material
         new_material = Material()
         new_material.name = lesson.name
         new_material.lesson = new_lesson
         new_material.author = module.author
         new_material.data = {}  # game no need data
+
         if lesson.game.slug == 'unit-conversion':
             mpt = MaterialProblemType.objects.filter(name='Unit conversion game official').first()
         else:
