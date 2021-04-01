@@ -1,5 +1,6 @@
 import os
 import hashlib
+import uuid
 from io import BytesIO
 
 from PIL import Image
@@ -210,13 +211,19 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
     """
 
 
+def data_upload_to(instance, filename):
+    unique_filename = str(uuid.uuid4())
+    return 'js_sandbox_caches/{0}.json'.format(unique_filename)
+
+
 class MaterialProblemTypeSandboxCache(models.Model):
     """
     Transpiled modules data (cache)
     """
-    # timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     version = models.URLField()  # transpiler version
-    data = JSONField(default=dict)
+    # data = JSONField(default=dict)
+    data = models.FileField(upload_to=data_upload_to)
     # sandbox = models.OneToOneField(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)
     # we can have > 1 of a cache for one sandbox (different versions)
     sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='cache', on_delete=models.CASCADE)

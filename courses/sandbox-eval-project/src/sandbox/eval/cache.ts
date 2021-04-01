@@ -74,6 +74,7 @@ export async function saveCache (
 
   try {
     if (process.env.NODE_ENV === 'development') {
+      // TODO !!!!! do not save cache if we used cache from localstorage
       // debug(
       console.log(
         'Saving cache of ' +
@@ -190,7 +191,24 @@ async function loadCacheFromAPI (sandboxId) {
       }
     })
     // .then(x => x.json())
-    .then(x => { return x.json() })
+    .then(x => {
+      return x.json()
+    })
+    .catch(e => {
+      console.log('Error while load mtp cache:')
+      console.log(e)
+    })
+}
+
+async function downloadMediaJSONFile (url) {
+  return window.fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }})
+    .then(x => {
+      return x.json()
+    })
     .catch(e => {
       console.log('Error while load mtp cache:')
       console.log(e)
@@ -206,8 +224,6 @@ export async function consumeCache (manager: Manager) {
       return false
     }
 
-    // it seem this data setting up by server side in sandox
-    // TODO load from API
     // const cacheData = (window as any).__SANDBOX_DATA__
     // const localData = await localforage.getItem(manager.id)
     let cache = await localforage.getItem(manager.id)
@@ -218,11 +234,15 @@ export async function consumeCache (manager: Manager) {
       // if (cacheApiData && cacheApiData.data && JSON.parse(cacheApiData.data)) {
       if (cacheApiData && cacheApiData.data) {
         // cache = JSON.parse(cacheApiData.data)
-        cache = cacheApiData.data
+        // cacheApiData.data static json now
+        // download static file
+        cache = await downloadMediaJSONFile(cacheApiData.data)
+        // console.log(cache)
+
         APICacheUsed = true
       }
     } else {
-      // if timestams of cache from API and local are not equals, reset local cache
+      // if timestamp of cache from API and local are not equals, reset local cache
       window
         .fetch(
           `${host}/api/v1/courses/material-problem-type/${manager.id}/cache/?timestamp-only=true&script-version=${SCRIPT_VERSION}`,
@@ -251,6 +271,9 @@ export async function consumeCache (manager: Manager) {
 
     if (cache) {
       const version = SCRIPT_VERSION
+
+      // console.log(cache.version)
+      // console.log(SCRIPT_VERSION)
 
       if (cache.version === version) {
         // if (cache === localData) {

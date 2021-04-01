@@ -1,5 +1,6 @@
-import json
+from io import StringIO
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Q, Count
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -345,13 +346,23 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
         sandbox = self.get_object()
 
         json_data = request.data.get('data', None)
+
         if not json_data:
             raise ValidationError('data field not found')
 
-        if type(json_data) is str:
-            json_data = json.loads(json_data)
+        # from django.core.files.base import ContentFile
+        # data_file = ContentFile(json_data)
+        buff = StringIO(json_data)
 
-        data = {'data': json_data, 'version': version}
+        buff.seek(0, 2)
+        file_data = InMemoryUploadedFile(buff, 'data', 'file_name', None, buff.tell(), None)
+
+        # FIXME why we need to check is str?
+        # if type(json_data) is str:
+        #     json_data = json.loads(json_data)
+
+        # data = {'data': json_data, 'version': version}
+        data = {'data': file_data, 'version': version}
 
         try:
             # try to get existing cache

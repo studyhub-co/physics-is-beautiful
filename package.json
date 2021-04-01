@@ -191,7 +191,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "remark-math": "^1.0.6",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.2",
     "scriptjs": "^2.5.8",
     "showdown": "^1.9.0",
     "showdown-katex": "^0.6.0",

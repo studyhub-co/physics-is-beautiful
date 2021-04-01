@@ -445,7 +445,7 @@ class MaterialProblemTypeSerializer(BaseSerializer):
 
 
 class MaterialProblemTypeSandboxCacheSerializer(serializers.ModelSerializer):
-    data = serializers.JSONField()
+    # data = serializers.JSONField()
 
     class Meta:
         model = MaterialProblemTypeSandboxCache

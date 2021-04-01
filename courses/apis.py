@@ -398,9 +398,12 @@ class MaterialProblemTypeCacheViewSet(ModelViewSet):
         timestamp_only = request.query_params.get('timestamp-only')
 
         if timestamp_only:
-            timestamp = mpt_cache.data['timestamp']
+            # timestamp = mpt_cache.data['timestamp']
+            # timestamp is model field now
+            timestamp = mpt_cache.timestamp
             if timestamp:
-                return Response(timestamp)
+                # return Response(timestamp)
+                return Response(int(timestamp.timestamp() * 1000))  # JsTimestamp value
 
         serializer = self.get_serializer(mpt_cache)
         return Response(serializer.data)
