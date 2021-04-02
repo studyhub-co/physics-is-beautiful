@@ -210,7 +210,7 @@ async function downloadMediaJSONFile (url) {
       return x.json()
     })
     .catch(e => {
-      console.log('Error while load mtp cache:')
+      console.log('Error while load mtp JSON cache file:')
       console.log(e)
     })
 }
@@ -237,8 +237,6 @@ export async function consumeCache (manager: Manager) {
         // cacheApiData.data static json now
         // download static file
         cache = await downloadMediaJSONFile(cacheApiData.data)
-        // console.log(cache)
-
         APICacheUsed = true
       }
     } else {
