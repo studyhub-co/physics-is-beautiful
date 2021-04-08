@@ -37,6 +37,8 @@ When the evaluation is done, the "Evaluate" project will save the cache of the j
 In the case of LessonEditor, the js bundle cache will save on the backend side too.    
 The flow of this process can see in the picture below. 
 
+![](https://raw.githubusercontent.com/studyhub-co/physics-is-beautiful/courses/courses/docs/sandbox_cache_logic.png)
+
 
 ### Courses part of PWA application (PWA/Courses)
 
