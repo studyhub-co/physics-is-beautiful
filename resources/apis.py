@@ -15,7 +15,8 @@ from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import NotFound, ValidationError
 
-from djeddit.models import Topic, Thread, Post
+# from djeddit.models import Topic, Thread, Post
+from react_comments_django.models import Topic, Thread, Post
 
 # from django_filters.rest_framework import DjangoFilterBackend
 

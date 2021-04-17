@@ -65,7 +65,8 @@ django-model-utils==3.1.2
 django-user_agents==0.3.2
 future==0.17.1
 -e git+https://github.com/physics-is-beautiful/django-react-djeddit.git@a9ce8e1c220fe7de725851a47b5bbbd937483ad6#egg=django-react-djeddit
-django-taggit==1.1.0
+react-comments-django==1.0.0
+django-taggit==1.3.0
 django-taggit-serializer==0.1.7
 django-npm==1.0.0
 # pyppeteer==0.0.25

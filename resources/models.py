@@ -103,7 +103,7 @@ def save_title(sender, instance, *args, **kwargs):
             instance.save()
 
 
-# TODO signal for remove djedit Topic onDelete resource
+# TODO signal for remove comments Topic onDelete resource
 class StandardizedTestResource(models.Model):
     resource = models.OneToOneField(Resource, related_name='standardized_test_info', on_delete=models.CASCADE)
     test_number = models.CharField(max_length=100)

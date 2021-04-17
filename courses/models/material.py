@@ -15,16 +15,17 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 from taggit.managers import TaggableManager
-from djeddit.models import Thread
+# from djeddit.models import Thread
+from react_comments_django.models import Thread
 
 from . import Lesson, BaseItemModel, MaterialProblemType, get_earliest_gap
 # from .storage import OverwriteStorage
 from .utils import UUIDTaggedItem
 
 try:
-    course_question_thread_related_name = settings.DJEDDIT_RELATED_FIELDS['course_material']
+    course_material_thread_related_name = settings.REACT_COMMENTS_DJANGO_RELATED_FIELDS['course_material']
 except (KeyError, AttributeError):
-    raise ImproperlyConfigured("Can't find settings.DJEDDIT_RELATED_FIELDS['course_material'] settings")
+    raise ImproperlyConfigured("Can't find settings.REACT_COMMENTS_DJANGO_RELATED_FIELDS['course_material'] settings")
 
 
 # it's seems we do not need this (only if determining type by 'game' in a material problem title is ugly)
@@ -64,8 +65,8 @@ class Material(BaseItemModel):
     # this is a data that uses by material_problem_type
     data = JSONField(default=dict)  # only Postgresql support!
 
-    thread = models.OneToOneField(Thread, related_name=course_question_thread_related_name, null=True,
-                                  on_delete=models.CASCADE)
+    # thread = models.OneToOneField(Thread, related_name=course_material_thread_related_name, null=True,
+    #                               on_delete=models.CASCADE)
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_materials')
 
     def get_correct_data(self):

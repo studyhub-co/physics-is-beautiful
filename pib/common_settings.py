@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     'blog',
     'editor',
     'djeddit',
+    'react_comments_django',
     'badges',
     'meta',
     'classroom',
@@ -127,7 +128,7 @@ ADMIN_REORDER = (
                                   )},
     {'app': 'curricula', 'models': ('curricula.Curriculum', 'curricula.Unit', 'curricula.Module',
                                     'curricula.Lesson', 'curricula.Question')},
-    'moderation',  'classroom', 'account', 'auth', 'djeddit', 'pib_auth', 'profiles', 'sites', 'socialaccount', 'resources'
+    'moderation',  'classroom', 'account', 'auth', 'djeddit', 'react_comments_django', 'pib_auth', 'profiles', 'sites', 'socialaccount', 'resources'
 )
 
 ROOT_URLCONF = 'pib.urls'
@@ -138,7 +139,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'templates', 'allauth'),  # not sure that we need it
-            os.path.join(BASE_DIR, 'node_modules', '@vermus', 'django-react-djeddit-client', 'dist'),
+            os.path.join(BASE_DIR, 'node_modules', '@vermus', 'django-react-djeddit-client', 'dist'),  # TODO remove
             os.path.join(BASE_DIR, 'courses', 'sandbox-eval-project', 'www', 'courses', 'js'), # 'codesandbox-apps', 'eval'
         ],
         'APP_DIRS': True,
@@ -149,7 +150,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 # 'django.template.context_processors.request',
-                'djeddit.context_processors.djeddit_settings'
+                'djeddit.context_processors.djeddit_settings'  # TODO remove
             ],
         },
     },
@@ -236,6 +237,7 @@ STATICFILES_FINDERS = [
     'npm.finders.NpmFinder'
 ]
 
+# No need anymore (discussion part is embed to SPA), TODO remove
 NPM_ROOT_PATH = BASE_DIR
 NPM_STATIC_FILES_PREFIX = os.path.join('js', 'npm')
 NPM_FILE_PATTERNS = {
@@ -299,12 +301,12 @@ WEBPACK_LOADER = {
 REPUTATION_STAGE_1_POINTS = 5
 REPUTATION_STAGE_2_POINTS = 10
 
+# DJEDDIT old settings TODO remove
+
 DJEDDIT_USER_FIELDS = ['display_name', ]
 DJEDDIT_DISPLAY_USERNAME_FIELD = 'display_name'
 
-# studyhub-co settings
-
-# We don't want to use Django generic relations due we lose the consistency and integrity of database
+# We don't want use Django generic relations due we lose the consistency and integrity of database
 # and count of sql queries will be increases
 DJEDDIT_RELATED_FIELDS = {
     'textbook_resource': 'textbook_resource',
@@ -317,6 +319,20 @@ DJEDDIT_RELATED_FIELDS = {
 DJEDDIT_STATIC_FILES_URL_PREFIX = 'js/npm/@vermus/django-react-djeddit-client/dist'
 
 SYSTEM_USER_ID = 2
+
+# react-comments-django settings
+
+REACT_COMMENTS_DJANGO_USER_FIELDS = ['display_name', ]
+REACT_COMMENTS_DJANGO_DISPLAY_USERNAME_FIELD = 'display_name'
+
+# We don't want use Django generic relations due we lose the consistency and integrity of database
+# and count of sql queries will be increases
+REACT_COMMENTS_DJANGO_RELATED_FIELDS = {
+    'textbook_resource': 'textbook_resource',
+    'textbook_problem': 'textbook_problem',
+    'textbook_solution': 'textbook_solution',
+    'course_material': 'course_material'
+}
 
 # TODO remove after new version will be released
 CURRICULA_SQL_PROBLEM_TYPE_HOST = os.getenv('CURRICULA_SQL_PROBLEM_TYPE_HOST')

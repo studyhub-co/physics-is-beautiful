@@ -20,7 +20,7 @@ from .serializers import MaterialSerializer, UserReactionSerializer, \
     LessonSerializer, ScoreBoardSerializer, ModuleSerializer, UnitSerializer,\
     CourseSerializer, LessonProgressSerializer, MaterialProblemTypeCacheSerializer
 
-from .djeddit import create_thread
+from .comments import create_thread
 
 
 def check_classroom_progress(service, user):

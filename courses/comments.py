@@ -1,8 +1,8 @@
 from django.db import transaction
 
-from djeddit.models import Topic, Thread, Post
+from react_comments_django.models import Topic, Thread, Post
 
-from .settings import QUESTIONS_TOPIC_SLUG, QUESTIONS_TOPIC_TITLE, SYSTEM_USER_ID
+from .settings import MATERIALS_TOPIC_SLUG, MATERIALS_TOPIC_TITLE, SYSTEM_USER_ID
 
 
 def create_thread(instance):
@@ -11,9 +11,9 @@ def create_thread(instance):
         # create root problem post
         if not instance.thread:
             try:
-                problems_topic = Topic.objects.get(slug=QUESTIONS_TOPIC_SLUG)
+                problems_topic = Topic.objects.get(slug=MATERIALS_TOPIC_SLUG)
             except Topic.DoesNotExist:
-                problems_topic = Topic.objects.create(title=QUESTIONS_TOPIC_TITLE)
+                problems_topic = Topic.objects.create(title=MATERIALS_TOPIC_TITLE)
 
             # thread title
             with transaction.atomic():

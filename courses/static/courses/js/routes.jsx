@@ -41,6 +41,9 @@ export default(
     {/* <Route exact path={'/studio/editor/questions/:uuid'} component={QuestionApp} /> */}
     {/* <Route path={BASE_URL + '/course/profile/:uuid'} component={CourseProfileView} /> */}
 
+    {/* discussion */}
+    <Route exact path={'/discussion/'} component={BrowseStudioDashboard} />
+
     {/* fixme */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}
     {/* TODO to complete home page */}

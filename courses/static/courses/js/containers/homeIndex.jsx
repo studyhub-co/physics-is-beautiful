@@ -13,6 +13,7 @@ const HomeIndex = props => {
       <div><a href={''} onClick={(e) => { e.preventDefault(); history.push('/courses/') }}>Student course view</a></div>
       <div><a href={''} onClick={(e) => { e.preventDefault(); history.push('/browse/') }}>Browse view</a></div>
       <div><a href={''} onClick={(e) => { e.preventDefault(); history.push('/studio/') }}>Editor view</a></div>
+      <div><a href={''} onClick={(e) => { e.preventDefault(); history.push('/discussion/') }}>Discussion</a></div>
     </Sheet>
   )
 }
