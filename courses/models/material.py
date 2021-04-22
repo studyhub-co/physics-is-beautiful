@@ -65,8 +65,8 @@ class Material(BaseItemModel):
     # this is a data that uses by material_problem_type
     data = JSONField(default=dict)  # only Postgresql support!
 
-    # thread = models.OneToOneField(Thread, related_name=course_material_thread_related_name, null=True,
-    #                               on_delete=models.CASCADE)
+    thread = models.OneToOneField(Thread, related_name=course_material_thread_related_name, null=True,
+                                   on_delete=models.CASCADE)
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_materials')
 
     def get_correct_data(self):

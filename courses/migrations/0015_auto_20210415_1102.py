@@ -13,17 +13,28 @@ class Migration(migrations.Migration):
     ]
 
     def copy_topics_from_djeddit(apps, schema_editor):
-        DJThread = apps.get_model('djeddit', 'Tread')
+        DJThread = apps.get_model('djeddit', 'Thread')
         DJTopic = apps.get_model('djeddit', 'Topic')
         DJPost = apps.get_model('djeddit', 'Post')
         DJUserPostVote = apps.get_model('djeddit', 'UserPostVote')
 
-        Thread = apps.get_model('react-comments-django', 'Tread')
-        Topic = apps.get_model('react-comments-django', 'Topic')
-        Post = apps.get_model('react-comments-django', 'Post')
-        UserPostVote = apps.get_model('react-comments-django', 'UserPostVote')
+        Thread = apps.get_model('react_comments_django', 'Thread')
+        Topic = apps.get_model('react_comments_django', 'Topic')
+        Post = apps.get_model('react_comments_django', 'Post')
+        UserPostVote = apps.get_model('react_comments_django', 'UserPostVote')
 
-        copy_comments(DJThread, DJTopic, DJPost, DJUserPostVote, Topic, Thread, Post, UserPostVote)
+        kwargs = {
+            '_DJThread': DJThread,
+            '_DJTopic': DJTopic,
+            '_DJPost': DJPost,
+            '_DJUserPostVote': DJUserPostVote,
+            '_Topic': Topic,
+            '_Thread': Thread,
+            '_Post': Post,
+            '_UserPostVote': UserPostVote
+        }
+
+        copy_comments(**kwargs)
 
     operations = [
         migrations.RunPython(copy_topics_from_djeddit),
