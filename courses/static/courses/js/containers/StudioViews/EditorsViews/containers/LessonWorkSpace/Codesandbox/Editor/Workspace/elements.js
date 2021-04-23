@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in'
 
 export const getContainerStyles = props => {
@@ -149,8 +149,10 @@ export const IconArea = styled.div`
   opacity: 0;
   line-height: 1;
   vertical-align: middle;
-  ${fadeIn(0)};
 `
+// TODO , error
+// It seems you are interpolating a keyframe declaration (bcCCNc) into an untagged string. This was supported in styled-components v3, but is not longer supported in v4 as keyframes are now injected on-demand. Please wrap your string in the css\`\` helper which ensures the styles are injected correctly.
+// ${fadeIn(0)};
 
 export const WorkspaceInputContainer = styled.div`
   display: inline-block;

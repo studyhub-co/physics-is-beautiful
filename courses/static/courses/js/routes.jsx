@@ -8,6 +8,7 @@ import {
 } from './containers/StudioViews/EditorsViews'
 
 import HomeIndex from './containers/homeIndex'
+import DiscussionIndex from './containers/discussionIndex'
 
 import NotFoundView from './components/NotFoundView'
 // import EditCourseProfileView from './containers/StudioViews/editProfile'
@@ -42,7 +43,7 @@ export default(
     {/* <Route path={BASE_URL + '/course/profile/:uuid'} component={CourseProfileView} /> */}
 
     {/* discussion */}
-    <Route exact path={'/discussion/'} component={BrowseStudioDashboard} />
+    <Route exact path={'/discussion/'} component={DiscussionIndex} />
 
     {/* fixme */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}
