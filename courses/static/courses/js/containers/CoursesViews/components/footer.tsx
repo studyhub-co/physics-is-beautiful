@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
+import Modal from 'react-bootstrap/Modal'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
+
+import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
 // import { Material } from '../../models/'
 
@@ -42,7 +45,6 @@ const Footer: React.FC<FooterProps> = props => {
   } = props
 
   const [showCommentsModal, setShowCommentsModal] = useState(false)
-  // todo userReactionStateHook + to make sure it's good place for init
 
   // data: {
   //   state: 'checked',
@@ -115,7 +117,30 @@ const Footer: React.FC<FooterProps> = props => {
   // calculate with ratio
   const [percentCompleted, setPercentCompleted] = useState(calculateProgress(currentMaterial?.score || 0))
 
-  // console.log(userReactionResult);
+  const commentsModal =
+      <Modal
+        show={showCommentsModal}
+        onHide={handleShowComments}
+        dialogClassName='modal-90w'
+        aria-labelledby='example-custom-modal-styling-title'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id='example-custom-modal-styling-title'>
+            Discussion
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/*{this.props.solutionText &&*/}
+          {/*    <MarkdownMathRender source={this.props.solutionText} />*/}
+          {/*}*/}
+          {/* TODO we can't show correct answer here */}
+          {/*{correctAnswer}*/}
+          <ThreadComponent
+            anonAsUserObject={Boolean(true)}
+            threadId={currentMaterial.thread}
+          />
+        </Modal.Body>
+      </Modal>
 
   return (
     <div id='footer' style={{
@@ -143,6 +168,7 @@ const Footer: React.FC<FooterProps> = props => {
           </Col>
         </Row>
         }
+        {commentsModal}
         <Row>
           <Col md='12'>
             <CheckContinueButton

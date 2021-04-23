@@ -2,6 +2,9 @@ import os
 
 from django_s3_storage.storage import S3Error
 
+from djeddit.models import Thread as DJThread
+from react_comments_django.models import Thread
+
 from ...models import Material, MaterialProblemType, JsonDataImage
 
 from .json_data_templates.vector import get_vector_json_data
@@ -14,8 +17,9 @@ def copy_question(lesson, question):
     # copy data
     new_material = Material()
     for field in question._meta.get_fields():  # True, False?
-        if field.name in ('id', 'uuid', 'lesson', 'tagged_items', 'tags', 'text'):
+        if field.name in ('id', 'uuid', 'lesson', 'tagged_items', 'tags', 'text', 'thread'):
             continue
+
 
         new_field_value = getattr(question, field.name)
 
@@ -24,6 +28,9 @@ def copy_question(lesson, question):
         #     new_field_value += ' material'
 
         setattr(new_material, field.name, new_field_value)
+
+    # copy thread (already exist due migration comments data was in 0015_auto_20210415_1102)
+    new_material.thread = Thread.objects.get(id=question.thread.id)
 
     new_material.name = question.text if len(question.text) > 3 else question.text + ' material'
     new_material.lesson = lesson

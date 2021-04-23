@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^classroom/', include('classroom.urls_api')),
     url(r'^resources/', include('resources.urls_api')),
     url(r'^djeddit/', include('djeddit.urls_api')),
+    url(r'^react-comments/', include('react_comments_django.urls_api')),
     url(r'^notifications/', include('notifications.urls_api')),
     url(r'^reputation/', include('user_reputation.urls_api')),
     # new api

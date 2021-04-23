@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('courses', '0014_materialproblemtypesandboxcache_timestamp'),
+        ('react_comments_django', '0001_initial')
     ]
 
     def copy_topics_from_djeddit(apps, schema_editor):

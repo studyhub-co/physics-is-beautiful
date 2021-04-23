@@ -13,7 +13,6 @@ import {
   checkHttpError,
   getAxios
 } from '../../../../../resources/static/resources/js/utils'
-import { API_DJEDDIT_PREFIX } from '../../../../../resources/static/resources/js/utils/config'
 
 export const API_PREFIX = '/api/v1/studio/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
