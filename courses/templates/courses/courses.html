@@ -80,6 +80,9 @@
   var REACT_COMMENTS_DJANGO_CONFIG = {
     API_PROFILE_URL: '/api/v1/profiles/me/',
     EMBEDDED_MODE: true,
+    {#  fixme we need to get basename (e.g. beta/) from SPA 'history' config #}
+    {#  see courses/static/courses/js/utils/config.jsx #}
+    ROOT_URL: '/beta/discussion/',
     API_URL_POSTFIX: 'react-comments/',
     DISPLAY_USERNAME_FIELD: 'display_name',
     ANON_AS_USER_OBJECT: true

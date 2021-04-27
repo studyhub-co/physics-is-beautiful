@@ -43,7 +43,7 @@ export default(
     {/* <Route path={BASE_URL + '/course/profile/:uuid'} component={CourseProfileView} /> */}
 
     {/* discussion */}
-    <Route exact path={'/discussion/'} component={DiscussionIndex} />
+    <Route path={'/discussion'} component={DiscussionIndex} />
 
     {/* fixme */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}

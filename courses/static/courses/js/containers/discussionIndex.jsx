@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 
 import TopicsListComponent from '@studyhub.co/react-comments-django-client/lib/TopicsListComponent'
 
+import history from '../history'
 import { Sheet } from '../components/Sheet'
 // import { Col, Container, Row } from 'react-bootstrap'
 // import { RingLoader } from 'react-spinners'
@@ -15,6 +16,7 @@ const DiscussionIndex = props => {
     <Sheet>
       <TopicsListComponent
         anonAsUserObject={Boolean(true)}
+        history={history}
       />
     </Sheet>
   )
