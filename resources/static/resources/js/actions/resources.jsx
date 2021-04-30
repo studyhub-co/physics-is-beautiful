@@ -146,7 +146,7 @@ export function fetchProblem (uuid, orderingValue) {
       ordering = '?ordering=' + orderingValue
     }
 
-    return getAxios().get(API_PREFIX + 'problems/' + uuid + ordering)
+    return getAxios().get(API_PREFIX + 'problems/' + uuid + '/' + ordering)
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveProblem(response.data))
@@ -167,7 +167,7 @@ export function receiveSolution (solution) {
 
 export function fetchSolution (uuid) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + 'solutions/' + uuid)
+    return getAxios().get(API_PREFIX + 'solutions/' + uuid + '/')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(receiveSolution(response.data))

@@ -7,8 +7,10 @@ import Moment from 'react-moment'
 import { Grid, Row, Col, Button, Glyphicon, FormGroup, InputGroup, FormControl, Form } from 'react-bootstrap'
 import PDF from 'react-pdf-js'
 
-import { Thread } from '../../components/reactDjeddit/thread'
-import history from '../../history'
+// import { Thread } from '../../components/reactDjeddit/thread'
+import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
+// import history from '../../history'
+import { withRouter } from 'react-router'
 import { Sheet } from '../../components/Sheet'
 
 // import { Document } from 'react-pdf' // https://github.com/wojtekmaj/react-pdf/issues/52
@@ -19,7 +21,7 @@ import { Sheet } from '../../components/Sheet'
 // import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
 
 import * as resourcesCreators from '../../actions/resources'
-import * as djedditCreators from '../../actions/djeddit'
+// import * as reactCommentsCreators from '../../actions/reactComments'
 import * as profileCreators from '../../actions/profile'
 
 import { BASE_URL } from '../../utils/config'
@@ -74,20 +76,20 @@ class TextBookSolutionView extends React.Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.solution !== this.props.solution) {
-      // reload thread
-      this.props.djedditActions.fetchThread(this.props.solution.thread)
-
-      // !=== part of google proxy pdf viewer
-      // we can't login in to google (auth popup will be blocked by browser)
-      // if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
-      //   // so load pdf only if user already logged in
-      //   if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token &&
-      //     this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
-      //     this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
-      //   }
-      // }
-    }
+    // if (prevProps.solution !== this.props.solution) {
+    //   // reload thread
+    //   this.props.reactCommentsActions.fetchThread(this.props.solution.thread)
+    //
+    //   // !=== part of google proxy pdf viewer
+    //   // we can't login in to google (auth popup will be blocked by browser)
+    //   // if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
+    //   //   // so load pdf only if user already logged in
+    //   //   if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token &&
+    //   //     this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
+    //   //     this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
+    //   //   }
+    //   // }
+    // }
 
     if (this.props.resource && this.props.solution &&
       (!this.titleSet ||
@@ -162,22 +164,17 @@ class TextBookSolutionView extends React.Component {
   }
 
   onPrevNextSolutionClick (value) {
-    if (this.props.solution && this.props.problem) {
+    const { history } = this.props
 
-      var resourceTitle = this.props.resource.metadata.data.volumeInfo.title
-      var problemTitle = this.props.problem.title
+    if (this.props.solution && this.props.problem) {
+      const resourceTitle = this.props.resource.metadata.data.volumeInfo.title
+      const problemTitle = this.props.problem.title
 
       for (let x = 0; x < this.props.problem.solutions.length; x++) {
         if (this.props.problem.solutions[x].uuid === this.props.solution.uuid) {
           if (value === 'next') {
             if (typeof this.props.problem.solutions[x + 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x + 1].uuid)
-              // history.push(BASE_URL +
-              //   this.props.resource.uuid +
-              //   '/problems/' +
-              //   this.props.problem.uuid +
-              //   '/solutions/' +
-              //   this.props.problem.solutions[x + 1].uuid)
               history.push(BASE_URL +
                 slugify(resourceTitle) + '/problems/' +
                 slugify(problemTitle) + '/solutions/' +
@@ -193,13 +190,6 @@ class TextBookSolutionView extends React.Component {
                 slugify(problemTitle) + '/solutions/' +
                 slugify(this.props.problem.solutions[x - 1].title) + '/' + this.props.problem.solutions[x - 1].uuid + '/'
               )
-
-            //   history.push(BASE_URL +
-            //     this.props.resource.uuid +
-            //     '/problems/' +
-            //     this.props.problem.uuid +
-            //     '/solutions/' +
-            //     this.props.problem.solutions[x - 1].uuid)
             }
           }
         }
@@ -244,15 +234,15 @@ class TextBookSolutionView extends React.Component {
   }
 
   // onSubmitPost (post) {
-  //   this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread)
+  //   this.props.reactCommentsActions.createPostWithRefreshThread(post, this.props.solution.thread)
   // }
   //
   // onEditPost (post) {
-  //   this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread)
+  //   this.props.reactCommentsActions.updatePostWithRefreshThread(post, this.props.solution.thread)
   // }
   //
   // onDeletePost (post) {
-  //   this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread)
+  //   this.props.reactCommentsActions.deletePostWithRefreshThread(post, this.props.solution.thread)
   // }
 
   renderPagination (page, pages) {
@@ -341,7 +331,7 @@ class TextBookSolutionView extends React.Component {
         slugify(problemTitle) + '/' + this.props.problem.uuid + '/'
     }
 
-    // history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid'])
+    const { history } = this.props
 
     return (
       <Sheet>
@@ -468,21 +458,31 @@ class TextBookSolutionView extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col sm={12} md={12}>
-                { this.props.thread
-                  ? <Thread
-                    thread={this.props.thread}
-                    currentProfile={this.props.profile}
-                    // onSubmitPost={this.onSubmitPost}
-                    // onSubmitEditPost={this.onEditPost}
-                    // onDeletePost={this.onDeletePost}
-                    onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread) }}
-                    onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}
-                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread) }}
-                    changePostVote={this.props.djedditActions.changePostVote}
-                  /> : null }
-              </Col>
-            </Row>
+            <Col sm={12} md={12}>
+              {this.props.solution && this.props.solution.thread
+                ? <ThreadComponent
+                  threadId={this.props.resource.thread}
+                  anonAsUserObject={Boolean(true)}
+                />
+                : null}
+            </Col>
+          </Row>
+            {/*<Row>*/}
+            {/*  <Col sm={12} md={12}>*/}
+            {/*    { this.props.thread*/}
+            {/*      ? <Thread*/}
+            {/*        thread={this.props.thread}*/}
+            {/*        currentProfile={this.props.profile}*/}
+            {/*        // onSubmitPost={this.onSubmitPost}*/}
+            {/*        // onSubmitEditPost={this.onEditPost}*/}
+            {/*        // onDeletePost={this.onDeletePost}*/}
+            {/*        onSubmitPost={(post) => { this.props.reactCommentsActions.createPostWithRefreshThread(post, this.props.solution.thread) }}*/}
+            {/*        onSubmitEditPost={(post) => { this.props.reactCommentsActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}*/}
+            {/*        onDeletePost={(post) => { this.props.reactCommentsActions.deletePostWithRefreshThread(post, this.props.solution.thread) }}*/}
+            {/*        changePostVote={this.props.reactCommentsActions.changePostVote}*/}
+            {/*      /> : null }*/}
+            {/*  </Col>*/}
+            {/*</Row>*/}
           </Grid>
           : null }
       </Sheet>
@@ -498,13 +498,13 @@ TextBookSolutionView.propTypes = {
     fetchSolution: PropTypes.func.isRequired,
     solutionVoteAndRefresh: PropTypes.func.isRequired
   }),
-  djedditActions: PropTypes.shape({
-    fetchThread: PropTypes.func.isRequired,
-    createPostWithRefreshThread: PropTypes.func.isRequired,
-    changePostVote: PropTypes.func.isRequired,
-    updatePostWithRefreshThread: PropTypes.func.isRequired,
-    deletePostWithRefreshThread: PropTypes.func.isRequired
-  }),
+  // reactCommentsActions: PropTypes.shape({
+  //   fetchThread: PropTypes.func.isRequired,
+  //   createPostWithRefreshThread: PropTypes.func.isRequired,
+  //   changePostVote: PropTypes.func.isRequired,
+  //   updatePostWithRefreshThread: PropTypes.func.isRequired,
+  //   deletePostWithRefreshThread: PropTypes.func.isRequired
+  // }),
   profileActions: PropTypes.shape({
     fetchProfileMe: PropTypes.func.isRequired
   }),
@@ -525,7 +525,7 @@ const mapStateToProps = (state) => {
     problem: state.resources.problem,
     resource: state.resources.resource,
     solution: state.resources.solution,
-    thread: state.djeddit.thread,
+    // thread: state.reactComments.thread,
     profile: state.profile.me,
     gapiInitState: state.google.gapiInitState
   }
@@ -535,11 +535,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
-    djedditActions: bindActionCreators(djedditCreators, dispatch),
+    // reactCommentsActions: bindActionCreators(reactCommentsCreators, dispatch),
     profileActions: bindActionCreators(profileCreators, dispatch),
     googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TextBookSolutionView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TextBookSolutionView))
 export { TextBookSolutionView as TextBookSolutionViewNotConnected }

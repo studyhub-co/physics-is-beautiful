@@ -124,7 +124,6 @@ library_test
 
 # emacs
 *~
-/package-lock.json
 
 # git windows
 sh.exe.stackdump
@@ -140,5 +139,4 @@ pip-selfcheck.json
 webpack-stats.json
 
 # yarn
-yarn.lock
 yarn-error.log

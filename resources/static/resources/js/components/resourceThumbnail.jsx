@@ -1,15 +1,16 @@
 import React from 'react'
-
 import PropTypes from 'prop-types'
+
+import { withRouter } from 'react-router'
 
 import { Image } from 'react-bootstrap'
 import { FaImage } from 'react-icons/fa'
 import { BASE_URL } from '../utils/config'
 import { slugify } from '../utils/urls'
 
-import history from '../history'
+// import history from '../history'
 
-export default class ResourceThumbnail extends React.Component { // TODO create components for each resources types
+class ResourceThumbnail extends React.Component { // TODO create components for each resources types
   constructor (props) {
     super(props)
     this.onTitleClick = this.onTitleClick.bind(this)
@@ -21,6 +22,7 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
     if (!title) {
       title = 'Unknown resource'
     }
+    const { history } = this.props
     history.push(BASE_URL + slugify(title) + '/' + this.props.resource.uuid + '/')
   }
 
@@ -87,3 +89,5 @@ export default class ResourceThumbnail extends React.Component { // TODO create 
 ResourceThumbnail.propTypes = {
   resource: PropTypes.object.isRequired
 }
+
+export default withRouter(ResourceThumbnail)

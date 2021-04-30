@@ -63,7 +63,6 @@ let ChapterClass = class Chapter extends React.Component {
               title={'Remove the chapter'}
             >
               {/* remove chapter button */}
-              {/*<Glyphicon glyph='remove' />&nbsp;*/}
               <FaTimes />&nbsp;
             </span>
             : null }
@@ -135,7 +134,6 @@ let ChapterClass = class Chapter extends React.Component {
                 style={{paddingLeft: '3rem', cursor: 'pointer'}}
                 onClick={() => this.props.addProblemClick(this.props.chapter)}
                 className={'blue-text'}>
-                {/*<Glyphicon glyph='plus' /> Add problem*/}
                 <FaPlus /> Add problem
               </div>
             </DockableDropTarget>

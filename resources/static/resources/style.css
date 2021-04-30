@@ -5,6 +5,7 @@
 
 /* common with classroom, need to create common.css */
 
+
 .resources .blue-title {
     font-size: 2rem;
     color: rgb(8, 209, 255);
@@ -180,7 +181,7 @@
 /*.unit .drop-target, .module .drop-target { float:left; margin-left:-60px; padding-left:60px;}*/
 /*.editor .unit .btn-add-module, .editor .module .btn-add-lesson {text-align:center;}*/
 
-/* from djeddit css */
+/* from reactComments css */
 
 .bs-callout {
     padding: 10px 20px;

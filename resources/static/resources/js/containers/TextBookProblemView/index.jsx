@@ -7,12 +7,14 @@ import Moment from 'react-moment'
 import { Grid, Row, Col, Table, Button, Glyphicon, Modal, Dropdown, MenuItem } from 'react-bootstrap'
 import AdSense from 'react-adsense'
 
-import history from '../../history'
+// import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
 import { slugify } from '../../utils/urls'
-import { Thread } from '../../components/reactDjeddit/thread'
+// import { Thread } from '../../components/reactDjeddit/thread'
+import { withRouter } from 'react-router'
+import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
 import {
   handleFileChange,
@@ -22,7 +24,8 @@ import {
 import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
-import * as djedditCreators from '../../actions/djeddit'
+// import * as reactCommentsCreators from '../../actions/reactComments'
+import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
 class HorizontalOptionToggle extends React.Component {
   constructor (props, context) {
@@ -80,10 +83,10 @@ class TextBookProblemView extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.problem !== this.props.problem) {
-      // reload thread
-      this.props.djedditActions.fetchThread(this.props.problem.thread)
-    }
+    // if (prevProps.problem !== this.props.problem) {
+    //   // reload thread
+    //   this.props.reactCommentsActions.fetchThread(this.props.problem.thread)
+    // }
 
     // Title / tags
     if (this.props.resource && this.props.problem &&
@@ -394,17 +397,28 @@ class TextBookProblemView extends React.Component {
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                { this.props.thread
-                  ? <Thread
-                    thread={this.props.thread}
-                    currentProfile={this.props.profile}
-                    onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.problem.thread) }}
-                    onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}
-                    onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.problem.thread) }}
-                    changePostVote={this.props.djedditActions.changePostVote}
-                  /> : null }
+                { this.props.problem && this.props.problem.thread ?
+                  <ThreadComponent
+                    threadId={this.props.problem.thread}
+                    anonAsUserObject={Boolean(true)}
+                  />
+                  : null
+                }
               </Col>
             </Row>
+            {/*<Row>*/}
+            {/*  <Col sm={12} md={12}>*/}
+            {/*    { this.props.thread*/}
+            {/*      ? <Thread*/}
+            {/*        thread={this.props.thread}*/}
+            {/*        currentProfile={this.props.profile}*/}
+            {/*        onSubmitPost={(post) => { this.props.reactCommentsActions.createPostWithRefreshThread(post, this.props.problem.thread) }}*/}
+            {/*        onSubmitEditPost={(post) => { this.props.reactCommentsActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}*/}
+            {/*        onDeletePost={(post) => { this.props.reactCommentsActions.deletePostWithRefreshThread(post, this.props.problem.thread) }}*/}
+            {/*        changePostVote={this.props.reactCommentsActions.changePostVote}*/}
+            {/*      /> : null }*/}
+            {/*  </Col>*/}
+            {/*</Row>*/}
           </Grid>
           : null }
       </Sheet>
@@ -422,13 +436,13 @@ TextBookProblemView.propTypes = {
     updateSolutionReloadProblem: PropTypes.func.isRequired,
     removeSolutionReloadProblem: PropTypes.func.isRequired
   }),
-  djedditActions: PropTypes.shape({
-    fetchThread: PropTypes.func.isRequired,
-    createPostWithRefreshThread: PropTypes.func.isRequired,
-    changePostVote: PropTypes.func.isRequired,
-    updatePostWithRefreshThread: PropTypes.func.isRequired,
-    deletePostWithRefreshThread: PropTypes.func.isRequired
-  }),
+  // reactCommentsActions: PropTypes.shape({
+  //   fetchThread: PropTypes.func.isRequired,
+  //   createPostWithRefreshThread: PropTypes.func.isRequired,
+  //   changePostVote: PropTypes.func.isRequired,
+  //   updatePostWithRefreshThread: PropTypes.func.isRequired,
+  //   deletePostWithRefreshThread: PropTypes.func.isRequired
+  // }),
   googleActions: PropTypes.shape({
     gapiInitialize: PropTypes.func.isRequired
   }).isRequired,
@@ -439,7 +453,7 @@ TextBookProblemView.propTypes = {
   problem: PropTypes.object,
   profile: PropTypes.object,
   resource: PropTypes.object,
-  thread: PropTypes.object
+  // thread: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
@@ -448,7 +462,7 @@ const mapStateToProps = (state) => {
     resource: state.resources.resource,
     gapiInitState: state.google.gapiInitState,
     profile: state.profile.me,
-    thread: state.djeddit.thread
+    // thread: state.reactComments.thread
   }
 }
 
@@ -456,11 +470,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     googleActions: bindActionCreators(googleCreators, dispatch),
-    djedditActions: bindActionCreators(djedditCreators, dispatch),
+    // reactCommentsActions: bindActionCreators(reactCommentsCreators, dispatch),
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
     profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TextBookProblemView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TextBookProblemView))
 export { TextBookProblemView as TextBookProblemViewNotConnected }

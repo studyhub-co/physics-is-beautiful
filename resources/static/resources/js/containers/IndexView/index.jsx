@@ -6,6 +6,12 @@ import PropTypes from 'prop-types'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
 
+// withRouter uses current history, history can be define in current app
+// or in parent app
+import { withRouter } from 'react-router'
+
+// import history from '../../history'
+
 import { Sheet } from '../../components/Sheet'
 import ResourceSearchView from './searchView'
 
@@ -17,7 +23,6 @@ import {
 
 import SearchRowView from './searchRow'
 
-import history from '../../history'
 import * as resourcesCreators from '../../actions/resources'
 import ResourceThumbnail from '../../components/resourceThumbnail'
 
@@ -81,13 +86,19 @@ class IndexView extends React.Component {
   loadNextSlides (next, slidesListName) {
     var self = this
 
-    if (self.state.recentSlides.length <= next + 5 && self.state.recentNextPageUrl && slidesListName === 'recentSlides') {
+    if (self.state.recentSlides.length <= next + 5 &&
+      self.state.recentNextPageUrl &&
+      slidesListName === 'recentSlides') {
       self.props.resourcesActions.loadRecentResourcesList(self.state.recentNextPageUrl)
     }
-    if (self.state.popularSlides.length <= next + 5 && self.state.popularNextPageUrl && slidesListName === 'popularSlides') {
+    if (self.state.popularSlides.length <= next + 5 &&
+      self.state.popularNextPageUrl &&
+      slidesListName === 'popularSlides') {
       self.props.resourcesActions.loadPopularResourcesList(self.state.popularNextPageUrl)
     }
-    if (self.state.newSlides.length <= next + 5 && self.state.newNextPageUrl && slidesListName === 'newSlides') {
+    if (self.state.newSlides.length <= next + 5 &&
+      self.state.newNextPageUrl &&
+      slidesListName === 'newSlides') {
       self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
     }
   }
@@ -96,7 +107,8 @@ class IndexView extends React.Component {
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
 
-      if (props[prefix + 'ResourcesList'] && props[prefix + 'ResourcesList'] !== this.props[prefix + 'ResourcesList']) {
+      if (props[prefix + 'ResourcesList'] &&
+        props[prefix + 'ResourcesList'] !== this.props[prefix + 'ResourcesList']) {
         var slides = this.populateSlides(slidesNames[i], props)
         var newState = {}
         newState[prefix + 'NextPageUrl'] = props[prefix + 'ResourcesList'].next
@@ -107,6 +119,7 @@ class IndexView extends React.Component {
   }
 
   onAddResourceClick (addResourceUrl) {
+    const { history } = this.props
     history.push(addResourceUrl)
   }
 
@@ -287,7 +300,7 @@ IndexView.propTypes = {
   // data
   popularResourcesList: PropTypes.object,
   recentResourcesList: PropTypes.object,
-  newResourcesList: PropTypes.object,
+  newResourcesList: PropTypes.object
   // dispatch: PropTypes.func.isRequired
 }
 
@@ -306,5 +319,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IndexView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(IndexView))
 export { IndexView as IndexViewNotConnected }

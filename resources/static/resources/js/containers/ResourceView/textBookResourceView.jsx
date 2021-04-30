@@ -8,10 +8,9 @@ import { FaPlus, FaImage } from 'react-icons/fa'
 
 import {DockableDropTarget, DragItemTypes} from '../../dnd'
 import Chapter from './Components/chapter'
-import { Thread } from '../../components/reactDjeddit/thread'
 import * as resourcesCreators from '../../actions/resources'
 import * as profileCreators from '../../actions/profile'
-import * as djedditCreators from '../../actions/djeddit'
+// import * as reactCommentsCreators from '../../actions/reactComments'
 import { checkNestedProp } from '../../utils'
 
 class TextBookResourceView extends React.Component {
@@ -40,15 +39,16 @@ class TextBookResourceView extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    // if (this.props.resource && !this.props.thread) {
-    if (
-      // we get resource via props!
-      (prevProps.resource !== this.props.resource && this.props.resource) || // reload
-      (this.props.resource && !this.props.thread) // new
-    ) {
-      // reload thread
-      this.props.djedditActions.fetchThread(this.props.resource.thread)
-    }
+    // TODO remove, we no need this due ThreeadComponent in external app
+    // // if (this.props.resource && !this.props.thread) {
+    // if (
+    //   // we get resource via props!
+    //   (prevProps.resource !== this.props.resource && this.props.resource) || // reload
+    //   (this.props.resource && !this.props.thread) // new
+    // ) {
+    //   // reload thread
+    //   this.props.reactCommentsActions.fetchThread(this.props.resource.thread)
+    // }
 
     // title / metatags
     if (this.props.resource && !this.titleSet) {
@@ -357,19 +357,6 @@ class TextBookResourceView extends React.Component {
               </div> : 'Book data not found'}
           </Col>
         </Row>
-        {/*<Row>*/}
-          {/*<Col sm={12} md={12}>*/}
-            {/*{ this.props.thread*/}
-              {/*? <Thread*/}
-                {/*thread={this.props.thread}*/}
-                {/*currentProfile={this.props.profile}*/}
-                {/*onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.resource.thread) }}*/}
-                {/*onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.resource.thread) }}*/}
-                {/*onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.resource.thread) }}*/}
-                {/*changePostVote={this.props.djedditActions.changePostVote}*/}
-              {/*/> : null }*/}
-          {/*</Col>*/}
-        {/*</Row>*/}
       </Container>
     )
   }
@@ -377,13 +364,13 @@ class TextBookResourceView extends React.Component {
 
 TextBookResourceView.propTypes = {
   // actions
-  djedditActions: PropTypes.shape({
-    fetchThread: PropTypes.func.isRequired,
-    createPostWithRefreshThread: PropTypes.func.isRequired,
-    changePostVote: PropTypes.func.isRequired,
-    updatePostWithRefreshThread: PropTypes.func.isRequired,
-    deletePostWithRefreshThread: PropTypes.func.isRequired
-  }),
+  // reactCommentsActions: PropTypes.shape({
+  //   fetchThread: PropTypes.func.isRequired,
+  //   createPostWithRefreshThread: PropTypes.func.isRequired,
+  //   changePostVote: PropTypes.func.isRequired,
+  //   updatePostWithRefreshThread: PropTypes.func.isRequired,
+  //   deletePostWithRefreshThread: PropTypes.func.isRequired
+  // }),
   resourcesActions: PropTypes.shape({
     addProblem: PropTypes.func.isRequired,
     addChapter: PropTypes.func.isRequired,
@@ -399,14 +386,14 @@ TextBookResourceView.propTypes = {
   // data
   profile: PropTypes.object,
   resource: PropTypes.object,
-  thread: PropTypes.object
+  // thread: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
   return {
     resource: state.resources.resource,
     profile: state.profile.me,
-    thread: state.djeddit.thread
+    // thread: state.reactComments.thread
   }
 }
 
@@ -414,7 +401,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
-    djedditActions: bindActionCreators(djedditCreators, dispatch),
+    // reactCommentsActions: bindActionCreators(reactCommentsCreators, dispatch),
     profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }

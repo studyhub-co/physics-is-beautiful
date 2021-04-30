@@ -9,11 +9,12 @@ import { FaPlus, FaMinus, FaChevronRight, FaChevronLeft, FaArrowUp, FaArrowDown 
 
 import PDF from 'react-pdf-js/dist/index'
 
-// import { Thread } from '../../components/reactDjeddit/thread'
-import history from '../../history'
+// import history from '../../history'
+import { withRouter } from 'react-router'
 import { Sheet } from '../../components/Sheet'
 
-import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
+// import { ThreadComponent } from '@vermus/django-react-react-commentsclient/'
+import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
 // import { Document } from 'react-pdf' // https://github.com/wojtekmaj/react-pdf/issues/52
 // import { Document, setOptions } from 'react-pdf/dist/entry.webpack'
@@ -23,7 +24,7 @@ import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
 // import { downloadGoogleDriveUrl } from '../AddTextBookResourceSteps/lib'
 
 import * as resourcesCreators from '../../actions/resources'
-import * as djedditCreators from '../../actions/djeddit'
+// import * as reactCommentsCreators from '../../actions/reactComments'
 import * as profileCreators from '../../actions/profile'
 
 import { BASE_URL } from '../../utils/config'
@@ -99,20 +100,20 @@ class SolutionView extends React.Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.solution !== this.props.solution) {
-      // reload thread
-      this.props.djedditActions.fetchThread(this.props.solution.thread)
-
-      // !=== part of google proxy pdf viewer
-      // we can't login in to google (auth popup will be blocked by browser)
-      // if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
-      //   // so load pdf only if user already logged in
-      //   if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token &&
-      //     this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
-      //     this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
-      //   }
-      // }
-    }
+    // if (prevProps.solution !== this.props.solution) {
+    //   // reload thread
+    //   this.props.reactCommentsActions.fetchThread(this.props.solution.thread)
+    //
+    //   // !=== part of google proxy pdf viewer
+    //   // we can't login in to google (auth popup will be blocked by browser)
+    //   // if (this.props.gapiInitState && this.props.solution.pdf.external_url) {
+    //   //   // so load pdf only if user already logged in
+    //   //   if (gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token &&
+    //   //     this.props.solution.pdf.external_url.startsWith('https://drive.google.com/')) {
+    //   //     this.loadExternalGooglePdf(this.props.solution.pdf.external_url)
+    //   //   }
+    //   // }
+    // }
 
     if (this.props.resource && this.props.solution &&
       (!this.titleSet ||
@@ -186,17 +187,13 @@ class SolutionView extends React.Component {
       let resourceTitle = this.getResourceTitle()
       let problemTitle = this.props.problem.title
 
+      const { history } = this.props
+
       for (let x = 0; x < this.props.problem.solutions.length; x++) {
         if (this.props.problem.solutions[x].uuid === this.props.solution.uuid) {
           if (value === 'next') {
             if (typeof this.props.problem.solutions[x + 1] !== 'undefined') {
               this.props.resourcesActions.fetchSolution(this.props.problem.solutions[x + 1].uuid)
-              // history.push(BASE_URL +
-              //   this.props.resource.uuid +
-              //   '/problems/' +
-              //   this.props.problem.uuid +
-              //   '/solutions/' +
-              //   this.props.problem.solutions[x + 1].uuid)
               history.push(BASE_URL +
                 slugify(resourceTitle) + '/problems/' +
                 slugify(problemTitle) + '/solutions/' +
@@ -261,15 +258,15 @@ class SolutionView extends React.Component {
   }
 
   // onSubmitPost (post) {
-  //   this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread)
+  //   this.props.reactCommentsActions.createPostWithRefreshThread(post, this.props.solution.thread)
   // }
   //
   // onEditPost (post) {
-  //   this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread)
+  //   this.props.reactCommentsActions.updatePostWithRefreshThread(post, this.props.solution.thread)
   // }
   //
   // onDeletePost (post) {
-  //   this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread)
+  //   this.props.reactCommentsActions.deletePostWithRefreshThread(post, this.props.solution.thread)
   // }
 
   renderPagination (page, pages) {
@@ -368,7 +365,7 @@ class SolutionView extends React.Component {
         slugify(problemTitle) + '/' + this.props.problem.uuid + '/'
     }
 
-    // history.push(BASE_URL + this.props.match.params['resource_uuid'] + '/problems/' + this.props.match.params['problem_uuid'])
+    const { history } = this.props
 
     return (
       <Sheet>
@@ -379,7 +376,6 @@ class SolutionView extends React.Component {
               <a
                 className={'back-button'}
                 onClick={() => { history.push(problemUrl) }} >
-                {/*<span className='glyphicon glyphicon-menu-left' style={{fontSize: 16}} />*/}
                 <FaChevronLeft />
                 All solutions
               </a>
@@ -406,10 +402,6 @@ class SolutionView extends React.Component {
                   <FaArrowUp
                     style={{cursor: 'pointer'}}
                     onClick={() => this.upDownSolutionClick(this.props.solution.uuid, 1)} />
-                  {/*<Glyphicon*/}
-                    {/*glyph='arrow-up'*/}
-                    {/*style={{cursor: 'pointer'}}*/}
-                    {/*onClick={() => this.upDownSolutionClick(this.props.solution.uuid, 1)} />*/}
                 </div>
                 <div>
                   {this.props.solution.vote_score}
@@ -418,10 +410,6 @@ class SolutionView extends React.Component {
                   <FaArrowDown
                     style={{cursor: 'pointer'}}
                     onClick={() => this.upDownSolutionClick(this.props.solution.uuid, -1)} />
-                  {/*<Glyphicon*/}
-                    {/*glyph='arrow-down'*/}
-                    {/*style={{cursor: 'pointer'}}*/}
-                    {/*onClick={() => this.upDownSolutionClick(this.props.solution.uuid, -1)} />*/}
                 </div>
               </Col>
               <Col sm={1} md={1}>
@@ -449,7 +437,6 @@ class SolutionView extends React.Component {
                   style={{marginTop: 0}}
                 >
                   <FaChevronLeft /> Previous solution
-                  {/*<Glyphicon glyph='menu-left' /> Previous solution*/}
                 </button>
                 &nbsp;
                 <button
@@ -458,7 +445,6 @@ class SolutionView extends React.Component {
                   disabled={nextSolutionDisabled === '' ? Boolean(false) : Boolean(true)}
                   style={{marginTop: 0}}
                 >
-                  {/*Next solution <Glyphicon glyph='menu-right' />*/}
                   Next solution <FaChevronRight />
                 </button>
               </Col>
@@ -471,7 +457,6 @@ class SolutionView extends React.Component {
             <Row>
               <Col sm={12} md={12} className={'text-align-center'}>
                 <div style={{overflowX: 'auto', position: 'relative'}}>
-                  {/* <Document file={this.props.solution.pdf.file} /> */}
                   { this.props.solution.pdf.external_url && !pdfFile
                     ? <Button
                       onClick={() => { this.loadExternalGooglePdf(this.props.solution.pdf.external_url) }}
@@ -506,24 +491,13 @@ class SolutionView extends React.Component {
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                { this.props.thread &&
+                { this.props.solution && this.props.solution.thread ?
                   <ThreadComponent
-                    threadId={this.props.thread.id}
+                    threadId={this.props.solution.thread}
                     anonAsUserObject={Boolean(true)}
                   />
+                  : null
                 }
-                {/*{ this.props.thread*/}
-                  {/*? <Thread*/}
-                    {/*thread={this.props.thread}*/}
-                    {/*currentProfile={this.props.profile}*/}
-                    {/*// onSubmitPost={this.onSubmitPost}*/}
-                    {/*// onSubmitEditPost={this.onEditPost}*/}
-                    {/*// onDeletePost={this.onDeletePost}*/}
-                    {/*onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.solution.thread) }}*/}
-                    {/*onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.solution.thread) }}*/}
-                    {/*onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.solution.thread) }}*/}
-                    {/*changePostVote={this.props.djedditActions.changePostVote}*/}
-                  {/*/> : null }*/}
               </Col>
             </Row>
           </Container>
@@ -541,13 +515,13 @@ SolutionView.propTypes = {
     fetchSolution: PropTypes.func.isRequired,
     solutionVoteAndRefresh: PropTypes.func.isRequired
   }),
-  djedditActions: PropTypes.shape({
-    fetchThread: PropTypes.func.isRequired,
-    createPostWithRefreshThread: PropTypes.func.isRequired,
-    changePostVote: PropTypes.func.isRequired,
-    updatePostWithRefreshThread: PropTypes.func.isRequired,
-    deletePostWithRefreshThread: PropTypes.func.isRequired
-  }),
+  // reactCommentsActions: PropTypes.shape({
+  //   fetchThread: PropTypes.func.isRequired,
+  //   createPostWithRefreshThread: PropTypes.func.isRequired,
+  //   changePostVote: PropTypes.func.isRequired,
+  //   updatePostWithRefreshThread: PropTypes.func.isRequired,
+  //   deletePostWithRefreshThread: PropTypes.func.isRequired
+  // }),
   profileActions: PropTypes.shape({
     fetchProfileMe: PropTypes.func.isRequired
   }),
@@ -558,8 +532,8 @@ SolutionView.propTypes = {
   problem: PropTypes.object,
   resource: PropTypes.object,
   solution: PropTypes.object,
-  thread: PropTypes.object,
-  profile: PropTypes.object,
+  // thread: PropTypes.object,
+  profile: PropTypes.object
   // gapiInitState: PropTypes.bool
 }
 
@@ -568,7 +542,7 @@ const mapStateToProps = (state) => {
     problem: state.resources.problem,
     resource: state.resources.resource,
     solution: state.resources.solution,
-    thread: state.djeddit.thread,
+    // thread: state.reactComments.thread,
     profile: state.profile.me,
     gapiInitState: state.google.gapiInitState
   }
@@ -578,11 +552,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
-    djedditActions: bindActionCreators(djedditCreators, dispatch),
+    // reactCommentsActions: bindActionCreators(reactCommentsCreators, dispatch),
     profileActions: bindActionCreators(profileCreators, dispatch),
     googleActions: bindActionCreators(googleCreators, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SolutionView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SolutionView))
 export { SolutionView as TextBookSolutionViewNotConnected }

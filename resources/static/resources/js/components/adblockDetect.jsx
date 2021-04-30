@@ -1,8 +1,9 @@
 import React from 'react'
-import history from '../history'
+// import history from '../history'
+import { withRouter } from 'react-router'
 import { BASE_URL } from '../utils/config'
 
-export class AdblockDetect extends React.Component {
+class _AdblockDetect extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -16,6 +17,8 @@ export class AdblockDetect extends React.Component {
   }
 
   render () {
+    const { history } = this.props
+
     if (this.state.usingAdblock === true) {
       history.push(BASE_URL + 'adblock/', { prevPath: this.state.path })
     }
@@ -29,3 +32,5 @@ export class AdblockDetect extends React.Component {
     )
   }
 }
+
+export const AdblockDetect = withRouter(_AdblockDetect)

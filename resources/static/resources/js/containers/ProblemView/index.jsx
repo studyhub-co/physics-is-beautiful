@@ -4,16 +4,18 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Container, Row, Col, Table, Button, Modal, Dropdown, DropdownItem } from 'react-bootstrap'
+import { Container, Row, Col, Table, Button, Modal, Dropdown } from 'react-bootstrap'
 import { FaPlus, FaEllipsisH, FaChevronLeft, FaArrowDown, FaArrowUp, FaCommentAlt } from 'react-icons/fa'
 import AdSense from 'react-adsense'
+import { withRouter } from 'react-router'
+// import history from '../../history'
+import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
-import history from '../../history'
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
 import { BASE_URL } from '../../utils/config'
 import { slugify } from '../../utils/urls'
-import { Thread } from '../../components/reactDjeddit/thread'
+
 import { AdblockDetect } from '../../components/adblockDetect'
 
 import { checkNestedProp } from '../../utils/index'
@@ -26,32 +28,47 @@ import {
 import { EditableExternalEventLabel, EditableLabel } from '../../utils/editableLabel'
 import * as googleCreators from '../../actions/google'
 import * as profileCreators from '../../actions/profile'
-import * as djedditCreators from '../../actions/djeddit'
-import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
+// import * as reactCommentsCreators from '../../actions/reactComments'
+// import { ThreadComponent } from '@vermus/django-react-react-commentsclient/'
 
-class HorizontalOptionToggle extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-  }
-
-  handleClick (e) {
-    e.preventDefault()
-    this.props.onClick(e)
-  }
-
-  render () {
-    return (
-      <span onClick={this.handleClick} style={{cursor: 'pointer'}}>
-        <FaEllipsisH />
-        {/* <Glyphicon */}
-        {/* glyph='option-horizontal' */}
-        {/* style={{cursor: 'pointer'}} */}
-        {/* /> */}
-      </span>
-    )
-  }
+const HorizontalOptionToggle = React.forwardRef(({ children, onClick }, ref) => {
+  return (
+    <span
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault()
+        onClick(e)
+      }} style={{cursor: 'pointer'}}>
+      <FaEllipsisH />
+      {children}
+    </span>
+  )
 }
+)
+
+// class HorizontalOptionToggle extends React.Component {
+//   constructor (props, context) {
+//     super(props, context)
+//     this.handleClick = this.handleClick.bind(this)
+//   }
+//
+//   handleClick (e) {
+//     e.preventDefault()
+//     this.props.onClick(e)
+//   }
+//
+//   render () {
+//     return (
+//       <span onClick={this.handleClick} style={{cursor: 'pointer'}}>
+//         <FaEllipsisH />
+//         {/* <Glyphicon */}
+//         {/* glyph='option-horizontal' */}
+//         {/* style={{cursor: 'pointer'}} */}
+//         {/* /> */}
+//       </span>
+//     )
+//   }
+// }
 
 class ProblemView extends React.Component {
   constructor (props) {
@@ -103,10 +120,10 @@ class ProblemView extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.problem !== this.props.problem) {
-      // reload thread
-      this.props.djedditActions.fetchThread(this.props.problem.thread)
-    }
+    // if (prevProps.problem !== this.props.problem) {
+    //   // reload thread
+    //   this.props.reactCommentsActions.fetchThread(this.props.problem.thread)
+    // }
 
     // Title / tags
     if (this.props.resource && this.props.problem &&
@@ -180,6 +197,7 @@ class ProblemView extends React.Component {
   }
 
   onClickSolution (e, solution) {
+    const { history } = this.props
     if (this.state.solutionEditModeUuid === solution.uuid) { return } // do not redirect while edit mode
     // history.push(BASE_URL + this.props.resource.uuid + '/problems/' + this.props.problem.uuid + '/solutions/' + uuid)
 
@@ -256,6 +274,8 @@ class ProblemView extends React.Component {
       // history.push(BASE_URL + this.props.match.params['resource_uuid'])
     }
 
+    const { history } = this.props
+
     return (
       <Sheet>
         <AdblockDetect />
@@ -291,8 +311,8 @@ class ProblemView extends React.Component {
                     {this.state.ordering}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <DropdownItem eventKey='Top'>Top</DropdownItem>
-                    <DropdownItem eventKey='New'>New</DropdownItem>
+                    <Dropdown.Item eventKey='Top'>Top</Dropdown.Item>
+                    <Dropdown.Item eventKey='New'>New</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </Col>
@@ -408,8 +428,8 @@ class ProblemView extends React.Component {
                                 {/* <HorizontalOptionToggle bsRole='toggle' data-boundary='body' /> */}
                                 <Dropdown.Toggle as={HorizontalOptionToggle} />
                                 <Dropdown.Menu>
-                                  <DropdownItem eventKey='Edit'>Edit</DropdownItem>
-                                  <DropdownItem eventKey='Delete'>Delete</DropdownItem>
+                                  <Dropdown.Item eventKey='Edit'>Edit</Dropdown.Item>
+                                  <Dropdown.Item eventKey='Delete'>Delete</Dropdown.Item>
                                 </Dropdown.Menu>
                               </Dropdown>
                             </td> : null }
@@ -427,21 +447,13 @@ class ProblemView extends React.Component {
             </Row>
             <Row>
               <Col sm={12} md={12}>
-                { this.props.thread &&
-                  <ThreadComponent
-                    threadId={this.props.thread.id}
+                { this.props.problem && this.props.problem.thread
+                  ? <ThreadComponent
+                    threadId={this.props.problem.thread}
                     anonAsUserObject={Boolean(true)}
                   />
+                  : null
                 }
-                {/*{ this.props.thread*/}
-                  {/*? <Thread*/}
-                    {/*thread={this.props.thread}*/}
-                    {/*currentProfile={this.props.profile}*/}
-                    {/*onSubmitPost={(post) => { this.props.djedditActions.createPostWithRefreshThread(post, this.props.problem.thread) }}*/}
-                    {/*onSubmitEditPost={(post) => { this.props.djedditActions.updatePostWithRefreshThread(post, this.props.problem.thread) }}*/}
-                    {/*onDeletePost={(post) => { this.props.djedditActions.deletePostWithRefreshThread(post, this.props.problem.thread) }}*/}
-                    {/*changePostVote={this.props.djedditActions.changePostVote}*/}
-                  {/*/> : null }*/}
               </Col>
             </Row>
           </Container>
@@ -461,13 +473,13 @@ ProblemView.propTypes = {
     updateSolutionReloadProblem: PropTypes.func.isRequired,
     removeSolutionReloadProblem: PropTypes.func.isRequired
   }),
-  djedditActions: PropTypes.shape({
-    fetchThread: PropTypes.func.isRequired,
-    createPostWithRefreshThread: PropTypes.func.isRequired,
-    changePostVote: PropTypes.func.isRequired,
-    updatePostWithRefreshThread: PropTypes.func.isRequired,
-    deletePostWithRefreshThread: PropTypes.func.isRequired
-  }),
+  // reactCommentsActions: PropTypes.shape({
+  //   fetchThread: PropTypes.func.isRequired,
+  //   createPostWithRefreshThread: PropTypes.func.isRequired,
+  //   changePostVote: PropTypes.func.isRequired,
+  //   updatePostWithRefreshThread: PropTypes.func.isRequired,
+  //   deletePostWithRefreshThread: PropTypes.func.isRequired
+  // }),
   googleActions: PropTypes.shape({
     gapiInitialize: PropTypes.func.isRequired
   }).isRequired,
@@ -477,8 +489,8 @@ ProblemView.propTypes = {
   // data
   problem: PropTypes.object,
   profile: PropTypes.object,
-  resource: PropTypes.object,
-  thread: PropTypes.object
+  resource: PropTypes.object
+  // thread: PropTypes.object
 }
 
 const mapStateToProps = (state) => {
@@ -486,8 +498,8 @@ const mapStateToProps = (state) => {
     problem: state.resources.problem,
     resource: state.resources.resource,
     gapiInitState: state.google.gapiInitState,
-    profile: state.profile.me,
-    thread: state.djeddit.thread
+    profile: state.profile.me
+    // thread: state.reactComments.thread
   }
 }
 
@@ -495,11 +507,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     googleActions: bindActionCreators(googleCreators, dispatch),
-    djedditActions: bindActionCreators(djedditCreators, dispatch),
+    // reactCommentsActions: bindActionCreators(reactCommentsCreators, dispatch),
     resourcesActions: bindActionCreators(resourcesCreators, dispatch),
     profileActions: bindActionCreators(profileCreators, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProblemView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProblemView))
 export { ProblemView as TextBookProblemViewNotConnected }

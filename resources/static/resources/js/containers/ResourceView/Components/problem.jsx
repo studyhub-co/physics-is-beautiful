@@ -9,7 +9,8 @@ import { FaTimes } from 'react-icons/fa'
 
 import { EditableLabel } from '../../../utils/editableLabel'
 
-import history from '../../../history'
+// import history from '../../../history'
+import { withRouter } from 'react-router'
 import { BASE_URL } from '../../../utils/config'
 import { slugify } from '../../../utils/urls'
 import { DragItemTypes } from '../../../dnd'
@@ -37,6 +38,8 @@ let ProblemClass = class Problem extends React.Component {
       problemViewUrl = BASE_URL + slugify(resourceTitle) + '/problems/' +
         slugify(problemTitle) + '/' + this.props.problem.uuid + '/'
     }
+
+    const { history } = this.props
 
     return (
       this.props.connectDragPreview(
@@ -117,4 +120,4 @@ function collect (connect, monitor) {
   }
 }
 
-export default DragSource(DragItemTypes.PROBLEM, dragSource, collect)(ProblemClass)
+export default withRouter(DragSource(DragItemTypes.PROBLEM, dragSource, collect)(ProblemClass))

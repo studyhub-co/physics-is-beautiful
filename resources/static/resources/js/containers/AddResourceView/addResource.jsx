@@ -9,7 +9,8 @@ import { FaChevronLeft } from 'react-icons/fa'
 
 import { Sheet } from '../../components/Sheet'
 import * as resourcesCreators from '../../actions/resources'
-import history from '../../history'
+// import history from '../../history'
+import { withRouter } from 'react-router'
 import { BASE_URL } from '../../utils/config'
 import AddTextBookResourceView from './addTextBookResource'
 import AddStandardizedTestResourceView from './addStandardizedTestResource'
@@ -144,5 +145,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddResourceView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddResourceView))
 export { AddResourceView as AddResourceViewNotConnected }

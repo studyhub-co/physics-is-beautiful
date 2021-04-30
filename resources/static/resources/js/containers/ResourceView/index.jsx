@@ -6,10 +6,12 @@ import PropTypes from 'prop-types'
 import { Container, Row, Col } from 'react-bootstrap'
 import { FaChevronLeft } from 'react-icons/fa'
 
-import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
+// import { ThreadComponent } from '@vermus/django-react-react-commentsclient/'
+import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
 import { Sheet } from '../../components/Sheet'
-import history from '../../history'
+// import history from '../../history'
+import { withRouter } from 'react-router'
 import { BASE_URL } from '../../utils/config'
 import * as resourcesCreators from '../../actions/resources'
 import { AdblockDetect } from '../../components/adblockDetect'
@@ -25,6 +27,8 @@ class ResourceView extends React.Component {
   }
 
   render () {
+    const { history } = this.props
+
     return (
       <Sheet>
         <AdblockDetect />
@@ -82,5 +86,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResourceView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ResourceView))
 export { ResourceView as ResourceViewNotConnected }

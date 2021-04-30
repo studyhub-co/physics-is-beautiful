@@ -12,6 +12,14 @@ import DevTools from '../containers/Root/DevTools'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 
 export default function configureStore (initialState, history) {
+  function createReducer (asyncReducers) {
+    return combineReducers({
+      ...rootReducer,
+      router: connectRouter(history),
+      ...asyncReducers
+    })
+  }
+
   const logger = createLogger()
 
   // Build the middleware for intercepting and dispatching navigation actions
@@ -36,7 +44,12 @@ export default function configureStore (initialState, history) {
   // Add the reducer to your store on the `router` key
   // Also apply our middleware for navigating
 
-  const reducers = combineReducers({...rootReducer, router: connectRouter(history)})
+  // const reducers = combineReducers({
+  //   ...rootReducer,
+  //   router: connectRouter(history),
+  // })
+
+  const reducers = createReducer()
 
   const store = createStore(
     // rootReducer,
@@ -46,6 +59,16 @@ export default function configureStore (initialState, history) {
     middlewareWithDevTools
     // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(
   )
+
+  // Add a dictionary to keep track of the registered async reducers
+  store.asyncReducers = {}
+
+  // Create an inject reducer function
+  // This function adds the async reducer, and creates a new combined reducer
+  store.injectReducer = (key, asyncReducer) => {
+    store.asyncReducers[key] = asyncReducer
+    store.replaceReducer(createReducer(store.asyncReducers))
+  }
 
   if (module.hot) {
     module.hot

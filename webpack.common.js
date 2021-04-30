@@ -152,6 +152,10 @@ module.exports = {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     symlinks: false,
     alias: {
+      // to exclude React versions collisions use React only from /node_modules/
+      'react': path.resolve('./node_modules/react'),
+      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
+      'react-redux': path.resolve('./node_modules/react-redux'),
       // NodeJs modules emulators
       fs: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/fs.js'),
       buffer: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/buffer.js'),

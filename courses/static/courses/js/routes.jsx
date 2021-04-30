@@ -9,6 +9,7 @@ import {
 
 import HomeIndex from './containers/homeIndex'
 import DiscussionIndex from './containers/discussionIndex'
+import ResourcesIndex from './containers/resourcesIndex'
 
 import NotFoundView from './components/NotFoundView'
 // import EditCourseProfileView from './containers/StudioViews/editProfile'
@@ -44,6 +45,9 @@ export default(
 
     {/* discussion */}
     <Route path={'/discussion'} component={DiscussionIndex} />
+
+    {/* discussion */}
+    <Route path={'/resources'} component={ResourcesIndex} />
 
     {/* fixme */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}
