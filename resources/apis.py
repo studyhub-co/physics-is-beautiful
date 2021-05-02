@@ -249,11 +249,11 @@ class ResourceViewSet(SeparateListObjectSerializerMixin,
         .order_by('-created_on') \
         .select_related('metadata', 'owner') \
         .prefetch_related(Prefetch('sections__problems',
-                          queryset=ResourceProblem.objects.
+                          queryset=ResourceProblem.objects.order_by('position').
                                    annotate(count_solutions=Count('solutions', distinct=True)))
                           ) \
         .prefetch_related(Prefetch('problems',
-                                   queryset=ResourceProblem.objects.
+                                   queryset=ResourceProblem.objects.order_by('position').
                                    annotate(count_solutions=Count('solutions', distinct=True)))
                           ) \
         .prefetch_related('sections__problems__solutions__posted_by__user') \
