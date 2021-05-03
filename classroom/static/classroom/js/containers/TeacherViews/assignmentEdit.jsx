@@ -19,7 +19,7 @@ import DropdownTreeSelect from 'react-dropdown-tree-select'
 import { Container, Row, Col, FormControl, FormCheck } from 'react-bootstrap'
 
 import * as assignmentCreators from '../../actions/assignment'
-import * as curriculaCreators from '../../actions/curricula'
+import * as coursesCreators from '../../actions/courses'
 
 // import { BASE_URL } from '../../utils/config'
 
@@ -54,7 +54,7 @@ class AssignmentEdit extends React.Component {
   }
 
   componentDidMount () {
-    this.props.curriculaActions.curriculaFetchExpandedCurriculum(this.props.classroomTeacher.curriculum.uuid)
+    this.props.coursesActions.coursesFetchExpandedCourse(this.props.classroomTeacher.course.uuid)
   }
 
   componentWillUnmount () {
@@ -67,11 +67,11 @@ class AssignmentEdit extends React.Component {
 
   componentWillReceiveProps (props) {
     var newLessonsTreeData = []
-    if (props.curriculumExpanded) {
-      if (props.curriculumExpanded.units.length > 0 &&
+    if (props.courseExpanded) {
+      if (props.courseExpanded.units.length > 0 &&
         this.state.lessonsTreeData.length === 0) {
         // populate with modulesTreeData
-        newLessonsTreeData = this.addChildren(props.curriculumExpanded.units)
+        newLessonsTreeData = this.addChildren(props.courseExpanded.units)
       }
       if (this.props.createNew) {
         this.setState(Object.assign({}, DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData}),
@@ -395,11 +395,12 @@ class AssignmentEdit extends React.Component {
 }
 
 AssignmentEdit.propTypes = {
-  curriculaActions: PropTypes.shape({
-    curriculaFetchExpandedCurriculum: PropTypes.func.isRequired,
-    dataReceiveExpandedCurriculum: PropTypes.func.isRequired
+  coursesActions: PropTypes.shape({
+    coursesFetchExpandedCourse: PropTypes.func.isRequired,
+    dataReceiveExpandedCourse: PropTypes.func.isRequired
   }).isRequired,
-  curriculumExpanded: PropTypes.object,
+  // courseExpanded: PropTypes.object,
+  courseExpanded: PropTypes.object,
   classroomTeacher: PropTypes.object.isRequired,
   assignmentActions: PropTypes.shape({
     assignmentCreateAssignment: PropTypes.func.isRequired,
@@ -415,14 +416,16 @@ const mapStateToProps = (state) => {
   return {
     // classroomStudent: state.classroom.classroomStudentClassroom
     classroomTeacher: state.classroom.classroomTeacherClassroom,
-    curriculumExpanded: state.curricula.curriculumExpanded
+    // courseExpanded: state.courses.courseExpanded
+    courseExpanded: state.course.courseExpanded
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    curriculaActions: bindActionCreators(curriculaCreators, dispatch),
+    coursesActions: bindActionCreators(coursesCreators, dispatch),
+    // coursesActions: bindActionCreators(coursesCreators, dispatch),
     assignmentActions: bindActionCreators(assignmentCreators, dispatch)
   }
 }

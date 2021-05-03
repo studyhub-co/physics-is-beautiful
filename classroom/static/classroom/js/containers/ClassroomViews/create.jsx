@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 
 import history from '../../history'
 import { PopupWindow } from '../../components/PopupWindow'
-import SelectCurriculum from '../../components/SelectCurriculum'
+import SelectCourse from '../../components/SelectCourse'
 import * as classroomCreators from '../../actions/classroom'
 import * as tabCreators from '../../actions/tab'
 
@@ -16,12 +16,12 @@ class CreateClassroomView extends React.Component {
     this.state = {
       classroomFormValues: {
         name: '',
-        curriculum_uuid: ''
+        course_uuid: ''
       },
       classroomFormIsValid: false
     }
     this.handleClassroomFormChange = this.handleClassroomFormChange.bind(this)
-    this.selectedCurriculumChanged = this.selectedCurriculumChanged.bind(this)
+    this.selectedCourseChanged = this.selectedCourseChanged.bind(this)
     this.saveClassroom = this.saveClassroom.bind(this)
   }
 
@@ -45,7 +45,7 @@ class CreateClassroomView extends React.Component {
       this.setState(
         { classroomFormValues: {
           name: props.classroomTeacher.name,
-          curriculum_uuid: props.classroomTeacher.curriculum.uuid
+          course_uuid: props.classroomTeacher.course.uuid
         }},
         this.validateClassroomForm
       )
@@ -61,9 +61,9 @@ class CreateClassroomView extends React.Component {
     )
   }
 
-  selectedCurriculumChanged (curriculum) {
+  selectedCourseChanged (course) {
     let classroomFormValues = Object.assign({}, this.state.classroomFormValues)
-    classroomFormValues['curriculum_uuid'] = curriculum.uuid
+    classroomFormValues['course_uuid'] = course.uuid
     this.setState(
       {classroomFormValues},
       this.validateClassroomForm
@@ -73,7 +73,7 @@ class CreateClassroomView extends React.Component {
   validateClassroomForm () {
     if (this.state.classroomFormValues &&
       this.state.classroomFormValues.name &&
-      this.state.classroomFormValues.curriculum_uuid) {
+      this.state.classroomFormValues.course_uuid) {
       this.setState({'classroomFormIsValid': true})
     } else {
       this.setState({'classroomFormIsValid': false})
@@ -113,9 +113,9 @@ class CreateClassroomView extends React.Component {
               </div>
             </div> }
           <br />
-          <SelectCurriculum
-            selectedCurriculumChanged={this.selectedCurriculumChanged}
-            selectedUuid={this.state.classroomFormValues.curriculum_uuid} />
+          <SelectCourse
+            selectedCourseChanged={this.selectedCourseChanged}
+            selectedUuid={this.state.classroomFormValues.course_uuid} />
           <button disabled={!this.state.classroomFormIsValid}
             className={'classroom-common-button float-right' + (this.state.classroomFormIsValid ? '' : ' disabled-button')}
             type='submit'>

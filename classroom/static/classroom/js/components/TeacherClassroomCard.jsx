@@ -12,7 +12,7 @@ export class TeacherClassroomCard extends React.Component {
       <div className={className}>
         <div onClick={() => { this.props.onTitleClick(this.props.baseUrl + '/' + this.props.classroom.uuid + '/') }}>
           {this.props.classroom.name}</div>
-        <div>{this.props.classroom.curriculum.name}</div>
+        <div>{this.props.classroom.course.name}</div>
         <div>{this.props.classroom.less_students
           ? <div style={{textAlign: 'left', padding: '1.5rem'}}>
             { this.props.classroom.less_students.map(function (student, i) {

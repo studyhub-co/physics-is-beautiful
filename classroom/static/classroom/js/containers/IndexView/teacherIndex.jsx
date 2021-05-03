@@ -12,7 +12,7 @@ import { Container, Row, Col, Modal } from 'react-bootstrap'
 import * as tabsCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
 // import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
-import SelectCurriculum from '../../components/SelectCurriculum'
+import SelectCourse from '../../components/SelectCourse'
 import { TeacherClassroomCard } from '../../components/TeacherClassroomCard'
 import { GoogleClassroomRow } from '../../components/GoogleClassroomRow'
 import { CreateClassroomView, TeacherClassroomView } from '../../containers/index'
@@ -27,10 +27,10 @@ class TeacherIndexView extends React.Component {
     this.onGoogleClassroomClick = this.onGoogleClassroomClick.bind(this)
     this.nextStepGoogleImportClick = this.nextStepGoogleImportClick.bind(this)
     this.prevStepGoogleImportClick = this.prevStepGoogleImportClick.bind(this)
-    this.selectedCurriculumGoogleImportChanged = this.selectedCurriculumGoogleImportChanged.bind(this)
+    this.selectedCourseGoogleImportChanged = this.selectedCourseGoogleImportChanged.bind(this)
     this.state = { showSelectGoogleClassroom: false,
       googleClassroomsSelected: [],
-      googleCurriculumSelected: null,
+      googleCourseSelected: null,
       googleClassroomsImportStep: 1
     }
   }
@@ -71,19 +71,19 @@ class TeacherIndexView extends React.Component {
     } else if (this.state.googleClassroomsImportStep === 2) {
       this.props.googleActions.googleSaveClassroomsWithStudents(
         this.state.googleClassroomsSelected,
-        this.state.googleCurriculumSelected)
+        this.state.googleCourseSelected)
 
       this.setState({'googleClassroomsImportStep': 1,
         googleClassroomsSelected: [],
-        googleCurriculumSelected: null
+        googleCourseSelected: null
       })
       this.handleImportGoogleClassroom()
     }
   }
 
-  selectedCurriculumGoogleImportChanged (curriculum) {
+  selectedCourseGoogleImportChanged (course) {
     this.setState({
-      googleCurriculumSelected: curriculum
+      googleCourseSelected: course
     })
   }
 
@@ -145,9 +145,9 @@ class TeacherIndexView extends React.Component {
                           }, this)
                           // step 2
                           : <div>
-                            <SelectCurriculum
-                              selectedCurriculumChanged={this.selectedCurriculumGoogleImportChanged}
-                              selectedUuid={this.state.googleCurriculumSelected ? this.state.googleCurriculumSelected.uuid : ''} />
+                            <SelectCourse
+                              selectedCourseChanged={this.selectedCourseGoogleImportChanged}
+                              selectedUuid={this.state.googleCourseSelected ? this.state.googleCourseSelected.uuid : ''} />
                           </div>}
                         </div>
                         : <Row className='justify-content-center'>
@@ -175,8 +175,8 @@ class TeacherIndexView extends React.Component {
                           className={'classroom-common-button'}
                           onClick={this.prevStepGoogleImportClick}>Back</button>&nbsp;
                         <button
-                          disabled={!this.state.googleCurriculumSelected}
-                          className={'classroom-common-button' + (this.state.googleCurriculumSelected ? '' : ' disabled-button')}
+                          disabled={!this.state.googleCourseSelected}
+                          className={'classroom-common-button' + (this.state.googleCourseSelected ? '' : ' disabled-button')}
                           onClick={this.nextStepGoogleImportClick}>Import classes</button>
                       </div>
                     }

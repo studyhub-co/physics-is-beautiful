@@ -206,13 +206,13 @@ export function googleFetchAndSaveClassroomsStudents (classrooms, refreshClassro
   }
 }
 
-export function googleSaveClassroomsWithStudents (googleClassrooms, googleCurriculumSelected) {
+export function googleSaveClassroomsWithStudents (googleClassrooms, googleCourseSelected) {
   return (dispatch, state) => {
     for (var i = 0; i < googleClassrooms.length; i++) {
       var googleClassRoom = googleClassrooms[i]
       var newClassroom = {}
       newClassroom['name'] = googleClassRoom['name']
-      newClassroom['curriculum_uuid'] = googleCurriculumSelected.uuid
+      newClassroom['course_uuid'] = googleCourseSelected.uuid
       newClassroom['external_classroom'] = {}
       newClassroom['external_classroom']['external_id'] = googleClassRoom['id']
       newClassroom['external_classroom']['name'] = googleClassRoom['name']

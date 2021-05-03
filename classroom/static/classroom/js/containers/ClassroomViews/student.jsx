@@ -35,11 +35,12 @@ class StudentClassroomView extends React.Component {
       this.props.match.params['uuid'],
       assignment.uuid,
       (uncompletedLesson) => {
-        if (uncompletedLesson.lesson_type === 'GAME') {
-          window.location.href = '/curriculum/games/' + uncompletedLesson.uuid + '/' + uncompletedLesson.game_slug
-        } else {
-          window.location.href = '/curriculum/lessons/' + uncompletedLesson.uuid
-        }
+        // TODO !!! we hav new url navigation here
+        // if (uncompletedLesson.lesson_type === 'GAME') {
+        //   window.location.href = '/curriculum/games/' + uncompletedLesson.uuid + '/' + uncompletedLesson.game_slug
+        // } else {
+        //   window.location.href = '/curriculum/lessons/' + uncompletedLesson.uuid
+        // }
       }
     )
   }

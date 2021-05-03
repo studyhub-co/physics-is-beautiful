@@ -28,11 +28,12 @@ class AssignmentStudentRow extends React.Component {
       this.props.classroomUuid,
       this.props.assignment.uuid,
       () => {
-        if (lesson.lesson_type === 'GAME') {
-          window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
-        } else {
-          window.location.href = '/curriculum/lessons/' + lesson.uuid
-        }
+        // TODO use history!
+        // if (lesson.lesson_type === 'GAME') {
+        //   window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
+        // } else {
+        //   window.location.href = '/curriculum/lessons/' + lesson.uuid
+        // }
       }
     )
   }

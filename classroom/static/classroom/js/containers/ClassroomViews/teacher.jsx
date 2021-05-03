@@ -13,7 +13,7 @@ import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 import { BASE_URL } from '../../utils/config'
 import history from '../../history'
 import EditableLabel from '../../utils/editableLabel'
-import { CurriculumRow } from '../../components/CurriculumRow'
+import { CourseRow } from '../../components/CourseRow'
 import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
 import { AssignmentView, AssignmentEdit, TeacherClassroomStudentsView } from '../index'
 
@@ -267,9 +267,9 @@ class TeacherClassroomView extends React.Component {
                       Course
                     </div>
                     <div onClick={() => {
-                      window.open('/studio/editor/curricula/' + this.props.classroomTeacher.curriculum.uuid, '_self') }
+                      window.open('/studio/editor/courses/' + this.props.classroomTeacher.course.uuid, '_self') }
                     }>
-                      <CurriculumRow curriculum={this.props.classroomTeacher.curriculum} />
+                      <CourseRow course={this.props.classroomTeacher.course} />
                     </div>
                     <div
                       className={'gray-text title pointer'}
