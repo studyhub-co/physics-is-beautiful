@@ -11,7 +11,7 @@ from django.contrib.sites.models import Site
 
 from shortuuidfield import ShortUUIDField
 
-from curricula.models import Curriculum, Lesson
+# from curricula.models import Curriculum, Lesson
 from courses.models import Course, Lesson as CoursesLesson
 from profiles.models import Profile
 
@@ -36,10 +36,10 @@ class Classroom(models.Model):
     teacher = models.ForeignKey(Profile, related_name='as_teacher_classrooms', on_delete=models.CASCADE)
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
-    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
-    # migrate to course
-    # TODO remove null=True after data migration, chamnge to on_delete=models.CASCADE
-    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
+
+    # curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+    # delete classroom if course related to classroom deleted # TODO remove null true3
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     code = models.CharField(unique=True, max_length=6)
 
     def __str__(self):
@@ -91,10 +91,8 @@ def generate_classroom_code(sender, instance, *args, **kwargs):
 
 class Assignment(models.Model):
     uuid = ShortUUIDField(unique=True)
-    lessons = models.ManyToManyField(Lesson)
-    # replace with lesson from courses
-    # TODO remove null=True after data migration, chamnge to on_delete=models.CASCADE
-    courses_lessons = models.ManyToManyField(CoursesLesson)
+    # lessons = models.ManyToManyField(Lesson)
+    lessons = models.ManyToManyField(CoursesLesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(auto_now=True)  # assigned On date
@@ -125,9 +123,12 @@ class AssignmentProgressManager(models.Manager):
 
         # FIXME Do we need to check start date
         for assignment_progress in assignment_progress_list:
-            student_completed_lessons = Lesson.objects.filter(
-                progress__profile=assignment_progress.student,
-                progress__status=30)
+            # student_completed_lessons = Lesson.objects.filter(
+            #     progress__profile=assignment_progress.student,
+            #     progress__status=30)
+            student_completed_lessons = CoursesLesson.objects.filter(
+                    progress__profile=assignment_progress.student,
+                    progress__status=30)
             need_complete_lessons = assignment_progress.assignment.lessons.all()
 
             if need_complete_lessons.difference(student_completed_lessons).count() == 0:
@@ -142,14 +143,14 @@ class AssignmentProgressManager(models.Manager):
                 assignment_progress.completed_on = None
                 assignment_progress.delayed_on = None
 
-            # save all lessons completed in Curriculum into classroom progress
+            # save all lessons completed in Course into classroom progress
             assignment_progress.completed_lessons.set(
                 student_completed_lessons.intersection(need_complete_lessons)
             )
 
             assignment_progress.save()
 
-    def recalculate_status_by_assignemnt(self, assignment):
+    def recalculate_status_by_assignment(self, assignment):
         assignment_progress_list = AssignmentProgress.objects.filter(assignment=assignment)
 
         self.__process__assignment_progress_list(assignment_progress_list)
@@ -195,7 +196,8 @@ class AssignmentProgressManager(models.Manager):
 class AssignmentProgress(models.Model):
     assignment = models.ForeignKey(Assignment, related_name='assignment_progress', on_delete=models.CASCADE)
     uuid = ShortUUIDField(unique=True)
-    completed_lessons = models.ManyToManyField(Lesson, related_name='assignment_progress_completed_lessons')
+    # completed_lessons = models.ManyToManyField(Lesson, related_name='assignment_progress_completed_lessons')
+    completed_lessons = models.ManyToManyField(CoursesLesson, related_name='assignment_progress_completed_lessons')
     updated_on = models.DateTimeField(auto_now=True)
     # assigned_on = assignment.start_on
     start_on = models.DateTimeField(blank=True, null=True)  # 1st lesson has been requested by student
@@ -208,8 +210,3 @@ class AssignmentProgress(models.Model):
     class Meta:
         ordering = ['-start_on']
         unique_together = (("assignment", "student"), )  # one progress per user and assignment
-
-
-# class OAuthUserToken(models.Model):
-#     token = models.CharField(max_length=200)
-#     refresh_token = models.CharField(max_length=200)

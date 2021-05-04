@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { FaCog } from 'react-icons/fa'
 
-import { Row, Col, Image, Dropdown, DropdownItem } from 'react-bootstrap'
+import { Row, Col, Image, Dropdown } from 'react-bootstrap'
 
 export class AssignmentTeacherRow extends React.Component {
   handleSettingsClick (e) {
@@ -63,8 +63,8 @@ export class AssignmentTeacherRow extends React.Component {
               <FaCog />&nbsp;
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <DropdownItem eventKey='delete'>Delete assignment</DropdownItem>
-              <DropdownItem eventKey='edit'>Edit assignment</DropdownItem>
+              <Dropdown.Item eventKey='delete'>Delete assignment</Dropdown.Item>
+              <Dropdown.Item eventKey='edit'>Edit assignment</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Col>

@@ -10,6 +10,7 @@ import {
 import HomeIndex from './containers/homeIndex'
 import DiscussionIndex from './containers/discussionIndex'
 import ResourcesIndex from './containers/resourcesIndex'
+import ClassroomIndex from './containers/classroomIndex'
 
 import NotFoundView from './components/NotFoundView'
 // import EditCourseProfileView from './containers/StudioViews/editProfile'
@@ -46,10 +47,14 @@ export default(
     {/* discussion */}
     <Route path={'/discussion'} component={DiscussionIndex} />
 
-    {/* discussion */}
+    {/* resources */}
     <Route path={'/resources'} component={ResourcesIndex} />
 
+    {/* classroom */}
+    <Route path={'/classroom'} component={ClassroomIndex} />
+
     {/* fixme */}
+    {/* do we have adblock in resources app only? */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}
     {/* TODO to complete home page */}
     <Route path='/' component={HomeIndex} />

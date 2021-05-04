@@ -12,7 +12,8 @@ class StudentsInline(admin.TabularInline):
 class ClassroomAdmin(admin.ModelAdmin):
     list_select_related = ('teacher__user', )
     inlines = (StudentsInline,)
-    raw_id_fields = ('teacher', 'curriculum')
+    # raw_id_fields = ('teacher', 'curriculum')
+    raw_id_fields = ('teacher', 'course')
 
     def get_queryset(self, request):
         return super(ClassroomAdmin, self).get_queryset(request).prefetch_related('students__user')

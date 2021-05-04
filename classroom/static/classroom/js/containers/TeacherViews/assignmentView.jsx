@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-import { Container, Row, Col, Image, Modal, Dropdown, DropdownItem } from 'react-bootstrap'
+import { Container, Row, Col, Image, Modal, Dropdown } from 'react-bootstrap'
 import { FaChevronLeft, FaCog, FaCheck, FaClock, FaTimes } from 'react-icons/fa'
 
 import * as assignmentCreators from '../../actions/assignment'
@@ -114,9 +114,9 @@ export class AssignmentView extends React.Component {
                   Manage assignment
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <DropdownItem eventKey='delete'>Delete assignment</DropdownItem>
-                  {/*<DropdownItem eventKey='send'>Send reminder</DropdownItem>*/}
-                  <DropdownItem eventKey='edit'>Edit assignment</DropdownItem>
+                  <Dropdown.Item eventKey='delete'>Delete assignment</Dropdown.Item>
+                  {/*<Dropdown.Item eventKey='send'>Send reminder</Dropdown.Item>*/}
+                  <Dropdown.Item eventKey='edit'>Edit assignment</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Col>

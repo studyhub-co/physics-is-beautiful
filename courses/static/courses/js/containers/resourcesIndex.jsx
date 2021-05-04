@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { ReactReduxContext } from 'react-redux'
 
 import { Sheet } from '../components/Sheet'
 
 import resourcesRoutes from '../../../../../resources/static/resources/js/routes'
 import resourcesReducers from '../../../../../resources/static/resources/js/reducers/index'
-
-// TODO add dnd
 
 const ResourcesIndex = (props) => {
   const context = React.useContext(ReactReduxContext)

@@ -6,11 +6,14 @@ from rest_framework import serializers
 
 from .models import Classroom, Assignment, ExternalClassroom
 
-from curricula.models import Curriculum, Lesson
+# from curricula.models import Curriculum, Lesson
+from courses.models import Course, Lesson
+
 from profiles.models import Profile
 
 from profiles.serializers import PublicProfileSerializer
-from curricula.serializers import SimpleCurriculumSerializer, CurriculumSerializer, LessonSerializer
+# from curricula.serializers import SimpleCurriculumSerializer, CurriculumSerializer, LessonSerializer
+from courses.serializers import CourseSerializer, LessonSerializer
 
 from urllib.parse import urljoin
 
@@ -81,10 +84,13 @@ class ExternalClassroomSerializer(serializers.ModelSerializer):
 class ClassroomBaseSerializer(serializers.ModelSerializer):
     count_students = serializers.IntegerField(read_only=True)
     teacher = PublicProfileSerializer(read_only=True)
-    curriculum = CurriculumSerializer(read_only=True)
-    # curriculum = SimpleCurriculumSerializer(read_only=True)
-    curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
-                                                   slug_field='uuid', write_only=True)
+    # curriculum = CurriculumSerializer(read_only=True)
+    # curriculum_uuid = serializers.SlugRelatedField(queryset=Curriculum.objects.all(), source='curriculum',
+    #                                                slug_field='uuid', write_only=True)
+
+    course = CourseSerializer(read_only=True)
+    course_uuid = serializers.SlugRelatedField(queryset=Course.objects.all(), source='course',
+                                               slug_field='uuid', write_only=True)
 
     external_classroom = ExternalClassroomSerializer(many=False, required=False)
 
@@ -105,16 +111,15 @@ class ClassroomBaseSerializer(serializers.ModelSerializer):
             #                                              teacher_id=external_classroom['teacher_id'],
             #                                              code=external_classroom['code'],
             try:
-                ExternalClassroom.objects.create(classroom=to_return,
-                                             **kwargs)
+                ExternalClassroom.objects.create(classroom=to_return, **kwargs)
             except:  # TODO raise error message
                 pass
         return to_return
 
     class Meta:
         model = Classroom
-        fields = ['uuid', 'name', 'created_on', 'updated_on', 'curriculum', 'code', 'count_students',
-                  'teacher', 'curriculum_uuid', 'external_classroom']
+        fields = ['uuid', 'name', 'created_on', 'updated_on',  'code', 'count_students',
+                  'teacher', 'external_classroom', 'course', 'course_uuid']  # 'curriculum', 'curriculum_uuid'
         read_only_fields = ('uuid', 'code', 'created_on', 'updated_on')
 
 
@@ -135,11 +140,18 @@ class ClassroomSerializer(ClassroomBaseSerializer):
 
 
 class AssignmentListSerializer(serializers.ModelSerializer):
+    # lessons_uuids = serializers.SlugRelatedField(queryset=Lesson.objects.all(), source='lessons',
+    #                                              slug_field='uuid', many=True, write_only=True)
+    # # classroom = ClassroomSerializer(read_only=True)
+    # classroom_uuid = serializers.SlugRelatedField(queryset=Classroom.objects.all(), source='classroom',
+    #                                               slug_field='uuid', write_only=True)
+
     lessons_uuids = serializers.SlugRelatedField(queryset=Lesson.objects.all(), source='lessons',
-                                                 slug_field='uuid', many=True, write_only=True)
+                                                 slug_field='uuid', many=True)
     # classroom = ClassroomSerializer(read_only=True)
     classroom_uuid = serializers.SlugRelatedField(queryset=Classroom.objects.all(), source='classroom',
-                                                  slug_field='uuid', write_only=True)
+                                                  slug_field='uuid')
+
 
     count_lessons = serializers.IntegerField(read_only=True)
 
@@ -168,7 +180,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
         lesson = instance.lessons.first()
 
-        lesson_url = reverse('main_curricula:lesson', args=[lesson.uuid])
+        lesson_url = reverse('main_courses:lesson', args=[lesson.uuid])
 
         url = urljoin('http://{}/'.format(current_site.domain), lesson_url)
 
@@ -273,7 +285,8 @@ class AssignmentListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on', 'classroom_uuid', 'lessons_uuids',
+        fields = ['uuid', 'name', 'created_on', 'updated_on', 'start_on', 'due_on',
+                  'classroom_uuid', 'lessons_uuids',
                   'count_lessons', 'completed_on', 'delayed_on',
                   # 'assigned_on',
                   'count_students_completed_assingment', 'count_students_missed_assingment',

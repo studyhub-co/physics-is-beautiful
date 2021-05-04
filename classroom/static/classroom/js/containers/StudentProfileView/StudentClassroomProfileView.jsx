@@ -14,7 +14,7 @@ import * as tabsCreators from '../../actions/tab'
 import * as assignmentCreators from '../../actions/assignment'
 
 import { FaTimes, FaClock, FaChevronLeft, FaCog, FaCheck } from 'react-icons/fa'
-import { Container, Row, Col, Image, Dropdown, DropdownItem } from 'react-bootstrap'
+import { Container, Row, Col, Image, Dropdown } from 'react-bootstrap'
 import { TeacherStudentAssignmentRow } from '../../components/TeacherStudentAssignmentRow'
 
 class StudentClassroomProfileView extends React.Component {
@@ -72,9 +72,9 @@ class StudentClassroomProfileView extends React.Component {
                 Manage student
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <DropdownItem eventKey='remove'>Remove from class</DropdownItem>
-                  {/* <DropdownItem eventKey='send'>Send reminder</DropdownItem> */}
-                  {/* <DropdownItem eventKey='edit'>Move student</DropdownItem> */}
+                  <Dropdown.Item eventKey='remove'>Remove from class</Dropdown.Item>
+                  {/* <Dropdown.Item eventKey='send'>Send reminder</Dropdown.Item> */}
+                  {/* <Dropdown.Item eventKey='edit'>Move student</Dropdown.Item> */}
                 </Dropdown.Menu>
               </Dropdown> : null}
             </Col>

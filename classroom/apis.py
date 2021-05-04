@@ -12,7 +12,7 @@ from rest_framework.exceptions import NotFound, PermissionDenied
 
 from profiles.models import Profile
 
-from curricula.serializers import LessonSerializer
+from courses.serializers import LessonSerializer
 
 from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
@@ -26,8 +26,8 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsClassroomTeacherOrStudentReadonly)
     serializer_class = ClassroomSerializer
     list_serializer_class = ClassroomListSerializer
-    queryset = Classroom.objects.all().select_related('curriculum', 'curriculum__author', 'teacher', 'teacher__user')\
-        .prefetch_related('students', 'students__user', 'external_classroom')
+    queryset = Classroom.objects.all().select_related('course', 'course__author', 'teacher', 'teacher__user')\
+        .prefetch_related('students', 'students__user', 'external_classroom')  # 'curriculum', 'curriculum__author',
     lookup_field = 'uuid'
 
     def get_queryset(self):
@@ -164,12 +164,12 @@ class ClassroomViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                 ClassroomStudent.objects.bulk_create(student_classroom_s)
                 AssignmentProgress.objects.bulk_create(assingments_progressess)
 
-        # Remove students from classrrom
+        # Remove students from classroom
         if len(to_remove_profiles_from_classroom__ids) > 0:
             with transaction.atomic():
-                ClassroomStudent.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                ClassroomStudent.objects.filter(student__pk__in=to_remove_profiles_from_classroom__ids,
                                                 classroom=classroom).delete()
-                AssignmentProgress.objects.filter(student__id__in=to_remove_profiles_from_classroom__ids,
+                AssignmentProgress.objects.filter(student__pk__in=to_remove_profiles_from_classroom__ids,
                                                   assignment__classroom=classroom).delete()
 
         return Response(status=status.HTTP_201_CREATED)
@@ -302,7 +302,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
         )
 
         # resfresh assignments states
-        AssignmentProgress.objects.recalculate_status_by_assignemnt(assignment)
+        AssignmentProgress.objects.recalculate_status_by_assignment(assignment)
 
         # test that we need to send emails
         if assignment.send_email:
@@ -328,7 +328,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         # reset AssignmentProgresses dates
         # should placed after serializer.save
-        AssignmentProgress.objects.recalculate_status_by_assignemnt(serializer.instance)
+        AssignmentProgress.objects.recalculate_status_by_assignment(serializer.instance)
 
     @action(methods=['get'], detail=True, permission_classes=[permissions.IsAuthenticated, ])
     def students(self, request, classroom_uuid, uuid):
@@ -365,7 +365,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
                 annotate(ann_status=Value('completed', CharField()))
 
             # mark completed lessons
-            lessons_list = completed_lessons.union(lessons_list.exclude(Q(id__in=completed_lessons)))
+            lessons_list = completed_lessons.union(lessons_list.exclude(Q(pk__in=completed_lessons)))
 
         except AssignmentProgress.DoesNotExist:
             pass
