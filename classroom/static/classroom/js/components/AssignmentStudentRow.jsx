@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -17,17 +18,13 @@ class AssignmentStudentRow extends React.Component {
   }
 
   onLessonClick (lesson) {
-    // if (lesson.lesson_type === 'GAME') {
-    //   window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
-    // } else {
-    //   window.location.href = '/curriculum/lessons/' + lesson.uuid
-    // }
-
+    const { history } = this.props
     // Need to save start_on date of Assignment Proccess
     this.props.assignmentActions.assignmentFetchFirstUncompletedLesson(
       this.props.classroomUuid,
       this.props.assignment.uuid,
       () => {
+        history.push(`/courses/lessons/${lesson.uuid}`)
         // TODO use history!
         // if (lesson.lesson_type === 'GAME') {
         //   window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
@@ -210,5 +207,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssignmentStudentRow)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AssignmentStudentRow))
 export { AssignmentStudentRow as AssignmentStudentRowNotConnected }

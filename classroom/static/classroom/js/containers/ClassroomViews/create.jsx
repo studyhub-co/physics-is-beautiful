@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import history from '../../history'
+// import history from '../../history'
+import { withRouter } from 'react-router'
 import { PopupWindow } from '../../components/PopupWindow'
 import SelectCourse from '../../components/SelectCourse'
 import * as classroomCreators from '../../actions/classroom'
@@ -26,8 +27,9 @@ class CreateClassroomView extends React.Component {
   }
 
   componentWillMount () {
+    const { history } = this.props
     // select teacher tab by default
-    this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
+    this.props.tabActions.changeSelectedTab('teacher', 'tab', history, true)
 
     if (this.props.match.params && this.props.match.params['uuid']) {
       // load classroom if unavailable
@@ -97,7 +99,9 @@ class CreateClassroomView extends React.Component {
   }
 
   render () {
-    console.log(this)
+
+    const { history } = this.props
+
     return (
       <PopupWindow goBack={history.goBack}>
         <form onSubmit={this.saveClassroom}>
@@ -157,5 +161,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateClassroomView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateClassroomView))
 export { CreateClassroomView as CreateClassroomViewNotConnected }

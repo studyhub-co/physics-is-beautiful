@@ -1,8 +1,8 @@
 import { CHANGE_SELECTED_TAB, CHANGE_SELECTED_TAB_TEACHER_CLASSROOM } from '../constants'
-import history from '../history'
+// import history from '../history'
 import { BASE_URL } from '../utils/config'
 
-export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = false) {
+export function changeSelectedTab (selectedTab, tabNamespace, history, fromChildren = false) {
   if (!fromChildren) {
     history.push(BASE_URL + selectedTab + '/')
   }
@@ -11,7 +11,7 @@ export function changeSelectedTab (selectedTab, tabNamespace, fromChildren = fal
     namespace: tabNamespace }
 }
 
-export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace, match) {
+export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace, history, match) {
   // TODO refactor this
 
   if (selectedTab === 'students') {
@@ -21,7 +21,7 @@ export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace, ma
       history.push('/classroom/teacher/' + match.params['uuid'] + '/students/')
     }
   } else if (match &&
-     !match.params.hasOwnProperty('assigmentUuid') &&
+     !match.params.hasOwnProperty('assignmentUuid') &&
      !match.params.hasOwnProperty('username')
   ) { // main teacher page
     history.push('/classroom/teacher/' + match.params['uuid'] + '/')
@@ -29,7 +29,7 @@ export function changeTeacherClassroomSelectedTab (selectedTab, tabNamespace, ma
 
   // if (match &&
   //     match.isExact === false &&
-  //     !match.params.hasOwnProperty('assigmentUuid') &&
+  //     !match.params.hasOwnProperty('assignmentUuid') &&
   //     !match.params.hasOwnProperty('username') &&
   //     match.path !== '/classroom/:uuid/teacher/students/' &&
   //     match.path !== '/classroom/:uuid/teacher/' &&

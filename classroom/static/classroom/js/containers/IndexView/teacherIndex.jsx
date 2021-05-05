@@ -38,7 +38,7 @@ class TeacherIndexView extends React.Component {
   componentWillMount () {
     this.props.googleActions.gapiInitialize()
     this.props.classroomActions.classroomFetchTeacherClassroomsList()
-    this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
+    this.props.tabActions.changeSelectedTab('teacher', 'tab', history, true)
   }
 
   // ================ Google start

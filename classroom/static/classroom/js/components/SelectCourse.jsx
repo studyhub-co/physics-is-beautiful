@@ -76,8 +76,8 @@ const mapStateToProps = (state) => {
   return {
     // coursesList: state.courses.coursesList,
     // coursesOtherList: state.courses.coursesOtherList,
-    coursesList: state.courses.coursesList,
-    coursesOtherList: state.courses.coursesOtherList,
+    coursesList: state.classroom.coursesList,
+    coursesOtherList: state.classroom.coursesOtherList,
   }
 }
 

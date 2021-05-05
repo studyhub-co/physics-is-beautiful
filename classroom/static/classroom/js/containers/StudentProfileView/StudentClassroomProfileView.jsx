@@ -24,8 +24,10 @@ class StudentClassroomProfileView extends React.Component {
   }
 
   componentWillMount () {
-    this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
-    this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
+    this.props.tabActions.changeSelectedTab('teacher', 'tab', history, true)
+    this.props.tabActions.changeTeacherClassroomSelectedTab(
+      'students', 'teacherClassroomTab', history, this.props.match
+    )
     this.props.studentActions.classroomFetchStudentClassroomProfile(
       this.props.match.params['uuid'],
       this.props.match.params['username']

@@ -18,7 +18,7 @@ export function dataReceiveExpandedCourse (course) {
 
 export function coursesFetchExpandedCourse (courseUuid) {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + courseUuid + '?expand=units.modules.lessons')
+    return getAxios().get(API_PREFIX + 'courses/' + courseUuid + '/?expand=units.modules.lessons')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(dataReceiveExpandedCourse(response.data))
@@ -37,7 +37,7 @@ export function dataReceiveCoursesList (coursesList) {
 
 export function coursesFetchCoursesList () {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + '?filter=my')
+    return getAxios().get(API_PREFIX + 'courses/?filter=my')
       .then(checkHttpStatus)
       .then((response) => {
         // fix for editor wrong json using
@@ -60,7 +60,7 @@ export function dataReceiveOtherCoursesList (coursesOtherList) {
 
 export function coursesFetchOtherCoursesList () {
   return (dispatch, state) => {
-    return getAxios().get(API_PREFIX + '?filter=default')
+    return getAxios().get(API_PREFIX + 'courses/?filter=default')
       .then(checkHttpStatus)
       .then((response) => {
         dispatch(dataReceiveOtherCoursesList(response.data))

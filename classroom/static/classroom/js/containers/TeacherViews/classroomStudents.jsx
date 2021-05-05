@@ -51,7 +51,9 @@ class TeacherClassroomStudentsView extends React.Component {
 
     if (isExactUrl) {
       if (this.props.teacherClassroomTab !== 'students') {
-        this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
+        this.props.tabActions.changeTeacherClassroomSelectedTab(
+          'students', 'teacherClassroomTab', history, this.props.match
+        )
       }
     }
 

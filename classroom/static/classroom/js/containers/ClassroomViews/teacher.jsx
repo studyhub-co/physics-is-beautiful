@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Route } from 'react-router'
+import { Route, withRouter } from 'react-router'
 import { push } from 'connected-react-router'
 import { FaChevronLeft, FaCheck, FaTimes, FaClock, FaPencilAlt } from 'react-icons/fa'
 import Clipboard from 'react-clipboard.js'
@@ -11,7 +11,7 @@ import { Container, Row, Col, OverlayTrigger, Tooltip, InputGroup, FormControl, 
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
 import { BASE_URL } from '../../utils/config'
-import history from '../../history'
+// import history from '../../history'
 import EditableLabel from '../../utils/editableLabel'
 import { CourseRow } from '../../components/CourseRow'
 import { AssignmentTeacherRow } from '../../components/AssignmentTeacherRow'
@@ -26,13 +26,14 @@ import * as googleCreators from '../../actions/google'
 class TeacherClassroomView extends React.Component {
   // componentDidUpdate () { # TODO rewrite with
   componentWillMount () {
+    const { history } = this.props
     // tabs
-    this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
+    this.props.tabActions.changeSelectedTab('teacher', 'tab', history, true)
     // if (this.props.match) {
     //   this.props.tabActions.changeTeacherClassroomSelectedTab('settings', 'teacherClassroomTab', this.props.match)
     // }
     if (this.props.teacherClassroomTab === 'students') {
-      this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', this.props.match)
+      this.props.tabActions.changeTeacherClassroomSelectedTab('students', 'teacherClassroomTab', history, this.props.match)
     }
     // data
     if (this.props.match.params['uuid'] !== 'create') {
@@ -45,14 +46,14 @@ class TeacherClassroomView extends React.Component {
   constructor (props) {
     super(props)
     this.handleTitleChange = this.handleTitleChange.bind(this)
-    this.handleCreateAssigment = this.handleCreateAssigment.bind(this)
+    this.handleCreateAssignment = this.handleCreateAssignment.bind(this)
     this.handleEditAssignmentModal = this.handleEditAssignmentModal.bind(this)
     this.hideCopiedToolTip = this.hideCopiedToolTip.bind(this)
 
     this.state = {
-      showCreateAssigment: false,
-      showAssingment: false,
-      createNewAssigment: false
+      showCreateAssignment: false,
+      // showAssignment: false,
+      createNewAssignment: false
     }
   }
 
@@ -65,11 +66,11 @@ class TeacherClassroomView extends React.Component {
   //   return true
   // }
 
-  handleCreateAssigment () {
+  handleCreateAssignment () {
     this.setState(
       {
-        showCreateAssigment: !this.state.showCreateAssigment,
-        createNewAssigment: !this.state.showCreateAssigment
+        showCreateAssignment: !this.state.showCreateAssignment,
+        createNewAssignment: !this.state.showCreateAssignment
       })
   }
 
@@ -88,7 +89,7 @@ class TeacherClassroomView extends React.Component {
 
   handleEditAssignmentModal (assignment) {
     this.setState({
-      showCreateAssigment: !this.state.showCreateAssigment
+      showCreateAssignment: !this.state.showCreateAssignment
     })
   }
 
@@ -114,7 +115,7 @@ class TeacherClassroomView extends React.Component {
   }
 
   render () {
-    var assignmentUrl = BASE_URL + 'teacher/:uuid/assignments/:assigmentUuid'
+    var assignmentUrl = BASE_URL + 'teacher/:uuid/assignments/:assignmentUuid'
     var studentsListUrl = this.props.match.path + 'students/'
 
     var isExactUrl = this.props.match.isExact // exact url for teacher view
@@ -129,6 +130,8 @@ class TeacherClassroomView extends React.Component {
         Copied!
       </Tooltip>
     )
+
+    const { history } = this.props
 
     return (
       <div className={'pop-up-window'}>
@@ -164,7 +167,9 @@ class TeacherClassroomView extends React.Component {
         <Tabs name='teacherClassroomTab'
           className='tabs'
           handleSelect={
-            (tabname, tabspace) => { this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, this.props.match) }
+            (tabname, tabspace) => {
+              this.props.tabActions.changeTeacherClassroomSelectedTab(tabname, tabspace, history, this.props.match)
+            }
           }
           selectedTab={this.props.teacherClassroomTab}
         >
@@ -328,23 +333,24 @@ class TeacherClassroomView extends React.Component {
                       key={i} />
                   }, this)}
                 </Container> : null }
-              { isExactUrl ? <div className={'join-another-classroom'} onClick={this.handleCreateAssigment}>
+              { isExactUrl ? <div className={'join-another-classroom'}
+                                  onClick={this.handleCreateAssignment}>
                 + Create an assignment
               </div> : null }
-              { this.state.showCreateAssigment
+              { this.state.showCreateAssignment
                 ? <Modal
-                  show={this.state.showCreateAssigment}
-                  onHide={this.handleCreateAssigment}
+                  show={this.state.showCreateAssignment}
+                  onHide={this.handleCreateAssignment}
                   // container={this}
                 >
                   <Modal.Header closeButton>
-                    <Modal.Title>{this.state.createNewAssigment ? 'Create' : 'Edit'}  an assignment</Modal.Title>
+                    <Modal.Title>{this.state.createNewAssignment ? 'Create' : 'Edit'}  an assignment</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <AssignmentEdit createNew={this.state.createNewAssigment} assignment={this.props.assignment} onSave={this.handleCreateAssigment} />
+                    <AssignmentEdit createNew={this.state.createNewAssignment} assignment={this.props.assignment} onSave={this.handleCreateAssignment} />
                   </Modal.Body>
                   <Modal.Footer>
-                    <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
+                    <div className={'gray-link'} onClick={this.handleCreateAssignment}>Back</div>
                   </Modal.Footer>
                 </Modal> : null
               }
@@ -406,5 +412,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeacherClassroomView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TeacherClassroomView))
 export { TeacherClassroomView as TeacherViewNotConnected }

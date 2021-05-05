@@ -13,8 +13,9 @@ import * as tabsCreators from '../../actions/tab'
 
 import { AssignmentEdit } from '../index'
 import { BASE_URL } from '../../utils/config'
-import history from '../../history'
-import { TeacherAssigmentStudentRow } from '../../components/TeacherAssigmentStudentRow'
+// import history from '../../history'
+import { withRouter } from 'react-router'
+import { TeacherAssignmentStudentRow } from '../../components/TeacherAssignmentStudentRow'
 
 export class AssignmentView extends React.Component {
   constructor (props) {
@@ -23,20 +24,20 @@ export class AssignmentView extends React.Component {
     this.handleSettingsClick = this.handleSettingsClick.bind(this)
 
     this.state = {
-      showEditAssigment: false
+      showEditAssignment: false
     }
   }
 
   componentWillMount () {
-    this.props.tabActions.changeSelectedTab('teacher', 'tab', true)
-    this.props.tabActions.changeTeacherClassroomSelectedTab('assignments', 'teacherClassroomTab')
-    this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], this.props.match.params['assigmentUuid'])
-    this.props.assignmentActions.assignmentFetchStudentsList(this.props.match.params['uuid'], this.props.match.params['assigmentUuid'])
+    this.props.tabActions.changeSelectedTab('teacher', 'tab', history, true)
+    this.props.tabActions.changeTeacherClassroomSelectedTab('assignments', 'teacherClassroomTab', history)
+    this.props.assignmentActions.assignmentFetchAssignment(this.props.match.params['uuid'], this.props.match.params['assignmentUuid'])
+    this.props.assignmentActions.assignmentFetchStudentsList(this.props.match.params['uuid'], this.props.match.params['assignmentUuid'])
   }
 
   handleEditAssignmentModal () {
     this.setState({
-      showEditAssigment: !this.state.showEditAssigment
+      showEditAssignment: !this.state.showEditAssignment
     })
   }
 
@@ -46,7 +47,7 @@ export class AssignmentView extends React.Component {
     } else if (e === 'delete') {
       this.props.assignmentActions.assignmentDeleteAssignment(
         this.props.match.params['uuid'],
-        this.props.match.params['assigmentUuid'],
+        this.props.match.params['assignmentUuid'],
         true,
         () => { this.props.dispatch(push(BASE_URL + 'teacher/' + this.props.match.params['uuid'])) }
       )
@@ -79,6 +80,9 @@ export class AssignmentView extends React.Component {
       //   this.props.assignment.name + '&body=Only for ' +
       //   this.props.classroomTeacher.external_classroom.name + ' classroom'
     }
+
+    const { history } = this.props
+
     return (
       <div>
         <Container fluid>
@@ -190,7 +194,7 @@ export class AssignmentView extends React.Component {
               this.props.classroomTeacher &&
               this.props.assignmentStudentsList
                 ? this.props.assignmentStudentsList.map(function (student, i) {
-                  return <TeacherAssigmentStudentRow
+                  return <TeacherAssignmentStudentRow
                     assignment={this.props.assignment}
                     student={student}
                     onStudentClick={() =>
@@ -203,9 +207,9 @@ export class AssignmentView extends React.Component {
             </Col>
           </Row>
         </Container>
-        { this.state.showEditAssigment
+        { this.state.showEditAssignment
           ? <Modal
-            show={this.state.showEditAssigment}
+            show={this.state.showEditAssignment}
             onHide={this.handleEditAssignmentModal}
             container={this} >
             <Modal.Header closeButton>
@@ -215,7 +219,7 @@ export class AssignmentView extends React.Component {
               <AssignmentEdit createNew={false} assignment={this.props.assignment} onSave={this.handleEditAssignmentModal} />
             </Modal.Body>
             <Modal.Footer>
-              <div className={'gray-link'} onClick={this.handleCreateAssigment}>Back</div>
+              <div className={'gray-link'} onClick={this.handleCreateAssignment}>Back</div>
             </Modal.Footer>
           </Modal> : null
         }
@@ -257,5 +261,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssignmentView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AssignmentView))
 export { AssignmentView as AssignmentViewNotConnected }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Route } from 'react-router'
+import { Route, withRouter } from 'react-router'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -13,21 +13,27 @@ import { Sheet } from '../../components/Sheet'
 import * as tabsCreators from '../../actions/tab'
 
 class IndexView extends React.Component {
-
   render () {
     var baseUrl = this.props.match.url.replace(/\/$/, '')
     var studentIndexUrl = baseUrl + '/student/'
     var teacherIndexUrl = baseUrl + '/teacher/'
 
+    const { history } = this.props
+
     if (this.props.match.url === '/classroom/' && this.props.match.isExact) {
-      this.props.dispatch(push(studentIndexUrl)) // redirect to student index page
+      // this.props.dispatch(push(studentIndexUrl)) // redirect to student index page
+      history.push(studentIndexUrl) // redirect to student index page
     }
 
     return (
       <Sheet>
         <Tabs name='tab'
           className='tabs'
-          handleSelect={this.props.tabActions.changeSelectedTab}
+          handleSelect={
+            (selectedTab, namespace) => {
+              this.props.tabActions.changeSelectedTab(selectedTab, namespace, history)
+            }
+          }
           selectedTab={this.props.tab}
         >
           <div className='tab-links'>
@@ -70,5 +76,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IndexView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(IndexView))
 export { IndexView as IndexViewNotConnected }

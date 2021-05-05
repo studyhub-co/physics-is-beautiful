@@ -54,6 +54,7 @@ class AssignmentEdit extends React.Component {
   }
 
   componentDidMount () {
+    console.log('coursesFetchExpandedCourse')
     this.props.coursesActions.coursesFetchExpandedCourse(this.props.classroomTeacher.course.uuid)
   }
 
@@ -413,11 +414,10 @@ AssignmentEdit.propTypes = {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
-    // classroomStudent: state.classroom.classroomStudentClassroom
     classroomTeacher: state.classroom.classroomTeacherClassroom,
-    // courseExpanded: state.courses.courseExpanded
-    courseExpanded: state.course.courseExpanded
+    courseExpanded: state.classroom.courseExpanded
   }
 }
 
@@ -431,4 +431,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssignmentEdit)
-export { AssignmentEdit as EditAssigmentsViewNotConnected }
+export { AssignmentEdit as EditAssignmentsViewNotConnected }

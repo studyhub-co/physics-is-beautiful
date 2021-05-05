@@ -8,15 +8,6 @@ import assignmentReducer from './assignment'
 import studentReducer from './student'
 import googleReducer from './google'
 
-// export default combineReducers({
-//   tab: tabReducer,
-//   classroom: classroomReducer,
-//   curricula: curriculaReducer,
-//   assignment: assignmentReducer,
-//   student: studentReducer,
-//   google: googleReducer
-// })
-
 export default {
   tab: tabReducer,
   classroom: classroomReducer,

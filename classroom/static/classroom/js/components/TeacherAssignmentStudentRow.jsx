@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { FaCheckCircle, FaTimes, FaClock } from 'react-icons/fa'
 import { Row, Col, Image } from 'react-bootstrap'
 
-export class TeacherAssigmentStudentRow extends React.Component {
+export class TeacherAssignmentStudentRow extends React.Component {
   // Row to show user inside assignment or user profile view
   render () {
     var className = 'student-classroom-row pointer'
@@ -81,7 +81,7 @@ export class TeacherAssigmentStudentRow extends React.Component {
   }
 }
 
-TeacherAssigmentStudentRow.propTypes = {
+TeacherAssignmentStudentRow.propTypes = {
   assignment: PropTypes.object.isRequired,
   student: PropTypes.object,
   onStudentClick: PropTypes.func.isRequired

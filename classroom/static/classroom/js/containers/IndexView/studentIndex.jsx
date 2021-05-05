@@ -19,7 +19,7 @@ import * as classroomCreators from '../../actions/classroom'
 class StudentIndexView extends React.Component {
   componentWillMount () {
     this.props.classroomActions.classroomFetchStudentClassroomsList()
-    this.props.tabActions.changeSelectedTab('student', 'tab', true)
+    this.props.tabActions.changeSelectedTab('student', 'tab', history, true)
   }
 
   componentWillReceiveProps (nextProps, nextContext) {

@@ -1,10 +1,11 @@
 import React from 'react'
 
-import PropTypes from 'prop-types'
-
-import history from '../../history'
-
 import { bindActionCreators } from 'redux'
+import { withRouter } from 'react-router'
+
+// import history from '../../history'
+
+import PropTypes from 'prop-types'
 
 import * as classroomCreators from '../../actions/classroom'
 
@@ -43,6 +44,9 @@ class JoinClassroomView extends React.Component {
   }
 
   render () {
+
+    const { history } = this.props
+
     return (
       <div className='pop-up-window'>
         <button type='button' className='close' aria-label='Close' onClick={() => { history.goBack() }}><span aria-hidden='true'>×</span></button>
@@ -91,5 +95,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(JoinClassroomView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(JoinClassroomView))
 export { JoinClassroomView as JoinClassroomViewNotConnected }
