@@ -1,4 +1,5 @@
-{% extends "navbar.html" %}
+{#{% extends "navbar.html" %}#}
+{% extends "base.html" %}
 {% load render_bundle from webpack_loader %}
 {% load static %}
 
@@ -12,8 +13,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'classroom/style.css' %}" />
 
 {# djeedit #}
-<link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">
-<link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">
+{#<link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">#}
+{#<link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">#}
+{# react-comments-django? #}
+{#<link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">#}
+{#<link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">#}
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
 {# editor TODO replace with webpack minification  #}

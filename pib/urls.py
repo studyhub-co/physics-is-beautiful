@@ -72,7 +72,7 @@ if settings.DEBUG:
     ] + urlpatterns
 
 
-from django.views.generic.base import TemplateView
+# from django.views.generic.base import TemplateView
 
 # # add material id / move to courses urls
 # urlpatterns += [

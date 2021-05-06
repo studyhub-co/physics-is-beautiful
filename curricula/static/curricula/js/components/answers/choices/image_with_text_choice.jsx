@@ -106,7 +106,7 @@ export class ImageWithText extends React.Component {
           {this.props.choice.content.text
             ? <label
               htmlFor={'radio' + this.props.choice.uuid}
-              style={{marginBottom: '0'}}> {/*fix bootsrap reboot.css (marginBottom:0.6rem)*/}
+              style={{marginBottom: '0'}}> {/*fix bootstrap reboot.css (marginBottom:0.6rem)*/}
               {this.props.choice.content.text}
             </label>
             : <label htmlFor={'radio' + this.props.choice.uuid} style={style} />
