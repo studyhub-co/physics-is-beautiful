@@ -19,9 +19,11 @@ class NotificationsListView extends React.Component {
   }
 
   onSellAllClick () {
-    if (this.props.profile) {
-      window.location.href = '/profile/' + this.props.profile.id + '/notifications/'
-    }
+    // if (this.props.profile) {
+    //   window.location.href = '/profile/' + this.props.profile.id + '/notifications/'
+    // }
+    this.props.onClosePopover()
+    this.props.history.push(`/profile/${this.props.profile.id}/notifications/`)
   }
 
   componentWillMount () {
@@ -35,7 +37,7 @@ class NotificationsListView extends React.Component {
 
   render () {
     return (
-      <Container style={{width: '30rem', maxWidth: '100vw'}}>
+      <Container style={{width: '30rem', maxWidth: '100vw', padding: '2rem'}}>
         <Row>
           <Col sm={12} md={12}>
             { this.props.notifications
@@ -119,7 +121,8 @@ NotificationsListView.propTypes = {
     fetchProfileMe: PropTypes.func.isRequired
   }),
   notifications: PropTypes.object,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  history: PropTypes.object
 }
 
 const mapStateToProps = (state) => {

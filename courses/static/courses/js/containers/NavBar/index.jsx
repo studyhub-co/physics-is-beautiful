@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import InputBase from '@material-ui/core/InputBase'
+import Popover from '@material-ui/core/Popover'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import Badge from '@material-ui/core/Badge'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -30,6 +31,7 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import history from '../../history'
 
 import { useStyles } from './style'
+import NotificationsList from './notificationsList'
 
 const Index = props => {
   return (
@@ -38,11 +40,6 @@ const Index = props => {
 }
 
 export default Index
-
-// <MenuButton className={classes.menuButton}>Courses</MenuButton>
-// <MenuButton className={classes.menuButton}>Classroom</MenuButton>
-// <MenuButton className={classes.menuButton}>Resources</MenuButton>
-// <MenuButton className={classes.menuButton}>Discussion</MenuButton>
 
 const MenuButton = withStyles((theme) => ({
   root: {
@@ -67,8 +64,9 @@ const MenuButton = withStyles((theme) => ({
 
 function PrimarySearchAppBar (props) {
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorUserMenuEl, setAnchorUserMenuEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  const [anchorNotificationPopoverEl, setAnchorNotificationPopoverEl] = React.useState(null)
   const [showDrawer, setShowDrawer] = React.useState(false)
 
   const theme = useTheme()
@@ -80,11 +78,23 @@ function PrimarySearchAppBar (props) {
     setShowDrawer(open)
   }
 
-  const isMenuOpen = Boolean(anchorEl)
+  const isMenuOpen = Boolean(anchorUserMenuEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
+  const handleNotificationShowClick = (event) => {
+    console.log('show')
+    setAnchorNotificationPopoverEl(event.currentTarget)
+  }
+
+  const handleNotificationClose = () => {
+    setAnchorNotificationPopoverEl(null)
+  }
+
+  const openedNotificationPopover = Boolean(anchorNotificationPopoverEl)
+  const notificationPopoverId = openedNotificationPopover ? 'notification-popover' : undefined
+
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
+    setAnchorUserMenuEl(event.currentTarget)
   }
 
   const handleMobileMenuClose = () => {
@@ -92,7 +102,7 @@ function PrimarySearchAppBar (props) {
   }
 
   const handleMenuClose = () => {
-    setAnchorEl(null)
+    setAnchorUserMenuEl(null)
     handleMobileMenuClose()
   }
 
@@ -103,7 +113,7 @@ function PrimarySearchAppBar (props) {
   const menuId = 'primary-search-account-menu'
   const renderMenu = (
     <Menu
-      anchorEl={anchorEl}
+      anchorEl={anchorUserMenuEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       id={menuId}
       keepMounted
@@ -140,7 +150,7 @@ function PrimarySearchAppBar (props) {
         <IconButton
           aria-label='show 4 new mails'
           color='inherit'
-          style={{ wordBreak: 'normal'}}>
+          style={{wordBreak: 'normal'}}>
           <Badge badgeContent={4} color='secondary' style={{wordBreak: 'normal'}}>
             <EmojiEventsIcon />
           </Badge>
@@ -263,11 +273,32 @@ function PrimarySearchAppBar (props) {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label='show 17 new notifications' color='inherit'>
+            <IconButton
+              aria-describedby={notificationPopoverId}
+              onClick={handleNotificationShowClick}
+              aria-label='show 17 new notifications'
+              color='inherit'
+            >
               <Badge badgeContent={17} color='secondary' style={{wordBreak: 'normal'}}>
                 <NotificationsIcon style={{'fontSize': '2rem'}} />
               </Badge>
             </IconButton>
+            <Popover
+              id={notificationPopoverId}
+              open={openedNotificationPopover}
+              anchorEl={anchorNotificationPopoverEl}
+              onClose={handleNotificationClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center'
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center'
+              }}
+            >
+              <NotificationsList history={history} onClosePopover={handleNotificationClose} />
+            </Popover>
             <IconButton aria-label='show 4 new mails' color='inherit'>
               <Badge badgeContent={4} color='secondary' style={{wordBreak: 'normal'}}>
                 <EmojiEventsIcon style={{'fontSize': '2rem'}} />

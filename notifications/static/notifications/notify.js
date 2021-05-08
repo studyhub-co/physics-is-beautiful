@@ -1,3 +1,5 @@
+// TODO WHAT is this? to remove?
+
 var notify_badge_class;
 var notify_menu_class;
 var notify_api_url;

@@ -12,7 +12,10 @@ export const useStyles = makeStyles((theme) => ({
     width: '20rem'
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    '&:hover': {
+      color: 'inherit'
+    }
   },
   title: {
     display: 'none',

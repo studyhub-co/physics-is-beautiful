@@ -7,7 +7,7 @@ import {
   EditCourseView, EditModuleView, EditLessonView
 } from './containers/StudioViews/EditorsViews'
 
-import HomeIndex from './containers/homeIndex'
+// import HomeIndex from './containers/homeIndex'
 import DiscussionIndex from './containers/discussionIndex'
 import ResourcesIndex from './containers/resourcesIndex'
 import ClassroomIndex from './containers/classroomIndex'
@@ -18,7 +18,7 @@ import NotFoundView from './components/NotFoundView'
 export default(
   <Switch>
     {/* <Route exact path={BASE_URL} component={IndexView} /> */}
-    {/* TODO lazy load components (see units/loadable.jsx for details) */}
+    {/* TODO lazy load components (see utils/loadable.jsx for details) */}
 
     {/* student views */}
     <Route exact path={'/'} component={CoursesRoutes} />
