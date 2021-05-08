@@ -219,6 +219,9 @@ export function receiveStudentClassroomSuccess (classroomStudent) {
 }
 
 export function classroomFetchStudentClassroom (classroomUuid) {
+
+  console.log(classroomUuid)
+
   return (dispatch, state) => {
     return getAxios().get(API_PREFIX + classroomUuid + '/')
       .then(checkHttpStatus)

@@ -22,7 +22,7 @@ class IndexView extends React.Component {
 
     if (this.props.match.url === '/classroom/' && this.props.match.isExact) {
       // this.props.dispatch(push(studentIndexUrl)) // redirect to student index page
-      history.push(studentIndexUrl) // redirect to student index page
+      history.replace(studentIndexUrl) // redirect to student index page
     }
 
     return (

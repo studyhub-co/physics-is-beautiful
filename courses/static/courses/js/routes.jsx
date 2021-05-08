@@ -21,6 +21,7 @@ export default(
     {/* TODO lazy load components (see units/loadable.jsx for details) */}
 
     {/* student views */}
+    <Route exact path={'/'} component={CoursesRoutes} />
     <Route path={'/courses/:courseUuid?'} component={CoursesRoutes} />
 
     {/* browse courses */}
@@ -57,7 +58,7 @@ export default(
     {/* do we have adblock in resources app only? */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}
     {/* TODO to complete home page */}
-    <Route path='/' component={HomeIndex} />
+    {/* <Route path='/' component={HomeIndex} /> */}
     <Route path='*' component={NotFoundView} />
   </Switch>
 )
