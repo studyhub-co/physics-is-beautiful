@@ -32,6 +32,7 @@ import history from '../../history'
 
 import { useStyles } from './style'
 import NotificationsList from './notificationsList'
+import AchievementsList from './achievementsList'
 
 const Index = props => {
   return (
@@ -66,7 +67,8 @@ function PrimarySearchAppBar (props) {
   const classes = useStyles()
   const [anchorUserMenuEl, setAnchorUserMenuEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
-  const [anchorNotificationPopoverEl, setAnchorNotificationPopoverEl] = React.useState(null)
+  const [anchorNotificationsPopoverEl, setAnchorNotificationsPopoverEl] = React.useState(null)
+  const [anchorAchievementsPopoverEl, setAnchorAchievementsPopoverEl] = React.useState(null)
   const [showDrawer, setShowDrawer] = React.useState(false)
 
   const theme = useTheme()
@@ -78,24 +80,78 @@ function PrimarySearchAppBar (props) {
     setShowDrawer(open)
   }
 
+  // notification list menu
+  const openedNotificationsPopover = Boolean(anchorNotificationsPopoverEl)
+  const notificationsPopoverId = openedNotificationsPopover ? 'notification-popover' : undefined
+
+  const handleNotificationsShowClick = (event) => {
+    setAnchorNotificationsPopoverEl(event.currentTarget)
+  }
+
+  const handleNotificationsClose = () => {
+    setAnchorNotificationsPopoverEl(null)
+  }
+
+  const notificationPopover = (
+    <Popover
+      id={notificationsPopoverId}
+      open={openedNotificationsPopover}
+      anchorEl={anchorNotificationsPopoverEl}
+      onClose={handleNotificationsClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center'
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center'
+      }}
+    >
+      <NotificationsList history={history} onClosePopover={handleNotificationsClose} />
+    </Popover>
+  )
+
+  // achievements list menu
+  const openedAchievementsPopover = Boolean(anchorAchievementsPopoverEl)
+  const achievementsPopoverId = openedAchievementsPopover ? 'achievements-popover' : undefined
+
+  const handleAchievementsShowClick = (event) => {
+    setAnchorAchievementsPopoverEl(event.currentTarget)
+  }
+
+  const handleAchievementsClose = () => {
+    setAnchorAchievementsPopoverEl(null)
+  }
+
+  // user profile menu
   const isMenuOpen = Boolean(anchorUserMenuEl)
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
-
-  const handleNotificationShowClick = (event) => {
-    console.log('show')
-    setAnchorNotificationPopoverEl(event.currentTarget)
-  }
-
-  const handleNotificationClose = () => {
-    setAnchorNotificationPopoverEl(null)
-  }
-
-  const openedNotificationPopover = Boolean(anchorNotificationPopoverEl)
-  const notificationPopoverId = openedNotificationPopover ? 'notification-popover' : undefined
 
   const handleProfileMenuOpen = (event) => {
     setAnchorUserMenuEl(event.currentTarget)
   }
+
+  const achievementsPopover = (
+    <Popover
+      id={achievementsPopoverId}
+      open={openedAchievementsPopover}
+      anchorEl={anchorAchievementsPopoverEl}
+      onClose={handleAchievementsClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center'
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center'
+      }}
+    >
+      <AchievementsList history={history} onClosePopover={handleAchievementsClose} />
+      {/* <NotificationsList history={history} onClosePopover={handleAchievementsClose} /> */}
+    </Popover>
+  )
+
+  // right-hand mobile menu
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null)
@@ -138,15 +194,25 @@ function PrimarySearchAppBar (props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label='show 11 new notifications' color='inherit'>
+      <MenuItem
+        aria-describedby={notificationsPopoverId}
+        onClick={handleNotificationsShowClick}
+      >
+        <IconButton
+          aria-label='show 11 new notifications'
+          color='inherit'
+        >
           <Badge badgeContent={11} color='secondary' style={{wordBreak: 'normal'}}>
             <NotificationsIcon />
           </Badge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem>
+      {notificationPopover}
+      <MenuItem
+        aria-describedby={achievementsPopoverId}
+        onClick={handleAchievementsShowClick}
+      >
         <IconButton
           aria-label='show 4 new mails'
           color='inherit'
@@ -155,8 +221,9 @@ function PrimarySearchAppBar (props) {
             <EmojiEventsIcon />
           </Badge>
         </IconButton>
-        <p>Messages</p>
+        <p>Achievements</p>
       </MenuItem>
+      {achievementsPopover}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label='account of current user'
@@ -198,8 +265,8 @@ function PrimarySearchAppBar (props) {
                 <Divider />
                 <List>
                   {['Courses', 'Classroom', 'Resources', 'Discussion'].map((text, index) => {
-                    let url = '/'
-                    if (text !== 'courses') {
+                    let url = '/browse/' // courses url
+                    if (text !== 'Courses') {
                       url = `/${text.toLowerCase()}/`
                     }
 
@@ -246,8 +313,8 @@ function PrimarySearchAppBar (props) {
           </div>
           <div className={classes.sectionDesktop}>
             <MenuButton
-              href={history.createHref({pathname: '/'})}
-              onClick={(e) => { e.preventDefault(); history.push('/') }}
+              href={history.createHref({pathname: '/browse/'})}
+              onClick={(e) => { e.preventDefault(); history.push('/browse/') }}
               className={classes.menuButton}>
               Courses
             </MenuButton>
@@ -274,8 +341,8 @@ function PrimarySearchAppBar (props) {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton
-              aria-describedby={notificationPopoverId}
-              onClick={handleNotificationShowClick}
+              aria-describedby={notificationsPopoverId}
+              onClick={handleNotificationsShowClick}
               aria-label='show 17 new notifications'
               color='inherit'
             >
@@ -283,27 +350,17 @@ function PrimarySearchAppBar (props) {
                 <NotificationsIcon style={{'fontSize': '2rem'}} />
               </Badge>
             </IconButton>
-            <Popover
-              id={notificationPopoverId}
-              open={openedNotificationPopover}
-              anchorEl={anchorNotificationPopoverEl}
-              onClose={handleNotificationClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center'
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center'
-              }}
-            >
-              <NotificationsList history={history} onClosePopover={handleNotificationClose} />
-            </Popover>
-            <IconButton aria-label='show 4 new mails' color='inherit'>
+            {notificationPopover}
+            <IconButton
+              aria-describedby={achievementsPopoverId}
+              onClick={handleAchievementsShowClick}
+              aria-label='show 4 new mails'
+              color='inherit'>
               <Badge badgeContent={4} color='secondary' style={{wordBreak: 'normal'}}>
                 <EmojiEventsIcon style={{'fontSize': '2rem'}} />
               </Badge>
             </IconButton>
+            {achievementsPopover}
             <IconButton
               edge='end'
               aria-label='account of current user'

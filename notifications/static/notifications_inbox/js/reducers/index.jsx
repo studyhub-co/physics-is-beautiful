@@ -10,5 +10,5 @@ import profileReducer from './profile'
 
 export default {
   notifications: notificationsReducer,
-  profile: profileReducer
+  profile: profileReducer // TODO replace this with global one
 }

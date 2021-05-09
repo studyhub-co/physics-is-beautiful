@@ -6,7 +6,8 @@ from curricula.models import Lesson, Module
 from curricula.serializers import LessonSerializer, ModuleSerializer
 from curricula.services import get_progress_service
 
-from djeddit.models import Thread, Post
+# from djeddit.models import Thread, Post
+from react_comments_django.models import Thread, Post
 from profiles.serializers import PublicProfileSerializer
 from badges.models import Badge
 from badges.serializers import BadgeSerializer
@@ -18,7 +19,8 @@ class MiniThreadSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
 
     def get_url(self, obj):
-        return obj.relativeUrl
+        # not so good link
+        return "/beta/discussion{}".format(obj.get_absolute_url())
 
     class Meta:
         fields = ('title', 'url')

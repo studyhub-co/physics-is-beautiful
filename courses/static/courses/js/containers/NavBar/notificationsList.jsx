@@ -16,7 +16,7 @@ const NotificationsList = (props) => {
   })
 
   return (
-    // class name needs for css separation
+    // history is in props
     <NotificationsListView {...props}/>
   )
 }
