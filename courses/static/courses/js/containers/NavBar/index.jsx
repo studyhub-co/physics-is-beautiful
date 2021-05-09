@@ -294,23 +294,23 @@ function PrimarySearchAppBar (props) {
             }}
             href={history.createHref({pathname: '/'})}
             onClick={(e) => { e.preventDefault(); history.push('/') }}>
-               StudyHub.io
+               StudyHub
               {/* Title should be configurable */}
             </a>
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder='Search…'
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
+          {/*<div className={classes.search}>*/}
+          {/*  <div className={classes.searchIcon}>*/}
+          {/*    <SearchIcon />*/}
+          {/*  </div>*/}
+          {/*  <InputBase*/}
+          {/*    placeholder='Search…'*/}
+          {/*    classes={{*/}
+          {/*      root: classes.inputRoot,*/}
+          {/*      input: classes.inputInput*/}
+          {/*    }}*/}
+          {/*    inputProps={{ 'aria-label': 'search' }}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div className={classes.sectionDesktop}>
             <MenuButton
               href={history.createHref({pathname: '/browse/'})}

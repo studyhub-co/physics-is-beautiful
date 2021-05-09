@@ -1,10 +1,10 @@
 import React from 'react'
 import { ReactReduxContext } from 'react-redux'
 
-import { Sheet } from '../components/Sheet'
+import { Sheet } from '../../components/Sheet'
 
-import resourcesRoutes from '../../../../../resources/static/resources/js/routes'
-import resourcesReducers from '../../../../../resources/static/resources/js/reducers/index'
+import resourcesRoutes from '../../../../../../resources/static/resources/js/routes'
+import resourcesReducers from '../../../../../../resources/static/resources/js/reducers'
 
 const ResourcesIndex = (props) => {
   const context = React.useContext(ReactReduxContext)

@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { Sheet } from '../components/Sheet'
+import { Sheet } from '../../components/Sheet'
 
-import classroomRoutes from '../../../../../classroom/static/classroom/js/routes'
-import classroomReducers from '../../../../../classroom/static/classroom/js/reducers/index'
-import useInjectReducer from '../utils/reactHooks/useInjectReducer'
+import classroomRoutes from '../../../../../../classroom/static/classroom/js/routes'
+import classroomReducers from '../../../../../../classroom/static/classroom/js/reducers'
+import useInjectReducer from '../../utils/reactHooks/useInjectReducer'
 
 const ClassroomIndex = (props) => {
   // if you get warning in dev console here,
