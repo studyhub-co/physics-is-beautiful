@@ -3,7 +3,7 @@ doc
 *~
 *.DS_Store
 *.log
-*.json
+#*.json
 !tsconfig.json
 test/fixtures
 test/harness/load_fixtures.ts
