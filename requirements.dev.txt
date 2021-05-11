@@ -1,4 +1,3 @@
-bpython==0.16
 flake8==3.2.1
 django-debug-toolbar
 django-extensions

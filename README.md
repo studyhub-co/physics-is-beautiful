@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 Requires PostgreSQL
 
-* install mysql:
+* install PostgreSQL:
 ```
 brew install postgresql
 ```
@@ -19,6 +19,12 @@ brew install postgresql
 
 ```
 createdb pib
+```
+
+* connect to `pib` database with `postgres` user and create EXTENSION
+
+```
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
 * install yarn:
