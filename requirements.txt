@@ -46,7 +46,7 @@ jsonfield==2.0.2
 pint==0.8.1
 django-modeladmin-reorder==0.3.1
 django-crispy-forms==1.11.2
-django-mptt==0.8.7
+django-mptt==0.11.0
 awesome-slugify==1.6.5
 django-ipware==2.1.0
 django-meta
