@@ -36,6 +36,14 @@ brew install yarn
 * get packages (from root directory):
 ```
 yarn install
+cd ./courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/
+
+cd ./courses/static/courses/js/codesandbox-apps/codesandbox-api/
+yarn build
+cd ./courses/static/courses/js/codesandbox-apps/common/
+yarn build
+cd ./courses/sandbox-eval-project/
+yarn install
 ```
 
 ## To run locally
