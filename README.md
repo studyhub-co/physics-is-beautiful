@@ -37,10 +37,18 @@ brew install yarn
 ```
 yarn install
 cd ./courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/
-
+npm install
+npm run build
+npm run dist
+cd ./courses/static/courses/js/codesandbox-apps/common/
+yarn install
+cd ./courses/static/courses/js/codesandbox-apps/vscode-textmate/
+npm run install install-dependencies
+npm run compile
 cd ./courses/static/courses/js/codesandbox-apps/codesandbox-api/
 yarn build
-cd ./courses/static/courses/js/codesandbox-apps/common/
+cd ./courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/node-services
+yarn install
 yarn build
 cd ./courses/sandbox-eval-project/
 yarn install
@@ -54,7 +62,7 @@ DJANGO_SETTINGS_MODULE=pib.local_settings
 * Build the front-end
 development watch mode
 ```
-yarn run watch
+yarn run dev
 ```
 or (prepare production bundle)
 ```
