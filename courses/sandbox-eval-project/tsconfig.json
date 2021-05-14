@@ -5,7 +5,6 @@
     "esModuleInterop": true,
     "baseUrl": "./",
     "paths": {
-      "app/*": ["./src/app/*"],
       "embed/*": ["./src/embed/*"],
       "sandbox/*": ["./src/sandbox/*"]
     },

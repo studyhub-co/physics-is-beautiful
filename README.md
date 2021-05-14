@@ -42,16 +42,17 @@ npm run build
 npm run dist
 cd ./courses/static/courses/js/codesandbox-apps/common/
 yarn install
+cd ./courses/static/courses/js/codesandbox-apps/codesandbox-api/
+yarn build
 cd ./courses/static/courses/js/codesandbox-apps/vscode-textmate/
 npm run install install-dependencies
 npm run compile
-cd ./courses/static/courses/js/codesandbox-apps/codesandbox-api/
-yarn build
 cd ./courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/node-services
 yarn install
 yarn build
 cd ./courses/sandbox-eval-project/
 yarn install
+yarn build:sandbox_pib_dev
 ```
 
 ## To run locally
