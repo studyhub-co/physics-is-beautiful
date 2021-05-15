@@ -149,9 +149,6 @@ class MonacoEditor extends React.PureComponent {
             const editorApi = {
               openFile (path: string) {
                 fontPromise.then(() => {
-                  // console.log(codeEditorService.openCodeEditor);
-                  // console.log(codeEditorService);
-                  // console.log(path);
                   codeEditorService.openCodeEditor({
                     resource: context.monaco.Uri.file('/sandbox' + path)
                   })

@@ -7,7 +7,8 @@ const global = getGlobal() as Window & { BrowserFS: any };
 
 const fs = global.BrowserFS.BFSRequire('fs');
 // const SERVICE_URL = 'https://ata-fetcher.cloud/api/v5/typings';
-const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
+// const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
+const SERVICE_URL = 'https://typings.csb.dev/api/v8';
 
 let lastMTime = new Date(0);
 

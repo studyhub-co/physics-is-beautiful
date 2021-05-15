@@ -36,6 +36,7 @@ brew install yarn
 * get packages (from root directory):
 ```
 yarn install
+yarn clear_types # remove duplicated react types
 cd ./courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/
 npm install
 npm run build

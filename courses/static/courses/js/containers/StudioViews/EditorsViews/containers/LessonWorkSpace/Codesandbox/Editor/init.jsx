@@ -137,7 +137,7 @@ export const initialize = (component, callback1) => {
         isVSCode,
         () => {
           if (process.env.NODE_ENV === 'development') {
-            console.log('Loaded Monaco'); // eslint-disable-line
+            console.log('Loaded VSCode Editor'); // eslint-disable-line
           }
           if (isVSCode) {
             vscode.acquireController({

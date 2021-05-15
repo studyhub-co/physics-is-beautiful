@@ -7,20 +7,20 @@
   ],
   "include": ["./src/**/*"],
   "compilerOptions": {
-    "baseUrl": ".",
+//    "baseUrl": ".",
     "module": "commonjs",
     "target": "ES6",
     "resolveJsonModule": true,
     "jsx": "react",
-    "types": ["react", "jest", "node"],
+//    "types": ["react", "jest", "node"],
     "lib": ["es2015", "dom"],
     "outDir": "lib",
     "skipLibCheck": true,
     "declaration": true,
     "allowJs": false,
     "esModuleInterop": true,
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+//    "typeRoots": [
+//      "./node_modules/@types"
+//    ]
   }
 }

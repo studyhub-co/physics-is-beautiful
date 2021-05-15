@@ -68,15 +68,15 @@
     {% endif %}
 >
 </link>
-<link rel="preload"
-      as="script"
-    {% if debug %}
-        href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}"
-    {% else %}
-        href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js"
-    {% endif %}
->
-</link>
+{#<link rel="preload"#}
+{#      as="script"#}
+{#    {% if debug %}#}
+{#        href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}"#}
+{#    {% else %}#}
+{#        href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js"#}
+{#    {% endif %}#}
+{#>#}
+{#</link>#}
 
 {% endblock extrahead %}
 

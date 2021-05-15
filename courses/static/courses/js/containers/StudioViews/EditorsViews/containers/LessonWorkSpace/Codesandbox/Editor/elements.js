@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components'
 
+// position: fixed;
 export const Container = styled.div`
   width: 100%;
   height: 100%;
-  position: fixed;
   left: 0;
   right: 0;
   top: 0;

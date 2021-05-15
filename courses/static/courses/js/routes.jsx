@@ -4,8 +4,10 @@ import { Route, Switch } from 'react-router'
 import { CoursesRoutes } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
 import {
-  EditCourseView, EditModuleView, EditLessonView
+  EditCourseView, EditModuleView
 } from './containers/StudioViews/EditorsViews'
+
+import EditLessonView from './containers/StudioViews/EditorsViews/editLessonLoadable'
 
 // import HomeIndex from './containers/homeIndex'
 import DiscussionIndex from './containers/discussionIndex'

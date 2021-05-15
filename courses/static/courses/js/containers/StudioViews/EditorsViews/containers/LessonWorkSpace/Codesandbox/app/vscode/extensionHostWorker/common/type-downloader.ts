@@ -21,7 +21,6 @@ export function getTypeFetcher() {
   } = {
     manager: {
       getTranspiledModules: () => types,
-
       addModule(module: IModule) {},
       removeModule(module: IModule) {},
       moveModule(module: IModule, newPath) {},

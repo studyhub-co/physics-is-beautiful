@@ -49,10 +49,8 @@ export async function initializeBrowserFS({
   extraMounts = {},
 } = {}) {
   return new Promise(resolve => {
-    
     // console.log(BROWSER_FS_CONFIG);
     // console.trace();
-    
     const config = { ...BROWSER_FS_CONFIG };
     let modulesByPath = {};
 
@@ -64,6 +62,14 @@ export async function initializeBrowserFS({
           fs: 'CodeSandboxFS',
           options,
         };
+
+        // config.options['/extensions/node_modules/typescript'] = {
+        //   fs: 'JSDelivrRequest',
+        //   options: {
+        //     dependency: 'typescript',
+        //     version: '4.1.2',
+        //   },
+        // };
       }
 
       config.options['/sandbox'] = {
