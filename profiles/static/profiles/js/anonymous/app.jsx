@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Button, FormGroup, FormCheck } from 'react-bootstrap'
 
-import LoggedInForm from './profile_logged_in_form'
+// import LoggedInForm from './profile_logged_in_form'
 
 class AnonymousForm extends React.Component {
   render () {
@@ -25,17 +25,23 @@ class AnonymousForm extends React.Component {
 class ProfileControl extends React.Component {
   render () {
     var name, form
-    if (!this.props.isAnonymous) {
-      if(!(this.props.firstName) && !(this.props.lastName)){
-        name = 'Profile'
-      } else {
-        name = this.props.firstName + ' ' + this.props.lastName
-      }
-      form = <LoggedInForm {...this.props} />
-    } else {
-      name = 'Settings'
-      form = <AnonymousForm {...this.props} />
-    }
+    // if (!this.props.isAnonymous) {
+    //   if(!(this.props.firstName) && !(this.props.lastName)){
+    //     name = 'Profile'
+    //   } else {
+    //     name = this.props.firstName + ' ' + this.props.lastName
+    //   }
+    //   form = <LoggedInForm {...this.props} />
+    // } else {
+    //   name = 'Settings'
+    //   form = <AnonymousForm {...this.props} />
+    // }
+
+    // !!!! this part always for anon users now.
+
+    name = 'Settings'
+    form = <AnonymousForm {...this.props} />
+
     return (
       <span>
         {/*<li className='nav-item'>*/}

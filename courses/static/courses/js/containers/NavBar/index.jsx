@@ -178,7 +178,6 @@ function PrimarySearchAppBar (props) {
       onClose={handleMenuClose}
     >
       <MenuItem style={{fontSize: '1.2rem'}} onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem style={{fontSize: '1.2rem'}} onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem style={{fontSize: '1.2rem'}} onClick={handleMenuClose}>Logout</MenuItem>
     </Menu>
   )

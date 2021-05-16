@@ -1,16 +1,26 @@
 import { CHANGE_SELECTED_TAB } from '../constants'
-import history from '../history'
+// import history from '../history'
 
-export function changeSelectedTab (selectedTab, tabNamespace, profileId, fromChildren = false, filter) {
+import { BASE_URL } from '../utils/config'
+
+export function changeSelectedTab (
+  selectedTab,
+  tabNamespace,
+  profileId,
+  // TODO add history prop
+  fromChildren = false,
+  filter) {
   if (!fromChildren) {
+    let url = `${BASE_URL}/${profileId}`
+
     if (selectedTab !== 'profile') {
-      var url = '/' + profileId + '/' + selectedTab + '/'
+      url = `${url}/${selectedTab}/`
       if (filter) {
-        url += filter + '/'
+        url = `${url}${filter}/`
       }
       history.push(url)
     } else {
-      history.push('/' + profileId + '/') // root url
+      history.push(url) // root url
     }
   }
   return { type: CHANGE_SELECTED_TAB,

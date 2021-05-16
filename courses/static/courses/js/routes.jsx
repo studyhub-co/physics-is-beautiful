@@ -9,13 +9,12 @@ import {
 
 import EditLessonView from './containers/StudioViews/EditorsViews/editLessonLoadable'
 
-// import HomeIndex from './containers/homeIndex'
 import DiscussionIndex from './containers/discussionIndex'
 import ResourcesIndex from './containers/ResourcesIndex/loadable'
 import ClassroomIndex from './containers/classroomIndex/loadable'
+import UserProfileIndex from './containers/userProfileIndex'
 
 import NotFoundView from './components/NotFoundView'
-// import EditCourseProfileView from './containers/StudioViews/editProfile'
 
 export default(
   <Switch>
@@ -55,6 +54,9 @@ export default(
 
     {/* classroom */}
     <Route path={'/classroom'} component={ClassroomIndex} />
+
+    {/* profile */}
+    <Route path={'/profile'} component={UserProfileIndex} />
 
     {/* fixme */}
     {/* do we have adblock in resources app only? */}

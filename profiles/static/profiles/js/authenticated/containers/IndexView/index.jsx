@@ -6,8 +6,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Tabs, TabLink, TabContent } from 'react-tabs-redux'
 
+import { BASE_URL } from '../../utils/config'
+
 // import history from '../../history'
-import { Sheet } from '../../components/Sheet'
+// import { Sheet } from '../../components/Sheet'
 import * as profileCreators from '../../actions/profile'
 import * as tabsCreators from '../../actions/tab'
 
@@ -19,54 +21,55 @@ import ActivityTabView from './activityTab'
 class IndexView extends React.Component {
   componentWillMount () {
     if (!this.props.profile && !this.props.profile_fetching) {
+      console.log(this.props.match)
       this.props.profileActions.fetchProfile(this.props.match.params.id)
     }
   }
 
   render () {
-    var profileSettingsUrl = '/:id/settings/'
-    var profileNotificationsUrl = '/:id/notifications/'
-    var profileActivityUrl = '/:id/activity/'
+    var profileSettingsUrl = `${BASE_URL}/:id/settings/`
+    var profileNotificationsUrl = `${BASE_URL}/:id/notifications/`
+    var profileActivityUrl = `${BASE_URL}/:id/activity/`
 
     return (
-      <Sheet>
-        <Tabs name='profileTab'
-          className='tabs'
-          handleSelect={
-            (selectedTab, tabNamespace) => {
-              this.props.tabActions.changeSelectedTab(selectedTab, tabNamespace, this.props.match.params.id)
-            }
+      // <Sheet>
+      <Tabs name='profileTab'
+        className='tabs'
+        handleSelect={
+          (selectedTab, tabNamespace) => {
+            this.props.tabActions.changeSelectedTab(selectedTab, tabNamespace, this.props.match.params.id)
           }
-          selectedTab={this.props.tab}
-        >
-          <div className='tab-links'>
-            <TabLink to='profile'>Profile</TabLink>
-            {this.props.profile && this.props.profile.is_current_user_profile
-              ? <TabLink to='settings'>Settings</TabLink> : null }
-            <TabLink to='activity'>Activity</TabLink>
-            {this.props.profile && this.props.profile.is_current_user_profile
-              ? <TabLink to='notifications'>Notifications</TabLink>
-              : null }
-          </div>
-          <div className='content'>
-            <TabContent for='profile'>
-              <ProfileTabView profileId={this.props.match.params.id} />
-            </TabContent>
-            {this.props.profile && this.props.profile.is_current_user_profile
-              ? <TabContent for='settings'>
-                <Route exact path={profileSettingsUrl} component={SettingsTabView} />
-              </TabContent> : null }
-            <TabContent for='activity'>
-              <Route exact path={profileActivityUrl} component={ActivityTabView} />
-            </TabContent>
-            {this.props.profile && this.props.profile.is_current_user_profile
-              ? <TabContent for='notifications'>
-                <Route exact path={profileNotificationsUrl} component={NotificationsTabView} />
-                <Route exact path={profileNotificationsUrl + ':filter/'} component={NotificationsTabView} />
-              </TabContent> : null }
-          </div>
-        </Tabs>
-      </Sheet>
+        }
+        selectedTab={this.props.tab}
+      >
+        <div className='tab-links'>
+          <TabLink to='profile'>Profile</TabLink>
+          {this.props.profile && this.props.profile.is_current_user_profile
+            ? <TabLink to='settings'>Settings</TabLink> : null }
+          <TabLink to='activity'>Activity</TabLink>
+          {this.props.profile && this.props.profile.is_current_user_profile
+            ? <TabLink to='notifications'>Notifications</TabLink>
+            : null }
+        </div>
+        <div className='content'>
+          <TabContent for='profile'>
+            <ProfileTabView profileId={this.props.match.params.id} />
+          </TabContent>
+          {this.props.profile && this.props.profile.is_current_user_profile
+            ? <TabContent for='settings'>
+              <Route exact path={profileSettingsUrl} component={SettingsTabView} />
+            </TabContent> : null }
+          <TabContent for='activity'>
+            <Route exact path={profileActivityUrl} component={ActivityTabView} />
+          </TabContent>
+          {this.props.profile && this.props.profile.is_current_user_profile
+            ? <TabContent for='notifications'>
+              <Route exact path={profileNotificationsUrl} component={NotificationsTabView} />
+              <Route exact path={profileNotificationsUrl + ':filter/'} component={NotificationsTabView} />
+            </TabContent> : null }
+        </div>
+      </Tabs>
+      // </Sheet>
     )
   }
 }

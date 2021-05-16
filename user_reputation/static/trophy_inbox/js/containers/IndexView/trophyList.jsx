@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { RingLoader } from 'react-spinners'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-// import { FaCheck, FaCheckCircle, FaExclamationCircle, FaClock } from 'react-icons/fa'
+
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -19,9 +19,11 @@ class TrophyListView extends React.Component {
   }
 
   onSellAllClick () {
-    if (this.props.profile) {
-      window.location.href = '/profile/' + this.props.profile.id + '/activity/'
-    }
+    // if (this.props.profile) {
+    //   window.location.href = '/profile/' + this.props.profile.id + '/activity/'
+    // }
+    this.props.onClosePopover()
+    this.props.history.push('/profile/' + this.props.profile.id + '/activity/')
   }
 
   componentWillMount () {

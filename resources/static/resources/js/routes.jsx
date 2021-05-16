@@ -6,7 +6,7 @@ import { BASE_URL } from './utils/config'
 export default(
   <Switch>
     <Route exact path={BASE_URL} component={IndexView} />
-    <Route exact path={BASE_URL + 'add/'} component={AddResourceView} />
+    <Route exact path={`${BASE_URL}add/`} component={AddResourceView} />
     {/* TODO extract regex */}
     <Route
       exact
@@ -17,7 +17,7 @@ export default(
       path={BASE_URL + ':resource_title([A-Za-z0-9_\\-\\.]+)/problems/:problem_title([A-Za-z0-9_\\-\\.]+)/:uuid'}
       component={ProblemView} />
     <Route exact path={BASE_URL + ':title([A-Za-z0-9_\\-\\.]+)/:uuid/'} component={ResourceView} />
-    <Route exact path={BASE_URL + 'adblock/'} component={AdblockView} />
+    <Route exact path={`${BASE_URL}adblock/`} component={AdblockView} />
     {/* <Route path='*' component={NotFoundView} /> */}
   </Switch>
 )
