@@ -22,6 +22,8 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
                      mixins.UpdateModelMixin,
                      GenericViewSet):
     lookup_field = 'user__id'
+    # TODO add regex fo all drf viewsets
+    lookup_value_regex = '\d+'
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, EditDeleteByOwnerOrStaff)  # users can upload solutions
     queryset = Profile.objects.filter(user__is_active=True)
     serializer_class = PublicProfileSerializer
@@ -73,7 +75,6 @@ class ProfileViewSet(mixins.RetrieveModelMixin,
         #     select_related('badge'). \
         #     annotate(badge_count=Count('badge__id'))
         # distinct('badge__id')
-
         badges = Badge.objects.filter(badgetouser__user=user__id).\
             annotate(badge_count=Count('badgetouser__user'))
 
