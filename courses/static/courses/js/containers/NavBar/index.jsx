@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import { useTheme, withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import InputBase from '@material-ui/core/InputBase'
+import withWidth, { isWidthUp  } from '@material-ui/core/withWidth'
 import Popover from '@material-ui/core/Popover'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import Badge from '@material-ui/core/Badge'
@@ -20,7 +20,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import MenuIcon from '@material-ui/icons/Menu'
-import SearchIcon from '@material-ui/icons/Search'
+// import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
 // import MailIcon from '@material-ui/icons/Mail'
@@ -63,7 +63,7 @@ const MenuButton = withStyles((theme) => ({
 //   'Discussion': {onClick: () => { console.log('Discussion') }}
 // }
 
-function PrimarySearchAppBar (props) {
+const PrimarySearchAppBar = withWidth()((props) => {
   const classes = useStyles()
   const [anchorUserMenuEl, setAnchorUserMenuEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
@@ -297,19 +297,19 @@ function PrimarySearchAppBar (props) {
               {/* Title should be configurable */}
             </a>
           </Typography>
-          {/*<div className={classes.search}>*/}
-          {/*  <div className={classes.searchIcon}>*/}
-          {/*    <SearchIcon />*/}
-          {/*  </div>*/}
-          {/*  <InputBase*/}
-          {/*    placeholder='Search…'*/}
-          {/*    classes={{*/}
-          {/*      root: classes.inputRoot,*/}
-          {/*      input: classes.inputInput*/}
-          {/*    }}*/}
-          {/*    inputProps={{ 'aria-label': 'search' }}*/}
-          {/*  />*/}
-          {/*</div>*/}
+          {/* <div className={classes.search}> */}
+          {/*  <div className={classes.searchIcon}> */}
+          {/*    <SearchIcon /> */}
+          {/*  </div> */}
+          {/*  <InputBase */}
+          {/*    placeholder='Search…' */}
+          {/*    classes={{ */}
+          {/*      root: classes.inputRoot, */}
+          {/*      input: classes.inputInput */}
+          {/*    }} */}
+          {/*    inputProps={{ 'aria-label': 'search' }} */}
+          {/*  /> */}
+          {/* </div> */}
           <div className={classes.sectionDesktop}>
             <MenuButton
               href={history.createHref({pathname: '/browse/'})}
@@ -384,8 +384,7 @@ function PrimarySearchAppBar (props) {
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      {isWidthUp('md', props.width) ? renderMenu : renderMobileMenu}
     </div>
   )
-}
+})
