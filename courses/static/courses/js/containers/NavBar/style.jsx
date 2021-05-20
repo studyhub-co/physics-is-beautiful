@@ -9,7 +9,9 @@ export const useStyles = makeStyles((theme) => ({
     margin: 0
   },
   drawer: {
-    width: '20rem'
+    width: '15rem',
+    height: '100%',
+    backgroundImage: 'linear-gradient(to right, rgb(61, 186, 244) 31%, rgb(4, 168, 244) 60%, rgb(28, 175, 246) 100%)',
   },
   menuButton: {
     marginRight: theme.spacing(2),

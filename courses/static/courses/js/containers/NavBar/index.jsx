@@ -23,7 +23,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import MenuIcon from '@material-ui/icons/Menu'
 // import SearchIcon from '@material-ui/icons/Search'
-import AccountCircle from '@material-ui/icons/AccountCircle'
+// import AccountCircle from '@material-ui/icons/AccountCircle'
+import ExitToApp from '@material-ui/icons/ExitToApp'
 
 // import MailIcon from '@material-ui/icons/Mail'
 import EmojiEventsIcon from '@material-ui/icons/EmojiEvents'
@@ -113,7 +114,7 @@ const PrimarySearchAppBar =
         }
 
         // const userAvatarRef = useRef()
-        const [userAvatarRef, setUserAvatarRef] =  React.useState(false)
+        const [userAvatarRef, setUserAvatarRef] = React.useState(false)
 
         useEffect(() => {
           const { userProfile: profile } = props
@@ -165,7 +166,10 @@ const PrimarySearchAppBar =
               horizontal: 'center'
             }}
           >
-            <NotificationsList history={history} onClosePopover={handleNotificationsClose} />
+            <NotificationsList
+              history={history}
+              onClosePopover={() => { handleNotificationsClose(); handleMobileMenuClose() }}
+            />
           </Popover>
         )
 
@@ -203,7 +207,9 @@ const PrimarySearchAppBar =
               horizontal: 'center'
             }}
           >
-            <AchievementsList history={history} onClosePopover={handleAchievementsClose} />
+            <AchievementsList
+              history={history}
+              onClosePopover={() => { handleAchievementsClose(); handleMobileMenuClose() }} />
             {/* <NotificationsList history={history} onClosePopover={handleAchievementsClose} /> */}
           </Popover>
         )
@@ -243,7 +249,7 @@ const PrimarySearchAppBar =
             <MenuItem
               style={{fontSize: '1.2rem'}}
               onClick={onProfileClick}>
-        Profile
+            Profile
             </MenuItem>
             <MenuItem style={{fontSize: '1.2rem'}} onClick={handleAccountMenuClose}>Logout</MenuItem>
           </Menu>
@@ -300,7 +306,7 @@ const PrimarySearchAppBar =
                 aria-haspopup='true'
                 color='inherit'
               >
-                <AccountCircle />
+                <Avatar style={{width: '1.8rem', height: '1.8rem'}} src={userAvatarRef} />
               </IconButton>
               <p>Profile</p>
             </MenuItem>
@@ -311,8 +317,7 @@ const PrimarySearchAppBar =
                 aria-haspopup='true'
                 color='inherit'
               >
-                {/*<AccountCircle />*/}
-                <Avatar src={userAvatarRef} />
+                <ExitToApp />
               </IconButton>
               <p>Logout</p>
             </MenuItem>
@@ -360,7 +365,7 @@ const PrimarySearchAppBar =
                               }}
                             >
                               {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-                              <ListItemText primary={text} />
+                              <ListItemText style={{color: 'white'}} primary={text} />
                             </ListItem>
                           )
                         })}
@@ -454,7 +459,7 @@ const PrimarySearchAppBar =
                     color='inherit'
                   >
                     <Avatar src={userAvatarRef} />
-                    {/*<AccountCircle style={{'fontSize': '2rem'}} />*/}
+                    {/* <AccountCircle style={{'fontSize': '2rem'}} /> */}
                   </IconButton>
                 </div>
                 <div className={classes.sectionMobile}>

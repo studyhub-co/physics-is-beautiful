@@ -7,12 +7,22 @@ import PropTypes from 'prop-types'
 
 import NavBar from './containers/NavBar/index'
 
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: 'Museosansrounded, sans-serif'
+  }
+})
+
 class App extends React.Component {
   render () {
     return (
       <div>
-        <NavBar />
-        {this.props.children}
+        <ThemeProvider theme={theme}>
+          <NavBar />
+          {this.props.children}
+        </ThemeProvider>
       </div>
     )
   }
