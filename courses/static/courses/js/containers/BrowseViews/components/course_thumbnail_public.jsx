@@ -153,7 +153,7 @@ class CourseThumbnailPublic extends React.Component {
             {this.props.course.name}
           </div>
           <div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            <a href={this.props.course.author.get_absolute_url}>
+            <a href={history.createHref({pathname: this.props.course.author.get_absolute_url})}>
               {this.props.course.author.display_name}
             </a> ∙ {this.props.course.count_lessons } lessons ∙ { this.props.course.number_of_learners } learners
           </div>

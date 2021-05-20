@@ -1,7 +1,8 @@
-import React, {useEffect} from 'react'
+import React, { useEffect, useRef } from 'react'
 import { bindActionCreators } from 'redux'
 
 import { useTheme, withStyles } from '@material-ui/core/styles'
+import Avatar from '@material-ui/core/Avatar'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
@@ -111,6 +112,32 @@ const PrimarySearchAppBar =
           setShowDrawer(open)
         }
 
+        // const userAvatarRef = useRef()
+        const [userAvatarRef, setUserAvatarRef] =  React.useState(false)
+
+        useEffect(() => {
+          const { userProfile: profile } = props
+
+          if (profile) {
+            switch (profile.selected_avatar) {
+              case 'u':
+                // userAvatarRef.current = profile.user_avatar
+                setUserAvatarRef(profile.user_avatar)
+                break
+              case 'g':
+                // userAvatarRef.current = profile.google_avatar_url
+                setUserAvatarRef(profile.google_avatar_url)
+                break
+              case 'a':
+                // userAvatarRef.current = profile.gravatar_url
+                setUserAvatarRef(profile.gravatar_url)
+                break
+            }
+          }
+        }, [
+          props.userProfile
+        ])
+
         // notification list menu
         const openedNotificationsPopover = Boolean(anchorNotificationsPopoverEl)
         const notificationsPopoverId = openedNotificationsPopover ? 'notification-popover' : undefined
@@ -199,7 +226,7 @@ const PrimarySearchAppBar =
 
         const onProfileClick = () => {
           handleAccountMenuClose()
-          history.push(`/profile/me/`)
+          history.push(`/profile/${props.userProfile.id}/`)
         }
 
         const menuId = 'primary-search-account-menu'
@@ -284,7 +311,8 @@ const PrimarySearchAppBar =
                 aria-haspopup='true'
                 color='inherit'
               >
-                <AccountCircle />
+                {/*<AccountCircle />*/}
+                <Avatar src={userAvatarRef} />
               </IconButton>
               <p>Logout</p>
             </MenuItem>
@@ -425,7 +453,8 @@ const PrimarySearchAppBar =
                     onClick={handleAccountMenuOpen}
                     color='inherit'
                   >
-                    <AccountCircle style={{'fontSize': '2rem'}} />
+                    <Avatar src={userAvatarRef} />
+                    {/*<AccountCircle style={{'fontSize': '2rem'}} />*/}
                   </IconButton>
                 </div>
                 <div className={classes.sectionMobile}>

@@ -1,5 +1,5 @@
 import reputationActionsReducer from './reputation_actions'
-import profileReducer from './profile'
+// import profileReducer from './profile'
 
 // export default combineReducers({
 //   reputationActions: reputationActionsReducer,
@@ -8,5 +8,5 @@ import profileReducer from './profile'
 
 export default {
   reputationActions: reputationActionsReducer,
-  profile: profileReducer // TODO replace this with global one
+  // profile: profileReducer // TODO replace this with global one
 }

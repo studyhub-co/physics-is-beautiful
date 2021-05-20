@@ -2,35 +2,14 @@ import React from 'react'
 
 // import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-// import PropTypes from 'prop-types'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { FaTrophy } from 'react-icons/fa'
-// import Badge from 'react-bootstrap/Badge'
 
 import TrophyListView from './trophyList'
 // import * as reputationCreators from '../../actions/reputation'
 
-// CustomToggle.propTypes = {
-//   onClick: PropTypes.func.isRequired
-// }
-
-// class IndexView extends React.Component {
 const IndexView = props => {
-  // render () {
-
   const CustomToggle = React.forwardRef(({ children, onClick }, ref) => {
-  // constructor (props, context) {
-  //   super(props, context)
-  //
-  //   this.handleClick = this.handleClick.bind(this)
-  // }
-
-  // handleClick (e) {
-  //   e.preventDefault()
-  //   this.props.onClick(e)
-  // }
-
-  // render () {
     return (
       <span
         ref={ref}

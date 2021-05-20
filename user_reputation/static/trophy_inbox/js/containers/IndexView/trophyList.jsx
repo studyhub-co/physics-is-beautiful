@@ -10,7 +10,8 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 import * as reputationActionsCreators from '../../actions/reputation'
-import * as profileCreators from '../../actions/profile'
+// import * as profileCreators from '../../actions/profile'
+import * as profileCreators from '../../../../../../courses/static/courses/js/actions/profile'
 
 class TrophyListView extends React.Component {
   constructor (props) {
@@ -26,8 +27,11 @@ class TrophyListView extends React.Component {
     this.props.history.push('/profile/' + this.props.profile.id + '/activity/')
   }
 
-  componentWillMount () {
-    this.props.profileActions.fetchProfileMe()
+  // componentWillMount () { depricated
+  componentDidMount () {
+    if (!this.props.profile) { // this is the 'me' profile
+      this.props.profileActions.fetchProfileMe()
+    }
 
     if (!this.props.reputationActionsList) {
       // load reputation_actions list
