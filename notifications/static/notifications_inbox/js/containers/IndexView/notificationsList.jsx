@@ -10,7 +10,8 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 import * as notificationsCreators from '../../actions/notifications'
-import * as profileCreators from '../../actions/profile'
+// import * as profileCreators from '../../actions/profile'
+import * as profileCreators from '../../../../../../courses/static/courses/js/actions/profile'
 
 class NotificationsListView extends React.Component {
   constructor (props) {
@@ -19,15 +20,15 @@ class NotificationsListView extends React.Component {
   }
 
   onSellAllClick () {
-    // if (this.props.profile) {
-    //   window.location.href = '/profile/' + this.props.profile.id + '/notifications/'
-    // }
     this.props.onClosePopover()
     this.props.history.push(`/profile/${this.props.profile.id}/notifications/`)
   }
 
-  componentWillMount () {
-    this.props.profileActions.fetchProfileMe()
+  // componentWillMount () { // deprecated
+   componentDidMount () {
+    if (!this.props.profile) { // this is the 'me' profile
+      this.props.profileActions.fetchProfileMe()
+    }
 
     if (!this.props.notifications) {
       // load notifications list

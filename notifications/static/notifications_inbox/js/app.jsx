@@ -15,9 +15,6 @@ class App extends React.Component {
 App.propTypes = {
   children: PropTypes.shape().isRequired
 }
-// App.defaultProps = {
-//   location: undefined
-// }
 
 const mapStateToProps = (state, ownProps) => {
   return {
