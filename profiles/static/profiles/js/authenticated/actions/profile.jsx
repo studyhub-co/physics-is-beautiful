@@ -1,28 +1,32 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_PROFILE_PREFIX } from '../utils/config'
 import {
-  PROFILE_RECEIVE_ME, PROFILE_RECEIVE_PROFILE, PROFILE_FETCHING_PROFILE,
+  // PROFILE_RECEIVE_ME,
+  PROFILE_RECEIVE_PROFILE, PROFILE_FETCHING_PROFILE,
   PROFILE_RECEIVE_BADGES
 } from '../constants'
 
-export function receiveProfileMe (me) {
-  return {
-    type: PROFILE_RECEIVE_ME,
-    payload: {
-      me
-    }
-  }
-}
+// export profile.me action and reducer from main SPA
+// + it will replace the root 'profile' reducer with removing data.
 
-export function fetchProfileMe () {
-  return (dispatch, state) => {
-    return getAxios().get(API_PROFILE_PREFIX + 'me')
-      .then(checkHttpStatus)
-      .then((response) => {
-        dispatch(receiveProfileMe(response.data))
-      })
-  }
-}
+// export function receiveProfileMe (me) {
+//   return {
+//     type: PROFILE_RECEIVE_ME,
+//     payload: {
+//       me
+//     }
+//   }
+// }
+
+// export function fetchProfileMe () {
+//   return (dispatch, state) => {
+//     return getAxios().get(API_PROFILE_PREFIX + 'me')
+//       .then(checkHttpStatus)
+//       .then((response) => {
+//         dispatch(receiveProfileMe(response.data))
+//       })
+//   }
+// }
 
 export function receiveProfile (profile) {
   return {

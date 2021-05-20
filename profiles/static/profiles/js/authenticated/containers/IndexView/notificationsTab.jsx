@@ -1,27 +1,22 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-import { Route } from 'react-router'
-import { push } from 'connected-react-router'
+import { withRouter } from 'react-router'
+
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
-// import Glyphicon from 'react-bootstrap/Glyphicon'
 import { FaCheck } from 'react-icons/fa'
 
 import ListGroup from 'react-bootstrap/ListGroup'
 import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import { RingLoader } from 'react-spinners'
 import InfiniteScroll from 'react-infinite-scroller'
-// import Moment from 'react-moment'
-
-import history from '../../history'
 
 import * as tabsCreators from '../../actions/tab'
 import * as notificationsCreators from '../../actions/notifications'
-// import * as profileCreators from '../../actions/profile'
 
 import Profile from '../../components/NotificationsDeserializers/profile'
 import Thread from '../../components/NotificationsDeserializers/thread'
@@ -48,16 +43,30 @@ class NotificationsTabView extends React.Component {
     // }
     // var path = this.props.match.path
     // if (path.indexOf('/notifications/', path.length - '/notifications/'.length) !== -1) {
+
+    const { history } = this.props
+
     if (!this.props.match.params.hasOwnProperty('filter') || this.props.match.params['filter'] !== 'read') {
       this.props.notificationsActions.fetchNotifications(null, {'filter': 'unread'})
-      this.props.tabActions.changeSelectedTab('notifications', 'profileTab', this.props.match.params.id, false)
+      this.props.tabActions.changeSelectedTab(
+        'notifications',
+        'profileTab',
+        this.props.match.params.id,
+        history,
+        false)
     }
 
     // console.log(this.props.match.params);
     // if (path.indexOf('/notifications/read/', path.length - '/notifications/read/'.length) !== -1) {
     if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
       this.props.notificationsActions.fetchNotifications(null, {'filter': 'read'})
-      this.props.tabActions.changeSelectedTab('notifications', 'profileTab', this.props.match.params.id, false, 'read')
+      this.props.tabActions.changeSelectedTab(
+        'notifications',
+        'profileTab',
+        this.props.match.params.id,
+        history,
+        false,
+        'read')
     }
   }
 
@@ -81,6 +90,9 @@ class NotificationsTabView extends React.Component {
   }
 
   onFilterClick (filter) {
+
+    const { history } = this.props
+
     if (this.props.cancelSource) {
       // cancel prev request
       this.props.cancelSource.cancel()
@@ -273,8 +285,8 @@ NotificationsTabView.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    // profile: state.profile.profile,
-    // profile_fetching: state.profile.fetching
+    // profile: state.profileCustom.profile,
+    // profile_fetching: state.profileCustom.fetching
     notifications: state.notifications.notifications,
     cancelSource: state.notifications.cancelSource
   }
@@ -289,5 +301,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotificationsTabView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NotificationsTabView))
 export { NotificationsTabView as NotificationsTabViewNotConnected }

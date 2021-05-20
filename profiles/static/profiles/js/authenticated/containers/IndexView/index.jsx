@@ -1,6 +1,5 @@
 import React from 'react'
-
-import { Route } from 'react-router'
+import { Route, withRouter } from 'react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -19,17 +18,32 @@ import SettingsTabView from './settingsTab'
 import ActivityTabView from './activityTab'
 
 class IndexView extends React.Component {
-  componentWillMount () {
+  // componentWillMount () { // deprecated
+  componentDidMount () {
     if (!this.props.profile && !this.props.profile_fetching) {
-      console.log(this.props.match)
       this.props.profileActions.fetchProfile(this.props.match.params.id)
     }
   }
 
+  // componentDidUpdate (prevProps, prevState, snapshot) {
+  //   const { history } = this.props
+  //
+  //   if (this.props.profile &&
+  //       this.props.match.params?.id === 'me') {
+  //     // redirect to profile with id (not 'me')
+  //     this.props.tabActions.changeSelectedTab(
+  //       'profile', 'profileTab',
+  //       this.props.profile.id, history
+  //     )
+  //   }
+  // }
+
   render () {
-    var profileSettingsUrl = `${BASE_URL}/:id/settings/`
-    var profileNotificationsUrl = `${BASE_URL}/:id/notifications/`
-    var profileActivityUrl = `${BASE_URL}/:id/activity/`
+    const profileSettingsUrl = `${BASE_URL}/:id/settings/`
+    const profileNotificationsUrl = `${BASE_URL}/:id/notifications/`
+    const profileActivityUrl = `${BASE_URL}/:id/activity/`
+
+    const { history } = this.props
 
     return (
       // <Sheet>
@@ -37,7 +51,11 @@ class IndexView extends React.Component {
         className='tabs'
         handleSelect={
           (selectedTab, tabNamespace) => {
-            this.props.tabActions.changeSelectedTab(selectedTab, tabNamespace, this.props.match.params.id)
+            this.props.tabActions.changeSelectedTab(
+              selectedTab,
+              tabNamespace,
+              this.props.match.params.id,
+              history)
           }
         }
         selectedTab={this.props.tab}
@@ -92,8 +110,8 @@ IndexView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     tab: state.tabs.profileTab,
-    profile: state.profile.profile,
-    profile_fetching: state.profile.fetching
+    profile: state.profileCustom.profile,
+    profile_fetching: state.profileCustom.fetching
   }
 }
 
@@ -106,5 +124,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IndexView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(IndexView))
 export { IndexView as IndexViewNotConnected }

@@ -10,7 +10,7 @@ export default class SettingRow extends React.Component {
 
     if (this.props.value) {
       this.state = {
-        [props.uuid + 'checked']: 'on',
+        [props.uuid + 'checked']: 'on'
       }
     } else {
       this.state = {

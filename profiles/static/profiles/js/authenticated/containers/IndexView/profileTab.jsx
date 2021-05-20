@@ -315,8 +315,9 @@ ProfileTabView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     // tab: tab: state.tabs.profileTab,
-    profile: state.profile.profile,
-    profile_fetching: state.profile.fetching
+    // state.profileCustom.profile - loaded from custom ID
+    profile: state.profileCustom.profile,
+    profile_fetching: state.profileCustom.fetching
   }
 }
 

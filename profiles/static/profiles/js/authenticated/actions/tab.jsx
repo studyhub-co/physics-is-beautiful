@@ -7,7 +7,7 @@ export function changeSelectedTab (
   selectedTab,
   tabNamespace,
   profileId,
-  // TODO add history prop
+  history,
   fromChildren = false,
   filter) {
   if (!fromChildren) {

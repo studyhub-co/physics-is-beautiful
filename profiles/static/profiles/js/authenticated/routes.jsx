@@ -6,7 +6,7 @@ import { BASE_URL } from './utils/config'
 
 export default(
   <Switch>
-    <Route path={`${BASE_URL}/:id/`} component={IndexView} />
+    <Route path={`${BASE_URL}/:id(\\d+)/`} component={IndexView} />
     {/*<Route path={`${BASE_URL}/:id/:tab/`} component={IndexView} />*/}
   </Switch>
 )

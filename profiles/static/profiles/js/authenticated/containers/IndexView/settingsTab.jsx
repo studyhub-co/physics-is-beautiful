@@ -1,8 +1,7 @@
 import React from 'react'
 
+import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
-import { Route } from 'react-router'
-import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Container, Row, Col } from 'react-bootstrap'
@@ -12,9 +11,11 @@ import * as tabsCreators from '../../actions/tab'
 import * as profileCreators from '../../actions/profile'
 import SettingRow from './settingRow'
 
+
 class SettingsTabView extends React.Component {
   componentWillMount () {
-    this.props.tabActions.changeSelectedTab('settings', 'profileTab', this.props.match.params.id, false)
+    const { history } = this.props
+    this.props.tabActions.changeSelectedTab('settings', 'profileTab', this.props.match.params.id, history, false)
     if (!this.props.profile && !this.props.profile_fetching) {
       this.props.profileActions.fetchProfile(this.props.match.params.id)
     }
@@ -90,8 +91,8 @@ SettingsTabView.propTypes = {
 const mapStateToProps = (state) => {
   return {
     // tab: tab: state.tabs.profileTab,
-    profile: state.profile.profile,
-    profile_fetching: state.profile.fetching
+    profile: state.profileCustom.profile,
+    profile_fetching: state.profileCustom.fetching
   }
 }
 
@@ -103,5 +104,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsTabView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SettingsTabView))
 export { SettingsTabView as SettingsTabViewNotConnected }
