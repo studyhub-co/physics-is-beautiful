@@ -5,13 +5,13 @@ import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import PropTypes from 'prop-types'
 
-import Index from './containers/NavBar/index'
+import NavBar from './containers/NavBar/index'
 
 class App extends React.Component {
   render () {
     return (
       <div>
-        <Index />
+        <NavBar />
         {this.props.children}
       </div>
     )
