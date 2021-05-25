@@ -5,13 +5,18 @@ import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import PropTypes from 'prop-types'
 
-import NavBar from './containers/NavBar/index'
+import NavBar from './components/NavBar/index'
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
   typography: {
     fontFamily: 'Museosansrounded, sans-serif'
+  },
+  palette: {
+    primary: {
+      main: '#007bff'
+    },
   }
 })
 

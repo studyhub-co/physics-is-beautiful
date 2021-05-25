@@ -1,43 +1,72 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_PROFILE_PREFIX } from '../utils/config'
-import { PROFILE_RECEIVE_ME, NOTIFICATIONS_RECEIVE_UNREAD_COUNT } from '../constants'
+import {
+  PROFILE_RECEIVE_ME,
+  NOTIFICATIONS_RECEIVE_UNREAD_COUNT,
+} from '../constants'
 import { API_NOTIFICATIONS_PREFIX } from '../../../../../notifications/static/notifications_inbox/js/utils/config'
 
-export function receiveProfileMe (me) {
+export function receiveProfileMe(me) {
   return {
     type: PROFILE_RECEIVE_ME,
     payload: {
-      me
-    }
+      me,
+    },
   }
 }
 
-export function fetchProfileMe () {
+export function fetchProfileMe() {
   return (dispatch, state) => {
-    return getAxios().get(API_PROFILE_PREFIX + 'me/')
+    return getAxios()
+      .get(API_PROFILE_PREFIX + 'me/')
       .then(checkHttpStatus)
-      .then((response) => {
+      .then(response => {
         dispatch(receiveProfileMe(response.data))
       })
   }
 }
 
-export function receiveUnreadNotificationsCount (unReadNotificationsCount) {
+export function receiveUnreadNotificationsCount(unReadNotificationsCount) {
   return {
     type: NOTIFICATIONS_RECEIVE_UNREAD_COUNT,
     payload: {
-      unReadNotificationsCount
-    }
+      unReadNotificationsCount,
+    },
   }
 }
 
-export function fetchUnReadNotificationCount () {
+export function fetchUnReadNotificationCount() {
   return (dispatch, state) => {
     return getAxios()
       .get(API_NOTIFICATIONS_PREFIX + 'unread_count/')
       .then(checkHttpStatus)
-      .then((response) => {
+      .then(response => {
         dispatch(receiveUnreadNotificationsCount(response.data))
+      })
+  }
+}
+
+export function logout() {
+  return (dispatch, state) => {
+    return getAxios()
+      .get(API_PROFILE_PREFIX + 'logout/')
+      .then(checkHttpStatus)
+      .then(response => {
+        dispatch(receiveProfileMe(response.data))
+      })
+  }
+}
+
+export function login(email, password) {
+  return (dispatch, state) => {
+    return getAxios()
+      .post(API_PROFILE_PREFIX + 'login/', {
+        email,
+        password,
+      })
+      .then(checkHttpStatus)
+      .then(response => {
+        dispatch(receiveProfileMe(response.data))
       })
   }
 }

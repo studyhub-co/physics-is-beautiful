@@ -5,7 +5,8 @@ django-ses==1.0.3
 Django==2.2.20
 # TODO try to migrate django-allauth==0.44.1
 # django-allauth==0.39.1
--e git+https://github.com/physics-is-beautiful/django-allauth.git@8b08f90262aefd61df9a24300e126d4eb2fd1834#egg=django-allauth
+django-allauth==0.44.0
+# git+https://github.com/physics-is-beautiful/django-allauth.git@8b08f90262aefd61df9a24300e126d4eb2fd1834#egg=django-allauth
 #-e git+https://github.com/pennersr/django-allauth.git@d34018a4ef40eb0c112c82672abeef402af7ee98#egg=django-allauth
 django-dotenv==1.4.1
 django-light-enums==0.1.6
@@ -69,7 +70,8 @@ django-model-utils==3.1.2
 django-user_agents==0.3.2
 future==0.17.1
 # TODO remove
--e git+https://github.com/physics-is-beautiful/django-react-djeddit.git#egg=django-react-djeddit
+# -e editable mode no needed
+git+https://github.com/physics-is-beautiful/django-react-djeddit.git#egg=django-react-djeddit
 react-comments-django==1.0.2
 django-taggit==1.3.0
 django-taggit-serializer==0.1.7

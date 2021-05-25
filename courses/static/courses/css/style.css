@@ -318,28 +318,29 @@ img.grayed-out-img {
     background-color: black;
 }
 
-#name {
-    color: white;
-    font-family: Tw Cen MT;
-    font-weight: normal;
-    font-size: 25px;
-    padding: 0px 30px;
-    margin: 16px 0;
-}
+/* bad approach todo remove */
+/*#name {*/
+/*    color: white;*/
+/*    font-family: Tw Cen MT;*/
+/*    font-weight: normal;*/
+/*    font-size: 25px;*/
+/*    padding: 0px 30px;*/
+/*    margin: 16px 0;*/
+/*}*/
 
-#spacer{
-    float:left;
-    bottom:0;
-    left:0;
-    right:0;
-    border-radius: 0 0 15px 15px;
-    background-color: #C0C0C0;
-    margin-top:5px;
-}
+/*#spacer{*/
+/*    float:left;*/
+/*    bottom:0;*/
+/*    left:0;*/
+/*    right:0;*/
+/*    border-radius: 0 0 15px 15px;*/
+/*    background-color: #C0C0C0;*/
+/*    margin-top:5px;*/
+/*}*/
 
-#checkMarks{
-    float: left;
-}
+/*#checkMarks{*/
+/*    float: left;*/
+/*}*/
 
 .flex-container {
     display: flex;

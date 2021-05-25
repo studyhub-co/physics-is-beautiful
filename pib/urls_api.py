@@ -18,12 +18,12 @@ from django.conf.urls import include
 
 
 urlpatterns = [
-    url(r'^curricula/', include('curricula.urls_api')),
-    url(r'^editor/', include('editor.urls_api')),
+    url(r'^curricula/', include('curricula.urls_api')), # TODO remove
+    url(r'^editor/', include('editor.urls_api')), # TODO remove
     url(r'^profiles/', include('profiles.urls_api')),
     url(r'^classroom/', include('classroom.urls_api')),
     url(r'^resources/', include('resources.urls_api')),
-    url(r'^djeddit/', include('djeddit.urls_api')),
+    url(r'^djeddit/', include('djeddit.urls_api')), # TODO remove
     url(r'^react-comments/', include('react_comments_django.urls_api')),
     url(r'^notifications/', include('notifications.urls_api')),
     url(r'^reputation/', include('user_reputation.urls_api')),

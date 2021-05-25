@@ -65,6 +65,7 @@ class ProfileSerializer(BaseSerializer):
         if isinstance(obj, Profile):
             return super(ProfileSerializer, self).to_representation(obj)
         else:
+            # TODO make it reusable / see apis.py:135
             return {'sound_enabled': self.context['request'].session.get('sound', True),
                     'is_anonymous': True}
 
@@ -82,7 +83,7 @@ class ProfileSerializer(BaseSerializer):
             instance.sound_enabled = validated_data['sound_enabled']
         if 'selected_avatar' in validated_data:
             instance.selected_avatar = validated_data['selected_avatar']
-        instance.save()  # ??? Need to save serilizer, not instance / user can be removed from validated_data
+        instance.save()  # ??? Need to save serializer, not instance / user can be removed from validated_data
         return instance
 
     def save(self):
@@ -91,3 +92,16 @@ class ProfileSerializer(BaseSerializer):
             return super(ProfileSerializer, self).save()
         else:
             request.session['sound'] = self.validated_data['sound_enabled']
+
+#  TODO may be it better to move ro pib_auth
+from pib_auth.models import User
+
+class LoginSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=User._meta.get_field('password').max_length)
+
+    def get_fields(self):
+        fields = super().get_fields()
+        fields[User.USERNAME_FIELD] = serializers.EmailField(
+            max_length=User._meta.get_field(User.USERNAME_FIELD).max_length
+        )
+        return fields

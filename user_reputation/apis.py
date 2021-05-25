@@ -1,6 +1,7 @@
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import permissions, mixins
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.exceptions import NotFound
 
 from .models import ReputationAction
 from .serializers import ReputationActionSerializer
@@ -21,6 +22,8 @@ class ReputationActionViewSet(mixins.RetrieveModelMixin,
 
     def get_queryset(self):
         user = self.request.user
+        if not user.is_active or user.is_anonymous:
+            raise NotFound
         return self.queryset.filter(user=user)
 
     # todo combine actions like in SO

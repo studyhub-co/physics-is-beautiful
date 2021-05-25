@@ -1,7 +1,16 @@
 {
-  "extends": ["standard", "standard-react",  "prettier/react"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
+  ],
   "plugins": ["prettier"],
   "parser": "@typescript-eslint/parser",
+  "parserOptions":  {
+    "ecmaVersion":  2018,
+    "sourceType":  "module"
+  },
   "env": {
     "jquery": true,
     "es6": true

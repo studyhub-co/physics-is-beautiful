@@ -35,6 +35,7 @@ sitemaps = {
 urlpatterns = [
     url(r'^', include('homepage.urls')),
 
+    # TODO remove all unused urls
     # must be upper than curriculum/
     url(r'^curriculum/profile/', include(('editor.urls', 'editor'), namespace='curriculum_profile')),
     # namespace - a fix for api/v1/editor/curricula url (drf router)
