@@ -5,12 +5,12 @@
     /*font-style: normal;*/
 /*}*/
 
-/*@font-face {*/
-    /*font-family: 'Museosansrounded';*/
-    /*src: url('typeface/museosansrounded/museosansrounded-500-webfont.woff2') format('woff2');*/
-    /*font-weight: normal;*/
-    /*font-style: normal;*/
-/*}*/
+@font-face {
+    font-family: 'Museosansrounded';
+    src: url('typeface/museosansrounded/museosansrounded-500-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 
 /*@font-face {*/
     /*font-family: 'Museosansrounded';*/
@@ -213,8 +213,9 @@ html, body {
 }
 
 .section-title {
-    font-family: Museosansrounded;
-    font-size: 20px;
+    /*font-family: Museosansrounded;*/
+    /*font-size: 20px;*/
+    font-size: 2rem;
     color: #1caff6;
     /*text-transform: uppercase;*/
 }

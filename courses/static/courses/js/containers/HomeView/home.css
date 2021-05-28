@@ -1,44 +1,47 @@
 /* TODO remove unused static files */
-/* homepage for anon */
+/* homepage for anonymous */
 
+
+/* Move to the main style.css if we use this in another then home SPA pages */
 @font-face {
-    font-family: 'Tw Cen MT';
-    src: url('typeface/hinted-TwCenMT-Regular.eot');
-    src: url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+    font-family: 'Tw Cen MT hinted';
+    src: url('typeface/hinted-TwCenMT-Regular.eot'),
+    url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
     url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
     url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
-html {
-    height: 100%;
-    min-height: 100%;
-}
+/*html {*/
+/*    height: 100%;*/
+/*    min-height: 100%;*/
+/*}*/
 
-a.socialaccount_provider.facebook {
+.front-page a.socialaccount_provider.facebook {
     text-decoration: none !important;
 }
 
-#front-page {
-    background-size: cover;
+.front-page #front-page {
     height: 100%;
     background: url('images/Prague.jpg') center;
+    background-size: cover;
     z-index: -1;
 }
 
-.navlink{
+.front-page .navlink{
     color: white;
     text-decoration:none !important;
 }
-.navlink:hover{
+
+.front-page .navlink:hover{
     color: white;
 }
 
-.navbutton{
+.front-page .navbutton{
     background: rgba(193, 179, 179, 0.25);
     color: white;
-    font-family: Tw Cen MT;
+    font-family: "Tw Cen MT hinted";
     font-weight: 200;
     font-size: 18px;
     border-radius: 20px;
@@ -47,54 +50,61 @@ a.socialaccount_provider.facebook {
     margin-top: 4px;
     transition: 0.3s;
 }
-.navbutton:active {
+
+.front-page .navbutton:active {
     background: rgba(255,255,255,.2);
     box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-.navbutton:hover {
+
+.front-page .navbutton:hover {
     box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-.navbutton:focus {
+
+.front-page .navbutton:focus {
     outline:none;
 }
 
-.card-body{
+.front-page .card-body{
     color:black;
     transition:.2s;
 }
-.card-body:hover{
+.front-page .card-body:hover{
     color: #6880b8;
 }
-.card{
+
+.front-page .card{
     transition:.2s;
 }
-.card:hover{
+
+.front-page .card:hover{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.jumbotron {
+.front-page .jumbotron {
     background-color: transparent;
 }
 
-.jumbotron h1 {
+.front-page .jumbotron h1 {
     color: #f7f7f7;
     font-size: 100px;
     text-align: center;
-    font-family: Tw Cen MT;
+    padding: 0;
+    margin: 0;
+    font-family: "Tw Cen MT hinted";
     font-weight: bold;
 }
 
-.jumbotron p {
+.front-page .jumbotron p {
     font-size: 40px;
     color: #fff;
     text-align: center;
     text-shadow: 1px 1px 28px #AAA;
 }
 
-#getStartedButton {
+.front-page #getStartedButton {
     background: rgba(0,0,0,0.25);
     color: white;
-    font-family: Tw Cen MT;
+    font-family: "Tw Cen MT hinted";
     font-weight: 200;
     font-size: 24px;
     border-radius: 20px;
@@ -104,48 +114,50 @@ a.socialaccount_provider.facebook {
     transition: 0.3s;
 }
 
-#getStartedButton:active {
+.front-page #getStartedButton:active {
     background: rgba(255,255,255,.2);
     box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-#getStartedButton:hover {
+
+.front-page #getStartedButton:hover {
     box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
     font-size: 25px;
     background: rgba(0, 0, 0, 0.61);
 }
-#getStartedButton:focus {
+
+.front-page #getStartedButton:focus {
     outline:none;
 }
 
 
 @media all and (max-width: 1000px) {
-    .jumbotron h1 {
+    .front-page .jumbotron h1 {
         font-size: 75px;
     }
-    .jumbotron p {
+    .front-page .jumbotron p {
         font-size: 30px;
     }
 }
 
 @media all and (max-width: 600px) {
-    .jumbotron h1 {
+    .front-page .jumbotron h1 {
         font-size: 50px;
     }
-    .jumbotron p {
+    .front-page .jumbotron p {
         font-size: 20px;
     }
 }
 
 @media all and (max-width: 210px) {
-    .jumbotron h1 {
+    .front-page .jumbotron h1 {
         font-size: 30px;
     }
-    .jumbotron p {
+    .front-page .jumbotron p {
         font-size: 12px;
     }
 }
 
-.scroll-down {
+.front-page .scroll-down {
   opacity: 1;
   -webkit-transition: all .5s ease-in 3s;
   transition: all .5s ease-in 3s;
@@ -166,7 +178,7 @@ a.socialaccount_provider.facebook {
   transition: all .2s ease-in;
 }
 
-.scroll-down:before {
+.front-page .scroll-down:before {
     position: absolute;
     top: calc(50% - 8px);
     left: calc(50% - 6px);
@@ -201,10 +213,10 @@ a.socialaccount_provider.facebook {
   }
 }
 
-*,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/**,*/
+/*:after,*/
+/*:before {*/
+/*  box-sizing: border-box;*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*}*/

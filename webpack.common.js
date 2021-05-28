@@ -112,10 +112,10 @@ module.exports = {
         include: /node_modules/,
         use: ['style-loader', 'css-loader'],
       },
-      {
-        test: /\.(eot|otf|ttf|woff|woff2)$/,
-        loader: 'url-loader?limit=1000000',
-      },
+      // {
+      //   test: /\.(eot|otf|ttf|woff|woff2)$/,
+      //   loader: 'url-loader?limit=1000000',
+      // },
       {
         test: /\.(svg)(\?.*)?$/,
         use: [
@@ -130,7 +130,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(ico|jpg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
+        test: /\.(ico|jpe?g|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
         exclude: [/\/favicon.ico$/],
         loader: 'file-loader',
         options: {
