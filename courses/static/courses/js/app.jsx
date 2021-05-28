@@ -11,56 +11,73 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: 'Museosansrounded, sans-serif'
+    fontFamily: 'Museosansrounded, sans-serif',
   },
   palette: {
     primary: {
-      main: '#007bff'
+      main: '#007bff',
     },
-  }
+  },
 })
 
-class App extends React.Component {
-  render () {
-    return (
-      <div>
-        <ThemeProvider theme={theme}>
-          <NavBar />
-          {this.props.children}
-        </ThemeProvider>
-      </div>
-    )
-  }
+const App = props => {
+  return (
+    <div>
+      <ThemeProvider theme={theme}>
+        {props.location?.pathname !== '/' && <NavBar />}
+        {props.children}
+      </ThemeProvider>
+    </div>
+  )
 }
+
+// class App extends React.Component {
+//   render() {
+//     console.log(this.props)
+//     return (
+//       <div>
+//         <ThemeProvider theme={theme}>
+//           <NavBar />
+//           {this.props.children}
+//         </ThemeProvider>
+//       </div>
+//     )
+//   }
+// }
 App.propTypes = {
-  children: PropTypes.shape().isRequired
+  children: PropTypes.shape().isRequired,
   // dispatch: PropTypes.func.isRequired,
   // location: PropTypes.shape({
   //   pathname: PropTypes.string
   // })
 }
 App.defaultProps = {
-  location: undefined
+  location: undefined,
 }
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    location: state.router.location
+    location: state.router.location,
   }
 }
 
-const getApp = (props) => {
-  return <DndProvider backend={HTML5Backend}><App {...props}/></DndProvider>
+const getApp = props => {
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <App {...props} />
+    </DndProvider>
+  )
 }
 
 export default connect(mapStateToProps)(getApp)
 export { App as AppNotConnected }
 
+// TODO not sure we need this, Babel should take care about, check it out
 // chrome 41 fix
 // https://tc39.github.io/ecma262/#sec-array.prototype.find
 if (!Array.prototype.find) {
   Object.defineProperty(Array.prototype, 'find', {
-    value: function (predicate) {
+    value: function(predicate) {
       // 1. Let O be ? ToObject(this value).
       if (this == null) {
         throw new TypeError('"this" is null or not defined')
@@ -100,6 +117,6 @@ if (!Array.prototype.find) {
       return undefined
     },
     configurable: true,
-    writable: true
+    writable: true,
   })
 }

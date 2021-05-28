@@ -16,7 +16,7 @@ module.exports = {
     resources: './resources/static/resources/js/index',
     homepage: './homepage/static/homepage/js/index',
     notifications_inbox: './notifications/static/notifications_inbox/js/index',
-    trophy_inbox: './user_reputation/static/trophy_inbox/js/index'
+    trophy_inbox: './user_reputation/static/trophy_inbox/js/index',
     // react_djeddit: './static/js/djedditWraper'
   },
 
@@ -30,7 +30,7 @@ module.exports = {
     publicPath: '/static/js/bundles/',
     // TODO dev/prod url
     // publicPath: 'https://assets-dev.physicsisbeautiful.com/js/bundles/',
-    globalObject: 'this'
+    globalObject: 'this',
   },
 
   optimization: {
@@ -55,18 +55,18 @@ module.exports = {
           //   return false
           // },
           name: 'vendors',
-          chunks: 'all'
-        }
-      }
+          chunks: 'all',
+        },
+      },
     },
     minimizer: [
       new TerserPlugin({
         parallel: true,
         terserOptions: {
-          ecma: 6
-        }
-      })
-    ]
+          ecma: 6,
+        },
+      }),
+    ],
   },
 
   // additional loading on babel, enable if needed js debug mode
@@ -90,12 +90,13 @@ module.exports = {
       {
         test: /\.(js|jsx|tsx|ts)$/,
         loader: 'babel-loader',
-        // exclude: [/node_modules\/(?!(@vermus\/django-react-djeddit-client)\/).*/,
         exclude: [
           /node_modules/,
-          path.resolve(__dirname,
-            '../django-react-djeddit/frontend/django-react-djeddit-client/dist/') // dev version
-        ]
+          path.resolve(
+            __dirname,
+            '../django-react-djeddit/frontend/django-react-djeddit-client/dist/', // todo remove this
+          ), // dev version
+        ],
       },
       {
         // Preprocess our own .css files
@@ -103,17 +104,17 @@ module.exports = {
         // for a list of loaders, see https://webpack.js.org/loaders/#styling
         test: /\.css$/,
         exclude: /node_modules/,
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader'],
       },
       {
         // Preprocess 3rd party .css files located in node_modules
         test: /\.css$/,
         include: /node_modules/,
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(eot|otf|ttf|woff|woff2)$/,
-        loader: 'url-loader?limit=1000000'
+        loader: 'url-loader?limit=1000000',
       },
       {
         test: /\.(svg)(\?.*)?$/,
@@ -121,12 +122,12 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[hash:8].[ext]'
+              name: '[name].[hash:8].[ext]',
               // name: 'static/js/bundles/[name].[hash:8].[ext]',
-            }
+            },
           },
-          { loader: 'svgo-loader' }
-        ]
+          { loader: 'svgo-loader' },
+        ],
       },
       {
         test: /\.(ico|jpg|png|gif|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
@@ -134,9 +135,9 @@ module.exports = {
         loader: 'file-loader',
         options: {
           // name: 'static/js/bundles/[name].[hash:8].[ext]',
-          name: '[name].[hash:8].[ext]'
-        }
-      }
+          name: '[name].[hash:8].[ext]',
+        },
+      },
       // {
       //   test: /\.jpe?g$|\.gif$|\.png$/,
       //   options: {
@@ -144,7 +145,7 @@ module.exports = {
       //   },
       //   loader: 'file-loader'
       // }
-    ]
+    ],
   },
   resolve: {
     modules: ['static/js/common', 'node_modules', 'bower_components'],
@@ -153,15 +154,25 @@ module.exports = {
     symlinks: false,
     alias: {
       // to exclude React versions collisions use React only from /node_modules/
-      'react': path.resolve('./node_modules/react'),
+      react: path.resolve('./node_modules/react'),
       'react-router-dom': path.resolve('./node_modules/react-router-dom'),
       'react-redux': path.resolve('./node_modules/react-redux'),
       // NodeJs modules emulators
-      fs: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/fs.js'),
-      buffer: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/buffer.js'),
-      processGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/process.js'),
-      bufferGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/bufferGlobal.js'),
-      bfsGlobal: path.resolve('courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/browserfs.js')
+      fs: path.resolve(
+        'courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/fs.js',
+      ),
+      buffer: path.resolve(
+        'courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/buffer.js',
+      ),
+      processGlobal: path.resolve(
+        'courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/process.js',
+      ),
+      bufferGlobal: path.resolve(
+        'courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/shims/bufferGlobal.js',
+      ),
+      bfsGlobal: path.resolve(
+        'courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/dist/browserfs.js',
+      ),
       /* bfsGlobal: require.resolve(
         path.join(
           '..',
@@ -173,9 +184,10 @@ module.exports = {
           __DEV__ ? 'browserfs.js' : 'browserfs.min.js'
         )
       ), */
-    }
+    },
   },
-  watchOptions: { // fix watch for Windows
-    poll: 1000
-  }
+  watchOptions: {
+    // fix watch for Windows
+    poll: 1000,
+  },
 }

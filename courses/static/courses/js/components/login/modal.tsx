@@ -18,6 +18,7 @@ interface IModalLogInProps {
   open: boolean
   handleClose(): void
   login(email: string, password: string): void
+  // history: object
 }
 
 const ModalLogIn: React.FC<IModalLogInProps> = props => {

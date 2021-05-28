@@ -5,6 +5,7 @@ import {
   NOTIFICATIONS_RECEIVE_UNREAD_COUNT,
 } from '../constants'
 import { API_NOTIFICATIONS_PREFIX } from '../../../../../notifications/static/notifications_inbox/js/utils/config'
+import history from '../history'
 
 export function receiveProfileMe(me) {
   return {
@@ -53,6 +54,7 @@ export function logout() {
       .then(checkHttpStatus)
       .then(response => {
         dispatch(receiveProfileMe(response.data))
+        history.push('/')
       })
   }
 }

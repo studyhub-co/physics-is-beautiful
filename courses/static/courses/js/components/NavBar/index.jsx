@@ -32,6 +32,7 @@ import EmojiEventsIcon from '@material-ui/icons/EmojiEvents'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 
+// FIXME we need to use global history
 import history from '../../history'
 
 import { useStyles } from './style'
@@ -551,6 +552,7 @@ const PrimarySearchAppBar = connect(
                   {/* <AccountCircle style={{'fontSize': '2rem'}} /> */}
                 </IconButton>
                 <ModalLogIn
+                  // history={history}
                   open={loginModalOpen}
                   handleClose={handleLogInModalOpen}
                   login={props.profileActions.login}

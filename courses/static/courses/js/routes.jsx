@@ -1,14 +1,15 @@
 import React from 'react'
 import { Route, Switch } from 'react-router'
 
+import HomeIndex from './containers/HomeView'
 import { CoursesRoutes } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
 import {
-  EditCourseView, EditModuleView
+  EditCourseView,
+  EditModuleView,
 } from './containers/StudioViews/EditorsViews'
 
 import EditLessonView from './containers/StudioViews/EditorsViews/editLessonLoadable'
-
 import DiscussionIndex from './containers/discussionIndex'
 import ResourcesIndex from './containers/ResourcesIndex/loadable'
 import ClassroomIndex from './containers/classroomIndex/loadable'
@@ -16,13 +17,14 @@ import UserProfileIndex from './containers/userProfileIndex'
 
 import NotFoundView from './components/NotFoundView'
 
-export default(
+export default (
   <Switch>
     {/* <Route exact path={BASE_URL} component={IndexView} /> */}
     {/* TODO lazy load components (see utils/loadable.jsx for details) */}
 
     {/* student views */}
-    <Route exact path={'/'} component={CoursesRoutes} />
+    <Route exact path="/" component={HomeIndex} />
+    {/*<Route exact path={'/'} component={CoursesRoutes} />*/}
     <Route path={'/courses/:courseUuid?'} component={CoursesRoutes} />
 
     {/* browse courses */}
@@ -32,12 +34,31 @@ export default(
     <Route exact path={'/studio/'} component={BrowseStudioDashboard} />
 
     {/* see for details courses/static/courses/js/containers/browseStudioIndex.jsx */}
-    <Route exact path={'/studio/profile/:uuid/'} component={BrowseStudioDashboard} />
-
-    <Route exact path={'/studio/editor/courses/:uuid'} component={EditCourseView} />
-    <Route exact path={'/studio/editor/modules/:uuid'} component={EditModuleView} />
-    <Route exact path={'/studio/editor/lessons/:uuid'} component={EditLessonView} />
-    <Route exact path={'/studio/editor/lessons/:uuid/materials/:material_uuid'} component={EditLessonView} />
+    <Route
+      exact
+      path={'/studio/profile/:uuid/'}
+      component={BrowseStudioDashboard}
+    />
+    <Route
+      exact
+      path={'/studio/editor/courses/:uuid'}
+      component={EditCourseView}
+    />
+    <Route
+      exact
+      path={'/studio/editor/modules/:uuid'}
+      component={EditModuleView}
+    />
+    <Route
+      exact
+      path={'/studio/editor/lessons/:uuid'}
+      component={EditLessonView}
+    />
+    <Route
+      exact
+      path={'/studio/editor/lessons/:uuid/materials/:material_uuid'}
+      component={EditLessonView}
+    />
 
     {/* <Route exact path={'/studio/profile/:uuid/' } component={EditCourseProfileView} /> */}
 
@@ -61,8 +82,6 @@ export default(
     {/* fixme */}
     {/* do we have adblock in resources app only? */}
     {/* <Route exact path={'adblock/'} component={AdblockView} /> */}
-    {/* TODO to complete home page */}
-    {/* <Route path='/' component={HomeIndex} /> */}
-    <Route path='*' component={NotFoundView} />
+    <Route path="*" component={NotFoundView} />
   </Switch>
 )

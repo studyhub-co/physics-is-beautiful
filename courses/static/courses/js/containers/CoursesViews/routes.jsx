@@ -5,27 +5,45 @@ import { Route, Switch } from 'react-router'
 // import { useRouteMatch } from 'react-router-dom'
 
 import { CourseApp, ModuleApp, LessonApp } from './index'
-import NotFoundView from '../../components/NotFoundView'
+// import NotFoundView from '../../components/NotFoundView'
 
 export default class CoursesRouter extends React.Component {
-  render () {
+  render() {
     return (
       <div className={'course'}>
         <Switch>
-          {/* TODO it seems we need to remove this.props.match.path */}
-          <Route exact path={this.props.match.path + 'lessons/:lessonUuid'} component={LessonApp} />
-          <Route exact path={this.props.match.path + 'lessons/:lessonUuid/materials/:materialUuid'} component={LessonApp} />
-          <Route exact path={this.props.match.path + 'modules/:moduleUuid'} component={ModuleApp} />
-
-          {/* TODO ADD Material url */}
-          {/*<Route exact path={this.props.match.path + 'material/:currentId/'} component={ModuleApp} />*/}
-
+          <Route
+            exact
+            path={this.props.match.path + 'lessons/:lessonUuid'}
+            component={LessonApp}
+          />
+          <Route
+            exact
+            path={
+              this.props.match.path +
+              'lessons/:lessonUuid/materials/:materialUuid'
+            }
+            component={LessonApp}
+          />
+          <Route
+            exact
+            path={this.props.match.path + 'modules/:moduleUuid'}
+            component={ModuleApp}
+          />
           {/* FixMe Not need (not used for now) or redirect to a first module in Unit */}
           {/* <Route path='/units/:currentId' component={UnitsApp} /> */}
           {/* <Route path='/games/:uuid/:slug' component={GamesApp} /> */}
-          <Route exact path='' component={CourseApp} />
-          <Route exact path={this.props.match.path + ':courseUuid/'} component={CourseApp} />
-          <Route path='*' component={NotFoundView} />
+
+          {/* default course */}
+          <Route exact path="" component={CourseApp} />
+          {/* course with uuid */}
+          <Route
+            exact
+            path={this.props.match.path + ':courseUuid/'}
+            component={CourseApp}
+          />
+          {/* exist in base route */}
+          {/*<Route path="*" component={NotFoundView} />*/}
         </Switch>
       </div>
     )

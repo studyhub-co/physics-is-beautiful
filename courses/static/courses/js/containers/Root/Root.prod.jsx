@@ -7,7 +7,7 @@ import routes from '../../routes'
 import App from '../../app'
 
 export default class Root extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <Provider store={this.props.store}>
@@ -25,5 +25,5 @@ export default class Root extends React.Component {
 }
 Root.propTypes = {
   store: PropTypes.shape().isRequired,
-  history: PropTypes.shape().isRequired
+  history: PropTypes.shape().isRequired,
 }
