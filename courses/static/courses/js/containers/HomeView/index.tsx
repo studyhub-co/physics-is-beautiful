@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import './home.css'
 
 import Logo from './images/favicon/favicon-32x32.png'
 
-import { Link, Element } from 'react-scroll'
+import { Link as ScrollLink, Element as ScrollElement } from 'react-scroll'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -21,6 +21,8 @@ interface IHomeIndexViewProps {
 const HomeIndexView = (props: IHomeIndexViewProps) => {
   const history = useHistory()
 
+  const [showMobileMenu, setShowMobileMenu] = useState('')
+
   // redirect before render
   if (props.userProfile?.hasOwnProperty('id')) {
     history.push('/courses/')
@@ -35,7 +37,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
   useEffect(() => {
     // if user logged in, redirect to courses
     if (props.userProfile?.hasOwnProperty('id')) {
-      console.log(props.userProfile)
+      // console.log(props.userProfile)
       history.push('/courses/')
     }
   }, [props.userProfile])
@@ -55,9 +57,21 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
               aria-expanded="false"
               aria-label="Toggle navigation"
             >
-              <span className="navbar-toggler-icon"></span>
+              <span
+                className="navbar-toggler-icon"
+                onClick={() => {
+                  if (showMobileMenu === '') {
+                    setShowMobileMenu(' show')
+                  } else {
+                    setShowMobileMenu('')
+                  }
+                }}
+              ></span>
             </button>
-            <div className="collapse navbar-collapse" id="navbarNavDropdown">
+            <div
+              className={`collapse navbar-collapse${showMobileMenu}`}
+              id="navbarNavDropdown"
+            >
               <ul className="navbar-nav ml-auto">
                 <li className="navbutton">
                   <a href="" className="navlink">
@@ -100,7 +114,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
               </button>
               <section>
                 {/*<a href="" className="scroll-down"></a>*/}
-                <Link
+                <ScrollLink
                   to="cards"
                   className="scroll-down"
                   spy={true}
@@ -111,7 +125,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
             </div>
           </div>
         </div>
-        <Element name="cards">
+        <ScrollElement name="cards">
           <section className="ok">
             <div
               className="container-fluid"
@@ -223,7 +237,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
               </div>
             </div>
           </section>
-        </Element>
+        </ScrollElement>
         <div className="container-fluid" style={{ background: '#f1f1f1' }}>
           <div className="container mt-3">
             <footer className="pt-4 pt-md-5 border-top">
@@ -300,17 +314,17 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
             </footer>
           </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
-        <script
-          src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-          integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-          crossOrigin="anonymous"
-        ></script>
-        <script
-          src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-          integrity="sha384-JZR6Spejh3U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-          crossOrigin="anonymous"
-        ></script>
+        {/*<script src="https://code.jquery.com/jquery-3.1.0.js"></script>*/}
+        {/*<script*/}
+        {/*  src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"*/}
+        {/*  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"*/}
+        {/*  crossOrigin="anonymous"*/}
+        {/*></script>*/}
+        {/*<script*/}
+        {/*  src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"*/}
+        {/*  integrity="sha384-JZR6Spejh3U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"*/}
+        {/*  crossOrigin="anonymous"*/}
+        {/*></script>*/}
       </div>
     )
   )
