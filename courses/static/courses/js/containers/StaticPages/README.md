@@ -1,0 +1,1 @@
+Static pages, should loads from DB and be configurable for the current Hub in the future. 

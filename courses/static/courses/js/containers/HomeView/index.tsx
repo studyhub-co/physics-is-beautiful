@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import './home.css'
 
@@ -285,28 +286,37 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   <h3>About</h3>
                   <ul className="list-unstyled text-small">
                     <li>
-                      <a
-                        className="text-muted"
-                        href="{% url 'homepage:about' %}"
-                      >
+                      <Link className="text-muted" to="/s/about">
                         Team
-                      </a>
+                      </Link>
+                      {/*<a*/}
+                      {/*  className="text-muted"*/}
+                      {/*  href="{% url 'homepage:about' %}"*/}
+                      {/*>*/}
+                      {/*  Team*/}
+                      {/*</a>*/}
                     </li>
                     <li>
-                      <a
-                        className="text-muted"
-                        href="{% url 'homepage:privacy' %}"
-                      >
+                      <Link className="text-muted" to="/s/privacy">
                         Privacy Policy
-                      </a>
+                      </Link>
+                      {/*<a*/}
+                      {/*  className="text-muted"*/}
+                      {/*  href="{% url 'homepage:privacy' %}"*/}
+                      {/*>*/}
+                      {/*  Privacy Policy*/}
+                      {/*</a>*/}
                     </li>
                     <li>
-                      <a
-                        className="text-muted"
-                        href="{% url 'homepage:terms' %}"
-                      >
+                      <Link className="text-muted" to="/s/terms">
                         Terms of Service
-                      </a>
+                      </Link>
+                      {/*<a*/}
+                      {/*  className="text-muted"*/}
+                      {/*  href="{% url 'homepage:terms' %}"*/}
+                      {/*>*/}
+                      {/*  Terms of Service*/}
+                      {/*</a>*/}
                     </li>
                   </ul>
                 </div>

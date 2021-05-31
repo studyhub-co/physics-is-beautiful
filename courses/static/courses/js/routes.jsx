@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router'
 
 import HomeIndex from './containers/HomeView'
+import StaticRoutes from './containers/StaticPages/routes'
 import { CoursesRoutes } from './containers/CoursesViews'
 import BrowseStudioDashboard from './containers/browseStudioIndex'
 import {
@@ -19,11 +20,9 @@ import NotFoundView from './components/NotFoundView'
 
 export default (
   <Switch>
-    {/* <Route exact path={BASE_URL} component={IndexView} /> */}
-    {/* TODO lazy load components (see utils/loadable.jsx for details) */}
-
     {/* student views */}
     <Route exact path="/" component={HomeIndex} />
+    <Route path="/s" component={StaticRoutes} />
     {/*<Route exact path={'/'} component={CoursesRoutes} />*/}
     <Route path={'/courses/:courseUuid?'} component={CoursesRoutes} />
 
