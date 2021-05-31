@@ -4,6 +4,8 @@ import './home.css'
 
 import Logo from './images/favicon/favicon-32x32.png'
 
+import { Link, Element } from 'react-scroll'
+
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -97,72 +99,131 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                 Get Started
               </button>
               <section>
-                <a href="#" className="scroll-down"></a>
+                {/*<a href="" className="scroll-down"></a>*/}
+                <Link
+                  to="cards"
+                  className="scroll-down"
+                  spy={true}
+                  smooth={true}
+                  duration={500}
+                />
               </section>
             </div>
           </div>
         </div>
-        <section className="ok">
-          <div className="container-fluid" style="background: linear-gradient(white, #fbfbfb, white);">
-            <div className="container-fluid mt-3 d-flex">
-              <div className="card-deck">
-                <div className="card">
-                  <a href="curriculum/lessons/4nXkRtEGMqGnNvcpLDfXmV" style="text-decoration: none !important">
-                    <img className="card-img-top" src="{% static 'homepage/images/vectors.png' %}" alt="Card image cap">
+        <Element name="cards">
+          <section className="ok">
+            <div
+              className="container-fluid"
+              style={{ background: 'linear-gradient(white, #fbfbfb, white)' }}
+            >
+              {/* TODO replace it with material ui or react-bootstrap grid */}
+              <div className="container-fluid mt-3 d-flex">
+                <div className="card-deck">
+                  <div className="card">
+                    {/*TODO change href*/}
+                    <a
+                      href="curriculum/lessons/4nXkRtEGMqGnNvcpLDfXmV"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <img
+                        className="card-img-top"
+                        src={require('./images/vectors.png')}
+                        alt="Card image cap"
+                      />
                       <div className="card-body">
-                        <h5 className="card-title">Vectors</h5>
-                        <p className="card-text">Learn vectors by drawing them interactively</p>
+                        <h3 className="card-title">Vectors</h3>
+                        <p className="card-text">
+                          Learn vectors by drawing them interactively
+                        </p>
                       </div>
-                  </a>
-                </div>
-                <div className="card ">
-                  <a href="curriculum/lessons/6imjwU5aXyfMvPZzCtz4FR" style="text-decoration: none !important">
-                    <img className="card-img-top" src="{% static 'homepage/images/unit-conversion.png' %}"
-                         alt="Card image cap">
+                    </a>
+                  </div>
+                  <div className="card">
+                    <a
+                      href="curriculum/lessons/6imjwU5aXyfMvPZzCtz4FR"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <img
+                        className="card-img-top"
+                        src={require('./images/unit-conversion.png')}
+                        alt="Card image cap"
+                      />
                       <div className="card-body">
-                        <h5 className="card-title">Unit Conversion</h5>
-                        <p className="card-text">Learn how to convert units, with automatic unit canceling. Get practice
-                          with prefixes (e.g. kilo, milli, centi) and convert between meters and feet, ounces and grams,
-                          and more.</p>
+                        <h3 className="card-title">Unit Conversion</h3>
+                        <p className="card-text">
+                          Learn how to convert units, with automatic unit
+                          canceling. Get practice with prefixes (e.g. kilo,
+                          milli, centi) and convert between meters and feet,
+                          ounces and grams, and more.
+                        </p>
                       </div>
-                  </a>
-                </div>
-                <div className="card">
-                  <a href="curriculum/lessons/dNcLZmMkymPQ5TcqdmDAqT" style="text-decoration: none !important">
-                    <img className="card-img-top" src="{% static 'homepage/images/graphs.png' %}" alt="Card image cap">
+                    </a>
+                  </div>
+                  <div className="card">
+                    <a
+                      href="curriculum/lessons/dNcLZmMkymPQ5TcqdmDAqT"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <img
+                        className="card-img-top"
+                        src={require('./images/graphs.png')}
+                        alt="Card image cap"
+                      />
                       <div className="card-body">
-                        <h5 className="card-title">Graphs</h5>
-                        <p className="card-text">Improve your understanding of displacement, velocity, and acceleration
-                          graphs</p>
+                        <h3 className="card-title">Graphs</h3>
+                        <p className="card-text">
+                          Improve your understanding of displacement, velocity,
+                          and acceleration graphs
+                        </p>
                       </div>
-                  </a>
-                </div>
-                <div className="card">
-                  <a href="curriculum/lessons/Zxk3SjzLAYtR4NxTUwxzJB" style="text-decoration: none !important">
-                    <img className="card-img-top" src="{% static 'homepage/images/motion-diagrams.png' %}"
-                         alt="Card image cap">
+                    </a>
+                  </div>
+                  <div className="card">
+                    <a
+                      href="curriculum/lessons/Zxk3SjzLAYtR4NxTUwxzJB"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <img
+                        className="card-img-top"
+                        src={require('./images/motion-diagrams.png')}
+                        alt="Card image cap"
+                      />
                       <div className="card-body">
-                        <h5 className="card-title">Motion diagrams</h5>
-                        <p className="card-text">Learn the difference between position and displacement, speed vs
-                          velocity through freeze-frame motion diagrams</p>
+                        <h3 className="card-title">Motion diagrams</h3>
+                        <p className="card-text">
+                          Learn the difference between position and
+                          displacement, speed vs velocity through freeze-frame
+                          motion diagrams
+                        </p>
                       </div>
-                  </a>
-                </div>
-                <div className="card">
-                  <a href="curriculum/lessons/hwJbeFd67Lk4H6LYW5aDg3" style="text-decoration: none !important">
-                    <img className="card-img-top" src="{% static 'homepage/images/friction.png' %}"
-                         alt="Card image cap">
+                    </a>
+                  </div>
+                  <div className="card">
+                    <a
+                      href="curriculum/lessons/hwJbeFd67Lk4H6LYW5aDg3"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <img
+                        className="card-img-top"
+                        src={require('./images/friction.png')}
+                        alt="Card image cap"
+                      />
                       <div className="card-body">
-                        <h5 className="card-title">Forces</h5>
-                        <p className="card-text">Understand forces such as tension, friction, normal force, and practice
-                          drawing free-body diagrams interactively</p>
+                        <h3 className="card-title">Forces</h3>
+                        <p className="card-text">
+                          Understand forces such as tension, friction, normal
+                          force, and practice drawing free-body diagrams
+                          interactively
+                        </p>
                       </div>
-                  </a>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </Element>
         <div className="container-fluid" style={{ background: '#f1f1f1' }}>
           <div className="container mt-3">
             <footer className="pt-4 pt-md-5 border-top">
@@ -180,7 +241,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   </small>
                 </div>
                 <div className="col-6 col-md">
-                  <h5>Resources</h5>
+                  <h3>Resources</h3>
                   <ul className="list-unstyled text-small">
                     {/*<li>*/}
                     {/*  <a*/}
@@ -207,7 +268,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   </ul>
                 </div>
                 <div className="col-6 col-md">
-                  <h5>About</h5>
+                  <h3>About</h3>
                   <ul className="list-unstyled text-small">
                     <li>
                       <a
@@ -247,7 +308,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
         ></script>
         <script
           src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-          integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+          integrity="sha384-JZR6Spejh3U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
           crossOrigin="anonymous"
         ></script>
       </div>

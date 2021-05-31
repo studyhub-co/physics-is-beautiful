@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render
+# , redirect
+# from django.urls import reverse
 
 # from django.conf import settings
 # from django.core.mail import EmailMessage
@@ -9,24 +10,20 @@ from django.urls import reverse
 
 
 def homepage(request):
-    if request.user.is_authenticated:
-        return redirect(reverse('main_curricula:curriculum'))
+    # redirect in SPA app now
+    # if request.user.is_authenticated:
+    #     return redirect(reverse('main_curricula:curriculum'))
     return render(request, 'homepage/homepage.html')
 
-
-def homepage2(request):
-    return render(request, 'homepage/homepage2.html')
-
-
-def About(request):
+def about(request):
     return render(request, 'homepage/about.html')
 
 
-def Privacy(request):
+def privacy(request):
     return render(request, 'homepage/privacy.html')
 
 
-def Terms(request):
+def terms(request):
     return render(request, 'homepage/terms.html')
 
 
