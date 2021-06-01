@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 import './home.css'
 
@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
 import * as profileCreators from '../../actions/profile'
+import ModalLogIn from '../../components/login/modal'
 
 interface IHomeIndexViewProps {
   userProfile: object | undefined
@@ -23,6 +24,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
   const history = useHistory()
 
   const [showMobileMenu, setShowMobileMenu] = useState('')
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
 
   // redirect before render
   if (props.userProfile?.hasOwnProperty('id')) {
@@ -36,14 +38,17 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
   }, [])
 
   useEffect(() => {
-    // if user logged in, redirect to courses
+    // redirect to courses if user's profile loaded
     if (props.userProfile?.hasOwnProperty('id')) {
       // console.log(props.userProfile)
       history.push('/courses/')
     }
   }, [props.userProfile])
 
-  // redirect to courses if user's profile loaded
+  const handleLogInModalOpen = () => {
+    setLoginModalOpen(!loginModalOpen)
+  }
+
   return (
     !props.userProfile?.hasOwnProperty('id') && (
       <div className={'front-page'}>
@@ -75,24 +80,37 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
             >
               <ul className="navbar-nav ml-auto">
                 <li className="navbutton">
-                  <a href="" className="navlink">
+                  <NavLink className="navlink" to="/s/about">
                     About Us
-                  </a>
+                  </NavLink>
+                  {/*<a href="" className="navlink">*/}
+                  {/*  About Us*/}
+                  {/*</a>*/}
                 </li>
-                <li className="navbutton">
-                  <a href="" className="navlink">
-                    Blog
-                  </a>
-                </li>
+                {/*<li className="navbutton">*/}
+                {/*  <a href="" className="navlink">*/}
+                {/*    Blog*/}
+                {/*  </a>*/}
+                {/*</li>*/}
                 <li
                   className="navbutton"
                   id="loginButton"
                   data-toggle="modal"
                   data-target="#signup-modal"
                 >
-                  <a href="#" className="navlink">
+                  <a
+                    onClick={handleLogInModalOpen}
+                    className="navlink"
+                    style={{ cursor: 'pointer' }}
+                  >
                     Login / Signup
                   </a>
+                  <ModalLogIn
+                    // history={history}
+                    open={loginModalOpen}
+                    handleClose={handleLogInModalOpen}
+                    login={props.profileActions.login}
+                  />
                 </li>
               </ul>
             </div>
@@ -109,6 +127,9 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
               <button
                 id="getStartedButton"
                 className="d-block mx-auto"
+                onClick={() => {
+                  history.push('courses')
+                }}
                 // onClick="location.href='/curriculum/'"
               >
                 Get Started
@@ -138,7 +159,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   <div className="card">
                     {/*TODO change href*/}
                     <a
-                      href="curriculum/lessons/4nXkRtEGMqGnNvcpLDfXmV"
+                      href=""
                       style={{ textDecoration: 'none' }}
                     >
                       <img
@@ -156,7 +177,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   </div>
                   <div className="card">
                     <a
-                      href="curriculum/lessons/6imjwU5aXyfMvPZzCtz4FR"
+                      href=""
                       style={{ textDecoration: 'none' }}
                     >
                       <img
@@ -177,7 +198,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   </div>
                   <div className="card">
                     <a
-                      href="curriculum/lessons/dNcLZmMkymPQ5TcqdmDAqT"
+                      href=""
                       style={{ textDecoration: 'none' }}
                     >
                       <img
@@ -196,7 +217,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   </div>
                   <div className="card">
                     <a
-                      href="curriculum/lessons/Zxk3SjzLAYtR4NxTUwxzJB"
+                      href=""
                       style={{ textDecoration: 'none' }}
                     >
                       <img
@@ -216,7 +237,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   </div>
                   <div className="card">
                     <a
-                      href="curriculum/lessons/hwJbeFd67Lk4H6LYW5aDg3"
+                      href=""
                       style={{ textDecoration: 'none' }}
                     >
                       <img
@@ -266,11 +287,14 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     {/*    Blog*/}
                     {/*  </a>*/}
                     {/*</li>*/}
-                    {/* todo add resource url*/}
+                    {/* todo add Shankar resource url? */}
                     <li>
-                      <a className="text-muted" href="{% url 'blog:shankar' %}">
-                        Shankar
-                      </a>
+                      <Link className="text-muted" to="/resources/">
+                        Resources
+                      </Link>
+                      {/*<a className="text-muted" href="">*/}
+                      {/*  Shankar*/}
+                      {/*</a>*/}
                     </li>
                     {/*<li>*/}
                     {/*  <a*/}

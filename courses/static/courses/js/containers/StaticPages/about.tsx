@@ -26,8 +26,8 @@ const AboutView = () => {
 
   return (
     <Sheet>
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Grid item xs={6}>
+        <Grid container direction="column" justify="center" alignItems="center">
+          <Grid item xs={6}>
           <div style={{ marginBottom: '.25rem' }}>
             <h1
               style={{

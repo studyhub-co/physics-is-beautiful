@@ -1,0 +1,523 @@
+/* not sure that is good css code, but leave it as it now */
+
+.privacy-view ol.lst-kix_list_1-3 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-4 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-5 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-6 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-0 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-2 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-8 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-8.start {
+    counter-reset: lst-ctn-kix_list_1-8 0
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-2 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-3 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-0 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_list_1-1 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-1 {
+    list-style-type: none
+}
+
+.privacy-view  ul.lst-kix_2z9oh0j4e1zo-6 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-5.start {
+    counter-reset: lst-ctn-kix_list_1-5 0
+}
+
+.privacy-view ol.lst-kix_list_1-7 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-7 {
+    list-style-type: none
+}
+
+.privacy-view .lst-kix_list_1-7>li {
+    counter-increment: lst-ctn-kix_list_1-7
+}
+
+.privacy-view ol.lst-kix_list_1-8 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-4 {
+    list-style-type: none
+}
+
+.privacy-view ul.lst-kix_2z9oh0j4e1zo-5 {
+    list-style-type: none
+}
+
+.privacy-view ol.lst-kix_list_1-7.start {
+    counter-reset: lst-ctn-kix_list_1-7 0
+}
+
+.privacy-view .lst-kix_list_1-2>li {
+    counter-increment: lst-ctn-kix_list_1-2
+}
+
+.privacy-view .lst-kix_list_1-5>li {
+    counter-increment: lst-ctn-kix_list_1-5
+}
+
+.privacy-view .lst-kix_list_1-8>li {
+    counter-increment: lst-ctn-kix_list_1-8
+}
+
+.privacy-view ol.lst-kix_list_1-4.start {
+    counter-reset: lst-ctn-kix_list_1-4 0
+}
+
+.privacy-view .lst-kix_list_1-4>li {
+    counter-increment: lst-ctn-kix_list_1-4
+}
+
+.privacy-view ol.lst-kix_list_1-6.start {
+    counter-reset: lst-ctn-kix_list_1-6 0
+}
+
+.privacy-view ol.lst-kix_list_1-3.start {
+    counter-reset: lst-ctn-kix_list_1-3 0
+}
+
+.privacy-view ol.lst-kix_list_1-2.start {
+    counter-reset: lst-ctn-kix_list_1-2 0
+}
+
+.privacy-view .lst-kix_list_1-0>li:before {
+    content: "" counter(lst-ctn-kix_list_1-0,decimal) ". "
+}
+
+.privacy-view .lst-kix_list_1-1>li:before {
+    content: "o  "
+}
+
+.privacy-view .lst-kix_list_1-2>li:before {
+    content: "" counter(lst-ctn-kix_list_1-2,decimal) ". "
+}
+
+.privacy-view .lst-kix_list_1-3>li:before {
+    content: "" counter(lst-ctn-kix_list_1-3,decimal) ". "
+}
+
+.privacy-view .lst-kix_list_1-4>li:before {
+    content: "" counter(lst-ctn-kix_list_1-4,decimal) ". "
+}
+
+.privacy-view ol.lst-kix_list_1-0.start {
+    counter-reset: lst-ctn-kix_list_1-0 0
+}
+
+.privacy-view .lst-kix_list_1-0>li {
+    counter-increment: lst-ctn-kix_list_1-0
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-0>li:before {
+    content: "\0025cf  "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-1>li:before {
+    content: "\0025cb  "
+}
+
+.privacy-view .lst-kix_list_1-6>li {
+    counter-increment: lst-ctn-kix_list_1-6
+}
+
+.privacy-view .lst-kix_list_1-7>li:before {
+    content: "" counter(lst-ctn-kix_list_1-7,decimal) ". "
+}
+
+.privacy-view .lst-kix_list_1-3>li {
+    counter-increment: lst-ctn-kix_list_1-3
+}
+
+.privacy-view .lst-kix_list_1-5>li:before {
+    content: "" counter(lst-ctn-kix_list_1-5,decimal) ". "
+}
+
+.privacy-view .lst-kix_list_1-6>li:before {
+    content: "" counter(lst-ctn-kix_list_1-6,decimal) ". "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-2>li:before {
+    content: "\0025a0  "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-5>li:before {
+    content: "\0025a0  "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-3>li:before {
+    content: "\0025cf  "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-7>li:before {
+    content: "\0025cb  "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-4>li:before {
+    content: "\0025cb  "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-8>li:before {
+    content: "\0025a0  "
+}
+
+.privacy-view .lst-kix_list_1-8>li:before {
+    content: "" counter(lst-ctn-kix_list_1-8,decimal) ". "
+}
+
+.privacy-view .lst-kix_2z9oh0j4e1zo-6>li:before {
+    content: "\0025cf  "
+}
+
+.privacy-view ol {
+    margin: 0;
+    padding: 0
+}
+
+.privacy-view table td,table th {
+    padding: 0
+}
+
+.privacy-view .c7 {
+    margin-left: 0pt;
+    padding-top: 0pt;
+    list-style-position: inside;
+    padding-bottom: 7.5pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: justify
+}
+
+.privacy-view .c0 {
+    padding-top: 0pt;
+    padding-left: 0pt;
+    padding-bottom: 7.5pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: justify
+}
+
+.privacy-view .c12 {
+    margin-left: 36pt;
+    padding-top: 0pt;
+    padding-left: 0pt;
+    padding-bottom: 0pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view .c20 {
+    margin-left: 36pt;
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view .c21 {
+    color: #000000;
+    font-weight: 400;
+    text-decoration: none;
+    vertical-align: baseline;
+    font-size: 10pt;
+    font-family: 'Museosansrounded';
+    font-style: normal
+}
+
+.privacy-view .c4 {
+    color: #3c3c3c;
+    font-weight: 700;
+    text-decoration: none;
+    vertical-align: baseline;
+    font-size: 11.5pt;
+    font-family: 'Museosansrounded';
+    font-style: normal
+}
+
+.privacy-view .c9 {
+    color: #000000;
+    font-weight: 400;
+    text-decoration: none;
+    vertical-align: baseline;
+    font-size: 12pt;
+    font-family: 'Museosansrounded';
+    font-style: normal
+}
+
+.privacy-view .c3 {
+    color: #999999;
+    font-weight: 400;
+    text-decoration: none;
+    vertical-align: baseline;
+    font-size: 11.5pt;
+    font-family: 'Museosansrounded';
+    font-style: normal
+}
+
+.privacy-view .c2 {
+    -webkit-text-decoration-skip: none;
+    color: #999999;
+    font-weight: 400;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    font-size: 11.5pt;
+    font-family: 'Museosansrounded';
+}
+
+.privacy-view .c19 {
+    color: #3c3c3c;
+    font-weight: 400;
+    text-decoration: none;
+    vertical-align: baseline;
+    font-size: 20.5pt;
+    font-family: 'Museosansrounded';
+    font-style: normal
+}
+
+.privacy-view .c15 {
+    padding-top: 0pt;
+    padding-bottom: 37.5pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: justify
+}
+
+.privacy-view .c1 {
+    padding-top: 0pt;
+    padding-bottom: 13.5pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: justify
+}
+
+.privacy-view .c16 {
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: justify
+}
+
+.privacy-view .c14 {
+    padding-top: 0pt;
+    padding-bottom: 7.5pt;
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: justify
+}
+
+.privacy-view .c11 {
+    font-size: 11.5pt;
+    font-family: 'Museosansrounded';
+    color: #999999;
+    font-weight: 700
+}
+
+.privacy-view .c8 {
+    font-size: 11.5pt;
+    font-family: 'Museosansrounded';
+    color: #999999;
+    font-weight: 400
+}
+
+.privacy-view .c13 {
+    margin-left: 15pt;
+    text-indent: -15pt;
+    height: 12pt
+}
+
+.privacy-view .c17 {
+    background-color: #ffffff;
+    max-width: 432pt;
+    padding: 72pt 90pt 72pt 90pt
+}
+
+.privacy-view .c10 {
+    vertical-align: baseline;
+    font-style: italic
+}
+
+.privacy-view .c5 {
+    padding: 0;
+    margin: 0
+}
+
+.privacy-view .c6 {
+    color: inherit;
+    text-decoration: inherit
+}
+
+.privacy-view .c18 {
+    height: 12pt
+}
+
+.privacy-view .title {
+    padding-top: 24pt;
+    color: #000000;
+    font-weight: 700;
+    font-size: 36pt;
+    padding-bottom: 6pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    page-break-after: avoid;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view .subtitle {
+    padding-top: 18pt;
+    color: #666666;
+    font-size: 24pt;
+    padding-bottom: 4pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    page-break-after: avoid;
+    font-style: italic;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view li {
+    color: #000000;
+    font-size: 12pt;
+    font-family: 'Museosansrounded';
+}
+
+.privacy-view p {
+    margin: 0;
+    color: #000000;
+    font-size: 12pt;
+    font-family: 'Museosansrounded';
+}
+
+.privacy-view h1 {
+    padding-top: 5pt;
+    color: #000000;
+    font-weight: 700;
+    font-size: 24pt;
+    padding-bottom: 5pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view h2 {
+    padding-top: 18pt;
+    color: #000000;
+    font-weight: 700;
+    font-size: 18pt;
+    padding-bottom: 4pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    page-break-after: avoid;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view h3 {
+    padding-top: 5pt;
+    color: #000000;
+    font-weight: 700;
+    font-size: 13.5pt;
+    padding-bottom: 5pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view h4 {
+    padding-top: 5pt;
+    color: #000000;
+    font-weight: 700;
+    font-size: 12pt;
+    padding-bottom: 5pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view h5 {
+    padding-top: 11pt;
+    color: #000000;
+    font-weight: 700;
+    font-size: 11pt;
+    padding-bottom: 2pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    page-break-after: avoid;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+
+.privacy-view h6 {
+    padding-top: 10pt;
+    color: #000000;
+    font-weight: 700;
+    font-size: 10pt;
+    padding-bottom: 2pt;
+    font-family: 'Museosansrounded';
+    line-height: 1.0;
+    page-break-after: avoid;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
