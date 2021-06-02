@@ -11,6 +11,7 @@ import FormControl from '@material-ui/core/FormControl'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Box from '@material-ui/core/Box'
+import Slide from '@material-ui/core/Slide'
 
 import LogIn from './logIn'
 
@@ -21,28 +22,29 @@ interface IModalLogInProps {
   // history: object
 }
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="down" ref={ref} {...props} />
+})
+
 const ModalLogIn: React.FC<IModalLogInProps> = props => {
   // LogIn by default, if LogIn == false, then use SignUp
   const [isLogIn, setLogIn] = useState(true)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  // const [email, setEmail] = useState('')
+  // const [password, setPassword] = useState('')
 
-  // const handleClickOpen = () => {
-  //   setOpen(true)
-  // }
-  //
-  // const handleClose = () => {
-  //   setOpen(false)
-  // }
+  const emailRef = React.useRef('')
+  const passwordRef = React.useRef('')
 
   const onLoginDataChange = (email, password) => {
-    setEmail(email)
-    setPassword(password)
+    // setEmail(email)
+    // setPassword(password)
+    emailRef.current = email
+    passwordRef.current = password
   }
 
   const onLoginClick = () => {
-    // console.log(email, password)
-    props.login(email, password)
+    props.login(emailRef.current, passwordRef.current)
+    // props.login(email, password)
     // TODO close if we have profile loaded - else show error
     props.handleClose()
   }
@@ -55,8 +57,10 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
       {/* onClose={props.handleClose} */}
       <Dialog
         fullWidth
+        TransitionComponent={Transition}
         maxWidth="sm"
         open={props.open}
+        onClose={props.handleClose}
         aria-labelledby="form-dialog-title"
       >
         <FormControl>

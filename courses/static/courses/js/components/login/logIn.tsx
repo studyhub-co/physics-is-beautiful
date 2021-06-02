@@ -6,7 +6,6 @@ import Box from '@material-ui/core/Box'
 // import Button from '@material-ui/core/Button'
 
 interface ILogInProps {
-  // open: boolean
   onDataChange(email: string, password: string): void
 }
 
@@ -25,11 +24,7 @@ export default function LogIn(props: ILogInProps) {
   }
 
   return (
-    <div>
-      {/*<DialogContentText>*/}
-      {/*      To subscribe to this website, please enter your email address here. We will send updates*/}
-      {/*      occasionally.*/}
-      {/*</DialogContentText>*/}
+    <React.Fragment>
       <TextField
         autoFocus
         margin="dense"
@@ -58,13 +53,13 @@ export default function LogIn(props: ILogInProps) {
         autoFocus
         margin="dense"
         autoComplete="password"
-        name="passowrd"
+        name="password"
         id="id_password"
         label="Password"
         placeholder={'password'}
         type="password"
         fullWidth
       />
-    </div>
+    </React.Fragment>
   )
 }
