@@ -116,13 +116,17 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
             </div>
           </nav>
           <div className="jumbotron">
-            <div className="container">
-              <h1>
-                Physics is{' '}
-                <span style={{ whiteSpace: 'nowrap' }}>
-                  beauti\(\!\int\!\)ul.
-                </span>
-              </h1>
+            <div className="container" style={{ textAlign: 'center' }}>
+              {/*<h1>*/}
+              {/*  Physics is{' '}*/}
+              {/*  <span style={{ whiteSpace: 'nowrap' }}>*/}
+              {/*    beauti\(\!\int\!\)ul.*/}
+              {/*  </span>*/}
+              {/*</h1>*/}
+              <img
+                style={{ width: '65vw' }}
+                src={require('./images/PIBTitle.png')}
+              />
               <p>Start learning physics, free.</p>
               <button
                 id="getStartedButton"
@@ -158,10 +162,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                 <div className="card-deck">
                   <div className="card">
                     {/*TODO change href*/}
-                    <a
-                      href=""
-                      style={{ textDecoration: 'none' }}
-                    >
+                    <a href="" style={{ textDecoration: 'none' }}>
                       <img
                         className="card-img-top"
                         src={require('./images/vectors.png')}
@@ -176,10 +177,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     </a>
                   </div>
                   <div className="card">
-                    <a
-                      href=""
-                      style={{ textDecoration: 'none' }}
-                    >
+                    <a href="" style={{ textDecoration: 'none' }}>
                       <img
                         className="card-img-top"
                         src={require('./images/unit-conversion.png')}
@@ -197,10 +195,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     </a>
                   </div>
                   <div className="card">
-                    <a
-                      href=""
-                      style={{ textDecoration: 'none' }}
-                    >
+                    <a href="" style={{ textDecoration: 'none' }}>
                       <img
                         className="card-img-top"
                         src={require('./images/graphs.png')}
@@ -216,10 +211,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     </a>
                   </div>
                   <div className="card">
-                    <a
-                      href=""
-                      style={{ textDecoration: 'none' }}
-                    >
+                    <a href="" style={{ textDecoration: 'none' }}>
                       <img
                         className="card-img-top"
                         src={require('./images/motion-diagrams.png')}
@@ -236,10 +228,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     </a>
                   </div>
                   <div className="card">
-                    <a
-                      href=""
-                      style={{ textDecoration: 'none' }}
-                    >
+                    <a href="" style={{ textDecoration: 'none' }}>
                       <img
                         className="card-img-top"
                         src={require('./images/friction.png')}

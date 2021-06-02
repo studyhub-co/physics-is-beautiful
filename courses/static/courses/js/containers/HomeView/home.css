@@ -25,6 +25,7 @@
 .front-page #front-page {
     height: 100vh;
     background: url('images/Prague.jpg') center;
+    /*background: url('images/background.png') center;*/
     background-size: cover;
     z-index: -1;
 }
