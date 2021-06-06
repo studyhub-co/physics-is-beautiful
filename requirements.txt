@@ -2,7 +2,7 @@ antlr4-python3-runtime==4.7
 #boto==2.46.1
 boto3==1.17.30
 django-ses==1.0.3
-Django==2.2.20
+Django==2.2.21
 # TODO try to migrate django-allauth==0.44.1
 # django-allauth==0.39.1
 django-allauth==0.44.0
