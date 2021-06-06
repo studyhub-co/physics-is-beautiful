@@ -3,11 +3,11 @@ import axios from 'axios'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
-export function getAxios () {
+export function getAxios() {
   return axios
 }
 
-export function checkHttpStatus (response) {
+export function checkHttpStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response
   }
@@ -17,7 +17,7 @@ export function checkHttpStatus (response) {
   throw error
 }
 
-export function checkHttpError (error) {
+export function checkHttpError(error) {
   let response = error.response
 
   if (response.status === 403) {
@@ -29,13 +29,13 @@ export function checkHttpError (error) {
   throw error
 }
 
-export function checkNestedProp (object, ...keys) {
-  return keys.reduce((a, b) => (a || { })[b], object) !== undefined
+export function checkNestedProp(object, ...keys) {
+  return keys.reduce((a, b) => (a || {})[b], object) !== undefined
 }
 
 const KeyCodes = {
   comma: 188,
-  enter: 13
+  enter: 13,
 }
 
 export const tagDelimiters = [KeyCodes.comma, KeyCodes.enter]

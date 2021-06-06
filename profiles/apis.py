@@ -1,4 +1,5 @@
 from django.db.models import F, Count
+from django.contrib.auth import get_user_model, logout as django_logout, login as django_login, authenticate
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import api_view, permission_classes, action
@@ -7,6 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.response import Response
+from rest_framework.generics import CreateAPIView
+from rest_framework.views import APIView
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from pib_auth.models import User
 
 from badges.models import Badge
 from badges.serializers import BadgeCountSerializer
@@ -14,7 +22,7 @@ from badges.serializers import BadgeCountSerializer
 from piblib.search_engines import is_search_engine_bot
 
 from .models import Profile
-from .serializers import ProfileSerializer, PublicProfileSerializer, LoginSerializer
+from .serializers import ProfileSerializer, PublicProfileSerializer, LoginSerializer, SignUpSerializer
 from .permissions import EditDeleteByOwnerOrStaff
 
 
@@ -115,18 +123,6 @@ def find_user(request):
     serializer = ProfileSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
-#  TODO may be it better to move ro pib_auth
-from django.contrib.auth import logout as django_logout, login as django_login
-
-from rest_framework.views import APIView
-
-from django.contrib.auth import authenticate, login
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-
-
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 def logout(request):
@@ -136,8 +132,6 @@ def logout(request):
     data =  {'sound_enabled': request._request.session.get('sound', True),
             'is_anonymous': True}
     return Response(data=data, status=status.HTTP_200_OK)
-
-from pib_auth.models import User
 
 
 class Login(APIView):
@@ -157,7 +151,7 @@ class Login(APIView):
                             password=credentials.validated_data['password'])
         if user is not None:
           if user.is_active:
-              login(request, user)
+              django_login(request, user)
               data = ProfileSerializer(user.profile).data
           else:
               raise NotFound({"status" : "false", "reason" : "You need to activate your account. Please check your email"})
@@ -166,3 +160,12 @@ class Login(APIView):
 
         # response user profile?
         return Response(data=data, status=status.HTTP_200_OK)
+
+
+class SignUpUserView(CreateAPIView):
+
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = SignUpSerializer

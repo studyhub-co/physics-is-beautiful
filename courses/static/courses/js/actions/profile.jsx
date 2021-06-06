@@ -72,3 +72,24 @@ export function login(email, password) {
       })
   }
 }
+
+export function signUp(firstName, lastName, email, password) {
+  return (dispatch, state) => {
+    return getAxios()
+      .post(API_PROFILE_PREFIX + 'signup/', {
+        firstName,
+        lastName,
+        email,
+        password,
+      })
+      .then(checkHttpStatus)
+      .then(response => {
+        // TODO redirect to Welcome (Check email) page
+        console.log(response)
+      })
+      .catch(error => {
+        // TODO add
+        console.log(error.response.data)
+      })
+  }
+}

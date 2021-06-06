@@ -11,14 +11,23 @@ import FormControl from '@material-ui/core/FormControl'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Box from '@material-ui/core/Box'
+import Divider from '@material-ui/core/Divider'
 import Slide from '@material-ui/core/Slide'
 
 import LogIn from './logIn'
+import SignUp from './signUp'
 
 interface IModalLogInProps {
   open: boolean
   handleClose(): void
   login(email: string, password: string): void
+  signUp(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password1: string,
+    password2: string,
+  ): void
   // history: object
 }
 
@@ -32,29 +41,59 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   // const [email, setEmail] = useState('')
   // const [password, setPassword] = useState('')
 
+  // login
   const emailRef = React.useRef('')
   const passwordRef = React.useRef('')
 
-  const onLoginDataChange = (email, password) => {
+  // signup
+  const sFirstNameRef = React.useRef('')
+  const sLastNameRef = React.useRef('')
+  const sEmailRef = React.useRef('')
+  const sPassword1Ref = React.useRef('')
+  const sPassword2Ref = React.useRef('')
+
+  const onLoginDataChange = (email: string, password: string) => {
     // setEmail(email)
     // setPassword(password)
     emailRef.current = email
     passwordRef.current = password
   }
 
+  const onSignUpDataChange = (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password1: string,
+    password2: string,
+  ) => {
+    sFirstNameRef.current = firstName
+    sLastNameRef.current = lastName
+    sEmailRef.current = email
+    sPassword1Ref.current = password1
+    sPassword2Ref.current = password2
+  }
+
   const onLoginClick = () => {
     props.login(emailRef.current, passwordRef.current)
-    // props.login(email, password)
     // TODO close if we have profile loaded - else show error
+    props.handleClose()
+  }
+
+  const onSignUpClick = () => {
+    props.signUp(
+      sFirstNameRef.current,
+      sLastNameRef.current,
+      sEmailRef.current,
+      sPassword1Ref.current,
+      sPassword2Ref.current,
+    )
+    // props.login(email, password)
+    // TODO close if success - else show error
     props.handleClose()
   }
 
   return (
     <div>
-      {/* <Button variant='outlined' color='primary' onClick={handleClickOpen}> */}
-      {/*  Open form dialog */}
-      {/* </Button> */}
-      {/* onClose={props.handleClose} */}
       <Dialog
         fullWidth
         TransitionComponent={Transition}
@@ -66,7 +105,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
         <FormControl>
           <DialogTitle id="form-dialog-title">
             <Box display="flex" alignItems="center">
-              <Box flexGrow={1}>Login</Box>
+              <Box flexGrow={1}>{isLogIn ? 'Login' : 'Sign Up'}</Box>
               <Box>
                 <IconButton onClick={props.handleClose}>
                   <CloseIcon />
@@ -76,21 +115,66 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
           </DialogTitle>
           <DialogContent>
             <form>
-              <LogIn onDataChange={onLoginDataChange} />
+              {isLogIn ? (
+                <LogIn onDataChange={onLoginDataChange} />
+              ) : (
+                <SignUp onDataChange={onSignUpDataChange} />
+              )}
             </form>
           </DialogContent>
           <DialogActions>
             {/* <Button onClick={props.handleClose} color='primary'> */}
             {/*  Cancel */}
             {/* </Button> */}
-            <Button
-              fullWidth
-              onClick={onLoginClick}
-              color="primary"
-              variant="contained"
-            >
-              Login
-            </Button>
+            {isLogIn ? (
+              <Button
+                fullWidth
+                onClick={onLoginClick}
+                color="primary"
+                variant="contained"
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                fullWidth
+                onClick={onSignUpClick}
+                color="primary"
+                variant="contained"
+              >
+                Sign Up
+              </Button>
+            )}
+          </DialogActions>
+          <DialogActions>
+            <Divider />
+            {isLogIn ? (
+              <span>
+                Don't have an account?{' '}
+                <a
+                  className="navlink"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setLogIn(false)
+                  }}
+                >
+                  Sign Up »
+                </a>
+              </span>
+            ) : (
+              <span>
+                Already have an account?{' '}
+                <a
+                  className="navlink"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setLogIn(true)
+                  }}
+                >
+                  Login »
+                </a>
+              </span>
+            )}
           </DialogActions>
         </FormControl>
       </Dialog>

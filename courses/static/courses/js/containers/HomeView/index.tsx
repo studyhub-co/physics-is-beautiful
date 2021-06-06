@@ -110,6 +110,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     open={loginModalOpen}
                     handleClose={handleLogInModalOpen}
                     login={props.profileActions.login}
+                    signUp={props.profileActions.signUp}
                   />
                 </li>
               </ul>

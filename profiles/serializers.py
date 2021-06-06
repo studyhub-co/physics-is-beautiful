@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
 
 from .models import Profile
@@ -93,7 +95,7 @@ class ProfileSerializer(BaseSerializer):
         else:
             request.session['sound'] = self.validated_data['sound_enabled']
 
-#  TODO may be it better to move ro pib_auth
+#  TODO may be it better to move to pib_auth
 from pib_auth.models import User
 
 class LoginSerializer(serializers.Serializer):
@@ -105,3 +107,25 @@ class LoginSerializer(serializers.Serializer):
             max_length=User._meta.get_field(User.USERNAME_FIELD).max_length
         )
         return fields
+
+UserModel = get_user_model()
+
+
+class SignUpSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        user = UserModel.objects.create_user(
+            email=validated_data['email'],
+            password=validated_data['password'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+        )
+
+        return user
+
+    class Meta:
+        model = UserModel
+        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name')
+        write_only_fields = ('password',)
+        read_only_fields = ('id',)

@@ -33,7 +33,7 @@ export default function LogIn(props: ILogInProps) {
         value={email}
         id="id_login"
         label="Email Address"
-        placeholder={'email'}
+        placeholder={'Email'}
         type="email"
         onChange={onChangeEmail}
         fullWidth
@@ -56,7 +56,7 @@ export default function LogIn(props: ILogInProps) {
         name="password"
         id="id_password"
         label="Password"
-        placeholder={'password'}
+        placeholder={'Password'}
         type="password"
         fullWidth
       />
