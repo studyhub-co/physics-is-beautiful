@@ -3,9 +3,8 @@ antlr4-python3-runtime==4.7
 boto3==1.17.30
 django-ses==1.0.3
 Django==2.2.21
-# TODO try to migrate django-allauth==0.44.1
-# django-allauth==0.39.1
 django-allauth==0.44.0
+dj-rest-auth==2.1.7
 # git+https://github.com/physics-is-beautiful/django-allauth.git@8b08f90262aefd61df9a24300e126d4eb2fd1834#egg=django-allauth
 #-e git+https://github.com/pennersr/django-allauth.git@d34018a4ef40eb0c112c82672abeef402af7ee98#egg=django-allauth
 django-dotenv==1.4.1

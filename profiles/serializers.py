@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
@@ -110,22 +111,136 @@ class LoginSerializer(serializers.Serializer):
 
 UserModel = get_user_model()
 
+from django.core import exceptions
+import django.contrib.auth.password_validation as validators
+
+# dj-rest-auth version
+
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import setup_user_email
+from allauth.utils import email_address_exists
+from allauth.account import app_settings as allauth_settings
 
 class SignUpSerializer(serializers.Serializer):
-    password = serializers.CharField(write_only=True)
+    email = serializers.EmailField(required=True)
+    password1 = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
 
-    def create(self, validated_data):
-        user = UserModel.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-        )
+    def validate(self, data):
+        errors = dict()
 
+        errors['password1'] = []
+
+        if data['password1'] != data['password2']:
+            errors['password1'].extend([_('Passwords are not equal')])
+
+        try:
+            validators.validate_password(password=data['password1'], user=User)
+
+        except exceptions.ValidationError as e:
+            errors['password1'].extend(list(e.messages))
+
+        if len(errors['password1']) > 0:
+            raise serializers.ValidationError(errors)
+
+        return data
+
+    def custom_signup(self, request, user):
+        pass
+
+    def validate_email(self, email):
+        email = get_adapter().clean_email(email)
+        if allauth_settings.UNIQUE_EMAIL:
+            if email and email_address_exists(email):
+                raise serializers.ValidationError(
+                    _('A user is already registered with this e-mail address.'),
+                )
+        return email
+
+    def get_cleaned_data(self):
+        return {
+            'first_name': self.validated_data.get('first_name', ''),
+            'last_name': self.validated_data.get('last_name', ''),
+            'password1': self.validated_data.get('password1', ''),
+            'email': self.validated_data.get('email', ''),
+        }
+
+    def save(self, request):
+        adapter = get_adapter()
+        user = adapter.new_user(request)
+        self.cleaned_data = self.get_cleaned_data()
+        adapter.save_user(request, user, self)
+        self.custom_signup(request, user)
+        setup_user_email(request, user, [])
         return user
 
-    class Meta:
-        model = UserModel
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name')
-        write_only_fields = ('password',)
-        read_only_fields = ('id',)
+    # def create(self, validated_data):
+    #     user = UserModel.objects.create_user(
+    #         email=validated_data['email'],
+    #         password=validated_data['password'],
+    #         first_name=validated_data['first_name'],
+    #         last_name=validated_data['last_name'],
+    #     )
+    #
+    #     user.is_active = False
+    #     user.set_password(validated_data['password'])
+    #     user.save()
+    #
+    #     return user
+
+    # class Meta:
+    #     model = UserModel
+    #     fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'password', 'password2')
+    #     write_only_fields = ('password', 'password2')
+    #     read_only_fields = ('id',)
+
+# standalone (without drf-rest-auth) version
+# class SignUpSerializer(serializers.ModelSerializer):
+#     # password = serializers.CharField(write_only=True)
+#     password2 = serializers.CharField(write_only=True)
+#     # add name's custom fields, because it's required (but blank=True in model)
+#     first_name = serializers.CharField()
+#     last_name = serializers.CharField()
+#
+#     def validate(self, data):
+#         errors = dict()
+#
+#         if data['password'] != data['password2']:
+#             errors['password'] = ['Passwords are not equal']
+#
+#         try:
+#             validators.validate_password(password=data['password'], user=User)
+#
+#         except exceptions.ValidationError as e:
+#             errors['password'].extend(list(e.messages))
+#
+#         if errors:
+#             raise serializers.ValidationError(errors)
+#
+#         return data
+#
+#     # def __init__(self, *args, **kwargs):
+#     #     super(SignUpSerializer, self).__init__(*args, **kwargs)
+#
+#
+#     def create(self, validated_data):
+#         user = UserModel.objects.create_user(
+#             email=validated_data['email'],
+#             password=validated_data['password'],
+#             first_name=validated_data['first_name'],
+#             last_name=validated_data['last_name'],
+#         )
+#
+#         user.is_active = False
+#         user.set_password(validated_data['password'])
+#         user.save()
+#
+#         return user
+#
+#     class Meta:
+#         model = UserModel
+#         fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'password', 'password2')
+#         write_only_fields = ('password', 'password2')
+#         read_only_fields = ('id',)

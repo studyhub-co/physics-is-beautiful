@@ -46,7 +46,7 @@ urlpatterns = [
     url(r'^classroom/', include('classroom.urls')),
     url(r'^resources/', include('resources.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/', include('allauth.urls')),
+    url(r'^accounts/', include('allauth.urls')), # TODO remove, we will use only models from allauth
     url(r'^accounts/', include('pib_auth.urls')),
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),

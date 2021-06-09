@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import Button from '@material-ui/core/Button'
 // import TextField from '@material-ui/core/TextField'
@@ -17,6 +17,7 @@ import Slide from '@material-ui/core/Slide'
 import LogIn from './logIn'
 import SignUp from './signUp'
 
+// FIXME move to Context?
 interface IModalLogInProps {
   open: boolean
   handleClose(): void
@@ -28,6 +29,9 @@ interface IModalLogInProps {
     password1: string,
     password2: string,
   ): void
+  signUpFormErrors?: object
+  loginFormErrors?: object
+  signUpSuccess?: void
   // history: object
 }
 
@@ -38,8 +42,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const ModalLogIn: React.FC<IModalLogInProps> = props => {
   // LogIn by default, if LogIn == false, then use SignUp
   const [isLogIn, setLogIn] = useState(true)
-  // const [email, setEmail] = useState('')
-  // const [password, setPassword] = useState('')
 
   // login
   const emailRef = React.useRef('')
@@ -51,6 +53,9 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   const sEmailRef = React.useRef('')
   const sPassword1Ref = React.useRef('')
   const sPassword2Ref = React.useRef('')
+
+  // prevErrors
+  // const prevErrorsRef = React.useRef(false)
 
   const onLoginDataChange = (email: string, password: string) => {
     // setEmail(email)
@@ -87,10 +92,17 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
       sPassword1Ref.current,
       sPassword2Ref.current,
     )
-    // props.login(email, password)
-    // TODO close if success - else show error
-    props.handleClose()
   }
+
+  const clearRefs = () => {
+    onSignUpDataChange(' ', ' ', ' ', ' ')
+  }
+
+  // close signup windows after succes
+  useEffect(() => {
+    props.handleClose()
+    clearRefs()
+  }, [props.signUpSuccess])
 
   return (
     <div>
@@ -114,13 +126,21 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
             </Box>
           </DialogTitle>
           <DialogContent>
-            <form>
-              {isLogIn ? (
-                <LogIn onDataChange={onLoginDataChange} />
-              ) : (
-                <SignUp onDataChange={onSignUpDataChange} />
-              )}
-            </form>
+            {isLogIn ? (
+              <form>
+                <LogIn
+                  onDataChange={onLoginDataChange}
+                  errors={props.logInFormErrors}
+                />
+              </form>
+            ) : (
+              <form autoComplete="off">
+                <SignUp
+                  onDataChange={onSignUpDataChange}
+                  errors={props.signUpFormErrors}
+                />
+              </form>
+            )}
           </DialogContent>
           <DialogActions>
             {/* <Button onClick={props.handleClose} color='primary'> */}

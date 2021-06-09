@@ -3,6 +3,9 @@ import { API_PROFILE_PREFIX } from '../utils/config'
 import {
   PROFILE_RECEIVE_ME,
   NOTIFICATIONS_RECEIVE_UNREAD_COUNT,
+  SIGNUP_FORM_ERRORS,
+  SIGNUP_REQUEST,
+  SIGNUP_SUCCESS,
 } from '../constants'
 import { API_NOTIFICATIONS_PREFIX } from '../../../../../notifications/static/notifications_inbox/js/utils/config'
 import history from '../history'
@@ -50,7 +53,7 @@ export function fetchUnReadNotificationCount() {
 export function logout() {
   return (dispatch, state) => {
     return getAxios()
-      .get(API_PROFILE_PREFIX + 'logout/')
+      .post(API_PROFILE_PREFIX + 'rest-auth/logout/')
       .then(checkHttpStatus)
       .then(response => {
         dispatch(receiveProfileMe(response.data))
@@ -62,7 +65,7 @@ export function logout() {
 export function login(email, password) {
   return (dispatch, state) => {
     return getAxios()
-      .post(API_PROFILE_PREFIX + 'login/', {
+      .post(API_PROFILE_PREFIX + 'rest-auth/login/', {
         email,
         password,
       })
@@ -73,23 +76,50 @@ export function login(email, password) {
   }
 }
 
-export function signUp(firstName, lastName, email, password) {
+export function signUpFormErrors(signUpFormErrors) {
+  return {
+    type: SIGNUP_FORM_ERRORS,
+    payload: {
+      signUpFormErrors,
+    },
+  }
+}
+
+export function signUpRequest() {
+  return {
+    type: SIGNUP_REQUEST,
+    // payload: {},
+  }
+}
+
+export function signUpSuccess() {
+  return {
+    type: SIGNUP_SUCCESS,
+    // payload: {},
+  }
+}
+
+export function signUp(firstName, lastName, email, password, password2) {
   return (dispatch, state) => {
+    dispatch(signUpRequest())
     return getAxios()
-      .post(API_PROFILE_PREFIX + 'signup/', {
-        firstName,
-        lastName,
+      .post(API_PROFILE_PREFIX + 'rest-auth/signup/', {
+        first_name: firstName,
+        last_name: lastName,
         email,
-        password,
+        password1: password, // dj_rest_auth version
+        // password
+        password2,
       })
       .then(checkHttpStatus)
       .then(response => {
-        // TODO redirect to Welcome (Check email) page
         console.log(response)
+        // success action
+        dispatch(signUpSuccess())
+        // TODO redirect to Welcome (Check email) page
       })
       .catch(error => {
-        // TODO add
-        console.log(error.response.data)
+        dispatch(signUpFormErrors(error.response.data))
       })
   }
 }

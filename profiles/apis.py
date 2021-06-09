@@ -123,7 +123,7 @@ def find_user(request):
     serializer = ProfileSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def logout(request):
     django_logout(request._request)
@@ -136,6 +136,7 @@ def logout(request):
 
 class Login(APIView):
     permission_classes = [permissions.AllowAny]
+    throttle_scope = 'dj_rest_auth'
 
     @method_decorator(csrf_protect)
     @method_decorator(never_cache)

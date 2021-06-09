@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import TextField from '@material-ui/core/TextField'
-import Box from '@material-ui/core/Box'
+// import Box from '@material-ui/core/Box'
 // import Button from '@material-ui/core/Button'
 
 interface ISignUpInProps {
@@ -12,9 +12,11 @@ interface ISignUpInProps {
     password1: string,
     password2: string,
   ): void
+  errors?: object
 }
 
 export default function SignUp(props: ISignUpInProps) {
+  // TODO add frontend form validation
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -52,13 +54,31 @@ export default function SignUp(props: ISignUpInProps) {
     props.onDataChange(firstName, lastName, email, password1, e.target.value)
   }
 
+  const hasError = (fieldName: string) => {
+    if (props.errors?.hasOwnProperty(fieldName)) {
+      return true
+    }
+    return false
+  }
+
+  const helperText = (fieldName: string) => {
+    if (props.errors?.hasOwnProperty(fieldName)) {
+      return props.errors[fieldName].join(' ')
+    }
+    return false
+  }
+
   return (
     <React.Fragment>
       <TextField
         autoFocus
+        variant="outlined"
         margin="dense"
         name="first_name"
+        error={hasError('first_name')}
+        helperText={helperText('first_name')}
         value={firstName}
+        autoComplete="off"
         id="id_firstname"
         placeholder={'First Name'}
         type="text"
@@ -66,10 +86,14 @@ export default function SignUp(props: ISignUpInProps) {
         fullWidth
       />
       <TextField
+        variant="outlined"
+        error={hasError('last_name')}
+        helperText={helperText('last_name')}
         autoFocus
         margin="dense"
         name="last_name"
         value={lastName}
+        autoComplete="off"
         id="last_name"
         placeholder={'Last Name'}
         type="text"
@@ -77,10 +101,13 @@ export default function SignUp(props: ISignUpInProps) {
         fullWidth
       />
       <TextField
+        error={hasError('email')}
+        helperText={helperText('email')}
         autoFocus
+        variant="outlined"
         margin="dense"
         name="email"
-        // autoComplete="login"
+        autoComplete="off"
         value={email}
         id="id_email"
         // label="Email Address"
@@ -90,24 +117,30 @@ export default function SignUp(props: ISignUpInProps) {
         fullWidth
       />
       <TextField
+        error={hasError('password1')}
+        helperText={helperText('password1')}
         value={password1}
+        variant="outlined"
         onChange={onChangePassword1}
         autoFocus
         margin="dense"
-        // autoComplete="password"
+        autoComplete="off"
         name="password1"
-        id="id_password1"
+        id="id_password"
         // label="Password"
         placeholder={'Password'}
         type="password"
         fullWidth
       />
       <TextField
+        error={hasError('password2')}
+        helperText={helperText('password2')}
         value={password2}
+        variant="outlined"
         onChange={onChangePassword2}
         autoFocus
         margin="dense"
-        // autoComplete="password"
+        autoComplete="off"
         name="password2"
         id="id_password2"
         // label="Password"

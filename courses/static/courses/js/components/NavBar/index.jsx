@@ -72,7 +72,9 @@ const MenuButton = withStyles(theme => ({
 const mapStateToProps = state => {
   return {
     userProfile: state.profile.me,
+    signUpFormErrors: state.profile.signUpFormErrors,
     unReadNotificationsCount: state.profile.unReadNotificationsCount,
+    signUpSuccess: state.profile.signUpSuccess,
   }
 }
 
@@ -83,7 +85,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-// TODO too much code
+// TODO 1) too much code 2) move to containers
 const PrimarySearchAppBar = connect(
   mapStateToProps,
   mapDispatchToProps,
@@ -555,6 +557,8 @@ const PrimarySearchAppBar = connect(
                   // history={history}
                   open={loginModalOpen}
                   handleClose={handleLogInModalOpen}
+                  signUpFormErrors={props.signUpFormErrors}
+                  signUpSuccess={props.signUpSuccess}
                   login={props.profileActions.login}
                   signUp={props.profileActions.signUp}
                 />

@@ -27,6 +27,7 @@ export default function LogIn(props: ILogInProps) {
     <React.Fragment>
       <TextField
         autoFocus
+        variant="outlined"
         margin="dense"
         name="login"
         autoComplete="login"
@@ -49,6 +50,7 @@ export default function LogIn(props: ILogInProps) {
       </Box>
       <TextField
         value={password}
+        variant="outlined"
         onChange={onChangePassword}
         autoFocus
         margin="dense"
