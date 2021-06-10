@@ -134,7 +134,7 @@ class SignUpSerializer(serializers.Serializer):
         errors['password1'] = []
 
         if data['password1'] != data['password2']:
-            errors['password1'].extend([_('Passwords are not equal')])
+            errors['password1'].extend([_('Passwords are not equal.')])
 
         try:
             validators.validate_password(password=data['password1'], user=User)

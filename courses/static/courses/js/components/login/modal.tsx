@@ -13,6 +13,8 @@ import CloseIcon from '@material-ui/icons/Close'
 import Box from '@material-ui/core/Box'
 import Divider from '@material-ui/core/Divider'
 import Slide from '@material-ui/core/Slide'
+import Snackbar from '@material-ui/core/Snackbar'
+import MuiAlert from '@material-ui/lab/Alert'
 
 import LogIn from './logIn'
 import SignUp from './signUp'
@@ -32,6 +34,7 @@ interface IModalLogInProps {
   signUpFormErrors?: object
   loginFormErrors?: object
   signUpSuccess?: void
+  signUpProcessRequesting?: void
   // history: object
 }
 
@@ -39,9 +42,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />
 })
 
+function Alert(props: object) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
+}
+
 const ModalLogIn: React.FC<IModalLogInProps> = props => {
   // LogIn by default, if LogIn == false, then use SignUp
   const [isLogIn, setLogIn] = useState(true)
+  const [openSnack, setOpenSnack] = useState(false)
 
   // login
   const emailRef = React.useRef('')
@@ -95,17 +103,39 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   }
 
   const clearRefs = () => {
-    onSignUpDataChange(' ', ' ', ' ', ' ')
+    onSignUpDataChange(' ', ' ', ' ', ' ', ' ')
   }
 
-  // close signup windows after succes
+  const handleCloseSnack = () => {
+    setOpenSnack(!openSnack)
+  }
+
+  // close signup windows after success
   useEffect(() => {
-    props.handleClose()
-    clearRefs()
+    if (props.signUpSuccess) {
+      props.handleClose()
+      clearRefs()
+      // Show Check email alert
+      setOpenSnack(true)
+    }
   }, [props.signUpSuccess])
 
   return (
     <div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={openSnack}
+        // key={vertical + horizontal}
+      >
+        <Alert onClose={handleCloseSnack} severity="success">
+          We have sent an email to you for verification. Follow the link
+          provided to finalize the signup process. Please contact us if you do
+          not receive it within a few minutes.
+        </Alert>
+      </Snackbar>
       <Dialog
         fullWidth
         TransitionComponent={Transition}
@@ -157,6 +187,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
               </Button>
             ) : (
               <Button
+                disabled={props.signUpProcessRequesting}
                 fullWidth
                 onClick={onSignUpClick}
                 color="primary"

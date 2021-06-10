@@ -1,3 +1,5 @@
+/* !!!!! Common css for SPA app !!!!! */
+
 /*@font-face {*/
     /*font-family: 'Museosansrounded';*/
     /*src: url('typeface/museosansrounded/museosansrounded-300-webfont.woff2') format('woff2');*/
@@ -19,8 +21,6 @@
     /*font-style: normal;*/
 /*}*/
 
-/* Common css for SPA apps */
-
 html, body {
     /* TODO !important needs to replace with theme.css of bootstrap */
     background-color: #f1f1f1 !important;
@@ -28,7 +28,7 @@ html, body {
     courses/static/courses/style.css used with templates of site so we need to set default font-size
      */
     font-family: "Museosansrounded", sans-serif !important;
-    font-size: 12px !important;
+    font-size: 14px !important;
 }
 
 #backToDashboard {

@@ -75,6 +75,7 @@ const mapStateToProps = state => {
     signUpFormErrors: state.profile.signUpFormErrors,
     unReadNotificationsCount: state.profile.unReadNotificationsCount,
     signUpSuccess: state.profile.signUpSuccess,
+    signUpProcessRequesting: state.profile.signUpProcessRequesting,
   }
 }
 
@@ -559,6 +560,7 @@ const PrimarySearchAppBar = connect(
                   handleClose={handleLogInModalOpen}
                   signUpFormErrors={props.signUpFormErrors}
                   signUpSuccess={props.signUpSuccess}
+                  signUpProcessRequesting={props.signUpProcessRequesting}
                   login={props.profileActions.login}
                   signUp={props.profileActions.signUp}
                 />

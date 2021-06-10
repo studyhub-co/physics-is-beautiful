@@ -111,6 +111,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     handleClose={handleLogInModalOpen}
                     signUpFormErrors={props.signUpFormErrors}
                     signUpSuccess={props.signUpSuccess}
+                    signUpProcessRequesting={props.signUpProcessRequesting}
                     login={props.profileActions.login}
                     signUp={props.profileActions.signUp}
                   />
@@ -360,7 +361,8 @@ const mapStateToProps = (state: any) => {
   return {
     userProfile: state.profile.me,
     signUpFormErrors: state.profile.signUpFormErrors,
-    signUpSuccess: state.profile.signUpSuccess
+    signUpSuccess: state.profile.signUpSuccess,
+    signUpProcessRequesting: state.profile.signUpProcessRequesting,
   }
 }
 

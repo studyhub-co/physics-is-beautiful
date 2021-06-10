@@ -113,10 +113,9 @@ export function signUp(firstName, lastName, email, password, password2) {
       })
       .then(checkHttpStatus)
       .then(response => {
-        console.log(response)
         // success action
+        signUpFormErrors(null)
         dispatch(signUpSuccess())
-        // TODO redirect to Welcome (Check email) page
       })
       .catch(error => {
         dispatch(signUpFormErrors(error.response.data))
