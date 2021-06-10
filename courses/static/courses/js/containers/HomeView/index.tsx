@@ -24,7 +24,10 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
   const history = useHistory()
 
   const [showMobileMenu, setShowMobileMenu] = useState('')
-  const [loginModalOpen, setLoginModalOpen] = useState(false)
+  // show login modal if /login in path
+  const [loginModalOpen, setLoginModalOpen] = useState(
+    props.match.path === '/login' ? true : false,
+  )
 
   // redirect before render
   if (props.userProfile?.hasOwnProperty('id')) {
@@ -106,7 +109,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     Login / Signup
                   </a>
                   <ModalLogIn
-                    // history={history}
+                    history={history}
                     open={loginModalOpen}
                     handleClose={handleLogInModalOpen}
                     signUpFormErrors={props.signUpFormErrors}

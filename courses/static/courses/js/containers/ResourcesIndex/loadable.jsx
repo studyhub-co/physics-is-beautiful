@@ -7,13 +7,15 @@ import loadable from '../../utils/loadable'
 import { RingLoader } from 'react-spinners'
 import { Sheet } from '../../components/Sheet'
 
-const RingLoaderSheet = (props) => {
+const RingLoaderSheet = props => {
   return (
     <Sheet>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <RingLoader color={'#1caff6'} />
       </div>
     </Sheet>
@@ -21,5 +23,5 @@ const RingLoaderSheet = (props) => {
 }
 
 export default loadable(() => import('./resourcesIndex'), {
-  fallback: <RingLoaderSheet />
+  fallback: <RingLoaderSheet />,
 })

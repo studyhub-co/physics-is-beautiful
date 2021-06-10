@@ -5,6 +5,7 @@ import { Route, Switch } from 'react-router'
 // import { useRouteMatch } from 'react-router-dom'
 
 import { CourseApp, ModuleApp, LessonApp } from './index'
+import NotFoundView from '../../components/NotFoundView'
 // import NotFoundView from '../../components/NotFoundView'
 
 export default class CoursesRouter extends React.Component {
@@ -42,8 +43,7 @@ export default class CoursesRouter extends React.Component {
             path={this.props.match.path + ':courseUuid/'}
             component={CourseApp}
           />
-          {/* exist in base route */}
-          {/*<Route path="*" component={NotFoundView} />*/}
+          <Route path="*" component={NotFoundView} />
         </Switch>
       </div>
     )

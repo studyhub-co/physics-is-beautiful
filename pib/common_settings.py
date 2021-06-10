@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 import sentry_sdk
 
+SPA_ROOT_URL = os.getenv('SPA_ROOT_URL', '/')
+
 from sentry_sdk.integrations.django import DjangoIntegration
 
 SENTRY_DSN = os.getenv('RAVEN_DSN')
@@ -264,6 +266,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SIGNUP_FORM_CLASS = 'pib_auth.forms.SignupForm'
+# Note however that following only works when confirming the email address immediately after signing up,
+# assuming users didn’t close their browser or used some sort of private browsing mode.
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_ADAPTER = 'pib_auth.adapters.AccountAdapter'
@@ -272,7 +276,11 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = False
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialAccountAdapter'
 
-LOGIN_REDIRECT_URL = 'pib_auth:login-next'
+# DJANGO login settings
+# LOGIN_URL
+# LOGIN_REDIRECT_URL = 'pib_auth:login-next'
+LOGIN_REDIRECT_URL = '{}courses/'.format(SPA_ROOT_URL)
+LOGIN_URL = '{}login/'.format(SPA_ROOT_URL)
 
 USER_LAST_ACTIVITY_INTERVAL_SECS = 120
 

@@ -21,7 +21,11 @@ import NotFoundView from './components/NotFoundView'
 export default (
   <Switch>
     {/* student views */}
+    {/* Home view */}
     <Route exact path="/" component={HomeIndex} />
+    {/* Home page + modal loging */}
+    <Route exact path="/login" component={HomeIndex} />
+    {/* TODO add signup url?*/}
     <Route path="/s" component={StaticRoutes} />
     {/*<Route exact path={'/'} component={CoursesRoutes} />*/}
     <Route path={'/courses/:courseUuid?'} component={CoursesRoutes} />

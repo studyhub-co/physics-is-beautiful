@@ -1,6 +1,7 @@
 import os
 import mimetypes
 
+# TODO we need this? The same as in common_settings
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault('DJANGO_SECRET', '0dk3tvyko9mz6t!+y42*$lzow)^dr3#(i_8^!7(x64!&yrpiz7')
 os.environ.setdefault('DJANGO_STATIC_ROOT', os.path.join(BASE_DIR, 'media'))

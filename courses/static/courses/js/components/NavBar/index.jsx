@@ -555,7 +555,7 @@ const PrimarySearchAppBar = connect(
                   {/* <AccountCircle style={{'fontSize': '2rem'}} /> */}
                 </IconButton>
                 <ModalLogIn
-                  // history={history}
+                  history={history}
                   open={loginModalOpen}
                   handleClose={handleLogInModalOpen}
                   signUpFormErrors={props.signUpFormErrors}

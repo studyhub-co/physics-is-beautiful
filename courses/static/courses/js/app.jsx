@@ -24,7 +24,10 @@ const App = props => {
   return (
     <div>
       <ThemeProvider theme={theme}>
-        {props.location?.pathname !== '/' && <NavBar />}
+        {/* TODO refactor this */}
+        {props.location?.pathname !== '/' &&
+          !/\/login(\/?)/.test(props.location?.pathname) &&
+          !/\/singup(\/?)/.test(props.location?.pathname) && <NavBar />}
         {props.children}
       </ThemeProvider>
     </div>
