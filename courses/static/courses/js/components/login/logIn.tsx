@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box'
 interface ILogInProps {
   onDataChange(email: string, password: string): void
   setModalType(type: string): void
+  loginIncorrectLogin?: boolean
 }
 
 export default function LogIn(props: ILogInProps) {
@@ -27,6 +28,10 @@ export default function LogIn(props: ILogInProps) {
   return (
     <React.Fragment>
       <TextField
+        error={props.loginIncorrectLogin}
+        helperText={
+          'The e-mail address and/or password you specified are not correct.'
+        }
         autoFocus
         variant="outlined"
         margin="dense"
@@ -55,6 +60,7 @@ export default function LogIn(props: ILogInProps) {
         </Box>
       </Box>
       <TextField
+        error={props.loginIncorrectLogin}
         value={password}
         variant="outlined"
         onChange={onChangePassword}

@@ -33,8 +33,10 @@ interface IModalLogInProps {
     password1: string,
     password2: string,
   ): void
+  loginIncorrect?: object
+  loginSuccess?: void
+  loginProcessRequesting?: void
   signUpFormErrors?: object
-  loginFormErrors?: object
   signUpSuccess?: void
   signUpProcessRequesting?: void
   history: object
@@ -95,8 +97,16 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   const onLoginClick = () => {
     props.login(emailRef.current, passwordRef.current)
     // TODO close if we have profile loaded - else show error
-    props.handleClose()
+    // props.handleClose()
   }
+
+  // close signup windows after success login
+  useEffect(() => {
+    if (props.loginSuccess) {
+        props.handleClose()
+    }
+  }, [props.loginSuccess])
+
 
   const onSignUpClick = () => {
     props.signUp(
@@ -108,7 +118,6 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
     )
   }
 
-  //
   const onPasswordResetClick = () => {
     props.passwordReset(emailRef.current)
     props.handleClose()
@@ -123,7 +132,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   //   setOpenSnack(!openSnack)
   // }
 
-  // close signup windows after success
+  // close signup windows after success signup
   useEffect(() => {
     if (props.signUpSuccess) {
       // props.handleClose()
@@ -179,7 +188,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
               <form>
                 <LogIn
                   onDataChange={onLoginDataChange}
-                  errors={props.logInFormErrors}
+                  loginIncorrectLogin={props.loginIncorrectLogin}
                   setModalType={setModalType}
                 />
               </form>
@@ -204,6 +213,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
             {/* </Button> */}
             {modalType == 'login' && (
               <Button
+                disabled={props.loginProcessRequesting}
                 fullWidth
                 onClick={onLoginClick}
                 color="primary"

@@ -112,6 +112,9 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     history={history}
                     open={loginModalOpen}
                     handleClose={handleLogInModalOpen}
+                    loginIncorrectLogin={props.loginIncorrectLogin}
+                    loginSuccess={props.loginSuccess}
+                    loginProcessRequesting={props.loginProcessRequesting}
                     signUpFormErrors={props.signUpFormErrors}
                     signUpSuccess={props.signUpSuccess}
                     passwordReset={props.profileActions.passwordReset}
@@ -364,6 +367,9 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
 const mapStateToProps = (state: any) => {
   return {
     userProfile: state.profile.me,
+    loginIncorrectLogin: state.profile.loginIncorrectLogin,
+    loginSuccess: state.profile.loginSuccess,
+    loginProcessRequesting: state.profile.loginProcessRequesting,
     signUpFormErrors: state.profile.signUpFormErrors,
     signUpSuccess: state.profile.signUpSuccess,
     signUpProcessRequesting: state.profile.signUpProcessRequesting,

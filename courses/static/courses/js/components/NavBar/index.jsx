@@ -72,8 +72,11 @@ const MenuButton = withStyles(theme => ({
 const mapStateToProps = state => {
   return {
     userProfile: state.profile.me,
-    signUpFormErrors: state.profile.signUpFormErrors,
     unReadNotificationsCount: state.profile.unReadNotificationsCount,
+    loginIncorrectLogin: state.profile.loginIncorrectLogin,
+    loginSuccess: state.profile.loginSuccess,
+    loginProcessRequesting: state.profile.loginProcessRequesting,
+    signUpFormErrors: state.profile.signUpFormErrors,
     signUpSuccess: state.profile.signUpSuccess,
     signUpProcessRequesting: state.profile.signUpProcessRequesting,
   }
@@ -561,6 +564,9 @@ const PrimarySearchAppBar = connect(
                   signUpFormErrors={props.signUpFormErrors}
                   signUpSuccess={props.signUpSuccess}
                   signUpProcessRequesting={props.signUpProcessRequesting}
+                  loginIncorrectLogin={props.loginIncorrectLogin}
+                  loginSuccess={props.loginSuccess}
+                  loginProcessRequesting={props.loginProcessRequesting}
                   login={props.profileActions.login}
                   passwordReset={props.profileActions.passwordReset}
                   signUp={props.profileActions.signUp}

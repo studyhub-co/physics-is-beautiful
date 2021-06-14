@@ -6,6 +6,9 @@ import {
   SIGNUP_FORM_ERRORS,
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
+  LOGIN_INCORRECT_LOGIN,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
 } from '../constants'
 import { API_NOTIFICATIONS_PREFIX } from '../../../../../notifications/static/notifications_inbox/js/utils/config'
 import history from '../history'
@@ -62,8 +65,27 @@ export function logout() {
   }
 }
 
+export function loginIncorrectLogin() {
+  return {
+    type: LOGIN_INCORRECT_LOGIN,
+  }
+}
+
+export function loginRequest() {
+  return {
+    type: LOGIN_REQUEST,
+  }
+}
+
+export function loginSuccess() {
+  return {
+    type: LOGIN_SUCCESS,
+  }
+}
+
 export function login(email, password) {
   return (dispatch, state) => {
+    dispatch(loginRequest())
     return getAxios()
       .post(API_PROFILE_PREFIX + 'rest-auth/login/', {
         email,
@@ -71,7 +93,11 @@ export function login(email, password) {
       })
       .then(checkHttpStatus)
       .then(response => {
+        dispatch(loginSuccess())
         dispatch(receiveProfileMe(response.data))
+      })
+      .catch(error => {
+        dispatch(loginIncorrectLogin())
       })
   }
 }

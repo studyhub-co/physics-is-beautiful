@@ -4,9 +4,14 @@ import {
   SIGNUP_FORM_ERRORS,
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
+  LOGIN_REQUEST,
+  LOGIN_INCORRECT_LOGIN,
+  LOGIN_SUCCESS,
 } from '../constants'
 
 const initialState = {
+  loginIncorrectLogin: false,
+  loginProcessRequesting: false,
   signUpFormErrors: null,
   signUpProcessRequesting: false,
   signUpSuccess: false,
@@ -21,6 +26,20 @@ export default function profile(state = initialState, action) {
     case NOTIFICATIONS_RECEIVE_UNREAD_COUNT:
       return Object.assign({}, state, {
         unReadNotificationsCount: action.payload.unReadNotificationsCount,
+      })
+    case LOGIN_REQUEST:
+      return Object.assign({}, state, {
+        loginProcessRequesting: true,
+      })
+    case LOGIN_INCORRECT_LOGIN:
+      return Object.assign({}, state, {
+        loginIncorrectLogin: true,
+        loginProcessRequesting: false,
+      })
+    case LOGIN_SUCCESS:
+      return Object.assign({}, state, {
+        loginProcessRequesting: false,
+        loginSuccess: true,
       })
     case SIGNUP_REQUEST:
       return Object.assign({}, state, {
