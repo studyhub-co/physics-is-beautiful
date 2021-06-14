@@ -49,7 +49,7 @@ urlpatterns = [
     # TODO add only necessary urls from allauth we will use only models from allauth
     # we use confirm-email url now
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^accounts/', include('pib_auth.urls')),
+    url(r'^accounts/', include('pib_auth.urls')), # TODO remove?
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     url(r'^blog/', include('blog.urls')),

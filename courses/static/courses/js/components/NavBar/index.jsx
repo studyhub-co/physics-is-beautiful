@@ -562,6 +562,7 @@ const PrimarySearchAppBar = connect(
                   signUpSuccess={props.signUpSuccess}
                   signUpProcessRequesting={props.signUpProcessRequesting}
                   login={props.profileActions.login}
+                  passwordReset={props.profileActions.passwordReset}
                   signUp={props.profileActions.signUp}
                 />
               </React.Fragment>

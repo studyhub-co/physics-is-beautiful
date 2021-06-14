@@ -120,6 +120,7 @@ from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from allauth.utils import email_address_exists
 from allauth.account import app_settings as allauth_settings
+from allauth.account.forms import ResetPasswordForm
 
 class SignUpSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -195,6 +196,12 @@ class SignUpSerializer(serializers.Serializer):
     #     fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'password', 'password2')
     #     write_only_fields = ('password', 'password2')
     #     read_only_fields = ('id',)
+
+from dj_rest_auth.serializers import PasswordResetSerializer as djPasswordResetSerializer
+
+class PasswordResetSerializer(djPasswordResetSerializer):
+    # dj_rest_auth use django.contrib.auth form instead allauth forms
+    password_reset_form_class = ResetPasswordForm
 
 # standalone (without drf-rest-auth) version
 # class SignUpSerializer(serializers.ModelSerializer):

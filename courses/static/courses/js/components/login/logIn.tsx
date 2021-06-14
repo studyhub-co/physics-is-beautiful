@@ -7,6 +7,7 @@ import Box from '@material-ui/core/Box'
 
 interface ILogInProps {
   onDataChange(email: string, password: string): void
+  setModalType(type: string): void
 }
 
 export default function LogIn(props: ILogInProps) {
@@ -42,8 +43,13 @@ export default function LogIn(props: ILogInProps) {
       <Box display="flex" alignItems="center">
         <Box flexGrow={1}></Box>
         <Box>
-          <a href={''}>
-            {/* TODO send email */}
+          <a
+            className="navlink"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              props.setModalType('passwordReset')
+            }}
+          >
             Forgot password?
           </a>
         </Box>

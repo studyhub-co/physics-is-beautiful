@@ -114,6 +114,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                     handleClose={handleLogInModalOpen}
                     signUpFormErrors={props.signUpFormErrors}
                     signUpSuccess={props.signUpSuccess}
+                    passwordReset={props.profileActions.passwordReset}
                     signUpProcessRequesting={props.signUpProcessRequesting}
                     login={props.profileActions.login}
                     signUp={props.profileActions.signUp}

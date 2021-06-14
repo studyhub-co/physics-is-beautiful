@@ -6,6 +6,7 @@ import PrivacyView from './privacy'
 import TermsView from './terms'
 
 import VerificationSentView from './auth/verification_sent'
+import PasswordResetDoneView from './auth/password_reset_done'
 import NotFoundView from '../../components/NotFoundView'
 
 const StaticRoutes = (props: object) => (
@@ -17,6 +18,11 @@ const StaticRoutes = (props: object) => (
       exact
       path={`${props.match.path}/auth/confirm-email`}
       component={VerificationSentView}
+    />
+    <Route
+      exact
+      path={`${props.match.path}/auth/reset/done`}
+      component={PasswordResetDoneView}
     />
     {/* we need this to catch not found */}
     <Route path="*" component={NotFoundView} />

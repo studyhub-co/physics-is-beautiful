@@ -252,8 +252,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = 'Physics is Beautiful <no-reply@physicsisbeautiful.com>'
 
 # dj_rest_auth
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 'profiles.serializers.PasswordResetSerializer'
+}
+
 REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'profiles.serializers.SignUpSerializer'
+    'REGISTER_SERIALIZER': 'profiles.serializers.SignUpSerializer',
 }
 
 REST_USE_JWT = False
@@ -277,10 +281,9 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialAccountAdapter'
 
 # DJANGO login settings
-# LOGIN_URL
 # LOGIN_REDIRECT_URL = 'pib_auth:login-next'
-LOGIN_REDIRECT_URL = '{}courses/'.format(SPA_ROOT_URL)
-LOGIN_URL = '{}login/'.format(SPA_ROOT_URL)
+LOGIN_REDIRECT_URL = '{}courses/'.format(SPA_ROOT_URL) # TODO add next-url
+LOGIN_URL = '{}login/'.format(SPA_ROOT_URL) # TODO add next url
 
 USER_LAST_ACTIVITY_INTERVAL_SECS = 120
 

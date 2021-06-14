@@ -18,12 +18,14 @@ import Slide from '@material-ui/core/Slide'
 
 import LogIn from './logIn'
 import SignUp from './signUp'
+import ResetPassword from './resetPassword'
 
 // FIXME move to Context?
 interface IModalLogInProps {
   open: boolean
   handleClose(): void
   login(email: string, password: string): void
+  passwordReset(email: string): void
   signUp(
     firstName: string,
     lastName: string,
@@ -46,9 +48,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 //   return <MuiAlert elevation={6} variant="filled" {...props} />
 // }
 
+// const ModalTypes = ['login', 'signUp', 'passwordReset']
+
 const ModalLogIn: React.FC<IModalLogInProps> = props => {
   // LogIn by default, if LogIn == false, then use SignUp
-  const [isLogIn, setLogIn] = useState(true)
+  const [modalType, setModalType] = useState('login')
+  // const [isLogIn, setLogIn] = useState(true)
   const [openSnack, setOpenSnack] = useState(false)
 
   // login
@@ -62,14 +67,15 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   const sPassword1Ref = React.useRef('')
   const sPassword2Ref = React.useRef('')
 
-  // prevErrors
-  // const prevErrorsRef = React.useRef(false)
-
   const onLoginDataChange = (email: string, password: string) => {
     // setEmail(email)
     // setPassword(password)
     emailRef.current = email
     passwordRef.current = password
+  }
+
+  const onPasswordResetDataChange = (email: string) => {
+    emailRef.current = email
   }
 
   const onSignUpDataChange = (
@@ -102,13 +108,20 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
     )
   }
 
+  //
+  const onPasswordResetClick = () => {
+    props.passwordReset(emailRef.current)
+    props.handleClose()
+    props.history.push('/s/auth/reset/done/')
+  }
+
   const clearRefs = () => {
     onSignUpDataChange(' ', ' ', ' ', ' ', ' ')
   }
 
-  const handleCloseSnack = () => {
-    setOpenSnack(!openSnack)
-  }
+  // const handleCloseSnack = () => {
+  //   setOpenSnack(!openSnack)
+  // }
 
   // close signup windows after success
   useEffect(() => {
@@ -117,8 +130,8 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
       clearRefs()
       // redirect to Check email page
       // Show Check email alert
-      // setOpenSnack(true)
       props.history.push('/s/auth/confirm-email/')
+      // setOpenSnack(true)
     }
   }, [props.signUpSuccess])
 
@@ -149,7 +162,11 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
         <FormControl>
           <DialogTitle id="form-dialog-title">
             <Box display="flex" alignItems="center">
-              <Box flexGrow={1}>{isLogIn ? 'Login' : 'Sign Up'}</Box>
+              <Box flexGrow={1}>
+                {modalType == 'login' && 'Login'}
+                {modalType == 'signUp' && 'Sign Up'}
+                {modalType == 'passwordReset' && 'Password Reset'}
+              </Box>
               <Box>
                 <IconButton onClick={props.handleClose}>
                   <CloseIcon />
@@ -158,14 +175,16 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
             </Box>
           </DialogTitle>
           <DialogContent>
-            {isLogIn ? (
+            {modalType == 'login' && (
               <form>
                 <LogIn
                   onDataChange={onLoginDataChange}
                   errors={props.logInFormErrors}
+                  setModalType={setModalType}
                 />
               </form>
-            ) : (
+            )}
+            {modalType == 'signUp' && (
               <form autoComplete="off">
                 <SignUp
                   onDataChange={onSignUpDataChange}
@@ -173,12 +192,17 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
                 />
               </form>
             )}
+            {modalType == 'passwordReset' && (
+              <form>
+                <ResetPassword onDataChange={onPasswordResetDataChange} />
+              </form>
+            )}
           </DialogContent>
           <DialogActions>
             {/* <Button onClick={props.handleClose} color='primary'> */}
             {/*  Cancel */}
             {/* </Button> */}
-            {isLogIn ? (
+            {modalType == 'login' && (
               <Button
                 fullWidth
                 onClick={onLoginClick}
@@ -187,7 +211,8 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
               >
                 Login
               </Button>
-            ) : (
+            )}
+            {modalType == 'signUp' && (
               <Button
                 disabled={props.signUpProcessRequesting}
                 fullWidth
@@ -198,33 +223,60 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
                 Sign Up
               </Button>
             )}
+            {modalType == 'passwordReset' && (
+              <Button
+                fullWidth
+                onClick={onPasswordResetClick}
+                color="primary"
+                variant="contained"
+              >
+                Reset My Password
+              </Button>
+            )}
           </DialogActions>
           <DialogActions>
             <Divider />
-            {isLogIn ? (
+            {modalType == 'login' && (
               <span>
                 Don't have an account?{' '}
                 <a
                   className="navlink"
                   style={{ cursor: 'pointer' }}
                   onClick={() => {
-                    setLogIn(false)
+                    // setLogIn(false)
+                    setModalType('signUp')
                   }}
                 >
                   Sign Up »
                 </a>
               </span>
-            ) : (
+            )}
+            {modalType == 'signUp' && (
               <span>
                 Already have an account?{' '}
                 <a
                   className="navlink"
                   style={{ cursor: 'pointer' }}
                   onClick={() => {
-                    setLogIn(true)
+                    // setLogIn(true)
+                    setModalType('login')
                   }}
                 >
                   Login »
+                </a>
+              </span>
+            )}
+            {modalType == 'passwordReset' && (
+              <span>
+                Don't have an account?{' '}
+                <a
+                  className="navlink"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setModalType('signUp')
+                  }}
+                >
+                  Sign Up »
                 </a>
               </span>
             )}

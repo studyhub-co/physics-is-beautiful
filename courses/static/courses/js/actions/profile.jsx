@@ -122,3 +122,16 @@ export function signUp(firstName, lastName, email, password, password2) {
       })
   }
 }
+
+export function passwordReset(email) {
+  return (dispatch, state) => {
+    return getAxios()
+      .post(API_PROFILE_PREFIX + 'rest-auth/password/reset/', {
+        email,
+      })
+      .then(checkHttpStatus)
+      .then(response => {
+        dispatch(receiveProfileMe(response.data))
+      })
+  }
+}
