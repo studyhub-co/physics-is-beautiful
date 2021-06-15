@@ -5,6 +5,8 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+import Grid from '@material-ui/core/Grid'
+// import { makeStyles } from '@material-ui/core/styles'
 // import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import FormControl from '@material-ui/core/FormControl'
@@ -19,6 +21,7 @@ import Slide from '@material-ui/core/Slide'
 import LogIn from './logIn'
 import SignUp from './signUp'
 import ResetPassword from './resetPassword'
+import useStyles from './styles'
 
 // FIXME move to Context?
 interface IModalLogInProps {
@@ -68,6 +71,8 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   const sEmailRef = React.useRef('')
   const sPassword1Ref = React.useRef('')
   const sPassword2Ref = React.useRef('')
+
+  const classes = useStyles()
 
   const onLoginDataChange = (email: string, password: string) => {
     // setEmail(email)
@@ -184,28 +189,58 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
             </Box>
           </DialogTitle>
           <DialogContent>
-            {modalType == 'login' && (
-              <form>
-                <LogIn
-                  onDataChange={onLoginDataChange}
-                  loginIncorrectLogin={props.loginIncorrectLogin}
-                  setModalType={setModalType}
-                />
-              </form>
-            )}
-            {modalType == 'signUp' && (
-              <form autoComplete="off">
-                <SignUp
-                  onDataChange={onSignUpDataChange}
-                  errors={props.signUpFormErrors}
-                />
-              </form>
-            )}
-            {modalType == 'passwordReset' && (
-              <form>
-                <ResetPassword onDataChange={onPasswordResetDataChange} />
-              </form>
-            )}
+            <React.Fragment>
+              {(modalType == 'login' || modalType == 'signUp') && (
+                <div>
+                  <Grid
+                    container
+                    spacing={3}
+                    justify="center"
+                    alignItems="center"
+                  >
+                    <Grid item xs={12} sm={6}>
+                      <div>
+                        <img
+                          className={classes.socialImage}
+                          src={require('./images/google.png')}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <div>
+                        <img
+                          className={classes.socialImage}
+                          src={require('./images/facebook.png')}
+                        />
+                      </div>
+                    </Grid>
+                  </Grid>
+                  <div className={classes.hrSect}>OR</div>
+                </div>
+              )}
+              {modalType == 'login' && (
+                <form>
+                  <LogIn
+                    onDataChange={onLoginDataChange}
+                    loginIncorrectLogin={props.loginIncorrectLogin}
+                    setModalType={setModalType}
+                  />
+                </form>
+              )}
+              {modalType == 'signUp' && (
+                <form autoComplete="off">
+                  <SignUp
+                    onDataChange={onSignUpDataChange}
+                    errors={props.signUpFormErrors}
+                  />
+                </form>
+              )}
+              {modalType == 'passwordReset' && (
+                <form>
+                  <ResetPassword onDataChange={onPasswordResetDataChange} />
+                </form>
+              )}
+            </React.Fragment>
           </DialogContent>
           <DialogActions>
             {/* <Button onClick={props.handleClose} color='primary'> */}
