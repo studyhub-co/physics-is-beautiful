@@ -48,8 +48,6 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
     }
   }, [props.userProfile])
 
-  console.log(loginModalOpen)
-
   const handleLogInModalOpen = () => {
     setLoginModalOpen(!loginModalOpen)
   }

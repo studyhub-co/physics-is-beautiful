@@ -586,17 +586,19 @@ const PrimarySearchAppBar = connect(
                 />
               </React.Fragment>
             )}
-            <div className={classes.sectionMobile}>
-              <IconButton
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon style={{ fontSize: '2rem' }} />
-              </IconButton>
-            </div>
+            {!isAnonymousUser && (
+              <div className={classes.sectionMobile}>
+                <IconButton
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon style={{ fontSize: '2rem' }} />
+                </IconButton>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
         {isWidthUp('md', props.width) ? renderMenu : renderMobileMenu}
