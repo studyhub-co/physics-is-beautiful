@@ -9,6 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth'
 import Popover from '@material-ui/core/Popover'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
@@ -19,7 +20,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import Divider from '@material-ui/core/Divider'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-// import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -309,58 +309,71 @@ const PrimarySearchAppBar = connect(
           aria-describedby={notificationsPopoverId}
           onClick={handleNotificationsShowClick}
         >
-          <IconButton aria-label="show 11 new notifications" color="inherit">
-            <Badge
-              badgeContent={props.unReadNotificationsCount?.count}
-              color="secondary"
-              style={{ wordBreak: 'normal' }}
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <p>Notifications</p>
+          <ListItemIcon>
+            <IconButton aria-label="show 11 new notifications" color="inherit">
+              <Badge
+                badgeContent={props.unReadNotificationsCount?.count}
+                color="secondary"
+                style={{ wordBreak: 'normal' }}
+              >
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          </ListItemIcon>
+          <Typography variant="inherit">Notifications</Typography>
         </MenuItem>
         {notificationPopover}
         <MenuItem
           aria-describedby={achievementsPopoverId}
           onClick={handleAchievementsShowClick}
         >
-          <IconButton
-            aria-label="show 4 new mails"
-            color="inherit"
-            style={{ wordBreak: 'normal' }}
-          >
-            {/* <Badge badgeContent={4} color='secondary' style={{wordBreak: 'normal'}}> */}
-            <EmojiEventsIcon />
-            {/* </Badge> */}
-          </IconButton>
-          <p>Achievements</p>
+          <ListItemIcon>
+            <IconButton
+              aria-label="show 4 new mails"
+              color="inherit"
+              style={{ wordBreak: 'normal' }}
+            >
+              {/* <Badge badgeContent={4} color='secondary' style={{wordBreak: 'normal'}}> */}
+              <EmojiEventsIcon />
+              {/* </Badge> */}
+            </IconButton>
+          </ListItemIcon>
+          <Typography variant="inherit">Achievements</Typography>
         </MenuItem>
         {achievementsPopover}
         <MenuItem onClick={onProfileClick}>
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <Avatar
-              style={{ width: '1.8rem', height: '1.8rem' }}
-              src={userAvatar}
-            />
-          </IconButton>
-          <p>Profile</p>
+          <ListItemIcon>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <Avatar
+                style={{ width: '1.8rem', height: '1.8rem' }}
+                src={userAvatar}
+              />
+            </IconButton>
+          </ListItemIcon>
+          <Typography variant="inherit">Profile</Typography>
         </MenuItem>
-        <MenuItem onClick={handleAccountMenuOpen}>
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <ExitToApp />
-          </IconButton>
-          <p>Logout</p>
+        <MenuItem
+          onClick={() => {
+            handleAccountMenuClose()
+            props.profileActions.logout()
+          }}
+        >
+          <ListItemIcon>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <ExitToApp />
+            </IconButton>
+          </ListItemIcon>
+          <Typography variant="inherit">Logout</Typography>
         </MenuItem>
       </Menu>
     )

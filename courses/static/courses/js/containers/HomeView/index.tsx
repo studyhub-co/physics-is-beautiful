@@ -43,10 +43,12 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
   useEffect(() => {
     // redirect to courses if user's profile loaded
     if (props.userProfile?.hasOwnProperty('id')) {
-      // console.log(props.userProfile)
+      // current login modal is automatically closed after push
       history.push('/courses/')
     }
   }, [props.userProfile])
+
+  console.log(loginModalOpen)
 
   const handleLogInModalOpen = () => {
     setLoginModalOpen(!loginModalOpen)
@@ -145,7 +147,6 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                 onClick={() => {
                   history.push('courses')
                 }}
-                // onClick="location.href='/curriculum/'"
               >
                 Get Started
               </button>

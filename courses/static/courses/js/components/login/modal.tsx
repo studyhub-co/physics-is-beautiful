@@ -56,7 +56,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   // LogIn by default, if LogIn == false, then use SignUp
   const [modalType, setModalType] = useState('login')
   // const [isLogIn, setLogIn] = useState(true)
-  const [openSnack, setOpenSnack] = useState(false)
+  // const [openSnack, setOpenSnack] = useState(false)
 
   // login
   const emailRef = React.useRef('')
@@ -100,13 +100,13 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
     // props.handleClose()
   }
 
-  // close signup windows after success login
-  useEffect(() => {
-    if (props.loginSuccess) {
-        props.handleClose()
-    }
-  }, [props.loginSuccess])
-
+  // No need this - windows automatically closes when history.push is running
+  // // close signup windows after success login
+  // useEffect(() => {
+  //   if (props.loginSuccess) {
+  //     props.handleClose()
+  //   }
+  // }, [props.loginSuccess])
 
   const onSignUpClick = () => {
     props.signUp(

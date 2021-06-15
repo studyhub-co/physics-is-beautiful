@@ -38,6 +38,7 @@ export default function profile(state = initialState, action) {
       })
     case LOGIN_SUCCESS:
       return Object.assign({}, state, {
+        loginIncorrectLogin: false,
         loginProcessRequesting: false,
         loginSuccess: true,
       })
@@ -47,6 +48,7 @@ export default function profile(state = initialState, action) {
       })
     case SIGNUP_SUCCESS:
       return Object.assign({}, state, {
+        signUpFormErrors: null,
         signUpProcessRequesting: false,
         signUpSuccess: true,
       })
