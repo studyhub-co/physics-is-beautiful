@@ -3,19 +3,31 @@ import history from '../history'
 import { MATERIAL_GOTO } from '../constants'
 
 const routingMiddleware = store => next => action => {
-  // studio editor routings
-  if (action.type === studioActions.GOTO_MATERIAL ||
-      action.type === studioActions.MATERIAL_ADDED) {
-    history.push('/studio/editor/lessons/' + action.lesson.uuid + '/materials/' + action.material.uuid)
+  // studio editor routing
+  if (
+    action.type === studioActions.GOTO_MATERIAL ||
+    action.type === studioActions.MATERIAL_ADDED
+  ) {
+    history.replace(
+      '/studio/editor/lessons/' +
+        action.lesson.uuid +
+        '/materials/' +
+        action.material.uuid,
+    )
     return next(action)
   }
   if (action.type === studioActions.GOTO_LESSON) {
-    history.push('/studio/editor/lessons/' + action.lesson.uuid)
+    history.replace('/studio/editor/lessons/' + action.lesson.uuid)
     return next(action)
   }
-  // student view routings (move to the material)
+  // student view routing (move to the material)
   if (action.type === MATERIAL_GOTO) {
-    history.push('/courses/lessons/' + action.lesson.uuid + '/materials/' + action.material.uuid)
+    history.replace(
+      '/courses/lessons/' +
+        action.lesson.uuid +
+        '/materials/' +
+        action.material.uuid,
+    )
     return next(action)
   }
   return next(action)
