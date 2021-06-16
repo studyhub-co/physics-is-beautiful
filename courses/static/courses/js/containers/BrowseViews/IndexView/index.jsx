@@ -47,11 +47,12 @@ class BrowseCoursesView extends React.Component {
     this.doTabsSearch = this.doTabsSearch.bind(this)
   }
 
-  componentDidMount() {
-    this.props.loadPopularCourses()
-    this.props.loadRecentCourses()
-    this.props.loadNewCourses()
-  }
+  // // this is not reload courses when tab changed
+  // componentDidMount() {
+  //   this.props.loadPopularCourses()
+  //   this.props.loadRecentCourses()
+  //   this.props.loadNewCourses()
+  // }
 
   alreadyInSlides(slides, uuid) {
     return alreadyInSlides(slides, uuid)

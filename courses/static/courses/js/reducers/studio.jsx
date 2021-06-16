@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 
 import { ActionTypes } from '../actions/studio'
 
-function courses (state = {}, action) {
+function courses(state = {}, action) {
   let ret
 
   switch (action.type) {
@@ -10,7 +10,7 @@ function courses (state = {}, action) {
       return action.courses
     case ActionTypes.COURSE_LOADED:
       return Object.assign({}, state, {
-        [action.course.uuid]: action.course
+        [action.course.uuid]: action.course,
       })
     case ActionTypes.DELETE_COURSE:
       ret = Object.assign({}, state)
@@ -24,7 +24,7 @@ function courses (state = {}, action) {
       ret = Object.assign({}, state)
       ret[action.courseUuid].units.splice(
         ret[action.courseUuid].units.indexOf(action.uuid),
-        1
+        1,
       )
       return ret
     default:
@@ -32,7 +32,7 @@ function courses (state = {}, action) {
   }
 }
 
-function search (state = {}, action) {
+function search(state = {}, action) {
   switch (action.type) {
     case ActionTypes.SEARCH_COURSES_LOADED:
       return Object.assign({}, state, { courses: action.coursesSearchList })
@@ -49,7 +49,7 @@ function search (state = {}, action) {
   }
 }
 
-function units (state = {}, action) {
+function units(state = {}, action) {
   let ret
 
   switch (action.type) {
@@ -73,7 +73,7 @@ function units (state = {}, action) {
       if (action.unitUuid in ret) {
         ret[action.unitUuid].modules.splice(
           ret[action.unitUuid].modules.indexOf(action.uuid),
-          1
+          1,
         )
       }
       return ret
@@ -82,7 +82,7 @@ function units (state = {}, action) {
   }
 }
 
-function modules (state = {}, action) {
+function modules(state = {}, action) {
   let ret
 
   switch (action.type) {
@@ -100,7 +100,9 @@ function modules (state = {}, action) {
       return ret
     case ActionTypes.LESSON_ADDED:
       ret = Object.assign({}, state)
-      ret[action.lesson.module].lessons = ret[action.lesson.module].lessons.slice()
+      ret[action.lesson.module].lessons = ret[
+        action.lesson.module
+      ].lessons.slice()
       ret[action.lesson.module].lessons.push(action.lesson.uuid)
       return ret
     case ActionTypes.DELETE_LESSON:
@@ -115,7 +117,7 @@ function modules (state = {}, action) {
   }
 }
 
-function lessons (state = {}, action) {
+function lessons(state = {}, action) {
   let toReturn
 
   switch (action.type) {
@@ -131,16 +133,19 @@ function lessons (state = {}, action) {
       return toReturn
     case ActionTypes.MATERIAL_ADDED:
       toReturn = Object.assign({}, state)
-      toReturn[action.material.lesson].materials =
-        toReturn[action.material.lesson].materials.slice()
+      toReturn[action.material.lesson].materials = toReturn[
+        action.material.lesson
+      ].materials.slice()
       toReturn[action.material.lesson].materials.push(action.material.uuid)
       return toReturn
     case ActionTypes.DELETE_MATERIAL:
       toReturn = Object.assign({}, state)
-      toReturn[action.lesson].materials = toReturn[action.lesson].materials.slice()
+      toReturn[action.lesson].materials = toReturn[
+        action.lesson
+      ].materials.slice()
       toReturn[action.lesson].materials.splice(
         toReturn[action.lesson].materials.indexOf(action.material),
-        1
+        1,
       )
       return toReturn
     case ActionTypes.MATERIAL_MOVED:
@@ -148,7 +153,9 @@ function lessons (state = {}, action) {
       let les = Object.assign({}, toReturn[action.lessonUuid])
       let qs = les.materials.slice()
       qs.splice(qs.indexOf(action.uuid), 1)
-      if (action.beforeUuid) { qs.splice(qs.indexOf(action.beforeUuid), 0, action.uuid) } else qs.push(action.uuid)
+      if (action.beforeUuid) {
+        qs.splice(qs.indexOf(action.beforeUuid), 0, action.uuid)
+      } else qs.push(action.uuid)
       les.materials = qs
       toReturn[action.lessonUuid] = les
       return toReturn
@@ -158,13 +165,14 @@ function lessons (state = {}, action) {
   }
 }
 // materials list (Got with lesson loaded)
-function materials (state = {}, action) {
+function materials(state = {}, action) {
   switch (action.type) {
     case ActionTypes.MATERIAL_LOADED:
     case ActionTypes.MATERIAL_ADDED:
       return Object.assign({}, state, {
-        [action.material.uuid]:
-        Object.assign({}, action.material, {completelyLoaded: true})
+        [action.material.uuid]: Object.assign({}, action.material, {
+          completelyLoaded: true,
+        }),
       })
     case ActionTypes.DELETE_MATERIAL:
       let ret = Object.assign({}, state)
@@ -179,7 +187,7 @@ function materials (state = {}, action) {
 }
 
 // currentMaterial (Got with material loaded - full version of material)
-function currentMaterial (state = null, action) {
+function currentMaterial(state = null, action) {
   switch (action.type) {
     case ActionTypes.MATERIAL_LOADED:
       return action.material
@@ -215,13 +223,13 @@ function currentMaterial (state = null, action) {
 //   }
 // }
 
-function allCourses (state = {}, action) {
+function allCourses(state = {}, action) {
   if (action.type === ActionTypes.ALL_COURSES_LOADED) {
     return action.courses
   } else return state
 }
 
-function filteredCourses (state = {}, action) {
+function filteredCourses(state = {}, action) {
   if (action.type === ActionTypes.RECENT_COURSES_LOADED) {
     return Object.assign({}, state, { recentCourses: action.courses })
   } else if (action.type === ActionTypes.NEW_COURSES_LOADED) {
@@ -231,61 +239,66 @@ function filteredCourses (state = {}, action) {
   } else return state
 }
 
-function course (state = {}, action) {
+function course(state = {}, action) {
   if (action.type === ActionTypes.PUBLIC_COURSE_LOADED) {
     return Object.assign({}, state, {
-      publicCourse: action.publicCourse
+      publicCourse: action.publicCourse,
     })
   }
   return state
 }
 
-export function users (state = {}, action) {
+export function users(state = {}, action) {
   switch (action.type) {
     case ActionTypes.FOUND_USERS_LOADED:
       return Object.assign({}, state, {
-        foundUsers: action.foundUsers
+        foundUsers: action.foundUsers,
       })
     case ActionTypes.FOUND_USERS_REQUEST:
       return Object.assign({}, state, {
-        findUserRequest: action.findUserRequest
+        findUserRequest: action.findUserRequest,
       })
     default:
       return state
   }
 }
 
-function tabs (state = { tab: null }, action) {
+function tabs(state = { tab: null }, action) {
   switch (action.type) {
     case ActionTypes.STUDIO_TAB_CHANGED:
       return Object.assign({}, state, {
-        [action.namespace]: action.tab
+        [action.namespace]: action.tab,
       })
     default:
       return state
   }
 }
 
-const DEFAULT_NAVIGATION_STATE = {courses: [], units: [], modules: [], lessons: []}
+const DEFAULT_NAVIGATION_STATE = {
+  courses: [],
+  units: [],
+  modules: [],
+  lessons: [],
+}
 
 // used to load structure menu navigation
-function courseNavigation (state = DEFAULT_NAVIGATION_STATE, action) {
+function courseNavigation(state = DEFAULT_NAVIGATION_STATE, action) {
   switch (action.type) {
     case ActionTypes.COURSE_NAVIGATION_COURSES_LOADED:
       return Object.assign({}, state, {
-        courses: action.courses
+        courses: action.courses,
       })
     case ActionTypes.COURSE_NAVIGATION_UNITS_LOADED:
       return Object.assign({}, state, {
-        units: action.units
+        units: action.units,
       })
     case ActionTypes.COURSE_NAVIGATION_MODULES_LOADED:
       return Object.assign({}, state, {
-        modules: action.modules
+        modules: action.modules,
       })
     case ActionTypes.COURSE_NAVIGATION_LESSONS_LOADED:
       return Object.assign({}, state, {
-        lessons: action.lessons
+        lessons: action.lessons,
       })
     default:
       return state
@@ -305,5 +318,5 @@ export default combineReducers({
   course,
   tabs,
   users,
-  courseNavigation
+  courseNavigation,
 })

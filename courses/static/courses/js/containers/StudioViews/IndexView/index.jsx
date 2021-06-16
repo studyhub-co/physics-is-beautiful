@@ -12,26 +12,30 @@ import CourseThumbnail from './components/course_thumbnail'
 import AddCourseButton from './components/add_course_button'
 
 class IndexView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
-    this.state = {prototypeChoice: null}
-    this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(this)
+    this.state = { prototypeChoice: null }
+    this.handlePrototypeChoiceChange = this.handlePrototypeChoiceChange.bind(
+      this,
+    )
     this.handleAddClick = this.handleAddClick.bind(this)
   }
 
-  componentDidMount () {
-    this.props.onMounted()
+  // this is not reload courses when tab changed
+  // move to change tab action
+  // componentDidMount() {
+  //   this.props.loadCourses()
+  // }
+
+  handlePrototypeChoiceChange(e) {
+    this.setState({ prototypeChoice: e.target.value })
   }
 
-  handlePrototypeChoiceChange (e) {
-    this.setState({prototypeChoice: e.target.value})
-  }
-
-  handleAddClick () {
+  handleAddClick() {
     this.props.onAddClick(this.state.prototypeChoice)
   }
 
-  render () {
+  render() {
     const courses = []
     for (var uuid in this.props.courses) {
       courses.push(
@@ -39,26 +43,19 @@ class IndexView extends React.Component {
           key={uuid}
           {...this.props.courses[uuid]}
           addCourse={this.props.onAddClick.bind(null, uuid)}
-          onEditCourseProfileClick={this.props.onEditCourseProfileClick.bind(null, uuid)}
+          onEditCourseProfileClick={this.props.onEditCourseProfileClick.bind(
+            null,
+            uuid,
+          )}
           onDeleteCourseClick={this.props.onDeleteCourseClick.bind(null, uuid)}
-          onClick={this.props.onCourseClick.bind(null, uuid)} />
+          onClick={this.props.onCourseClick.bind(null, uuid)}
+        />,
       )
     }
 
-    // const prototypeChoices = []
-    // for (var i in this.props.allCourses.results) {
-    //   prototypeChoices.push(
-    //     <option
-    //       key={this.props.allCourses.results[i].uuid}
-    //       value={this.props.allCourses.results[i].uuid}>
-    //       {this.props.allCourses.results[i].name + ' by ' + this.props.allCourses.results[i].author.display_name}
-    //     </option>
-    //   )
-    // }
-
     return (
       <div>
-        <div className='row'>
+        <div className="row">
           <Container fluid>
             <Row>
               {courses}
@@ -72,27 +69,29 @@ class IndexView extends React.Component {
 }
 
 IndexView.propTypes = {
-  onMounted: PropTypes.func.isRequired,
+  // loadCourses: PropTypes.func.isRequired,
   onAddClick: PropTypes.func.isRequired,
   onCourseClick: PropTypes.func.isRequired,
   allCourses: PropTypes.object,
-  courses: PropTypes.object
+  courses: PropTypes.object,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     course: state.studio.course,
     courses: state.studio.courses,
-    allCourses: state.studio.allCourses
+    allCourses: state.studio.allCourses,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
     onAddClick: prototype => dispatch(addCourse(prototype)),
-    onMounted: () => dispatch(loadCourses()),
-    onCourseClick: (uuid) => { history.push('/studio/editor/courses/' + uuid + '/') }
+    // loadCourses: () => dispatch(loadCourses()),
+    onCourseClick: uuid => {
+      history.push('/studio/editor/courses/' + uuid + '/')
+    },
   }
 }
 

@@ -11,7 +11,7 @@ import history from '../history'
 import request from '../utils/request'
 import {
   checkHttpError,
-  getAxios
+  getAxios,
 } from '../../../../../resources/static/resources/js/utils'
 
 export const API_PREFIX = '/api/v1/studio/'
@@ -61,209 +61,234 @@ export const ActionTypes = Object.freeze({
   COURSE_NAVIGATION_COURSES_LOADED: 'COURSE_NAVIGATION_COURSES_LOADED',
   COURSE_NAVIGATION_UNITS_LOADED: 'COURSE_NAVIGATION_UNITS_LOADED',
   COURSE_NAVIGATION_MODULES_LOADED: 'COURSE_NAVIGATION_MODULES_LOADED',
-  COURSE_NAVIGATION_LESSONS_LOADED: 'COURSE_NAVIGATION_LESSONS_LOADED'
+  COURSE_NAVIGATION_LESSONS_LOADED: 'COURSE_NAVIGATION_LESSONS_LOADED',
 })
 
-export function courseAdded (course) {
+export function courseAdded(course) {
   return { type: ActionTypes.COURSE_ADDED, course: course }
 }
 
-export function changeStudioSelectedTab (selectedTab, tabNamespace) {
-  return {
-    type: ActionTypes.STUDIO_TAB_CHANGED,
-    tab: selectedTab,
-    namespace: tabNamespace
+export function changeStudioSelectedTab(selectedTab, tabNamespace) {
+  // reload courses
+
+  return function(dispatch) {
+    // see also courses/static/courses/js/containers/BrowseViews/IndexView/index.jsx^437
+    const loadRecentCourses = url => dispatch(loadAllCourses(url, 'recent'))
+    const loadNewCourses = url =>
+      dispatch(loadAllCourses(url, null, '-created_on'))
+    const loadPopularCourses = url =>
+      dispatch(loadAllCourses(url, null, '-number_of_learners_denormalized')) // popular
+
+    if (selectedTab == 'studio') {
+      // reload courses
+      dispatch(loadCourses())
+    } else selectedTab == 'browse'
+    {
+      loadPopularCourses()
+      loadRecentCourses()
+      loadNewCourses()
+    }
+
+    dispatch(
+      (function() {
+        return {
+          type: ActionTypes.STUDIO_TAB_CHANGED,
+          tab: selectedTab,
+          namespace: tabNamespace,
+        }
+      })(),
+    )
   }
 }
 
-export function addCourseTag (uuid, tag) {
-  return function (dispatch) {
+export function addCourseTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'courses/' + uuid + '/tags/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     })
   }
 }
 
-export function deleteCourseTag (uuid, tag) {
-  return function (dispatch) {
+export function deleteCourseTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'courses/' + uuid + '/tags/', {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     })
   }
 }
 
-export function addUnitTag (uuid, tag) {
-  return function (dispatch) {
+export function addUnitTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'units/' + uuid + '/tags/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     })
   }
 }
 
-export function deleteUnitTag (uuid, tag) {
-  return function (dispatch) {
+export function deleteUnitTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'units/' + uuid + '/tags/', {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     })
   }
 }
 
-export function addModuleTag (uuid, tag) {
-  return function (dispatch) {
+export function addModuleTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'modules/' + uuid + '/tags/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     })
   }
 }
 
-export function deleteModuleTag (uuid, tag) {
-  return function (dispatch) {
+export function deleteModuleTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'modules/' + uuid + '/tags/', {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     })
   }
 }
 
-export function addMaterialTag (uuid, tag) {
-  return function (dispatch) {
+export function addMaterialTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'materials/' + uuid + '/tags/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     }).then(value => {
       $.ajax({
         async: true,
         url: API_PREFIX + 'materials/' + uuid + '/',
-        success: function (data, status, jqXHR) {
+        success: function(data, status, jqXHR) {
           dispatch(materialLoaded(data))
-        }
+        },
       })
     })
   }
 }
 
-export function deleteMaterialTag (uuid, tag) {
-  return function (dispatch) {
+export function deleteMaterialTag(uuid, tag) {
+  return function(dispatch) {
     request(API_PREFIX + 'materials/' + uuid + '/tags/', {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': getCookie('csrftoken')
+        'X-CSRFToken': getCookie('csrftoken'),
       },
-      body: JSON.stringify({ tag: tag.text })
+      body: JSON.stringify({ tag: tag.text }),
     }).then(value => {
       $.ajax({
         async: true,
         url: API_PREFIX + 'materials/' + uuid + '/',
-        success: function (data, status, jqXHR) {
+        success: function(data, status, jqXHR) {
           dispatch(materialLoaded(data))
-        }
+        },
       })
     })
   }
 }
 
-export function addCourse (prototype) {
-  return function (dispatch) {
+export function addCourse(prototype) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: API_PREFIX + 'courses/',
       method: 'POST',
       data: {
         name: 'New course',
-        prototype: prototype
+        prototype: prototype,
       },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(courseLoaded(data))
         history.push('/studio/editor/courses/' + data.uuid + '/')
       },
-      error: function (xhr, ajaxOptions, thrownError) {
+      error: function(xhr, ajaxOptions, thrownError) {
         if (xhr.status === 403) {
           document.location.href = '/accounts/login/?next=/browse/'
         }
-      }
+      },
     })
   }
 }
 
-export function addCourseToDashboard (uuid) {
-  return function (dispatch) {
+export function addCourseToDashboard(uuid) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: API_PREFIX + 'public/courses/' + uuid + '/add_to_dashboard/',
       method: 'POST',
-      success: function (data, status, jqXHR) {},
-      error: function (xhr, ajaxOptions, thrownError) {
+      success: function(data, status, jqXHR) {},
+      error: function(xhr, ajaxOptions, thrownError) {
         if (xhr.status === 403) {
           // TODO implement with pop up messages/alerts
           alert('Please login or sign up to use your dashboard')
         }
-      }
+      },
     })
   }
 }
 
-export function removeCourseFromDashboard (uuid) {
-  return function (dispatch) {
+export function removeCourseFromDashboard(uuid) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: API_PREFIX + 'public/courses/' + uuid + '/remove_from_dashboard/',
       method: 'POST',
-      success: function (data, status, jqXHR) {}
+      success: function(data, status, jqXHR) {},
     })
   }
 }
 
-export function coursesLoaded (data) {
+export function coursesLoaded(data) {
   var units = extractAll(data, 'units')
   var modules = extractAll(units, 'modules')
 
@@ -271,11 +296,11 @@ export function coursesLoaded (data) {
     type: ActionTypes.COURSES_LOADED,
     courses: data,
     units: units,
-    modules: modules
+    modules: modules,
   }
 }
 
-function extract (object, prop) {
+function extract(object, prop) {
   // This function change object! :(
   // TODO remove this!
   var ret = object[prop]
@@ -287,7 +312,7 @@ function extract (object, prop) {
   return ret
 }
 
-function extractAll (object, prop) {
+function extractAll(object, prop) {
   var ret = {}
   for (var k in object) {
     Object.assign(ret, extract(object[k], prop))
@@ -295,7 +320,7 @@ function extractAll (object, prop) {
   return ret
 }
 
-export function allCoursesLoaded (data, filter, ordering) {
+export function allCoursesLoaded(data, filter, ordering) {
   var type = ActionTypes.ALL_COURSES_LOADED
   if (filter === 'recent') {
     type = ActionTypes.RECENT_COURSES_LOADED
@@ -308,30 +333,13 @@ export function allCoursesLoaded (data, filter, ordering) {
   }
   return {
     type: type,
-    courses: data
+    courses: data,
   }
 }
 
-export function loadMyCourses () {
-  return function (dispatch) {
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'courses/',
-      context: this,
-      success: function (data, status, jqXHR) {
-        dispatch(data => {
-          return {
-            type: ActionTypes.COURSES_LOADED,
-            courses: data
-          }
-        })
-      }
-    })
-  }
-}
-
-export function loadAllCourses (url, filter, ordering) {
-  return function (dispatch) {
+// Public courses
+export function loadAllCourses(url, filter, ordering) {
+  return function(dispatch) {
     var GETParams = {}
     if (filter) {
       GETParams['filter'] = filter
@@ -353,42 +361,70 @@ export function loadAllCourses (url, filter, ordering) {
       async: true,
       url: url || API_PREFIX + 'public/courses/' + paramsString,
       context: this,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(allCoursesLoaded(data, filter, ordering))
-      }
+      },
     })
   }
 }
 
 // TODO add pagination
-export function loadCourses () {
-  return function (dispatch) {
-    dispatch(loadAllCourses())
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'courses/',
-      context: this,
-      success: function (data, status, jqXHR) {
-        dispatch(coursesLoaded(data))
-      },
-      error: function (xhr, ajaxOptions, thrownError) {
-        if (xhr.status === 404) {
-          history.push('404')
-        }
-      }
-    })
+// user created courses
+export function loadCourses() {
+  return function(dispatch) {
+    // load public separately!
+    // dispatch(loadAllCourses())
+    return getAxios()
+      .get(API_PREFIX + 'courses/')
+      .catch(checkHttpError)
+      .then(response => {
+        dispatch(coursesLoaded(response.data))
+      })
+
+    // $.ajax({
+    //   async: true,
+    //   url: API_PREFIX + 'courses/',
+    //   context: this,
+    //   success: function(data, status, jqXHR) {
+    //     dispatch(coursesLoaded(data))
+    //   },
+    //   error: function(xhr, ajaxOptions, thrownError) {
+    //     if (xhr.status === 404) {
+    //       history.push('404')
+    //     }
+    //   },
+    // })
   }
 }
 
-function coursesSearchLoaded (data) {
+//// the same loadCourses function
+// export function loadMyCourses() {
+//   return function(dispatch) {
+//     $.ajax({
+//       async: true,
+//       url: API_PREFIX + 'courses/',
+//       context: this,
+//       success: function(data, status, jqXHR) {
+//         dispatch(data => {
+//           return {
+//             type: ActionTypes.COURSES_LOADED,
+//             courses: data,
+//           }
+//         })
+//       },
+//     })
+//   }
+// }
+
+function coursesSearchLoaded(data) {
   var type = ActionTypes.SEARCH_COURSES_LOADED
   return {
     type: type,
-    coursesSearchList: data
+    coursesSearchList: data,
   }
 }
 
-export function loadSearchCourses (searchString, nextPageUrl) {
+export function loadSearchCourses(searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/courses/' // all units
 
   if (searchString) {
@@ -399,27 +435,27 @@ export function loadSearchCourses (searchString, nextPageUrl) {
     url = nextPageUrl
   }
 
-  return function (dispatch) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: url,
       context: this,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(coursesSearchLoaded(data))
-      }
+      },
     })
   }
 }
 
-function unitsSearchLoaded (data) {
+function unitsSearchLoaded(data) {
   var type = ActionTypes.SEARCH_UNITS_LOADED
   return {
     type: type,
-    untisSearchList: data
+    untisSearchList: data,
   }
 }
 
-export function loadSearchUnits (searchString, nextPageUrl) {
+export function loadSearchUnits(searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/units/' // all units
 
   if (searchString) {
@@ -430,27 +466,27 @@ export function loadSearchUnits (searchString, nextPageUrl) {
     url = nextPageUrl
   }
 
-  return function (dispatch) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: url,
       context: this,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(unitsSearchLoaded(data))
-      }
+      },
     })
   }
 }
 
-function modulesSearchLoaded (data) {
+function modulesSearchLoaded(data) {
   var type = ActionTypes.SEARCH_MODULES_LOADED
   return {
     type: type,
-    modulesSearchList: data
+    modulesSearchList: data,
   }
 }
 
-export function loadSearchModules (searchString, nextPageUrl) {
+export function loadSearchModules(searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/modules/' // all units
 
   if (searchString) {
@@ -461,27 +497,27 @@ export function loadSearchModules (searchString, nextPageUrl) {
     url = nextPageUrl
   }
 
-  return function (dispatch) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: url,
       context: this,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(modulesSearchLoaded(data))
-      }
+      },
     })
   }
 }
 
-function lessonsSearchLoaded (data) {
+function lessonsSearchLoaded(data) {
   var type = ActionTypes.SEARCH_LESSONS_LOADED
   return {
     type: type,
-    lessonsSearchList: data
+    lessonsSearchList: data,
   }
 }
 
-export function loadSearchLessons (searchString, nextPageUrl) {
+export function loadSearchLessons(searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/lessons/'
 
   if (searchString) {
@@ -492,27 +528,27 @@ export function loadSearchLessons (searchString, nextPageUrl) {
     url = nextPageUrl
   }
 
-  return function (dispatch) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: url,
       context: this,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(lessonsSearchLoaded(data))
-      }
+      },
     })
   }
 }
 
-function materialsSearchLoaded (data) {
+function materialsSearchLoaded(data) {
   var type = ActionTypes.SEARCH_MATERIALS_LOADED
   return {
     type: type,
-    materialsSearchList: data
+    materialsSearchList: data,
   }
 }
 
-export function loadSearchMaterials (searchString, nextPageUrl) {
+export function loadSearchMaterials(searchString, nextPageUrl) {
   var url = API_PREFIX + 'public/materials/'
 
   if (searchString) {
@@ -523,105 +559,105 @@ export function loadSearchMaterials (searchString, nextPageUrl) {
     url = nextPageUrl
   }
 
-  return function (dispatch) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: url,
       context: this,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(materialsSearchLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function courseLoaded (data) {
+export function courseLoaded(data) {
   var units = extract(data, 'units')
   var modules = extractAll(units, 'modules')
   return {
     type: ActionTypes.COURSE_LOADED,
     course: data,
     units: units,
-    modules: modules
+    modules: modules,
   }
 }
 
-export function renameCourse (uuid, newName) {
-  return function (dispatch) {
+export function renameCourse(uuid, newName) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'courses/' + uuid + '/',
       type: 'PATCH',
       data: { name: newName },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(courseLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function saveCourseDescription (uuid, newText) {
-  return function (dispatch) {
+export function saveCourseDescription(uuid, newText) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'courses/' + uuid + '/',
       type: 'PATCH',
       data: { description: newText },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(courseLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function publicCourseLoaded (data) {
+export function publicCourseLoaded(data) {
   return {
     type: ActionTypes.PUBLIC_COURSE_LOADED,
-    publicCourse: data
+    publicCourse: data,
   }
 }
 
-export function loadPublicCourse (uuid) {
-  return function (dispatch) {
+export function loadPublicCourse(uuid) {
+  return function(dispatch) {
     $.ajax({
       async: true,
       url: API_PREFIX + 'public/courses/' + uuid + '/',
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(publicCourseLoaded(data))
-      }
+      },
     })
   }
 }
 
-function loadCourse (uuid, dispatch) {
+function loadCourse(uuid, dispatch) {
   $.ajax({
     async: true,
     url: API_PREFIX + 'courses/' + uuid + '/',
-    success: function (data, status, jqXHR) {
+    success: function(data, status, jqXHR) {
       dispatch(courseLoaded(data))
     },
-    error: function (xhr, ajaxOptions, thrownError) {
+    error: function(xhr, ajaxOptions, thrownError) {
       if (xhr.status === 404) {
         history.push('404')
       }
-    }
+    },
   })
 }
 
-export function updateCourse (course) {
-  return function (dispatch) {
+export function updateCourse(course) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'courses/' + course.uuid + '/',
       dataType: 'json', // due https://github.com/encode/django-rest-framework/issues/5807
       contentType: 'application/json',
       type: 'PATCH',
       data: JSON.stringify(course),
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(courseLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function loadCourseIfNeeded (uuid) {
+export function loadCourseIfNeeded(uuid) {
   return (dispatch, getState) => {
     if (!(uuid in getState().studio.courses)) {
       loadCourse(uuid, dispatch)
@@ -629,7 +665,7 @@ export function loadCourseIfNeeded (uuid) {
   }
 }
 
-export function changeCourseImage (uuid, image) {
+export function changeCourseImage(uuid, image) {
   return dispatch => {
     var formData = new FormData()
     formData.append('image', image)
@@ -639,14 +675,14 @@ export function changeCourseImage (uuid, image) {
       processData: false,
       contentType: false,
       data: formData,
-      success: function (data) {
+      success: function(data) {
         dispatch(courseLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function changeCourseCoverPhoto (uuid, image) {
+export function changeCourseCoverPhoto(uuid, image) {
   return dispatch => {
     var formData = new FormData()
     formData.append('cover_photo', image, image.filename)
@@ -656,41 +692,41 @@ export function changeCourseCoverPhoto (uuid, image) {
       processData: false,
       contentType: false,
       data: formData,
-      success: function (data) {
+      success: function(data) {
         dispatch(courseLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function deleteCourse (uuid) {
+export function deleteCourse(uuid) {
   return dispatch => {
     dispatch({
       type: ActionTypes.DELETE_COURSE,
-      uuid: uuid
+      uuid: uuid,
     })
     $.ajax({
       async: true,
       url: API_PREFIX + 'courses/' + uuid + '/',
       method: 'DELETE',
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         history.push('/studio/')
         // TODO: reload all courses
-      }
+      },
     })
   }
 }
 
-export function unitAdded (courseUuid, data) {
+export function unitAdded(courseUuid, data) {
   return {
     type: ActionTypes.UNIT_ADDED,
     courseUuid: courseUuid,
     unit: data,
-    modules: extract(data, 'modules')
+    modules: extract(data, 'modules'),
   }
 }
 
-export function addUnit (courseUuid, unit) {
+export function addUnit(courseUuid, unit) {
   var data = { name: 'New unit', course: courseUuid }
   if (unit) {
     data['prototype'] = unit.uuid
@@ -703,22 +739,22 @@ export function addUnit (courseUuid, unit) {
       url: API_PREFIX + 'units/',
       method: 'POST',
       data: data,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         // dispatch(unitAdded(courseUuid, data))
         // reload expanded
         loadCourse(courseUuid, dispatch)
         history.push('/studio/editor/courses/' + courseUuid + '/')
       },
-      error: function (xhr, ajaxOptions, thrownError) {
+      error: function(xhr, ajaxOptions, thrownError) {
         if (xhr.status === 403) {
           document.location.href = '/accounts/login/?next=/browse/'
         }
-      }
+      },
     })
   }
 }
 
-export function addToNewCourse (type, value) {
+export function addToNewCourse(type, value) {
   return dispatch => {
     $.ajax({
       // create course
@@ -726,9 +762,9 @@ export function addToNewCourse (type, value) {
       url: API_PREFIX + 'courses/',
       method: 'POST',
       data: {
-        name: 'New course'
+        name: 'New course',
       },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         var unitData = { name: 'New unit', course: data.uuid }
 
         if (type === 'unit') {
@@ -741,7 +777,7 @@ export function addToNewCourse (type, value) {
           url: API_PREFIX + 'units/',
           method: 'POST',
           data: unitData,
-          success: function (data, status, jqXHR) {
+          success: function(data, status, jqXHR) {
             if (type === 'unit') {
               // dispatch(unitAdded(unitData.course, data))
               loadCourse(unitData.course, dispatch)
@@ -760,7 +796,7 @@ export function addToNewCourse (type, value) {
                 url: API_PREFIX + 'modules/',
                 method: 'POST',
                 data: moduleData,
-                success: function (data, status, jqXHR) {
+                success: function(data, status, jqXHR) {
                   if (type === 'module') {
                     // dispatch(moduleAdded(data))
                     loadCourse(unitData.course, dispatch)
@@ -783,7 +819,7 @@ export function addToNewCourse (type, value) {
                       url: API_PREFIX + 'lessons/',
                       method: 'POST',
                       data: lessonData,
-                      success: function (data, status, jqXHR) {
+                      success: function(data, status, jqXHR) {
                         if (type === 'lesson') {
                           // var materials = extract(data, 'materials')
                           // dispatch({
@@ -793,13 +829,13 @@ export function addToNewCourse (type, value) {
                           //   answers: extractAll(materials, 'answers')
                           // })
                           history.push(
-                            '/studio/editor/lessons/' + data.uuid + '/'
+                            '/studio/editor/lessons/' + data.uuid + '/',
                           )
                         } else {
                           // add material
                           var materialData = {
                             name: 'New material',
-                            lesson: data.uuid
+                            lesson: data.uuid,
                           }
 
                           if (type === 'material') {
@@ -813,71 +849,71 @@ export function addToNewCourse (type, value) {
                             method: 'POST',
                             url: API_PREFIX + 'materials/',
                             data: materialData,
-                            success: function (data, status, jqXHR) {
+                            success: function(data, status, jqXHR) {
                               history.push(
-                                '/studio/editor/lessons/' + data.lesson + '/'
+                                '/studio/editor/lessons/' + data.lesson + '/',
                               )
-                            }
+                            },
                           })
                         }
-                      }
+                      },
                     })
                   }
-                }
+                },
               })
             }
-          }
+          },
         })
       },
-      error: function (xhr, ajaxOptions, thrownError) {
+      error: function(xhr, ajaxOptions, thrownError) {
         if (xhr.status === 403) {
           document.location.href = '/accounts/login/?next=/browse/'
         }
-      }
+      },
     })
   }
 }
 
-export function deleteUnit (unitUuid) {
+export function deleteUnit(unitUuid) {
   return (dispatch, getState) => {
     dispatch({
       type: ActionTypes.DELETE_UNIT,
       courseUuid: getState().studio.units[unitUuid].course,
-      uuid: unitUuid
+      uuid: unitUuid,
     })
     $.ajax({
       async: true,
       url: API_PREFIX + 'units/' + unitUuid + '/',
       method: 'DELETE',
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         // dispatch(unitDeleted(unitUuid))
-      }
+      },
     })
   }
 }
 
-export function renameUnit (uuid, newName) {
-  return function (dispatch) {
+export function renameUnit(uuid, newName) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'units/' + uuid + '/',
       type: 'PATCH',
       data: { name: newName },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(unitLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function unitLoaded (data) {
+export function unitLoaded(data) {
   return {
     type: ActionTypes.UNIT_LOADED,
     unit: data,
-    modules: extract(data, 'modules')
+    modules: extract(data, 'modules'),
   }
 }
 
-export function changeUnitImage (uuid, image) {
+export function changeUnitImage(uuid, image) {
   return dispatch => {
     var formData = new FormData()
     formData.append('image', image)
@@ -887,14 +923,14 @@ export function changeUnitImage (uuid, image) {
       processData: false,
       contentType: false,
       data: formData,
-      success: function (data) {
+      success: function(data) {
         dispatch(unitLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function moveUnit (uuid, beforeUuid) {
+export function moveUnit(uuid, beforeUuid) {
   return (dispatch, getState) => {
     var state = getState().studio
     var newPosition
@@ -909,22 +945,22 @@ export function moveUnit (uuid, beforeUuid) {
       url: API_PREFIX + 'units/' + uuid + '/',
       method: 'PATCH',
       data: { position: newPosition },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         loadCourse(data.course, dispatch)
-      }
+      },
     })
   }
 }
 
-export function moduleAdded (data) {
+export function moduleAdded(data) {
   return {
     type: ActionTypes.MODULE_ADDED,
     module: data,
-    lessons: extract(data, 'lessons')
+    lessons: extract(data, 'lessons'),
   }
 }
 
-export function addModule (unitUuid, module) {
+export function addModule(unitUuid, module) {
   var data = { name: 'New module', unit: unitUuid }
   if (module) {
     data['prototype'] = module.uuid
@@ -937,36 +973,36 @@ export function addModule (unitUuid, module) {
       url: API_PREFIX + 'modules/',
       method: 'POST',
       data: data,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(moduleAdded(data))
         history.push('/studio/editor/modules/' + data.uuid + '/')
-      }
+      },
     })
   }
 }
 
-export function moduleLoaded (data) {
+export function moduleLoaded(data) {
   return {
     type: ActionTypes.MODULE_LOADED,
     module: data,
-    lessons: extract(data, 'lessons')
+    lessons: extract(data, 'lessons'),
   }
 }
 
-export function renameModule (uuid, newName) {
-  return function (dispatch) {
+export function renameModule(uuid, newName) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'modules/' + uuid + '/',
       type: 'PATCH',
       data: { name: newName },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(moduleLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function changeModuleImage (uuid, image) {
+export function changeModuleImage(uuid, image) {
   return dispatch => {
     var formData = new FormData()
     formData.append('image', image)
@@ -976,14 +1012,14 @@ export function changeModuleImage (uuid, image) {
       processData: false,
       contentType: false,
       data: formData,
-      success: function (data) {
+      success: function(data) {
         dispatch(moduleLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function moveModule (uuid, toUnitUuid, beforeUuid) {
+export function moveModule(uuid, toUnitUuid, beforeUuid) {
   return (dispatch, getState) => {
     var state = getState().studio
     var toUnit = state.units[toUnitUuid]
@@ -1003,53 +1039,53 @@ export function moveModule (uuid, toUnitUuid, beforeUuid) {
       method: 'PATCH',
       data: {
         position: newPosition,
-        unit: toUnitUuid
+        unit: toUnitUuid,
       },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         $.ajax({
           async: true,
           url: API_PREFIX + 'units/' + toUnitUuid + '/',
           method: 'GET',
-          success: function (data, status, jqXHR) {
+          success: function(data, status, jqXHR) {
             dispatch(unitLoaded(data))
-          }
+          },
         })
         if (toUnitUuid != fromUnit.uuid) {
           $.ajax({
             async: true,
             url: API_PREFIX + 'units/' + fromUnit.uuid + '/',
             method: 'GET',
-            success: function (data, status, jqXHR) {
+            success: function(data, status, jqXHR) {
               dispatch(unitLoaded(data))
-            }
+            },
           })
         }
-      }
+      },
     })
   }
 }
 
-export function deleteModule (moduleUuid) {
+export function deleteModule(moduleUuid) {
   return (dispatch, getState) => {
     var state = getState().studio
     var course = state.modules[moduleUuid].course
     dispatch({
       type: ActionTypes.DELETE_MODULE,
       unitUuid: state.modules[moduleUuid].unit,
-      uuid: moduleUuid
+      uuid: moduleUuid,
     })
     $.ajax({
       async: true,
       url: API_PREFIX + 'modules/' + moduleUuid + '/',
       method: 'DELETE',
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         history.push('/studio/editor/courses/' + course + '/')
-      }
+      },
     })
   }
 }
 
-export function loadModuleIfNeeded (uuid) {
+export function loadModuleIfNeeded(uuid) {
   return (dispatch, getState) => {
     if (
       !(uuid in getState().studio.modules) ||
@@ -1058,20 +1094,20 @@ export function loadModuleIfNeeded (uuid) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'modules/' + uuid + '/',
-        success: function (data, status, jqXHR) {
+        success: function(data, status, jqXHR) {
           dispatch(moduleLoaded(data))
         },
-        error: function (xhr, ajaxOptions, thrownError) {
+        error: function(xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {
             history.push('404')
           }
-        }
+        },
       })
     }
   }
 }
 
-export function addLesson (moduleUuid, lesson) {
+export function addLesson(moduleUuid, lesson) {
   var data = { name: 'New lesson', module: moduleUuid }
   if (lesson) {
     data['prototype'] = lesson.uuid
@@ -1088,7 +1124,7 @@ export function addLesson (moduleUuid, lesson) {
       url: API_PREFIX + 'lessons/',
       method: 'POST',
       data: data,
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         // remove this ugly procces
         // var materials = extract(data, 'materials')
 
@@ -1105,16 +1141,16 @@ export function addLesson (moduleUuid, lesson) {
         dispatch({
           type: ActionTypes.LESSON_ADDED,
           lesson: data,
-          materials: materials
+          materials: materials,
         })
         dispatch(redirectTo1stMaterial(data))
         // history.push('/studio/editor/lessons/' + data.uuid + '/')
-      }
+      },
     })
   }
 }
 
-function redirectTo1stMaterial (lesson) {
+function redirectTo1stMaterial(lesson) {
   return (dispatch, getState) => {
     // materials: Array(5)
     // 0: "3ecaf3d9-87d4-4496-b9f1-79f9f22b8b83"
@@ -1127,7 +1163,7 @@ function redirectTo1stMaterial (lesson) {
   }
 }
 
-export function lessonLoaded (data) {
+export function lessonLoaded(data) {
   // var materials = extract(data, 'materials')
   // extract function:
   // return materials as {{},{}}
@@ -1150,18 +1186,18 @@ export function lessonLoaded (data) {
   return {
     type: ActionTypes.LESSON_LOADED,
     lesson: data,
-    materials: materials
+    materials: materials,
   }
 }
 
-export function lessonAvailable (lesson) {
+export function lessonAvailable(lesson) {
   return {
     type: ActionTypes.LESSON_AVAILABLE,
-    lesson: lesson
+    lesson: lesson,
   }
 }
 
-export function loadLessonIfNeeded (uuid, materialUuid) {
+export function loadLessonIfNeeded(uuid, materialUuid) {
   return (dispatch, getState) => {
     if (
       !(uuid in getState().studio.lessons) ||
@@ -1170,7 +1206,7 @@ export function loadLessonIfNeeded (uuid, materialUuid) {
       $.ajax({
         async: true,
         url: API_PREFIX + 'lessons/' + uuid + '/',
-        success: function (data, status, jqXHR) {
+        success: function(data, status, jqXHR) {
           dispatch(lessonLoaded(data))
 
           if (
@@ -1184,11 +1220,11 @@ export function loadLessonIfNeeded (uuid, materialUuid) {
             dispatch(redirectTo1stMaterial(data))
           }
         },
-        error: function (xhr, ajaxOptions, thrownError) {
+        error: function(xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {
             history.push('404')
           }
-        }
+        },
       })
     } else {
       dispatch(lessonAvailable(getState().studio.lessons[uuid]))
@@ -1196,33 +1232,33 @@ export function loadLessonIfNeeded (uuid, materialUuid) {
   }
 }
 
-export function renameLesson (uuid, newName) {
-  return function (dispatch) {
+export function renameLesson(uuid, newName) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'lessons/' + uuid + '/',
       type: 'PATCH',
       data: { name: newName },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(lessonLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function changeCompleteBoundary (uuid, value) {
-  return function (dispatch) {
+export function changeCompleteBoundary(uuid, value) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'lessons/' + uuid + '/',
       type: 'PATCH',
       data: { complete_boundary: value },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(lessonLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function changeLessonImage (uuid, image) {
+export function changeLessonImage(uuid, image) {
   return dispatch => {
     var formData = new FormData()
     formData.append('image', image)
@@ -1232,9 +1268,9 @@ export function changeLessonImage (uuid, image) {
       processData: false,
       contentType: false,
       data: formData,
-      success: function (data) {
+      success: function(data) {
         dispatch(lessonLoaded(data))
-      }
+      },
     })
   }
 }
@@ -1265,7 +1301,7 @@ export function changeLessonImage (uuid, image) {
 //   }
 // }
 
-export function moveLesson (uuid, toModuleUuid, beforeLessonUuid) {
+export function moveLesson(uuid, toModuleUuid, beforeLessonUuid) {
   return (dispatch, getState) => {
     var state = getState().studio
     var toModule = state.modules[toModuleUuid]
@@ -1285,63 +1321,63 @@ export function moveLesson (uuid, toModuleUuid, beforeLessonUuid) {
       method: 'PATCH',
       data: {
         position: newPosition,
-        module: toModuleUuid
+        module: toModuleUuid,
       },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         $.ajax({
           async: true,
           url: API_PREFIX + 'modules/' + toModuleUuid + '/',
           method: 'GET',
-          success: function (data, status, jqXHR) {
+          success: function(data, status, jqXHR) {
             dispatch(moduleLoaded(data))
-          }
+          },
         })
-      }
+      },
     })
   }
 }
 
-export function deleteLesson (lessonUuid) {
+export function deleteLesson(lessonUuid) {
   return (dispatch, getState) => {
     var state = getState().studio
     var moduleUuid = state.lessons[lessonUuid].module
     dispatch({
       type: ActionTypes.DELETE_LESSON,
       moduleUuid: moduleUuid,
-      uuid: lessonUuid
+      uuid: lessonUuid,
     })
     $.ajax({
       async: true,
       url: API_PREFIX + 'lessons/' + lessonUuid + '/',
       method: 'DELETE',
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         history.push('/studio/editor/modules/' + moduleUuid + '/')
-      }
+      },
     })
   }
 }
 
-export function materialLoaded (data) {
+export function materialLoaded(data) {
   return {
     type: ActionTypes.MATERIAL_LOADED,
-    material: data
+    material: data,
   }
 }
 
-export function loadMaterial (uuid) {
+export function loadMaterial(uuid) {
   return (dispatch, getState) => {
     // load full version of a material
     $.ajax({
       async: true,
       url: API_PREFIX + 'materials/' + uuid + '/',
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(materialLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function setMaterialProblemType (material, materialProblemType) {
+export function setMaterialProblemType(material, materialProblemType) {
   return (dispatch, state) => {
     return getAxios()
       .post(
@@ -1349,7 +1385,7 @@ export function setMaterialProblemType (material, materialProblemType) {
           'materials/' +
           material.uuid +
           '/set_material_problem_type/',
-        materialProblemType
+        materialProblemType,
       )
       .catch(checkHttpError)
       .then(response => {
@@ -1359,7 +1395,7 @@ export function setMaterialProblemType (material, materialProblemType) {
 }
 
 // TODO replace with updateMaterial all below
-export function updateMaterial (material) {
+export function updateMaterial(material) {
   return (dispatch, state) => {
     return getAxios()
       .patch(API_PREFIX + 'materials/' + material.uuid + '/', material)
@@ -1379,28 +1415,28 @@ export function updateMaterial (material) {
   }
 }
 
-export function changeMaterialName (uuid, newText) {
-  return function (dispatch) {
+export function changeMaterialName(uuid, newText) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
       data: { name: newText },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(materialLoaded(data))
-      }
+      },
     })
   }
 }
 
-export function changeMaterialSolutionText (uuid, newSolutionText) {
-  return function (dispatch) {
+export function changeMaterialSolutionText(uuid, newSolutionText) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
       data: { solution_text: newSolutionText },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(materialLoaded(data))
-      }
+      },
     })
   }
 }
@@ -1443,21 +1479,21 @@ export function changeMaterialSolutionText (uuid, newSolutionText) {
 //   }
 // }
 
-export function changeMaterialHint (uuid, newHint) {
-  return function (dispatch) {
+export function changeMaterialHint(uuid, newHint) {
+  return function(dispatch) {
     $.ajax({
       url: API_PREFIX + 'materials/' + uuid + '/',
       type: 'PATCH',
       data: { hint: newHint },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch(materialLoaded(data))
-      }
+      },
     })
   }
 }
 // END of TODO: replace with updateMaterial
 
-export function goToMaterial (materialUuid, lessonUuid) {
+export function goToMaterial(materialUuid, lessonUuid) {
   return (dispatch, getState) => {
     const currentMaterialUuid = getState().studio.currentMaterial?.uuid
     if (currentMaterialUuid === materialUuid) {
@@ -1470,7 +1506,7 @@ export function goToMaterial (materialUuid, lessonUuid) {
       dispatch({
         type: ActionTypes.GOTO_MATERIAL,
         material: { uuid: materialUuid },
-        lesson: { uuid: lessonUuid }
+        lesson: { uuid: lessonUuid },
       })
       // get fresh version every time we navigate to material, we can cache it in the future
       dispatch(loadMaterial(materialUuid))
@@ -1478,13 +1514,13 @@ export function goToMaterial (materialUuid, lessonUuid) {
       // navigate to empty lesson
       dispatch({
         type: ActionTypes.GOTO_LESSON,
-        lesson: { uuid: lessonUuid }
+        lesson: { uuid: lessonUuid },
       })
     }
   }
 }
 
-export function addMaterial (lessonUuid, material) {
+export function addMaterial(lessonUuid, material) {
   let data = { name: 'New material', lesson: lessonUuid }
   if (material) {
     data['prototype'] = material.uuid
@@ -1496,22 +1532,22 @@ export function addMaterial (lessonUuid, material) {
       method: 'POST',
       url: API_PREFIX + 'materials/',
       data: data, // {lesson : lesson, text : 'New material'},
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         if (data) {
           dispatch({
             type: ActionTypes.MATERIAL_ADDED,
             material: data,
-            lesson: { uuid: lessonUuid }
+            lesson: { uuid: lessonUuid },
           })
         } else {
           console.log('material was not saved')
         }
-      }
+      },
     })
   }
 }
 
-export function moveMaterial (uuid, beforeUuid) {
+export function moveMaterial(uuid, beforeUuid) {
   return (dispatch, getState) => {
     var state = getState().studio
     var lessonUuid = state.materials[uuid].lesson
@@ -1530,19 +1566,19 @@ export function moveMaterial (uuid, beforeUuid) {
       url: API_PREFIX + 'materials/' + uuid + '/',
       method: 'PATCH',
       data: { position: newPosition },
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch({
           type: ActionTypes.MATERIAL_MOVED,
           uuid: uuid,
           beforeUuid: beforeUuid,
-          lessonUuid: lessonUuid
+          lessonUuid: lessonUuid,
         })
-      }
+      },
     })
   }
 }
 
-export function deleteMaterial (uuid) {
+export function deleteMaterial(uuid) {
   return (dispatch, getState) => {
     let state = getState().studio
     let currentLesson = state.lessons[state.materials[uuid].lesson]
@@ -1562,37 +1598,130 @@ export function deleteMaterial (uuid) {
       async: true,
       url: API_PREFIX + 'materials/' + uuid + '/',
       method: 'DELETE',
-      success: function (data, status, jqXHR) {
+      success: function(data, status, jqXHR) {
         dispatch({
           type: ActionTypes.DELETE_MATERIAL,
           material: uuid,
-          lesson: state.materials[uuid].lesson
+          lesson: state.materials[uuid].lesson,
         })
         dispatch(goToMaterial(willGoToMaterialUuid, currentLesson.uuid))
-      }
+      },
     })
   }
 }
 
-// TODO conver to updateMaterial ?
-export function updateMaterialImage (materail, canvas) {
+// TODO convert to updateMaterial (see above)?
+export function updateMaterialImage(materail, canvas) {
   return (dispatch, state) => {
     let data = new window.FormData()
-    canvas.toBlob(function (blob) {
+    canvas.toBlob(function(blob) {
       data.append('screenshot', blob, 'screenshot.png')
-      getAxios().patch(`${API_PREFIX}materials/${materail.uuid}/`, data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(response => {
-        dispatch(materialLoaded(response.data))
-      }).catch(error => {
-        console.log(error.response)
-      })
+      getAxios()
+        .patch(`${API_PREFIX}materials/${materail.uuid}/`, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          dispatch(materialLoaded(response.data))
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
     })
   }
 }
 
+export function foundUsersLoaded(data) {
+  return {
+    type: ActionTypes.FOUND_USERS_LOADED,
+    foundUsers: data,
+  }
+}
+
+export function findUserRequest(data) {
+  return {
+    type: ActionTypes.FOUND_USERS_REQUEST,
+    findUserRequest: data,
+  }
+}
+
+export function findUsers(searchString) {
+  return (dispatch, getState) => {
+    dispatch(findUserRequest(true))
+    $.ajax({
+      url: API_PROFILE_PREFIX + 'find?q=' + searchString,
+      type: 'GET',
+      success: function(data, status, jqXHR) {
+        dispatch(foundUsersLoaded(data))
+        dispatch(findUserRequest(false))
+      },
+    })
+  }
+}
+
+export function coursesNavigationLoaded(data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_COURSES_LOADED,
+    courses: data,
+  }
+}
+
+export function unitsNavigationLoaded(data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_UNITS_LOADED,
+    units: data,
+  }
+}
+
+export function modulesNavigationLoaded(data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_MODULES_LOADED,
+    modules: data,
+  }
+}
+
+export function moduleNavigationLoaded(data) {
+  return {
+    type: ActionTypes.COURSE_NAVIGATION_LESSONS_LOADED,
+    lessons: extract(data, 'lessons'),
+  }
+}
+
+export function loadNavigationCourses() {
+  return function(dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'courses/',
+      context: this,
+      success: function(data, status, jqXHR) {
+        dispatch(coursesNavigationLoaded(data))
+
+        // extract all units from all courses, not so good.
+        const units = extractAll(data, 'units')
+        dispatch(unitsNavigationLoaded(units))
+
+        // extract all modules from all units, not so good.
+        var modules = extractAll(units, 'modules')
+        dispatch(modulesNavigationLoaded(modules))
+      },
+    })
+  }
+}
+
+export function loadNavigationModule(uuid) {
+  return function(dispatch) {
+    $.ajax({
+      async: true,
+      url: API_PREFIX + 'modules/' + uuid + '/',
+      success: function(data, status, jqXHR) {
+        dispatch(moduleNavigationLoaded(data))
+      },
+    })
+  }
+}
+
+//// TODO remove
 // export function answerLoaded (data) {
 //   return {
 //     type: ActionTypes.ANSWER_LOADED,
@@ -1984,92 +2113,3 @@ export function updateMaterialImage (materail, canvas) {
 //     })
 //   }
 // }
-
-export function foundUsersLoaded (data) {
-  return {
-    type: ActionTypes.FOUND_USERS_LOADED,
-    foundUsers: data
-  }
-}
-
-export function findUserRequest (data) {
-  return {
-    type: ActionTypes.FOUND_USERS_REQUEST,
-    findUserRequest: data
-  }
-}
-
-export function findUsers (searchString) {
-  return (dispatch, getState) => {
-    dispatch(findUserRequest(true))
-    $.ajax({
-      url: API_PROFILE_PREFIX + 'find?q=' + searchString,
-      type: 'GET',
-      success: function (data, status, jqXHR) {
-        dispatch(foundUsersLoaded(data))
-        dispatch(findUserRequest(false))
-      }
-    })
-  }
-}
-
-export function coursesNavigationLoaded (data) {
-  return {
-    type: ActionTypes.COURSE_NAVIGATION_COURSES_LOADED,
-    courses: data
-  }
-}
-
-export function unitsNavigationLoaded (data) {
-  return {
-    type: ActionTypes.COURSE_NAVIGATION_UNITS_LOADED,
-    units: data
-  }
-}
-
-export function modulesNavigationLoaded (data) {
-  return {
-    type: ActionTypes.COURSE_NAVIGATION_MODULES_LOADED,
-    modules: data
-  }
-}
-
-export function moduleNavigationLoaded (data) {
-  return {
-    type: ActionTypes.COURSE_NAVIGATION_LESSONS_LOADED,
-    lessons: extract(data, 'lessons')
-  }
-}
-
-export function loadNavigationCourses () {
-  return function (dispatch) {
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'courses/',
-      context: this,
-      success: function (data, status, jqXHR) {
-        dispatch(coursesNavigationLoaded(data))
-
-        // extract all units from all courses, not so good.
-        const units = extractAll(data, 'units')
-        dispatch(unitsNavigationLoaded(units))
-
-        // extract all modules from all units, not so good.
-        var modules = extractAll(units, 'modules')
-        dispatch(modulesNavigationLoaded(modules))
-      }
-    })
-  }
-}
-
-export function loadNavigationModule (uuid) {
-  return function (dispatch) {
-    $.ajax({
-      async: true,
-      url: API_PREFIX + 'modules/' + uuid + '/',
-      success: function (data, status, jqXHR) {
-        dispatch(moduleNavigationLoaded(data))
-      }
-    })
-  }
-}
