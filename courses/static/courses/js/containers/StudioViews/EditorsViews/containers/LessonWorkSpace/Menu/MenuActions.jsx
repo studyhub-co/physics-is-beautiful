@@ -1,18 +1,15 @@
 import { connect } from 'react-redux'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     // tab: state.tab.tab,
   }
 }
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    dispatch
+    dispatch,
     // tabActions: bindActionCreators(tabsCreators, dispatch)
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)
+export default connect(mapStateToProps, mapDispatchToProps)

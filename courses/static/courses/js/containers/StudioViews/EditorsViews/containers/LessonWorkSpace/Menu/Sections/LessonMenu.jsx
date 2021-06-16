@@ -4,10 +4,14 @@ import ListItemText from '@material-ui/core/ListItemText'
 
 import Filter8 from '@material-ui/icons/Filter8'
 
-import { StyledListItemIcon, StyledMenu, StyledMenuItem } from '../StyledComponents'
+import {
+  StyledListItemIcon,
+  StyledMenu,
+  StyledMenuItem,
+} from '../StyledComponents'
 import PropTypes from 'prop-types'
 
-export default function LessonMenu ({onChange}) {
+export default function LessonMenu({ onChange }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = event => {
@@ -26,25 +30,25 @@ export default function LessonMenu ({onChange}) {
   return (
     <React.Fragment>
       <Button
-        aria-controls='lesson-menu'
-        aria-haspopup='true'
+        aria-controls="lesson-menu"
+        aria-haspopup="true"
         onClick={handleClick}
-        color='default'
+        color="default"
       >
         Lesson
       </Button>
       <StyledMenu
-        id='lesson-menu'
+        id="lesson-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'lesson.settings')}>
+        <StyledMenuItem onClick={e => handleMenuClick(e, 'lesson.settings')}>
           <StyledListItemIcon>
             <Filter8 />
           </StyledListItemIcon>
-          <ListItemText primary='Settings' />
+          <ListItemText primary="Settings" />
         </StyledMenuItem>
       </StyledMenu>
     </React.Fragment>
@@ -52,5 +56,5 @@ export default function LessonMenu ({onChange}) {
 }
 
 LessonMenu.propTypes = {
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 }

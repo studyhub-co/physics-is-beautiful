@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { dispatch as csDispatch } from 'codesandbox-api'
 
-export function useLayoutMode () {
+export function useLayoutMode() {
   const [layout, setLayout] = useState('student')
 
-  function setLayoutMode (mode) {
+  function setLayoutMode(mode) {
     // we can't use csDispatch in sanbox standalone mode
     // dispatch event to Editor API
     // csDispatch({
@@ -14,9 +14,9 @@ export function useLayoutMode () {
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
         type: 'edit_mode',
-        data: mode
+        data: mode,
       },
-      '*'
+      '*',
     )
     setLayout(mode)
   }

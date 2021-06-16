@@ -5,10 +5,14 @@ import ListItemText from '@material-ui/core/ListItemText'
 import AllInbox from '@material-ui/icons/AllInbox'
 import Inbox from '@material-ui/icons/Inbox'
 
-import { StyledListItemIcon, StyledMenu, StyledMenuItem } from '../StyledComponents'
+import {
+  StyledListItemIcon,
+  StyledMenu,
+  StyledMenuItem,
+} from '../StyledComponents'
 import PropTypes from 'prop-types'
 
-export default function ActionsMenu ({onChange}) {
+export default function ActionsMenu({ onChange }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = event => {
@@ -27,37 +31,43 @@ export default function ActionsMenu ({onChange}) {
   return (
     <React.Fragment>
       <Button
-        aria-controls='action-menu'
-        aria-haspopup='true'
+        aria-controls="action-menu"
+        aria-haspopup="true"
         onClick={handleClick}
-        color='default'
+        color="default"
       >
         Actions
       </Button>
       <StyledMenu
-        id='action-menu'
+        id="action-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'actions.learn_lesson')}>
+        <StyledMenuItem
+          onClick={e => handleMenuClick(e, 'actions.learn_lesson')}
+        >
           <StyledListItemIcon>
             <AllInbox />
           </StyledListItemIcon>
-          <ListItemText primary='Learn lesson' />
+          <ListItemText primary="Learn lesson" />
         </StyledMenuItem>
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'actions.learn_material')}>
+        <StyledMenuItem
+          onClick={e => handleMenuClick(e, 'actions.learn_material')}
+        >
           <StyledListItemIcon>
             <Inbox />
           </StyledListItemIcon>
-          <ListItemText primary='Learn selected material' />
+          <ListItemText primary="Learn selected material" />
         </StyledMenuItem>
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'actions.standalone_material')}>
+        <StyledMenuItem
+          onClick={e => handleMenuClick(e, 'actions.standalone_material')}
+        >
           <StyledListItemIcon>
             <Inbox />
           </StyledListItemIcon>
-          <ListItemText primary='Standalone selected material' />
+          <ListItemText primary="Standalone selected material" />
         </StyledMenuItem>
       </StyledMenu>
     </React.Fragment>
@@ -65,5 +75,5 @@ export default function ActionsMenu ({onChange}) {
 }
 
 ActionsMenu.propTypes = {
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 }
