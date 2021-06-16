@@ -12,6 +12,15 @@ router = routers.DefaultRouter()
 
 router.register(r'', ProfileViewSet, basename='profiles')
 
+# from dj_rest_auth.registration.views import SocialConnectView
+# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+#
+# class GoogleConnect(SocialConnectView):
+#     adapter_class = GoogleOAuth2Adapter
+
+from dj_rest_auth.views import (
+    PasswordResetView
+)
 
 urlpatterns = [
     path('me/', ProfileViewSetMe.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
@@ -27,8 +36,12 @@ urlpatterns = [
     # path('password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
     #     TemplateView.as_view(template_name="password_reset_confirm.html"),
     #     name='password_reset_confirm'),
-    # TODO we use some of dj_rest_auth urls, so exclude unnecessary and use dj_rest_auth directly
-    path('rest-auth/', include('dj_rest_auth.urls')),
+
+    # we use some of dj_rest_auth urls, so exclude unnecessary and use dj_rest_auth directly
+    # only password reset for now
+    # path('rest-auth/', include('dj_rest_auth.urls')),
+    path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
+    # path('rest-auth/google/connect/', GoogleConnect.as_view(), name='google_connect'),
     # Attention. Serializer of SignUp defined in settings.REST_AUTH_REGISTER_SERIALIZERS
     path('rest-auth/signup/', include('dj_rest_auth.registration.urls'))
     # path('login/', Login.as_view()),

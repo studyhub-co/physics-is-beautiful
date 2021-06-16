@@ -199,20 +199,27 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
                     alignItems="center"
                   >
                     <Grid item xs={12} sm={6}>
-                      <div>
+                      <a
+                        title="Google"
+                        className="socialaccount_provider google "
+                        href="/accounts/google/login/?process="
+                      >
                         <img
                           className={classes.socialImage}
                           src={require('./images/google.png')}
                         />
-                      </div>
+                      </a>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <div>
+                      <a
+                        title="Facebook"
+                        href="/accounts/facebook/login/?process="
+                      >
                         <img
                           className={classes.socialImage}
                           src={require('./images/facebook.png')}
                         />
-                      </div>
+                      </a>
                     </Grid>
                   </Grid>
                   <div className={classes.hrSect}>OR</div>
