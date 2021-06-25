@@ -22,7 +22,8 @@ const routingMiddleware = store => next => action => {
   }
   // student view routing (move to the material)
   if (action.type === MATERIAL_GOTO) {
-    history.replace(
+    // we need to save root lesson url
+    history.push(
       '/courses/lessons/' +
         action.lesson.uuid +
         '/materials/' +

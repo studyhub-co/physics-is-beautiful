@@ -19,6 +19,7 @@ const fetchingMaterial = () => {
   }
 }
 
+// see courses/static/courses/js/middleware/routing.jsx for details
 const redirect2Material = (lessonUuid, materialUuid) => {
   return {
     type: MATERIAL_GOTO,

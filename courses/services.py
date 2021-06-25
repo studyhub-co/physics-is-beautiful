@@ -168,17 +168,22 @@ class ProgressServiceBase(object):
         # 2) we need to recalculate score for all students when add new material
         # 3) so if we want to use denorm score value we need to use backgroud quene (same issue in classroom app)
         # 4) we can just calculate score for each user request (todo optimize sql query).
-        self.current_lesson_progress.lesson_progress = self.calculate_progress()
+        overall_process = self.calculate_progress()
+        self.current_lesson_progress.lesson_progress = overall_process
+        if overall_process >= 100:
+            # TODO add duration of the lesson in the future
+            self.current_lesson_progress.complete()
         self.save()
 
         return is_correct
 
-    def game_success(self, game, duration=None, score=None):
-        self.current_lesson_progress.complete(duration, score)
-        next_lesson = game.lesson.get_next_lesson()
-        if next_lesson:
-            self.unlock_lesson(next_lesson)
-        self.save()
+    # WE HAVE NO GAME NOW
+    # def game_success(self, game, duration=None, score=None):
+    #     self.current_lesson_progress.complete(duration, score)
+    #     next_lesson = game.lesson.get_next_lesson()
+    #     if next_lesson:
+    #         self.unlock_lesson(next_lesson)
+    #     self.save()
 
 
 class ProgressService(ProgressServiceBase):

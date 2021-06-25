@@ -39,10 +39,19 @@ class LessonProgress(models.Model):
         choices=[(status, status.value) for status in LessonProgressStatus]
     )
 
-    def complete(self, duration=None, score=None):
-        self.status = self.Status.COMPLETE
+    def complete(self, duration=None):
+        self.status = LessonProgressStatus.COMPLETE.value
         self.completed_on = timezone.now()
-        self.score = score
+        # no need we save it every step
+        # self.lesson_progress = lesson_progress
 
         if duration:
             self.duration = duration
+
+    # def complete(self, duration=None, lesson_progress=None):
+    #     self.status = self.Status.COMPLETE
+    #     self.completed_on = timezone.now()
+    #     self.lesson_progress = lesson_progress
+    #
+    #     if duration:
+    #         self.duration = duration

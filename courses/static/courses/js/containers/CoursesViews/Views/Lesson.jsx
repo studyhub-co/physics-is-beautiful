@@ -22,8 +22,8 @@ const Lesson = props => {
     (executionFrameRef = ((!node || !node.contentWindow) && null) || node) // we want a reference to an iframe
 
   const [state, setState] = useState({
-    lessonUuid: match.params.lessonUuid,
-    materialUuid: match.params.materialUuid || null,
+    // lessonUuid: match.params.lessonUuid,
+    // materialUuid: match.params.materialUuid || null,
     iframeUrl: null,
     // we got lesson_progress with material and with user reaction
     lesson_progress: currentMaterial.lesson_progress,
@@ -49,7 +49,6 @@ const Lesson = props => {
       if (data.hasOwnProperty('type')) {
         if (data.type === 'redirect_to_material') {
           // listen iframe when continue button clicked
-          console.log(state.lesson_progress)
           if (state.lesson_progress >= 100) {
             // redirect to complete only if continue button checked
             setShowLessonComplete(true)
@@ -100,7 +99,7 @@ const Lesson = props => {
             // update only if material_problem_type has been changed
             setState({
               ...state,
-              materialUuid: currentMaterialState.uuid,
+              // materialUuid: currentMaterialState.uuid,
               iframeUrl: materialEvalUrl(nextMaterial),
             })
           }
@@ -124,44 +123,51 @@ const Lesson = props => {
     return () => window.removeEventListener('message', messageListener)
   }, [messageListener])
 
-  // watch for state changes
+  // const initLoadMaterial = () => {
+  //   if (!match.params.materialUuid) {
+  //     // we don't have materialUuid at this stage
+  //     // start lesson without material uuid in the URL
+  //     fetchMaterial(match.params.lessonUuid)
+  //   } else {
+  //     // we have materialUuid in the url
+  //     // we need material to get material type uuid for the run iframe:
+  //     // /evaluation/33e9e96e-37a0-4bfd-a74d-c75460216059/fc704bf7-5b98-4668-9e68-70c7767b5489/ae38f620-b7b5-438c-90d4-65e8fac305c5/?standalone
+  //     //              ^ material type uuid                 ^ material uuid (optional)          ^ lesson uuid (optional)
+  //     fetchMaterial(match.params.lessonUuid, match.params.materialUuid)
+  //   }
+  // }
+
+  // direct page load / SPA urls changes from iframe data, no need to reload material at the SPA side
   useEffect(() => {
-    if (state.materialUuid == null) {
-      // we don't have materialUuid at this stage
-
-      // start lesson without material uuid in the URL
-      fetchMaterial(state.lessonUuid)
-    } else {
-      // we have materialUuid in the url
-
+    // we have materialUuid in the url
+    if (match.params.materialUuid) {
       // we need material to get material type uuid for the run iframe:
       // /evaluation/33e9e96e-37a0-4bfd-a74d-c75460216059/fc704bf7-5b98-4668-9e68-70c7767b5489/ae38f620-b7b5-438c-90d4-65e8fac305c5/?standalone
       //              ^ material type uuid                 ^ material uuid (optional)          ^ lesson uuid (optional)
-      fetchMaterial(state.lessonUuid, state.materialUuid)
+      fetchMaterial(match.params.lessonUuid, match.params.materialUuid)
     }
-
-    // // not sure we need this, it's something related to mobile version
-    // window.parent.postMessage(
-    //   {
-    //     message: 'canGoBack',
-    //     data: false,
-    //   },
-    //   '*',
-    // )
   }, [])
+
+  useEffect(() => {
+    // if match.params.materialUuid was reset (start lesson from start)
+    if (!match.params.materialUuid) {
+      // we don't have materialUuid at this stage
+      // start lesson without material uuid in the URL
+      fetchMaterial(match.params.lessonUuid)
+    }
+  }, [match.params.materialUuid])
 
   // watch for URL changes
   useEffect(() => {
-    if (!match.params.materialUuid) {
+    if (!match.params.materialUuid && showLessonComplete) {
       // lesson run from start
       setShowLessonComplete(false)
     }
-
-    setState({
-      ...state,
-      lessonUuid: match.params.lessonUuid,
-      materialUuid: match.params.materialUuid || null,
-    })
+    // setState({
+    //   ...state,
+    //   lessonUuid: match.params.lessonUuid,
+    //   materialUuid: match.params.materialUuid || null,
+    // })
   }, [match.params])
 
   useEffect(() => {
@@ -174,7 +180,7 @@ const Lesson = props => {
     ) {
       setState({
         ...state,
-        materialUuid: currentMaterial.uuid,
+        // materialUuid: currentMaterial.uuid,
         iframeUrl: materialEvalUrl(currentMaterial),
       })
     }
@@ -182,18 +188,8 @@ const Lesson = props => {
 
   // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
   const materialEvalUrl = material => {
-    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/${state.lessonUuid}/?standalone`
+    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/${match.params.lessonUuid}/?standalone`
   }
-
-  // console.log(currentMaterialState)
-  // it seems we no need lesson_progress in material
-  // if (
-  //   currentMaterialState &&
-  //   !currentMaterialState.isFetching &&
-  //   currentMaterialState.lesson_progress >= 100
-  // ) {
-  //   return <LessonComplete />
-  // }
 
   return (
     <React.Fragment>
