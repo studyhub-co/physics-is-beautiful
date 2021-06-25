@@ -53,7 +53,6 @@ SELECT content,
         deleted_on
  FROM djeddit_post;""")
     #    cursor.execute("""INSERT INTO react_comments_django_post SELECT * FROM djeddit_post;""")
-
     # copy topics
     for djtopic in DJTopic.objects.all():
         new_topic = Topic()
@@ -88,6 +87,9 @@ SELECT content,
             new_thread.op = Post.objects.get(uid=djthread.op.uid)
             new_thread.topic = new_topic
             new_thread.save()
+
+    # update id sequence for thread
+    cursor.execute("""SELECT setval('react_comments_django_thread_id_seq', (SELECT MAX(id) FROM react_comments_django_thread));""")
 
     # copy users votes
     for djvote in DJUserPostVote.objects.all():

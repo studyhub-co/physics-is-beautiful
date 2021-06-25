@@ -15,7 +15,7 @@ class LessonProgressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LessonProgress
-        fields = ['score', 'status', 'completed_on']
+        fields = ['lesson_progress', 'status', 'completed_on']
 
 
 class BaseSerializer(serializers.ModelSerializer):

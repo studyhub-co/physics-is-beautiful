@@ -5,7 +5,7 @@ import { FaChevronLeft } from 'react-icons/fa'
 import { Section } from './navigation'
 
 export class SectionSheet extends React.Component {
-  render () {
+  render() {
     let backLink = ''
     if (this.props.backLink) {
       backLink = (
@@ -27,11 +27,11 @@ export class SectionSheet extends React.Component {
       )
     }
     var sections = []
-    this.props.sections.forEach(function (el) {
+    this.props.sections.forEach(function(el) {
       sections.push(<Section key={el.uuid} name={el.name} items={el.items} />)
     })
     return (
-      <div className='section-sheet'>
+      <div className="section-sheet">
         {backLink}
         {sections}
       </div>

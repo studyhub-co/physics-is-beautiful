@@ -24,15 +24,13 @@ def get_progress_service(request, current_lesson=None):
 class ProgressServiceBase(object):
 
     # COMPLETION_THRESHOLD = 80
-    # CORRECT_RESPONSE_VALUE = 10
-    # INCORRECT_RESPONSE_VALUE = -5
     INCORRECT_RESPONSE_RATIO = 50
 
     def __init__(self, request, current_lesson=None):
         self.request = request
         self.user = request.user
         self.current_lesson = current_lesson
-        # self.user_reactions = []  # depricated
+        # self.user_reactions = []  # deprecated
         self.user_reaction = None
         self._dirty_lesson_progresses = {}
 
@@ -59,21 +57,12 @@ class ProgressServiceBase(object):
                                                              material__in=self.current_lesson.materials.all(),
                                                              last_reaction=True,
                                                              )
+            # remove last_reaction marks, it will give 0 for calculate_progress
             user_reactions.update(last_reaction=False)
-            # reset denorm value
-            self.current_lesson_progress.score = 0
+            # reset denorm value, we sure that lesson_progress because all last_reaction is False
+            self.current_lesson_progress.lesson_progress = 0
             self.save()
-            # if not material:
-            #     material = self.current_lesson.materials.first()
-            # elif material.position == 0:
-            #     # self.current_lesson_progress.score = 0
-            #     # Temp variant - delete all progress if user request the 1st material in lesson
-            #     # TODO remove from the anon user
-            #     # user_reactions = UserReaction.objects.filter(profile=self.user.profile,
-            #     #                                              material__in=self.current_lesson.materials.all())
-            #     # user_reactions.delete()
-            #     # self.save()
-            #     pass
+
         return material
 
     def get_current_material(self, current_material_uuid):
@@ -140,7 +129,7 @@ class ProgressServiceBase(object):
         return lesson_progress.status
 
     def calculate_progress(self):
-        # TODO validate materials w\o sanboxes?
+        # TODO we can migrate from is_correct=True to user_reaction.score=100
         number_of_materials = self.current_lesson.materials.count()
         if self.user and self.user.is_authenticated and self.user.profile:
             correct_reactions = UserReaction.objects.filter(material__lesson=self.current_lesson,
@@ -179,29 +168,10 @@ class ProgressServiceBase(object):
         # 2) we need to recalculate score for all students when add new material
         # 3) so if we want to use denorm score value we need to use backgroud quene (same issue in classroom app)
         # 4) we can just calculate score for each user request (todo optimize sql query).
-        self.current_lesson_progress.score = self.calculate_progress()
+        self.current_lesson_progress.lesson_progress = self.calculate_progress()
         self.save()
 
         return is_correct
-
-        # if is_correct:
-        #     self.current_lesson_progress.score += self.CORRECT_RESPONSE_VALUE
-        #     if self.current_lesson_progress.score >= self.COMPLETION_THRESHOLD:
-        #         self.current_lesson_progress.complete(score=self.current_lesson_progress.score)
-        #
-        #         # unlock the next lesson!
-        #         next_lesson = self.current_lesson.get_next_lesson()
-        #         if next_lesson:
-        #             self.unlock_lesson(next_lesson)
-        # else:
-        #     self.current_lesson_progress.score = max(
-        #         0, self.current_lesson_progress.score + self.INCORRECT_RESPONSE_VALUE
-        #     )
-        #
-        # # Why user_reactions is list? seems because it was multiple choices == reactions list. not actual
-        # self.user_reactions.append(user_reaction)
-        # self.save()
-        # return is_correct
 
     def game_success(self, game, duration=None, score=None):
         self.current_lesson_progress.complete(duration, score)

@@ -18,15 +18,18 @@ class UserReaction(models.Model):
     data = JSONField()  # only Postgresql support!
     reaction_start_on = models.DateTimeField()  # time when user got an material / need to get from front end for now
     reacted_on = models.DateTimeField(auto_now_add=True)  # time when user gave an answer
-    score = models.SmallIntegerField(default=0)  # TODO: what is score for a material?
-    is_correct = models.BooleanField(default=False)
+    score = models.SmallIntegerField(default=0)  # score for a material. correct answer: score = 100, + score for the games
+    is_correct = models.BooleanField(default=False)  # we use this to calculate score of lesson progress
+    # fixme we can use the only score value in the future convert is_correct to score=100
 
-    # When user give a reaction - we calculate last_reaction flag
-    # (remove for an old reaction for current material and set a new one)
+    # When user give a reaction - we calculate and set last_reaction flag
+    # (remove for an old last_reaction marks for current material and set a new one)
     # If we want to restart lesson - we remove the last_reaction marks for current lesson and user
     # With last_reaction we can:
     # 1) Calculate score of the current lesson
-    # 2) Start lesson from following after last_reaction.material material
+    # 2) Start lesson from following after user_reaction.last_reaction==true reaction
+    # (get material from user_reaction.material and find the next material in the lesson)
+    # 3) Save history of user reactions
     last_reaction = models.BooleanField(default=True, verbose_name='Mark reaction as last for user')
 
     class Meta:

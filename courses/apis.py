@@ -25,7 +25,7 @@ from .comments import create_thread
 
 def check_classroom_progress(service, user):
     # if user.is_authenticated and service.current_lesson_progress.score >= service.COMPLETION_THRESHOLD:
-    if user.is_authenticated and service.current_lesson_progress.score >= service.current_lesson.complete_boundary:
+    if user.is_authenticated and service.current_lesson_progress.lesson_progress >= service.current_lesson.complete_boundary:
         from classroom.models import AssignmentProgress
 
         if isinstance(service.current_lesson, Lesson):

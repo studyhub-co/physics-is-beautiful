@@ -11,14 +11,14 @@ import { checkSaveButtonStyle, checkSaveButtonStyleDisabled } from './style'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface CheckContinueProps {
-  currentMaterial: materialActionCreators.MaterialRedux;
-  editMode: boolean;
-  disabledCheck: boolean;
+  currentMaterial: materialActionCreators.MaterialRedux
+  editMode: boolean
+  disabledCheck: boolean
   // updateMaterial(material: Material): void;
   // moveToNextComponent(previousMaterialUuid: string): void;
   // checkUserMaterialReaction(material: Material): void;
   // componentData: IQAData | null; // Any component IData
-  userReactionState: string; // todo enum?
+  userReactionState: string // todo enum?
 }
 
 const CheckContinueButton: React.FC<CheckContinueProps> = props => {
@@ -38,9 +38,9 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
     // send event to the iframe to save material
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
-        type: 'save_data'
+        type: 'save_data',
       },
-      '*'
+      '*',
     )
   }
 
@@ -48,10 +48,10 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
     // send event to the iframe to check user reaction
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
-        type: 'check_user_reaction'
+        type: 'check_user_reaction',
         // data: { }
       },
-      '*'
+      '*',
     )
   }
 
@@ -60,10 +60,10 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
     // todo change current URL see redirect_to_material event from iframe for now
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
-        type: 'continue'
+        type: 'continue',
         // data: { }
       },
-      '*'
+      '*',
     )
     // if (currentMaterial.uuid) {
     //   moveToNextComponent(currentMaterial.uuid)
@@ -73,16 +73,27 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
   return (
     <div style={{ textAlign: 'center' }}>
       {currentMaterial && editMode ? (
-        <Button style={checkSaveButtonStyle} variant='contained' color='primary' onClick={handleSaveDataClick}>
+        <Button
+          style={checkSaveButtonStyle}
+          variant="contained"
+          color="primary"
+          onClick={handleSaveDataClick}
+        >
           Save
         </Button>
       ) : (
         <Button
           disabled={disabledCheck}
-          style={disabledCheck ? checkSaveButtonStyleDisabled : checkSaveButtonStyle}
-          variant='contained'
-          color='primary'
-          onClick={userReactionResult.state === 'start' ? handleCheckClick : handleContinueClick}
+          style={
+            disabledCheck ? checkSaveButtonStyleDisabled : checkSaveButtonStyle
+          }
+          variant="contained"
+          color="primary"
+          onClick={
+            userReactionResult.state === 'start'
+              ? handleCheckClick
+              : handleContinueClick
+          }
         >
           {userReactionResult.state === UserStateEnum.start && 'Check'}
           {userReactionResult.state === UserStateEnum.checked && 'Continue'}
