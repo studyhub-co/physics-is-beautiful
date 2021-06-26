@@ -19,8 +19,6 @@ import PropTypes from 'prop-types'
 const LessonComplete = props => {
   const { currentMaterial } = props
 
-  console.log(currentMaterial)
-
   // const [state, setState] = useState({
   //   // lessonUuid: match.params.lessonUuid,
   //   // materialUuid: match.params.materialUuid || null,

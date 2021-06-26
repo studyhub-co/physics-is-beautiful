@@ -6,11 +6,11 @@ export const checkSaveButtonStyle = {
   transition: 'color .5s,border .5s',
   outline: 'none',
   width: '60%',
-  margin: '2rem 0 2rem 0'
+  margin: '1rem 0 1rem 0',
 }
 
 export const checkSaveButtonStyleDisabled = {
   ...checkSaveButtonStyle,
   background: 'gray',
-  border: '.2rem solid gray'
+  border: '.2rem solid gray',
 }

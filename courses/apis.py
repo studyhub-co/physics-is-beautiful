@@ -269,9 +269,16 @@ class LessonViewSet(ModelViewSet):
                 material.thread = new_thread
             # data = {}
             data = MaterialSerializer(material, context={'progress_service': service}).data
-            # TODO: it might make more sense for these fields to be on the
-            # lesson. Or a separate lesson_progress object.
+
+            # Fixme: it might make more sense for these fields to be on the
+            # Fixme: lesson. Or a separate lesson_progress object.
+            # The reason: lesson_progress related to lesson, not to the individual material
             data.update(LessonProgressSerializer(service.current_lesson_progress).data)
+
+            # set next_material_uuid to be able to skip material before user reaction
+            next_material = service.get_next_material(material)
+            data['next_material_uuid'] = next_material.uuid
+
             # data['required_score'] = service.COMPLETION_THRESHOLD
             # remove hidden fields data (i.g. selected choice) from JSON DATA
             data['data'] = remove_hidden_data(data['data'])

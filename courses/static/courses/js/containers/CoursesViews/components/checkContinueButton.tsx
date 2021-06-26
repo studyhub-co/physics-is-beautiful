@@ -1,40 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import UserStateEnum from '../const'
-
-// import { Material } from '../../models/'
+import React from 'react'
 
 import Button from '@material-ui/core/Button'
+
+import UserStateEnum from '../const'
+import { handleContinueClick } from '../postIframeMessages'
 import { checkSaveButtonStyle, checkSaveButtonStyleDisabled } from './style'
-// import history from '../../../history'
-// import * as materialActionCreators from '../../redux/modules/material'
-// import { QAData as IQAData } from '../qaChoices/IData/index'
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface CheckContinueProps {
-  currentMaterial: materialActionCreators.MaterialRedux
+  // currentMaterial: materialActionCreators.MaterialRedux
+  currentMaterial: object
   editMode: boolean
   disabledCheck: boolean
-  // updateMaterial(material: Material): void;
-  // moveToNextComponent(previousMaterialUuid: string): void;
-  // checkUserMaterialReaction(material: Material): void;
-  // componentData: IQAData | null; // Any component IData
   userReactionState: string // todo enum?
 }
 
 const CheckContinueButton: React.FC<CheckContinueProps> = props => {
-  const {
-    currentMaterial,
-    editMode,
-    disabledCheck,
-    // updateMaterial,
-    // checkUserMaterialReaction,
-    // componentData,
-    userReactionResult,
-    // moveToNextComponent
-  } = props
+  const { currentMaterial, editMode, disabledCheck, userReactionResult } = props
 
   const handleSaveDataClick = () => {
-    // TODO - we can get data from iframe and save in SPA, need to explore
     // send event to the iframe to save material
     document.getElementById('student_view_iframe').contentWindow.postMessage(
       {
@@ -55,20 +39,18 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
     )
   }
 
-  const handleContinueClick = () => {
-    // send event to the iframe to movetothe next component
-    // todo change current URL see redirect_to_material event from iframe for now
-    document.getElementById('student_view_iframe').contentWindow.postMessage(
-      {
-        type: 'continue',
-        // data: { }
-      },
-      '*',
-    )
-    // if (currentMaterial.uuid) {
-    //   moveToNextComponent(currentMaterial.uuid)
-    // }
-  }
+  // moved to postIframeMessages
+  // const handleContinueClick = () => {
+  //   // send event to the iframe to movetothe next component
+  //   // todo change current URL see redirect_to_material event from iframe for now
+  //   document.getElementById('student_view_iframe').contentWindow.postMessage(
+  //     {
+  //       type: 'continue',
+  //       // data: { }
+  //     },
+  //     '*',
+  //   )
+  // }
 
   return (
     <div style={{ textAlign: 'center' }}>

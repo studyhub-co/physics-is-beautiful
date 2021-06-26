@@ -5,8 +5,11 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
+import Button from 'react-bootstrap/Button'
 
 import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
+
+import history from '../../../history'
 
 // fixme copied from studyhub components library, todo remove unnecessary code
 // import { Material } from '../../models/'
@@ -14,12 +17,11 @@ import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/Threa
 // import * as materialActionCreators from '../../redux/modules/material'
 // import { QAData as IQAData } from '../qaChoices/IData/index'
 import CheckContinueButton from './checkContinueButton'
-import Button from 'react-bootstrap/Button'
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 // import history from '../../../history'
 import UserStateEnum from '../const'
-
 import { calculateProgress } from '../utils'
+import { handleContinueClick } from '../postIframeMessages'
 
 // fixme copied from studyhub components library, todo remove unnecessary code
 interface FooterProps {
@@ -171,12 +173,27 @@ const Footer: React.FC<FooterProps> = props => {
       }}
     >
       <Container fluid>
-        {userReactionResult.state === UserStateEnum.checked && (
+        {userReactionResult.state === UserStateEnum.checked ? (
           <Row className="justify-content-md-center">
-            <Col md={{ span: '3', offset: 3 }} xs={{ span: '2', offset: 2 }}>
-              {reactionResultIcon} {correctMessage}
+            <Col
+              md={6}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {reactionResultIcon}
+              <span style={{ paddingLeft: '1rem' }}>{correctMessage}</span>
             </Col>
-            <Col md={{ span: '3', offset: 3 }} xs={{ span: '2', offset: 2 }}>
+            <Col
+              md={6}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               <Button
                 onClick={handleShowComments}
                 style={{
@@ -188,6 +205,55 @@ const Footer: React.FC<FooterProps> = props => {
                 }}
               >
                 Comments
+              </Button>
+            </Col>
+          </Row>
+        ) : (
+          <Row className="justify-content-md-center">
+            <Col
+              xs={6}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Button
+                onClick={e => {
+                  e.preventDefault()
+                  history.push(
+                    `/courses/modules/${currentMaterial.lesson.module}`,
+                  )
+                }}
+                style={{
+                  backgroundColor: 'rgb(219, 219, 219)',
+                  borderColor: '#979797',
+                  padding: '0.5rem 2rem',
+                  borderRadius: '12rem',
+                }}
+              >
+                Exit lesson
+              </Button>
+            </Col>
+            <Col
+              xs={6}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Button
+                onClick={handleContinueClick}
+                style={{
+                  backgroundColor: 'rgb(219, 219, 219)',
+                  borderColor: '#979797',
+                  color: '#4c4c4c',
+                  padding: '0.5rem 2rem',
+                  borderRadius: '12rem',
+                }}
+              >
+                Skip material
               </Button>
             </Col>
           </Row>
