@@ -230,7 +230,7 @@ class ProgressService(ProgressServiceBase):
         ).annotate(
             # duration=Func(F('reacted_on'), F('reaction_start_on'), function='AGE')
             duration=ExpressionWrapper(F('reacted_on') - F('reaction_start_on'), output_field=DurationField())
-        ).order_by('-duration')
+        ).order_by('duration')
 
 
 class AnonymousProgressService(ProgressService):

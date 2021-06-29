@@ -2,12 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default class Badge extends React.Component {
-  render () {
+  render() {
     return (
       <span>
-        <a href={this.props.user.get_absolute_url + 'activity/'}>
-          {this.props.badge.title} badge
-        </a> ({this.props.badge.description})
+        {/* TODO not used basename of react router, fix this */}
+        {/*<a href={this.props.user.get_absolute_url + 'activity/'}>*/}
+        {this.props.badge.title} badge ({this.props.badge.description})
+        {/*</a>{' '}({this.props.badge.description})*/}
       </span>
     )
   }
@@ -15,5 +16,5 @@ export default class Badge extends React.Component {
 
 Badge.propTypes = {
   badge: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
 }

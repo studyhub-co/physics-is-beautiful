@@ -7,6 +7,10 @@ import Col from 'react-bootstrap/Col'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import Button from 'react-bootstrap/Button'
 
+import { makeStyles } from '@material-ui/core/styles'
+import ButtonUI from '@material-ui/core/Button'
+import CloseIcon from '@material-ui/icons/Close'
+
 import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
 import history from '../../../history'
@@ -36,6 +40,19 @@ interface FooterProps {
   userReactionState: string // todo enum?
 }
 
+const useStyles = makeStyles(theme => ({
+  skipButton: {
+    backgroundColor: 'rgb(219, 219, 219)',
+    borderColor: '#979797',
+    color: '#4c4c4c',
+    padding: '0.5rem 2rem',
+    borderRadius: '12rem',
+  },
+  exitButton: {
+    borderRadius: '12rem',
+  },
+}))
+
 const Footer: React.FC<FooterProps> = props => {
   const {
     currentMaterial,
@@ -47,6 +64,8 @@ const Footer: React.FC<FooterProps> = props => {
     // userReactionState
     // moveToNextComponent
   } = props
+
+  const classes = useStyles()
 
   const [showCommentsModal, setShowCommentsModal] = useState(false)
 
@@ -218,22 +237,24 @@ const Footer: React.FC<FooterProps> = props => {
                 justifyContent: 'center',
               }}
             >
-              <Button
+              <ButtonUI
+                title={'Exit'}
                 onClick={e => {
                   e.preventDefault()
                   history.push(
                     `/courses/modules/${currentMaterial.lesson.module}`,
                   )
                 }}
-                style={{
-                  backgroundColor: 'rgb(219, 219, 219)',
-                  borderColor: '#979797',
-                  padding: '0.5rem 2rem',
-                  borderRadius: '12rem',
-                }}
+                className={classes.exitButton}
+                // style={{
+                //   backgroundColor: 'rgb(219, 219, 219)',
+                //   borderColor: '#979797',
+                //   padding: '0.5rem 2rem',
+                //   borderRadius: '12rem',
+                // }}
               >
-                Exit lesson
-              </Button>
+                <CloseIcon />
+              </ButtonUI>
             </Col>
             <Col
               xs={6}
@@ -243,18 +264,20 @@ const Footer: React.FC<FooterProps> = props => {
                 justifyContent: 'center',
               }}
             >
-              <Button
+              <ButtonUI
                 onClick={handleContinueClick}
-                style={{
-                  backgroundColor: 'rgb(219, 219, 219)',
-                  borderColor: '#979797',
-                  color: '#4c4c4c',
-                  padding: '0.5rem 2rem',
-                  borderRadius: '12rem',
-                }}
+                variant="contained"
+                className={classes.skipButton}
+                // style={{
+                //   backgroundColor: 'rgb(219, 219, 219)',
+                //   borderColor: '#979797',
+                //   color: '#4c4c4c',
+                //   padding: '0.5rem 2rem',
+                //   borderRadius: '12rem',
+                // }}
               >
-                Skip material
-              </Button>
+                Skip
+              </ButtonUI>
             </Col>
           </Row>
         )}

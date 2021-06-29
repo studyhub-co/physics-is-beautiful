@@ -44,10 +44,10 @@ class ModuleFinished(MetaBadge):
 
             if not module_award.module_completed_award:
                 # 1. award reputation
-                def send_notification(user, action_value, lesson):
+                def send_notification(user, action_value, module):
                     notify.send(user, recipient=user,
                                 verb='earned {} points for completing a module!'.format(action_value),
-                                action_object=lesson)
+                                action_object=module)
 
                 # add reputation lesson points
                 Reputation.objects.add_reputation_action(instance.profile.user,

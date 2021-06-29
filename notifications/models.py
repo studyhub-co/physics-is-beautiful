@@ -1,4 +1,4 @@
-''' Django notifications models file '''
+""" Django notifications models file """
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-lines
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error

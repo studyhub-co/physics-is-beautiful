@@ -25,11 +25,11 @@ import Lesson from '../../components/NotificationsDeserializers/lesson'
 import Module from '../../components/NotificationsDeserializers/module'
 
 class NotificationsTabView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       nextHref: null,
-      notifications: []
+      notifications: [],
     }
 
     this.loadNextPage = this.loadNextPage.bind(this)
@@ -37,60 +37,67 @@ class NotificationsTabView extends React.Component {
     this.markAs = this.markAs.bind(this)
   }
 
-  componentWillMount () {
-    // if (!this.props.profile && !this.props.profile_fetching) {
-    //   this.props.profileActions.fetchProfile(this.props.match.params.id)
-    // }
-    // var path = this.props.match.path
-    // if (path.indexOf('/notifications/', path.length - '/notifications/'.length) !== -1) {
-
+  componentWillMount() {
     const { history } = this.props
 
-    if (!this.props.match.params.hasOwnProperty('filter') || this.props.match.params['filter'] !== 'read') {
-      this.props.notificationsActions.fetchNotifications(null, {'filter': 'unread'})
-      this.props.tabActions.changeSelectedTab(
-        'notifications',
-        'profileTab',
-        this.props.match.params.id,
-        history,
-        false)
-    }
-
-    // console.log(this.props.match.params);
-    // if (path.indexOf('/notifications/read/', path.length - '/notifications/read/'.length) !== -1) {
-    if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
-      this.props.notificationsActions.fetchNotifications(null, {'filter': 'read'})
+    if (
+      !this.props.match.params.hasOwnProperty('filter') ||
+      this.props.match.params['filter'] !== 'read'
+    ) {
+      this.props.notificationsActions.fetchNotifications(null, {
+        filter: 'unread',
+      })
       this.props.tabActions.changeSelectedTab(
         'notifications',
         'profileTab',
         this.props.match.params.id,
         history,
         false,
-        'read')
+      )
+    }
+
+    if (
+      this.props.match.params.hasOwnProperty('filter') &&
+      this.props.match.params['filter'] === 'read'
+    ) {
+      this.props.notificationsActions.fetchNotifications(null, {
+        filter: 'read',
+      })
+      this.props.tabActions.changeSelectedTab(
+        'notifications',
+        'profileTab',
+        this.props.match.params.id,
+        history,
+        false,
+        'read',
+      )
     }
   }
 
-  componentWillReceiveProps (nexProps) {
+  componentWillReceiveProps(nexProps) {
     if (nexProps.notifications !== this.props.notifications) {
-      var notifications = this.state.notifications.concat(nexProps.notifications['results'])
+      var notifications = this.state.notifications.concat(
+        nexProps.notifications['results'],
+      )
 
       this.setState({
         notifications: notifications,
-        nextHref: nexProps.notifications['next']
+        nextHref: nexProps.notifications['next'],
       })
     }
   }
 
-  loadNextPage () {
+  loadNextPage() {
     var self = this
 
     if (self.state.newNextPageUrl) {
-      this.props.notificationsActions.fetchNotifications(self.state.newNextPageUrl)
+      this.props.notificationsActions.fetchNotifications(
+        self.state.newNextPageUrl,
+      )
     }
   }
 
-  onFilterClick (filter) {
-
+  onFilterClick(filter) {
     const { history } = this.props
 
     if (this.props.cancelSource) {
@@ -99,63 +106,88 @@ class NotificationsTabView extends React.Component {
     }
 
     if (filter === 'unread') {
-      if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
-        var unReadUrl = this.props.match.url.replace(/read\/$/, '');
+      if (
+        this.props.match.params.hasOwnProperty('filter') &&
+        this.props.match.params['filter'] === 'read'
+      ) {
+        var unReadUrl = this.props.match.url.replace(/read\/$/, '')
         history.push(unReadUrl)
       }
     }
     if (filter === 'read') {
-      if (!this.props.match.params.hasOwnProperty('filter') || this.props.match.params['filter'] !== 'read') {
+      if (
+        !this.props.match.params.hasOwnProperty('filter') ||
+        this.props.match.params['filter'] !== 'read'
+      ) {
         var readUrl = this.props.match.url + 'read/'
         history.push(readUrl)
       }
     }
   }
 
-  markAs (id) {
+  markAs(id) {
     // remove from this.state.notifications
     var notifications = this.state.notifications.filter(obj => obj.id !== id)
-    this.setState({notifications: notifications})
-    if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
-      this.props.notificationsActions.markAsRead({id: id}, 'unread')
+    this.setState({ notifications: notifications })
+    if (
+      this.props.match.params.hasOwnProperty('filter') &&
+      this.props.match.params['filter'] === 'read'
+    ) {
+      this.props.notificationsActions.markAsRead({ id: id }, 'unread')
     } else {
-      this.props.notificationsActions.markAsRead({id: id}, 'read')
+      this.props.notificationsActions.markAsRead({ id: id }, 'read')
     }
   }
 
-  getNotificationStringFromOjbect (notification, type) {
-    return <span>
-      { notification[type] && notification[type]['content_type'] === 'thread'
-        ? <span>
-          { type === 'target' ? 'on ' : null }<Thread thread={notification[type]} />&nbsp;
-        </span>
-        : null
-      }
-      { notification[type] && notification[type]['content_type'] === 'badge'
-        ? <span>
-          { type === 'target' ? 'on ' : null }<Badge badge={notification[type]} user={notification['recipient']} />&nbsp;
-        </span>
-        : null
-      }
-      { notification[type] && notification[type]['content_type'] === 'lesson'
-        ? <span>
-          { type === 'target' ? 'on ' : null }<Lesson lesson={notification[type]} />&nbsp;
-        </span>
-        : null
-      }
-      { notification[type] && notification[type]['content_type'] === 'module'
-        ? <span>
-          { type === 'target' ? 'on ' : null }<Module module={notification[type]} />&nbsp;
-        </span>
-        : null
-      }
-    </span>
+  getNotificationStringFromObject(notification, type) {
+    return (
+      <span>
+        {notification[type] &&
+        notification[type]['content_type'] === 'thread' ? (
+          <span>
+            {type === 'target' ? 'on ' : null}
+            <Thread thread={notification[type]} />
+            &nbsp;
+          </span>
+        ) : null}
+        {notification[type] &&
+        notification[type]['content_type'] === 'badge' ? (
+          <span>
+            {type === 'target' ? 'on ' : null}
+            <Badge
+              badge={notification[type]}
+              user={notification['recipient']}
+            />
+            &nbsp;
+          </span>
+        ) : null}
+        {notification[type] &&
+        notification[type]['content_type'] === 'lesson' ? (
+          <span>
+            {type === 'target' ? 'on ' : null}
+            <Lesson lesson={notification[type]} />
+            &nbsp;
+          </span>
+        ) : null}
+        {notification[type] &&
+        notification[type]['content_type'] === 'module' ? (
+          <span>
+            {type === 'target' ? 'on ' : null}
+            <Module module={notification[type]} />
+            &nbsp;
+          </span>
+        ) : null}
+      </span>
+    )
   }
 
-  render () {
+  render() {
     var items = []
     var markAsTitle = 'read'
-    if (this.props.match.params.hasOwnProperty('filter') && this.props.match.params['filter'] === 'read') {
+    if (
+      this.props.match.params.hasOwnProperty('filter') &&
+      this.props.match.params['filter'] === 'read'
+    ) {
       markAsTitle = 'unread'
     }
 
@@ -164,109 +196,117 @@ class NotificationsTabView extends React.Component {
         var notification = this.state.notifications[i]
         let that = this
 
-        let getMarkAsFunc = function (id) {
-          return function () {
+        let getMarkAsFunc = function(id) {
+          return function() {
             that.markAs(id)
           }
         }
 
-        var actionString = this.getNotificationStringFromOjbect(notification, 'action_object')
-        var targetString = this.getNotificationStringFromOjbect(notification, 'target')
+        var actionString = this.getNotificationStringFromObject(
+          notification,
+          'action_object',
+        )
+        var targetString = this.getNotificationStringFromObject(
+          notification,
+          'target',
+        )
 
         items.push(
           <Row key={notification.id}>
             <Col sm={2} md={2}>
-            {/*<Col sm={2} md={2}>*/}
-              {/*<Moment fromNow>*/}
               {notification['timesince']}
-              {/*</Moment>*/}
-            {/*</Col>*/}
-            {/*<Col sm={2} md={2}>*/}
             </Col>
             <Col sm={8} md={8}>
-              {notification['recipient'].id !== notification['actor'].id
-                ? <Profile profile={notification['actor']} />
-                : <span>You've</span>
-              }
-            {/*</Col>*/}
-            {/*<Col sm={3} md={3}>*/}
-            &nbsp;
+              {notification['recipient'].id !== notification['actor'].id ? (
+                <Profile profile={notification['actor']} />
+              ) : (
+                <span>You've</span>
+              )}
+              &nbsp;
               <span>{notification['verb']}</span>
-            &nbsp;
-            {/*</Col>*/}
-            {/*<Col sm={3} md={3}>*/}
-              { actionString }
-              { targetString }
-              {/*{ notification[type] && notification[type]['content_type'] === 'thread'*/}
-                {/*? <Thread thread={notification[type]} />*/}
-                {/*: null*/}
-              {/*}*/}
-              {/*{ notification[type] && notification[type]['content_type'] === 'badge'*/}
-                {/*? <Badge badge={notification[type]} user={notification['recipient']} />*/}
-                {/*: null*/}
-              {/*}*/}
+              &nbsp;
+              {actionString}
+              {targetString}
             </Col>
             <Col sm={2} md={2}>
               <FaCheck
                 onClick={getMarkAsFunc(notification.id)}
                 title={'Mark as ' + markAsTitle}
-                style={{fontSize: '1.5rem', cursor: 'pointer'}} />
+                style={{ fontSize: '1.5rem', cursor: 'pointer' }}
+              />
             </Col>
-          </Row>
+          </Row>,
         )
       }
     }
 
-    return <div>
-      <Container fluid>
-        <Row style={{padding: '2rem 0 0 0'}}>
-          <Col sm={2} md={2}>
-            <ListGroup>
-              <ListGroupItem
-                onClick={() => this.onFilterClick('unread')}
-                action
-                style={{cursor: 'pointer',
-                  backgroundColor: markAsTitle === 'read' ? 'rgb(8, 209, 255)' : null}}>Unread</ListGroupItem>
-              <ListGroupItem
-                onClick={() => this.onFilterClick('read')}
-                action
-                style={{cursor: 'pointer',
-                  backgroundColor: markAsTitle === 'unread' ? 'rgb(8, 209, 255)' : null}}>Read</ListGroupItem>
-            </ListGroup>
-          </Col>
-          <Col sm={10} md={10}>
-            {this.props.notifications
-              ? <InfiniteScroll
-                pageStart={0}
-                loadMore={this.loadNextPage}
-                hasMore={this.state.hasMoreItems}
-                loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
-              >
-                {items}
-              </InfiniteScroll>
-              : <Row>
-                <Col sm={12} md={12}>
-                  <div style={{height: '10rem'}}>
-                    <div className='sweet-loading' style={{position: 'absolute'}}>
-                      <RingLoader
-                        color={'#1caff6'}
-                        loading={Boolean(true)}
-                      />
+    return (
+      <div>
+        <Container fluid>
+          <Row style={{ padding: '2rem 0 0 0' }}>
+            <Col sm={2} md={2}>
+              <ListGroup>
+                <ListGroupItem
+                  onClick={() => this.onFilterClick('unread')}
+                  action
+                  style={{
+                    cursor: 'pointer',
+                    backgroundColor:
+                      markAsTitle === 'read' ? 'rgb(8, 209, 255)' : null,
+                  }}
+                >
+                  Unread
+                </ListGroupItem>
+                <ListGroupItem
+                  onClick={() => this.onFilterClick('read')}
+                  action
+                  style={{
+                    cursor: 'pointer',
+                    backgroundColor:
+                      markAsTitle === 'unread' ? 'rgb(8, 209, 255)' : null,
+                  }}
+                >
+                  Read
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+            <Col sm={10} md={10}>
+              {this.props.notifications ? (
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.loadNextPage}
+                  hasMore={this.state.hasMoreItems}
+                  loader={
+                    <div key={this.state.nextHref} style={{ clear: 'both' }} />
+                  } // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
+                >
+                  {items}
+                </InfiniteScroll>
+              ) : (
+                <Row>
+                  <Col sm={12} md={12}>
+                    <div style={{ height: '10rem' }}>
+                      <div
+                        className="sweet-loading"
+                        style={{ position: 'absolute' }}
+                      >
+                        <RingLoader color={'#1caff6'} loading={Boolean(true)} />
+                      </div>
                     </div>
-                  </div>
-                </Col>
-              </Row>
-            }
-          </Col>
-        </Row>
-      </Container>
-    </div>
+                  </Col>
+                </Row>
+              )}
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    )
   }
 }
 
 NotificationsTabView.propTypes = {
   tabActions: PropTypes.shape({
-    changeSelectedTab: PropTypes.func.isRequired
+    changeSelectedTab: PropTypes.func.isRequired,
   }).isRequired,
   // profileActions: PropTypes.shape({
   //   fetchProfile: PropTypes.func.isRequired,
@@ -274,25 +314,25 @@ NotificationsTabView.propTypes = {
   // }).isRequired,
   notificationsActions: PropTypes.shape({
     fetchNotifications: PropTypes.func.isRequired,
-    markAsRead: PropTypes.func.isRequired
+    markAsRead: PropTypes.func.isRequired,
   }).isRequired,
   // profile: PropTypes.object,
   // profile_fetching: PropTypes.bool,
   notifications: PropTypes.object,
-  cancelSource: PropTypes.object
+  cancelSource: PropTypes.object,
   // dispatch: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     // profile: state.profileCustom.profile,
     // profile_fetching: state.profileCustom.fetching
     notifications: state.notifications.notifications,
-    cancelSource: state.notifications.cancelSource
+    cancelSource: state.notifications.cancelSource,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
@@ -301,5 +341,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NotificationsTabView))
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(NotificationsTabView),
+)
 export { NotificationsTabView as NotificationsTabViewNotConnected }

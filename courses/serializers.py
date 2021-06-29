@@ -230,10 +230,16 @@ class MaterialSerializer(BaseSerializer):
 class ScoreBoardSerializer(serializers.ModelSerializer):
     row_num = serializers.IntegerField(read_only=True)
     profile = ProfileUserField(read_only=True)
+    duration = serializers.SerializerMethodField()
+
+    def get_duration(self, obj):
+        # convert time delta to seconds
+        return obj.duration.total_seconds()
 
     class Meta:
-        model = LessonProgress
-        fields = ['score', 'duration', 'profile', 'row_num']
+        # model = LessonProgress
+        model = UserReaction
+        fields = ['score', 'duration', 'profile', 'row_num', 'reaction_start_on', 'reacted_on']
 
 
 class ModuleSerializer(ExpanderSerializerMixin, BaseSerializer):

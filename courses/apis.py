@@ -103,7 +103,7 @@ class MaterialViewSet(ModelViewSet):
         if not is_correct:
             data['correct_data'] = material.data
 
-        # TODO we have lesson scoreboard too
+        # TODO we will have lesson scoreboard too
         material_scoreboard = request.query_params.get('materialScoreboard')
 
         if material_scoreboard == 'true':
@@ -152,7 +152,7 @@ class MaterialViewSet(ModelViewSet):
                             user_already_in_score_list = True
 
                 setattr(row, 'row_num', row_num + 1)
-                # setattr(row, 'duration', row.duration()) already annotate
+                # setattr(row, 'duration', row.duration()) # already annotate but not in seconds
                 # add row into list
                 data_scores_list.append(row)
 

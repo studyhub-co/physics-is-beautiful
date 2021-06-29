@@ -96,8 +96,7 @@ class ReputationAction(TimeStampedModel):
     user = models.ForeignKey(get_user_model(), related_name='reputation_actions', on_delete=models.CASCADE)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    # TODO make it configurable (uuid or int ID) like an in taggit
-    # https://github.com/jazzband/django-taggit/blob/master/taggit/models.py#L166
+    # TODO make it UUID id independent see notifications/models.py for details
     # old_object_id = models.PositiveIntegerField()
     object_id = models.UUIDField(verbose_name=_("object ID"), db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')

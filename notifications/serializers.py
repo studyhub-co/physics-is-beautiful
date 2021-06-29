@@ -2,9 +2,14 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-from curricula.models import Lesson, Module
-from curricula.serializers import LessonSerializer, ModuleSerializer
-from curricula.services import get_progress_service
+# from curricula.models import Lesson, Module
+# from curricula.serializers import LessonSerializer, ModuleSerializer
+# from curricula.services import get_progress_service
+
+from courses.models import Lesson, Module
+from courses.serializers import LessonSerializer, ModuleSerializer
+from courses.services import get_progress_service
+
 
 # from djeddit.models import Thread, Post
 from react_comments_django.models import Thread, Post
