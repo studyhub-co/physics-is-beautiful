@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 
 class TimeStampedModel(models.Model):
@@ -44,7 +45,7 @@ class ReputationManager(models.Manager):
         content_type_object = ContentType.objects.get_for_model(
             target_object.__class__
         )
-        object_id = target_object.id
+        object_id = target_object.pk
 
         try:
             ReputationAction.objects.get(
@@ -95,7 +96,10 @@ class ReputationAction(TimeStampedModel):
     user = models.ForeignKey(get_user_model(), related_name='reputation_actions', on_delete=models.CASCADE)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
+    # TODO make it configurable (uuid or int ID) like an in taggit
+    # https://github.com/jazzband/django-taggit/blob/master/taggit/models.py#L166
+    # old_object_id = models.PositiveIntegerField()
+    object_id = models.UUIDField(verbose_name=_("object ID"), db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
     value = models.IntegerField(default=0)
