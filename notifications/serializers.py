@@ -2,9 +2,9 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-# from curricula.models import Lesson, Module
-# from curricula.serializers import LessonSerializer, ModuleSerializer
-# from curricula.services import get_progress_service
+# from curricula.models import Lesson as LessonC, Module as ModuleC
+# from curricula.serializers import LessonSerializer as LessonSerializerC, ModuleSerializer as ModuleSerializerC
+# from curricula.services import get_progress_service as get_progress_serviceC
 
 from courses.models import Lesson, Module
 from courses.serializers import LessonSerializer, ModuleSerializer
@@ -65,7 +65,7 @@ class BaseObjectRelatedField(serializers.RelatedField):
             data = PublicProfileSerializer(value.profile).data
             data['content_type'] = 'profile'
             return data
-        raise Exception('Unexpected type of target object')
+        raise Exception('Unexpected type of target object: {}'.format(type(value)))
 
 
 class NotificationActorRelatedField(BaseObjectRelatedField):

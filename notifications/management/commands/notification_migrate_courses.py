@@ -1,11 +1,13 @@
 from django.core.management.base import BaseCommand
 from django.contrib.contenttypes.models import ContentType
 
+from curricula.models import Lesson as LessonC, Module as ModuleC
+
 from ...models import Notification
 
 
 class Command(BaseCommand):
-    help = 'count the number of course learners'
+    help = 'migrate courses notification'
 
     def handle(self, *args, **options):
         # Get post type id
@@ -35,5 +37,12 @@ class Command(BaseCommand):
                     notification.target_content_type = react_comments_thread_type
                     notification.save()
 
+            if isinstance(notification.action_object, ModuleC):
+                # we do not know the new uuid of a module, so just remove notification
+                notification.delete()
+
+            if isinstance(notification.action_object, LessonC):
+                # we do not know the new uuid of a lesson, so just remove notification
+                notification.delete()
 
 
