@@ -130,6 +130,10 @@ function build(previousSizeMap) {
 
     const info = stats.toJson();
 
+    // console.log('-----------------');
+    // console.log(info);
+    // console.log('-----------------');
+
     if (stats.hasErrors()) {
       console.error('Error creating a production build:');
       console.error(info.errors);

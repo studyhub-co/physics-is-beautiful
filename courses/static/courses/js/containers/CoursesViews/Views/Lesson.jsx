@@ -191,6 +191,8 @@ const Lesson = props => {
     return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/${match.params.lessonUuid}/?standalone`
   }
 
+  // console.log(currentMaterialState)
+
   return (
     <React.Fragment>
       {showLessonComplete ? (

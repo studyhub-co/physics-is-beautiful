@@ -17,6 +17,7 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.get_or_create(user=instance)
 
+        # TODO get site name?
         notify.send(instance, recipient=instance,
                     verb='signed up successfully! Thanks for signing up and welcome to Physics is Beautiful!',
                     )

@@ -275,7 +275,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
     # @transaction.atomic
     # TODO rewrite with SQL
-    def clone_sanbox(self):
+    def clone_sandbox(self):
         # clone sandbox
         initial_sandbox = self.get_object()
 
@@ -326,7 +326,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
             permission_classes=[permissions.IsAuthenticated, ], )
     def fork(self, request, *args, **kwargs):
 
-        forked_material_problem_type = self.clone_sanbox()
+        forked_material_problem_type = self.clone_sandbox()
 
         serializer = self.get_serializer(forked_material_problem_type)
         return Response(serializer.data)

@@ -17,20 +17,22 @@ const nodePaths = (process.env.NODE_PATH || '')
   .map(p => path.resolve(p))
 
 // ???
-function resolveApp (relativePath) {
+function resolveApp(relativePath) {
   return path.resolve(relativePath)
 }
 
 const src = resolveApp('src')
 // const common = path.resolve('../common')
 // courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common
-const common = path.resolve('../static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common')
+const common = path.resolve(
+  '../static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/common',
+)
 const appSrc = path.join(src, 'app')
 const sandboxSrc = path.join(src, 'sandbox')
 const embedSrc = path.join(src, 'embed')
 const homepageSrc = path.join(src, 'homepage')
 
-console.log(common);
+// console.log(common)
 
 // config after eject: we're in ./config/
 module.exports = {
@@ -49,5 +51,5 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   ownNodeModules: resolveApp('node_modules'),
   nodePaths,
-  config: resolveApp('config')
+  config: resolveApp('config'),
 }

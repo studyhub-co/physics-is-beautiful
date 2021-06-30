@@ -204,6 +204,7 @@
     "reakit": "^1.0.0-beta.4",
     "rebound": "^0.1.0",
     "resize-observer-polyfill": "^1.5.1",
+    "resolve": "^1.20.0",
     "sha1": "^1.1.1",
     "shelljs": "^0.7.8",
     "shortid": "^2.2.8",

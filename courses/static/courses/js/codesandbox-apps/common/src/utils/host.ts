@@ -17,6 +17,7 @@ export default () => {
     return process.env.ROOT_URL;
   }
   // TODO dev/prod url
-  return 'http://pib-dev.us-east-1.elasticbeanstalk.com'
+  // return 'http://pib-dev.us-east-1.elasticbeanstalk.com'
+  return 'https://dev.physicsisbeautiful.com'
   // return 'https://physicsisbeautiful.com/';
 };
