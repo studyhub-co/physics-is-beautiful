@@ -2,7 +2,7 @@ antlr4-python3-runtime==4.7
 #boto==2.46.1
 boto3==1.17.30
 django-ses==1.0.3
-Django==2.2.21
+Django==2.2.24
 django-allauth==0.44.0
 dj-rest-auth==2.1.7
 # git+https://github.com/physics-is-beautiful/django-allauth.git@8b08f90262aefd61df9a24300e126d4eb2fd1834#egg=django-allauth
