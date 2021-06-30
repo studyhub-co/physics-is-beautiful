@@ -104,7 +104,7 @@ def resize_and_delete_old_screenshot(sender, instance, **kwargs):
                 instance.screenshot.name,
                 InMemoryUploadedFile(
                     image_file,
-                    None, '',
+                    None, instance.screenshot.name,
                     instance.screenshot.file.content_type,
                     image.size,
                     instance.screenshot.file.charset,
