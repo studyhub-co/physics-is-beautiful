@@ -41,7 +41,7 @@ class BrowseCurriculaView extends React.Component {
     this.handleSearchString = this.handleSearchString.bind(this)
     this.searchButtonClick = this.searchButtonClick.bind(this)
     this.populateSlides = this.populateSlides.bind(this)
-    this.onAddRemoveFromDashboardSildes = this.onAddRemoveFromDashboardSildes.bind(this)
+    this.onAddRemoveFromDashboardSlides = this.onAddRemoveFromDashboardSlides.bind(this)
     this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
     this.clearSearchButtonClick = this.clearSearchButtonClick.bind(this)
     this.doTabsSearch = this.doTabsSearch.bind(this)
@@ -90,7 +90,7 @@ class BrowseCurriculaView extends React.Component {
     return getPrefixFromSlidesName(slidesName)
   }
 
-  onAddRemoveFromDashboardSildes (action, curriculum) {
+  onAddRemoveFromDashboardSlides (action, curriculum) {
     var newRecent = this.state['recentSlides']
 
     // remove from recent
@@ -111,7 +111,7 @@ class BrowseCurriculaView extends React.Component {
         newRecent.push(<CurriculumThumbnailPublic
           className='swiper-slide'
           key={curriculum.uuid}
-          onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+          onAddRemoveFromDashboardSlides={this.onAddRemoveFromDashboardSlides}
           slidesListName={'recentSlides'}
           curriculum={curriculum}
         />)
@@ -141,7 +141,7 @@ class BrowseCurriculaView extends React.Component {
           <CurriculumThumbnailPublic
             className='swiper-slide'
             key={curricula.results[index].uuid}
-            onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+            onAddRemoveFromDashboardSlides={this.onAddRemoveFromDashboardSlides}
             slidesListName={slidesListName}
             curriculum={curricula.results[index]}
           />

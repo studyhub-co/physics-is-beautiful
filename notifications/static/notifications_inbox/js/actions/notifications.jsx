@@ -1,39 +1,41 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_NOTIFICATIONS_PREFIX } from '../utils/config'
 import {
-  NOTIFICATIONS_RECEIVE_NOTIFICATIONS, NOTIFICATIONS_SET_CANCEL_SOURCE, NOTIFICATIONS_RECEIVE_UNREAD_COUNT
+  NOTIFICATIONS_RECEIVE_NOTIFICATIONS,
+  NOTIFICATIONS_SET_CANCEL_SOURCE,
+  NOTIFICATIONS_RECEIVE_UNREAD_COUNT,
 } from '../constants'
 
 import { dictToURI } from '../utils/urls'
 
-export function receiveNotifications (notifications) {
+export function receiveNotifications(notifications) {
   return {
     type: NOTIFICATIONS_RECEIVE_NOTIFICATIONS,
     payload: {
-      notifications
-    }
+      notifications,
+    },
   }
 }
 
-export function setCancelSource (cancelSource) {
+export function setCancelSource(cancelSource) {
   return {
     type: NOTIFICATIONS_SET_CANCEL_SOURCE,
     payload: {
-      cancelSource
-    }
+      cancelSource,
+    },
   }
 }
 
-export function receiveUnreadCount (unReadCount) {
+export function receiveUnreadCount(unReadCount) {
   return {
     type: NOTIFICATIONS_RECEIVE_UNREAD_COUNT,
     payload: {
-      unReadCount
-    }
+      unReadCount,
+    },
   }
 }
 
-export function fetchNotifications (nextPageUrl, filters) {
+export function fetchNotifications(nextPageUrl, filters) {
   var url = API_NOTIFICATIONS_PREFIX
 
   if (nextPageUrl) {
@@ -51,15 +53,14 @@ export function fetchNotifications (nextPageUrl, filters) {
     dispatch(setCancelSource(source))
 
     return getAxios()
-      .get(url,
-        {
-          cancelToken: source.token
-        }
-      )
+      .get(url, {
+        cancelToken: source.token,
+      })
       .then(checkHttpStatus)
-      .then((response) => {
+      .then(response => {
         dispatch(receiveNotifications(response.data))
-      }).catch(function (thrown) {
+      })
+      .catch(function(thrown) {
         if (getAxios().isCancel(thrown)) {
           // silent cancel
         } else {
@@ -69,24 +70,29 @@ export function fetchNotifications (nextPageUrl, filters) {
   }
 }
 
-export function markAsRead (notification, markState) {
+export function markAsRead(notification, markState) {
   // markState = 'read, unread'
 
   return (dispatch, state) => {
     return getAxios()
-      .post(API_NOTIFICATIONS_PREFIX + notification.id + '/mark_as_' + markState + '/')
+      .post(
+        API_NOTIFICATIONS_PREFIX +
+          notification.id +
+          '/mark_as_' +
+          markState +
+          '/',
+      )
       .then(checkHttpStatus)
-      .then((response) => {
-      })
+      .then(response => {})
   }
 }
 
-export function fetchUnReadCount () {
+export function fetchUnReadCount() {
   return (dispatch, state) => {
     return getAxios()
       .get(API_NOTIFICATIONS_PREFIX + 'unread_count/')
       .then(checkHttpStatus)
-      .then((response) => {
+      .then(response => {
         dispatch(receiveUnreadCount(response.data))
       })
   }

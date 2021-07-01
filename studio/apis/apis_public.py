@@ -36,7 +36,9 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
                 if request.user.is_authenticated:
                     user = request.user
                 else:
-                    user = None
+                    # return empty queryset, we do not support anonymous recent/my courses now
+                    return queryset.none()
+                    # user = None
 
                 queryset = queryset.filter(courses_user_dashboard__profile__user=user)
         return queryset

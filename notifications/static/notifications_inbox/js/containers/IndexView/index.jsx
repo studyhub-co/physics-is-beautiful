@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -12,9 +12,7 @@ import * as notificationsCreators from '../../actions/notifications'
 
 // class IndexView extends React.Component {
 const IndexView = props => {
-  const {
-    unReadCount, notificationsActions
-  } = props
+  const { unReadCount, notificationsActions } = props
 
   // The forwardRef is important!!
   // Dropdown needs access to the DOM node in order to position the Menu
@@ -22,19 +20,19 @@ const IndexView = props => {
     return (
       <span
         ref={ref}
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault()
           onClick(e)
         }}
         style={{
           padding: '1rem',
-          cursor: 'pointer'
-        }}>
+          cursor: 'pointer',
+        }}
+      >
         {children}
       </span>
     )
-  }
-  )
+  })
 
   useEffect(() => {
     notificationsActions.fetchUnReadCount()
@@ -52,23 +50,23 @@ const IndexView = props => {
 
   return (
     <Dropdown>
-      <Dropdown.Toggle
-        as={CustomToggle} id='dropdown-custom-components'>
+      <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
         <span>
-          <FaInbox
-            title={''}
-            style={{fontSize: '2rem'}} />
-          { unReadCountString
-            ? <Badge
-              variant='danger'
-              style={{left: '2rem', position: 'absolute'}}
-            >{unReadCountString}</Badge>
-            : null }
+          <FaInbox title={''} style={{ fontSize: '2rem' }} />
+          {unReadCountString ? (
+            <Badge
+              variant="danger"
+              style={{ left: '2rem', position: 'absolute' }}
+            >
+              {unReadCountString}
+            </Badge>
+          ) : null}
         </span>
       </Dropdown.Toggle>
       <Dropdown.Menu
         // as={this.CustomMenu}
-        alignRight>
+        alignRight
+      >
         <NotificationsListView />
       </Dropdown.Menu>
     </Dropdown>
@@ -77,21 +75,21 @@ const IndexView = props => {
 
 IndexView.propTypes = {
   notificationsActions: PropTypes.shape({
-    fetchUnReadCount: PropTypes.func.isRequired
+    fetchUnReadCount: PropTypes.func.isRequired,
   }).isRequired,
-  unReadCount: PropTypes.object
+  unReadCount: PropTypes.object,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    unReadCount: state.notifications.unReadCount
+    unReadCount: state.notifications.unReadCount,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
-    notificationsActions: bindActionCreators(notificationsCreators, dispatch)
+    notificationsActions: bindActionCreators(notificationsCreators, dispatch),
   }
 }
 

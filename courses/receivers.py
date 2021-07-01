@@ -15,10 +15,10 @@ def transfer_lesson_progress(request, user, **kwargs):
     """
     if request.session.session_key:
         with transaction.atomic():
-            # TODO compy reactions
-            # UserResponse.objects\
-            #     .filter(anon_session_key=request.session.session_key) \
-            #     .update(anon_session_key=None, profile=user.profile)
+            # copy reactions
+            UserReaction.objects\
+                .filter(anon_session_key=request.session.session_key) \
+                .update(anon_session_key=None, profile=user.profile)
 
             lesson_progresses = LessonProgress.objects\
                 .filter(anon_session_key=request.session.session_key)

@@ -90,7 +90,7 @@ class MaterialViewSet(ModelViewSet):
         if is_correct is None:
             raise NotFound('validate.js for this material problem type was not found or have incorrect code')
 
-        # with this data we can determine progress of the lesson: progress bar depens on a score of the lesson
+        # with this data we can determine progress of the lesson: progress bar depends on a score of the lesson
         data = LessonProgressSerializer(service.current_lesson_progress).data
 
         next_material = service.get_next_material(material)

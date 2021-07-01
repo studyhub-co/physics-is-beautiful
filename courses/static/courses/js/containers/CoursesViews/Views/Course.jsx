@@ -69,7 +69,7 @@ const CourseInfoPanel = props => {
                         to={'/browse/'}
                         style={{ cursor: 'pointer', color: 'grey' }}
                       >
-                        {'Select other course'}
+                        {'Select another course'}
                       </Link>
                     </div>
                   ) : null}

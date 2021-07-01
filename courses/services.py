@@ -140,14 +140,20 @@ class ProgressServiceBase(object):
                                                           is_correct=False,
                                                           profile=self.user.profile,
                                                           last_reaction=True)
-
-            progress = max(0,
-                           (correct_reactions.count() / number_of_materials) * 100 -
-                           (wrong_reactions.count() / number_of_materials) * 100 * (self.INCORRECT_RESPONSE_RATIO / 100)
-                           )
         else:
-            # TODO calculate anon user progress
-            progress = 0
+            # calculate anon user progress
+            correct_reactions = UserReaction.objects.filter(material__lesson=self.current_lesson,
+                                                            is_correct=True,
+                                                            anon_session_key=self.session.session_key,
+                                                            last_reaction=True)
+            wrong_reactions = UserReaction.objects.filter(material__lesson=self.current_lesson,
+                                                          is_correct=False,
+                                                          anon_session_key=self.session.session_key,
+                                                          last_reaction=True)
+        progress = max(0,
+                       (correct_reactions.count() / number_of_materials) * 100 -
+                       (wrong_reactions.count() / number_of_materials) * 100 * (self.INCORRECT_RESPONSE_RATIO / 100)
+                       )
 
         return progress
 

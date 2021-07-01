@@ -18,6 +18,7 @@ import SearchRowView from './searchRow'
 
 import { loadAllCourses } from '../../../actions/studio'
 
+// TODO rename 'recent' to 'my'
 const slidesNames = ['newSlides', 'popularSlides', 'recentSlides']
 
 class BrowseCoursesView extends React.Component {
@@ -39,7 +40,7 @@ class BrowseCoursesView extends React.Component {
     this.handleSearchString = this.handleSearchString.bind(this)
     this.searchButtonClick = this.searchButtonClick.bind(this)
     this.populateSlides = this.populateSlides.bind(this)
-    this.onAddRemoveFromDashboardSildes = this.onAddRemoveFromDashboardSildes.bind(
+    this.onAddRemoveFromDashboardSlides = this.onAddRemoveFromDashboardSlides.bind(
       this,
     )
     this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
@@ -62,7 +63,12 @@ class BrowseCoursesView extends React.Component {
     return getPrefixFromSlidesName(slidesName)
   }
 
-  onAddRemoveFromDashboardSildes(action, course) {
+  onAddRemoveFromDashboardSlides(action, course) {
+    if (!this.props.myProfile.hasOwnProperty('id')) {
+      // user is not logged in, not use recent/my slides
+      return
+    }
+
     var newRecent = this.state['recentSlides']
 
     // remove from recent
@@ -84,7 +90,7 @@ class BrowseCoursesView extends React.Component {
           <CourseThumbnailPublic
             className="swiper-slide"
             key={course.uuid}
-            onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+            onAddRemoveFromDashboardSlides={this.onAddRemoveFromDashboardSlides}
             slidesListName={'recentSlides'}
             course={course}
           />,
@@ -115,7 +121,7 @@ class BrowseCoursesView extends React.Component {
           <CourseThumbnailPublic
             className="swiper-slide"
             key={courses.results[index].uuid}
-            onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+            onAddRemoveFromDashboardSlides={this.onAddRemoveFromDashboardSlides}
             slidesListName={slidesListName}
             course={courses.results[index]}
           />,
@@ -281,9 +287,9 @@ class BrowseCoursesView extends React.Component {
   }
 
   render() {
-    var displyDashboard = 'block'
+    var displayDashboard = 'block'
     if (this.state.searchEnabeled) {
-      displyDashboard = 'none'
+      displayDashboard = 'none'
     }
 
     return (
@@ -320,7 +326,7 @@ class BrowseCoursesView extends React.Component {
                       coursesSearchString={this.state.searchString}
                     />
                   ) : null}
-                  <div style={{ display: displyDashboard }}>
+                  <div style={{ display: displayDashboard }}>
                     <Container fluid>
                       <Row>
                         <Col sm={12} md={12}>
@@ -415,6 +421,7 @@ const mapStateToProps = state => {
     recentCourses: state.studio.filteredCourses.recentCourses,
     newCourses: state.studio.filteredCourses.newCourses,
     tab: state.studio.tabs.tab,
+    myProfile: state.profile.me,
   }
 }
 

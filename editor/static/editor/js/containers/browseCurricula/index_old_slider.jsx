@@ -46,7 +46,7 @@
 //     this.updateSliderNavigation = this.updateSliderNavigation.bind(this)
 //     this.searchButtonClick = this.searchButtonClick.bind(this)
 //     this.populateSlides = this.populateSlides.bind(this)
-//     this.onAddRemoveFromDashboardSildes = this.onAddRemoveFromDashboardSildes.bind(this)
+//     this.onAddRemoveFromDashboardSlides = this.onAddRemoveFromDashboardSlides.bind(this)
 //     this.handleSearchInputKeyUp = this.handleSearchInputKeyUp.bind(this)
 //     this.clearSearchButtonClick = this.clearSearchButtonClick.bind(this)
 //     this.doTabsSearch = this.doTabsSearch.bind(this)
@@ -155,7 +155,7 @@
 //   //   return false
 //   // }
 //
-//   onAddRemoveFromDashboardSildes (action, curriculum) {
+//   onAddRemoveFromDashboardSlides (action, curriculum) {
 //     var newRecent = this.state['recentSlides']
 //
 //     // remove from recent
@@ -176,7 +176,7 @@
 //         newRecent.push(<CurriculumThumbnailPublic
 //           className='swiper-slide'
 //           key={curriculum.uuid}
-//           onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+//           onAddRemoveFromDashboardSlides={this.onAddRemoveFromDashboardSlides}
 //           slidesListName={'recentSlides'}
 //           curriculum={curriculum}
 //         />)
@@ -206,7 +206,7 @@
 //           <CurriculumThumbnailPublic
 //             className='swiper-slide'
 //             key={curricula.results[index].uuid}
-//             onAddRemoveFromDashboardSildes={this.onAddRemoveFromDashboardSildes}
+//             onAddRemoveFromDashboardSlides={this.onAddRemoveFromDashboardSlides}
 //             slidesListName={slidesListName}
 //             curriculum={curricula.results[index]}
 //           />/*{...curricula.results[index]}*/

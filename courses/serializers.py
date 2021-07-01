@@ -84,7 +84,7 @@ class UserReactionSerializer(serializers.ModelSerializer):
                 else:  # anon
                     last_reaction = self.Meta.model.objects.get(
                         # TODO check it
-                        anon_session_key=validated_data['material'],
+                        anon_session_key=validated_data['anon_session_key'],
                         last_reaction=True,
                         material=validated_data['material']
                     )

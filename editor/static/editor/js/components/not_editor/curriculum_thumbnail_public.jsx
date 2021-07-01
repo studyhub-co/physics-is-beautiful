@@ -83,14 +83,14 @@ export class CurriculumThumbnailPublic extends React.Component {
   onAddToDashboardSelect (e) {
     store.dispatch(addCurriculumToDashboard(this.props.curriculum.uuid))
     if (this.props.slidesListName !== 'recentSlides') {
-      this.props.onAddRemoveFromDashboardSildes('add', this.props.curriculum)
+      this.props.onAddRemoveFromDashboardSlides('add', this.props.curriculum)
     }
   }
 
   onRemoveFromDashboardSelect (e) {
     store.dispatch(removeCurriculumFromDashboard(this.props.curriculum.uuid))
     if (this.props.slidesListName === 'recentSlides') {
-      this.props.onAddRemoveFromDashboardSildes('remove', this.props.curriculum)
+      this.props.onAddRemoveFromDashboardSlides('remove', this.props.curriculum)
     }
   }
 
@@ -186,5 +186,5 @@ CurriculumThumbnailPublic.propTypes = {
   // name: PropTypes.string.isRequired,
   curriculum: PropTypes.object.isRequired,
   slidesListName: PropTypes.string,
-  onAddRemoveFromDashboardSildes: PropTypes.func
+  onAddRemoveFromDashboardSlides: PropTypes.func
 }
