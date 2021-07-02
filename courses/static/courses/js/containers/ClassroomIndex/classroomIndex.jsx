@@ -6,22 +6,22 @@ import classroomRoutes from '../../../../../../classroom/static/classroom/js/rou
 import classroomReducers from '../../../../../../classroom/static/classroom/js/reducers'
 import useInjectReducer from '../../utils/reactHooks/useInjectReducer'
 
-const ClassroomIndex = (props) => {
+import requireAuthentication from '../../utils/requireAuthentication'
+
+const ClassroomIndex = props => {
   // if you get warning in dev console here,
   // please see for detail: https://github.com/zalmoxisus/redux-devtools-extension/issues/759
   // inject async reducer
   Object.keys(classroomReducers).map((key, reducer) => {
-    useInjectReducer({key, reducer: classroomReducers[key]})
+    useInjectReducer({ key, reducer: classroomReducers[key] })
   })
 
   return (
     // class name needs for css separation
     <div className={'classroom'}>
-      <Sheet>
-        {classroomRoutes}
-      </Sheet>
+      <Sheet>{classroomRoutes}</Sheet>
     </div>
   )
 }
 
-export default ClassroomIndex
+export default requireAuthentication(ClassroomIndex)
