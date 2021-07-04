@@ -6,8 +6,9 @@ export function requireAuthentication(Component) {
     /**
      * Function that redirects to the login page
      */
+    // TODO replace with SPA modal sign in
     redirectToLoginPage() {
-      //  referrer
+      // referrer
       // redirect to login page
       let url = '/accounts/login/?next=' + window.location.pathname
       window.location.replace(url)

@@ -23,6 +23,8 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import MenuIcon from '@material-ui/icons/Menu'
+import SettingsIcon from '@material-ui/icons/Settings' // SettingsApplications
+
 // import SearchIcon from '@material-ui/icons/Search'
 // import AccountCircle from '@material-ui/icons/AccountCircle'
 import ExitToApp from '@material-ui/icons/ExitToApp'
@@ -559,6 +561,19 @@ const PrimarySearchAppBar = connect(
             )}
             {isAnonymousUser && (
               <React.Fragment>
+                <IconButton
+                  edge="end"
+                  aria-label="Settings"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={() => {
+                    history.push('/profile/me/settings/')
+                  }}
+                  color="inherit"
+                  style={{ margin: '0 0.5rem' }}
+                >
+                  <SettingsIcon />
+                </IconButton>
                 <IconButton
                   edge="end"
                   aria-label="Log in"

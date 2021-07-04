@@ -6,20 +6,18 @@ import userProfileRoutes from '../../../../../profiles/static/profiles/js/authen
 import userProfileReducers from '../../../../../profiles/static/profiles/js/authenticated/reducers'
 import useInjectReducer from '../utils/reactHooks/useInjectReducer'
 
-const UserProfileIndex = (props) => {
+const UserProfileIndex = props => {
   // if you get warning in dev console here,
   // please see for detail: https://github.com/zalmoxisus/redux-devtools-extension/issues/759
   // inject async reducer
   Object.keys(userProfileReducers).map((key, reducer) => {
-    useInjectReducer({key, reducer: userProfileReducers[key]})
+    useInjectReducer({ key, reducer: userProfileReducers[key] })
   })
 
   return (
     // class name needs for css separation
     <div className={'profile'}>
-      <Sheet>
-        {userProfileRoutes}
-      </Sheet>
+      <Sheet>{userProfileRoutes}</Sheet>
     </div>
   )
 }
