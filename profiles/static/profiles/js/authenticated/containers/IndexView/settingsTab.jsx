@@ -12,6 +12,7 @@ import * as profileCreators from '../../actions/profile'
 import SettingRow from './settingRow'
 
 class SettingsTabView extends React.Component {
+  // TODO https://github.com/studyhub-co/physics-is-beautiful/issues/210
   componentWillMount() {
     const { history } = this.props
     this.props.tabActions.changeSelectedTab(
@@ -30,23 +31,11 @@ class SettingsTabView extends React.Component {
     var profile = { id: this.props.profile.id || this.props.match.params.id }
     profile[name] = value
 
-    this.props.profileActions.updateReloadProfile(profile)
+    // this.props.profileActions.updateReloadProfile(profile)
+    this.props.profileActions.updateProfile(profile)
   }
 
   render() {
-    // var baseUrl =  this.props.match.url.replace(/\/$/, '')
-    // var studentClassroomUrl = baseUrl + '/:uuid/'
-    //
-    // var joinUrl = baseUrl + '/new/join'
-    //
-    // if (this.props.match.params && this.props.match.params.joinCode) {
-    //   var joinCode = this.props.match.params.joinCode
-    //   // join to classroom and redirect to classroom student view
-    //   if (joinCode) {
-    //     this.props.classroomActions.classroomJoinClassroom(joinCode)
-    //   }
-    // }
-
     return (
       <div>
         {this.props.profile ? (
@@ -61,7 +50,7 @@ class SettingsTabView extends React.Component {
               onChange={value => {
                 this.settingChanged('sound_enabled', value)
               }}
-              uuid={'units'}
+              uuid={'sound'}
               text={'Sound effects'}
             />
           </Container>
@@ -92,7 +81,8 @@ SettingsTabView.propTypes = {
   }).isRequired,
   profileActions: PropTypes.shape({
     fetchProfile: PropTypes.func.isRequired,
-    updateReloadProfile: PropTypes.func.isRequired,
+    // updateReloadProfile: PropTypes.func.isRequired,
+    updateProfile: PropTypes.func.isRequired,
   }).isRequired,
   profile: PropTypes.object,
   profile_fetching: PropTypes.bool,

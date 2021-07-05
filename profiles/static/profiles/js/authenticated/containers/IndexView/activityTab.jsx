@@ -14,6 +14,8 @@ import Col from 'react-bootstrap/Col'
 import * as tabsCreators from '../../actions/tab'
 import * as profileCreators from '../../actions/profile'
 
+import { BASE_URL } from '../../utils/config'
+
 import Badge from '../../components/Badge'
 
 class ActivityTabView extends React.Component {
@@ -21,75 +23,89 @@ class ActivityTabView extends React.Component {
   //   super(props, context)
   // }
 
-  componentWillMount () {
+  // TODO https://github.com/studyhub-co/physics-is-beautiful/issues/210
+  componentWillMount() {
     // if (!this.props.profile && !this.props.profile_fetching) {
     //   this.props.profileActions.fetchProfile(this.props.profileId)
     // }
     const { history } = this.props
 
-    this.props.tabActions.changeSelectedTab('activity', 'profileTab', this.props.match.params.id, history, false)
+    this.props.tabActions.changeSelectedTab(
+      'activity',
+      'profileTab',
+      this.props.match.params.id,
+      history,
+      false,
+    )
     if (!this.props.badges) {
       this.props.profileActions.fetchBadges(this.props.match.params.id)
     }
   }
 
-  render () {
-    return <div>
-      <Row style={{paddingTop: '2rem'}}>
-        <Col sm={12} md={12}>
-          <div className={'blue-title'}>
-           Badges Awarded
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm={12} md={12}>
-          {this.props.badges
-            // TODO sort by level
-            ? <div>
-              { this.props.badges.length === 0 ? <span>No badges</span> : null }
-              { this.props.badges.map(function (badge, i) {
-              // TODO create badge component
-              //   return <div key={badge.id}>{badge.title} {badge.count > 1 ? 'x ' + badge.count : null}</div>
-                return <Badge key={badge.id} badge={badge} />
-              }) }
-            </div>
-            : null }
-        </Col>
+  render() {
+    const { history } = this.props
+    const { id } = this.props.match.params
 
-      </Row>
-    </div>
+    return (
+      <div>
+        <Row style={{ paddingTop: '2rem' }}>
+          <Col sm={12} md={12}>
+            <div className={'blue-title'}>Badges Awarded</div>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={12} md={12}>
+            {this.props.badges ? (
+              // TODO sort by level
+              <div>
+                {this.props.badges.length === 0 ? <span>No badges</span> : null}
+                {this.props.badges.map(function(badge, i) {
+                  return (
+                    <Badge
+                      key={badge.id}
+                      badge={badge}
+                      history={history}
+                      notificationsUrl={`${BASE_URL}/${id}/notifications/`}
+                    />
+                  )
+                })}
+              </div>
+            ) : null}
+          </Col>
+        </Row>
+      </div>
+    )
   }
 }
 
 ActivityTabView.propTypes = {
   tabActions: PropTypes.shape({
-    changeSelectedTab: PropTypes.func.isRequired
+    changeSelectedTab: PropTypes.func.isRequired,
   }).isRequired,
   profileActions: PropTypes.shape({
     // fetchProfile: PropTypes.func.isRequired,
     // updateReloadProfile: PropTypes.func.isRequired
-    fetchBadges: PropTypes.func.isRequired
+    fetchBadges: PropTypes.func.isRequired,
   }).isRequired,
   // profile_fetching: PropTypes.bool,
   // profile: PropTypes.object,
-  badges: PropTypes.array
+  badges: PropTypes.array,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     // tab: tab: state.tabs.profileTab,
     // profile: state.profileCustom.profile,
     // profile_fetching: state.profileCustom.fetching
-    badges: state.profileCustom.badges
+    badges: state.profileCustom.badges,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
-    profileActions: bindActionCreators(profileCreators, dispatch)
+    profileActions: bindActionCreators(profileCreators, dispatch),
   }
 }
 

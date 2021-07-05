@@ -32,10 +32,11 @@ const IndexView = props => {
 
   useEffect(() => {
     // match.params.id == 0 for anon users and me?
-    if (!profile && !profile_fetching) {
-      profileActions.fetchProfile(match.params.id)
-    }
-  }, [])
+    // if (!profile && !profile_fetching) {
+    // fetch profile only if id changed
+    profileActions.fetchProfile(match.params.id)
+    // }
+  }, [match.params.id])
 
   useEffect(() => {
     if (match.isExact && tab !== 'profile') {
@@ -48,6 +49,17 @@ const IndexView = props => {
       )
     }
   }, [match, tab])
+
+  useEffect(() => {
+    if (
+      match.params?.id === 'me' &&
+      profile &&
+      Object.prototype.hasOwnProperty.call(profile, 'id')
+    ) {
+      // user logged in, redirect to ID (from 'me')
+      history.push(`${BASE_URL}/${profile.id}`)
+    }
+  }, [profile])
 
   // TODO remove custom user profile from state on component unmount
   const profileSettingsUrl = `${BASE_URL}/:id/settings/`
@@ -74,10 +86,10 @@ const IndexView = props => {
             {Object.prototype.hasOwnProperty.call(profile, 'id') && (
               <TabLink to="profile">Profile</TabLink>
             )}
-            {profile.is_current_user_profile ||
-              (!Object.prototype.hasOwnProperty.call(profile, 'id') && (
-                <TabLink to="settings">Settings</TabLink>
-              ))}
+            {(profile.is_current_user_profile ||
+              !Object.prototype.hasOwnProperty.call(profile, 'id')) && (
+              <TabLink to="settings">Settings</TabLink>
+            )}
             {Object.prototype.hasOwnProperty.call(profile, 'id') && (
               <TabLink to="activity">Activity</TabLink>
             )}
@@ -90,16 +102,16 @@ const IndexView = props => {
             <TabContent for="profile">
               <ProfileTabView profileId={match.params.id} />
             </TabContent>
-            {(profile && profile.is_current_user_profile) ||
-              (!Object.prototype.hasOwnProperty.call(profile, 'id') && (
-                <TabContent for="settings">
-                  <Route
-                    exact
-                    path={profileSettingsUrl}
-                    component={SettingsTabView}
-                  />
-                </TabContent>
-              ))}
+            {((profile && profile.is_current_user_profile) ||
+              !Object.prototype.hasOwnProperty.call(profile, 'id')) && (
+              <TabContent for="settings">
+                <Route
+                  exact
+                  path={profileSettingsUrl}
+                  component={SettingsTabView}
+                />
+              </TabContent>
+            )}
             <TabContent for="activity">
               <Route
                 exact

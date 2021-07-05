@@ -1,5 +1,6 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_PROFILE_PREFIX } from '../utils/config'
+import { BASE_URL } from '../utils/config'
 import {
   // PROFILE_RECEIVE_ME,
   PROFILE_RECEIVE_PROFILE,
@@ -66,11 +67,12 @@ export function updateProfile(profileJson) {
       .patch(API_PROFILE_PREFIX + profileJson.id + '/', profileJson)
       .then(checkHttpStatus)
       .then(response => {
-        // dispatch(receiveProfile(response.data))
+        dispatch(receiveProfile(response.data))
       })
   }
 }
 
+// TODO why we need reload if updated will return updated profile?
 export function updateReloadProfile(profileJson) {
   return (dispatch, state) => {
     return dispatch(updateProfile(profileJson)).then(() => {
