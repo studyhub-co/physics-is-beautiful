@@ -12,8 +12,11 @@ import {
 } from '../constants'
 import { API_NOTIFICATIONS_PREFIX } from '../../../../../notifications/static/notifications_inbox/js/utils/config'
 import history from '../history'
+// import { userProfileMessage } from '../utils/iframe/postMessages'
 
 export function receiveProfileMe(me) {
+  /* send refreshed profile to the iframe, needs only if settings will be modal window */
+  // userProfileMessage(me)
   return {
     type: PROFILE_RECEIVE_ME,
     payload: {

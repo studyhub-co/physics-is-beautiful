@@ -25,7 +25,8 @@ import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 // import history from '../../../history'
 import UserStateEnum from '../const'
 import { calculateProgress } from '../utils'
-import { handleContinueClick } from '../postIframeMessages'
+// import { handleContinueClick } from '../postIframeMessages'
+import { continueMessage } from '../../../utils/iframe/postMessages'
 
 // fixme copied from studyhub components library, todo remove unnecessary code
 interface FooterProps {
@@ -265,7 +266,7 @@ const Footer: React.FC<FooterProps> = props => {
               }}
             >
               <ButtonUI
-                onClick={handleContinueClick}
+                onClick={continueMessage}
                 variant="contained"
                 className={classes.skipButton}
                 // style={{

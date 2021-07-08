@@ -21,7 +21,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode'
 import Slideshow from '@material-ui/icons/Slideshow'
-
 import { FaTimes } from 'react-icons/fa' // FaPlusCircle
 
 import {
@@ -34,20 +33,15 @@ import {
   updateMaterialImage,
   changeCompleteBoundary,
 } from '../../../../../actions/studio'
-
 import { updateProblemTypeImage } from '../../../../../actions/problemType'
 
 import { DockableDropTarget, DragItemTypes } from '../../../../../dnd'
-
 import { EditableThumbnail } from '../../../../../components/thumbnail'
 import { EditableLabel } from '../../../../../components/label'
-
 import MaterialThumbnail from './MaterialThumbnail'
 // import MaterialContainer from '../../containers/material'
-
 import ToolBar from './Menu/ToolBar'
 import WorkspaceMenu from './Menu/Menu'
-
 import Search from './Codesandbox/Search/index'
 import asyncEditor from './Codesandbox/Editor/index'
 
@@ -62,6 +56,7 @@ import { useHandleDeleteLessonClick } from './Hooks/lesson'
 import { useLayoutMode } from './Hooks/LayoutMenu'
 import { useIframeLoaded } from './Hooks/eval'
 import { checkSaveButtonStyle } from '../../../../CoursesViews/components/style'
+import { saveDataMessage } from '../../../../../utils/iframe/postMessages'
 
 const Lesson = props => {
   const {
@@ -217,7 +212,10 @@ const Lesson = props => {
       if (action === 'standalone_material') {
         // this url not use in SPA application
         if (currentMaterialHasType) {
-          window.open(mptEvalUrl(currentMaterial.material_problem_type), '_blank')
+          window.open(
+            mptEvalUrl(currentMaterial.material_problem_type),
+            '_blank',
+          )
         } else {
           alert('Current material has no type!')
         }
@@ -249,16 +247,16 @@ const Lesson = props => {
   // viewport - header - menu - toolbar
   const bottomsPanelsHeight = 'calc(100vh - 51px - 108px - 35px)'
 
-  const handleSaveDataClick = () => {
-    // TODO - we can get data from iframe and save in SPA, need to explore
-    // send event to the iframe to save material
-    document.getElementById('student_view_iframe').contentWindow.postMessage(
-      {
-        type: 'save_data',
-      },
-      '*',
-    )
-  }
+  // const handleSaveDataClick = () => {
+  //   // TODO - we can get data from iframe and save in SPA, need to explore
+  //   // send event to the iframe to save material
+  //   document.getElementById('student_view_iframe').contentWindow.postMessage(
+  //     {
+  //       type: 'save_data',
+  //     },
+  //     '*',
+  //   )
+  // }
 
   return (
     <Grid container>
@@ -436,7 +434,7 @@ const Lesson = props => {
                 }}
                 variant="contained"
                 color="primary"
-                onClick={handleSaveDataClick}
+                onClick={saveDataMessage}
               >
                 Save
               </Fab>

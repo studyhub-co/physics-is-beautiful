@@ -117,13 +117,13 @@ const Course = props => {
   useEffect(() => {
     fetchCourse(state.courseUuid)
 
-    window.parent.postMessage(
-      {
-        message: 'canGoBack',
-        data: false,
-      },
-      '*',
-    )
+    // window.parent.postMessage(
+    //   {
+    //     message: 'canGoBack',
+    //     data: false,
+    //   },
+    //   '*',
+    // )
   }, [])
 
   useEffect(() => {

@@ -17,7 +17,6 @@ import ProfileTabView from './profileTab'
 import NotificationsTabView from './notificationsTab'
 import SettingsTabView from './settingsTab'
 import ActivityTabView from './activityTab'
-import { Col } from 'react-bootstrap'
 
 const IndexView = props => {
   const {

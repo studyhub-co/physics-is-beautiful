@@ -42,7 +42,7 @@ class SettingsTabView extends React.Component {
           <Container fluid>
             <Row style={{ paddingTop: '2rem' }}>
               <Col sm={12} md={12}>
-                <div className={'blue-title'}>Sounds settings</div>
+                <div className={'blue-title'}>Sound settings</div>
               </Col>
             </Row>
             <SettingRow

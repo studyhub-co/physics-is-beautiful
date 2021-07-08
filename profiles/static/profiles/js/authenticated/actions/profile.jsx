@@ -1,6 +1,7 @@
 import { checkHttpStatus, getAxios } from '../utils'
 import { API_PROFILE_PREFIX } from '../utils/config'
-import { BASE_URL } from '../utils/config'
+// import { BASE_URL } from '../utils/config'
+
 import {
   // PROFILE_RECEIVE_ME,
   PROFILE_RECEIVE_PROFILE,
@@ -10,6 +11,8 @@ import {
 
 // export profile.me action and reducer from main SPA
 // + it will replace the root 'profile' reducer with removing data.
+
+import { receiveProfileMe } from '../../../../../../courses/static/courses/js/actions/profile'
 
 // export function receiveProfileMe (me) {
 //   return {
@@ -68,6 +71,10 @@ export function updateProfile(profileJson) {
       .then(checkHttpStatus)
       .then(response => {
         dispatch(receiveProfile(response.data))
+        // we assume that user can update only me profile,
+        // update data for another part of SPA
+        // FIXME need more clear logic
+        dispatch(receiveProfileMe(response.data))
       })
   }
 }

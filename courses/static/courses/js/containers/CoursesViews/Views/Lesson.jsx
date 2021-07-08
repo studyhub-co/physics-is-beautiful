@@ -6,6 +6,7 @@ import { RingLoader } from 'react-spinners'
 
 import history from '../../../history'
 import * as materialsActionCreators from '../../../actions/materials'
+import { getUserProfileListener } from '../../../utils/iframe/messageListeners'
 
 import { calculateProgress } from '../utils'
 import Footer from '../components/footer'
@@ -120,7 +121,11 @@ const Lesson = props => {
 
   useEffect(() => {
     window.addEventListener('message', messageListener)
-    return () => window.removeEventListener('message', messageListener)
+    window.addEventListener('message', getUserProfileListener)
+    return () => {
+      window.removeEventListener('message', messageListener)
+      window.removeEventListener('message', getUserProfileListener)
+    }
   }, [messageListener])
 
   // const initLoadMaterial = () => {

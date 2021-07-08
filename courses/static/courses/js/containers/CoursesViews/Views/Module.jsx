@@ -22,10 +22,10 @@ const Module = props => {
   useEffect(() => {
     fetchModule(state.moduleUuid)
 
-    window.parent.postMessage({
-      'message': 'canGoBack',
-      'data': false
-    }, '*')
+    // window.parent.postMessage({
+    //   'message': 'canGoBack',
+    //   'data': false
+    // }, '*')
   }, [])
 
   useEffect(() => {
