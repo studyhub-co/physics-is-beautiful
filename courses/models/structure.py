@@ -25,6 +25,10 @@ class CourseQuerySet(models.QuerySet):
         #         return user.profile.as_student_classrooms.last().course
         #     return user.profile.as_student_classrooms.last().curriculum
 
+        # we moved from classroom last to profile.selected_course
+        if user and user.profile.selected_course:
+            return user.profile.selected_course
+
         # this is return null if we have no is_default
         return self.filter(is_default=True).first()  # get first default
 

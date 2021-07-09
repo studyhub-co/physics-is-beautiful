@@ -1,9 +1,7 @@
 from django.conf import settings
 from django.db import models
-
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-
 from django.urls import reverse
 
 
@@ -29,7 +27,10 @@ class Profile(BaseModel):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     sound_enabled = models.BooleanField(default=True)
+    # TODO all_lessons_unlocked - all lesson in all courses?
     all_lessons_unlocked = models.BooleanField(default=False)
+    # The course that user last used
+    selected_course = models.ForeignKey('courses.Course', null=True, blank=True, on_delete=models.SET_NULL)
     user_avatar = models.ImageField(null=True, blank=True)
     gravatar_url = models.URLField(null=True, blank=True, max_length=2048)
     google_avatar_url = models.URLField(null=True, blank=True, max_length=2048)

@@ -452,4 +452,10 @@ class CourseViewSet(ModelViewSet):
             if self.request.user.is_authenticated:
                 user = self.request.user
             return Course.objects.get_default(user=user)
+        elif self.request.user.is_authenticated:
+            course = super(CourseViewSet, self).get_object()
+            # save profile.selected_course
+            self.request.user.profile.selected_course = course
+            self.request.user.profile.save(update_fields=['selected_course'])
+        # TODO add selected_course anon user support?
         return super(CourseViewSet, self).get_object()
