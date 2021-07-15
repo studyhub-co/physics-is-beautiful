@@ -6,7 +6,7 @@ import { FaTimes, FaPlusCircle } from 'react-icons/fa'
 
 import LessonThumbnailContainer from '../containers/lesson_thumbnail'
 import { EditableThumbnail } from '../../../../components/thumbnail'
-import { EditableLabel } from '../../../../components/label'
+import { EditableLabel } from '../../../../components/editableLabel'
 import { BackButton } from '../components/back_button'
 import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 import { tagDelimiters } from '../../../../utils'

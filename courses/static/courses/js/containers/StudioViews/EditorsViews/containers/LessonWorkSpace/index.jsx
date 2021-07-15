@@ -37,7 +37,7 @@ import { updateProblemTypeImage } from '../../../../../actions/problemType'
 
 import { DockableDropTarget, DragItemTypes } from '../../../../../dnd'
 import { EditableThumbnail } from '../../../../../components/thumbnail'
-import { EditableLabel } from '../../../../../components/label'
+import { EditableLabel } from '../../../../../components/editableLabel'
 import MaterialThumbnail from './MaterialThumbnail'
 // import MaterialContainer from '../../containers/material'
 import ToolBar from './Menu/ToolBar'

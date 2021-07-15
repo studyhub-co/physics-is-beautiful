@@ -9,17 +9,23 @@ export const DEFAULT_MATHJAX_OPTIONS = {
   extensions: ['tex2jax.js'],
   jax: ['input/TeX', 'output/HTML-CSS'],
   tex2jax: {
-    inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
-    displayMath: [ ['$$', '$$'], ['\\[', '\\]'] ],
-    processEscapes: true
+    inlineMath: [
+      ['$', '$'],
+      ['\\(', '\\)'],
+    ],
+    displayMath: [
+      ['$$', '$$'],
+      ['\\[', '\\]'],
+    ],
+    processEscapes: true,
   },
-  'HTML-CSS': { availableFonts: ['TeX'] }
+  'HTML-CSS': { availableFonts: ['TeX'] },
 }
 
 export class EditableLabel extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
-    this.state = {editing: false}
+    this.state = { editing: false }
     this.handleEditClick = this.handleEditClick.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleInputBlur = this.handleInputBlur.bind(this)
@@ -28,9 +34,12 @@ export class EditableLabel extends React.Component {
     this.setInputRef = this.setInputRef.bind(this)
   }
 
-  handleEditClick (e) {
+  handleEditClick(e) {
     // edit by external event only
-    if (this.props.hasOwnProperty('editableLabel') && this.props.editableLabel === false) {
+    if (
+      this.props.hasOwnProperty('editableLabel') &&
+      this.props.editableLabel === false
+    ) {
       return
     }
 
@@ -43,91 +52,103 @@ export class EditableLabel extends React.Component {
     }
     this.setState({
       editing: true,
-      value: val
+      value: val,
     })
   }
 
-  setInputRef (ref) {
+  setInputRef(ref) {
     this._inputRef = ref
     if (ref && this.state.editing) {
       this.focus()
     }
   }
 
-  focus () {
+  focus() {
     this._inputRef.focus()
     var v = this._inputRef.value
     this._inputRef.value = ''
     this._inputRef.value = v
   }
 
-  handleInputChange (e) {
+  handleInputChange(e) {
     this.setState({
-      'value': e.target.value
+      value: e.target.value,
     })
   }
 
-  handleInputBlur (e) {
+  handleInputBlur(e) {
     this.save()
   }
 
-  handleInputKeyUp (e) {
+  handleInputKeyUp(e) {
     if (e.which === 27) {
       this.setState({
-        editing: false
+        editing: false,
       })
     }
   }
 
-  handleFormSubmit (e) {
+  handleFormSubmit(e) {
     e.preventDefault()
     this.save()
     return false
   }
 
-  save () {
-    this.setState({editing: false})
+  save() {
+    this.setState({ editing: false })
     this.props.onChange(this.state.value)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
-  componentDidUpdate () {
+  componentDidUpdate() {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
 
-  render () {
+  render() {
     const InputWithRef = React.forwardRef((props, ref) => (
       <input
-        type='text' value={this.state.value}
-        onChange={this.handleInputChange} onBlur={this.handleInputBlur}
-        ref={ref} onKeyUp={this.handleInputKeyUp} />
+        type="text"
+        value={this.state.value}
+        onChange={this.handleInputChange}
+        onBlur={this.handleInputBlur}
+        ref={ref}
+        onKeyUp={this.handleInputKeyUp}
+      />
     ))
 
     if (this.state.editing) {
       return (
-        <form onSubmit={this.handleFormSubmit} style={{display: 'inline'}}>
+        <form onSubmit={this.handleFormSubmit} style={{ display: 'inline' }}>
           <InputWithRef ref={this.setInputRef} />
-        </form>)
+        </form>
+      )
     } else {
       return (
         <span
-          className={'editable-label' + (((this.props.value && this.props.value.trim()) ||
-            this.props.defaultValue) ? '' : ' empty')}
-          onClick={this.handleEditClick}>
+          className={
+            'editable-label' +
+            ((this.props.value && this.props.value.trim()) ||
+            this.props.defaultValue
+              ? ''
+              : ' empty')
+          }
+          onClick={this.handleEditClick}
+        >
           <span>{this.props.value || this.props.defaultValue}</span>
           {/* <span className='glyphicon glyphicon-pencil' /> */}
           <FaPencilAlt className={'glyphicon-pencil'} />
-        </span>)
+        </span>
+      )
     }
   }
 }
 
 export class EditableExternalEventLabel extends EditableLabel {
-  enableEditMode (editMode) {
+  enableEditMode(editMode) {
     var val = this.props.value
     if (editMode || this.props.editMode) {
       if (this.props.value === this.props.defaultValue) {
@@ -138,47 +159,57 @@ export class EditableExternalEventLabel extends EditableLabel {
       }
       this.setState({
         editing: true,
-        value: val
+        value: val,
       })
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.enableEditMode()
   }
 
-  componentWillReceiveProps (props) {
+  componentWillReceiveProps(props) {
     if (props.editMode) {
       this.enableEditMode(props.editMode)
     }
   }
 
-  render () {
-    var inputParams = {type: 'text',
+  render() {
+    var inputParams = {
+      type: 'text',
       value: this.state.value || '',
       onChange: this.handleInputChange,
       onBlur: this.handleInputBlur,
       ref: this.setInputRef,
-      onKeyUp: this.handleInputKeyUp}
+      onKeyUp: this.handleInputKeyUp,
+    }
 
     var input = <input {...inputParams} />
     if (this.props.textArea) {
-      input = <textarea {...inputParams} style={{ 'width': '90%' }} />
+      input = <textarea {...inputParams} style={{ width: '90%' }} />
     }
     if (this.state.editing) {
       return (
-        <form onSubmit={this.handleFormSubmit} style={{display: 'inline'}}>
+        <form onSubmit={this.handleFormSubmit} style={{ display: 'inline' }}>
           {input}
-        </form>)
+        </form>
+      )
     } else {
       return (
         <span
-          className={'editable-label' + (((this.props.value && this.props.value.trim()) || this.props.defaultValue) ? '' : ' empty')}
+          className={
+            'editable-label' +
+            ((this.props.value && this.props.value.trim()) ||
+            this.props.defaultValue
+              ? ''
+              : ' empty')
+          }
           onClick={this.handleEditClick}
-          style={{whiteSpace: 'pre-line'}}
+          style={{ whiteSpace: 'pre-line' }}
         >
           <span>{this.props.value || this.props.defaultValue}</span>
-        </span>)
+        </span>
+      )
     }
   }
 }

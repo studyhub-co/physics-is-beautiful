@@ -10,7 +10,7 @@ import Fade from 'react-bootstrap/Fade'
 import { FaChevronLeft, FaPen, FaCodeBranch } from 'react-icons/fa'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 
-import { EditableLabel } from '../../../../components/label'
+import { EditableLabel } from '../../../../components/editableLabel'
 // import { MySQLAnswerContainer } from '../containers/mysql_answer'
 import { tagDelimiters } from '../../../../utils'
 import markdownConverter from '../../../../utils/markdownConverter'

@@ -668,7 +668,13 @@ export function loadCourseIfNeeded(uuid) {
 export function changeCourseImage(uuid, image) {
   return dispatch => {
     var formData = new FormData()
-    formData.append('image', image)
+    if (image == null) {
+      // delete image
+      formData.append('image', '')
+    } else {
+      formData.append('image', image, image.filename)
+    }
+    // formData.append('image', image)
     $.ajax({
       url: API_PREFIX + 'courses/' + uuid + '/',
       type: 'PATCH',
@@ -685,7 +691,12 @@ export function changeCourseImage(uuid, image) {
 export function changeCourseCoverPhoto(uuid, image) {
   return dispatch => {
     var formData = new FormData()
-    formData.append('cover_photo', image, image.filename)
+    if (image == null) {
+      // delete photo
+      formData.append('cover_photo', '')
+    } else {
+      formData.append('cover_photo', image, image.filename)
+    }
     $.ajax({
       url: API_PREFIX + 'courses/' + uuid + '/',
       type: 'PATCH',

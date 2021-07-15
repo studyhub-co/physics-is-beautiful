@@ -223,10 +223,11 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
     #     return value
 
     def validate_cover_photo(self, value):
-        w, h = get_image_dimensions(value)
-        if value:
-            if round(w / h, 1) != 2.7:
-                raise serializers.ValidationError("Invalid aspect ratio (2.7 : 1)")
+        if value: # not check if empty file
+            w, h = get_image_dimensions(value)
+            if value:
+                if round(w / h, 1) != 2.7:
+                    raise serializers.ValidationError("Invalid aspect ratio (2.7 / 1 required)")
         return value
 
     def update(self, instance, validated_data):

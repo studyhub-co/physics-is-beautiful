@@ -66,7 +66,7 @@ class CourseThumbnailPublic extends React.Component {
   }
 
   onViewProfileSelect() {
-    history.push('/courses/profile/' + this.props.course.uuid + '/')
+    history.push('/courses/' + this.props.course.uuid + '/profile/')
   }
 
   onTitleClick() {
@@ -116,7 +116,7 @@ class CourseThumbnailPublic extends React.Component {
       </Overlay>
     )
 
-    // neeed react >= 16
+    // need react >= 16
     // fix issue https://github.com/akiran/react-slick/issues/757 by append Dropdown.Menu to the react app DOM element
     const DropdownMenu = () =>
       ReactDOM.createPortal(

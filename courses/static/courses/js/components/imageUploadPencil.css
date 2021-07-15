@@ -1,0 +1,15 @@
+.base-circle-edit {
+    /*position: absolute;*/
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    vertical-align: middle;
+    color: rgb(8, 209, 255);
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 10px #d8d8d8;
+    cursor: pointer;
+    top: 0.5rem;
+    /*z-index: 999;*/
+}

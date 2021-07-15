@@ -296,27 +296,27 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
     box-shadow: 0 0 10px #d8d8d8;
 }
 
-.base-circle-edit {
-    position: absolute;
-    width: 3rem;
-    height: 3rem;
-    text-align: center;
-    vertical-align: middle;
-    color: rgb(8, 209, 255);
-    border-radius: 50%;
-    background-color: white;
-    box-shadow: 0 0 10px #d8d8d8;
-    cursor: pointer;
-    top: 0.5rem;
-    /*z-index: 999;*/
-}
+/*.base-circle-edit {*/
+/*    position: absolute;*/
+/*    width: 3rem;*/
+/*    height: 3rem;*/
+/*    text-align: center;*/
+/*    vertical-align: middle;*/
+/*    color: rgb(8, 209, 255);*/
+/*    border-radius: 50%;*/
+/*    background-color: white;*/
+/*    box-shadow: 0 0 10px #d8d8d8;*/
+/*    cursor: pointer;*/
+/*    top: 0.5rem;*/
+/*    !*z-index: 999;*!*/
+/*}*/
 
 .right-circle-edit {
    right: 1rem;
 }
 
 .bottom-circle-edit {
-    top: unset;
+   top: unset;
    bottom: 1rem;
 }
 

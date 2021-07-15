@@ -5,7 +5,7 @@ import Moment from 'react-moment'
 import { Col, Image, Row } from 'react-bootstrap'
 
 import ThumbnailMenu from './thumbnail_menu'
-import { DEFAULT_MATHJAX_OPTIONS } from '../../../components/label'
+import { DEFAULT_MATHJAX_OPTIONS } from '../../../components/editableLabel'
 
 export class MaterialThumbnailPublic extends React.Component {
   // constructor (props, context) {

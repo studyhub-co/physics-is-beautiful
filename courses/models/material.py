@@ -79,7 +79,7 @@ class Material(BaseItemModel):
     class Meta:
         ordering = ['position']
 
-
+# TODO add delete screen on material delete?
 @receiver(pre_save, sender=Material)
 def resize_and_delete_old_screenshot(sender, instance, **kwargs):
     output_size = (300, 300)

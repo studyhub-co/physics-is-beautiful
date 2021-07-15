@@ -28,7 +28,8 @@ export default (
     {/* TODO add signup url?*/}
     <Route path="/s" component={StaticRoutes} />
     {/*<Route exact path={'/'} component={CoursesRoutes} />*/}
-    <Route path={'/courses/:courseUuid?'} component={CoursesRoutes} />
+    {/*<Route path={'/courses/:courseUuid?'} component={CoursesRoutes} />*/}
+    <Route path={'/courses/'} component={CoursesRoutes} />
 
     {/* browse courses */}
     <Route exact path={'/browse/'} component={BrowseStudioDashboard} />

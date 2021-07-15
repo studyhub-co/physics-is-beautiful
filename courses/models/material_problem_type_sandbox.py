@@ -232,8 +232,6 @@ class MaterialProblemTypeSandboxCache(models.Model):
         unique_together = [['sandbox', 'version']]
 
 # These two auto-delete files from filesystem when they are unneeded:
-
-
 @receiver(models.signals.post_delete, sender=MaterialProblemTypeSandboxCache)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     instance.data.delete(save=False)
@@ -246,7 +244,8 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
     try:
         old_data = MaterialProblemTypeSandboxCache.objects.get(pk=instance.pk).data
-        old_data.delete(save=False)
+        if not instance.data == old_data:
+            old_data.delete(save=False)
     except MaterialProblemTypeSandboxCache.DoesNotExist:
         pass
 

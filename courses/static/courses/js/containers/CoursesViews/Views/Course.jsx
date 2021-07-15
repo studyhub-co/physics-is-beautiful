@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
 import { Link } from 'react-router-dom'
 
-// import history from '../history'
+import history from '../../../history'
 
 import * as coursesActionCreators from '../../../actions/courses'
 
@@ -30,75 +29,106 @@ const CourseInfoPanel = props => {
   }
 
   return (
-    <Sheet>
+    <Sheet
+      style={{
+        backgroundSize: 'cover',
+        backgroundImage: currentCourse?.cover_photo
+          ? `url("${currentCourse.cover_photo}")`
+          : 'none',
+      }}
+    >
       {currentCourse && !currentCourse.isFetching && currentCourse.uuid && (
         <Container fluid>
           {/* title */}
           <Row>
-            <Col md={10} xs={8}>
-              <Row>
-                <Col md={12}>
-                  <span className="course-title">{currentCourse.name}</span>
-                  <span style={{ fontSize: '20px', color: 'darkgrey' }}>
-                    &nbsp;
-                    {' by '}&nbsp;
-                    <a
-                      target={'_blank'}
-                      href={currentCourse.author.get_absolute_url}
-                      className="course-user-link"
-                      rel="noreferrer"
-                    >
-                      {currentCourse.author.display_name}
-                    </a>
-                  </span>
-                </Col>
-              </Row>
-              <Row style={{ fontWeight: 300, fontSize: 18, color: '#555' }}>
-                <Col md={12}>
-                  {state.showMore ? (
-                    <div>{currentCourse.description}</div>
-                  ) : null}
-                </Col>
-              </Row>
-              <Row>
-                <Col md={8} />
-                <Col md={12} style={{ textAlign: 'right', fontSize: 15 }}>
-                  {state.showMore ? (
-                    <div>
-                      <Link
-                        to={'/browse/'}
-                        style={{ cursor: 'pointer', color: 'grey' }}
-                      >
-                        {'Select another course'}
-                      </Link>
-                    </div>
-                  ) : null}
-                </Col>
-              </Row>
-            </Col>
-            <Col md={2} xs={4} style={{ textAlign: 'center' }}>
-              <Row>
-                <a
-                  style={{ margin: 'auto' }}
-                  className="course-title course-more-less"
-                  onClick={e => {
-                    showLessMore(e)
+            <Col md={10}>
+              <span className="course-title">
+                <Link
+                  to={`/courses/${currentCourse.uuid}/profile/`}
+                  style={{
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    color: '#1caff6',
                   }}
                 >
-                  {state.showMore ? 'Show less' : 'Show details'}
+                  {currentCourse.name}
+                </Link>
+              </span>
+              <span style={{ fontSize: '20px', color: 'darkgrey' }}>
+                &nbsp;{'by'}&nbsp;
+                <a
+                  // target={'_blank'}
+                  href={''}
+                  onClick={e => {
+                    e.preventDefault()
+                    history.push(`/profile/${currentCourse.author.id}/`)
+                  }}
+                  // href={currentCourse.author.get_absolute_url}
+                  className="course-user-link"
+                  rel="noreferrer"
+                >
+                  {currentCourse.author.display_name}
                 </a>
-              </Row>
-              {state.showMore ? (
-                <Row>
-                  <Col md={12}>
-                    {currentCourse.image ? (
-                      <img className={'img-fluid'} src={currentCourse.image} />
-                    ) : null}
-                  </Col>
-                </Row>
-              ) : null}
+              </span>
+            </Col>
+            <Col md={2} xs={4} style={{ textAlign: 'right' }}>
+              <a
+                style={{
+                  margin: 'auto',
+                  color: 'darkgrey',
+                  textDecoration: 'none',
+                }}
+                className="course-title course-more-less"
+                onClick={e => {
+                  showLessMore(e)
+                }}
+              >
+                {state.showMore ? 'Show less' : 'Show details'}
+              </a>
             </Col>
           </Row>
+          {state.showMore && (
+            <React.Fragment>
+              <Row>
+                <Col md={12}>
+                  {currentCourse.image && (
+                    <img className={'img-fluid'} src={currentCourse.image} />
+                  )}
+                </Col>
+              </Row>
+              {/*<Row>*/}
+              {/*  <Col sm={12} md={12}>*/}
+              {/*    <div style={{ fontSize: '1rem' }}>*/}
+              {/*      {currentCourse.count_lessons} lesson*/}
+              {/*      {currentCourse.count_lessons > 1 && 's'} ∙{' '}*/}
+              {/*      {currentCourse.number_of_learners} learner*/}
+              {/*      {currentCourse.number_of_learners > 1 && 's'}*/}
+              {/*    </div>*/}
+              {/*  </Col>*/}
+              {/*</Row>*/}
+              <Row style={{ fontWeight: 300, fontSize: 18, color: '#555' }}>
+                <Col md={12}>{currentCourse.description}</Col>
+              </Row>
+              <Row>
+                <Col md={6} />
+                <Col md={6} style={{ textAlign: 'right', fontSize: 15 }}>
+                  <Link
+                    to={`/courses/${currentCourse.uuid}/profile/`}
+                    style={{ cursor: 'pointer', color: 'grey' }}
+                  >
+                    {'Course profile view'}
+                  </Link>
+                  {' / '}
+                  <Link
+                    to={'/browse/'}
+                    style={{ cursor: 'pointer', color: 'grey' }}
+                  >
+                    {'Select another course'}
+                  </Link>
+                </Col>
+              </Row>
+            </React.Fragment>
+          )}
         </Container>
       )}
     </Sheet>

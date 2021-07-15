@@ -5,7 +5,7 @@ import { FaTimes, FaPlusCircle, FaGripHorizontal } from 'react-icons/fa'
 import { DragSource } from 'react-dnd'
 import { WithOutContext as ReactTags } from 'react-tag-input'
 
-import { EditableLabel } from '../../../../components/label'
+import { EditableLabel } from '../../../../components/editableLabel'
 import { EditableThumbnail } from '../../../../components/thumbnail'
 import ModuleThumbnailContainer from '../containers/module_thumbnail'
 import { DockableDropTarget, DragItemTypes } from '../../../../dnd'

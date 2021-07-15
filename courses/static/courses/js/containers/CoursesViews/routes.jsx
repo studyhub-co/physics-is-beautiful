@@ -5,11 +5,14 @@ import { Route, Switch } from 'react-router'
 // import { useRouteMatch } from 'react-router-dom'
 
 import { CourseApp, ModuleApp, LessonApp } from './index'
+import CourseProfile from './courseProfile'
 import NotFoundView from '../../components/NotFoundView'
 // import NotFoundView from '../../components/NotFoundView'
 
 export default class CoursesRouter extends React.Component {
   render() {
+    console.log(this.props.match)
+
     return (
       <div className={'course'}>
         <Switch>
@@ -35,14 +38,22 @@ export default class CoursesRouter extends React.Component {
           {/* <Route path='/units/:currentId' component={UnitsApp} /> */}
           {/* <Route path='/games/:uuid/:slug' component={GamesApp} /> */}
 
-          {/* default course */}
-          <Route exact path="" component={CourseApp} />
+          {/* course with uuid */}
+          <Route
+            exact
+            path={this.props.match.path + ':courseUuid/profile/'}
+            component={CourseProfile}
+          />
           {/* course with uuid */}
           <Route
             exact
             path={this.props.match.path + ':courseUuid/'}
             component={CourseApp}
           />
+
+          {/* default course */}
+          <Route exact path="" component={CourseApp} />
+
           <Route path="*" component={NotFoundView} />
         </Switch>
       </div>

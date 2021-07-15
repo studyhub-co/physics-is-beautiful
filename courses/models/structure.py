@@ -2,6 +2,8 @@
 from builtins import setattr
 
 from django.db import models, connection
+from django.db.models.signals import pre_save, post_delete
+from django.dispatch import receiver
 
 from taggit.managers import TaggableManager
 
@@ -125,6 +127,26 @@ class Course(BaseItemModel):
     def __str__(self):
         return 'Course: {}'.format(self.name)
 
+
+@receiver(post_delete, sender=Course)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    instance.cover_photo.delete(save=False)
+    instance.image.delete(save=False)
+
+
+@receiver(pre_save, sender=Course)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+
+    try:
+        old_instance = Course.objects.get(pk=instance.pk)
+        if not old_instance.cover_photo == instance.cover_photo:
+            old_instance.cover_photo.delete(save=False)
+        if not old_instance.image == instance.image:
+            old_instance.image.delete(save=False)
+    except Course.DoesNotExist:
+        pass
 
 class Unit(BaseItemModel):
 
