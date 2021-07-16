@@ -26,7 +26,7 @@ class BrowseCoursesView extends React.Component {
     super(props)
     this.state = {
       searchString: '',
-      searchEnabeled: false,
+      searchEnabled: false,
       selectedTab: '',
       selectedOption: [],
       popularSlides: [],
@@ -152,7 +152,7 @@ class BrowseCoursesView extends React.Component {
   handleSearchString(e) {
     if (!e.target.value) {
       this.setState({ searchString: e.target.value }, this.doTabsSearch) // reset
-      this.setState({ searchEnabeled: false })
+      this.setState({ searchEnabled: false })
       this.searchView = null
     } else {
       this.setState({ searchString: e.target.value })
@@ -161,7 +161,7 @@ class BrowseCoursesView extends React.Component {
 
   clearSearchButtonClick(e) {
     this.setState({ searchString: '' }, this.doTabsSearch)
-    this.setState({ searchEnabeled: false })
+    this.setState({ searchEnabled: false })
     this.searchView = null
   }
 
@@ -173,25 +173,26 @@ class BrowseCoursesView extends React.Component {
 
   doTabsSearch() {
     if (this.state.selectedTab === 'Units') {
-      this.searchUnitsView.getWrappedInstance().doSearch()
+      this.searchUnitsView.doSearch()
     }
     if (this.state.selectedTab === 'Modules') {
-      this.searchModulesView.getWrappedInstance().doSearch()
+      this.searchModulesView.doSearch()
     }
     if (this.state.selectedTab === 'Lessons') {
-      this.searchLessonsView.getWrappedInstance().doSearch()
+      this.searchLessonsView.doSearch()
     }
     if (this.state.selectedTab === 'Materials') {
-      this.materialsSearchView.getWrappedInstance().doSearch()
+      this.materialsSearchView.doSearch()
     }
   }
 
   searchButtonClick(e) {
     var searchString = this.state.searchString
     if (searchString) {
-      this.setState({ searchEnabeled: true })
+      this.setState({ searchEnabled: true })
       if (this.searchView) {
-        this.searchView.getWrappedInstance().doSearch()
+        // this.searchView.getWrappedInstance().doSearch()
+        this.searchView.doSearch()
       }
       this.doTabsSearch()
     }
@@ -288,7 +289,7 @@ class BrowseCoursesView extends React.Component {
 
   render() {
     var displayDashboard = 'block'
-    if (this.state.searchEnabeled) {
+    if (this.state.searchEnabled) {
       displayDashboard = 'none'
     }
 
@@ -318,7 +319,7 @@ class BrowseCoursesView extends React.Component {
               <TabLink to="Materials">Materials</TabLink>
               <div className="content">
                 <TabContent for="Courses">
-                  {this.state.searchEnabeled ? (
+                  {this.state.searchEnabled ? (
                     <CoursesSearchView
                       ref={node => {
                         if (node) this.searchView = node

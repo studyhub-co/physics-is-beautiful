@@ -86,7 +86,7 @@ class LessonsSearchView extends React.Component {
             {items}
           </Row>
         </InfiniteScroll>
-        { this.props.lessonsSearchList.results.length === 0 ? <h4>
+        { this.props.lessonsSearchList.results.length === 0 ? <h4 style={{padding: "1rem 0"}}>
         Sorry, we couldn't find any results for this query.
         </h4> : null }
       </div>

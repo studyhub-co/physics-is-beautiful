@@ -11,7 +11,7 @@ import { loadSearchCourses } from '../../../../actions/studio'
 import CourseThumbnailPublic from '../../components/course_thumbnail_public'
 
 class CoursesSearchView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.doSearch = this.doSearch.bind(this)
     this.loadNextPage = this.loadNextPage.bind(this)
@@ -19,84 +19,96 @@ class CoursesSearchView extends React.Component {
     this.state = {
       courses: [],
       hasMoreItems: false,
-      nextHref: null
+      nextHref: null,
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.loadSearchCourses(this.props.coursesSearchString)
   }
 
-  componentWillReceiveProps (props) {
-    if (this.props.selectedTab !== props.selectedTab && props.selectedTab === 'Courses') {
+  componentWillReceiveProps(props) {
+    if (
+      this.props.selectedTab !== props.selectedTab &&
+      props.selectedTab === 'Courses'
+    ) {
       this.props.loadSearchCourses(this.props.searchString)
     }
 
-    if (this.props.coursesSearchList !== props.coursesSearchList && props.coursesSearchList) {
+    if (
+      this.props.coursesSearchList !== props.coursesSearchList &&
+      props.coursesSearchList
+    ) {
       if (props.coursesSearchList.previous == null) {
-      // 1st page
+        // 1st page
         this.setState({
           courses: props.coursesSearchList.results,
           hasMoreItems: Boolean(props.coursesSearchList.next),
-          nextHref: props.coursesSearchList.next})
+          nextHref: props.coursesSearchList.next,
+        })
       } else {
-      // add to list
-        var newlist = [...this.state.courses, ...props.coursesSearchList.results]
+        // add to list
+        var newlist = [
+          ...this.state.courses,
+          ...props.coursesSearchList.results,
+        ]
 
         this.setState({
           courses: newlist,
           hasMoreItems: Boolean(props.coursesSearchList.next),
-          nextHref: props.coursesSearchList.next})
+          nextHref: props.coursesSearchList.next,
+        })
       }
     }
   }
 
-  loadNextPage (page) {
+  loadNextPage(page) {
     if (this.state.hasMoreItems) {
       this.props.loadSearchCourses(this.props.searchString, this.state.nextHref)
     }
   }
 
-  doSearch () {
+  doSearch() {
     this.props.loadSearchCourses(this.props.coursesSearchString)
   }
 
-  render () {
+  render() {
     var items = []
 
     this.state.courses.map((course, i) => {
-      items.push(
-        <CourseThumbnailPublic
-          key={course.uuid}
-          course={course} />
-      )
+      items.push(<CourseThumbnailPublic key={course.uuid} course={course} />)
     })
 
-    return (<Container fluid>{this.props.coursesSearchList
-      ? <div>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.loadNextPage}
-          hasMore={this.state.hasMoreItems}
-          loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
-        >
-          {items}
-        </InfiniteScroll>
-        { this.props.coursesSearchList.results.length === 0 ? <h4>
-          Sorry, we couldn't find any results for this query.
-        </h4> : null }
-      </div>
-      : <Row>
-        <Col sm={12} md={12}>
-          <div style={{height: '10rem', marginLeft: '50%'}}>
-            <RingLoader
-              color={'#1caff6'}
-              loading={Boolean(true)}
-            />
+    return (
+      <Container fluid>
+        {this.props.coursesSearchList ? (
+          <div>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={this.loadNextPage}
+              hasMore={this.state.hasMoreItems}
+              loader={
+                <div key={this.state.nextHref} style={{ clear: 'both' }} />
+              } // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
+            >
+              {items}
+            </InfiniteScroll>
+            {this.props.coursesSearchList.results.length === 0 ? (
+              <h4 style={{ padding: '1rem 0' }}>
+                Sorry, we couldn't find any results for this query.
+              </h4>
+            ) : null}
           </div>
-        </Col>
-      </Row> }
-    </Container>
+        ) : (
+          <Row>
+            <Col sm={12} md={12}>
+              <div style={{ height: '10rem', marginLeft: '50%' }}>
+                <RingLoader color={'#1caff6'} loading={Boolean(true)} />
+              </div>
+            </Col>
+          </Row>
+        )}
+      </Container>
     )
   }
 }
@@ -109,21 +121,24 @@ CoursesSearchView.propTypes = {
   // coursesSearchList: PropTypes.array
   searchString: PropTypes.string,
   lessonsSearchList: PropTypes.object,
-  selectedTab: PropTypes.string
+  selectedTab: PropTypes.string,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    coursesSearchList: state.studio.search.courses
+    coursesSearchList: state.studio.search.courses,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
-    loadSearchCourses: (coursesSearchString, url) => dispatch(loadSearchCourses(coursesSearchString, url)),
+    loadSearchCourses: (coursesSearchString, url) =>
+      dispatch(loadSearchCourses(coursesSearchString, url)),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(CoursesSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(CoursesSearchView)
 export { CoursesSearchView as CoursesSearchViewNotConnected }
