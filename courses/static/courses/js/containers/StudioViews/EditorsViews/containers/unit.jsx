@@ -9,7 +9,7 @@ import {
   moveModule,
   // moveLesson,
   addUnitTag,
-  deleteUnitTag
+  deleteUnitTag,
 } from '../../../../actions/studio'
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,7 +21,7 @@ const mapStateToProps = (state, ownProps) => {
     tags: unit.tags,
     image: unit.image,
     course: unit.course,
-    modules: unit.modules
+    modules: unit.modules,
   }
 }
 
@@ -33,15 +33,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onNameChange: name => dispatch(renameUnit(uuid, name)),
     onDeleteClick: () => dispatch(deleteUnit(uuid)),
     onAddModuleClick: () => dispatch(addModule(uuid)),
-    onAddTag: (tag) => dispatch(addUnitTag(uuid, tag)),
-    onDeleteTag: (tag) => dispatch(deleteUnitTag(uuid, tag)),
+    onAddTag: tag => dispatch(addUnitTag(uuid, tag)),
+    onDeleteTag: tag => dispatch(deleteUnitTag(uuid, tag)),
     onModuleDroppedBefore: (beforeModuleUuid, draggedItem) => {
       dispatch(moveModule(draggedItem.uuid, uuid, beforeModuleUuid))
-    }
+    },
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Unit)
+export default connect(mapStateToProps, mapDispatchToProps)(Unit)

@@ -46,8 +46,8 @@ class RecentlyFilterBackend(filters.BaseFilterBackend):
 
 # TODO move to lib app
 class SearchMixin:
-
-    @action(methods=['GET'], detail=False, permission_classes=[permissions.IsAuthenticated, ])
+    # permission_classes=[permissions.IsAuthenticated, ]  # allow anon user use search
+    @action(methods=['GET'], detail=False)
     def search(self, request):
 
         qs = self.get_queryset()
@@ -67,7 +67,7 @@ class SearchMixin:
             fields = [Cast(val, TextField()) for i, val in enumerate(self.casting_search_fields)]
             vector = SearchVector(*fields)
 
-        qs = qs.annotate(search=vector).filter(search=query)
+        qs = qs.annotate(search=vector).filter(Q(tags__name__in=keywords.split(' ')) | Q(search=query))
         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 
         # search pagination
@@ -218,7 +218,9 @@ class MaterialViewSet(mixins.UpdateModelMixin,
         .order_by('-lesson__module__unit__course__number_of_learners_denormalized', 'uuid')\
         .select_related('lesson')
     serializer_class = PublicMaterialSerializer
-    search_fields = ['text', ]  # TODO add answers text
+    # search_fields = ['text', ]
+    # we do not need 'name' field
+    search_fields = ['data', ] # TODO material problem type name!
     lookup_field = 'uuid'
     pagination_class = StandardResultsSetPagination
 

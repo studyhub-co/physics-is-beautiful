@@ -3,8 +3,14 @@ import { connect } from 'react-redux'
 import { Course } from '../rich_components/course'
 
 import {
-  renameCourse, changeCourseImage, deleteCourse, addUnit, moveUnit,
-  addCourseTag, deleteCourseTag, loadCourses
+  renameCourse,
+  changeCourseImage,
+  deleteCourse,
+  addUnit,
+  moveUnit,
+  addCourseTag,
+  deleteCourseTag,
+  loadCourses,
 } from '../../../../actions/studio'
 
 const mapStateToProps = (state, ownProps) => {
@@ -18,9 +24,9 @@ const mapStateToProps = (state, ownProps) => {
       tags: cur.tags,
       uuid: uuid,
       image: cur.image,
-      units: cur.units.map(unitUuid => state.studio.units[unitUuid])
+      units: cur.units.map(unitUuid => state.studio.units[unitUuid]),
     }
-  } else return {loading: true}
+  } else return { loading: true }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -31,14 +37,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onNameChange: name => dispatch(renameCourse(uuid, name)),
     onDeleteClick: () => dispatch(deleteCourse(uuid)),
     onAddUnitClick: () => dispatch(addUnit(uuid)),
-    onAddTag: (tag) => dispatch(addCourseTag(uuid, tag)),
-    onDeleteTag: (tag) => dispatch(deleteCourseTag(uuid, tag)),
-    onUnitDroppedBefore: (beforeUnit, unit) => dispatch(moveUnit(unit.uuid, beforeUnit)),
-    loadCourses: () => dispatch(loadCourses())
+    onAddTag: tag => dispatch(addCourseTag(uuid, tag)),
+    onDeleteTag: tag => dispatch(deleteCourseTag(uuid, tag)),
+    onUnitDroppedBefore: (beforeUnit, unit) =>
+      dispatch(moveUnit(unit.uuid, beforeUnit)),
+    loadCourses: () => dispatch(loadCourses()),
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Course)
+export default connect(mapStateToProps, mapDispatchToProps)(Course)

@@ -1,3 +1,4 @@
+
 from django.db.models import Q, Count, Max, F
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
@@ -65,7 +66,7 @@ class SearchMixin:
             fields = [Cast(val, TextField()) for i, val in enumerate(self.casting_search_fields)]
             vector = SearchVector(*fields)
 
-        qs = qs.annotate(search=vector).filter(search=query)
+        qs = qs.annotate(search=vector).filter(Q(tags__name__in=keywords.split(' ')) | Q(search=query))
         qs = qs.annotate(rank=SearchRank(vector, query)).order_by('-rank')
 
         # search pagination

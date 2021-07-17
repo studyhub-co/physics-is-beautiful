@@ -80,6 +80,7 @@ class ModulesSearchView extends React.Component {
           pageStart={0}
           loadMore={this.loadNextPage}
           hasMore={this.state.hasMoreItems}
+          style={{ display: 'flex', flexWrap: 'wrap' }}
           loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
         >
           <Row>
@@ -87,7 +88,7 @@ class ModulesSearchView extends React.Component {
           </Row>
         </InfiniteScroll>
         { this.props.modulesSearchList.results.length === 0 ? <h4 style={{padding: "1rem 0"}}>
-        Sorry, we couldn't find any results for this query.
+        Sorry, we couldn&apos;t find any results for this query.
         </h4> : null }
       </div>
       : <Row>

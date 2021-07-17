@@ -10,7 +10,7 @@ import {
   addLesson,
   addModuleTag,
   deleteModuleTag,
-  loadModuleIfNeeded
+  loadModuleIfNeeded,
 } from '../../../../actions/studio'
 
 const mapStateToProps = (state, ownProps) => {
@@ -24,12 +24,12 @@ const mapStateToProps = (state, ownProps) => {
       tags: module.tags,
       image: module.image,
       lessons: module.lessons || [],
-      course: module.course
+      course: module.course,
     }
   } else {
     return {
       loading: true,
-      uuid: uuid
+      uuid: uuid,
     }
   }
 }
@@ -40,16 +40,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onImageChange: image => dispatch(changeModuleImage(uuid, image)),
     onNameChange: name => dispatch(renameModule(uuid, name)),
     onDeleteClick: () => dispatch(deleteModule(uuid)),
-    onAddTag: (tag) => dispatch(addModuleTag(uuid, tag)),
-    onDeleteTag: (tag) => dispatch(deleteModuleTag(uuid, tag)),
+    onAddTag: tag => dispatch(addModuleTag(uuid, tag)),
+    onDeleteTag: tag => dispatch(deleteModuleTag(uuid, tag)),
     onLessonDroppedBefore: (beforeLessonUuid, draggedItem) =>
       dispatch(moveLesson(draggedItem.uuid, uuid, beforeLessonUuid)),
     onAddLessonClick: () => dispatch(addLesson(uuid)),
-    loadModuleIfNeeded: () => dispatch(loadModuleIfNeeded(uuid))
+    loadModuleIfNeeded: () => dispatch(loadModuleIfNeeded(uuid)),
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Module)
+export default connect(mapStateToProps, mapDispatchToProps)(Module)

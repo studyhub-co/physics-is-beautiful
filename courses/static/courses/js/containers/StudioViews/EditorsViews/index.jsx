@@ -5,7 +5,7 @@ import EditCourseView1 from './containers/course'
 import EditModuleView1 from './containers/module'
 
 export class EditCourseView extends React.Component {
-  render () {
+  render() {
     return (
       <Sheet>
         <div className={'editor'}>
@@ -17,12 +17,13 @@ export class EditCourseView extends React.Component {
 }
 
 export class EditModuleView extends React.Component {
-  render () {
-    return (<Sheet>
-      <div className={'editor'}>
-        <EditModuleView1 {...this.props} />
-      </div>
-    </Sheet>
+  render() {
+    return (
+      <Sheet>
+        <div className={'editor'}>
+          <EditModuleView1 {...this.props} />
+        </div>
+      </Sheet>
     )
   }
 }

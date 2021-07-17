@@ -10,7 +10,9 @@ const mapStateToProps = (state, ownProps) => {
     uuid: uuid,
     name: les.name,
     image: les.image,
-    onClick: () => { history.push('/studio/editor/lessons/' + uuid + '/') }
+    onClick: () => {
+      history.push('/studio/editor/lessons/' + uuid + '/')
+    },
   }
 }
 

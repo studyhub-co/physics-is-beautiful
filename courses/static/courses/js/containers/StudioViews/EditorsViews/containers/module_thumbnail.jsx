@@ -13,26 +13,35 @@ const mapStateToProps = (state, ownProps) => {
   return {
     name: mod.name,
     image: mod.image,
-    onClick: () => { history.push('/studio/editor/modules/' + uuid + '/') }
+    onClick: () => {
+      history.push('/studio/editor/modules/' + uuid + '/')
+    },
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const uuid = ownProps.uuid || ownProps.match.params.uuid
   return {
-    onLessonDrop: (lessonUuid) => dispatch(moveLesson(lessonUuid, uuid))
+    onLessonDrop: lessonUuid => dispatch(moveLesson(lessonUuid, uuid)),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  DropTarget(DragItemTypes.LESSON,
-    {drop: function (props, monitor) {
-      props.onLessonDrop(monitor.getItem().uuid)
-    }
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
+  DropTarget(
+    DragItemTypes.LESSON,
+    {
+      drop: function(props, monitor) {
+        props.onLessonDrop(monitor.getItem().uuid)
+      },
     },
     (connect, monitor) => {
       return {
         connectDropTarget: connect.dropTarget(),
-        dragOver: monitor.isOver()
+        dragOver: monitor.isOver(),
       }
-    })(ModuleThumbnail))
+    },
+  )(ModuleThumbnail),
+)

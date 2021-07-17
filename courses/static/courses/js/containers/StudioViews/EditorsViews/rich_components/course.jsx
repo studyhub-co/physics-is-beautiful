@@ -14,50 +14,55 @@ import { DockableDropTarget, DragItemTypes } from '../../../../dnd'
 import { tagDelimiters } from '../../../../utils'
 
 export class Course extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleDeleteClick = this.handleDeleteClick.bind(this)
     this.handleTagDelete = this.handleTagDelete.bind(this)
     this.handleTagAddition = this.handleTagAddition.bind(this)
-    this.state = {tags: []}
+    this.state = { tags: [] }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // TODO load single course
     this.props.loadCourses()
   }
 
-  handleDeleteClick (e) {
+  handleDeleteClick(e) {
     e.preventDefault()
-    if (confirm('This will permanently delete course "' + this.props.name +
-      '" with all its materials. Are you sure?')) {
+    if (
+      confirm(
+        'This will permanently delete course "' +
+          this.props.name +
+          '" with all its materials. Are you sure?',
+      )
+    ) {
       this.props.onDeleteClick()
     }
   }
 
-  handleTagDelete (i) {
+  handleTagDelete(i) {
     const { tags } = this.state
     this.props.onDeleteTag(tags[i])
     this.setState({
-      tags: tags.filter((tag, index) => index !== i)
+      tags: tags.filter((tag, index) => index !== i),
     })
   }
 
-  handleTagAddition (tag) {
+  handleTagAddition(tag) {
     this.setState(state => ({ tags: [...state.tags, tag] }))
     this.props.onAddTag(tag)
   }
 
-  componentWillUpdate (nextProps, nextState, nextContext) {
+  componentWillUpdate(nextProps, nextState, nextContext) {
     if (nextProps.tags && nextProps.tags !== this.props.tags) {
-      const tags = nextProps.tags.map((tag) => {
-        return {id: tag, text: tag}
+      const tags = nextProps.tags.map(tag => {
+        return { id: tag, text: tag }
       })
-      this.setState({tags: tags})
+      this.setState({ tags: tags })
     }
   }
 
-  render () {
+  render() {
     if (this.props.loading) {
       return <div>Loading...</div>
     }
@@ -69,17 +74,22 @@ export class Course extends React.Component {
           key={unit.uuid}
           onDrop={this.props.onUnitDroppedBefore.bind(null, unit.uuid)}
           itemType={DragItemTypes.UNIT}
-          selfUuid={unit.uuid}>
+          selfUuid={unit.uuid}
+        >
           <UnitContainer key={unit.uuid} uuid={unit.uuid} />
-        </DockableDropTarget>)
+        </DockableDropTarget>,
+      )
     }
     var nameLabel
     // TODO get default from course settings
     if (this.props.name !== 'Default Course') {
-      nameLabel = <EditableLabel
-        value={this.props.name}
-        onChange={this.props.onNameChange}
-        defaultValue='New course'/>
+      nameLabel = (
+        <EditableLabel
+          value={this.props.name}
+          onChange={this.props.onNameChange}
+          defaultValue="New course"
+        />
+      )
     } else {
       nameLabel = <span>{this.props.name}</span>
     }
@@ -87,26 +97,41 @@ export class Course extends React.Component {
     return (
       <div>
         <BackButton link={'/studio/'} />
-        <div className='course'>
+        <div className="course">
           <h1>
-            <EditableThumbnail image={this.props.image} onChange={this.props.onImageChange}/>
+            <EditableThumbnail
+              image={this.props.image}
+              onChange={this.props.onImageChange}
+            />
             {nameLabel}
             <FaTimes onClick={this.handleDeleteClick} />
-            <Link to={'/courses/' + this.props.uuid + '/'} className='btn btn-light'>
+            <Link
+              to={'/courses/' + this.props.uuid + '/'}
+              className="btn btn-light"
+            >
               <FaExternalLinkAlt /> Open student view
             </Link>
           </h1>
           <ReactTags
             tags={this.state.tags}
             // suggestions={suggestions}
-            inputFieldPosition='inline'
+            inputFieldPosition="inline"
             handleDelete={this.handleTagDelete}
             handleAddition={this.handleTagAddition}
             allowDragDrop={Boolean(false)}
-            delimiters={tagDelimiters} />
+            delimiters={tagDelimiters}
+          />
           {units}
-          <DockableDropTarget onDrop={this.props.onUnitDroppedBefore.bind(null, null)} itemType={DragItemTypes.UNIT}>
-            <Button className={'common-button'} onClick={this.props.onAddUnitClick}>Add Unit</Button>
+          <DockableDropTarget
+            onDrop={this.props.onUnitDroppedBefore.bind(null, null)}
+            itemType={DragItemTypes.UNIT}
+          >
+            <Button
+              className={'common-button'}
+              onClick={this.props.onAddUnitClick}
+            >
+              Add Unit
+            </Button>
           </DockableDropTarget>
         </div>
       </div>
@@ -122,5 +147,5 @@ Course.propTypes = {
   onNameChange: PropTypes.func.isRequired,
   onAddUnitClick: PropTypes.func.isRequired,
   onUnitDroppedBefore: PropTypes.func.isRequired,
-  loadCourses: PropTypes.func.isRequired
+  loadCourses: PropTypes.func.isRequired,
 }
