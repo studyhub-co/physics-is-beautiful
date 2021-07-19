@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState, memo } from 'react';
+import React, { useCallback, useEffect, useRef, useState, memo } from 'react'
 import { connect, useSelector, useDispatch } from 'react-redux'
 import { Dispatch, bindActionCreators, compose } from 'redux'
 // import {Dispatch} from '../../../../../../../ts/types/redux'
-import qs from 'qs';
+import qs from 'qs'
 import { useActions } from './hooks'
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel'
+import Input from '@material-ui/core/Input'
+import FormControl from '@material-ui/core/FormControl'
 
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components'
 
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth'
+// import Margin from '@codesandbox/common/lib/components/spacing/Margin'
 
 import * as problemTypeActionsCreators from '../../../../../../../actions/problemType'
 import * as studioActionsCreators from '../../../../../../../actions/studio'
@@ -23,15 +23,14 @@ import * as studioActionsCreators from '../../../../../../../actions/studio'
 
 // import { useOvermind } from '../app/overmind';
 
-import theme from '@codesandbox/common/lib/theme';
+import theme from '@codesandbox/common/lib/theme'
 
-import { Container, Content, Main, StyledTitle } from './elements';
-import Filters from './Filters';
-import Results from './Results';
-import Styles, { materialUIStyles } from './search';
+import { Container, Content, Main, StyledTitle } from './elements'
+// import Filters from './Filters'
+import Results from './Results'
+import Styles, { materialUIStyles } from './search'
 
 // import { Pagination } from '../../../../../../../components/react-bootstrap/pagination'
-
 
 // import {
 //   ALGOLIA_API_KEY,
@@ -53,50 +52,53 @@ import Styles, { materialUIStyles } from './search';
 // import { Navigation } from '../app/pages/common/Navigation';
 // import 'instantsearch.css/themes/reset.css';
 
-
 interface ISearchProps {
-  history: History;
-  location: Location;
+  history: History
+  location: Location
 }
 
-const updateAfter = 700;
+const updateAfter = 700
 
-const createURL = state => `?${qs.stringify(state)}`;
+const createURL = state => `?${qs.stringify(state)}`
 
 const searchStateToUrl = (location, searchState) =>
-  searchState ? `${location.pathname}${createURL(searchState)}` : '';
+  searchState ? `${location.pathname}${createURL(searchState)}` : ''
 
-const Search: React.FC<ISearchProps> = ({
-      // history,
-}) => {
+const Search: React.FC<ISearchProps> = (
+  {
+    // history,
+  },
+) => {
   // const {
   //   actions: { searchMounted },
   // } = useOvermind();
 
   // redux store
-  const problemTypesPaginatedListObject =
-     useSelector(state => state.problemType.problemTypesPaginatedListObject)
-  const currentMaterial =
-     useSelector(state => state.studio.currentMaterial)
+  const problemTypesPaginatedListObject = useSelector(
+    state => state.problemType.problemTypesPaginatedListObject,
+  )
+  const currentMaterial = useSelector(state => state.studio.currentMaterial)
 
   const problemTypeActions = useActions(problemTypeActionsCreators)
   const studioActions = useActions(studioActionsCreators)
 
   // urls search navigation, no need now
-  const [searchState, setSearchState] = useState(
-    // qs.parse(location.search.slice(1))
-  );
+  // const [searchState, setSearchState] = useState()
+  // qs.parse(location.search.slice(1))
 
-  const debouncedSetState = useRef(null);
+  // const debouncedSetState = useRef(null)
+
+  const [searchString, setSearchString] = useState('')
 
   // useEffect(() => {
   //   searchMounted();
   // }, [searchMounted]);
 
   useEffect(() => {
-    problemTypeActions.fetchProblemTypes();
-  }, []);
+    problemTypeActions.fetchProblemTypes()
+  }, [])
 
+  //// sandbox listen query PARAM in URL, we have now this
   // useEffect(() => {
   //   const unlisten = history.listen((loc, action) => {
   //     if (['POP', 'PUSH'].includes(action)) {
@@ -123,98 +125,114 @@ const Search: React.FC<ISearchProps> = ({
   //   [history, location]
   // );
 
-  const onSearchStateChange = useCallback(
-    newSearchState => {
-      clearTimeout(debouncedSetState.current);
+  // const onSearchStateChange = useCallback(
+  //   newSearchState => {
+  //     clearTimeout(debouncedSetState.current)
+  //
+  //     debouncedSetState.current = setTimeout(() => {
+  //       // history.push(
+  //       //   searchStateToUrl(location, newSearchState),
+  //       //   newSearchState
+  //       // );
+  //     }, updateAfter)
+  //
+  //     setSearchState(newSearchState)
+  //   },
+  //   [history, location],
+  // )
 
-      debouncedSetState.current = setTimeout(() => {
-        // history.push(
-        //   searchStateToUrl(location, newSearchState),
-        //   newSearchState
-        // );
-      }, updateAfter);
-
-      setSearchState(newSearchState);
-    },
-    [history, location]
-  );
-
-  const selectMaterialType = (materialType) => {
+  const selectMaterialType = materialType => {
     // set materialType to current material
     studioActions.setMaterialProblemType(currentMaterial, materialType)
   }
 
-  const useMaterialUIStyles = materialUIStyles(theme);
+  const useMaterialUIStyles = materialUIStyles(theme)
   const fetchNextPage = (nextHref: string) => {
-    problemTypeActions.fetchProblemTypes(nextHref);
+    problemTypeActions.fetchProblemTypes(nextHref)
+  }
+
+  const filterByUserType = (query: string) => {
+    setSearchString(query)
+  }
+
+  const clearSearchString = () => {
+    setSearchString('')
   }
 
   return (
     <ThemeProvider theme={theme}>
-    <Container>
-      {/*<Helmet>*/}
+      <Container>
+        {/*<Helmet>*/}
         {/*<title>Search - CodeSandbox</title>*/}
-      {/*</Helmet>*/}
-      <Styles />
+        {/*</Helmet>*/}
+        <Styles />
 
-      <MaxWidth>
-        {/*<Margin vertical={1.5}>*/}
+        <MaxWidth>
+          {/*<Margin vertical={1.5}>*/}
           {/*<Navigation title="Search" searchNoInput />*/}
 
           <Content>
             {/*<InstantSearch*/}
-              {/*appId={ALGOLIA_APPLICATION_ID}*/}
-              {/*apiKey={ALGOLIA_API_KEY}*/}
-              {/*createURL={createURL}*/}
-              {/*indexName={ALGOLIA_DEFAULT_INDEX}*/}
-              {/*onSearchStateChange={onSearchStateChange}*/}
-              {/*searchState={searchState}*/}
+            {/*appId={ALGOLIA_APPLICATION_ID}*/}
+            {/*apiKey={ALGOLIA_API_KEY}*/}
+            {/*createURL={createURL}*/}
+            {/*indexName={ALGOLIA_DEFAULT_INDEX}*/}
+            {/*onSearchStateChange={onSearchStateChange}*/}
+            {/*searchState={searchState}*/}
             {/*>*/}
-              {/*<Configure hitsPerPage={12} />*/}
+            {/*<Configure hitsPerPage={12} />*/}
 
-              <Main alignItems="flex-start">
-                <div>
-                  <StyledTitle>Search Material Type</StyledTitle>
-                  {/*<PoweredBy />*/}
-                   <FormControl fullWidth>
-                    <InputLabel
-                      className={useMaterialUIStyles.inputLabel}
-                      classes={{
-                        focused: useMaterialUIStyles.inputLabelFocused,
-                      }}
-                      htmlFor="filled-search">
-                      Search
-                    </InputLabel>
-                    <Input
-                      className={useMaterialUIStyles.input}
-                      id="filled-search"
-                      // label="Search field"
-                      type="search"
-                      // variant="filled"
-                    />
-                   </FormControl>
-                  {/*<div>SearchBox</div>*/}
-                  {/*<SearchBox*/}
-                    {/*autoFocus*/}
-                    {/*translations={{ placeholder: 'Search Sandboxes...' }}*/}
-                  {/*/>*/}
-                  <Results
-                    selectMaterialType={selectMaterialType}
-                    resultsObj={problemTypesPaginatedListObject}
-                    resetResultsObj={problemTypeActions.resetProblemTypes}
-                    fetchNextPage={fetchNextPage}
+            <Main alignItems="flex-start">
+              <div>
+                <StyledTitle>Search Material Type</StyledTitle>
+                {/*<PoweredBy />*/}
+                <FormControl fullWidth>
+                  <InputLabel
+                    className={useMaterialUIStyles.inputLabel}
+                    classes={{
+                      focused: useMaterialUIStyles.inputLabelFocused,
+                    }}
+                    htmlFor="filled-search"
+                  >
+                    Search
+                  </InputLabel>
+                  <Input
+                    className={useMaterialUIStyles.input}
+                    id="filled-search"
+                    // label="Search field"
+                    type="search"
+                    value={searchString}
+                    onChange={e => {
+                      filterByUserType(e.target.value)
+                    }}
+                    // variant="filled"
                   />
-                </div>
-                <Filters />
-              </Main>
+                </FormControl>
+                {/*<div>SearchBox</div>*/}
+                {/*<SearchBox*/}
+                {/*autoFocus*/}
+                {/*translations={{ placeholder: 'Search Sandboxes...' }}*/}
+                {/*/>*/}
+                <Results
+                  clearSearchString={clearSearchString}
+                  searchString={searchString}
+                  selectMaterialType={selectMaterialType}
+                  resultsObj={problemTypesPaginatedListObject}
+                  resetResultsObj={problemTypeActions.resetProblemTypes}
+                  fetchNextPage={fetchNextPage}
+                />
+              </div>
+              {/* disable for now */}
+              {/*<Filters />*/}
+            </Main>
             {/*</InstantSearch>*/}
           </Content>
-        {/*</Margin>*/}
-      </MaxWidth>
-    </Container>
+          {/*</Margin>*/}
+        </MaxWidth>
+      </Container>
     </ThemeProvider>
-  );
-};
+  )
+}
 
 // eslint-disable-next-line import/no-default-export
 // export default Search;

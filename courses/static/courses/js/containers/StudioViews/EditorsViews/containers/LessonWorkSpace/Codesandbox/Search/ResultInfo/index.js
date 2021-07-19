@@ -3,18 +3,17 @@ import React from 'react'
 
 import { ClearAllContainer } from './elements'
 
-const ResultInfo = () => (
+const ResultInfo = props => (
   <div style={{ marginBottom: '1rem', fontSize: '.875rem' }}>
     {/*<Stats*/}
-      {/*translations={{*/}
-        {/*stats: nbHits => `${nbHits.toLocaleString()} results found`*/}
-      {/*}}*/}
+    {/*translations={{*/}
+    {/*stats: nbHits => `${nbHits.toLocaleString()} results found`*/}
+    {/*}}*/}
     {/*/>*/}
-    0 results found
-
-    <ClearAllContainer>
+    {props.count} results found
+    <ClearAllContainer onClick={props.clearFilters}>
       Clear all filters
-       {/*<ClearRefnements />*/}
+      {/*<ClearRefnements />*/}
     </ClearAllContainer>
   </div>
 )

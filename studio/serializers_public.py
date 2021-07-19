@@ -60,8 +60,8 @@ class PublicMaterialSerializer(BaseSerializer):
 
     class Meta:
         model = Material
-        fields = ['uuid', 'name', 'position', 'url', 'created_on', 'updated_on', 'lesson']
-        read_only_fields = ('uuid',)
+        fields = ['uuid', 'name', 'position', 'url', 'created_on', 'updated_on', 'lesson', 'screenshot']
+        read_only_fields = ('uuid', 'screenshot')
         extra_kwargs = {
             'url': {'lookup_field': 'uuid'}
         }

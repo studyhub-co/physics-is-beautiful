@@ -12,43 +12,53 @@ export class MaterialThumbnailPublic extends React.Component {
   //   super(props, context)
   // }
 
-  componentDidMount () {
+  componentDidMount() {
     MathJax.Hub.Config(DEFAULT_MATHJAX_OPTIONS)
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
 
-  render () {
+  render() {
+
+    console.log(this.props.material)
+
     return (
-      <Col
-        sm={12}
-        md={12}
-        className={'staff-user-row'}>
+      <Col sm={12} md={12} className={'staff-user-row'}>
         <Row>
-          <Col
-            sm={2}
-            md={2}
-          >
-            <div style={{padding: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
-              {this.props.material ? <Image fluid src={this.props.material.image} /> : null }
+          <Col sm={2} md={2}>
+            <div
+              style={{
+                padding: '1rem',
+                overflow: 'hidden',
+                borderRadius: '15px',
+              }}
+            >
+              {this.props.material?.screenshot ? (
+                <Image fluid src={this.props.material.screenshot} />
+              ) : null}
             </div>
           </Col>
-          <Col
-            sm={10}
-            md={10}
-          >
+          <Col sm={10} md={10}>
             <ThumbnailMenu material={this.props.material} />
-            <div style={{fontSize: '2rem'}} onClick={this.onTitleClick}>
+            <div style={{ fontSize: '2rem' }} onClick={this.onTitleClick}>
               {this.props.material.name}
             </div>
-            <div style={{fontSize: '1.5rem', margin: '1rem 0 1rem 0'}} onClick={this.onTitleClick}>
+            <div
+              style={{ fontSize: '1.5rem', margin: '1rem 0 1rem 0' }}
+              onClick={this.onTitleClick}
+            >
               {this.props.material.lesson.name}
             </div>
-            <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0'}}>
-              Created <Moment fromNow>
-                {this.props.material.created_on}
-              </Moment> ∙ Last updated <Moment fromNow>
-                {this.props.material.updated_on}
-              </Moment>
+            <div
+              style={{
+                fontSize: '1rem',
+                color: 'gray',
+                textAlign: 'left',
+                margin: '0 0.5rem 0 0',
+              }}
+            >
+              Created <Moment fromNow>{this.props.material.created_on}</Moment>{' '}
+              ∙ Last updated{' '}
+              <Moment fromNow>{this.props.material.updated_on}</Moment>
             </div>
           </Col>
         </Row>
@@ -58,5 +68,5 @@ export class MaterialThumbnailPublic extends React.Component {
 }
 
 MaterialThumbnailPublic.propTypes = {
-  material: PropTypes.object.isRequired
+  material: PropTypes.object.isRequired,
 }

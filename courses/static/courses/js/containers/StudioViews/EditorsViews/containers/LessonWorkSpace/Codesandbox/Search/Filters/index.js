@@ -15,32 +15,32 @@ const Filters = () => (
       //   { value: ALGOLIA_DEFAULT_INDEX, label: 'Views' },
       //   { value: `${ALGOLIA_DEFAULT_INDEX}_date`, label: 'Date' }
       // ]}
-      title='Sort By'
+      title="Sort By"
     />
 
     <Filter
-      attributeName='template'
-      operator='or'
-      title='Enviroment'
+      attributeName="template"
+      operator="or"
+      title="Environment"
       transformItems={items =>
         items.map(({ label, ...item }) => {
           const { name, niceName } = getTemplate(label)
 
           return {
             ...item,
-            label: name === label ? niceName : label
+            label: name === label ? niceName : label,
           }
         })
       }
     />
 
     <Filter
-      attributeName='npm_dependencies.dependency'
-      operator='and'
-      title='Dependencies'
+      attributeName="npm_dependencies.dependency"
+      operator="and"
+      title="Dependencies"
     />
 
-    <Filter attributeName='tags' operator='or' title='Tags' />
+    <Filter attributeName="tags" operator="or" title="Tags" />
   </Container>
 )
 

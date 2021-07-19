@@ -38,19 +38,19 @@ class TagAddRemoveViewMixin(object):
     #         detail=True,
     #         permission_classes=[IsOwnerOrCollaboratorBase, ], )
     def tags(self, request, *args, **kwargs):
-        tagret_object = self.get_object()
+        target_object = self.get_object()
         if request.method == 'POST':
             # create tag
             new_tag = request.data.get('tag', None)
             if not new_tag:
                 raise ValidationError('tag is not present')
-            tagret_object.tags.add(new_tag)
+            target_object.tags.add(new_tag)
             return Response({'tag': new_tag}, status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
             to_delete_tag = request.data.get('tag', None)
             if not to_delete_tag:
                 raise ValidationError('tag is not present')
-            tagret_object.tags.remove(to_delete_tag)
+            target_object.tags.remove(to_delete_tag)
             return Response({'tag': to_delete_tag}, status=status.HTTP_204_NO_CONTENT)
 
 

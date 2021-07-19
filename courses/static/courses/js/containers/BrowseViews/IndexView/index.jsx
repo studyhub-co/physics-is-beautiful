@@ -182,7 +182,7 @@ class BrowseCoursesView extends React.Component {
       this.searchLessonsView.doSearch()
     }
     if (this.state.selectedTab === 'Materials') {
-      this.materialsSearchView.doSearch()
+      this.searchMaterialsView.doSearch()
     }
   }
 
