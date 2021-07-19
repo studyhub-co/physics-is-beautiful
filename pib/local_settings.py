@@ -30,7 +30,9 @@ INTERNAL_IPS = ALLOWED_HOSTS
 DEBUG_TOOLBAR_CONFIG = {
     "DISABLE_PANELS": ["debug_toolbar.panels.staticfiles.StaticFilesPanel",
                        "debug_toolbar.panels.profiling.ProfilingPanel",
+                       "debug_toolbar.panels.redirects.RedirectsPanel",
                        "debug_toolbar.panels.sql.SQLPanel"],
+    "INTERCEPT_REDIRECTS": False,
     # "SHOW_TEMPLATE_CONTEXT": True,
 }
 
