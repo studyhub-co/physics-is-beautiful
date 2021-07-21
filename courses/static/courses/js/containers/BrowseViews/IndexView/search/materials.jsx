@@ -26,6 +26,7 @@ class MaterialsSearchView extends React.Component {
     }
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps(props) {
     if (
       this.props.selectedTab !== props.selectedTab &&

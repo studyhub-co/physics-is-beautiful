@@ -74,7 +74,7 @@ class CourseThumbnailPublic extends React.Component {
   }
 
   onCopyShareableLink(e) {
-    // todo it's beter to replace with history's generated url here
+    // todo it's better to replace with history's generated url here
     copy(
       window.location.origin +
         BASE_URL +

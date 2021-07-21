@@ -27,6 +27,7 @@ class CoursesSearchView extends React.Component {
     this.props.loadSearchCourses(this.props.coursesSearchString)
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps(props) {
     if (
       this.props.selectedTab !== props.selectedTab &&

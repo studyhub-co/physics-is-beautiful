@@ -11,26 +11,32 @@ import { Thumbnail } from '../../../components/thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
 
 export class ModuleThumbnailPublic extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.onTitleClick = this.onTitleClick.bind(this)
     this.onLearnSelect = this.onLearnSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
   }
 
-  onLearnSelect () {
+  onLearnSelect() {
     history.push('/courses/modules/' + this.props.module.uuid + '/', '_self')
   }
 
-  onTitleClick () {
+  onTitleClick() {
     history.push('/courses/modules/' + this.props.module.uuid + '/', '_self')
   }
 
-  onCopyShareableLink (e) {
-    copy(window.location.origin + BASE_URL + 'courses/module/' + this.props.module.uuid + '/')
+  onCopyShareableLink(e) {
+    copy(
+      window.location.origin +
+        BASE_URL +
+        'courses/module/' +
+        this.props.module.uuid +
+        '/',
+    )
   }
 
-  render () {
+  render() {
     return (
       <Col
         xl={2}
@@ -39,24 +45,38 @@ export class ModuleThumbnailPublic extends React.Component {
         sm={6}
         xs={12}
         className={'course-card'}
-        style={{'cursor': 'pointer'}}>
+        style={{ cursor: 'pointer' }}
+      >
         <div
           onClick={this.onTitleClick}
-          style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}
+          style={{
+            paddingBottom: '1rem',
+            overflow: 'hidden',
+            borderRadius: '15px',
+            height: '13rem',
+          }}
         >
           <Thumbnail image={this.props.module.image} />
         </div>
         <div>
           <ThumbnailMenu module={this.props.module} />
-          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
+          <div
+            onClick={this.onTitleClick}
+            className={'blue-text'}
+            style={{ fontSize: '2rem' }}
+          >
             {this.props.module.name}
           </div>
-          <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            Created <Moment fromNow>
-              {this.props.module.created_on}
-            </Moment> ∙ Last updated <Moment fromNow>
-              {this.props.module.updated_on}
-            </Moment>
+          <div
+            style={{
+              fontSize: '1rem',
+              color: 'gray',
+              textAlign: 'left',
+              margin: '0 0.5rem 0 0.5rem',
+            }}
+          >
+            Created <Moment fromNow>{this.props.module.created_on}</Moment> ∙
+            Last updated <Moment fromNow>{this.props.module.updated_on}</Moment>
           </div>
         </div>
       </Col>
@@ -65,5 +85,5 @@ export class ModuleThumbnailPublic extends React.Component {
 }
 
 ModuleThumbnailPublic.propTypes = {
-  module: PropTypes.object.isRequired
+  module: PropTypes.object.isRequired,
 }

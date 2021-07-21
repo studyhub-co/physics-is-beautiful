@@ -13,7 +13,7 @@ import { ModuleThumbnailPublic } from './../../components/module_thumbnail_publi
 import { RingLoader } from 'react-spinners'
 
 class ModulesSearchView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.doSearch = this.doSearch.bind(this)
     this.loadNextPage = this.loadNextPage.bind(this)
@@ -21,87 +21,98 @@ class ModulesSearchView extends React.Component {
     this.state = {
       modules: [],
       hasMoreItems: false,
-      nextHref: null
+      nextHref: null,
     }
   }
 
-  componentWillReceiveProps (props) {
-    if (this.props.selectedTab !== props.selectedTab && props.selectedTab === 'Modules') {
+  // deprecated TODO replace with componentDidUpdate
+  componentWillReceiveProps(props) {
+    if (
+      this.props.selectedTab !== props.selectedTab &&
+      props.selectedTab === 'Modules'
+    ) {
       this.props.loadSearchModules(this.props.searchString)
     }
 
-    if (this.props.modulesSearchList !== props.modulesSearchList && props.modulesSearchList) {
+    if (
+      this.props.modulesSearchList !== props.modulesSearchList &&
+      props.modulesSearchList
+    ) {
       if (props.modulesSearchList.previous == null) {
-      // 1st page
+        // 1st page
         this.setState({
           modules: props.modulesSearchList.results,
           hasMoreItems: Boolean(props.modulesSearchList.next),
-          nextHref: props.modulesSearchList.next})
+          nextHref: props.modulesSearchList.next,
+        })
       } else {
-      // add to list
-        var newlist = [...this.state.modules, ...props.modulesSearchList.results]
+        // add to list
+        var newlist = [
+          ...this.state.modules,
+          ...props.modulesSearchList.results,
+        ]
 
         this.setState({
           modules: newlist,
           hasMoreItems: Boolean(props.modulesSearchList.next),
-          nextHref: props.modulesSearchList.next})
+          nextHref: props.modulesSearchList.next,
+        })
       }
     }
   }
 
-  loadNextPage (page) {
+  loadNextPage(page) {
     if (this.state.hasMoreItems) {
       this.props.loadSearchModules(this.props.searchString, this.state.nextHref)
     }
   }
 
-  doSearch () {
+  doSearch() {
     this.props.loadSearchModules(this.props.searchString)
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return this.props.searchString === nextProps.searchString
   }
 
-  render () {
+  render() {
     var items = []
 
     this.state.modules.map((module, i) => {
-      items.push(
-        <ModuleThumbnailPublic
-          key={module.uuid}
-          module={module} />
-      )
+      items.push(<ModuleThumbnailPublic key={module.uuid} module={module} />)
     })
 
-    return (<Container fluid>{this.props.modulesSearchList
-      ? <div>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.loadNextPage}
-          hasMore={this.state.hasMoreItems}
-          style={{ display: 'flex', flexWrap: 'wrap' }}
-          loader={<div key={this.state.nextHref} style={{clear: 'both'}} />} // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
-        >
-          <Row>
-            {items}
-          </Row>
-        </InfiniteScroll>
-        { this.props.modulesSearchList.results.length === 0 ? <h4 style={{padding: "1rem 0"}}>
-        Sorry, we couldn&apos;t find any results for this query.
-        </h4> : null }
-      </div>
-      : <Row>
-        <Col sm={12} md={12}>
-          <div style={{height: '10rem', marginLeft: '50%'}}>
-            <RingLoader
-              color={'#1caff6'}
-              loading={Boolean(true)}
-            />
+    return (
+      <Container fluid>
+        {this.props.modulesSearchList ? (
+          <div>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={this.loadNextPage}
+              hasMore={this.state.hasMoreItems}
+              style={{ display: 'flex', flexWrap: 'wrap' }}
+              loader={
+                <div key={this.state.nextHref} style={{ clear: 'both' }} />
+              } // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
+            >
+              <Row>{items}</Row>
+            </InfiniteScroll>
+            {this.props.modulesSearchList.results.length === 0 ? (
+              <h4 style={{ padding: '1rem 0' }}>
+                Sorry, we couldn&apos;t find any results for this query.
+              </h4>
+            ) : null}
           </div>
-        </Col>
-      </Row> }
-    </Container>
+        ) : (
+          <Row>
+            <Col sm={12} md={12}>
+              <div style={{ height: '10rem', marginLeft: '50%' }}>
+                <RingLoader color={'#1caff6'} loading={Boolean(true)} />
+              </div>
+            </Col>
+          </Row>
+        )}
+      </Container>
     )
   }
 }
@@ -111,22 +122,25 @@ ModulesSearchView.propTypes = {
   loadSearchModules: PropTypes.func.isRequired,
   searchString: PropTypes.string,
   modulesSearchList: PropTypes.object,
-  selectedTab: PropTypes.string
+  selectedTab: PropTypes.string,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    modulesSearchList: state.studio.search.modules
+    modulesSearchList: state.studio.search.modules,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
-    loadSearchModules: (searchString, url) => dispatch(loadSearchModules(searchString, url)),
-    loadPublicModules: () => dispatch(loadSearchModules())
+    loadSearchModules: (searchString, url) =>
+      dispatch(loadSearchModules(searchString, url)),
+    loadPublicModules: () => dispatch(loadSearchModules()),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef: true})(ModulesSearchView)
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(ModulesSearchView)
 export { ModulesSearchView as ModulesSearchViewNotConnected }

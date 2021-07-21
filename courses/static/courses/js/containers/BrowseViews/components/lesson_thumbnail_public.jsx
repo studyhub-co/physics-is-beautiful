@@ -10,7 +10,7 @@ import { Thumbnail } from '../../../components/thumbnail'
 import ThumbnailMenu from './thumbnail_menu'
 
 export class LessonThumbnailPublic extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.onTitleClick = this.onTitleClick.bind(this)
     this.onLearnSelect = this.onLearnSelect.bind(this)
@@ -18,23 +18,30 @@ export class LessonThumbnailPublic extends React.Component {
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
   }
 
-  onLearnSelect () {
+  onLearnSelect() {
     history.push('/courses/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
-  onTitleClick () {
+  onTitleClick() {
     history.push('/courses/lessons/' + this.props.lesson.uuid + '/', '_self')
   }
 
-  onCopyShareableLink (e) {
-    copy(window.location.origin + BASE_URL + 'courses/lesson/' + this.props.lesson.uuid + '/')
+  onCopyShareableLink(e) {
+    // todo it's better to replace with history's generated url here
+    copy(
+      window.location.origin +
+        BASE_URL +
+        'courses/lesson/' +
+        this.props.lesson.uuid +
+        '/',
+    )
   }
 
-  onForkSelect (e) {
+  onForkSelect(e) {
     // store.dispatch(addLesson(this.props.lesson.uuid))
   }
 
-  render () {
+  render() {
     return (
       <Col
         xl={2}
@@ -43,21 +50,38 @@ export class LessonThumbnailPublic extends React.Component {
         sm={6}
         xs={12}
         className={'course-card'}
-        style={{'cursor': 'pointer'}}>
-        <div onClick={this.onTitleClick} style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px'}}>
+        style={{ cursor: 'pointer' }}
+      >
+        <div
+          onClick={this.onTitleClick}
+          style={{
+            paddingBottom: '1rem',
+            overflow: 'hidden',
+            borderRadius: '15px',
+            height: '13rem',
+          }}
+        >
           <Thumbnail image={this.props.lesson.image} />
         </div>
         <div>
           <ThumbnailMenu lesson={this.props.lesson} />
-          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '2rem'}}>
+          <div
+            onClick={this.onTitleClick}
+            className={'blue-text'}
+            style={{ fontSize: '2rem' }}
+          >
             {this.props.lesson.name}
           </div>
-          <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            Created <Moment fromNow>
-              {this.props.lesson.created_on}
-            </Moment> ∙ Last updated <Moment fromNow>
-              {this.props.lesson.updated_on}
-            </Moment>
+          <div
+            style={{
+              fontSize: '1rem',
+              color: 'gray',
+              textAlign: 'left',
+              margin: '0 0.5rem 0 0.5rem',
+            }}
+          >
+            Created <Moment fromNow>{this.props.lesson.created_on}</Moment> ∙
+            Last updated <Moment fromNow>{this.props.lesson.updated_on}</Moment>
           </div>
         </div>
       </Col>
@@ -66,5 +90,5 @@ export class LessonThumbnailPublic extends React.Component {
 }
 
 LessonThumbnailPublic.propTypes = {
-  lesson: PropTypes.object.isRequired
+  lesson: PropTypes.object.isRequired,
 }

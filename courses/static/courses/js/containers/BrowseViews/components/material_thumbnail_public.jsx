@@ -18,9 +18,6 @@ export class MaterialThumbnailPublic extends React.Component {
   }
 
   render() {
-
-    console.log(this.props.material)
-
     return (
       <Col sm={12} md={12} className={'staff-user-row'}>
         <Row>
