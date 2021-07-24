@@ -60,7 +60,7 @@ class Lesson(BaseItemModel):
         copy.uuid = None
         copy.thread_id = None
         copy.name = '{} forked'.format(copy.name)
-        # attach to selected lesson
+        # attach to selected module
         copy.module = to_parent_module
         copy.save()
         self.clone_children(copy)

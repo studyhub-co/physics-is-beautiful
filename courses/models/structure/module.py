@@ -27,6 +27,18 @@ class Module(BaseItemModel):
             self.position = get_earliest_gap(taken_positions)
         super(Module, self).save(*args, **kwargs)
 
+    def clone(self, to_parent_unit):
+        copy = self.instance_from_db()
+        # reset uuid, so Django will save the new object
+        copy.uuid = None
+        copy.thread_id = None
+        copy.name = '{} forked'.format(copy.name)
+        # attach to selected unit
+        copy.unit = to_parent_unit
+        copy.save()
+        self.clone_children(copy)
+        return copy
+
     def clone_children(self, to_module):
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -37,18 +49,12 @@ class Module(BaseItemModel):
         BEGIN
         RAISE NOTICE 'Start module forking...';
             FOR lesson_row IN
-                SELECT * FROM "clone_lessons"(%s, %s)
+                SELECT * FROM "courses_clone_lessons"(%s, %s)
             LOOP
-                FOR question_row IN
-                    SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
-                LOOP
-                    -- clone question vectors
-                    PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
-                    PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
-                END LOOP;
+                PERFORM "courses_clone_materials"(lesson_row.lesson_id_from, lesson_row.lesson_id_to);
             END LOOP;
         END $$;
-        """, [self.id, to_module.id])
+        """, [self.pk, to_module.pk])
 
     def __str__(self):
         return 'Module: {}'.format(self.name)

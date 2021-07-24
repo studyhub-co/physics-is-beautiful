@@ -89,17 +89,18 @@ class CoursesConfig(AppConfig):
 
                 RETURN QUERY
                 WITH sel AS (
-                   SELECT "name", image, "position", uuid, lesson_type, row_number() OVER (ORDER BY uuid) AS rn
-                   FROM public.courses_lessons
+                   SELECT "name", image, "position", uuid, complete_boundary, author_id, row_number() OVER (ORDER BY uuid) AS rn
+                   FROM public.courses_lesson
                    WHERE module_id=module_id_from
                    ORDER BY uuid
                    )
                    , ins AS (
-                   INSERT INTO public.courses_lessons (created_on, updated_on, uuid, "name", image, "position", module_id, lesson_type)
+                   INSERT INTO public.courses_lesson (created_on, updated_on, uuid, 
+                   "name", image, "position", module_id, complete_boundary, author_id)
                    SELECT NOW(), NOW(), uuid_generate_v4(), 
-                       "name", image, "position", module_id_to, lesson_type
+                       "name", image, "position", module_id_to, complete_boundary, author_id
                    FROM sel ORDER BY uuid
-                   RETURNING id, uuid
+                   RETURNING uuid
                 )
                 SELECT i.uuid AS lesson_id_to, s.uuid AS lesson_id_from
                 FROM (SELECT uuid, row_number() OVER (ORDER BY uuid) AS rn FROM ins) i
@@ -122,13 +123,13 @@ class CoursesConfig(AppConfig):
                 RETURN QUERY
                 WITH sel AS (
                    SELECT "name", image, "position", uuid, row_number() OVER (ORDER BY uuid) AS rn
-                   FROM public.courses_modules
+                   FROM public.courses_module
                    WHERE unit_id=unit_id_from
                    ORDER BY uuid
                    )
                    , ins AS (
-                   INSERT INTO public.courses_modules (created_on, updated_on, uuid, "name", image, "position", unit_id)
-                   SELECT NOW(), NOW(), uuid_generate_v4(), "name", image, "position", unit_id_to
+                   INSERT INTO public.courses_module (created_on, updated_on, uuid, "name", image, "position", unit_id, author_id)
+                   SELECT NOW(), NOW(), uuid_generate_v4(), "name", image, "position", unit_id_to, author_id
                    FROM sel ORDER BY uuid
                    RETURNING uuid
                 )
