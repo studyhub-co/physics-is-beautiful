@@ -42,7 +42,7 @@ class Module(BaseItemModel):
                 FOR question_row IN
                     SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
                 LOOP
-                    -- clone quesion vectors
+                    -- clone question vectors
                     PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
                     PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
                 END LOOP;

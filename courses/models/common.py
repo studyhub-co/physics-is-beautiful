@@ -97,8 +97,8 @@ class BaseItemModel(models.Model):
         super(BaseItemModel, self).save(*args, **kwargs)
 
 
-    # def instance_from_db(self):
-    #     return self.__class__.objects.get(pk=self.pk)
+    def instance_from_db(self):
+        return self.__class__.objects.get(pk=self.pk)
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)

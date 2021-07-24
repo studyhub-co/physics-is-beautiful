@@ -38,6 +38,8 @@ class IndexView extends React.Component {
   render() {
     const courses = []
     for (var uuid in this.props.courses) {
+      // isFetching means courses is loading now
+      if (uuid === 'isFetching') continue
       courses.push(
         <CourseThumbnail
           key={uuid}

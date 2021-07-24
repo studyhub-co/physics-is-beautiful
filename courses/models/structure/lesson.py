@@ -54,23 +54,37 @@ class Lesson(BaseItemModel):
             self.position = get_earliest_gap(taken_positions)
         super(Lesson, self).save(*args, **kwargs)
 
+    def clone(self, to_parent_module):
+        copy = self.instance_from_db()
+        # reset uuid, so Django will save the new object
+        copy.uuid = None
+        copy.thread_id = None
+        copy.name = '{} forked'.format(copy.name)
+        # attach to selected lesson
+        copy.module = to_parent_module
+        copy.save()
+        self.clone_children(copy)
+        return copy
+
     def clone_children(self, to_lesson):
+
         with connection.cursor() as cursor:
             cursor.execute("""
         DO $$
-        DECLARE 
-            question_row record;
+        --DECLARE 
+        --    question_row record;
         BEGIN
         RAISE NOTICE 'Start lesson forking...';
-            FOR question_row IN
-                SELECT * FROM "clone_questions"(%s, %s)
-            LOOP
-                -- clone quesion vectors
-                PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
-                PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
-            END LOOP;
+            PERFORM "courses_clone_materials"(%s, %s);
+            --FOR material_row IN
+            --    SELECT * FROM "courses_clone_materials"('', '')
+            --LOOP
+            --    -- clone materials
+            --    PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
+            --    PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+            --END LOOP;
         END $$;
-        """, [self.id, to_lesson.id])
+        """, [self.pk, to_lesson.pk])
 
     def __str__(self):
         return 'Lesson: {}'.format(self.name)

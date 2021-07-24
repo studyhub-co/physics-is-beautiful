@@ -35,8 +35,8 @@ class Course(BaseItemModel):
     class Meta:
         verbose_name_plural = "courses"
 
-    class CloneMeta:
-        children_field = 'units'
+    # class CloneMeta:
+    #     children_field = 'units'
 
     objects = CourseQuerySet.as_manager()
 
@@ -123,6 +123,7 @@ class Course(BaseItemModel):
 
 @receiver(post_delete, sender=Course)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
+    # TODO check that file is now used by another courses, we can have forked version with the same image
     instance.cover_photo.delete(save=False)
     instance.image.delete(save=False)
 
@@ -132,6 +133,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not instance.pk:
         return False
 
+    # TODO check that file is now used by another courses, we can have forked version with the same image
     try:
         old_instance = Course.objects.get(pk=instance.pk)
         if not old_instance.cover_photo == instance.cover_photo:

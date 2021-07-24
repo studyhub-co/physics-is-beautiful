@@ -12,9 +12,9 @@ class Unit(BaseItemModel):
     class Meta:
         ordering = ['position']
 
-    class CloneMeta:
-        parent_field = 'course'
-        children_field = 'modules'
+    # class CloneMeta:
+    #     parent_field = 'course'
+    #     children_field = 'modules'
 
     course = models.ForeignKey(Course, related_name='units', on_delete=models.CASCADE)
     published_on = models.DateTimeField('date published', null=True, blank=True)

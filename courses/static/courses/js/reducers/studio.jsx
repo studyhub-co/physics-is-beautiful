@@ -8,6 +8,8 @@ function courses(state = {}, action) {
   switch (action.type) {
     case ActionTypes.COURSES_LOADED:
       return action.courses
+    case ActionTypes.COURSES_FETCHING:
+      return { ...state, isFetching: true }
     case ActionTypes.COURSE_LOADED:
       return Object.assign({}, state, {
         [action.course.uuid]: action.course,
@@ -133,9 +135,15 @@ function lessons(state = {}, action) {
       return toReturn
     case ActionTypes.MATERIAL_ADDED:
       toReturn = Object.assign({}, state)
-      toReturn[action.material.lesson].materials = toReturn[
-        action.material.lesson
-      ].materials.slice()
+      // we have no materials here if forked
+      if (toReturn[action.material.lesson].materials) {
+        // shallow copy of array
+        toReturn[action.material.lesson].materials = toReturn[
+          action.material.lesson
+        ].materials.slice()
+      } else {
+        toReturn[action.material.lesson].materials = []
+      }
       toReturn[action.material.lesson].materials.push(action.material.uuid)
       return toReturn
     case ActionTypes.DELETE_MATERIAL:

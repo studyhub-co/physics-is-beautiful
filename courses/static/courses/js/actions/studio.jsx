@@ -13,6 +13,7 @@ import {
   checkHttpError,
   getAxios,
 } from '../../../../../resources/static/resources/js/utils'
+import { MATERIAL_FETCHING } from '../constants'
 
 export const API_PREFIX = '/api/v1/studio/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
@@ -34,6 +35,7 @@ export const ActionTypes = Object.freeze({
   SEARCH_MATERIALS_LOADED: 'SEARCH_MATERIALS_LOADED',
   NEW_COURSES_LOADED: 'NEW_COURSES_LOADED',
   LOAD_COURSES: 'LOAD_COURSES',
+  COURSES_FETCHING: 'COURSES_FETCHING',
   PUBLIC_COURSE_LOADED: 'PUBLIC_COURSE_LOADED',
   COURSE_LOADED: 'COURSE_LOADED',
   RENAME_COURSE: 'RENAME_COURSE',
@@ -368,32 +370,25 @@ export function loadAllCourses(url, filter, ordering) {
   }
 }
 
+const myCoursesFetching = () => {
+  return {
+    type: ActionTypes.COURSES_FETCHING,
+  }
+}
+
 // TODO add pagination
-// user created courses
+// user created courses (myCourses)
 export function loadCourses() {
   return function(dispatch) {
     // load public separately!
     // dispatch(loadAllCourses())
+    dispatch(myCoursesFetching())
     return getAxios()
       .get(API_PREFIX + 'courses/')
       .catch(checkHttpError)
       .then(response => {
         dispatch(coursesLoaded(response.data))
       })
-
-    // $.ajax({
-    //   async: true,
-    //   url: API_PREFIX + 'courses/',
-    //   context: this,
-    //   success: function(data, status, jqXHR) {
-    //     dispatch(coursesLoaded(data))
-    //   },
-    //   error: function(xhr, ajaxOptions, thrownError) {
-    //     if (xhr.status === 404) {
-    //       history.push('404')
-    //     }
-    //   },
-    // })
   }
 }
 
@@ -636,7 +631,11 @@ function loadCourse(uuid, dispatch) {
     },
     error: function(xhr, ajaxOptions, thrownError) {
       if (xhr.status === 404) {
-        history.push('404')
+        // fixme, not so good:
+        // 1) user start request to backend
+        // 2) user moved the another url of SPA (which no depend of request from 1) )
+        // 3) response from 1) not found and weill move user to 404 instead 2)
+        history.replace('404')
       }
     },
   })
@@ -1110,7 +1109,11 @@ export function loadModuleIfNeeded(uuid) {
         },
         error: function(xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {
-            history.push('404')
+            // fixme, not so good:
+            // 1) user start request to backend
+            // 2) user moved the another url of SPA (which no depend of request from 1) )
+            // 3) response from 1) not found and weill move user to 404 instead 2)
+            history.replace('404')
           }
         },
       })
@@ -1233,7 +1236,11 @@ export function loadLessonIfNeeded(uuid, materialUuid) {
         },
         error: function(xhr, ajaxOptions, thrownError) {
           if (xhr.status === 404) {
-            history.push('404')
+            // fixme, not so good:
+            // 1) user start request to backend
+            // 2) user moved the another url of SPA (which no depend of request from 1) )
+            // 3) response from 1) not found and weill move user to 404 instead 2)
+            history.replace('404')
           }
         },
       })

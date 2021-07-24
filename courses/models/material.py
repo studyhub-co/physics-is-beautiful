@@ -69,6 +69,21 @@ class Material(BaseItemModel):
                                    on_delete=models.CASCADE)
     tags = TaggableManager(through=UUIDTaggedItem, related_name='courses_materials')
 
+    # used by material creation with prototype id directly
+    def clone(self, to_parent_lesson):
+        copy = self.instance_from_db()
+        # reset uuid, so Django will save the new object
+        copy.uuid = None
+        copy.thread_id = None
+        # do not copy screenshot path, it will be delete if the new one will generate for the new course
+        # FIXME think about copy screenshot physically with the new name (not so need, because it will generates
+        #  in studio in any case, after fork redirect)
+        copy.screenshot = None
+        # attach to selected lesson
+        copy.lesson = to_parent_lesson
+        copy.save()
+        return copy
+
     def get_correct_data(self):
         # return correct data
         return self.data
@@ -86,6 +101,8 @@ def resize_and_delete_old_screenshot(sender, instance, **kwargs):
 
     if instance.screenshot:
         image = Image.open(instance.screenshot.file.file)
+        # TODO the screenshot of forked material will removed,
+        #  do we need to check that there are no materials with this screenshot file?
 
         # TODO will be removed by management script
         file_class_name = type(instance.screenshot.file).__name__

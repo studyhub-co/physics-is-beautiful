@@ -44,8 +44,9 @@ class CoursesConfig(AppConfig):
                 language plpgsql;
 
                 -- clone materials func
-                DROP FUNCTION IF EXISTS courses_clone_courses_materials;
-                CREATE function courses_clone_courses_materials(IN lesson_id_from uuid, IN lesson_id_to uuid) 
+                -- TODO it seem we no need to generate slug now? 
+                DROP FUNCTION IF EXISTS courses_clone_materials;
+                CREATE function courses_clone_materials(IN lesson_id_from uuid, IN lesson_id_to uuid) 
                     RETURNS TABLE (
                       material_id_to uuid, 
                       material_id_from uuid
@@ -54,16 +55,17 @@ class CoursesConfig(AppConfig):
                 begin
                 RETURN QUERY
                 WITH sel AS (
-                   SELECT uuid, "text", hint, image, "position", answer_type, row_number() OVER (ORDER BY uuid) AS rn
+                   SELECT uuid, "name", "position", "data", material_problem_type_id, author_id, 
+                        last_edit_user_id, material_workflow_type, row_number() OVER (ORDER BY uuid) AS rn
                    FROM public.courses_material
                    WHERE lesson_id=lesson_id_from
                    ORDER BY uuid
                    )
                    , ins AS (
-                   INSERT INTO public.courses_material (created_on, updated_on, uuid, "text", image, 
-                                                           "position", lesson_id)
-                   SELECT NOW(), NOW(), uuid_generate_v4()::text, 
-                       "text", image, "position", lesson_id_to 
+                   INSERT INTO public.courses_material (created_on, updated_on, uuid, "name", "position", "data", 
+                        material_problem_type_id, author_id, last_edit_user_id, material_workflow_type, lesson_id)
+                   SELECT NOW(), NOW(), uuid_generate_v4(), "name", "position", "data", material_problem_type_id, 
+                        author_id, last_edit_user_id, material_workflow_type, lesson_id_to
                    FROM sel ORDER BY uuid
                    RETURNING uuid
                 )
@@ -94,7 +96,7 @@ class CoursesConfig(AppConfig):
                    )
                    , ins AS (
                    INSERT INTO public.courses_lessons (created_on, updated_on, uuid, "name", image, "position", module_id, lesson_type)
-                   SELECT NOW(), NOW(), uuid_generate_v4()::text, 
+                   SELECT NOW(), NOW(), uuid_generate_v4(), 
                        "name", image, "position", module_id_to, lesson_type
                    FROM sel ORDER BY uuid
                    RETURNING id, uuid
@@ -126,7 +128,7 @@ class CoursesConfig(AppConfig):
                    )
                    , ins AS (
                    INSERT INTO public.courses_modules (created_on, updated_on, uuid, "name", image, "position", unit_id)
-                   SELECT NOW(), NOW(), uuid_generate_v4()::text, "name", image, "position", unit_id_to
+                   SELECT NOW(), NOW(), uuid_generate_v4(), "name", image, "position", unit_id_to
                    FROM sel ORDER BY uuid
                    RETURNING uuid
                 )
@@ -157,7 +159,7 @@ class CoursesConfig(AppConfig):
                    )
                    , ins AS (
                    INSERT INTO public.courses_units (created_on, updated_on, uuid, "name", image, "position", course_id)
-                   SELECT NOW(), NOW(), uuid_generate_v4()::text, "name", image, "position", curr_id_to
+                   SELECT NOW(), NOW(), uuid_generate_v4(), "name", image, "position", curr_id_to
                    FROM sel ORDER BY uuid
                    RETURNING uuid
                 )
