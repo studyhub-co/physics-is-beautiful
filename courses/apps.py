@@ -122,7 +122,7 @@ class CoursesConfig(AppConfig):
 
                 RETURN QUERY
                 WITH sel AS (
-                   SELECT "name", image, "position", uuid, row_number() OVER (ORDER BY uuid) AS rn
+                   SELECT "name", image, "position", uuid, author_id, row_number() OVER (ORDER BY uuid) AS rn
                    FROM public.courses_module
                    WHERE unit_id=unit_id_from
                    ORDER BY uuid
@@ -153,19 +153,21 @@ class CoursesConfig(AppConfig):
 
                 RETURN QUERY
                 WITH sel AS (
-                   SELECT "name", image, "position", uuid, row_number() OVER (ORDER BY uuid) AS rn
-                   FROM public.courses_units
+                   SELECT "name", image, "position", uuid, author_id, row_number() OVER (ORDER BY uuid) AS rn
+                   FROM public.courses_unit
                    WHERE course_id=curr_id_from
                    ORDER BY uuid
                    )
                    , ins AS (
-                   INSERT INTO public.courses_units (created_on, updated_on, uuid, "name", image, "position", course_id)
-                   SELECT NOW(), NOW(), uuid_generate_v4(), "name", image, "position", curr_id_to
+                   INSERT INTO public.courses_unit (created_on, updated_on, uuid, author_id, "name", 
+                        image, "position", course_id)
+                   SELECT NOW(), NOW(), uuid_generate_v4(), author_id, "name", 
+                        image, "position", curr_id_to
                    FROM sel ORDER BY uuid
                    RETURNING uuid
                 )
                 SELECT i.uuid AS unit_id_to, s.uuid AS unit_id_from
-                FROM (SELECT id, row_number() OVER (ORDER BY uuid) AS rn FROM ins) i
+                FROM (SELECT uuid, row_number() OVER (ORDER BY uuid) AS rn FROM ins) i
                 JOIN sel s USING (rn);
 
                 END;

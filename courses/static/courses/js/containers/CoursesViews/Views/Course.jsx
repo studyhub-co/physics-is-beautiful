@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -155,6 +155,23 @@ const Course = props => {
     //   '*',
     // )
   }, [])
+
+  const mounted = useRef()
+
+  useEffect(() => {
+    if (!mounted.current) {
+      // do componentDidMount logic
+      mounted.current = true
+    } else {
+      // do componentDidUpdate logic
+      // if hash and element exit - navigate
+      // (TODO navigate only after thw course fetched)
+      const hash = location.href.substr(location.href.indexOf('#') + 1)
+      if (hash) {
+        document.getElementById(hash)?.scrollIntoView()
+      }
+    }
+  })
 
   useEffect(() => {
     if (!currentCourse.uuid) {

@@ -15,7 +15,10 @@ export class UnitThumbnailPublic extends React.Component {
   }
 
   onTitleClick() {
-    history.push('/courses/units/' + this.props.unit.uuid + '/', '_self')
+    // history.push('/courses/units/' + this.props.unit.uuid + '/', '_self')
+    // we have no units url now
+    console.log(this.props)
+    history.push(`/courses/${this.props.unit.course}/#${this.props.unit.uuid}`)
   }
 
   render() {

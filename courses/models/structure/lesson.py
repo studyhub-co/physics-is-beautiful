@@ -71,18 +71,18 @@ class Lesson(BaseItemModel):
         with connection.cursor() as cursor:
             cursor.execute("""
         DO $$
-        --DECLARE 
-        --    question_row record;
+        DECLARE 
+            material_row record;
         BEGIN
         RAISE NOTICE 'Start lesson forking...';
-            PERFORM "courses_clone_materials"(%s, %s);
-            --FOR material_row IN
-            --    SELECT * FROM "courses_clone_materials"('', '')
-            --LOOP
-            --    -- clone materials
-            --    PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
-            --    PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
-            --END LOOP;
+            FOR material_row IN
+                SELECT * FROM "courses_clone_materials"(%s, %s)
+            LOOP
+                -- clone tags
+                PERFORM "courses_clone_tags"('material', material_row.material_id_from, material_row.material_id_to);
+                -- PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
+                -- PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+            END LOOP;
         END $$;
         """, [self.pk, to_lesson.pk])
 

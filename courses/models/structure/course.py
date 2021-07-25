@@ -70,7 +70,7 @@ class Course(BaseItemModel):
 
     def clone(self, to_course):
         # copy name, image, description, cover_photo from self to to_course
-        for attr in ('image', 'description', 'cover_photo'):
+        for attr in ('image', 'description', 'cover_photo', 'author_id'):
             to_course.name = '{} forked'.format(self.name)
             setattr(to_course, attr, getattr(self, attr))
             to_course.save()
@@ -88,28 +88,25 @@ class Course(BaseItemModel):
                     unit_row record;
                     module_row record;
                     lesson_row record;
-                    question_row record;
+                    material_row record;
                 BEGIN
                 RAISE NOTICE 'Start forking...';
                 FOR unit_row IN
-                    SELECT * FROM "clone_units"(%s, %s)
+                    SELECT * FROM "courses_clone_units"(%s, %s)
                 LOOP
-                    PERFORM "clone_tags"('unit', unit_row.unit_id_from, unit_row.unit_id_to);
+                    PERFORM "courses_clone_tags"('unit', unit_row.unit_id_from, unit_row.unit_id_to);
                     FOR module_row IN
-                        SELECT * FROM "clone_modules"(unit_row.unit_id_from, unit_row.unit_id_to)
+                        SELECT * FROM "courses_clone_modules"(unit_row.unit_id_from, unit_row.unit_id_to)
                     LOOP
-                        PERFORM "clone_tags"('module', module_row.module_id_from, module_row.module_id_to);
+                        PERFORM "courses_clone_tags"('module', module_row.module_id_from, module_row.module_id_to);
                         FOR lesson_row IN
-                            SELECT * FROM "clone_lessons"(module_row.module_id_from, module_row.module_id_to)
+                            SELECT * FROM "courses_clone_lessons"(module_row.module_id_from, module_row.module_id_to)
                         LOOP
-                            PERFORM "clone_tags"('lesson', lesson_row.lesson_id_from, lesson_row.lesson_id_to);
-                            FOR question_row IN
-                                SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
+                            PERFORM "courses_clone_tags"('lesson', lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                            FOR material_row IN
+                                SELECT * FROM "courses_clone_materials"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
                             LOOP
-                                PERFORM "clone_tags"('question', question_row.question_id_from, question_row.question_id_to);
-                                -- clone question vectors
-                                PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
-                                PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+                                PERFORM "courses_clone_tags"('material', material_row.material_id_from, material_row.material_id_to);
                             END LOOP;
                         END LOOP;
                     END LOOP;

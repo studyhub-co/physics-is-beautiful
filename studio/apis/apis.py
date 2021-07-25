@@ -91,6 +91,7 @@ class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
 
     def create(self, request, *args, **kwargs):
         if 'prototype' in self.request.data and self.request.data['prototype']:
+            # TODo validate request.data dict
             prototype = Unit.objects.get(uuid=self.request.data['prototype'])
             copied_unit = prototype.clone(Course.objects.get(uuid=self.request.data['course']))
 

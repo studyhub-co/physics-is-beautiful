@@ -34,6 +34,18 @@ class Unit(BaseItemModel):
     def __str__(self):
         return 'Unit: {}'.format(self.name)
 
+    def clone(self, to_parent_course):
+        copy = self.instance_from_db()
+        # reset uuid, so Django will save the new object
+        copy.uuid = None
+        copy.thread_id = None
+        copy.name = '{} forked'.format(copy.name)
+        # attach to selected module
+        copy.course = to_parent_course
+        copy.save()
+        self.clone_children(copy)
+        return copy
+
     def clone_children(self, to_unit):
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -41,23 +53,26 @@ class Unit(BaseItemModel):
         DECLARE
             module_row record;
             lesson_row record;
-            question_row record;
+            material_row record;
         BEGIN
         RAISE NOTICE 'Start unit forking...';
+            PERFORM "courses_clone_tags"('unit', %s, %s);
             FOR module_row IN
-                SELECT * FROM "clone_modules"(%s, %s)
+                SELECT * FROM "courses_clone_modules"(%s, %s)
             LOOP
+                PERFORM "courses_clone_tags"('module', module_row.module_id_from, module_row.module_id_to);
                 FOR lesson_row IN
-                    SELECT * FROM "clone_lessons"(module_row.module_id_from, module_row.module_id_to)
+                    SELECT * FROM "courses_clone_lessons"(module_row.module_id_from, module_row.module_id_to)
                 LOOP
-                    FOR question_row IN
-                        SELECT * FROM "clone_questions"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
+                    -- PERFORM "courses_clone_materials"(lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                    PERFORM "courses_clone_tags"('lesson', lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                    FOR material_row IN
+                        SELECT * FROM "courses_clone_materials"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
                     LOOP
-                        -- clone quesion vectors
-                        PERFORM "clone_question_vectors"(question_row.question_id_from, question_row.question_id_to);
-                        PERFORM "clone_answers"(question_row.question_id_from, question_row.question_id_to);
+                        -- clone tags
+                        PERFORM "courses_clone_tags"('material', material_row.material_id_from, material_row.material_id_to);
                     END LOOP;
                 END LOOP;
             END LOOP;
         END $$;
-        """, [self.pk, to_unit.pk])
+        """, [self.pk, to_unit.pk, self.pk, to_unit.pk])

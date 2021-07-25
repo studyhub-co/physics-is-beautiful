@@ -28,7 +28,14 @@ export class SectionSheet extends React.Component {
     }
     var sections = []
     this.props.sections.forEach(function(el) {
-      sections.push(<Section key={el.uuid} name={el.name} items={el.items} />)
+      sections.push(
+        <Section
+          uuid={el.uuid}
+          key={el.uuid}
+          name={el.name}
+          items={el.items}
+        />,
+      )
     })
     return (
       <div className="section-sheet">

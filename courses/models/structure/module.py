@@ -45,16 +45,24 @@ class Module(BaseItemModel):
         DO $$
         DECLARE 
             lesson_row record;
-            question_row record;
+            material_row record;
         BEGIN
         RAISE NOTICE 'Start module forking...';
+            PERFORM "courses_clone_tags"('module', %s, %s);
             FOR lesson_row IN
                 SELECT * FROM "courses_clone_lessons"(%s, %s)
             LOOP
-                PERFORM "courses_clone_materials"(lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                -- PERFORM "courses_clone_materials"(lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                PERFORM "courses_clone_tags"('lesson', lesson_row.lesson_id_from, lesson_row.lesson_id_to);
+                FOR material_row IN
+                    SELECT * FROM "courses_clone_materials"(lesson_row.lesson_id_from, lesson_row.lesson_id_to)
+                LOOP
+                    -- clone tags
+                    PERFORM "courses_clone_tags"('material', material_row.material_id_from, material_row.material_id_to);
+                END LOOP;
             END LOOP;
         END $$;
-        """, [self.pk, to_module.pk])
+        """, [self.pk, to_module.pk, self.pk, to_module.pk])
 
     def __str__(self):
         return 'Module: {}'.format(self.name)
