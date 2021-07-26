@@ -2,10 +2,11 @@
 import os
 import sys
 
-import dotenv
+# import dotenv
 
 if __name__ == "__main__":
-    dotenv.read_dotenv()
+    # not sure we need this
+    # dotenv.read_dotenv()
     if sys.argv[1] == 'test':
         os.environ['DJANGO_SETTINGS_MODULE'] = 'pib.test_settings'
     else:

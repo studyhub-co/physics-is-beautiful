@@ -11,6 +11,7 @@ ALLOWED_HOSTS = [
     'www.physicsisbeautiful.com',
     'dev.physicsisbeautiful.com',
     'pib-dev.us-east-1.elasticbeanstalk.com',
+    'pib-dev-v2.us-east-1.elasticbeanstalk.com',
     '.compute-1.amazonaws.com',
 ]
 

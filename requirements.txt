@@ -36,17 +36,17 @@ numpy==1.16.3
 #pandas==0.24.2
 #pandas==0.22.0
 # ==== blog section requirements begin / TODO remove?
-pandas==0.23.4
-python-dateutil==2.6.0
-pytz==2016.10
-PyYAML==3.12
-requests==2.13.0
-simplejson==3.10.0
-six==1.10.0
-tornado==4.4.2
-bokeh==0.12.4
-sympy==1.0
-typing==3.6.1
+#pandas==0.23.4
+#python-dateutil==2.6.0
+#pytz==2016.10
+#PyYAML==3.12
+#requests==2.13.0
+#simplejson==3.10.0
+#six==1.10.0
+#tornado==4.4.2
+#bokeh==0.12.4
+sympy==1.0 # TODO remove (used in answers now)
+#typing==3.6.1
 # ==== blog section requirements end
 # jsonfield==2.0.2
 pint==0.8.1
@@ -79,3 +79,4 @@ django-npm==1.0.0
 websockets==6.0
 # v8eval==0.3.0
 py-mini-racer==0.3.0
+# python-dotenv==0.19.0

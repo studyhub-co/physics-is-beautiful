@@ -97,7 +97,7 @@ INSTALLED_APPS = [
     'piblib',
     # blog
     'user_reputation.apps.UserReputationConfig',
-    'blog',
+    # 'blog',
     'editor',
     'djeddit',
     'react_comments_django',
