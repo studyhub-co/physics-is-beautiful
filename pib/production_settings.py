@@ -10,10 +10,15 @@ ALLOWED_HOSTS = [
     'physicsisbeautiful.com',
     'www.physicsisbeautiful.com',
     'dev.physicsisbeautiful.com',
-    'pib-dev.us-east-1.elasticbeanstalk.com',
+    # 'pib-dev.us-east-1.elasticbeanstalk.com',
     'pib-dev-v2.us-east-1.elasticbeanstalk.com',
     '.compute-1.amazonaws.com',
 ]
+
+if os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST', None):
+    ALLOWED_HOSTS.append(os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST'))
+    # import socket
+    # socket.gethostbyname(socket.gethostname())
 
 CORS_ORIGIN_WHITELIST = (
     # allow mobile app to access apis
@@ -69,7 +74,7 @@ CSRF_COOKIE_SECURE = bool(os.getenv('CSRF_COOKIE_SECURE', True))
 #         'file': {
 #             'level': 'DEBUG',
 #             'class': 'logging.FileHandler',
-#             'filename': '/opt/python/log/djangodebug.log',
+#             'filename': '/var/app/current/djangodebug.log',
 #         },
 #     },
 #     'loggers': {

@@ -22,6 +22,10 @@ SENTRY_DSN = os.getenv('RAVEN_DSN')
 sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=[DjangoIntegration()],
+    # To send a representative sample of your errors to Sentry, set the sample_rate option
+    # in your SDK configuration to a number between 0 (0% of errors sent) and 1 (100% of errors sent).
+    # This is a static rate, which will apply equally to all errors.
+    traces_sample_rate=0.2,
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
