@@ -15,6 +15,7 @@ export default class EditableLabel extends React.Component {
     this.handleEnterPressed = this.handleEnterPressed.bind(this)
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps (nextProps) {
     if (nextProps.text !== this.props.text) {
       this.setState({text: nextProps.text})

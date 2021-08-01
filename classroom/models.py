@@ -127,8 +127,8 @@ class AssignmentProgressManager(models.Manager):
             #     progress__profile=assignment_progress.student,
             #     progress__status=30)
             student_completed_lessons = CoursesLesson.objects.filter(
-                    progress__profile=assignment_progress.student,
-                    progress__status=30)
+                    courses_lessons_progress__profile=assignment_progress.student,
+                    courses_lessons_progress__status=30)
             need_complete_lessons = assignment_progress.assignment.lessons.all()
 
             if need_complete_lessons.difference(student_completed_lessons).count() == 0:

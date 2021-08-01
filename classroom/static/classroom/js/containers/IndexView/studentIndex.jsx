@@ -22,6 +22,7 @@ class StudentIndexView extends React.Component {
     this.props.tabActions.changeSelectedTab('student', 'tab', history, true)
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps (nextProps, nextContext) {
     if (nextProps.match.params && nextProps.match.params.joinCode) {
       var joinCode = this.props.match.params.joinCode

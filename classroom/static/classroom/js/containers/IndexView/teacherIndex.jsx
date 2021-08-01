@@ -11,247 +11,321 @@ import { Container, Row, Col, Modal } from 'react-bootstrap'
 
 import * as tabsCreators from '../../actions/tab'
 import * as classroomCreators from '../../actions/classroom'
-// import GoooleClassromIcon from '../../../images/google-classroom-yellow-icon.png'
 import SelectCourse from '../../components/SelectCourse'
 import { TeacherClassroomCard } from '../../components/TeacherClassroomCard'
 import { GoogleClassroomRow } from '../../components/GoogleClassroomRow'
-import { CreateClassroomView, TeacherClassroomView } from '../../containers/index'
+import {
+  CreateClassroomView,
+  TeacherClassroomView,
+} from '../../containers/index'
 import * as googleCreators from '../../actions/google'
 import { endsWith } from '../../utils/strings'
 
 class TeacherIndexView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.getGoogleClassroomList = this.getGoogleClassroomList.bind(this)
-    this.handleImportGoogleClassroom = this.handleImportGoogleClassroom.bind(this)
+    this.handleImportGoogleClassroom = this.handleImportGoogleClassroom.bind(
+      this,
+    )
     this.onGoogleClassroomClick = this.onGoogleClassroomClick.bind(this)
     this.nextStepGoogleImportClick = this.nextStepGoogleImportClick.bind(this)
     this.prevStepGoogleImportClick = this.prevStepGoogleImportClick.bind(this)
-    this.selectedCourseGoogleImportChanged = this.selectedCourseGoogleImportChanged.bind(this)
-    this.state = { showSelectGoogleClassroom: false,
+    this.selectedCourseGoogleImportChanged = this.selectedCourseGoogleImportChanged.bind(
+      this,
+    )
+    this.state = {
+      showSelectGoogleClassroom: false,
       googleClassroomsSelected: [],
       googleCourseSelected: null,
-      googleClassroomsImportStep: 1
+      googleClassroomsImportStep: 1,
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.googleActions.gapiInitialize()
     this.props.classroomActions.classroomFetchTeacherClassroomsList()
+    // TODo what is history here>
     this.props.tabActions.changeSelectedTab('teacher', 'tab', history, true)
   }
 
   // ================ Google start
-
-  getGoogleClassroomList () {
+  getGoogleClassroomList() {
     this.props.googleActions.googleFetchClassroomList()
     this.handleImportGoogleClassroom()
   }
 
-  onGoogleClassroomClick (classroom) {
+  onGoogleClassroomClick(classroom) {
     // add classroom to googleSelected list, remove classroom from list if exist
     var classroomIdx = this.state.googleClassroomsSelected.indexOf(classroom)
     var newGoogleClassroomsSelected = this.state.googleClassroomsSelected
     if (classroomIdx === -1) {
       newGoogleClassroomsSelected.push(classroom)
-      this.setState({googleClassroomsSelected: newGoogleClassroomsSelected})
+      this.setState({ googleClassroomsSelected: newGoogleClassroomsSelected })
     } else {
       newGoogleClassroomsSelected.splice(classroomIdx, 1)
-      this.setState({googleClassroomsSelected: newGoogleClassroomsSelected})
+      this.setState({ googleClassroomsSelected: newGoogleClassroomsSelected })
     }
   }
 
-  prevStepGoogleImportClick () {
-    this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep - 1})
+  prevStepGoogleImportClick() {
+    this.setState({
+      googleClassroomsImportStep: this.state.googleClassroomsImportStep - 1,
+    })
   }
 
-  nextStepGoogleImportClick () {
+  nextStepGoogleImportClick() {
     if (this.state.googleClassroomsImportStep === 1) {
-      this.setState({'googleClassroomsImportStep': this.state.googleClassroomsImportStep + 1})
+      this.setState({
+        googleClassroomsImportStep: this.state.googleClassroomsImportStep + 1,
+      })
     } else if (this.state.googleClassroomsImportStep === 2) {
       this.props.googleActions.googleSaveClassroomsWithStudents(
         this.state.googleClassroomsSelected,
-        this.state.googleCourseSelected)
+        this.state.googleCourseSelected,
+      )
 
-      this.setState({'googleClassroomsImportStep': 1,
+      this.setState({
+        googleClassroomsImportStep: 1,
         googleClassroomsSelected: [],
-        googleCourseSelected: null
+        googleCourseSelected: null,
       })
       this.handleImportGoogleClassroom()
     }
   }
 
-  selectedCourseGoogleImportChanged (course) {
+  selectedCourseGoogleImportChanged(course) {
     this.setState({
-      googleCourseSelected: course
+      googleCourseSelected: course,
     })
   }
 
-  handleImportGoogleClassroom () {
-    this.setState({'showSelectGoogleClassroom': !this.state.showSelectGoogleClassroom})
+  handleImportGoogleClassroom() {
+    this.setState({
+      showSelectGoogleClassroom: !this.state.showSelectGoogleClassroom,
+    })
   }
-
   // ================ Google end
 
-  render () {
+  render() {
     var baseUrl = this.props.match.url.replace(/\/$/, '')
     var createUrl = baseUrl + '/create'
     var teacherUrl = baseUrl + '/:uuid/'
     var editUrl = baseUrl + '/:uuid/edit/'
 
-    return <div>
-      {this.props.location.pathname === '/classroom/teacher/'
-        ? <Container fluid>
-          <Row>
-            <Col sm={6} md={6}>
-              <h2>All classrooms</h2>
-            </Col>
-            {/* <Col sm={4} md={3} smOffset={2} mdOffset={3} style={{marginTop: 10}}> */}
-            <Col sm={{ span: 4, offset: 2 }} md={{ span: 3, offset: 3 }} style={{marginTop: 10}}>
-              {this.props.gapiInitState
-                ? <button
-                  onClick={this.getGoogleClassroomList}
-                  className='google-button'
-                  type='button'>
-                  <div className='google-classroom-img' />
-                  <span>
-                    <span>Import from</span>
-                    <span>Google Classroom</span>
-                  </span>
-                </button>
-                : <RingLoader
-                  color={'#1caff6'}
-                  loading={this.state.loading}
-                /> }
-              {/* Google Modal start */}
-              { this.state.showSelectGoogleClassroom
-                ? <Modal
-                  show={this.state.showSelectGoogleClassroom}
-                  onHide={this.handleImportGoogleClassroom}
-                  container={this} >
-                  <Modal.Header closeButton>
-                    <Modal.Title>Please select the classes you want to import</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Container fluid>
-                      { this.props.googleClassroomsList
-                        ? <div>{this.state.googleClassroomsImportStep === 1
-                          ? this.props.googleClassroomsList.map(function (classroom, i) {
-                            return <GoogleClassroomRow
-                              onGoogleClassroomClick={this.onGoogleClassroomClick}
-                              existingClassroomsList={this.props.classroomList}
-                              classroom={classroom}
-                              key={i} />
-                          }, this)
-                          // step 2
-                          : <div>
-                            <SelectCourse
-                              selectedCourseChanged={this.selectedCourseGoogleImportChanged}
-                              selectedUuid={this.state.googleCourseSelected ? this.state.googleCourseSelected.uuid : ''} />
-                          </div>}
+    return (
+      <div>
+        {this.props.location.pathname === '/classroom/teacher/' ? (
+          <Container fluid>
+            <Row>
+              <Col sm={6} md={6}>
+                <h2>All classrooms</h2>
+              </Col>
+              <Col
+                sm={{ span: 4, offset: 2 }}
+                md={{ span: 3, offset: 3 }}
+                style={{ marginTop: 10 }}
+              >
+                {this.props.gapiInitState ? (
+                  <button
+                    onClick={this.getGoogleClassroomList}
+                    className="google-button"
+                    type="button"
+                  >
+                    <div className="google-classroom-img" />
+                    <span>
+                      <span>Import from</span>
+                      <span>Google Classroom</span>
+                    </span>
+                  </button>
+                ) : (
+                  <RingLoader color={'#1caff6'} loading={this.state.loading} />
+                )}
+                {/* Google Modal start */}
+                {this.state.showSelectGoogleClassroom ? (
+                  <Modal
+                    show={this.state.showSelectGoogleClassroom}
+                    onHide={this.handleImportGoogleClassroom}
+                    container={this}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>
+                        Please select the classes you want to import
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Container fluid>
+                        {this.props.googleClassroomsList ? (
+                          <div>
+                            {this.state.googleClassroomsImportStep === 1 ? (
+                              this.props.googleClassroomsList.map(function(
+                                classroom,
+                                i,
+                              ) {
+                                return (
+                                  <GoogleClassroomRow
+                                    onGoogleClassroomClick={
+                                      this.onGoogleClassroomClick
+                                    }
+                                    existingClassroomsList={
+                                      this.props.classroomList
+                                    }
+                                    classroom={classroom}
+                                    key={i}
+                                  />
+                                )
+                              },
+                              this)
+                            ) : (
+                              // step 2
+                              <div>
+                                <SelectCourse
+                                  selectedCourseChanged={
+                                    this.selectedCourseGoogleImportChanged
+                                  }
+                                  selectedUuid={
+                                    this.state.googleCourseSelected
+                                      ? this.state.googleCourseSelected.uuid
+                                      : ''
+                                  }
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <Row className="justify-content-center">
+                            <Col sm={2} md={2}>
+                              <RingLoader
+                                color={'#1caff6'}
+                                loading={this.state.loading}
+                              />
+                            </Col>
+                          </Row>
+                        )}
+                      </Container>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      {this.state.googleClassroomsImportStep === 1 ? (
+                        <div>
+                          <button
+                            disabled={
+                              this.state.googleClassroomsSelected.length === 0
+                            }
+                            className={
+                              'classroom-common-button' +
+                              (this.state.googleClassroomsSelected.length > 0
+                                ? ''
+                                : ' disabled-button')
+                            }
+                            onClick={this.nextStepGoogleImportClick}
+                          >
+                            Next step
+                          </button>
                         </div>
-                        : <Row className='justify-content-center'>
-                          <Col sm={2} md={2}>
-                            <RingLoader
-                              color={'#1caff6'}
-                              loading={this.state.loading}
-                            />
-                          </Col>
-                        </Row>
-                      }
-                    </Container>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    {this.state.googleClassroomsImportStep === 1
-                      ? <div>
-                        <button
-                          disabled={this.state.googleClassroomsSelected.length === 0}
-                          className={'classroom-common-button' +
-                                    (this.state.googleClassroomsSelected.length > 0 ? '' : ' disabled-button')}
-                          onClick={this.nextStepGoogleImportClick}>Next step</button>
-                      </div>
-                      : <div>
-                        <button
-                          className={'classroom-common-button'}
-                          onClick={this.prevStepGoogleImportClick}>Back</button>&nbsp;
-                        <button
-                          disabled={!this.state.googleCourseSelected}
-                          className={'classroom-common-button' + (this.state.googleCourseSelected ? '' : ' disabled-button')}
-                          onClick={this.nextStepGoogleImportClick}>Import classes</button>
-                      </div>
-                    }
-                  </Modal.Footer>
-                </Modal> : null
-              }
-              {/* Google Modal end */}
-            </Col>
-          </Row>
-          {this.props.classroomList
-            ? <div> { this.props.classroomList.map(function (classroom, i) {
-              return <TeacherClassroomCard
-                classroom={classroom}
-                onTitleClick={(url) => this.props.dispatch(push(url))}
-                baseUrl={baseUrl}
-                key={i} />
-            }, this)}
-            <div style={{float: 'left'}}>
-              {this.props.location.pathname === '/classroom/teacher/' ? <div className={'vcenter create-classroom-button'}
-                onClick={() => this.props.dispatch(push(createUrl))}>
-              + Create another classroom
-              </div> : null}
-            </div>
-            <div style={{'clear': 'both'}} />
-            </div> : null }
-        </Container>
-        : null
-      }
-      <Route path={createUrl} exact component={CreateClassroomView} />
-      <Route path={editUrl} exact component={CreateClassroomView} />
-      { endsWith(window.location.pathname, 'teacher/create') ||
-        endsWith(window.location.pathname, '/edit/')
-        ? null
-        : <Route path={teacherUrl} component={TeacherClassroomView} />
-      }
-    </div>
+                      ) : (
+                        <div>
+                          <button
+                            className={'classroom-common-button'}
+                            onClick={this.prevStepGoogleImportClick}
+                          >
+                            Back
+                          </button>
+                          &nbsp;
+                          <button
+                            disabled={!this.state.googleCourseSelected}
+                            className={
+                              'classroom-common-button' +
+                              (this.state.googleCourseSelected
+                                ? ''
+                                : ' disabled-button')
+                            }
+                            onClick={this.nextStepGoogleImportClick}
+                          >
+                            Import classes
+                          </button>
+                        </div>
+                      )}
+                    </Modal.Footer>
+                  </Modal>
+                ) : null}
+                {/* Google Modal end */}
+              </Col>
+            </Row>
+            {this.props.classroomList ? (
+              <div>
+                {' '}
+                {this.props.classroomList.map(function(classroom, i) {
+                  return (
+                    <TeacherClassroomCard
+                      classroom={classroom}
+                      onTitleClick={url => this.props.dispatch(push(url))}
+                      baseUrl={baseUrl}
+                      key={i}
+                    />
+                  )
+                }, this)}
+                <div style={{ float: 'left' }}>
+                  {this.props.location.pathname === '/classroom/teacher/' ? (
+                    <div
+                      className={'vcenter create-classroom-button'}
+                      onClick={() => this.props.dispatch(push(createUrl))}
+                    >
+                      + Create another classroom
+                    </div>
+                  ) : null}
+                </div>
+                <div style={{ clear: 'both' }} />
+              </div>
+            ) : null}
+          </Container>
+        ) : null}
+        <Route path={createUrl} exact component={CreateClassroomView} />
+        <Route path={editUrl} exact component={CreateClassroomView} />
+        {endsWith(window.location.pathname, 'teacher/create') ||
+        endsWith(window.location.pathname, '/edit/') ? null : (
+          <Route path={teacherUrl} component={TeacherClassroomView} />
+        )}
+      </div>
+    )
   }
 }
 
 TeacherIndexView.propTypes = {
   tabActions: PropTypes.shape({
-    changeSelectedTab: PropTypes.func.isRequired
+    changeSelectedTab: PropTypes.func.isRequired,
   }).isRequired,
   googleActions: PropTypes.shape({
     googleFetchClassroomList: PropTypes.func.isRequired,
     gapiInitialize: PropTypes.func.isRequired,
-    googleSaveClassroomsWithStudents: PropTypes.func.isRequired
+    googleSaveClassroomsWithStudents: PropTypes.func.isRequired,
   }).isRequired,
   classroomActions: PropTypes.shape({
     classroomCreateClassroom: PropTypes.func.isRequired,
     classroomFetchTeacherClassroomsList: PropTypes.func.isRequired,
-    classroomJoinClassroom: PropTypes.func.isRequired
+    classroomJoinClassroom: PropTypes.func.isRequired,
   }).isRequired,
   tab: PropTypes.string,
   classroomList: PropTypes.array,
   googleClassroomsList: PropTypes.array,
   gapiInitState: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     tab: state.tab.tab,
     classroomList: state.classroom.classroomList,
     googleClassroomsList: state.google.googleClassroomsList,
-    gapiInitState: state.google.gapiInitState
+    gapiInitState: state.google.gapiInitState,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
     tabActions: bindActionCreators(tabsCreators, dispatch),
     classroomActions: bindActionCreators(classroomCreators, dispatch),
-    googleActions: bindActionCreators(googleCreators, dispatch)
+    googleActions: bindActionCreators(googleCreators, dispatch),
   }
 }
 

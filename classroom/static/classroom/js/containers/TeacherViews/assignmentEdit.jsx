@@ -66,6 +66,7 @@ class AssignmentEdit extends React.Component {
     this.setState({_ispopulated: true})
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps (props) {
     var newLessonsTreeData = []
     if (props.courseExpanded) {

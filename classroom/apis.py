@@ -301,7 +301,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
             ap_objects
         )
 
-        # resfresh assignments states
+        # refresh assignments states
         AssignmentProgress.objects.recalculate_status_by_assignment(assignment)
 
         # test that we need to send emails
