@@ -15,10 +15,13 @@ ALLOWED_HOSTS = [
     '.compute-1.amazonaws.com',
 ]
 
-if os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST', None):
-    ALLOWED_HOSTS.append(os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST'))
-    # import socket
-    # socket.gethostbyname(socket.gethostname())
+## this ip can changes every deploy
+# if os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST', None):
+#     ALLOWED_HOSTS.append(os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST'))
+
+# add ip to allow ebs health checker to work
+import socket
+ALLOWED_HOSTS.append(socket.gethostbyname(socket.gethostname()))
 
 CORS_ORIGIN_WHITELIST = (
     # allow mobile app to access apis

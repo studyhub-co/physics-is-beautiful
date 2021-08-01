@@ -98,6 +98,7 @@ export function login(email, password) {
       .then(response => {
         dispatch(loginSuccess())
         dispatch(receiveProfileMe(response.data))
+        // TODO if we on profile/me page we need to redirect to profile/user_id page
       })
       .catch(error => {
         dispatch(loginIncorrectLogin())

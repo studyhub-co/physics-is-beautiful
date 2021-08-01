@@ -95,6 +95,7 @@ export class Material extends React.Component {
     MathJax.Hub.Queue(['Typeset', MathJax.Hub])
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps (nextProps, nextContext) {
     if (this.props.uuid !== nextProps.uuid) {
       this.setState({ fadeOut: false }, () => {

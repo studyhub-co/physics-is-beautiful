@@ -1,46 +1,46 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
 export function requireAuthentication(Component) {
-  class AuthenticatedComponent extends React.Component {
+  const AuthenticatedComponent = props => {
+    const { profile } = props
+
     /**
      * Function that redirects to the login page
      */
     // TODO replace with SPA modal sign in
-    redirectToLoginPage() {
-      // referrer
+    const redirectToLoginPage = () => {
       // redirect to login page
-      let url = '/accounts/login/?next=' + window.location.pathname
+      const url = '/accounts/login/?next=' + window.location.pathname
       window.location.replace(url)
     }
 
     /**
      * Check if the user is authenticated
      */
-    isAuthenticated() {
-      return this.props.profile?.hasOwnProperty('id')
-    }
-
-    render() {
-      if (!this.isAuthenticated()) {
-        this.redirectToLoginPage()
+    useEffect(() => {
+      if (profile) {
+        // redirect only if profile loaded
+        if (!profile.hasOwnProperty('id')) {
+          redirectToLoginPage()
+        }
       }
+    }, [profile])
 
-      // const loginErrorMessage = (
-      //   <div>Please login in order to view this part of the application.</div>
-      // )
+    // const loginErrorMessage = (
+    //   <div>Please login in order to view this part of the application.</div>
+    // )
 
-      return (
-        <div>
-          <Component {...this.props} />
-          {/*{this.isAuthenticated() === true ? (*/}
-          {/*  <Component {...this.props} />*/}
-          {/*) : (*/}
-          {/*  loginErrorMessage*/}
-          {/*)}*/}
-        </div>
-      )
-    }
+    return (
+      <div>
+        <Component {...props} />
+        {/*{this.isAuthenticated() === true ? (*/}
+        {/*  <Component {...this.props} />*/}
+        {/*) : (*/}
+        {/*  loginErrorMessage*/}
+        {/*)}*/}
+      </div>
+    )
   }
 
   const mapStateToProps = (state, ownProps) => {

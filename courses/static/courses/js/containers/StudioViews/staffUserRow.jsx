@@ -1,20 +1,25 @@
 import React from 'react'
 
 import PropTypes from 'prop-types'
-import { Row, Col, Image, FormGroup, InputGroup, DropdownButton, DropdownItem } from 'react-bootstrap'
+import {
+  Row,
+  Col,
+  Image,
+  FormGroup,
+  InputGroup,
+  DropdownButton,
+  Dropdown,
+} from 'react-bootstrap'
 import { FaEdit } from 'react-icons/fa'
 
 export default class StaffUserRow extends React.Component {
-  render () {
+  render() {
     return (
       <Row className={'staff-user-row'}>
         <Col sm={2} md={2}>
-          { this.props.staff.avatar_url
-            ? <Image
-              fluid
-              src={this.props.staff.avatar_url}
-              rounded />
-            : null}
+          {this.props.staff.avatar_url ? (
+            <Image fluid src={this.props.staff.avatar_url} rounded />
+          ) : null}
         </Col>
         <Col sm={6} md={6}>
           <a href={this.props.staff.get_absolute_url}>
@@ -22,23 +27,31 @@ export default class StaffUserRow extends React.Component {
           </a>
         </Col>
         <Col sm={2} md={2}>
-          <span style={{textTransform: 'capitalize '}}>{this.props.post}</span>
+          <span style={{ textTransform: 'capitalize ' }}>
+            {this.props.post}
+          </span>
         </Col>
         <Col sm={2} md={2}>
-          { this.props.post !== 'owner'
-            ? <FormGroup>
+          {this.props.post !== 'owner' ? (
+            <FormGroup>
               <InputGroup>
                 <DropdownButton
                   // componentClass={InputGroup.Button}
-                  id='input-dropdown-addon'
+                  id="input-dropdown-addon"
                   // title={<Glyphicon glyph='edit' />}
-                  variant='light'
+                  variant="light"
                   title={<FaEdit />}
                 >
-                  <DropdownItem key='e' onSelect={this.props.onRemoveFromCollaboratorsClick}>Remove from collaborators</DropdownItem>
+                  <Dropdown.Item
+                    key="e"
+                    onSelect={this.props.onRemoveFromCollaboratorsClick}
+                  >
+                    Remove from collaborators
+                  </Dropdown.Item>
                 </DropdownButton>
               </InputGroup>
-            </FormGroup> : null }
+            </FormGroup>
+          ) : null}
         </Col>
       </Row>
     )
@@ -48,5 +61,5 @@ export default class StaffUserRow extends React.Component {
 StaffUserRow.propTypes = {
   staff: PropTypes.object.isRequired,
   onRemoveFromCollaboratorsClick: PropTypes.func,
-  post: PropTypes.string.isRequired
+  post: PropTypes.string.isRequired,
 }

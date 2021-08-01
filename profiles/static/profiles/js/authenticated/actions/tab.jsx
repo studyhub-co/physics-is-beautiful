@@ -10,7 +10,7 @@ export function changeSelectedTab(
   fromChildren = false,
   filter,
 ) {
-  console.log(selectedTab)
+  // console.log(selectedTab)
 
   if (!fromChildren) {
     let url = `${BASE_URL}/${profileId}`

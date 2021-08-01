@@ -1488,7 +1488,7 @@ export function changeAnswerMYSQL (uuid, schemaSQL, querySQL) {
       },
       error: function (data) {
         if (data.status === 400) {
-          // TODO rewrite with embededd message
+          // TODO rewrite with embedded message
           let errorMessage = null
           if (data.responseJSON.hasOwnProperty('schema_SQL')) {
             errorMessage = data.responseJSON.schema_SQL

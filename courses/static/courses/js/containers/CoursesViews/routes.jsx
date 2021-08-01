@@ -11,8 +11,6 @@ import NotFoundView from '../../components/NotFoundView'
 
 export default class CoursesRouter extends React.Component {
   render() {
-    console.log(this.props.match)
-
     return (
       <div className={'course'}>
         <Switch>

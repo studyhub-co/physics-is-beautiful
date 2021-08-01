@@ -1,13 +1,13 @@
 import {
   // PROFILE_RECEIVE_ME,
-  PROFILE_RECEIVE_PROFILE, PROFILE_FETCHING_PROFILE,
-  PROFILE_RECEIVE_BADGES
+  PROFILE_RECEIVE_PROFILE,
+  PROFILE_FETCHING_PROFILE,
+  PROFILE_RECEIVE_BADGES,
 } from '../constants'
 
-const initialState = {
-}
+const initialState = {}
 
-export default function profileReducer (state = initialState, action) {
+export default function profileReducer(state = initialState, action) {
   switch (action.type) {
     // this is loads in main SPA app
     // case PROFILE_RECEIVE_ME:
@@ -16,15 +16,15 @@ export default function profileReducer (state = initialState, action) {
     //   })
     case PROFILE_RECEIVE_PROFILE:
       return Object.assign({}, state, {
-        profile: action.payload.profile
+        profile: action.payload.profile,
       })
     case PROFILE_FETCHING_PROFILE:
       return Object.assign({}, state, {
-        fetching: action.payload.fetching
+        fetching: action.payload.fetching,
       })
     case PROFILE_RECEIVE_BADGES:
       return Object.assign({}, state, {
-        badges: action.payload.badges
+        badges: action.payload.badges,
       })
     default:
       return state

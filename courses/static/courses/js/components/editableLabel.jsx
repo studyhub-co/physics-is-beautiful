@@ -168,6 +168,7 @@ export class EditableExternalEventLabel extends EditableLabel {
     this.enableEditMode()
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps(props) {
     if (props.editMode) {
       this.enableEditMode(props.editMode)
