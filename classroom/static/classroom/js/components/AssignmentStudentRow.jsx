@@ -5,54 +5,66 @@ import { withRouter } from 'react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { FaCheck, FaCheckCircle, FaExclamationCircle, FaClock } from 'react-icons/fa'
+import {
+  FaCheck,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaClock,
+} from 'react-icons/fa'
 import { Row, Col, Image } from 'react-bootstrap'
 import * as assignmentCreators from '../actions/assignment'
 
 class AssignmentStudentRow extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.onLessonClick = this.onLessonClick.bind(this)
     this.onShowLessonsClick = this.onShowLessonsClick.bind(this)
     this.state = { hideLessons: false }
   }
 
-  onLessonClick (lesson) {
+  onLessonClick(lesson) {
     const { history } = this.props
-    // Need to save start_on date of Assignment Proccess
+    // Need to save start_on date of Assignment Process
     this.props.assignmentActions.assignmentFetchFirstUncompletedLesson(
       this.props.classroomUuid,
       this.props.assignment.uuid,
       () => {
         history.push(`/courses/lessons/${lesson.uuid}`)
-        // TODO use history!
-        // if (lesson.lesson_type === 'GAME') {
-        //   window.location.href = '/curriculum/games/' + lesson.uuid + '/' + lesson.game_slug
-        // } else {
-        //   window.location.href = '/curriculum/lessons/' + lesson.uuid
-        // }
-      }
+      },
     )
   }
 
-  onShowLessonsClick () {
-    if (!this.props['assignmentStudentLessonsList' + this.props.assignment.uuid]) {
-      this.props.assignmentActions.assignmentFetchStudentLessonsList(this.props.classrroom_uuid, this.props.assignment.uuid)
+  onShowLessonsClick() {
+    if (
+      !this.props['assignmentStudentLessonsList' + this.props.assignment.uuid]
+    ) {
+      this.props.assignmentActions.assignmentFetchStudentLessonsList(
+        this.props.classrroom_uuid,
+        this.props.assignment.uuid,
+      )
     } else {
       this.setState({ hideLessons: !this.state.hideLessons })
     }
   }
 
-  componentWillMount () {
-    if (!this.props.assignment.completed_on && !this.props.assignment.delayed_on) {
+  componentWillMount() {
+    if (
+      !this.props.assignment.completed_on &&
+      !this.props.assignment.delayed_on
+    ) {
       // load lessons list
-      this.props.assignmentActions.assignmentFetchStudentLessonsList(this.props.classrroom_uuid, this.props.assignment.uuid)
+      this.props.assignmentActions.assignmentFetchStudentLessonsList(
+        this.props.classrroom_uuid,
+        this.props.assignment.uuid,
+      )
     }
   }
 
-  render () {
+  render() {
     var selectedAssignmentUuid = null
-    var assignmentStudentLessonsList = this.props['assignmentStudentLessonsList' + this.props.assignment.uuid]
+    var assignmentStudentLessonsList = this.props[
+      'assignmentStudentLessonsList' + this.props.assignment.uuid
+    ]
 
     var className = 'student-classroom-row'
 
@@ -65,7 +77,10 @@ class AssignmentStudentRow extends React.Component {
     var dueDateTime = null
 
     var textColorClassName = 'green-text'
-    if (!this.props.assignment.completed_on && !this.props.assignment.delayed_on) {
+    if (
+      !this.props.assignment.completed_on &&
+      !this.props.assignment.delayed_on
+    ) {
       if (new Date(this.props.assignment.due_on) < new Date()) {
         textColorClassName = 'red-text'
       } else {
@@ -76,7 +91,10 @@ class AssignmentStudentRow extends React.Component {
     }
 
     if (this.props.assignment.due_on) {
-      dueDateTime = new Date(this.props.assignment.due_on).toLocaleDateString() + ' ' + new Date(this.props.assignment.due_on).toLocaleTimeString()
+      dueDateTime =
+        new Date(this.props.assignment.due_on).toLocaleDateString() +
+        ' ' +
+        new Date(this.props.assignment.due_on).toLocaleTimeString()
     }
 
     return (
@@ -85,94 +103,129 @@ class AssignmentStudentRow extends React.Component {
           <Row>
             <Col sm={1} md={1}>
               <div className={'gray-text small-text'}>
-                {this.props.assignment && this.props.assignment.image
-                  ? <Image
-                    style={{maxHeight: '4rem'}}
+                {this.props.assignment && this.props.assignment.image ? (
+                  <Image
+                    style={{ maxHeight: '4rem' }}
                     fluid
                     src={this.props.assignment.image}
-                    rounded />
-                  : null}
+                    rounded
+                  />
+                ) : null}
               </div>
             </Col>
             <Col sm={4} md={4}>
-              { this.props.assignment.completed_on || this.props.assignment.delayed_on // TODO check start date
-                ? <div className={'blue-title'}>{this.props.assignment.name}</div>
-                : <div
+              {this.props.assignment.completed_on ||
+              this.props.assignment.delayed_on ? ( // TODO check start date
+                <div className={'blue-title'}>{this.props.assignment.name}</div>
+              ) : (
+                <div
                   title={'Perform the assignment'}
                   className={'blue-title pointer'}
-                  onClick={this.props.onTitleClick}>
+                  onClick={this.props.onTitleClick}
+                >
                   {this.props.assignment.name}
                 </div>
-              }
+              )}
               <div
                 className={'gray-text small-text pointer'}
-                style={{borderBottom: '1px dotted #000', width: 'fit-content'}}
+                style={{
+                  borderBottom: '1px dotted #000',
+                  width: 'fit-content',
+                }}
                 title={'Show lessons'}
-                onClick={this.onShowLessonsClick}>
-                {this.props.assignment.count_lessons} lesson{this.props.assignment.count_lessons > 1 ? 's' : null}
+                onClick={this.onShowLessonsClick}
+              >
+                {this.props.assignment.count_lessons} lesson
+                {this.props.assignment.count_lessons > 1 ? 's' : null}
               </div>
             </Col>
             <Col sm={4} md={4} className={'vcenter'}>
-              { this.props.assignment.completed_on &&
-                new Date(this.props.assignment.due_on) > new Date(this.props.assignment.completed_on)
-                ? <div className={textColorClassName}>Completed</div>
-                : null }
-              { this.props.assignment.delayed_on
-                ? <div className={textColorClassName}>Completed late</div>
-                : null }
-              { !this.props.assignment.completed_on && !this.props.assignment.delayed_on
-                ? <div>
-                  {new Date(this.props.assignment.due_on) > new Date()
-                    ? <div className={textColorClassName}>Due:&nbsp;{dueDateTime}</div> : null }
-                  {new Date(this.props.assignment.due_on) < new Date()
-                    ? <div className={textColorClassName}>Past due:&nbsp;{dueDateTime}</div> : null }
-                </div> : null }
-
+              {this.props.assignment.completed_on &&
+              new Date(this.props.assignment.due_on) >
+                new Date(this.props.assignment.completed_on) ? (
+                <div className={textColorClassName}>Completed</div>
+              ) : null}
+              {this.props.assignment.delayed_on ? (
+                <div className={textColorClassName}>Completed late</div>
+              ) : null}
+              {!this.props.assignment.completed_on &&
+              !this.props.assignment.delayed_on ? (
+                <div>
+                  {new Date(this.props.assignment.due_on) > new Date() ? (
+                    <div className={textColorClassName}>
+                      Due:&nbsp;{dueDateTime}
+                    </div>
+                  ) : null}
+                  {new Date(this.props.assignment.due_on) < new Date() ? (
+                    <div className={textColorClassName}>
+                      Past due:&nbsp;{dueDateTime}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
             </Col>
             <Col sm={2} md={2} className={'vcenter'}>
               <div className={textColorClassName}>
-                {this.props.assignment.count_completed_lessons} of {this.props.assignment.count_lessons} completed
+                {this.props.assignment.count_completed_lessons} of{' '}
+                {this.props.assignment.count_lessons} completed
               </div>
             </Col>
             <Col sm={1} md={1} className={'vcenter'}>
-              { textColorClassName === 'green-text'
+              {textColorClassName === 'green-text' ? (
                 // ? <span className='glyphicon glyphicon-ok-sign' style={{color: 'green', fontSize: '3rem'}} /> : null }
-                ? <FaCheckCircle style={{color: 'green', fontSize: '3rem'}} /> : null }
-              { textColorClassName === 'red-text'
+                <FaCheckCircle style={{ color: 'green', fontSize: '3rem' }} />
+              ) : null}
+              {textColorClassName === 'red-text' ? (
                 // ? <span className='glyphicon glyphicon-exclamation-sign' style={{color: 'red', fontSize: '3rem'}} /> : null }
-                ? <FaExclamationCircle style={{color: 'red', fontSize: '3rem'}} /> : null }
-              { textColorClassName === 'yellow-text'
+                <FaExclamationCircle
+                  style={{ color: 'red', fontSize: '3rem' }}
+                />
+              ) : null}
+              {textColorClassName === 'yellow-text' ? (
                 // ? <span className='glyphicon glyphicon-time yellow-text' style={{fontSize: '3rem'}} /> : null }
-                ? <FaClock className='yellow-text' style={{fontSize: '3rem'}} /> : null }
+                <FaClock className="yellow-text" style={{ fontSize: '3rem' }} />
+              ) : null}
             </Col>
           </Row>
           <Row>
             <Col sm={12} md={12}>
               <Row>
-                { assignmentStudentLessonsList && !this.state.hideLessons
-                  ? assignmentStudentLessonsList.map(function (lesson, i) {
-                    return <span
-                      className={'col-md-2 lesson-card' + (lesson.status === 'completed' ? ' module-completed'
-                        : ' module-accessible-block')}
-                      // style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
-                      onClick={() => { this.onLessonClick(lesson) }} key={i}>
-                      <div className={'thumbnail section-thumbnail'}>
-                        <Image
-                          fluid
-                          src={lesson.image}
-                          // width={'80%'}
-                          // rounded
-                          // style={{display: 'inline-block', top: '0', height: '80%'}}
-                        />
-                      </div>
-                      <div>
-                        {lesson.name}{lesson.status === 'completed'
-                          // ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '0.3rem'}} />
-                          ? <FaCheck style={{paddingLeft: '0.3rem'}} />
-                          : null}
-                      </div>
-                    </span>
-                  }, this) : null}
+                {assignmentStudentLessonsList && !this.state.hideLessons
+                  ? assignmentStudentLessonsList.map(function(lesson, i) {
+                      return (
+                        <span
+                          className={
+                            'col-md-2 lesson-card' +
+                            (lesson.status === 'completed'
+                              ? ' module-completed'
+                              : ' module-accessible-block')
+                          }
+                          // style={{width: '20rem', height: '15rem', cursor: 'pointer'}}
+                          onClick={() => {
+                            this.onLessonClick(lesson)
+                          }}
+                          key={i}
+                        >
+                          <div className={'thumbnail section-thumbnail'}>
+                            <Image
+                              fluid
+                              src={lesson.image}
+                              // width={'80%'}
+                              // rounded
+                              // style={{display: 'inline-block', top: '0', height: '80%'}}
+                            />
+                          </div>
+                          <div>
+                            {lesson.name}
+                            {lesson.status === 'completed' ? (
+                              // ? <span className='glyphicon glyphicon-ok' style={{paddingLeft: '0.3rem'}} />
+                              <FaCheck style={{ paddingLeft: '0.3rem' }} />
+                            ) : null}
+                          </div>
+                        </span>
+                      )
+                    }, this)
+                  : null}
               </Row>
             </Col>
           </Row>
@@ -189,23 +242,25 @@ AssignmentStudentRow.propTypes = {
   classroomUuid: PropTypes.string.isRequired,
   assignmentActions: PropTypes.shape({
     assignmentFetchStudentLessonsList: PropTypes.func.isRequired,
-    assignmentFetchFirstUncompletedLesson: PropTypes.func.isRequired
+    assignmentFetchFirstUncompletedLesson: PropTypes.func.isRequired,
   }).isRequired,
 }
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    ['assignmentStudentLessonsList' + ownProps.assignment.uuid]:
-      state.assignment['assignmentStudentLessonsList' + ownProps.assignment.uuid]
+    ['assignmentStudentLessonsList' + ownProps.assignment.uuid]: state
+      .assignment['assignmentStudentLessonsList' + ownProps.assignment.uuid],
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
-    assignmentActions: bindActionCreators(assignmentCreators, dispatch)
+    assignmentActions: bindActionCreators(assignmentCreators, dispatch),
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AssignmentStudentRow))
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(AssignmentStudentRow),
+)
 export { AssignmentStudentRow as AssignmentStudentRowNotConnected }
