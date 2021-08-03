@@ -385,7 +385,7 @@ const PrimarySearchAppBar = connect(
     }
 
     return (
-      <div className={classes.grow}>
+      <div className={classes.grow} id={'app-bar'}>
         <AppBar position="static" className={classes.appBar}>
           <Toolbar>
             <div className={classes.sectionMobile}>

@@ -196,10 +196,10 @@
 .monaco-workbench .menubar .menubar-menu-items-holder {
   position: absolute;
   /*left: 0px;*/
-  left: auto!important;
+  /*left: auto!important;*/
     /* quick fix for menu, TODO , more info https://github.com/microsoft/vscode/blob/5854f63f43c464dbf27c43a05c66948f6cd6f080/src/vs/base/browser/ui/menu/menu.ts#L766*/
   opacity: 1;
-  z-index: 2000;
+  /*z-index: 3000;*/
 }
 
 .monaco-workbench .menubar .menubar-menu-items-holder.monaco-menu-container {

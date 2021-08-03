@@ -1,13 +1,15 @@
-import React, { FunctionComponent } from 'react';
+// todo remove?
 
-import { useOvermind } from 'app/overmind';
-import Loadable from 'app/utils/Loadable';
+import React, { FunctionComponent } from 'react'
 
-import { Container, Heading } from '../elements';
+import { useOvermind } from 'app/overmind'
+import Loadable from 'app/utils/Loadable'
+
+import { Container, Heading } from '../elements'
 
 const Feedback = Loadable(() =>
-  import(/* webpackChunkName: 'feedback' */ './Feedback')
-);
+  import(/* webpackChunkName: 'feedback' */ './Feedback'),
+)
 
 export const FeedbackModal: FunctionComponent = () => {
   const {
@@ -15,7 +17,7 @@ export const FeedbackModal: FunctionComponent = () => {
       editor: { currentId },
       user,
     },
-  } = useOvermind();
+  } = useOvermind()
 
   return (
     <Container>
@@ -23,5 +25,5 @@ export const FeedbackModal: FunctionComponent = () => {
 
       <Feedback user={user} id={currentId} />
     </Container>
-  );
-};
+  )
+}

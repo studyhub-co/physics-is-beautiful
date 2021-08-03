@@ -6,10 +6,14 @@ import Edit from '@material-ui/icons/Edit'
 import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode'
 import Slideshow from '@material-ui/icons/Slideshow'
 
-import { StyledListItemIcon, StyledMenu, StyledMenuItem } from '../StyledComponents'
+import {
+  StyledListItemIcon,
+  StyledMenu,
+  StyledMenuItem,
+} from '../StyledComponents'
 import PropTypes from 'prop-types'
 
-export default function ViewMenu ({onChange}) {
+export default function ViewMenu({ onChange }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = event => {
@@ -28,37 +32,37 @@ export default function ViewMenu ({onChange}) {
   return (
     <React.Fragment>
       <Button
-        aria-controls='view-menu'
-        aria-haspopup='true'
+        aria-controls="view-menu"
+        aria-haspopup="true"
         onClick={handleClick}
-        color='default'
+        color="default"
       >
         View
       </Button>
       <StyledMenu
-        id='view-menu'
+        id="view-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.student')}>
+        <StyledMenuItem onClick={e => handleMenuClick(e, 'view.student')}>
           <StyledListItemIcon>
             <Slideshow />
           </StyledListItemIcon>
-          <ListItemText primary='Student view' />
+          <ListItemText primary="Student view" />
         </StyledMenuItem>
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.edit')}>
+        <StyledMenuItem onClick={e => handleMenuClick(e, 'view.edit')}>
           <StyledListItemIcon>
             <Edit />
           </StyledListItemIcon>
-          <ListItemText primary='Content edit mode' />
+          <ListItemText primary="Content edit mode" />
         </StyledMenuItem>
-        <StyledMenuItem onClick={(e) => handleMenuClick(e, 'view.type')}>
+        <StyledMenuItem onClick={e => handleMenuClick(e, 'view.type')}>
           <StyledListItemIcon>
             <ChromeReaderModeIcon />
           </StyledListItemIcon>
-          <ListItemText primary='Material type edit mode' />
+          <ListItemText primary="Material type edit mode" />
         </StyledMenuItem>
       </StyledMenu>
     </React.Fragment>
@@ -66,5 +70,5 @@ export default function ViewMenu ({onChange}) {
 }
 
 ViewMenu.propTypes = {
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 }

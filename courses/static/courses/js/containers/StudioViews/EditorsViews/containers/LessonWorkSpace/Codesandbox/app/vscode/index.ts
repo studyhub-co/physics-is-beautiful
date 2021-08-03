@@ -1,16 +1,16 @@
 // import { notificationState } from '/./common/lib/utils/notifications';
-import { blocker } from '../../app/utils/blocker';
+import { blocker } from '../../app/utils/blocker'
 // import {
 //   NotificationMessage,
 //   NotificationStatus,
 // } from '@codesandbox/notifications/lib/state';
 
-import { KeyCode, KeyMod } from './keyCodes';
-import bootstrap from './dev-bootstrap';
-import { MenuId } from './menus';
+import { KeyCode, KeyMod } from './keyCodes'
+import bootstrap from './dev-bootstrap'
+import { MenuId } from './menus'
 
 interface IServiceCache {
-  [serviceName: string]: any;
+  [serviceName: string]: any
 }
 
 /**
@@ -18,11 +18,11 @@ interface IServiceCache {
  */
 interface ICustomEditorApi {
   getCustomEditorAPI(
-    modulePath: string
-  ): false | ((container: HTMLElement, extraProps: object) => void);
+    modulePath: string,
+  ): false | ((container: HTMLElement, extraProps: object) => void)
 }
 
-const context: any = window;
+const context: any = window
 
 /**
  * Handles the VSCode instance for the whole app. The goal is to deprecate/remove this service at one point
@@ -31,22 +31,22 @@ const context: any = window;
  * parts.
  */
 class VSCodeManager {
-  private serviceCache: IServiceCache;
-  private controller: any;
+  private serviceCache: IServiceCache
+  private controller: any
 
-  private statusbarPart = blocker<any>();
-  private menubarPart = blocker<any>();
-  private commandService = blocker<any>();
-  private extensionService = blocker<any>();
-  private extensionEnablementService = blocker<any>();
+  private statusbarPart = blocker<any>()
+  private menubarPart = blocker<any>()
+  private commandService = blocker<any>()
+  private extensionService = blocker<any>()
+  private extensionEnablementService = blocker<any>()
 
   public acquireController(controller: any) {
-    this.controller = controller;
-    this.addWorkbenchActions();
+    this.controller = controller
+    this.addWorkbenchActions()
   }
 
   public loadScript(scripts: string[], isVSCode = true, cb: () => void) {
-    bootstrap(isVSCode, scripts)(cb);
+    bootstrap(isVSCode, scripts)(cb)
   }
 
   private addWorkbenchActions() {
@@ -56,17 +56,17 @@ class VSCodeManager {
       commandLabel: 'Toggle Status Bar Visibility',
       category: 'View',
       run: () => {
-        this.controller.getSignal('editor.toggleStatusBar')();
+        this.controller.getSignal('editor.toggleStatusBar')()
       },
-    });
+    })
     this.addWorkbenchAction({
       id: 'view.preview.flip',
       label: 'Flip Preview Layout',
       commandLabel: 'Toggle Vertical/Horizontal Preview Layout',
       category: 'View',
       run: () => {
-        this.runCommand('workbench.action.toggleEditorGroupLayout');
-        this.controller.getSignal('editor.toggleEditorPreviewLayout')();
+        this.runCommand('workbench.action.toggleEditorGroupLayout')
+        this.controller.getSignal('editor.toggleEditorPreviewLayout')()
       },
       keybindings: {
         primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_9,
@@ -74,43 +74,43 @@ class VSCodeManager {
           primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_9,
         },
       },
-    });
+    })
 
     this.addWorkbenchAction({
       id: 'codesandbox.sandbox.new',
       label: 'New Sandbox...',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' });
+        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' })
       },
-    });
+    })
 
     this.addWorkbenchAction({
       id: 'codesandbox.sandbox.fork',
       label: 'Fork Sandbox',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('editor.forkSandboxClicked')();
+        this.controller.getSignal('editor.forkSandboxClicked')()
       },
-    });
+    })
 
     this.addWorkbenchAction({
       id: 'codesandbox.sandbox.exportzip',
       label: 'Export To ZIP',
       category: 'Sandbox',
       run: () => {
-        this.controller.getSignal('editor.createZipClicked')();
+        this.controller.getSignal('editor.createZipClicked')()
       },
-    });
+    })
 
     this.addWorkbenchAction({
       id: 'codesandbox.preferences',
       label: 'Open CodeSandbox Settings',
       category: 'Preferences',
       run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'preferences' });
+        this.controller.getSignal('modalOpened')({ modal: 'preferences' })
       },
-    });
+    })
 
     this.addWorkbenchAction({
       id: 'view.fullscreen',
@@ -118,9 +118,9 @@ class VSCodeManager {
       category: 'View',
       run: () => {
         if (document.fullscreenElement) {
-          document.exitFullscreen();
+          document.exitFullscreen()
         } else {
-          document.documentElement.requestFullscreen();
+          document.documentElement.requestFullscreen()
 
           // this.addNotification({
           //   title: 'Fullscreen',
@@ -139,14 +139,14 @@ class VSCodeManager {
               'KeyT',
               'ArrowLeft',
               'ArrowRight',
-            ]);
+            ])
           }
         }
       },
       keybindings: {
         primary: KeyMod.WinCtrl | KeyMod.Alt | KeyCode.KEY_F,
       },
-    });
+    })
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
@@ -155,7 +155,7 @@ class VSCodeManager {
         id: 'codesandbox.sandbox.new',
         title: 'New Sandbox...',
       },
-    });
+    })
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       // Z to be the last item after vscode group 4
@@ -165,7 +165,7 @@ class VSCodeManager {
         id: 'codesandbox.sandbox.fork',
         title: '&&Fork Sandbox',
       },
-    });
+    })
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '4_zsandbox',
@@ -174,7 +174,7 @@ class VSCodeManager {
         id: 'codesandbox.sandbox.exportzip',
         title: 'Export to ZIP',
       },
-    });
+    })
 
     this.appendMenuItem(MenuId.MenubarPreferencesMenu, {
       group: '1_settings',
@@ -183,7 +183,7 @@ class VSCodeManager {
         id: 'codesandbox.preferences',
         title: 'CodeSandbox Settings',
       },
-    });
+    })
 
     this.appendMenuItem(MenuId.MenubarLayoutMenu, {
       group: 'z_flip',
@@ -192,7 +192,7 @@ class VSCodeManager {
         title: 'Flip Full Layout',
       },
       order: 2,
-    });
+    })
 
     this.appendMenuItem(MenuId.MenubarViewMenu, {
       group: '1_toggle_view',
@@ -201,124 +201,124 @@ class VSCodeManager {
         id: 'view.fullscreen',
         title: 'Toggle Fullscreen',
       },
-    });
+    })
 
     const addBrowserNavigationCommand = (
       id: string,
       label: string,
-      url: string
+      url: string,
     ) => {
       this.addWorkbenchAction({
         id,
         label,
         category: 'Help',
         run: () => {
-          window.open(url, '_blank');
+          window.open(url, '_blank')
         },
-      });
-    };
+      })
+    }
 
-    addBrowserNavigationCommand(
-      'codesandbox.help.documentation',
-      'Documentation',
-      'https://codesandbox.io/docs'
-    );
-    addBrowserNavigationCommand(
-      'codesandbox.explore',
-      'Explore Sandboxes',
-      'https://codesandbox.io/explore'
-    );
-    addBrowserNavigationCommand(
-      'codesandbox.search',
-      'Search',
-      'https://codesandbox.io/search'
-    );
-    addBrowserNavigationCommand(
-      'codesandbox.dashboard',
-      'Dashboard',
-      'https://codesandbox.io/dashboard'
-    );
-    addBrowserNavigationCommand(
-      'codesandbox.help.open-issue',
-      'Open Issue on GitHub',
-      'https://github.com/codesandbox/codesandbox-client/issues'
-    );
+    // addBrowserNavigationCommand(
+    //   'codesandbox.help.documentation',
+    //   'Documentation',
+    //   'https://codesandbox.io/docs',
+    // )
+    // addBrowserNavigationCommand(
+    //   'codesandbox.explore',
+    //   'Explore Sandboxes',
+    //   'https://codesandbox.io/explore',
+    // )
+    // addBrowserNavigationCommand(
+    //   'codesandbox.search',
+    //   'Search',
+    //   'https://codesandbox.io/search',
+    // )
+    // addBrowserNavigationCommand(
+    //   'codesandbox.dashboard',
+    //   'Dashboard',
+    //   'https://codesandbox.io/dashboard',
+    // )
+    // addBrowserNavigationCommand(
+    //   'codesandbox.help.open-issue',
+    //   'Open Issue on GitHub',
+    //   'https://github.com/codesandbox/codesandbox-client/issues',
+    // )
     addBrowserNavigationCommand(
       'codesandbox.help.github',
       'Open Our GitHub Repository',
-      'https://github.com/codesandbox/codesandbox-client'
-    );
-    addBrowserNavigationCommand(
-      'codesandbox.help.twitter',
-      'Follow Us on Twitter',
-      'https://twitter.com/codesandbox'
-    );
-    addBrowserNavigationCommand(
-      'codesandbox.help.spectrum',
-      'Join Us on Spectrum',
-      'https://spectrum.chat/codesandbox'
-    );
+      'https://github.com/studyhub-co/physics-is-beautiful',
+    )
+    // addBrowserNavigationCommand(
+    //   'codesandbox.help.twitter',
+    //   'Follow Us on Twitter',
+    //   'https://twitter.com/codesandbox',
+    // )
+    // addBrowserNavigationCommand(
+    //   'codesandbox.help.spectrum',
+    //   'Join Us on Spectrum',
+    //   'https://spectrum.chat/codesandbox',
+    // )
 
-    this.addWorkbenchAction({
-      id: 'codesandbox.help.feedback',
-      label: 'Submit Feedback...',
-      category: 'Help',
-      run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'feedback' });
-      },
-    });
+    // this.addWorkbenchAction({
+    //   id: 'codesandbox.help.feedback',
+    //   label: 'Submit Feedback...',
+    //   category: 'Help',
+    //   run: () => {
+    //     this.controller.getSignal('modalOpened')({ modal: 'feedback' })
+    //   },
+    // })
 
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '1_resources',
-      order: 1,
-      command: {
-        id: 'codesandbox.help.documentation',
-        title: '&&Documentation',
-      },
-    });
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '1_resources',
+    //   order: 1,
+    //   command: {
+    //     id: 'codesandbox.help.documentation',
+    //     title: '&&Documentation',
+    //   },
+    // })
 
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '1_resources',
-      order: 2,
-      command: {
-        id: 'codesandbox.explore',
-        title: '&&Explore Sandboxes',
-      },
-    });
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '1_resources',
-      order: 3,
-      command: {
-        id: 'codesandbox.search',
-        title: '&&Search',
-      },
-    });
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '1_resources',
-      order: 4,
-      command: {
-        id: 'codesandbox.dashboard',
-        title: 'D&&ashboard',
-      },
-    });
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '1_resources',
+    //   order: 2,
+    //   command: {
+    //     id: 'codesandbox.explore',
+    //     title: '&&Explore Sandboxes',
+    //   },
+    // })
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '1_resources',
+    //   order: 3,
+    //   command: {
+    //     id: 'codesandbox.search',
+    //     title: '&&Search',
+    //   },
+    // })
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '1_resources',
+    //   order: 4,
+    //   command: {
+    //     id: 'codesandbox.dashboard',
+    //     title: 'D&&ashboard',
+    //   },
+    // })
 
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '2_help',
-      order: 1,
-      command: {
-        id: 'codesandbox.help.open-issue',
-        title: '&&Open Issue on GitHub',
-      },
-    });
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '2_help',
+    //   order: 1,
+    //   command: {
+    //     id: 'codesandbox.help.open-issue',
+    //     title: '&&Open Issue on GitHub',
+    //   },
+    // })
 
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '2_help',
-      order: 2,
-      command: {
-        id: 'codesandbox.help.feedback',
-        title: 'Submit &&Feedback...',
-      },
-    });
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '2_help',
+    //   order: 2,
+    //   command: {
+    //     id: 'codesandbox.help.feedback',
+    //     title: 'Submit &&Feedback...',
+    //   },
+    // })
 
     this.appendMenuItem(MenuId.MenubarHelpMenu, {
       group: '3_social',
@@ -327,25 +327,25 @@ class VSCodeManager {
         id: 'codesandbox.help.github',
         title: '&&GitHub Repository',
       },
-    });
+    })
 
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '3_social',
-      order: 2,
-      command: {
-        id: 'codesandbox.help.twitter',
-        title: 'Follow Us on &&Twitter',
-      },
-    });
-
-    this.appendMenuItem(MenuId.MenubarHelpMenu, {
-      group: '3_social',
-      order: 3,
-      command: {
-        id: 'codesandbox.help.spectrum',
-        title: 'Join Us on S&&pectrum',
-      },
-    });
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '3_social',
+    //   order: 2,
+    //   command: {
+    //     id: 'codesandbox.help.twitter',
+    //     title: 'Follow Us on &&Twitter',
+    //   },
+    // })
+    //
+    // this.appendMenuItem(MenuId.MenubarHelpMenu, {
+    //   group: '3_social',
+    //   order: 3,
+    //   command: {
+    //     id: 'codesandbox.help.spectrum',
+    //     title: 'Join Us on S&&pectrum',
+    //   },
+    // })
   }
 
   addNotification(notification: NotificationMessage) {
@@ -358,25 +358,23 @@ class VSCodeManager {
   public initializeEditor(
     container: HTMLElement,
     customEditorAPI: ICustomEditorApi,
-    cb: (services: IServiceCache) => void
+    cb: (services: IServiceCache) => void,
   ) {
     if (this.serviceCache) {
       const [{ IConfigurationService }, { IInstantiationService }] = [
         context.require('vs/platform/configuration/common/configuration'),
         context.require('vs/platform/instantiation/common/instantiation'),
-      ];
+      ]
 
-      const instantiationService = this.serviceCache.get(IInstantiationService);
+      const instantiationService = this.serviceCache.get(IInstantiationService)
       instantiationService.invokeFunction(accessor => {
-        const workspaceService = accessor.get(IConfigurationService);
+        const workspaceService = accessor.get(IConfigurationService)
 
-        workspaceService.initialize(
-          context.monaco.editor.getDefaultWorkspace()
-        );
+        workspaceService.initialize(context.monaco.editor.getDefaultWorkspace())
 
-        cb(accessor);
-      });
-      return;
+        cb(accessor)
+      })
+      return
     }
 
     const [
@@ -391,13 +389,13 @@ class VSCodeManager {
       { IExtensionEnablementService },
     ] = [
       context.require(
-        'vs/codesandbox/services/codesandbox/browser/codesandboxService'
+        'vs/codesandbox/services/codesandbox/browser/codesandboxService',
       ),
       context.require(
-        'vs/codesandbox/services/codesandbox/configurationUIService'
+        'vs/codesandbox/services/codesandbox/configurationUIService',
       ),
       context.require(
-        'vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector'
+        'vs/codesandbox/services/codesandbox/common/codesandboxEditorConnector',
       ),
       context.require('vs/platform/statusbar/common/statusbar'),
       context.require('vs/platform/commands/common/commands'),
@@ -405,9 +403,9 @@ class VSCodeManager {
       context.require('vs/platform/instantiation/common/instantiation'),
       context.require('vs/workbench/services/extensions/common/extensions'),
       context.require(
-        'vs/platform/extensionManagement/common/extensionManagement'
+        'vs/platform/extensionManagement/common/extensionManagement',
       ),
-    ];
+    ]
 
     context.monaco.editor.create(
       container,
@@ -421,51 +419,51 @@ class VSCodeManager {
       },
       ({ serviceCollection }) => {
         const instantiationService = serviceCollection.get(
-          IInstantiationService
-        );
+          IInstantiationService,
+        )
         instantiationService.invokeFunction(accessor => {
-          this.serviceCache = serviceCollection;
+          this.serviceCache = serviceCollection
 
           // Initialize status bar
-          const statusbarPart = accessor.get(IStatusbarService);
-          this.statusbarPart.resolve(statusbarPart);
+          const statusbarPart = accessor.get(IStatusbarService)
+          this.statusbarPart.resolve(statusbarPart)
 
           // Initialize menu bar
-          const menubarPart = accessor.get('menubar');
-          this.menubarPart.resolve(menubarPart);
+          const menubarPart = accessor.get('menubar')
+          this.menubarPart.resolve(menubarPart)
 
           // Initialize command service
-          const commandService = accessor.get(ICommandService);
-          this.commandService.resolve(commandService);
+          const commandService = accessor.get(ICommandService)
+          this.commandService.resolve(commandService)
 
-          const extensionService = accessor.get(IExtensionService);
-          this.extensionService.resolve(extensionService);
+          const extensionService = accessor.get(IExtensionService)
+          this.extensionService.resolve(extensionService)
 
           const extensionEnablementService = accessor.get(
-            IExtensionEnablementService
-          );
-          this.extensionEnablementService.resolve(extensionEnablementService);
+            IExtensionEnablementService,
+          )
+          this.extensionEnablementService.resolve(extensionEnablementService)
 
           // Initialize these services
-          accessor.get(CodeSandboxConfigurationUIService);
-          accessor.get(ICodeSandboxEditorConnectorService);
+          accessor.get(CodeSandboxConfigurationUIService)
+          accessor.get(ICodeSandboxEditorConnectorService)
 
-          cb(accessor);
-        });
-      }
-    );
+          cb(accessor)
+        })
+      },
+    )
   }
 
   public async getStatusbarPart(): Promise<any> {
-    return this.statusbarPart.promise;
+    return this.statusbarPart.promise
   }
 
   public async getMenubarPart(): Promise<any> {
-    return this.menubarPart.promise;
+    return this.menubarPart.promise
   }
 
   public async getCommandService(): Promise<any> {
-    return this.commandService.promise;
+    return this.commandService.promise
   }
 
   /**
@@ -475,24 +473,24 @@ class VSCodeManager {
    * @param args Extra arguments
    */
   public async runCommand(id: string, ...args: any[]) {
-    const commandService = await this.getCommandService();
+    const commandService = await this.getCommandService()
     // console.log(commandService.executeCommand);
-    return commandService.executeCommand(id, ...args);
+    return commandService.executeCommand(id, ...args)
   }
 
   public appendMenuItem(
     menubarId: number,
     item: {
-      group: string;
+      group: string
       command: {
-        id: string;
-        title: string;
-        toggled?: boolean;
-      };
-      order: number;
-    }
+        id: string
+        title: string
+        toggled?: boolean
+      }
+      order: number
+    },
   ) {
-    context.monaco.editor.appendMenuItem(menubarId, item);
+    context.monaco.editor.appendMenuItem(menubarId, item)
   }
 
   public addWorkbenchAction({
@@ -503,12 +501,12 @@ class VSCodeManager {
     run,
     keybindings = { primary: 0 },
   }: {
-    id: string;
-    label: string;
-    commandLabel?: string; // Name of the command
-    category?: string;
-    run: () => any | Promise<any>;
-    keybindings?: { primary: number; mac?: { primary: number } };
+    id: string
+    label: string
+    commandLabel?: string // Name of the command
+    category?: string
+    run: () => any | Promise<any>
+    keybindings?: { primary: number; mac?: { primary: number } }
   }) {
     context.monaco.editor.addWorkbenchActions({
       id,
@@ -517,38 +515,38 @@ class VSCodeManager {
       run,
       category,
       keybindings,
-    });
+    })
   }
 
   public async disableExtension(id: string) {
-    const extensionService = await this.extensionService.promise;
+    const extensionService = await this.extensionService.promise
     const extensionEnablementService = await this.extensionEnablementService
-      .promise;
+      .promise
 
-    const extensionDescription = await extensionService.getExtension(id);
+    const extensionDescription = await extensionService.getExtension(id)
 
     if (extensionDescription) {
       const { toExtension } = context.require(
-        'vs/workbench/services/extensions/common/extensions'
-      );
-      const extension = toExtension(extensionDescription);
-      extensionEnablementService.setEnablement([extension], 0);
+        'vs/workbench/services/extensions/common/extensions',
+      )
+      const extension = toExtension(extensionDescription)
+      extensionEnablementService.setEnablement([extension], 0)
     }
   }
 
   public async enableExtension(id: string) {
     const extensionEnablementService = await this.extensionEnablementService
-      .promise;
-    const extensionIdentifier = (await extensionEnablementService.getDisabledExtensions()).find(
-      ext => ext.id === id
-    );
+      .promise
+    const extensionIdentifier = (
+      await extensionEnablementService.getDisabledExtensions()
+    ).find(ext => ext.id === id)
 
     if (extensionIdentifier) {
       // Sadly we have to call a private api for this. Might change this once we have extension management
       // built in.
-      extensionEnablementService._enableExtension(extensionIdentifier);
+      extensionEnablementService._enableExtension(extensionIdentifier)
     }
   }
 }
 
-export const vscode = new VSCodeManager();
+export const vscode = new VSCodeManager()

@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
+import styled from 'styled-components'
+import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in'
 
 const Resizer = styled.div`
   position: absolute;
   z-index: 20;
-`;
+`
 
-const width = 8;
+const width = 8
 
 export const TopResizer = styled(Resizer)`
   top: -${width / 2}px;
@@ -14,7 +14,7 @@ export const TopResizer = styled(Resizer)`
   left: 0;
   right: 0;
   cursor: ns-resize;
-`;
+`
 
 export const RightResizer = styled(Resizer)`
   top: 0;
@@ -22,7 +22,7 @@ export const RightResizer = styled(Resizer)`
   width: ${width}px;
   right: -${width / 2}px;
   cursor: ew-resize;
-`;
+`
 
 export const BottomResizer = styled(Resizer)`
   bottom: -${width / 2}px;
@@ -30,7 +30,7 @@ export const BottomResizer = styled(Resizer)`
   left: 0;
   right: 0;
   cursor: ns-resize;
-`;
+`
 
 export const LeftResizer = styled(Resizer)`
   top: 0;
@@ -38,7 +38,7 @@ export const LeftResizer = styled(Resizer)`
   width: ${width}px;
   left: -${width / 2}px;
   cursor: ew-resize;
-`;
+`
 
 export const NEResizer = styled(Resizer)`
   top: -${width / 2}px;
@@ -46,7 +46,7 @@ export const NEResizer = styled(Resizer)`
   width: ${width * 2}px;
   height: ${width * 2}px;
   cursor: nesw-resize;
-`;
+`
 
 export const SEResizer = styled(Resizer)`
   bottom: -${width / 2}px;
@@ -54,7 +54,7 @@ export const SEResizer = styled(Resizer)`
   width: ${width * 2}px;
   height: ${width * 2}px;
   cursor: nwse-resize;
-`;
+`
 
 export const SWResizer = styled(Resizer)`
   bottom: -${width / 2}px;
@@ -62,7 +62,7 @@ export const SWResizer = styled(Resizer)`
   width: ${width * 2}px;
   height: ${width * 2}px;
   cursor: nesw-resize;
-`;
+`
 
 export const NWResizer = styled(Resizer)`
   top: -${width / 2}px;
@@ -70,7 +70,7 @@ export const NWResizer = styled(Resizer)`
   width: ${width * 2}px;
   height: ${width * 2}px;
   cursor: nwse-resize;
-`;
+`
 
 export const ResizingNotice = styled.div`
   position: absolute;
@@ -84,4 +84,4 @@ export const ResizingNotice = styled.div`
 
   border-radius: 2px;
   ${fadeIn(0)};
-`;
+`

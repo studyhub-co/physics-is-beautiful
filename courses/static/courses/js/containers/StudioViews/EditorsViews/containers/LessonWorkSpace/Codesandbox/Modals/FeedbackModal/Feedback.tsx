@@ -1,14 +1,14 @@
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { CurrentUser } from '@codesandbox/common/lib/types';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin'
+import { CurrentUser } from '@codesandbox/common/lib/types'
 import React, {
   ChangeEvent,
   FormEvent,
   FunctionComponent,
   useState,
-} from 'react';
+} from 'react'
 
-import { useOvermind } from 'app/overmind';
-import pushToAirtable from 'app/store/utils/pushToAirtable';
+import { useOvermind } from 'app/overmind'
+import pushToAirtable from 'app/store/utils/pushToAirtable'
 
 import {
   AutosizeTextArea,
@@ -16,37 +16,36 @@ import {
   ButtonContainer,
   EmojiButton,
   Input,
-} from './elements';
+} from './elements'
 
 type Props = {
-  id: string;
-  user?: CurrentUser;
-};
+  id: string
+  user?: CurrentUser
+}
 const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const {
     actions: { notificationAdded, modalClosed },
-  } = useOvermind();
-  const [email, setEmail] = useState((user || {}).email);
-  const [emoji, setEmoji] = useState(null);
-  const [feedback, setFeedback] = useState('');
-  const [loading, setLoading] = useState(false);
+  } = useOvermind()
+  const [email, setEmail] = useState((user || {}).email)
+  const [emoji, setEmoji] = useState(null)
+  const [feedback, setFeedback] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const onChange = ({
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) => {
-    const noop = () => undefined;
+    const noop = () => undefined
     const settersByInputName = {
       email: setEmail,
       feedback: setFeedback,
-    };
-
-    (settersByInputName[name] || noop)(value);
-  };
+    }
+    ;(settersByInputName[name] || noop)(value)
+  }
 
   const onSubmit = ({ preventDefault }: FormEvent<HTMLFormElement>) => {
-    preventDefault();
+    preventDefault()
 
-    setLoading(true);
+    setLoading(true)
 
     pushToAirtable({
       sandboxId: id,
@@ -56,28 +55,28 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
       email,
     })
       .then(() => {
-        setEmoji(null);
-        setFeedback('');
-        setLoading(false);
+        setEmoji(null)
+        setFeedback('')
+        setLoading(false)
 
-        modalClosed();
+        modalClosed()
         notificationAdded({
           notificationType: 'success',
           title: 'Thanks for your feedback!',
-        });
+        })
       })
       .catch(({ message }) => {
         notificationAdded({
           notificationType: 'error',
           title: `Something went wrong while sending feedback: ${message}`,
-        });
+        })
 
-        setLoading(false);
-      });
-  };
+        setLoading(false)
+      })
+  }
 
-  const setHappy = () => setEmoji('happy');
-  const setSad = () => setEmoji('sad');
+  const setHappy = () => setEmoji('happy')
+  const setSad = () => setEmoji('sad')
 
   return (
     <form onSubmit={onSubmit}>
@@ -132,7 +131,7 @@ const Feedback: FunctionComponent<Props> = ({ id, user }) => {
         </ButtonContainer>
       </Margin>
     </form>
-  );
-};
+  )
+}
 
-export default Feedback;
+export default Feedback

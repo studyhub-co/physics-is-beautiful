@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { dispatch as csDispatch } from 'codesandbox-api'
+// import { dispatch as csDispatch } from 'codesandbox-api'
 
 import { editModeMessage } from '../../../../../../utils/iframe/postMessages'
 

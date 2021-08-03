@@ -12,6 +12,7 @@ export const Container = styled.div`
   .Resizer {
     background: ${props => props.theme['sideBar.border'] || 'black'};
     background-clip: padding-box;
+    z-index: 0;
   }
 `
 
@@ -34,7 +35,7 @@ export const HeaderLeft = styled.div`
 export const HeaderContainer = styled.div`
   ${({ theme, zenMode }) => css`
     display: ${zenMode ? 'none' : 'flex'};
-    # position: fixed;
+    #position: fixed;
     z-index: 5;
     justify-content: space-between;
     align-items: center;
@@ -51,7 +52,7 @@ export const HeaderContainer = styled.div`
     box-sizing: border-box;
     border-bottom: 1px solid
       ${theme['titleBar.activeForeground']
-    ? theme['titleBar.border'] || 'transparent'
-    : theme.background2.darken(0.3)};
+        ? theme['titleBar.border'] || 'transparent'
+        : theme.background2.darken(0.3)};
   `}
 `

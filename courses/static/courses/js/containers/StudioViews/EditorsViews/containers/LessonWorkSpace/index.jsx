@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 
+import './styles.css'
+
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -9,7 +11,6 @@ import Grid from '@material-ui/core/Grid'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 import MenuItem from '@material-ui/core/MenuItem'
-// import Paper from '@material-ui/core/Paper'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Edit from '@material-ui/icons/Edit'
@@ -39,7 +40,6 @@ import { DockableDropTarget, DragItemTypes } from '../../../../../dnd'
 import { EditableThumbnail } from '../../../../../components/thumbnail'
 import { EditableLabel } from '../../../../../components/editableLabel'
 import MaterialThumbnail from './MaterialThumbnail'
-// import MaterialContainer from '../../containers/material'
 import ToolBar from './Menu/ToolBar'
 import WorkspaceMenu from './Menu/Menu'
 import Search from './Codesandbox/Search/index'
@@ -55,6 +55,7 @@ import {
 import { useHandleDeleteLessonClick } from './Hooks/lesson'
 import { useLayoutMode } from './Hooks/LayoutMenu'
 import { useIframeLoaded } from './Hooks/eval'
+import { useBodyClass } from './Hooks/bodyCss'
 import { checkSaveButtonStyle } from '../../../../CoursesViews/components/style'
 import { saveDataMessage } from '../../../../../utils/iframe/postMessages'
 
@@ -83,6 +84,8 @@ const Lesson = props => {
   } = props
 
   const history = useHistory()
+
+  useBodyClass(`height100`)
 
   // eval iframe
   let executionFrameRef = useRef(null)
@@ -119,6 +122,7 @@ const Lesson = props => {
     lessonSettingsDialogOpen,
     setLessonSettingsDialogOpen,
   ] = React.useState(false)
+
   const [lessonCompleteBoundary, setLessonCompleteBoundary] = React.useState(
     completeBoundary || 70,
   )
@@ -143,6 +147,8 @@ const Lesson = props => {
 
   useEffect(() => {
     loadLessonIfNeeded(materialUrlUuid)
+    // reset state view to student
+    setLayoutMode('student')
   }, [materialUrlUuid])
 
   // materials list
@@ -190,17 +196,9 @@ const Lesson = props => {
 
     if (section === 'actions') {
       if (action === 'learn_lesson') {
-        // window.open(
-        //   `${window.location.origin}/beta/courses/lessons/${uuid}/`,
-        //   '_blank',
-        // )
         history.push(`/courses/lessons/${uuid}/`)
       }
       if (action === 'learn_material') {
-        // window.open(
-        //   `${window.location.origin}/beta/courses/lessons/${uuid}/materials/${currentMaterial.uuid}/`,
-        //   '_blank',
-        // )
         if (currentMaterialHasType) {
           history.push(
             `/courses/lessons/${uuid}/materials/${currentMaterial.uuid}/`,
@@ -230,7 +228,6 @@ const Lesson = props => {
   // Fixme replace mpt with currentMaterial.material_problem_type?
   const mptEvalUrl = mpt => {
     if (mpt && mpt.hasOwnProperty('id')) {
-      // return `${window.location.origin}/evaluation/${mpt.id}/${currentMaterial.uuid}/${uuid}/`
       return `${window.location.origin}/evaluation/${mpt.id}/${currentMaterial.uuid}/${uuid}/?standalone`
     } else {
       return ''
@@ -245,26 +242,37 @@ const Lesson = props => {
   const editorComponent = state.editor
 
   // viewport - header - menu - toolbar
-  const bottomsPanelsHeight = 'calc(100vh - 51px - 108px - 35px)'
+  // const bottomsPanelsHeight = 'calc(100vh - 51px - 108px - 35px)'
+  const appBarHeight = document.getElementById('app-bar')?.clientHeight
+  const lessonTitleHeight = document.getElementById('lesson-title-menu-bar')
+    ?.clientHeight
 
-  // const handleSaveDataClick = () => {
-  //   // TODO - we can get data from iframe and save in SPA, need to explore
-  //   // send event to the iframe to save material
-  //   document.getElementById('student_view_iframe').contentWindow.postMessage(
-  //     {
-  //       type: 'save_data',
-  //     },
-  //     '*',
-  //   )
-  // }
+  const lessonToolbarHeight = document.getElementById('lesson-toolbar')
+    ?.clientHeight
+
+  let editorBarHeight = 0
+  if (layoutMode === 'type') {
+    editorBarHeight = 42
+  }
+
+  const bottomsPanelsHeight = `calc(100vh - ${appBarHeight}px -
+      ${lessonTitleHeight}px - ${lessonToolbarHeight}px - 0.2rem - 
+      ${editorBarHeight}px)`
+  // TODO find what is 0,2 rem
 
   return (
     <Grid container>
-      <Grid container item xs={12} style={{ padding: '1rem' }}>
-        <Grid item xs={1}>
+      <Grid
+        container
+        item
+        xs={12}
+        style={{ padding: '1rem' }}
+        id={'lesson-title-menu-bar'}
+      >
+        <Grid item sm={1}>
           <EditableThumbnail image={image} onChange={onImageChange} />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item sm={8}>
           <div>
             <h1>
               <EditableLabel
@@ -328,7 +336,7 @@ const Lesson = props => {
             </Dialog>
           </div>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item sm={3}>
           {/* TODO move to component */}
           <FormControl variant="outlined">
             <Select
@@ -360,6 +368,7 @@ const Lesson = props => {
           borderTop: '1px solid #dadce0',
           borderBottom: '1px solid #dadce0',
         }}
+        id={'lesson-toolbar'}
       >
         <ToolBar handleAddMaterial={onAddMaterialClick} />
       </Grid>
@@ -386,9 +395,10 @@ const Lesson = props => {
         <Grid
           item
           xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}
-          style={{ height: bottomsPanelsHeight, overflow: 'auto' }}
+          style={{ height: bottomsPanelsHeight }}
         >
-          {/* Search if sanbox does not exist in current Material */}
+          {/*  , overflow: 'auto' */}
+          {/* Search if MPT does not exist in current Material */}
           {!loading && // loading lesson
           materialTypePropIsInMaterial && // loading material
           !currentMaterialHasType ? ( //
@@ -490,19 +500,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const lesson = state.studio.lessons[uuid]
   if (lesson) {
-    // let previousMaterial, nextMaterial
     const currentMaterial = state.studio.currentMaterial
-
-    // set material nexp/prev buttons
-    // if (currentMaterial && lesson.materials) {
-    //   const idx = lesson.materials.indexOf(currentMaterial.uuid)
-    //   if (idx > 0) {
-    //     previousMaterial = lesson.materials[idx - 1]
-    //   }
-    //   if (idx < lesson.materials.length - 1) {
-    //     nextMaterial = lesson.materials[idx + 1]
-    //   }
-    // }
 
     return {
       uuid: uuid,
@@ -514,8 +512,6 @@ const mapStateToProps = (state, ownProps) => {
       module: lesson.module, // fixme do we need this?
       materials: lesson.materials, // this is uuids list
       materialsDict: state.studio.materials, // this is {'uuid': obj} dict with all materials ever loaded o_0
-      // previousMaterial: previousMaterial,
-      // nextMaterial: nextMaterial,
       currentMaterial: currentMaterial,
     }
   } else {

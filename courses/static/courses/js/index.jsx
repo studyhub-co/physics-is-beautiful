@@ -13,8 +13,6 @@ const target = document.getElementById('main-app')
 
 // const store = configureStore(initialState, history)
 
-const node = (
-  <Root store={store} history={history} />
-)
+const node = <Root store={store} history={history} />
 
 ReactDOM.render(node, target)
