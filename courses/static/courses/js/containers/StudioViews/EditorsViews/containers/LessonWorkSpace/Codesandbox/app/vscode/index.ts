@@ -76,14 +76,14 @@ class VSCodeManager {
       },
     })
 
-    this.addWorkbenchAction({
-      id: 'codesandbox.sandbox.new',
-      label: 'New Sandbox...',
-      category: 'Sandbox',
-      run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'newSandbox' })
-      },
-    })
+    // this.addWorkbenchAction({
+    //   id: 'codesandbox.sandbox.new',
+    //   label: 'New Sandbox...',
+    //   category: 'Sandbox',
+    //   run: () => {
+    //     this.controller.getSignal('modalOpened')({ modal: 'newSandbox' })
+    //   },
+    // })
 
     this.addWorkbenchAction({
       id: 'codesandbox.sandbox.fork',
@@ -148,14 +148,15 @@ class VSCodeManager {
       },
     })
 
-    this.appendMenuItem(MenuId.MenubarFileMenu, {
-      group: '1_new',
-      order: 1,
-      command: {
-        id: 'codesandbox.sandbox.new',
-        title: 'New Sandbox...',
-      },
-    })
+    //// New Sandbox not supported yet TODO
+    // this.appendMenuItem(MenuId.MenubarFileMenu, {
+    //   group: '1_new',
+    //   order: 1,
+    //   command: {
+    //     id: 'codesandbox.sandbox.new',
+    //     title: 'New Sandbox...',
+    //   },
+    // })
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       // Z to be the last item after vscode group 4

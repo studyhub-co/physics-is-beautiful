@@ -2,16 +2,21 @@
 import html2canvas from 'html2canvas'
 
 export const useIframeLoaded = () => {
-  return (e, mpt, currentMaterial,
-    onUpdateProblemTypeImage, onUpdateMaterialImage,
-    executionFrameRef) => {
+  return (
+    e,
+    mpt,
+    currentMaterial,
+    onUpdateProblemTypeImage,
+    onUpdateMaterialImage,
+    executionFrameRef,
+  ) => {
     let iframeDoc = executionFrameRef.contentWindow.document
     // callback executed when canvas was found
 
-    function handleRoot (root) {
+    function handleRoot(root) {
       // get screenshot of the iframe
-      setTimeout(function () {
-        html2canvas(iframeDoc.body).then(function (canvas) {
+      setTimeout(function() {
+        html2canvas(iframeDoc.body).then(function(canvas) {
           onUpdateProblemTypeImage(canvas, mpt)
           // can save the same Screen for current material
           onUpdateMaterialImage(canvas, currentMaterial)
@@ -20,7 +25,7 @@ export const useIframeLoaded = () => {
     }
 
     // set up the mutation observer
-    var observer = new window.MutationObserver(function (mutations, me) {
+    var observer = new window.MutationObserver(function(mutations, me) {
       // `mutations` is an array of mutations that occurred
       // `me` is the MutationObserver instance
       let root = iframeDoc.getElementById('root')
@@ -33,7 +38,7 @@ export const useIframeLoaded = () => {
     // start observing
     observer.observe(iframeDoc.body, {
       childList: true,
-      subtree: true
+      subtree: true,
     })
   }
 }

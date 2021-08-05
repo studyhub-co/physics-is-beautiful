@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import './styles.css'
 
@@ -55,9 +55,15 @@ import {
 import { useHandleDeleteLessonClick } from './Hooks/lesson'
 import { useLayoutMode } from './Hooks/LayoutMenu'
 import { useIframeLoaded } from './Hooks/eval'
+import useFullscreenStatus from './Hooks/fullScreenStatus'
 import { useBodyClass } from './Hooks/bodyCss'
 import { checkSaveButtonStyle } from '../../../../CoursesViews/components/style'
 import { saveDataMessage } from '../../../../../utils/iframe/postMessages'
+
+function useForceUpdate() {
+  const [value, setValue] = useState(0) // integer state
+  return () => setValue(value => value + 1) // update the state to force render
+}
 
 const Lesson = props => {
   const {
@@ -86,6 +92,9 @@ const Lesson = props => {
   const history = useHistory()
 
   useBodyClass(`height100`)
+
+  const [isFullscreen, setIsFullscreen] = useFullscreenStatus(document)
+  const forceUpdate = useForceUpdate()
 
   // eval iframe
   let executionFrameRef = useRef(null)
@@ -241,24 +250,37 @@ const Lesson = props => {
 
   const editorComponent = state.editor
 
-  // viewport - header - menu - toolbar
-  // const bottomsPanelsHeight = 'calc(100vh - 51px - 108px - 35px)'
-  const appBarHeight = document.getElementById('app-bar')?.clientHeight
-  const lessonTitleHeight = document.getElementById('lesson-title-menu-bar')
-    ?.clientHeight
+  const calculateFullHeightEditor = () => {
+    // viewport - header - menu - toolbar
+    // const bottomPanelsHeight = 'calc(100vh - 51px - 108px - 35px)'
+    const appBarHeight = document.getElementById('app-bar')?.clientHeight
+    const lessonTitleHeight = document.getElementById('lesson-title-menu-bar')
+      ?.clientHeight
+    const lessonToolbarHeight = document.getElementById('lesson-toolbar')
+      ?.clientHeight
 
-  const lessonToolbarHeight = document.getElementById('lesson-toolbar')
-    ?.clientHeight
-
-  let editorBarHeight = 0
-  if (layoutMode === 'type') {
-    editorBarHeight = 42
+    return `calc(100vh - ${appBarHeight}px -
+        ${lessonTitleHeight}px - ${lessonToolbarHeight}px - 0.2rem)`
   }
 
-  const bottomsPanelsHeight = `calc(100vh - ${appBarHeight}px -
-      ${lessonTitleHeight}px - ${lessonToolbarHeight}px - 0.2rem - 
-      ${editorBarHeight}px)`
+  let bottomPanelsHeight
+
+  const appBarHeight = document.getElementById('app-bar')?.clientHeight
+
   // TODO find what is 0,2 rem
+  if (isFullscreen) {
+    bottomPanelsHeight = `calc(100vh - ${appBarHeight}px - 0.2rem)`
+  } else {
+    bottomPanelsHeight = calculateFullHeightEditor()
+    if (appBarHeight == bottomPanelsHeight) {
+      // refresh editor if is not fullscreen & lesson title is hidden
+      // (lesson-toolbar and lesson-toolbar height == 0) // not so good fixme
+      setTimeout(function() {
+        // wait for DOM update
+        forceUpdate()
+      }, 2000)
+    }
+  }
 
   return (
     <Grid container>
@@ -266,7 +288,10 @@ const Lesson = props => {
         container
         item
         xs={12}
-        style={{ padding: '1rem' }}
+        style={{
+          padding: '1rem',
+          display: isFullscreen ? 'none' : 'flex',
+        }}
         id={'lesson-title-menu-bar'}
       >
         <Grid item sm={1}>
@@ -367,13 +392,14 @@ const Lesson = props => {
         style={{
           borderTop: '1px solid #dadce0',
           borderBottom: '1px solid #dadce0',
+          display: isFullscreen ? 'none' : 'flex',
         }}
         id={'lesson-toolbar'}
       >
         <ToolBar handleAddMaterial={onAddMaterialClick} />
       </Grid>
       {/* Present mode on */}
-      <Grid container item xs={12} style={{ height: bottomsPanelsHeight }}>
+      <Grid container item xs={12} style={{ height: bottomPanelsHeight }}>
         {/* Materials list */}
         {['student', 'edit'].includes(layoutMode) ? (
           <Grid item xs={2} style={{ background: 'white' }}>
@@ -383,7 +409,7 @@ const Lesson = props => {
               spacing={1}
               cols={1}
               style={{
-                maxHeight: bottomsPanelsHeight,
+                maxHeight: bottomPanelsHeight,
                 padding: '0.5rem',
               }}
             >
@@ -395,9 +421,8 @@ const Lesson = props => {
         <Grid
           item
           xs={['student', 'edit'].includes(layoutMode) ? 10 : 12}
-          style={{ height: bottomsPanelsHeight }}
+          style={{ height: bottomPanelsHeight, overflow: 'auto' }}
         >
-          {/*  , overflow: 'auto' */}
           {/* Search if MPT does not exist in current Material */}
           {!loading && // loading lesson
           materialTypePropIsInMaterial && // loading material
@@ -413,7 +438,7 @@ const Lesson = props => {
                 currentMaterialHasType
                   ? 'flex'
                   : 'none', // display only if material problem type is set
-              height: bottomsPanelsHeight,
+              height: bottomPanelsHeight,
             }}
           >
             {currentMaterialHasType && (
@@ -454,12 +479,12 @@ const Lesson = props => {
           <div
             style={{
               display:
-                !['student', 'edit'].includes(layoutMode) &&
+                layoutMode === 'type' &&
                 materialTypePropIsInMaterial &&
                 currentMaterialHasType
                   ? 'flex'
                   : 'none', // display only if material problem type is set
-              height: bottomsPanelsHeight,
+              height: bottomPanelsHeight,
             }}
           >
             {editorComponent}

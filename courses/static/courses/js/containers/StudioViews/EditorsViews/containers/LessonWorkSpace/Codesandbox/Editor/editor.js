@@ -189,7 +189,7 @@ class ContentSplit extends React.Component {
         }}
       >
         <Container
-          style={{ lineHeight: 'initial' }}
+          style={{ lineHeight: 'initial', color: '#e7e7e7' }}
           className="monaco-workbench"
         >
           {/* <HeaderContainer> */}
@@ -210,7 +210,7 @@ class ContentSplit extends React.Component {
           {/* </HeaderContainer> */}
           {/* <div><MenuBar/></div> */}
           {/* <Header zenMode={store.preferences.settings.zenMode} /> */}
-          <Fullscreen style={{ width: 'initial' }}>
+          <Fullscreen style={{ width: 'initial', height: 'auto' }}>
             {/* {!hideNavigation && ( */}
             {/* <Navigation topOffset={topOffset} bottomOffset={bottomOffset} /> */}
             {/* )} */}
@@ -249,6 +249,7 @@ class ContentSplit extends React.Component {
                 }}
                 style={{
                   overflow: 'visible', // For VSCode Context Menu
+                  height: statusBar ? 'calc(100% - 4.5rem)' : 'auto',
                 }}
               >
                 {store.workspace.workspaceHidden ? <div /> : <Workspace />}
