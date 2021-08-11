@@ -1,62 +1,62 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { ThemeProvider } from 'styled-components';
-import { TextOperation } from 'ot';
-import { debounce } from 'lodash-es';
-import * as fs from 'fs';
+import React from 'react'
+import { render } from 'react-dom'
+import { ThemeProvider } from 'styled-components'
+import { TextOperation } from 'ot'
+import { debounce } from 'lodash-es'
+import * as fs from 'fs'
 import {
   getModulePath,
   resolveModule,
-} from '@codesandbox/common/lib/sandbox/modules';
-import { listen, actions, dispatch } from 'codesandbox-api';
+} from '@codesandbox/common/lib/sandbox/modules'
+import { listen, actions, dispatch } from 'codesandbox-api'
 
-import prettify from '../../../../app/utils/prettify';
-import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
-// import getUI from '@codesandbox/common/lib/templates/configuration/ui';
+import prettify from '../../../../app/utils/prettify'
+import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config'
+import getUI from '@codesandbox/common/lib/templates/configuration/ui'
 
-import getTemplate from '@codesandbox/common/lib/templates';
-import theme from '@codesandbox/common/lib/theme';
+import getTemplate from '@codesandbox/common/lib/templates'
+import theme from '@codesandbox/common/lib/theme'
 import {
   Module,
   Sandbox,
   ModuleError,
   ModuleCorrection,
-} from '@codesandbox/common/lib/types';
-import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+} from '@codesandbox/common/lib/types'
+import { getTextOperation } from '@codesandbox/common/lib/utils/diff'
 
 /* eslint-disable import/no-webpack-loader-syntax, import/default */
 // @ts-ignore
 // import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
 // TODO dev/prod url
-import LinterWorker from 'worker-loader?publicPath=/static/js/bundles/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
+import LinterWorker from 'worker-loader?publicPath=/static/js/bundles/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter'
 /* eslint-enable import/no-webpack-loader-syntax, import/default */
-import { clone } from '../../../../app/componentConnectors';
-import eventToTransform from '../Monaco/event-to-transform';
-import MonacoEditorComponent, { EditorAPI } from './MonacoReactComponent';
-import { Container, GlobalStyles } from './elements';
-import getSettings from '../Monaco/settings';
+import { clone } from '../../../../app/componentConnectors'
+import eventToTransform from '../Monaco/event-to-transform'
+import VSCodeEditorComponent, { EditorAPI } from './VSCodeReactComponent'
+import { Container, GlobalStyles } from './elements'
+import getSettings from '../Monaco/settings'
 
 import { Props, Editor } from '../types'; // eslint-disable-line
-import getMode from '../Monaco/mode';
+import getMode from '../Monaco/mode'
 
 import {
   lineAndColumnToIndex,
   indexToLineAndColumn,
-} from '../Monaco/monaco-index-converter';
-import { updateUserSelections } from '../Monaco/live-decorations';
-import { Configuration } from './Configuration';
+} from '../Monaco/monaco-index-converter'
+import { updateUserSelections } from '../Monaco/live-decorations'
+import { Configuration } from './Configuration'
 
 function getSelection(lines, selection) {
   const startSelection = lineAndColumnToIndex(
     lines,
     selection.startLineNumber,
-    selection.startColumn
-  );
+    selection.startColumn,
+  )
   const endSelection = lineAndColumnToIndex(
     lines,
     selection.endLineNumber,
-    selection.endColumn
-  );
+    selection.endColumn,
+  )
 
   return {
     selection:
@@ -64,68 +64,68 @@ function getSelection(lines, selection) {
     cursorPosition: lineAndColumnToIndex(
       lines,
       selection.positionLineNumber,
-      selection.positionColumn
+      selection.positionColumn,
     ),
-  };
+  }
 }
 
 type UserSelection =
   | {
-      userId: string;
-      selection: null;
+      userId: string
+      selection: null
     }
   | {
-      userId: string;
-      name: string;
-      selection: any;
-      color: number[];
-    };
+      userId: string
+      name: string
+      selection: any
+      color: number[]
+    }
 
 export class VSCode extends React.Component<Props> implements Editor {
   static defaultProps = {
     width: '100%',
     height: '100%',
-  };
+  }
 
-  sandbox: Props['sandbox'];
-  currentModule: Props['currentModule'];
-  currentTitle: string;
-  currentDirectoryShortid: string | null;
-  settings: Props['settings'];
-  dependencies: Props['dependencies'] | undefined;
-  tsconfig: Props['tsconfig'] | undefined;
-  disposeInitializer?: Function;
-  lintWorker: Worker | null;
-  editor?: any;
-  monaco?: any;
-  receivingCode: boolean = false;
-  codeSandboxAPIListener: () => void;
-  sizeProbeInterval: number | undefined;
-  resizeEditor: (() => void) | EventListener;
-  commitLibChanges: () => void;
+  sandbox: Props['sandbox']
+  currentModule: Props['currentModule']
+  currentTitle: string
+  currentDirectoryShortid: string | null
+  settings: Props['settings']
+  dependencies: Props['dependencies'] | undefined
+  tsconfig: Props['tsconfig'] | undefined
+  disposeInitializer?: Function
+  lintWorker: Worker | null
+  editor?: any
+  monaco?: any
+  receivingCode: boolean = false
+  codeSandboxAPIListener: () => void
+  sizeProbeInterval: number | undefined
+  resizeEditor: (() => void) | EventListener
+  commitLibChanges: () => void
 
   modelSelectionListener: {
-    dispose: () => void;
-  };
+    dispose: () => void
+  }
 
   constructor(props: Props) {
-    super(props);
-    this.sandbox = props.sandbox;
-    this.currentModule = props.currentModule;
-    this.currentTitle = props.currentModule.title;
-    this.currentDirectoryShortid = props.currentModule.directoryShortid;
-    this.settings = props.settings;
-    this.dependencies = props.dependencies;
+    super(props)
+    this.sandbox = props.sandbox
+    this.currentModule = props.currentModule
+    this.currentTitle = props.currentModule.title
+    this.currentDirectoryShortid = props.currentModule.directoryShortid
+    this.settings = props.settings
+    this.dependencies = props.dependencies
 
-    this.tsconfig = props.tsconfig;
+    this.tsconfig = props.tsconfig
 
-    this.lintWorker = null;
-    this.sizeProbeInterval = undefined;
+    this.lintWorker = null
+    this.sizeProbeInterval = undefined
 
-    this.resizeEditor = debounce(this.resizeEditorInstantly, 150);
-    this.commitLibChanges = debounce(this.commitLibChangesInstantly, 300);
+    this.resizeEditor = debounce(this.resizeEditorInstantly, 150)
+    this.commitLibChanges = debounce(this.commitLibChangesInstantly, 300)
 
-    this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener();
+    this.codeSandboxAPIListener = this.setupCodeSandboxAPIListener()
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -133,98 +133,93 @@ export class VSCode extends React.Component<Props> implements Editor {
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
     ) {
-      this.resizeEditorInstantly();
+      this.resizeEditorInstantly()
     }
 
-    const activeEditor = this.editor && this.editor.getActiveCodeEditor();
-
-    // console.log('activeEditor');
-    // console.log(activeEditor);
-
+    const activeEditor = this.editor && this.editor.getActiveCodeEditor()
 
     if (this.props.readOnly !== nextProps.readOnly && activeEditor) {
-      activeEditor.updateOptions({ readOnly: Boolean(nextProps.readOnly) });
+      activeEditor.updateOptions({ readOnly: Boolean(nextProps.readOnly) })
     }
 
-    return false;
+    return false
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resizeEditor);
+    window.removeEventListener('resize', this.resizeEditor)
     // Make sure that everything has run before disposing, to prevent any inconsistensies
 
     if (this.lintWorker) {
-      this.lintWorker.terminate();
+      this.lintWorker.terminate()
     }
 
     if (this.codeSandboxAPIListener) {
-      this.codeSandboxAPIListener();
+      this.codeSandboxAPIListener()
     }
-    clearInterval(this.sizeProbeInterval);
+    clearInterval(this.sizeProbeInterval)
     if (this.modelSelectionListener) {
-      this.modelSelectionListener.dispose();
+      this.modelSelectionListener.dispose()
     }
 
-    this.disposeContentListeners();
+    this.disposeContentListeners()
 
     if (this.disposeInitializer) {
-      this.disposeInitializer();
+      this.disposeInitializer()
     }
   }
 
   updateModules = () => {
     Object.keys(this.modelListeners).forEach(path => {
-      const shortid = this.modelListeners[path].moduleShortid;
-      const { model } = this.modelListeners[path];
-      const module = this.sandbox.modules.find(m => m.shortid === shortid);
+      const shortid = this.modelListeners[path].moduleShortid
+      const { model } = this.modelListeners[path]
+      const module = this.sandbox.modules.find(m => m.shortid === shortid)
       if (!module) {
         // Deleted
-        return;
+        return
       }
 
-      const modulePath = this.getVSCodePath(module.id);
+      const modulePath = this.getVSCodePath(module.id)
 
       if (modulePath !== model.uri.path) {
         this.editor.textFileService
           .move(model.uri, this.monaco.Uri.file(modulePath))
           .then(() => {
-            const editor = this.editor.getActiveCodeEditor();
-            const currentModel = editor && editor.getModel();
-            const isCurrentFile =
-              currentModel && currentModel.uri.path === path;
+            const editor = this.editor.getActiveCodeEditor()
+            const currentModel = editor && editor.getModel()
+            const isCurrentFile = currentModel && currentModel.uri.path === path
             if (isCurrentFile) {
-              this.editor.openFile(modulePath.replace('/sandbox', ''));
+              this.editor.openFile(modulePath.replace('/sandbox', ''))
             }
 
             // Don't move the listener from old path to new path, that's handled by the model
             // logic
-          });
+          })
       }
-    });
-  };
+    })
+  }
 
   getVSCodePath = (moduleId: string) =>
     `/sandbox${getModulePath(
       this.sandbox.modules,
       this.sandbox.directories,
-      moduleId
-    )}`;
+      moduleId,
+    )}`
 
-  getCurrentModuleVSCodePath = () => this.getVSCodePath(this.currentModule.id);
+  getCurrentModuleVSCodePath = () => this.getVSCodePath(this.currentModule.id)
 
   getPrettierConfig = () => {
     try {
       const module = resolveModule(
         '/.prettierrc',
         this.sandbox.modules,
-        this.sandbox.directories
-      );
+        this.sandbox.directories,
+      )
 
-      return JSON.parse(module.code || '');
+      return JSON.parse(module.code || '')
     } catch (e) {
-      return this.settings.prettierConfig || DEFAULT_PRETTIER_CONFIG;
+      return this.settings.prettierConfig || DEFAULT_PRETTIER_CONFIG
     }
-  };
+  }
 
   provideDocumentFormattingEdits = (model, options, token) =>
     prettify(
@@ -232,13 +227,13 @@ export class VSCode extends React.Component<Props> implements Editor {
       () => model.getValue(),
       this.getPrettierConfig(),
       () => false,
-      token
+      token,
     ).then(newCode => [
       {
         range: model.getFullModelRange(),
         text: newCode,
       },
-    ]);
+    ])
 
   setupCodeSandboxAPIListener = () =>
     listen(({ action, type, code, path, lineNumber, column }: any) => {
@@ -251,47 +246,46 @@ export class VSCode extends React.Component<Props> implements Editor {
         // this.commitLibChanges();
       } else if (action === 'editor.open-module') {
         const options: {
-          selection?: { startLineNumber: number; startColumn: number };
-        } = {};
+          selection?: { startLineNumber: number; startColumn: number }
+        } = {}
 
         if (lineNumber || column) {
           options.selection = {
             startLineNumber: lineNumber,
             startColumn: column || 0,
-          };
+          }
         }
 
         if (this.editor) {
-          // console.log(this.editor);
           this.editor.codeEditorService.openCodeEditor({
             resource: this.monaco.Uri.file('/sandbox' + path),
             options,
-          });
+          })
         }
       }
-    });
+    })
 
   modelListeners: {
     [path: string]: {
-      listener: { dispose: () => void };
-      moduleShortid: string;
-      model: any;
-    };
-  } = {};
+      listener: { dispose: () => void }
+      moduleShortid: string
+      model: any
+    }
+  } = {}
 
-  modelRemovedListener: { dispose: () => void };
-  modelAddedListener: { dispose: () => void };
-  activeEditorListener: { dispose: () => void };
+  modelRemovedListener: { dispose: () => void }
+  modelAddedListener: { dispose: () => void }
+  activeEditorListener: { dispose: () => void }
 
   getModelContentChangeListener = model =>
     model.onDidChangeContent(e => {
-      const { path } = model.uri;
+      const { path } = model.uri
       try {
         const module = resolveModule(
           path.replace(/^\/sandbox/, ''),
           this.sandbox.modules,
-          this.sandbox.directories
-        );
+          this.sandbox.directories,
+        )
 
         // const { isLive, sendTransforms } = this.props;
         //
@@ -304,127 +298,125 @@ export class VSCode extends React.Component<Props> implements Editor {
         //   this.sendChangeOperations(e);
         // }
 
-        this.sendChangeOperations(e);
+        // this.sendChangeOperations(e)
 
-        this.handleChange(module.shortid, module.title, model.getValue());
+        this.handleChange(module.shortid, module.title, model.getValue())
       } catch (err) {
         if (process.env.NODE_ENV === 'development') {
-          console.error('caught', err);
+          console.error('caught', err)
         }
       }
-    });
+    })
 
   listenForFileChanges = () => {
     this.modelAddedListener = this.editor.textFileService.modelService.onModelAdded(
       model => {
         if (this.modelListeners[model.uri.path] === undefined) {
-          let module: Module;
+          let module: Module
           try {
             module = resolveModule(
               model.uri.path.replace(/^\/sandbox/, ''),
               this.sandbox.modules,
-              this.sandbox.directories
-            );
+              this.sandbox.directories,
+            )
           } catch (e) {
-            return;
+            return
           }
 
-          const listener = this.getModelContentChangeListener(model);
+          const listener = this.getModelContentChangeListener(model)
           this.modelListeners[model.uri.path] = {
             moduleShortid: module.shortid,
             model,
             listener,
-          };
+          }
         }
-      }
-    );
+      },
+    )
 
     this.modelRemovedListener = this.editor.textFileService.modelService.onModelRemoved(
       model => {
         if (this.modelListeners[model.uri.path]) {
-          this.modelListeners[model.uri.path].listener.dispose();
+          this.modelListeners[model.uri.path].listener.dispose()
 
-          const csbPath = model.uri.path.replace('/sandbox', '');
-          dispatch(actions.correction.clear(csbPath, 'eslint'));
+          const csbPath = model.uri.path.replace('/sandbox', '')
+          dispatch(actions.correction.clear(csbPath, 'eslint'))
 
-          delete this.modelListeners[model.uri.path];
+          delete this.modelListeners[model.uri.path]
         }
-      }
-    );
-
-    // console.log(this.modelListeners);
-  };
+      },
+    )
+  }
 
   disposeContentListeners = () => {
     if (this.modelAddedListener) {
-      this.modelAddedListener.dispose();
+      this.modelAddedListener.dispose()
     }
     if (this.modelRemovedListener) {
-      this.modelRemovedListener.dispose();
+      this.modelRemovedListener.dispose()
     }
     if (this.activeEditorListener) {
-      this.activeEditorListener.dispose();
+      this.activeEditorListener.dispose()
     }
     Object.keys(this.modelListeners).forEach(p => {
-      this.modelListeners[p].listener.dispose();
-    });
-  };
+      this.modelListeners[p].listener.dispose()
+    })
+  }
 
   configureEditor = async (editor: EditorAPI, monaco: any) => {
-    this.editor = editor;
+    this.editor = editor
 
-    this.monaco = monaco;
+    this.monaco = monaco
 
-    // foirmating support
-    monaco.languages.registerDocumentFormattingEditProvider('typescript', this);
+    // formatting support
+    monaco.languages.registerDocumentFormattingEditProvider('typescript', this)
     monaco.languages.registerDocumentFormattingEditProvider(
       'typescriptreact',
-      this
-    );
-    monaco.languages.registerDocumentFormattingEditProvider('javascript', this);
+      this,
+    )
+    monaco.languages.registerDocumentFormattingEditProvider('javascript', this)
     monaco.languages.registerDocumentFormattingEditProvider(
       'javascriptreact',
-      this
-    );
-    monaco.languages.registerDocumentFormattingEditProvider('css', this);
-    monaco.languages.registerDocumentFormattingEditProvider('less', this);
-    monaco.languages.registerDocumentFormattingEditProvider('sass', this);
-    monaco.languages.registerDocumentFormattingEditProvider('graphql', this);
-    monaco.languages.registerDocumentFormattingEditProvider('html', this);
-    monaco.languages.registerDocumentFormattingEditProvider('markdown', this);
-    monaco.languages.registerDocumentFormattingEditProvider('json', this);
+      this,
+    )
+    monaco.languages.registerDocumentFormattingEditProvider('css', this)
+    monaco.languages.registerDocumentFormattingEditProvider('less', this)
+    monaco.languages.registerDocumentFormattingEditProvider('sass', this)
+    monaco.languages.registerDocumentFormattingEditProvider('graphql', this)
+    monaco.languages.registerDocumentFormattingEditProvider('html', this)
+    monaco.languages.registerDocumentFormattingEditProvider('markdown', this)
+    monaco.languages.registerDocumentFormattingEditProvider('json', this)
 
     // eslint-disable-next-line no-underscore-dangle
-    const global = window as any;
+    const global = window as any
     global.CSEditor = {
       editor: this.editor,
       monaco: this.monaco,
-    };
+    }
 
-    this.listenForFileChanges();
+    this.listenForFileChanges()
 
     this.activeEditorListener = editor.editorService.onDidActiveEditorChange(
       () => {
         if (this.modelSelectionListener) {
-          this.modelSelectionListener.dispose();
+          this.modelSelectionListener.dispose()
         }
 
-        const activeEditor = editor.getActiveCodeEditor();
+        const activeEditor = editor.getActiveCodeEditor()
 
         if (activeEditor) {
-          const modulePath = activeEditor.getModel().uri.path;
+          const modulePath = activeEditor.getModel().uri.path
 
-          activeEditor.updateOptions({ readOnly: this.props.readOnly });
+          activeEditor.updateOptions({ readOnly: this.props.readOnly })
 
           if (!modulePath.startsWith('/sandbox')) {
-            return;
+            return
           }
 
           this.lint(
             activeEditor.getModel().getValue(),
             modulePath,
-            activeEditor.getModel().getVersionId()
-          );
+            activeEditor.getModel().getVersionId(),
+          )
 
           if (
             modulePath === this.getCurrentModuleVSCodePath() &&
@@ -436,33 +428,33 @@ export class VSCode extends React.Component<Props> implements Editor {
             // TODO: a better long term solution would be to store the changes of someone else in a model, even if the
             // model is not opened in an editor.
 
-            this.receivingCode = true;
+            this.receivingCode = true
             // This means that the file in Cerebral is dirty and has changed,
             // VSCode only gets saved contents. In this case we manually set the value correctly.
-            const model = activeEditor.getModel();
+            const model = activeEditor.getModel()
             model.applyEdits([
               {
                 text: this.currentModule.code,
                 range: model.getFullModelRange(),
               },
-            ]);
-            this.receivingCode = false;
+            ])
+            this.receivingCode = false
           }
 
           this.modelSelectionListener = activeEditor.onDidChangeCursorSelection(
             selectionChange => {
               // TODO: add another debounced action to send the current data. So we can
               // have the correct cursor pos no matter what
-              const { onSelectionChanged, isLive } = this.props;
+              const { onSelectionChanged, isLive } = this.props
               // Reason 3 is update by mouse or arrow keys
               if (isLive) {
-                const lines = activeEditor.getModel().getLinesContent() || [];
+                const lines = activeEditor.getModel().getLinesContent() || []
                 const data = {
                   primary: getSelection(lines, selectionChange.selection),
                   secondary: selectionChange.secondarySelections.map(s =>
-                    getSelection(lines, s)
+                    getSelection(lines, s),
                   ),
-                };
+                }
                 if (
                   (selectionChange.reason === 3 ||
                     /* alt + shift + arrow keys */ selectionChange.source ===
@@ -471,126 +463,126 @@ export class VSCode extends React.Component<Props> implements Editor {
                       'api') &&
                   onSelectionChanged
                 ) {
-                  this.onSelectionChangedDebounced.cancel();
+                  this.onSelectionChangedDebounced.cancel()
                   onSelectionChanged({
                     selection: data,
                     moduleShortid: this.currentModule.shortid,
-                  });
+                  })
                 } else {
                   // This is just on typing, we send a debounced selection update as a
                   // safeguard to make sure we are in sync
                   this.onSelectionChangedDebounced({
                     selection: data,
                     moduleShortid: this.currentModule.shortid,
-                  });
+                  })
                 }
               }
-            }
-          );
+            },
+          )
         }
-      }
-    );
+      },
+    )
 
     requestAnimationFrame(() => {
       if (this.editor && !this.editor.getActiveCodeEditor()) {
-        this.openModule(this.currentModule);
+        this.openModule(this.currentModule)
       }
-      this.setupWorkers();
-    });
+      this.setupWorkers()
+    })
 
-    window.addEventListener('resize', this.resizeEditor);
+    window.addEventListener('resize', this.resizeEditor)
     this.sizeProbeInterval = window.setInterval(() => {
       if (this.props.width && this.props.height) {
-        return;
+        return
       }
 
-      this.resizeEditorInstantly();
-    }, 3000);
+      this.resizeEditorInstantly()
+    }, 3000)
 
-    const { dependencies } = this;
+    const { dependencies } = this
     if (dependencies != null) {
       if (Object.keys(dependencies)) {
-        setTimeout(() => {}, this.hasNativeTypescript() ? 500 : 5000);
+        setTimeout(() => {}, this.hasNativeTypescript() ? 500 : 5000)
       }
     }
 
     if (this.props.onInitialized) {
-      this.disposeInitializer = this.props.onInitialized(this);
+      this.disposeInitializer = this.props.onInitialized(this)
     }
-  };
+  }
 
   changeModule = (
     newModule: Module,
     errors?: ModuleError[],
-    corrections?: ModuleCorrection[]
+    corrections?: ModuleCorrection[],
   ) => {
-    this.swapDocuments(newModule);
+    this.swapDocuments(newModule)
 
-    this.currentModule = newModule;
-    this.currentTitle = newModule.title;
-    this.currentDirectoryShortid = newModule.directoryShortid;
+    this.currentModule = newModule
+    this.currentTitle = newModule.title
+    this.currentDirectoryShortid = newModule.directoryShortid
 
     // Let the model load first
     setTimeout(() => {
       if (errors) {
-        this.setErrors(errors);
+        this.setErrors(errors)
       }
       if (corrections) {
-        this.setCorrections(corrections);
+        this.setCorrections(corrections)
       }
-    }, 100);
+    }, 100)
 
     if (this.props.onCodeReceived) {
       // Whenever the user changes a module we set up a state that defines
       // that the changes of code are not sent to live users. We need to reset
       // this state when we're doing changing modules
-      this.props.onCodeReceived();
-      this.liveOperationCode = '';
+      this.props.onCodeReceived()
+      this.liveOperationCode = ''
     }
-  };
+  }
 
   onSelectionChangedDebounced = debounce(data => {
     if (this.props.onSelectionChanged) {
-      this.props.onSelectionChanged(data);
+      this.props.onSelectionChanged(data)
     }
-  });
+  })
 
-  liveOperationCode = '';
+  // liveOperationCode = ''
 
-  sendChangeOperations = changeEvent => {
-    const { sendTransforms, isLive, onCodeReceived } = this.props;
+  // sendChangeOperations = changeEvent => {
+  //   const { sendTransforms, isLive, onCodeReceived } = this.props
+  //
+  //   if (sendTransforms && changeEvent.changes) {
+  //     this.liveOperationCode =
+  //       this.liveOperationCode || this.currentModule.code || ''
+  //     try {
+  //       const { operation, newCode } = eventToTransform(
+  //         changeEvent,
+  //         this.liveOperationCode,
+  //       )
+  //
+  //       this.liveOperationCode = newCode
+  //
+  //       sendTransforms(operation)
+  //     } catch (e) {
+  //       // Something went wrong while composing the operation, so we're opting for a full sync
+  //       console.error(e)
+  //
+  //       if (this.props.onModuleStateMismatch) {
+  //         this.props.onModuleStateMismatch()
+  //       }
+  //     }
+  //
+  //     requestAnimationFrame(() => {
+  //       this.liveOperationCode = ''
+  //     })
+  //   } else if (!isLive && onCodeReceived) {
+  //     onCodeReceived()
+  //   }
+  // }
 
-    if (sendTransforms && changeEvent.changes) {
-      this.liveOperationCode =
-        this.liveOperationCode || this.currentModule.code || '';
-      try {
-        const { operation, newCode } = eventToTransform(
-          changeEvent,
-          this.liveOperationCode
-        );
-
-        this.liveOperationCode = newCode;
-
-        sendTransforms(operation);
-      } catch (e) {
-        // Something went wrong while composing the operation, so we're opting for a full sync
-        console.error(e);
-
-        if (this.props.onModuleStateMismatch) {
-          this.props.onModuleStateMismatch();
-        }
-      }
-
-      requestAnimationFrame(() => {
-        this.liveOperationCode = '';
-      });
-    } else if (!isLive && onCodeReceived) {
-      onCodeReceived();
-    }
-  };
-
-  userClassesGenerated = {};
-  userSelectionDecorations = {};
+  userClassesGenerated = {}
+  userSelectionDecorations = {}
 
   updateUserSelections = (userSelections: UserSelection[]) => {
     if (this.editor.getActiveCodeEditor()) {
@@ -598,45 +590,45 @@ export class VSCode extends React.Component<Props> implements Editor {
         this.monaco,
         this.editor.getActiveCodeEditor(),
         this.currentModule,
-        userSelections
-      );
+        userSelections,
+      )
     }
-  };
+  }
 
   changeSandbox = (
     newSandbox: Sandbox,
     newCurrentModule: Module,
-    dependencies: Props['dependencies']
+    dependencies: Props['dependencies'],
   ): Promise<null> =>
     new Promise(resolve => {
-      this.sandbox = newSandbox;
-      this.dependencies = dependencies;
-      
+      this.sandbox = newSandbox
+      this.dependencies = dependencies
+
       // console.log(newCurrentModule);
-      
-      this.changeModule(newCurrentModule, [], []);
+
+      this.changeModule(newCurrentModule, [], [])
 
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
-        resolve(null);
-      });
-    });
+        resolve(null)
+      })
+    })
 
   moduleSyncedChanged = () => {
-    const openedModels = this.editor.textFileService.getFileModels();
+    const openedModels = this.editor.textFileService.getFileModels()
 
     openedModels.forEach(fileModel => {
-      const { path } = fileModel.resource;
+      const { path } = fileModel.resource
 
       if (!path.startsWith('/sandbox') || !fileModel.isDirty()) {
-        return;
+        return
       }
 
       const module = resolveModule(
         path.replace(/^\/sandbox/, ''),
         this.sandbox.modules,
-        this.sandbox.directories
-      );
+        this.sandbox.directories,
+      )
 
       if (
         module &&
@@ -645,13 +637,13 @@ export class VSCode extends React.Component<Props> implements Editor {
       ) {
         // Do a revert to remove the dirty state and get the code from the FS, since in Cerebral
         // we're already synced
-        fileModel.revert();
+        fileModel.revert()
       }
-    });
-  };
+    })
+  }
 
   changeCode = (code: string, moduleId?: string) => {
-    const editor = this.editor.getActiveCodeEditor();
+    const editor = this.editor.getActiveCodeEditor()
     if (
       code !== this.getCode() &&
       (!moduleId || this.currentModule.id === moduleId) &&
@@ -660,47 +652,47 @@ export class VSCode extends React.Component<Props> implements Editor {
       this.lint(
         code,
         this.currentModule.title,
-        editor.getModel().getVersionId()
-      );
+        editor.getModel().getVersionId(),
+      )
     }
-  };
+  }
 
   applyOperationToModel = (
     operation,
     pushStack = false,
-    model = this.editor.getActiveCodeEditor().getModel()
+    model = this.editor.getActiveCodeEditor().getModel(),
   ) => {
     const results: Array<{
-      range: unknown;
-      text: string;
-      forceMoveMarkers?: boolean;
-    }> = [];
-    let index = 0;
-    const currentEOLLength = model.getEOL().length;
-    let eolChanged = false;
+      range: unknown
+      text: string
+      forceMoveMarkers?: boolean
+    }> = []
+    let index = 0
+    const currentEOLLength = model.getEOL().length
+    let eolChanged = false
     for (let i = 0; i < operation.ops.length; i++) {
-      const op = operation.ops[i];
+      const op = operation.ops[i]
       if (TextOperation.isRetain(op)) {
-        index += op;
+        index += op
       } else if (TextOperation.isInsert(op)) {
         const { lineNumber, column } = indexToLineAndColumn(
           model.getValue().split(/\n/) || [],
-          index
-        );
+          index,
+        )
         const range = new this.monaco.Range(
           lineNumber,
           column,
           lineNumber,
-          column
-        );
+          column,
+        )
 
         // if there's a new line
         if (/\n/.test(op)) {
-          const eol = /\r\n/.test(op) ? 2 : 1;
+          const eol = /\r\n/.test(op) ? 2 : 1
           if (eol !== currentEOLLength) {
             // With this insert the EOL of the document changed on the other side. We need
             // to accomodate our EOL to it.
-            eolChanged = true;
+            eolChanged = true
           }
         }
 
@@ -708,130 +700,128 @@ export class VSCode extends React.Component<Props> implements Editor {
           range,
           text: op,
           forceMoveMarkers: true,
-        });
+        })
       } else if (TextOperation.isDelete(op)) {
-        const lines = model.getValue().split(/\n/) || [];
-        const from = indexToLineAndColumn(lines, index);
-        const to = indexToLineAndColumn(lines, index - op);
+        const lines = model.getValue().split(/\n/) || []
+        const from = indexToLineAndColumn(lines, index)
+        const to = indexToLineAndColumn(lines, index - op)
         results.push({
           range: new this.monaco.Range(
             from.lineNumber,
             from.column,
             to.lineNumber,
-            to.column
+            to.column,
           ),
           text: '',
-        });
-        index -= op;
+        })
+        index -= op
       }
     }
 
-    this.receivingCode = true;
+    this.receivingCode = true
 
     if (eolChanged) {
-      const newEolMode = currentEOLLength === 2 ? 0 : 1;
-      model.setEOL(newEolMode);
+      const newEolMode = currentEOLLength === 2 ? 0 : 1
+      model.setEOL(newEolMode)
     }
 
     if (pushStack) {
-      model.pushEditOperations([], results);
+      model.pushEditOperations([], results)
     } else {
-      model.applyEdits(results);
+      model.applyEdits(results)
     }
-    this.receivingCode = false;
-  };
+    this.receivingCode = false
+  }
 
   applyOperations = (operations: { [moduleShortid: string]: any }) => {
-    const operationsJSON = operations.toJSON ? operations.toJSON() : operations;
+    const operationsJSON = operations.toJSON ? operations.toJSON() : operations
 
     Object.keys(operationsJSON).forEach(moduleShortid => {
-      const operation = TextOperation.fromJSON(operationsJSON[moduleShortid]);
+      const operation = TextOperation.fromJSON(operationsJSON[moduleShortid])
 
       const foundModule = this.sandbox.modules.find(
-        m => m.shortid === moduleShortid
-      );
+        m => m.shortid === moduleShortid,
+      )
 
       if (!foundModule) {
-        return;
+        return
       }
 
-      const moduleId = foundModule.id;
+      const moduleId = foundModule.id
 
       const modulePath =
         '/sandbox' +
-        getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId);
+        getModulePath(this.sandbox.modules, this.sandbox.directories, moduleId)
 
       const modelEditor =
         this.editor &&
         this.editor.editorService.editors.find(
-          editor => editor.resource && editor.resource.path === modulePath
-        );
+          editor => editor.resource && editor.resource.path === modulePath,
+        )
 
       // Apply the code to the current module code itself
-      const module = this.sandbox.modules.find(
-        m => m.shortid === moduleShortid
-      );
+      const module = this.sandbox.modules.find(m => m.shortid === moduleShortid)
 
       if (!modelEditor) {
         if (!module) {
-          return;
+          return
         }
 
         try {
-          const code = operation.apply(module.code || '');
+          const code = operation.apply(module.code || '')
           if (this.props.onChange) {
-            this.props.onChange(code, module.shortid);
+            this.props.onChange(code, module.shortid)
           }
         } catch (e) {
           // Something went wrong while applying
           if (this.props.onModuleStateMismatch) {
-            this.props.onModuleStateMismatch();
+            this.props.onModuleStateMismatch()
           }
         }
       } else {
-        this.liveOperationCode = '';
+        this.liveOperationCode = ''
 
         modelEditor.textModelReference.then(model => {
           this.applyOperationToModel(
             operation,
             false,
-            model.object.textEditorModel
-          );
+            model.object.textEditorModel,
+          )
 
           if (this.props.onChange && module) {
             this.props.onChange(
               model.object.textEditorModel.getValue(),
-              module.shortid
-            );
+              module.shortid,
+            )
           }
-        });
+        })
       }
-    });
-  };
+    })
+  }
 
   changeDependencies = (dependencies: Props['dependencies'] | undefined) => {
-    this.dependencies = dependencies;
-  };
+    this.dependencies = dependencies
+  }
 
   changeSettings = (settings: Props['settings']) => {
-    this.settings = settings;
+    this.settings = settings
     if (settings.lintEnabled && !this.lintWorker) {
-      this.setupLintWorker();
+      this.setupLintWorker()
     }
 
-    this.editor.getActiveCodeEditor().updateOptions(this.getEditorOptions());
-    this.forceUpdate();
-  };
+    this.editor.getActiveCodeEditor().updateOptions(this.getEditorOptions())
+    this.forceUpdate()
+  }
 
   setErrors = (errors: ModuleError[]) => {
-    const activeEditor = this.editor.getActiveCodeEditor();
+    const activeEditor = this.editor.getActiveCodeEditor()
 
     if (activeEditor) {
       if (errors.length > 0) {
-        const currentPath = this.getCurrentModelPath();
+        const currentPath = this.getCurrentModelPath()
         const thisModuleErrors = errors.filter(
-          error => error.path === currentPath
-        );
+          error => error.path === currentPath,
+        )
         const errorMarkers = thisModuleErrors
           .map(error => {
             if (error) {
@@ -842,33 +832,29 @@ export class VSCode extends React.Component<Props> implements Editor {
                 endColumn: error.column,
                 endLineNumber: error.line + 1,
                 message: error.message,
-              };
+              }
             }
 
-            return null;
+            return null
           })
-          .filter(x => x);
+          .filter(x => x)
 
         this.monaco.editor.setModelMarkers(
           activeEditor.getModel(),
           'error',
-          errorMarkers
-        );
+          errorMarkers,
+        )
       } else {
-        this.monaco.editor.setModelMarkers(
-          activeEditor.getModel(),
-          'error',
-          []
-        );
+        this.monaco.editor.setModelMarkers(activeEditor.getModel(), 'error', [])
       }
     }
-  };
+  }
 
   setCorrections = (corrections: ModuleCorrection[]) => {
-    const activeEditor = this.editor.getActiveCodeEditor();
+    const activeEditor = this.editor.getActiveCodeEditor()
     if (activeEditor) {
       if (corrections.length > 0) {
-        const currentPath = this.getCurrentModelPath();
+        const currentPath = this.getCurrentModelPath()
         const correctionMarkers = corrections
           .filter(correction => correction.path === currentPath)
           .map(correction => {
@@ -884,42 +870,42 @@ export class VSCode extends React.Component<Props> implements Editor {
                 endLineNumber: correction.lineEnd || correction.line + 1,
                 message: correction.message,
                 source: correction.source,
-              };
+              }
             }
 
-            return null;
+            return null
           })
-          .filter(x => x);
+          .filter(x => x)
 
         this.monaco.editor.setModelMarkers(
           activeEditor.getModel(),
           'correction',
-          correctionMarkers
-        );
+          correctionMarkers,
+        )
       } else {
         this.monaco.editor.setModelMarkers(
           activeEditor.getModel(),
           'correction',
-          []
-        );
+          [],
+        )
       }
     }
-  };
+  }
 
   setupLintWorker = () => {
     if (!this.lintWorker) {
-      this.lintWorker = new LinterWorker();
+      this.lintWorker = new LinterWorker()
 
       this.lintWorker!.addEventListener('message', event => {
-        const { markers, version } = event.data;
+        const { markers, version } = event.data
 
         requestAnimationFrame(() => {
-          const activeEditor = this.editor.getActiveCodeEditor();
+          const activeEditor = this.editor.getActiveCodeEditor()
 
           if (activeEditor && activeEditor.getModel()) {
             dispatch(
-              actions.correction.clear(this.getCurrentModelPath(), 'eslint')
-            );
+              actions.correction.clear(this.getCurrentModelPath(), 'eslint'),
+            )
 
             if (version === activeEditor.getModel().getVersionId()) {
               markers.forEach(marker => {
@@ -932,143 +918,141 @@ export class VSCode extends React.Component<Props> implements Editor {
                     source: 'eslint',
                     severity: marker.severity === 2 ? 'warning' : 'notice',
                     path: this.getCurrentModelPath(),
-                  })
-                );
-              });
+                  }),
+                )
+              })
             }
           }
-        });
-      });
+        })
+      })
 
-      this.lint = debounce(this.lint, 400);
+      this.lint = debounce(this.lint, 400)
 
-      const activeEditor = this.editor.getActiveCodeEditor();
+      const activeEditor = this.editor.getActiveCodeEditor()
       if (activeEditor && activeEditor.getModel()) {
         this.lint(
           this.getCode(),
           this.currentModule.title,
-          activeEditor.getModel().getVersionId()
-        );
+          activeEditor.getModel().getVersionId(),
+        )
       }
     }
-  };
+  }
 
   setupWorkers = () => {
-    const { settings } = this;
+    const { settings } = this
 
     if (settings.lintEnabled) {
       // Delay this one, as initialization is very heavy
       setTimeout(() => {
-        this.setupLintWorker();
-      }, 5000);
+        this.setupLintWorker()
+      }, 5000)
     }
-  };
+  }
 
   updateDecorations = async (
     classifications: Array<{
-      type: string;
-      kind: string;
-      parentKind: string;
-      startLine: number;
-      start: number;
-      endLine: number;
-      end: number;
-    }>
+      type: string
+      kind: string
+      parentKind: string
+      startLine: number
+      start: number
+      endLine: number
+      end: number
+    }>,
   ) => {
     const decorations = classifications.map(classification => ({
       range: new this.monaco.Range(
         classification.startLine,
         classification.start,
         classification.endLine,
-        classification.end
+        classification.end,
       ),
       options: {
         inlineClassName: classification.type
-          ? `${classification.kind} ${classification.type}-of-${
-              classification.parentKind
-            }`
+          ? `${classification.kind} ${classification.type}-of-${classification.parentKind}`
           : classification.kind,
       },
-    }));
+    }))
 
-    const { currentModule } = this;
-    const modelInfo = await this.getModelById(currentModule.id);
+    const { currentModule } = this
+    const modelInfo = await this.getModelById(currentModule.id)
 
     modelInfo.decorations = this.editor
       .getActiveCodeEditor()
-      .deltaDecorations(modelInfo.decorations || [], decorations);
-  };
+      .deltaDecorations(modelInfo.decorations || [], decorations)
+  }
 
   getModelById = (id: string) => {
     const modulePath = getModulePath(
       this.sandbox.modules,
       this.sandbox.directories,
-      id
-    );
+      id,
+    )
 
-    const uri = this.monaco.Uri.file('/sandbox' + modulePath);
-    return this.editor.textFileService.modelService.getModel(uri);
-  };
+    const uri = this.monaco.Uri.file('/sandbox' + modulePath)
+    return this.editor.textFileService.modelService.getModel(uri)
+  }
 
   getFileModel = (modulePath: string) =>
     this.editor.textFileService.getFileModels(
-      this.monaco.Uri.file(modulePath)
-    )[0];
+      this.monaco.Uri.file(modulePath),
+    )[0]
 
   getCurrentModelPath = () => {
-    const activeEditor = this.editor.getActiveCodeEditor();
+    const activeEditor = this.editor.getActiveCodeEditor()
 
     if (!activeEditor) {
-      return undefined;
+      return undefined
     }
-    const model = activeEditor.getModel();
+    const model = activeEditor.getModel()
     if (!model) {
-      return undefined;
+      return undefined
     }
 
-    return model.uri.path.replace(/^\/sandbox/, '');
-  };
+    return model.uri.path.replace(/^\/sandbox/, '')
+  }
 
   openModule = (module: Module) => {
     if (module.id) {
       const path = getModulePath(
         this.sandbox.modules,
         this.sandbox.directories,
-        module.id
-      );
+        module.id,
+      )
 
-      // reopen file (when changebox reload with the same path)
+      // reopen file (when sandbox reload with the same path)
       // this.editor.openFile(path);
 
       if (path && this.getCurrentModelPath() !== path) {
-        this.editor.openFile(path);
+        this.editor.openFile(path)
       }
     }
-  };
+  }
 
   swapDocuments = (nextModule: Module) => {
-    this.openModule(nextModule);
-  };
+    this.openModule(nextModule)
+  }
 
   updateCode(code: string = '') {
-    const operation = getTextOperation(this.getCode(), code);
+    const operation = getTextOperation(this.getCode(), code)
 
     if (!this.receivingCode) {
       // For the live operation we need to send the operation based on the old code,
       // that's why we set the 'liveOperationCode' to the last code so the operation
       // will be applied on that code instead of `currentModule.code`
-      this.liveOperationCode = this.getCode();
+      this.liveOperationCode = this.getCode()
     }
 
-    this.applyOperationToModel(operation, true);
+    this.applyOperationToModel(operation, true)
   }
 
   lint = async (code: string, title: string, version: number) => {
     if (!title) {
-      return;
+      return
     }
 
-    const mode = (await getMode(title, this.monaco)) || '';
+    const mode = (await getMode(title, this.monaco)) || ''
     if (this.settings.lintEnabled) {
       if (
         ['javascript', 'typescript', 'typescriptreact', 'vue'].includes(mode)
@@ -1079,41 +1063,41 @@ export class VSCode extends React.Component<Props> implements Editor {
             title,
             version,
             template: this.sandbox.template,
-          });
+          })
         }
       }
     }
-  };
+  }
 
   handleChange = (
     currentModuleShortid: string,
     currentModuleTitle: string,
-    newCode: string
+    newCode: string,
   ) => {
     if (this.props.onChange) {
-      this.props.onChange(newCode, currentModuleShortid);
+      this.props.onChange(newCode, currentModuleShortid)
     }
 
-    const editor = this.editor.getActiveCodeEditor();
+    const editor = this.editor.getActiveCodeEditor()
 
     if (currentModuleShortid === this.currentModule.shortid && editor) {
-      this.lint(newCode, currentModuleTitle, editor.getModel().getVersionId());
+      this.lint(newCode, currentModuleTitle, editor.getModel().getVersionId())
     }
-  };
+  }
 
   hasNativeTypescript = () => {
-    const { sandbox } = this;
-    const template = getTemplate(sandbox.template);
-    return template.isTypescript;
-  };
+    const { sandbox } = this
+    const template = getTemplate(sandbox.template)
+    return template.isTypescript
+  }
 
   resizeEditorInstantly = () => {
     this.forceUpdate(() => {
       if (this.editor) {
-        this.editor.editorPart.layout(this.props.width, this.props.height);
+        this.editor.editorPart.layout(this.props.width, this.props.height)
       }
-    });
-  };
+    })
+  }
 
   /**
    * We manually commit lib changes, because if do this for *every* change we will
@@ -1123,38 +1107,38 @@ export class VSCode extends React.Component<Props> implements Editor {
   commitLibChangesInstantly = () => {
     // eslint-disable-next-line no-underscore-dangle
     this.monaco.languages.typescript.javascriptDefaults._onDidChange.fire(
-      this.monaco.languages.typescript.javascriptDefaults
-    );
+      this.monaco.languages.typescript.javascriptDefaults,
+    )
 
     this.monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
       noSyntaxValidation: !this.hasNativeTypescript(),
-    });
-  };
+    })
+  }
 
   getCode = () => {
-    const activeEditor = this.editor.getActiveCodeEditor();
-    if (!activeEditor) return '';
+    const activeEditor = this.editor.getActiveCodeEditor()
+    if (!activeEditor) return ''
 
-    return activeEditor.getValue();
-  };
+    return activeEditor.getValue()
+  }
 
   getEditorOptions = () => {
-    const { settings } = this;
-    const { currentModule } = this;
+    const { settings } = this
+    const { currentModule } = this
 
     return {
       ...getSettings(settings),
       ariaLabel: currentModule.title,
       readOnly: Boolean(this.props.readOnly),
-    };
-  };
+    }
+  }
 
   getCustomEditor = (modulePath: string) => {
-    const template = getTemplate(this.sandbox.template);
-    const config = template.configurationFiles[modulePath];
+    const template = getTemplate(this.sandbox.template)
+    const config = template.configurationFiles[modulePath]
 
-    const ui = config && getUI(config.type);
+    const ui = config && getUI(config.type)
     return (
       ui &&
       ui.ConfigWizard &&
@@ -1162,8 +1146,8 @@ export class VSCode extends React.Component<Props> implements Editor {
         const currentModule = resolveModule(
           modulePath,
           this.sandbox.modules,
-          this.sandbox.directories
-        );
+          this.sandbox.directories,
+        )
         return render(
           <ThemeProvider theme={theme}>
             <Configuration
@@ -1175,21 +1159,21 @@ export class VSCode extends React.Component<Props> implements Editor {
               {...extraProps}
             />
           </ThemeProvider>,
-          container
-        );
+          container,
+        )
       })
-    );
-  };
+    )
+  }
 
   render() {
-    const { width, height } = this.props;
+    const { width, height } = this.props
 
-    const options = this.getEditorOptions();
+    const options = this.getEditorOptions()
 
     return (
       <Container id="vscode-container">
         <GlobalStyles />
-        <MonacoEditorComponent
+        <VSCodeEditorComponent
           id={this.props.sandbox.id}
           width={width}
           height={height}
@@ -1201,6 +1185,6 @@ export class VSCode extends React.Component<Props> implements Editor {
           customEditorAPI={{ getCustomEditor: this.getCustomEditor }}
         />
       </Container>
-    );
+    )
   }
 }

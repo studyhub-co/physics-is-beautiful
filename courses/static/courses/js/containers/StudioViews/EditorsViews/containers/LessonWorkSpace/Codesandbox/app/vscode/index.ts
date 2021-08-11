@@ -50,6 +50,9 @@ class VSCodeManager {
   }
 
   private addWorkbenchActions() {
+
+    console.log(context.monaco.editor)
+
     this.addWorkbenchAction({
       id: 'workbench.action.toggleStatusbarVisibility',
       label: 'Toggle Status Bar Visibility',
@@ -350,6 +353,7 @@ class VSCodeManager {
   }
 
   addNotification(notification: NotificationMessage) {
+    // todo add notifications
     // notificationState.addNotification(notification);
   }
 
@@ -448,7 +452,6 @@ class VSCodeManager {
           // Initialize these services
           accessor.get(CodeSandboxConfigurationUIService)
           accessor.get(ICodeSandboxEditorConnectorService)
-
           cb(accessor)
         })
       },

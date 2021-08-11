@@ -160,6 +160,9 @@ class MaterialProblemTypeSandboxDirectory(BaseItemModel):
 
     sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='directories', on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = [['sandbox', 'shortid']]
+
 
 class MaterialProblemTypeSandboxModule(BaseItemModel):
     code = models.TextField(blank=True)
@@ -195,6 +198,9 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
     # exist in BaseItemModel
 
     sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='modules', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = [['sandbox', 'shortid']]
 
     """
     data: {

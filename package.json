@@ -206,6 +206,7 @@
     "remark-math": "^1.0.6",
     "rimraf": "^3.0.2",
     "scriptjs": "^2.5.8",
+    "shortid": "^2.2.16",
     "showdown": "^1.9.0",
     "showdown-katex": "^0.6.0",
     "store": "^2.0.12",

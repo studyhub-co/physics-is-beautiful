@@ -1,13 +1,13 @@
 // import VERSION from '@codesandbox/common/lib/version';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react'
 //  Fix css prop types in styled-components (see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31245#issuecomment-463640878)
 import * as CSSProps from 'styled-components/cssprop'; // eslint-disable-line
 
 // import { SocialInfo } from '../app/components/SocialInfo';
-import { useOvermind } from '../../app/overmind';
+import { useOvermind } from '../../app/overmind'
 import getWorkspaceItems, {
   getDisabledItems,
-} from '../../app/store/modules/workspace/items';
+} from '../../app/store/modules/workspace/items'
 
 // import { Advertisement } from './Advertisement';
 // import { Chat } from './Chat';
@@ -17,20 +17,20 @@ import {
   ContactContainer,
   ItemTitle,
   VersionContainer,
-} from './elements';
-import ConfigurationFiles from './items/ConfigurationFiles';
-import { Deployment } from './items/Deployment';
-import { FilesItem } from './items/Files';
+} from './elements'
+import ConfigurationFiles from './items/ConfigurationFiles'
+import { Deployment } from './items/Deployment'
+import { FilesItem } from './items/Files'
 // import { GitHub } from './items/GitHub';
 // import { Live } from './items/Live';
 // import { More } from './items/More';
 
 // this Component includes File's explorer
-import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo';
+import { NotOwnedSandboxInfo } from './items/NotOwnedSandboxInfo'
 // import { ProjectInfo } from './items/ProjectInfo';
 // import { Server } from './items/Server';
 // import { SSEDownNotice } from './SSEDownNotice';
-import { WorkspaceItem } from './WorkspaceItem';
+import { WorkspaceItem } from './WorkspaceItem'
 
 const workspaceTabs = {
   // project: ProjectInfo,
@@ -42,10 +42,10 @@ const workspaceTabs = {
   // live: Live,
   // server: Server,
   // more: More,
-};
+}
 
 export const Workspace: FunctionComponent = () => {
-  const { state } = useOvermind();
+  const { state } = useOvermind()
 
   const {
     editor: {
@@ -58,16 +58,16 @@ export const Workspace: FunctionComponent = () => {
       settings: { zenMode },
     },
     workspace: { openedWorkspaceItem: activeTab },
-  } = state;
+  } = state
 
   if (!activeTab) {
-    return null;
+    return null
   }
 
-  const Component = workspaceTabs[activeTab];
+  const Component = workspaceTabs[activeTab]
   const item =
     getWorkspaceItems(state).find(({ id }) => id === activeTab) ||
-    getDisabledItems(state).find(({ id }) => id === activeTab);
+    getDisabledItems(state).find(({ id }) => id === activeTab)
 
   return (
     <Container>
@@ -78,28 +78,28 @@ export const Workspace: FunctionComponent = () => {
       </div>
 
       {/*{isLive && roomInfo.chatEnabled && (*/}
-        {/*<WorkspaceItem defaultOpen title="Chat">*/}
-          {/*<Chat />*/}
-        {/*</WorkspaceItem>*/}
+      {/*<WorkspaceItem defaultOpen title="Chat">*/}
+      {/*<Chat />*/}
+      {/*</WorkspaceItem>*/}
       {/*)}*/}
 
       {/*{!zenMode && (*/}
-        {/*<>*/}
-          {/*{!(isPatron || owned) && <Advertisement />}*/}
+      {/*<>*/}
+      {/*{!(isPatron || owned) && <Advertisement />}*/}
 
-          {/*<ContactContainer>*/}
-            {/*<SocialInfo style={{ display: 'inline-block' }} />*/}
+      {/*<ContactContainer>*/}
+      {/*<SocialInfo style={{ display: 'inline-block' }} />*/}
 
-            {/*<VersionContainer className="codesandbox-version">*/}
-              {/*{VERSION}*/}
-            {/*</VersionContainer>*/}
-          {/*</ContactContainer>*/}
+      {/*<VersionContainer className="codesandbox-version">*/}
+      {/*{VERSION}*/}
+      {/*</VersionContainer>*/}
+      {/*</ContactContainer>*/}
 
-          {/*<SSEDownNotice />*/}
+      {/*<SSEDownNotice />*/}
 
-          {/*<ConnectionNotice />*/}
-        {/*</>*/}
+      {/*<ConnectionNotice />*/}
+      {/*</>*/}
       {/*)}*/}
     </Container>
-  );
-};
+  )
+}

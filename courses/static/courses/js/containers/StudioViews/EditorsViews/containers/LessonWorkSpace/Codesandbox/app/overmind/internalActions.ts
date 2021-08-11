@@ -1,4 +1,4 @@
-import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
+import { generateFileFromSandbox as generatePackageJsonFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json'
 import {
   ModuleTab,
   NotificationButton,
@@ -6,41 +6,41 @@ import {
   ServerContainerStatus,
   ServerStatus,
   TabType,
-} from '@codesandbox/common/lib/types';
-import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics';
+} from '@codesandbox/common/lib/types'
+import { identify, setUserId } from '@codesandbox/common/lib/utils/analytics'
 
-import { createOptimisticModule } from './utils/common';
-import getItems from './utils/items';
-import { defaultOpenedModule, mainModule } from './utils/main-module';
-import { parseConfigurations } from './utils/parse-configurations';
-import { Action, AsyncAction } from '.';
+import { createOptimisticModule } from './utils/common'
+import getItems from './utils/items'
+import { defaultOpenedModule, mainModule } from './utils/main-module'
+import { parseConfigurations } from './utils/parse-configurations'
+import { Action, AsyncAction } from '.'
 
 export const signIn: AsyncAction<{ useExtraScopes: boolean }> = async (
   { state, effects, actions },
-  options
+  options,
 ) => {
-  state.isAuthenticating = true;
-  effects.analytics.track('Sign In', {});
+  state.isAuthenticating = true
+  effects.analytics.track('Sign In', {})
   try {
-    const jwt = await actions.internal.signInGithub(options);
-    actions.internal.setJwt(jwt);
-    state.user = await effects.api.getCurrentUser();
-    actions.internal.setPatronPrice();
-    actions.internal.setSignedInCookie();
-    actions.internal.setStoredSettings();
-    effects.live.connect();
-    actions.userNotifications.internal.initialize(); // Seemed a bit differnet originally?
-    actions.refetchSandboxInfo();
+    const jwt = await actions.internal.signInGithub(options)
+    actions.internal.setJwt(jwt)
+    state.user = await effects.api.getCurrentUser()
+    actions.internal.setPatronPrice()
+    actions.internal.setSignedInCookie()
+    actions.internal.setStoredSettings()
+    effects.live.connect()
+    actions.userNotifications.internal.initialize() // Seemed a bit differnet originally?
+    actions.refetchSandboxInfo()
   } catch (error) {
     actions.internal.addNotification({
       title: 'Github Authentication Error',
       type: 'error',
-    });
+    })
   }
-};
+}
 
 export const setStoredSettings: Action = ({ state, effects }) => {
-  const settings = effects.settingsStore.getAll();
+  const settings = effects.settingsStore.getAll()
 
   if (settings.keybindings) {
     settings.keybindings = Object.keys(settings.keybindings).reduce(
@@ -49,33 +49,33 @@ export const setStoredSettings: Action = ({ state, effects }) => {
           key,
           bindings: settings.keybindings[key],
         }),
-      []
-    );
+      [],
+    )
   }
 
-  Object.assign(state.preferences.settings, settings);
-};
+  Object.assign(state.preferences.settings, settings)
+}
 
 export const setPatronPrice: Action = ({ state }) => {
   state.patron.price = state.user.subscription
     ? Number(state.user.subscription.amount)
-    : 10;
-};
+    : 10
+}
 
 export const setSignedInCookie: Action = ({ state }) => {
-  document.cookie = 'signedIn=true; Path=/;';
-  identify('signed_in', true);
-  setUserId(state.user.id);
-};
+  document.cookie = 'signedIn=true; Path=/;'
+  identify('signed_in', true)
+  setUserId(state.user.id)
+}
 
 export const addNotification: Action<{
-  title: string;
-  type: 'notice' | 'success' | 'warning' | 'error';
-  timeAlive?: number;
-  buttons?: Array<NotificationButton>;
+  title: string
+  type: 'notice' | 'success' | 'warning' | 'error'
+  timeAlive?: number
+  buttons?: Array<NotificationButton>
 }> = ({ state }, { title, type, timeAlive, buttons }) => {
-  const now = Date.now();
-  const timeAliveDefault = type === 'error' ? 6 : 3;
+  const now = Date.now()
+  const timeAliveDefault = type === 'error' ? 6 : 3
 
   state.notifications.push({
     id: now,
@@ -83,16 +83,16 @@ export const addNotification: Action<{
     type,
     buttons,
     endTime: now + (timeAlive || timeAliveDefault) * 1000,
-  });
-};
+  })
+}
 
 export const authorize: AsyncAction = async ({ state, effects }) => {
   try {
-    state.authToken = await effects.api.getAuthToken();
+    state.authToken = await effects.api.getAuthToken()
   } catch (error) {
-    state.editor.error = error.message;
+    state.editor.error = error.message
   }
-};
+}
 
 export const signInGithub: Action<
   { useExtraScopes: boolean },
@@ -101,29 +101,29 @@ export const signInGithub: Action<
   const authPath =
     process.env.LOCAL_SERVER || process.env.STAGING
       ? '/auth/dev'
-      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`;
+      : `/auth/github${options.useExtraScopes ? '?scope=user:email,repo' : ''}`
 
-  const popup = effects.browser.openPopup(authPath, 'sign in');
+  const popup = effects.browser.openPopup(authPath, 'sign in')
 
   return effects.browser
     .waitForMessage<{ jwt: string }>('signin')
     .then(data => {
-      const { jwt } = data;
+      const { jwt } = data
 
-      popup.close();
+      popup.close()
 
       if (jwt) {
-        return jwt;
+        return jwt
       }
 
-      throw new Error('Could not get sign in token');
-    });
-};
+      throw new Error('Could not get sign in token')
+    })
+}
 
 export const setJwt: Action<string> = ({ state, effects }, jwt) => {
-  effects.jwt.set(jwt);
-  state.jwt = jwt;
-};
+  effects.jwt.set(jwt)
+  state.jwt = jwt
+}
 
 export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   if (
@@ -131,42 +131,42 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
     state.preferences.itemId === 'keybindings' &&
     isKeyDown
   ) {
-    return;
+    return
   }
 
-  state.currentModal = null;
-  effects.keybindingManager.start();
-};
+  state.currentModal = null
+  effects.keybindingManager.start()
+}
 
 export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   { state, effects, actions },
-  sandbox
+  sandbox,
 ) => {
   const oldSandboxId =
-    state.editor.currentId === sandbox.id ? null : state.editor.currentId;
+    state.editor.currentId === sandbox.id ? null : state.editor.currentId
 
-  state.editor.sandboxes[sandbox.id] = sandbox;
+  state.editor.sandboxes[sandbox.id] = sandbox
 
   // here is where syncfiles
-  state.editor.currentId = sandbox.id;
+  state.editor.currentId = sandbox.id
 
-  let { currentModuleShortid } = state.editor;
-  const parsedConfigs = parseConfigurations(sandbox);
-  const main = mainModule(sandbox, parsedConfigs);
+  let { currentModuleShortid } = state.editor
+  const parsedConfigs = parseConfigurations(sandbox)
+  const main = mainModule(sandbox, parsedConfigs)
 
-  state.editor.mainModuleShortid = main.shortid;
+  state.editor.mainModuleShortid = main.shortid
 
   // Only change the module shortid if it doesn't exist in the new sandbox
   // What is the scenario here?
   if (
     !sandbox.modules.find(module => module.shortid === currentModuleShortid)
   ) {
-    const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
+    const defaultModule = defaultOpenedModule(sandbox, parsedConfigs)
 
-    currentModuleShortid = defaultModule.shortid;
+    currentModuleShortid = defaultModule.shortid
   }
 
-  const sandboxOptions = effects.router.getSandboxOptions();
+  const sandboxOptions = effects.router.getSandboxOptions()
 
   if (sandboxOptions.currentModule) {
     try {
@@ -176,32 +176,32 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
         sandbox.directories,
         // currentModule is a string... something wrong here?
         // @ts-ignore
-        sandboxOptions.currentModule.directoryShortid
-      );
+        sandboxOptions.currentModule.directoryShortid,
+      )
       currentModuleShortid = resolvedModule
         ? resolvedModule.shortid
-        : currentModuleShortid;
+        : currentModuleShortid
     } catch (err) {
       effects.notificationToast.warning(
-        `Could not find the module ${sandboxOptions.currentModule}`
-      );
+        `Could not find the module ${sandboxOptions.currentModule}`,
+      )
     }
   }
 
-  state.editor.currentModuleShortid = currentModuleShortid;
-  state.editor.workspaceConfigCode = '';
+  state.editor.currentModuleShortid = currentModuleShortid
+  state.editor.workspaceConfigCode = ''
 
-  state.server.status = ServerStatus.INITIALIZING;
-  state.server.containerStatus = ServerContainerStatus.INITIALIZING;
-  state.server.error = null;
-  state.server.hasUnrecoverableError = false;
-  state.server.ports = [];
+  state.server.status = ServerStatus.INITIALIZING
+  state.server.containerStatus = ServerContainerStatus.INITIALIZING
+  state.server.error = null
+  state.server.hasUnrecoverableError = false
+  state.server.ports = []
 
   const newTab: ModuleTab = {
     type: TabType.MODULE,
     moduleShortid: currentModuleShortid,
     dirty: true,
-  };
+  }
 
   // closeTabByIndex(state, 0)
   // state.editor.tabs = []
@@ -210,40 +210,40 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   // state.editor.tabs = [newTab];
 
   state.preferences.showPreview =
-    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen;
+    sandboxOptions.isPreviewScreen || sandboxOptions.isSplitScreen
 
   state.preferences.showEditor =
-    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen;
+    sandboxOptions.isEditorScreen || sandboxOptions.isSplitScreen
 
   if (sandboxOptions.initialPath)
-    state.editor.initialPath = sandboxOptions.initialPath;
+    state.editor.initialPath = sandboxOptions.initialPath
   if (sandboxOptions.fontSize)
-    state.preferences.settings.fontSize = sandboxOptions.fontSize;
+    state.preferences.settings.fontSize = sandboxOptions.fontSize
   if (sandboxOptions.highlightedLines)
-    state.editor.highlightedLines = sandboxOptions.highlightedLines;
+    state.editor.highlightedLines = sandboxOptions.highlightedLines
   if (sandboxOptions.hideNavigation)
-    state.preferences.hideNavigation = sandboxOptions.hideNavigation;
+    state.preferences.hideNavigation = sandboxOptions.hideNavigation
   if (sandboxOptions.isInProjectView)
-    state.editor.isInProjectView = sandboxOptions.isInProjectView;
+    state.editor.isInProjectView = sandboxOptions.isInProjectView
   if (sandboxOptions.autoResize)
-    state.preferences.settings.autoResize = sandboxOptions.autoResize;
+    state.preferences.settings.autoResize = sandboxOptions.autoResize
   if (sandboxOptions.enableEslint)
-    state.preferences.settings.enableEslint = sandboxOptions.enableEslint;
+    state.preferences.settings.enableEslint = sandboxOptions.enableEslint
   if (sandboxOptions.forceRefresh)
-    state.preferences.settings.forceRefresh = sandboxOptions.forceRefresh;
+    state.preferences.settings.forceRefresh = sandboxOptions.forceRefresh
   if (sandboxOptions.expandDevTools)
-    state.preferences.showDevtools = sandboxOptions.expandDevTools;
+    state.preferences.showDevtools = sandboxOptions.expandDevTools
   if (sandboxOptions.runOnClick)
-    state.preferences.runOnClick = sandboxOptions.runOnClick;
+    state.preferences.runOnClick = sandboxOptions.runOnClick
 
   // state.workspace.project.title = sandbox.title || '';
   // state.workspace.project.description = sandbox.description || '';
   // state.workspace.project.alias = sandbox.alias || '';
 
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
+  const items = getItems(state)
+  const defaultItem = items.find(i => i.defaultOpen) || items[0]
 
-  state.workspace.openedWorkspaceItem = defaultItem.id;
+  state.workspace.openedWorkspaceItem = defaultItem.id
 
   // TODO not sure that we need this
   // await effects.executor.initializeExecutor(sandbox);
@@ -271,65 +271,66 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
     There seems to be a race condition here? Verify if this still happens with Overmind
   */
   if (oldSandboxId !== state.editor.currentId) {
-    delete state.editor.sandboxes[oldSandboxId];
+    delete state.editor.sandboxes[oldSandboxId]
   }
-};
+}
 
 export const updateCurrentSandbox: AsyncAction<Sandbox> = async (
   { state },
-  sandbox
+  sandbox,
 ) => {
-  state.editor.currentSandbox.team = sandbox.team || null;
-  state.editor.currentSandbox.collection = sandbox.collection;
-  state.editor.currentSandbox.owned = sandbox.owned;
-  state.editor.currentSandbox.userLiked = sandbox.userLiked;
-  state.editor.currentSandbox.title = sandbox.title;
-};
+  state.editor.currentSandbox.team = sandbox.team || null
+  state.editor.currentSandbox.collection = sandbox.collection
+  state.editor.currentSandbox.owned = sandbox.owned
+  state.editor.currentSandbox.userLiked = sandbox.userLiked
+  state.editor.currentSandbox.title = sandbox.title
+}
 
 export const ensurePackageJSON: AsyncAction = async ({
   state,
   effects,
   actions,
 }) => {
-  const sandbox = state.editor.currentSandbox;
+  const sandbox = state.editor.currentSandbox
   const existingPackageJson = sandbox.modules.find(
-    module => module.directoryShortid == null && module.title === 'package.json'
-  );
+    module =>
+      module.directoryShortid == null && module.title === 'package.json',
+  )
 
   if (sandbox.owned && !existingPackageJson) {
     const optimisticModule = createOptimisticModule({
       title: 'package.json',
       code: generatePackageJsonFromSandbox(sandbox),
-    });
+    })
 
-    state.editor.currentSandbox.modules.push(optimisticModule);
+    state.editor.currentSandbox.modules.push(optimisticModule)
 
     try {
       const updatedModule = await effects.api.createModule(
         sandbox.id,
-        optimisticModule
-      );
+        optimisticModule,
+      )
 
-      optimisticModule.id = updatedModule.id;
-      optimisticModule.shortid = updatedModule.shortid;
+      optimisticModule.id = updatedModule.id
+      optimisticModule.shortid = updatedModule.shortid
     } catch (error) {
-      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1);
+      sandbox.modules.splice(sandbox.modules.indexOf(optimisticModule), 1)
     }
   }
-};
+}
 
 export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
-  const { currentModule } = state.editor;
-  const tabs = state.editor.tabs as ModuleTab[];
-  const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
+  const { currentModule } = state.editor
+  const tabs = state.editor.tabs as ModuleTab[]
+  const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid
 
   if (isActiveTab) {
-    const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1];
+    const newTab = tabIndex > 0 ? tabs[tabIndex - 1] : tabs[tabIndex + 1]
 
     if (newTab) {
-      state.editor.currentModuleShortid = newTab.moduleShortid;
+      state.editor.currentModuleShortid = newTab.moduleShortid
     }
   }
 
-  state.editor.tabs.splice(tabIndex, 1);
-};
+  state.editor.tabs.splice(tabIndex, 1)
+}

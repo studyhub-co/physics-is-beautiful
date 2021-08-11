@@ -1,32 +1,29 @@
-import { Contributor } from '@codesandbox/common/lib/types';
-import { json, IState, IDerive } from 'overmind';
-import { AsyncAction } from '.';
+import { Contributor } from '@codesandbox/common/lib/types'
+import { json, IState, IDerive } from 'overmind'
+import { AsyncAction } from '.'
 
 export const withLoadApp = <T>(
-  continueAction?: AsyncAction<T>
+  continueAction?: AsyncAction<T>,
 ): AsyncAction<T> => async (context, value) => {
-  const { effects, state, actions } = context;
-
-  // console.log('state.hasLoadedApp');
-  // console.log(state.hasLoadedApp);
+  const { effects, state, actions } = context
 
   if (state.hasLoadedApp && continueAction) {
-    await continueAction(context, value);
-    return;
+    await continueAction(context, value)
+    return
   }
   if (state.hasLoadedApp) {
-    return;
+    return
   }
 
   // state.isAuthenticating = true;
   // state.jwt = effects.jwt.get() || null;
-  effects.connection.addListener(actions.connectionChanged);
-  actions.internal.setStoredSettings();
+  effects.connection.addListener(actions.connectionChanged)
+  actions.internal.setStoredSettings()
   effects.keybindingManager.set(
-    json(state.preferences.settings.keybindings || [])
-  );
-  effects.keybindingManager.start();
-  effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage);
+    json(state.preferences.settings.keybindings || []),
+  )
+  effects.keybindingManager.start()
+  effects.codesandboxApi.listen(actions.server.onCodeSandboxAPIMessage)
 
   // if (state.jwt) {
   //   try {
@@ -47,14 +44,14 @@ export const withLoadApp = <T>(
   // }
 
   if (continueAction) {
-    await continueAction(context, value);
+    await continueAction(context, value)
   }
 
   // console.log(state);
   // console.log(state.hasLoadedApp);
-  state.hasLoadedApp = true;
+  state.hasLoadedApp = true
   // console.log(state.hasLoadedApp);
-  state.isAuthenticating = false;
+  state.isAuthenticating = false
 
   // try {
   //   const response = await effects.http.get<{
@@ -69,114 +66,113 @@ export const withLoadApp = <T>(
   // } catch (error) {
   //   // Something wrong in the parsing probably, make sure the file is JSON valid
   // }
-};
+}
 
 export const withOwnedSandbox = <T>(
   continueAction: AsyncAction<T>,
-  cancelAction: AsyncAction<T> = () => Promise.resolve()
+  cancelAction: AsyncAction<T> = () => Promise.resolve(),
 ): AsyncAction<T> => async (context, payload) => {
-
-  const { state, actions } = context;
+  const { state, actions } = context
 
   if (!state.editor.currentSandbox.owned) {
     if (state.editor.isForkingSandbox) {
-      return cancelAction(context, payload);
+      return cancelAction(context, payload)
     }
 
     await actions.editor.internal.forkSandbox({
       sandboxId: state.editor.currentId,
-    });
+    })
   } else if (
     state.editor.currentSandbox.isFrozen &&
     state.editor.sessionFrozen
   ) {
-    const modalResponse = await actions.modals.forkFrozenModal.open();
+    const modalResponse = await actions.modals.forkFrozenModal.open()
 
     if (modalResponse === 'fork') {
       await actions.editor.internal.forkSandbox({
         sandboxId: state.editor.currentId,
-      });
+      })
     } else if (modalResponse === 'unfreeze') {
-      state.editor.sessionFrozen = false;
+      state.editor.sessionFrozen = false
     } else if (modalResponse === 'cancel') {
-      return cancelAction(context, payload);
+      return cancelAction(context, payload)
     }
   }
 
-  return continueAction(context, payload);
-};
+  return continueAction(context, payload)
+}
 
 export const createModals = <
   T extends {
     [name: string]: {
-      state?: IState;
-      result?: unknown;
-    };
+      state?: IState
+      result?: unknown
+    }
   }
 >(
-  modals: T
+  modals: T,
 ): {
   state?: {
-    current: keyof T;
+    current: keyof T
   } & {
     [K in keyof T]: T[K]['state'] & { isCurrent: IDerive<any, any, boolean> }
-  };
+  }
   actions?: {
     [K in keyof T]: {
       open: AsyncAction<
         T[K]['state'] extends IState ? T[K]['state'] : void,
         T[K]['result']
-      >;
-      close: AsyncAction<T[K]['result']>;
+      >
+      close: AsyncAction<T[K]['result']>
     }
-  };
+  }
 } => {
   function createModal(name, modal) {
-    let resolver;
+    let resolver
 
     const open: AsyncAction<any, any> = async ({ state }, newState = {}) => {
-      state.modals.current = name;
+      state.modals.current = name
 
-      Object.assign(state.modals[name], newState);
+      Object.assign(state.modals[name], newState)
 
       return new Promise(resolve => {
-        resolver = resolve;
-      });
-    };
+        resolver = resolve
+      })
+    }
 
     const close: AsyncAction<T> = async ({ state }, payload) => {
-      state.modals.current = null;
-      resolver(payload || modal.result);
-    };
+      state.modals.current = null
+      resolver(payload || modal.result)
+    }
 
     return {
       state: {
         ...modal.state,
         isCurrent(_, root) {
-          return root.modals.current === name;
+          return root.modals.current === name
         },
       },
       actions: {
         open,
         close,
       },
-    };
+    }
   }
 
   return Object.keys(modals).reduce(
     (aggr, name) => {
-      const modal = createModal(name, modals[name]);
+      const modal = createModal(name, modals[name])
 
-      aggr.state[name] = modal.state;
-      aggr.actions[name] = modal.actions;
+      aggr.state[name] = modal.state
+      aggr.actions[name] = modal.actions
 
-      return aggr;
+      return aggr
     },
     {
       state: {
         current: null,
       },
       actions: {},
-    }
-  ) as any;
-};
+    },
+  ) as any
+}

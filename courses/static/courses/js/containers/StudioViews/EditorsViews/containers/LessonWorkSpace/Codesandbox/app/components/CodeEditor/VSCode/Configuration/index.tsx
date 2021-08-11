@@ -1,114 +1,117 @@
-import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
-// import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import theme from '@codesandbox/common/lib/theme';
-import { Module } from '@codesandbox/common/lib/types';
-import { TextOperation } from 'ot';
-import React from 'react';
+import React from 'react'
+
+import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types'
+import getUI from '@codesandbox/common/lib/templates/configuration/ui'
+import theme from '@codesandbox/common/lib/theme'
+import { Module } from '@codesandbox/common/lib/types'
+import { TextOperation } from 'ot'
 
 // import EntryIcons from 'pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from '../../../../../app/utils/get-type';
+//courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons
+import EntryIcons from '../../../../../Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons'
+import getType from '../../../../../app/utils/get-type'
 
 import { Props as EditorProps, Editor } from '../../types'; // eslint-disable-line
 
-import { Container, Title, Description } from './elements';
+import { Container, Title, Description } from './elements'
 
 type Disposable = {
-  dispose: () => void;
-};
+  dispose: () => void
+}
 
 type Props = EditorProps & {
-  config: ConfigurationFile;
-  toggleConfigUI: () => void;
-  onDidChangeDirty: (cb: () => void) => Disposable;
-  getCode: () => string;
-  onChangeVSCode: (val: string) => void;
-  onDispose: (cb: () => void) => void;
-  openText: () => void;
-};
+  config: ConfigurationFile
+  toggleConfigUI: () => void
+  onDidChangeDirty: (cb: () => void) => Disposable
+  getCode: () => string
+  onChangeVSCode: (val: string) => void
+  onDispose: (cb: () => void) => void
+  openText: () => void
+}
 
 export class Configuration extends React.PureComponent<Props>
   implements Editor {
-  disposeInitializer: Function;
-  currentModule: Module;
-  dirtyChangeListener: Disposable;
-  receivingCode: boolean = false;
+  disposeInitializer: Function
+  currentModule: Module
+  dirtyChangeListener: Disposable
+  receivingCode: boolean = false
 
   constructor(props: Props) {
-    super(props);
+    super(props)
 
-    this.registerListeners();
+    this.registerListeners()
   }
 
   registerListeners() {
     if (this.props.onDidChangeDirty) {
       this.dirtyChangeListener = this.props.onDidChangeDirty(() => {
-        this.forceUpdate();
+        this.forceUpdate()
         this.props.onChange(
           this.props.getCode(),
-          this.props.currentModule.shortid
-        );
-      });
+          this.props.currentModule.shortid,
+        )
+      })
     }
 
     this.props.onDispose(() => {
-      this.dirtyChangeListener.dispose();
-    });
+      this.dirtyChangeListener.dispose()
+    })
   }
 
   componentDidMount() {
     if (this.props.onInitialized) {
-      this.disposeInitializer = this.props.onInitialized(this);
+      this.disposeInitializer = this.props.onInitialized(this)
     }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.currentModule.id !== this.props.currentModule.id) {
-      this.dirtyChangeListener.dispose();
+      this.dirtyChangeListener.dispose()
 
-      this.registerListeners();
+      this.registerListeners()
     }
   }
 
   componentWillUnmount() {
     if (this.disposeInitializer) {
-      this.disposeInitializer();
+      this.disposeInitializer()
     }
   }
 
   sendLiveChanges = (code: string) => {
-    const { sendTransforms, isLive, onCodeReceived } = this.props;
+    const { sendTransforms, isLive, onCodeReceived } = this.props
     if (sendTransforms) {
-      const oldCode = this.currentModule.code || '';
+      const oldCode = this.currentModule.code || ''
 
       // We don't know exactly what changed, just that the code changed. So
       // we send the whole code.
 
-      const op = new TextOperation();
+      const op = new TextOperation()
 
-      op.delete(oldCode.length);
-      op.insert(code);
+      op.delete(oldCode.length)
+      op.insert(code)
 
-      sendTransforms(op);
+      sendTransforms(op)
     } else if (!isLive && onCodeReceived) {
-      onCodeReceived();
+      onCodeReceived()
     }
-  };
+  }
 
   updateFile = (code: string) => {
-    const { isLive, sendTransforms } = this.props;
+    const { isLive, sendTransforms } = this.props
 
     if (isLive && sendTransforms && !this.receivingCode) {
-      this.sendLiveChanges(code);
+      this.sendLiveChanges(code)
     }
 
-    this.props.onChangeVSCode(code);
-  };
+    this.props.onChangeVSCode(code)
+  }
 
   render() {
-    const { config, width, height, sandbox } = this.props;
-    const { currentModule } = this.props;
+    const { config, width, height, sandbox } = this.props
+    const { currentModule } = this.props
 
-    const { ConfigWizard } = getUI(config.type);
+    const { ConfigWizard } = getUI(config.type)
 
     return (
       <Container style={{ width, height }}>
@@ -155,6 +158,6 @@ export class Configuration extends React.PureComponent<Props>
           file={this.props.getCode()}
         />
       </Container>
-    );
+    )
   }
 }

@@ -6,7 +6,7 @@ from .material_problem_type_sandbox import MaterialProblemTypeSandbox
 
 
 class MaterialProblemType(MaterialProblemTypeSandbox):  # MaterialProblemTypeSandbox ~= sanbox data
-    # sanbox reverse field (see material_sandbox)
+    # sandbox reverse field (see material_sandbox)
     official = models.BooleanField(default=False)
 
     def __str__(self):

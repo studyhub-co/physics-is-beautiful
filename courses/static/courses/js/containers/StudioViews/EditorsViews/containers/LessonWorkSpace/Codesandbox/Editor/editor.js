@@ -96,7 +96,7 @@ class ContentSplit extends React.Component {
     this.unSubscribeStore()
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.fetchReactSandbox()
   }
 
@@ -282,18 +282,5 @@ class ContentSplit extends React.Component {
     )
   }
 }
-
-// const mapStateToProps = (state, ownProps) => {
-//     return {}
-// }
-//
-// const mapDispatchToProps = (dispatch, ownProps) => {
-//   return {}
-// }
-//
-//
-// // Connect PIB store
-// const contentSplit = connect(mapStateToProps, mapDispatchToProps)(ContentSplit)
-// export default inject('signals', 'store')(observer(contentSplit))
 
 export default inject('signals', 'store')(observer(ContentSplit))

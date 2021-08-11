@@ -1,15 +1,26 @@
-import { Dependency, Module, Sandbox } from '@codesandbox/common/lib/types'
+import {
+  Dependency,
+  Directory,
+  Module,
+  Sandbox,
+} from '@codesandbox/common/lib/types'
+
 import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
 } from './types'
-import { transformModule, transformSandbox } from '../utils/sandbox'
+
+import {
+  transformDirectory,
+  transformModule,
+  transformSandbox,
+} from '../utils/sandbox'
 
 import { camelizeKeys, decamelizeKeys } from 'humps'
 import apiFactory, { Api, ApiConfig } from './apiFactory'
 
-import { API_PREFIX } from '../../../../../../../../../../actions/studio'
+// import { API_PREFIX } from '../../../../../../../../../../actions/studio'
 
 let api: Api
 
@@ -26,10 +37,6 @@ export default {
   },
 
   async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
-    // const url = id.includes('/')
-    //   ? `/sandboxes/fork/${id}`
-    //   : `/sandboxes/${id}/fork`;
-
     const url = `/studio/material-problem-type/${id}/fork/`
 
     const sandbox = await api.post<SandboxAPIResponse>(url, body || {})
@@ -38,7 +45,6 @@ export default {
   saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
     return api
       .patch<IModuleAPIResponse>(
-        // `/sandboxes/${sandboxId}/modules/${module.shortid}`,
         `/studio/material-problem-type/${sandboxId}/modules/${module.shortid}/`,
         {
           code: module.code,
@@ -81,21 +87,47 @@ export default {
   async deleteModule(sandboxId: string, moduleShortid: string): Promise<void> {
     await api.delete<IModuleAPIResponse>(
       `/studio/material-problem-type/${sandboxId}/modules/${moduleShortid}/`,
-      // `/sandboxes/${sandboxId}/modules/${moduleShortid}`
-    );
+    )
+  },
+  async massCreateModules(
+    sandboxId: string,
+    directoryShortid: string | null,
+    modules: Module[],
+    directories: Directory[],
+  ): Promise<{
+    modules: Module[]
+    directories: Directory[]
+  }> {
+    const data = (await api.post(
+      `/studio/material-problem-type/${sandboxId}/modules/mcreate/`,
+      {
+        directoryShortid,
+        modules,
+        directories,
+      },
+    )) as {
+      modules: IModuleAPIResponse[]
+      directories: IDirectoryAPIResponse[]
+    }
+
+    return {
+      modules: data.modules.map(transformModule),
+      directories: data.directories.map(transformDirectory),
+    }
   },
   updateSandbox(sandboxId: string, data: Partial<Sandbox>): Promise<Sandbox> {
     // return api.put(`/sandboxes/${sandboxId}`, {
     //   sandbox: data,
     // });
-    return api.patch(`/studio/material-problem-type/${sandboxId}/`,
-      { ...data, name: data.title }
-    );
+    return api.patch(`/studio/material-problem-type/${sandboxId}/`, {
+      ...data,
+      name: data.title,
+    })
   },
   // call backend API to resolve last version of the package
   getDependency(name: string): Promise<Dependency> {
     // return api.get(`/dependencies/${name}@latest`);
-    return api.get(`/studio/npm/dependencies/${name}@latest`);
+    return api.get(`/studio/npm/dependencies/${name}@latest`)
   },
   // TODO add directories API
   // saveDirectoryTitle(

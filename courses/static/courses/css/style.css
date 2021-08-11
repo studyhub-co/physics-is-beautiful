@@ -580,30 +580,32 @@ img.grayed-out-img {
 }
 
 
-/* END bootsrap 4 additional classes */
+/* END bootstrap 4 additional classes */
 
-.wrapper {
-  position: relative;
-  overflow: hidden;
-  margin: 0.25rem;
-}
+/* FIXME What is wrapper? This broke VSCode editor wrapper */
 
-.wrapper:after {
-  content: '';
-  display: block;
-  padding-top: 100%;
-}
+/*.wrapper {*/
+/*  position: relative;*/
+/*  overflow: hidden;*/
+/*  margin: 0.25rem;*/
+/*}*/
 
-.wrapper img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
-}
+/*.wrapper:after {*/
+/*  content: '';*/
+/*  display: block;*/
+/*  padding-top: 100%;*/
+/*}*/
+
+/*.wrapper img {*/
+/*  width: auto;*/
+/*  height: auto;*/
+/*  max-width: 100%;*/
+/*  max-height: 100%;*/
+/*  position: absolute;*/
+/*  left: 50%;*/
+/*  top: 50%;*/
+/*  transform: translateX(-50%) translateY(-50%);*/
+/*}*/
 
 
 .answer-button{

@@ -58,12 +58,12 @@ export default function FileMenu({ handleAddMaterial }) {
         {/* </StyledListItemIcon> */}
         {/* <ListItemText primary='Rename material' /> */}
         {/* </StyledMenuItem> */}
-        <StyledMenuItem>
-          <StyledListItemIcon>
-            <SaveAlt />
-          </StyledListItemIcon>
-          <ListItemText primary="Save as.." />
-        </StyledMenuItem>
+        {/*<StyledMenuItem>*/}
+        {/*  <StyledListItemIcon>*/}
+        {/*    <SaveAlt />*/}
+        {/*  </StyledListItemIcon>*/}
+        {/*  <ListItemText primary="Save as.." />*/}
+        {/*</StyledMenuItem>*/}
       </StyledMenu>
     </React.Fragment>
   )

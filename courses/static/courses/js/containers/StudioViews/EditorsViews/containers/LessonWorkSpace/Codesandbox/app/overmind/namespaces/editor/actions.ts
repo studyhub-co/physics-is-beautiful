@@ -5,15 +5,18 @@ import {
   ModuleCorrection,
   ModuleError,
   ModuleTab,
-  WindowOrientation
+  WindowOrientation,
 } from '@codesandbox/common/lib//types'
 import { Action, AsyncAction } from '../../../../app/overmind'
-import { withLoadApp, withOwnedSandbox } from '../../../../app/overmind/factories'
+import {
+  withLoadApp,
+  withOwnedSandbox,
+} from '../../../../app/overmind/factories'
 import { sortObjectByKeys } from '../../../../app/overmind/utils/common'
 import {
   addDevToolsTab as addDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
-  moveDevToolsTab as moveDevToolsTabUtil
+  moveDevToolsTab as moveDevToolsTabUtil,
 } from '../../../../Editor/Content/utils'
 import { clearCorrectionsFromAction } from '../../../../app/utils/corrections'
 import { json } from 'overmind'
@@ -25,9 +28,9 @@ export const internal = internalActions
 export const onNavigateAway: Action = () => {}
 
 export const addNpmDependency: AsyncAction<{
-  name: string;
-  version?: string;
-  isDev?: boolean;
+  name: string
+  version?: string
+  isDev?: boolean
 }> = withOwnedSandbox(
   async ({ effects, actions, state }, { name, version, isDev }) => {
     // effects.analytics.track('Add NPM Dependency');
@@ -40,18 +43,16 @@ export const addNpmDependency: AsyncAction<{
       newVersion = dependency.version
     }
 
-    // console.log(newVersion);
-
     await actions.editor.internal.addNpmDependencyToPackageJson({
       name,
       version: newVersion,
-      isDev: Boolean(isDev)
+      isDev: Boolean(isDev),
     })
-  }
+  },
 )
 
 export const npmDependencyRemoved: AsyncAction<{
-  name: string;
+  name: string
 }> = withOwnedSandbox(async ({ state, effects, actions }, { name }) => {
   effects.analytics.track('Remove NPM Dependency')
 
@@ -63,13 +64,13 @@ export const npmDependencyRemoved: AsyncAction<{
   await actions.editor.internal.saveCode({
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.editor.currentPackageJSON.shortid,
-    cbID: null
+    cbID: null,
   })
 })
 
 export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
-// export const sandboxChanged: AsyncAction<{ id: string }> = <{
-  id: string;
+  // export const sandboxChanged: AsyncAction<{ id: string }> = <{
+  id: string
 }>(async ({ state, actions, effects }, { id }) => {
   state.editor.error = null
 
@@ -117,7 +118,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     return
   }
 
-  const sandbox = state.editor.currentSandbox
+  // const sandbox = state.editor.currentSandbox
 
   actions.internal.ensurePackageJSON()
 
@@ -156,33 +157,33 @@ export const resizingStopped: Action = ({ state }) => {
 }
 
 export const codeSaved: AsyncAction<{
-  code: string;
-  moduleShortid: string;
-  cbID: string;
+  code: string
+  moduleShortid: string
+  cbID: string
 }> = withOwnedSandbox(
   async ({ actions }, { code, moduleShortid, cbID }) => {
     // console.trace()
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
-      cbID
+      cbID,
     })
   },
   async ({ effects }, { cbID }) => {
     effects.vscode.callCallbackError(cbID)
-  }
+  },
 )
 
 export const codeChanged: Action<{
-  code: string;
-  moduleShortid: string;
-  noLive?: boolean;
+  code: string
+  moduleShortid: string
+  noLive?: boolean
 }> = ({ effects, state, actions }, { code, moduleShortid, noLive }) => {
   // effects.analytics.trackOnce('Change Code');
   // console.log(state.editor.currentSandbox);
 
   const module = state.editor.currentSandbox.modules.find(
-    m => m.shortid === moduleShortid
+    m => m.shortid === moduleShortid,
   )
 
   if (!module) {
@@ -196,7 +197,7 @@ export const codeChanged: Action<{
   // }
   actions.editor.internal.setModuleCode({
     module,
-    code
+    code,
   })
 }
 
@@ -208,7 +209,7 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
 
     try {
       const changedModules = sandbox.modules.filter(module =>
-        state.editor.changedModuleShortids.includes(module.shortid)
+        state.editor.changedModuleShortids.includes(module.shortid),
       )
 
       state.editor.changedModuleShortids = []
@@ -235,27 +236,28 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
       //   'Sorry, was not able to save, please try again'
       // );
     }
-  }
+  },
 )
 
 export const createZipClicked: Action = ({ state, effects }) => {
-  // console.log(state.editor.currentSandbox);
+  // console.log(state.editor.currentSandbox)
+  console.log(effects)
   effects.zip.download(state.editor.currentSandbox)
 }
 
 export const forkExternalSandbox: AsyncAction<string> = async (
   { actions },
-  sandboxId
+  sandboxId,
 ) => {
   await actions.editor.internal.forkSandbox({
-    sandboxId
+    sandboxId,
   })
 }
 
 export const forkSandboxClicked: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   if (
     state.editor.currentSandbox.owned &&
@@ -265,12 +267,12 @@ export const forkSandboxClicked: AsyncAction = async ({
   }
 
   await actions.editor.internal.forkSandbox({
-    sandboxId: state.editor.currentId
+    sandboxId: state.editor.currentId,
   })
 }
 
 export const likeSandboxToggled: AsyncAction<{
-  id: string;
+  id: string
 }> = async ({ state, effects }, { id }) => {
   if (state.editor.sandboxes[id].userLiked) {
     state.editor.sandboxes[id].likeCount--
@@ -284,8 +286,8 @@ export const likeSandboxToggled: AsyncAction<{
 }
 
 export const moduleSelected: Action<{
-  path?: string;
-  id?: string;
+  path?: string
+  id?: string
 }> = ({ state, effects, actions }, { path, id }) => {
   // effects.analytics.track('Open File');
 
@@ -298,11 +300,11 @@ export const moduleSelected: Action<{
       module = effects.utils.resolveModule(
         path.replace(/^\//, ''),
         sandbox.modules,
-        sandbox.directories
+        sandbox.directories,
       )
     } else {
       module = state.editor.currentSandbox.modules.find(
-        moduleItem => moduleItem.id === id
+        moduleItem => moduleItem.id === id,
       )
     }
 
@@ -348,7 +350,7 @@ export const moduleDoubleClicked: Action = ({ state, effects }) => {
   const { currentModule } = state.editor
   const tabs = state.editor.tabs as ModuleTab[]
   const tab = tabs.find(
-    tabItem => tabItem.moduleShortid === currentModule.shortid
+    tabItem => tabItem.moduleShortid === currentModule.shortid,
   )
 
   if (tab) {
@@ -363,8 +365,8 @@ export const tabClosed: Action<number> = ({ state, actions }, tabIndex) => {
 }
 
 export const tabMoved: Action<{
-  prevIndex: number;
-  nextIndex: number;
+  prevIndex: number
+  nextIndex: number
 }> = ({ state }, { prevIndex, nextIndex }) => {
   const { tabs } = state.editor
   const tab = json(tabs[prevIndex])
@@ -376,19 +378,19 @@ export const tabMoved: Action<{
 export const prettifyClicked: AsyncAction = async ({
   state,
   effects,
-  actions
+  actions,
 }) => {
   effects.analytics.track('Prettify Code')
   const module = state.editor.currentModule
   const newCode = await effects.prettyfier.prettify(
     module.id,
     module.title,
-    module.code || ''
+    module.code || '',
   )
 
   actions.editor.codeChanged({
     code: newCode,
-    moduleShortid: module.shortid
+    moduleShortid: module.shortid,
   })
 }
 
@@ -399,7 +401,7 @@ export const errorsCleared: Action = ({ state }) => {
         const module = resolveModule(
           error.path,
           state.editor.currentSandbox.modules,
-          state.editor.currentSandbox.directories
+          state.editor.currentSandbox.directories,
         )
         module.errors = []
       } catch (e) {
@@ -421,7 +423,7 @@ export const projectViewToggled: Action = ({ state }) => {
 
 export const frozenUpdated: AsyncAction<{ frozen: boolean }> = async (
   { state, effects },
-  { frozen }
+  { frozen },
 ) => {
   state.editor.currentSandbox.isFrozen = frozen
 
@@ -443,19 +445,19 @@ export const togglePreviewContent: Action = ({ state }) => {
 }
 
 export const currentTabChanged: Action<{
-  tabId: string;
+  tabId: string
 }> = ({ state }, { tabId }) => {
   state.editor.currentTabId = tabId
 }
 
 export const discardModuleChanges: Action<{
-  moduleShortid: string;
+  moduleShortid: string
 }> = ({ state, effects, actions }, { moduleShortid }) => {
   effects.analytics.track('Code Discarded')
 
   const sandbox = state.editor.currentSandbox
   const module = sandbox.modules.find(
-    moduleItem => moduleItem.shortid === moduleShortid
+    moduleItem => moduleItem.shortid === moduleShortid,
   )
 
   if (!module) {
@@ -465,45 +467,46 @@ export const discardModuleChanges: Action<{
   const code = module.savedCode === null ? module.code || '' : module.savedCode
   actions.editor.codeChanged({
     code,
-    moduleShortid
+    moduleShortid,
   })
 
   module.updatedAt = new Date().toString()
 
   state.editor.changedModuleShortids.splice(
     state.editor.changedModuleShortids.indexOf(moduleShortid),
-    1
+    1,
   )
 }
 
 export const fetchEnvironmentVariables: AsyncAction = async ({
   state,
-  effects
+  effects,
 }) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.getEnvironmentVariables(
-    state.editor.currentId
+    state.editor.currentId,
   )
 }
 
-export const updateEnvironmentVariables: AsyncAction<
-  EnvironmentVariable
-> = async ({ state, effects }, environmentVariable) => {
+export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
+  { state, effects },
+  environmentVariable,
+) => {
   state.editor.currentSandbox.environmentVariables = await effects.api.saveEnvironmentVariable(
     state.editor.currentId,
-    environmentVariable
+    environmentVariable,
   )
 
   effects.codesandboxApi.restartSandbox()
 }
 
 export const deleteEnvironmentVariable: AsyncAction<{
-  name: string;
+  name: string
 }> = async ({ state, effects }, { name }) => {
   const id = state.editor.currentId
 
   state.editor.currentSandbox.environmentVariables = await effects.api.deleteEnvironmentVariable(
     id,
-    name
+    name,
   )
   effects.codesandboxApi.restartSandbox()
 }
@@ -518,14 +521,14 @@ export const toggleEditorPreviewLayout: Action = ({ state }) => {
 }
 
 export const previewActionReceived: Action<{
-  action: any;
+  action: any
 }> = ({ state, effects, actions }, { action }) => {
   switch (action.action) {
     case 'notification':
       effects.notificationToast.add({
         message: action.title,
         status: action.notificationType,
-        timeAlive: action.timeAlive
+        timeAlive: action.timeAlive,
       })
       break
     case 'show-error': {
@@ -539,13 +542,13 @@ export const previewActionReceived: Action<{
         path: action.path,
         source: action.source,
         severity: action.severity,
-        type: action.type
+        type: action.type,
       }
       try {
         const module = resolveModule(
           error.path,
           state.editor.currentSandbox.modules,
-          state.editor.currentSandbox.directories
+          state.editor.currentSandbox.directories,
         )
 
         module.errors.push(json(error))
@@ -564,13 +567,13 @@ export const previewActionReceived: Action<{
         lineEnd: action.lineEnd,
         message: action.message,
         source: action.source,
-        severity: action.severity
+        severity: action.severity,
       }
       try {
         const module = resolveModule(
           correction.path,
           state.editor.currentSandbox.modules,
-          state.editor.currentSandbox.directories
+          state.editor.currentSandbox.directories,
         )
 
         state.editor.corrections.push(correction)
@@ -590,7 +593,7 @@ export const previewActionReceived: Action<{
           const module = resolveModule(
             error.path,
             state.editor.currentSandbox.modules,
-            state.editor.currentSandbox.directories
+            state.editor.currentSandbox.directories,
           )
 
           module.errors = []
@@ -604,7 +607,7 @@ export const previewActionReceived: Action<{
 
       const newCorrections = clearCorrectionsFromAction(
         currentCorrections,
-        action
+        action,
       )
 
       if (newCorrections.length !== currentCorrections.length) {
@@ -613,7 +616,7 @@ export const previewActionReceived: Action<{
             const module = resolveModule(
               correction.path,
               state.editor.currentSandbox.modules,
-              state.editor.currentSandbox.directories
+              state.editor.currentSandbox.directories,
             )
 
             module.corrections = []
@@ -627,18 +630,16 @@ export const previewActionReceived: Action<{
       break
     }
     case 'source.module.rename': {
-      console.log('source.module.rename')
-
       const sandbox = state.editor.currentSandbox
       const module = effects.utils.resolveModule(
         action.path.replace(/^\//, ''),
         sandbox.modules,
-        sandbox.directories
+        sandbox.directories,
       )
 
       if (module) {
         const sandboxModule = sandbox.modules.find(
-          moduleEntry => moduleEntry.shortid === module.shortid
+          moduleEntry => moduleEntry.shortid === module.shortid,
         )
 
         if (sandboxModule) {
@@ -650,7 +651,7 @@ export const previewActionReceived: Action<{
     case 'source.dependencies.add': {
       const name = action.dependency
       actions.editor.addNpmDependency({
-        name
+        name,
       })
       actions.forceRender()
       break
@@ -659,15 +660,15 @@ export const previewActionReceived: Action<{
 }
 
 export const renameModule: AsyncAction<{
-  title: string;
-  moduleShortid: string;
+  title: string
+  moduleShortid: string
 }> = withOwnedSandbox(
   async ({ state, effects, actions }, { title, moduleShortid }) => {
     // working code for this function at app/overmind/namespaces/files/actions.ts
 
     const sandbox = state.editor.currentSandbox
     const module = sandbox.modules.find(
-      moduleItem => moduleItem.shortid === moduleShortid
+      moduleItem => moduleItem.shortid === moduleShortid,
     )
 
     if (!module) {
@@ -682,7 +683,7 @@ export const renameModule: AsyncAction<{
       await effects.api.saveModuleTitle(
         state.editor.currentId,
         moduleShortid,
-        title
+        title,
       )
 
       // if (state.live.isCurrentEditor) {
@@ -693,49 +694,49 @@ export const renameModule: AsyncAction<{
       console.log('Could not rename file')
       // effects.notificationToast.error('Could not rename file');
     }
-  }
+  },
 )
 
 export const onDevToolsTabAdded: Action<{
-  tab: any;
+  tab: any
 }> = ({ state, actions }, { tab }) => {
   const { devToolTabs } = state.editor
   const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
     json(devToolTabs),
-    tab
+    tab,
   )
 
   const code = JSON.stringify({ preview: newDevToolTabs }, null, 2)
   const nextPos = position
 
   actions.editor.internal.updateDevtools({
-    code
+    code,
   })
 
   state.editor.currentDevToolsPosition = nextPos
 }
 
 export const onDevToolsTabMoved: Action<{
-  prevPos: any;
-  nextPos: any;
+  prevPos: any
+  nextPos: any
 }> = ({ state, actions }, { prevPos, nextPos }) => {
   const { devToolTabs } = state.editor
   const newDevToolTabs = moveDevToolsTabUtil(
     json(devToolTabs),
     prevPos,
-    nextPos
+    nextPos,
   )
   const code = JSON.stringify({ preview: newDevToolTabs }, null, 2)
 
   actions.editor.internal.updateDevtools({
-    code
+    code,
   })
 
   state.editor.currentDevToolsPosition = nextPos
 }
 
 export const onDevToolsTabClosed: Action<{
-  pos: any;
+  pos: any
 }> = ({ state, actions }, { pos }) => {
   const { devToolTabs } = state.editor
   const closePos = pos
@@ -743,18 +744,18 @@ export const onDevToolsTabClosed: Action<{
   const code = JSON.stringify({ preview: newDevToolTabs }, null, 2)
 
   actions.editor.internal.updateDevtools({
-    code
+    code,
   })
 }
 
 export const onDevToolsPositionChanged: Action<{
-  position: any;
+  position: any
 }> = ({ state }, { position }) => {
   state.editor.currentDevToolsPosition = position
 }
 
 export const openDevtoolsTab: Action<{
-  tab: any;
+  tab: any
 }> = ({ state, actions }, { tab: tabToFind }) => {
   const serializedTab = JSON.stringify(tabToFind)
   const { devToolTabs } = state.editor
@@ -768,7 +769,7 @@ export const openDevtoolsTab: Action<{
       if (JSON.stringify(tab) === serializedTab) {
         nextPos = {
           devToolIndex: i,
-          tabPosition: j
+          tabPosition: j,
         }
       }
     }
@@ -778,14 +779,14 @@ export const openDevtoolsTab: Action<{
     state.editor.currentDevToolsPosition = nextPos
   } else {
     actions.editor.onDevToolsTabAdded({
-      tab: tabToFind
+      tab: tabToFind,
     })
   }
 }
 
 export const sessionFreezeOverride: Action<{ frozen: boolean }> = (
   { state },
-  { frozen }
+  { frozen },
 ) => {
   state.editor.sessionFrozen = frozen
 }

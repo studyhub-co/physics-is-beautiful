@@ -31,22 +31,22 @@ const settings = store => ({
   // experimentVSCode: store.preferences.settings.experimentVSCode,
   experimentVSCode: true,
   prettierConfig: store.preferences.settings.prettierConfig,
-  forceRefresh: store.preferences.settings.forceRefresh
+  forceRefresh: store.preferences.settings.forceRefresh,
 })
 
 class EditorPreview extends React.Component {
-  state = { width: null, height: null };
-  interval;
-  disposeEditorChange;
-  el;
-  devtools;
-  contentNode;
+  state = { width: null, height: null }
+  interval
+  disposeEditorChange
+  el
+  devtools
+  contentNode
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.signals.editor.contentMounted()
     this.disposeEditorChange = this.props.reaction(
       ({ preferences }) => preferences.settings.codeMirror,
-      () => this.forceUpdate()
+      () => this.forceUpdate(),
     )
 
     window.addEventListener('resize', this.getBounds)
@@ -60,7 +60,7 @@ class EditorPreview extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.disposeEditorChange()
     window.removeEventListener('resize', this.getBounds)
     clearInterval(this.interval)
@@ -80,7 +80,7 @@ class EditorPreview extends React.Component {
         this.setState({ width, height })
       }
     }
-  };
+  }
 
   handleToggleDevtools = showDevtools => {
     if (this.devtools) {
@@ -90,7 +90,7 @@ class EditorPreview extends React.Component {
         this.devtools.hideDevTools()
       }
     }
-  };
+  }
 
   onInitialized = editor => {
     const { store } = this.props
@@ -114,15 +114,15 @@ class EditorPreview extends React.Component {
                 parsed
                   ? parsed.dependencies
                   : newSandbox.npmDependencies.toJS
-                    ? newSandbox.npmDependencies.toJS()
-                    : json(newSandbox.npmDependencies)
+                  ? newSandbox.npmDependencies.toJS()
+                  : json(newSandbox.npmDependencies),
               )
               .then(() => {
                 isChangingSandbox = false
               })
           }
         })
-      }
+      },
     )
     const disposeErrorsHandler = this.props.reaction(
       ({ editor: { errors } }) => errors.map(error => error),
@@ -130,7 +130,7 @@ class EditorPreview extends React.Component {
         if (editor.setErrors) {
           editor.setErrors(errors)
         }
-      }
+      },
     )
     const disposeCorrectionsHandler = this.props.reaction(
       ({ editor: { corrections } }) =>
@@ -139,7 +139,7 @@ class EditorPreview extends React.Component {
         if (editor.setCorrections) {
           editor.setCorrections(corrections)
         }
-      }
+      },
     )
     const disposeModulesHandler = this.props.reaction(
       this.detectStructureChange,
@@ -150,7 +150,7 @@ class EditorPreview extends React.Component {
         if (editor.updateModules) {
           editor.updateModules()
         }
-      }
+      },
     )
     const disposePreferencesHandler = this.props.reaction(
       state => settings(state),
@@ -160,20 +160,20 @@ class EditorPreview extends React.Component {
         }
       },
       {
-        compareStructural: true
-      }
+        compareStructural: true,
+      },
     )
     const disposeResizeHandler = this.props.reaction(
       state => [
         state.preferences.settings.zenMode,
         state.workspace.workspaceHidden,
-        state.editor.previewWindowOrientation
+        state.editor.previewWindowOrientation,
       ],
       () => {
         setTimeout(() => {
           this.getBounds()
         })
-      }
+      },
     )
     const disposePackageHandler = this.props.reaction(
       state => state.editor.parsedConfigurations.package,
@@ -186,7 +186,7 @@ class EditorPreview extends React.Component {
             editor.changeDependencies(dependencies)
           }
         }
-      }
+      },
     )
     const disposeTSConfigHandler = this.props.reaction(
       state => state.editor.parsedConfigurations.typescript,
@@ -199,7 +199,7 @@ class EditorPreview extends React.Component {
             }
           }
         }
-      }
+      },
     )
     // const disposeLiveHandler = this.props.reaction(
     //   state => state.live.receivingCode,
@@ -216,7 +216,7 @@ class EditorPreview extends React.Component {
         if (editor.moduleSyncedChanged) {
           editor.moduleSyncedChanged()
         }
-      }
+      },
     )
 
     const disposePendingOperationHandler = this.props.reaction(
@@ -261,7 +261,7 @@ class EditorPreview extends React.Component {
         //     this.props.signals.live.onOperationApplied()
         //   }
         // }
-      }
+      },
     )
 
     const updateUserSelections = () => {
@@ -316,13 +316,13 @@ class EditorPreview extends React.Component {
           // Only code changed from outside the editor
           editor.changeCode(newModule.code || '', newModule.id)
         }
-      }
+      },
     )
     const disposeToggleDevtools = this.props.reaction(
       state => state.preferences.showDevtools,
       showDevtools => {
         this.handleToggleDevtools(showDevtools)
-      }
+      },
     )
     const disposeTogglePreview = this.props.reaction(
       state => state.editor.previewWindowVisible,
@@ -330,7 +330,7 @@ class EditorPreview extends React.Component {
         requestAnimationFrame(() => {
           this.getBounds()
         })
-      }
+      },
     )
 
     return () => {
@@ -350,7 +350,7 @@ class EditorPreview extends React.Component {
       disposeTogglePreview()
       disposeModuleSyncedHandler()
     }
-  };
+  }
 
   detectStructureChange = ({ editor }) => {
     const sandbox = editor.currentSandbox
@@ -360,11 +360,11 @@ class EditorPreview extends React.Component {
         .map(module => module.id + module.directoryShortid + module.title)
         .concat(
           sandbox.directories.map(
-            directory => directory.directoryShortid + directory.title
-          )
-        )
+            directory => directory.directoryShortid + directory.title,
+          ),
+        ),
     )
-  };
+  }
 
   sendTransforms = operation => {
     const { currentModuleShortid } = this.props.store.editor
@@ -373,21 +373,21 @@ class EditorPreview extends React.Component {
     //   moduleShortid: currentModuleShortid,
     //   operation: operation.toJSON()
     // })
-  };
+  }
 
   moveDevToolsTab = (prevPos, nextPos) => {
     const { signals } = this.props
 
     signals.editor.onDevToolsTabMoved({ prevPos, nextPos })
-  };
+  }
 
   closeDevToolsTab = pos => {
     const { signals } = this.props
 
     signals.editor.onDevToolsTabClosed({ pos })
-  };
+  }
 
-  render () {
+  render() {
     const { signals, store } = this.props
     const { currentModule } = store.editor
     const notSynced = !store.editor.isAllModulesSynced
@@ -435,27 +435,34 @@ class EditorPreview extends React.Component {
         // console.log(`${window.location.origin}`)
         // options.url = 'http://127.0.0.1:8000'
         return (
-          <Preview options={options} hidden={hidden} width='100%' height='100%' />
+          <Preview
+            options={options}
+            hidden={hidden}
+            width="100%"
+            height="100%"
+          />
         )
       },
-      actions: []
+      actions: [],
     }
 
     return (
       <ThemeProvider
-        theme={{
-          // templateColor: template.color,
-          // templateBackgroundColor: template.backgroundColor
-        }}
+        theme={
+          {
+            // templateColor: template.color,
+            // templateBackgroundColor: template.backgroundColor
+          }
+        }
       >
         <div
-          id='workbench.main.container'
+          id="workbench.main.container"
           style={{
             height: '100%',
             width: '100%',
             overflow: 'visible', // For VSCode Context Menu
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
           }}
           ref={node => {
             if (node) {
@@ -483,28 +490,28 @@ class EditorPreview extends React.Component {
               })
             }}
             style={{
-              overflow: 'visible' // For VSCode Context Menu
+              overflow: 'visible', // For VSCode Context Menu
             }}
             split={this.props.store.editor.previewWindowOrientation}
-            defaultSize='50%'
+            defaultSize="50%"
             pane1Style={
               windowVisible
                 ? {
-                  minWidth: 100
-                }
+                    minWidth: 100,
+                  }
                 : {
-                  width: '100%',
-                  minWidth: '100%',
-                  height: '100%',
-                  minHeight: '100%'
-                }
+                    width: '100%',
+                    minWidth: '100%',
+                    height: '100%',
+                    minHeight: '100%',
+                  }
             }
             pane2Style={{
               visibility: windowVisible ? 'visible' : 'hidden',
               maxWidth: windowVisible ? '100%' : 0,
               width: windowVisible ? '100%' : 0,
               overflow: 'hidden',
-              zIndex: 0 // For VSCode hovers, beware this is also dynamically changed in PreviewTabs
+              zIndex: 0, // For VSCode hovers, beware this is also dynamically changed in PreviewTabs
             }}
           >
             <div
@@ -515,13 +522,13 @@ class EditorPreview extends React.Component {
                 flex: 1,
                 height: '100%',
                 width: '100%',
-                marginTop: 0
+                marginTop: 0,
               }}
             >
               {/* {!store.preferences.settings.experimentVSCode && <Tabs />} */}
               <CodeEditor
                 style={{
-                  top: 0
+                  top: 0,
                   // top: store.preferences.settings.experimentVSCode ? 0 : 35
                 }}
                 onInitialized={this.onInitialized}
@@ -548,7 +555,7 @@ class EditorPreview extends React.Component {
                   signals.editor.codeChanged({
                     code,
                     moduleShortid: moduleShortid || currentModule.shortid,
-                    noLive: true
+                    noLive: true,
                   })
                 }
                 onModuleChange={moduleId =>
@@ -556,14 +563,13 @@ class EditorPreview extends React.Component {
                 }
                 // onModuleStateMismatch={signals.live.onModuleStateMismatch}
                 onSave={code => {
-                  // console.log('onSave from vscode');
+                  console.log('onSave from vscode')
                   // console.log(code);
                   signals.editor.codeSaved({
                     code,
-                    moduleShortid: currentModule.shortid
+                    moduleShortid: currentModule.shortid,
                   })
-                }
-                }
+                }}
                 tsconfig={
                   store.editor.parsedConfigurations.typescript &&
                   store.editor.parsedConfigurations.typescript.parsed
@@ -574,16 +580,16 @@ class EditorPreview extends React.Component {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                height: '100%'
+                height: '100%',
               }}
-              id='csb-devtools' // used for tabs for highlighting
+              id="csb-devtools" // used for tabs for highlighting
             >
               {views.map((v, i) => (
                 <DevTools
                   key={i} // eslint-disable-line react/no-array-index-key
                   devToolIndex={i}
                   addedViews={{
-                    'codesandbox.browser': browserConfig
+                    'codesandbox.browser': browserConfig,
                   }}
                   setDragging={dragging => {
                     if (dragging) {
@@ -608,7 +614,7 @@ class EditorPreview extends React.Component {
                   currentTabPosition={currentPosition.tabPosition}
                   setPane={position =>
                     this.props.signals.editor.onDevToolsPositionChanged({
-                      position
+                      position,
                     })
                   }
                 />

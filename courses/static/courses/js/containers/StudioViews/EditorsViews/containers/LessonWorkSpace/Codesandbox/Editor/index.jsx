@@ -10,15 +10,13 @@ import Editor from './editor'
 import { initialize } from './init'
 
 let Index = class Index extends React.Component {
-  render () {
+  render() {
     return (
       <ActualOvermindProvider value={this.props.overmind}>
         <OvermindProvider value={this.props.overmind}>
           {/* <HooksProvider client={client}> */}
           <ThemeProvider theme={theme}>
-            <Editor {...this.props}>
-              {/* {this.props.children} */}
-            </Editor>
+            <Editor {...this.props}>{/* {this.props.children} */}</Editor>
             <Modals />
           </ThemeProvider>
           {/* </HooksProvider> */}
@@ -28,10 +26,10 @@ let Index = class Index extends React.Component {
   }
 }
 
-export default async (props) => {
+export default async props => {
   const x = await new Promise((resolve, reject) => {
     initialize(Index, (Component, overmind) => {
-      resolve(<Component overmind={overmind} {...props}/>)
+      resolve(<Component overmind={overmind} {...props} />)
     })
   })
   return x

@@ -59,6 +59,7 @@ ansi-html
 "vue-hot-reload-api": "^2.3.3",
 "vue-template-compiler": "^2.6.10",
 "vue-template-es2015-compiler": "^1.9.1",
+"shortid": "^2.2.16",
 
 # search:
 "qs": "^6.5.0",

@@ -1,29 +1,29 @@
-import React from 'react';
+import React from 'react'
 
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
-import getDefinition from '@codesandbox/common/lib/templates';
+import Centered from '@codesandbox/common/lib/components/flex/Centered'
+import Margin from '@codesandbox/common/lib/components/spacing/Margin'
+import Tooltip from '@codesandbox/common/lib/components/Tooltip'
+import { getModulePath } from '@codesandbox/common/lib/sandbox/modules'
+import getDefinition from '@codesandbox/common/lib/templates'
 // import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import { Sandbox } from '@codesandbox/common/lib/types';
-import isImage from '@codesandbox/common/lib/utils/is-image';
-import { SubTitle } from '../../../app/components/SubTitle';
-import { Title } from '../../../app/components/Title';
-import Loadable from '../../../app/utils/Loadable';
+import { Sandbox } from '@codesandbox/common/lib/types'
+import isImage from '@codesandbox/common/lib/utils/is-image'
+import { SubTitle } from '../../../app/components/SubTitle'
+import { Title } from '../../../app/components/Title'
+import Loadable from '../../../app/utils/Loadable'
 
-import { MdDvr as UIIcon } from 'react-icons/md';
-import { GoQuestion as QuestionIcon } from 'react-icons/go';
+import { MdDvr as UIIcon } from 'react-icons/md'
+import { GoQuestion as QuestionIcon } from 'react-icons/go'
 
 // import QuestionIcon from 'react-icons/lib/go/question';
 // import UIIcon from 'react-icons/lib/md/dvr';
 
-import { Configuration } from './Configuration';
-import { Icon, Icons } from './elements';
-import { ImageViewer } from './ImageViewer';
-import MonacoDiff from './MonacoDiff';
+import { Configuration } from './Configuration'
+import { Icon, Icons } from './elements'
+import { ImageViewer } from './ImageViewer'
+import MonacoDiff from './MonacoDiff'
 import { Props } from './types'; // eslint-disable-line
-import { VSCode } from './VSCode';
+import { VSCode } from './VSCode'
 
 // const CodeMirror = Loadable(() =>
 //   import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror')
@@ -35,55 +35,55 @@ import { VSCode } from './VSCode';
 
 const getDependencies = (sandbox: Sandbox): { [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
-    m => m.title === 'package.json' && m.directoryShortid == null
-  );
+    m => m.title === 'package.json' && m.directoryShortid == null,
+  )
 
   if (packageJSON != null) {
     try {
       const { dependencies = {}, devDependencies = {} } = JSON.parse(
-        packageJSON.code || ''
-      );
+        packageJSON.code || '',
+      )
 
-      const usedDevDependencies = {};
+      const usedDevDependencies = {}
       Object.keys(devDependencies).forEach(d => {
         if (d.startsWith('@types')) {
-          usedDevDependencies[d] = devDependencies[d];
+          usedDevDependencies[d] = devDependencies[d]
         }
-      });
+      })
 
-      return { ...dependencies, ...usedDevDependencies };
+      return { ...dependencies, ...usedDevDependencies }
     } catch (e) {
-      console.error(e);
-      return null;
+      console.error(e)
+      return null
     }
   } else {
     return typeof sandbox.npmDependencies.toJS === 'function'
       ? (sandbox.npmDependencies as any).toJS()
-      : sandbox.npmDependencies;
+      : sandbox.npmDependencies
   }
-};
+}
 
 type State = {
-  showConfigUI: boolean;
-};
+  showConfigUI: boolean
+}
 
 export class CodeEditor extends React.PureComponent<
   Props & {
-    editor?: 'vscode' | 'monaco' | 'codemirror';
-    style?: React.CSSProperties;
+    editor?: 'vscode' | 'monaco' | 'codemirror'
+    style?: React.CSSProperties
   },
   State
 > {
   state = {
     showConfigUI: true,
-  };
+  }
 
   toggleConfigUI = () => {
-    this.setState(state => ({ showConfigUI: !state.showConfigUI }));
-  };
+    this.setState(state => ({ showConfigUI: !state.showConfigUI }))
+  }
 
   render() {
-    const { props } = this;
+    const { props } = this
 
     const {
       isModuleSynced,
@@ -91,7 +91,7 @@ export class CodeEditor extends React.PureComponent<
       sandbox,
       currentModule: module,
       settings,
-    } = props;
+    } = props
 
     if (currentTab && currentTab.type === 'DIFF') {
       return (
@@ -113,10 +113,10 @@ export class CodeEditor extends React.PureComponent<
             {...props}
           />
         </div>
-      );
+      )
     }
 
-    const dependencies = getDependencies(sandbox);
+    const dependencies = getDependencies(sandbox)
 
     // const template = getDefinition(sandbox.template);
     // const modulePath = getModulePath(
@@ -177,7 +177,7 @@ export class CodeEditor extends React.PureComponent<
 
     // let Editor = ((Monaco as unknown) as React.ComponentClass<Props>);
 
-    let Editor = VSCode as React.ComponentClass<Props>;
+    let Editor = VSCode as React.ComponentClass<Props>
 
     // if (settings.experimentVSCode) {
     //   Editor = VSCode as React.ComponentClass<Props>;
@@ -203,38 +203,35 @@ export class CodeEditor extends React.PureComponent<
           </Icons>
         )}
         {/*{config &&*/}
-          {/*(getUI(config.type) && !settings.experimentVSCode ? (*/}
-            {/*<Icons>*/}
-              {/*<Tooltip content="Switch to UI Configuration">*/}
-                {/*<Icon onClick={this.toggleConfigUI}>*/}
-                  {/*<UIIcon />*/}
-                {/*</Icon>*/}
-              {/*</Tooltip>*/}
-            {/*</Icons>*/}
-          {/*) : (*/}
-            {/*<Icons>*/}
-              {/*{config.partialSupportDisclaimer ? (*/}
-                {/*<Tooltip*/}
-                  {/*placement="bottom"*/}
-                  {/*content={config.partialSupportDisclaimer}*/}
-                  {/*style={{*/}
-                    {/*display: 'flex',*/}
-                    {/*'align-items': 'center',*/}
-                  {/*}}*/}
-                {/*>*/}
-                  {/*Partially Supported Config{' '}*/}
-                  {/*<QuestionIcon style={{ marginLeft: '.5rem' }} />*/}
-                {/*</Tooltip>*/}
-              {/*) : (*/}
-                {/*<div>Supported Configuration</div>*/}
-              {/*)}*/}
-            {/*</Icons>*/}
-          {/*))}*/}
-        <Editor
-          {...props}
-          dependencies={dependencies}
-        />
+        {/*(getUI(config.type) && !settings.experimentVSCode ? (*/}
+        {/*<Icons>*/}
+        {/*<Tooltip content="Switch to UI Configuration">*/}
+        {/*<Icon onClick={this.toggleConfigUI}>*/}
+        {/*<UIIcon />*/}
+        {/*</Icon>*/}
+        {/*</Tooltip>*/}
+        {/*</Icons>*/}
+        {/*) : (*/}
+        {/*<Icons>*/}
+        {/*{config.partialSupportDisclaimer ? (*/}
+        {/*<Tooltip*/}
+        {/*placement="bottom"*/}
+        {/*content={config.partialSupportDisclaimer}*/}
+        {/*style={{*/}
+        {/*display: 'flex',*/}
+        {/*'align-items': 'center',*/}
+        {/*}}*/}
+        {/*>*/}
+        {/*Partially Supported Config{' '}*/}
+        {/*<QuestionIcon style={{ marginLeft: '.5rem' }} />*/}
+        {/*</Tooltip>*/}
+        {/*) : (*/}
+        {/*<div>Supported Configuration</div>*/}
+        {/*)}*/}
+        {/*</Icons>*/}
+        {/*))}*/}
+        <Editor {...props} dependencies={dependencies} />
       </div>
-    );
+    )
   }
 }
