@@ -106,14 +106,14 @@ class VSCodeManager {
       },
     })
 
-    this.addWorkbenchAction({
-      id: 'codesandbox.preferences',
-      label: 'Open CodeSandbox Settings',
-      category: 'Preferences',
-      run: () => {
-        this.controller.getSignal('modalOpened')({ modal: 'preferences' })
-      },
-    })
+    // this.addWorkbenchAction({
+    //   id: 'codesandbox.preferences',
+    //   label: 'Open CodeSandbox Settings',
+    //   category: 'Preferences',
+    //   run: () => {
+    //     this.controller.getSignal('modalOpened')({ modal: 'preferences' })
+    //   },
+    // })
 
     this.addWorkbenchAction({
       id: 'view.fullscreen',
@@ -180,14 +180,14 @@ class VSCodeManager {
       },
     })
 
-    this.appendMenuItem(MenuId.MenubarPreferencesMenu, {
-      group: '1_settings',
-      order: 1,
-      command: {
-        id: 'codesandbox.preferences',
-        title: 'CodeSandbox Settings',
-      },
-    })
+    // this.appendMenuItem(MenuId.MenubarPreferencesMenu, {
+    //   group: '1_settings',
+    //   order: 1,
+    //   command: {
+    //     id: 'codesandbox.preferences',
+    //     title: 'CodeSandbox Settings',
+    //   },
+    // })
 
     this.appendMenuItem(MenuId.MenubarLayoutMenu, {
       group: 'z_flip',
