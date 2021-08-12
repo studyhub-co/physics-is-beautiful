@@ -115,6 +115,24 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
 
         return Response(data, status=status.HTTP_201_CREATED)
 
+    def update(self, request, *args, **kwargs):
+        request.data['sandbox'] = kwargs['material_problem_type_uuid']
+        try:
+            request.data['name'] = request.data['title']
+        except:
+            pass
+
+        try:
+            mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
+                shortid=request.data['directory_shortid'],
+                sandbox__uuid=self.kwargs['material_problem_type_uuid']
+            )
+            request.data['directory'] = mpt_directory.uuid
+        except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
+            request.data['directory'] = None
+
+        return super().update(request, *args, **kwargs)
+
     def create(self, request, *args, **kwargs):
         try:
             mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
@@ -162,12 +180,11 @@ class MaterialTypeDirectoriesViewSet(mixins.RetrieveModelMixin,
                 shortid=request.data['directory_shortid'],
                 sandbox__uuid=kwargs['material_problem_type_uuid']
             )
+            request.data['directory'] = mpt_directory.uuid
         except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
-            mpt_directory = None
+            pass
 
         request.data['sandbox'] = kwargs['material_problem_type_uuid']
-        if mpt_directory:
-            request.data['directory'] = mpt_directory.uuid
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -181,6 +198,17 @@ class MaterialTypeDirectoriesViewSet(mixins.RetrieveModelMixin,
             request.data['name'] = request.data['title']
         except:
             pass
+
+        # parent directory
+        try:
+            mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
+                shortid=request.data['directory_shortid'],
+                sandbox__uuid=kwargs['material_problem_type_uuid']
+            )
+            request.data['directory'] = mpt_directory.uuid
+        except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
+            pass
+
         return super().update(request, *args, **kwargs)
 
 

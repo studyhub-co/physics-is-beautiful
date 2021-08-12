@@ -160,10 +160,11 @@ export const directoryMovedToDirectory: AsyncAction<{
         shortid,
         directoryShortid,
       )
-      effects.live.sendDirectoryUpdate(directoryToMove)
+      // effects.live.sendDirectoryUpdate(directoryToMove)
     } catch (error) {
       directoryToMove.directoryShortid = shortid
-      effects.notificationToast.error('Could not save new directory location')
+      alert('Could not save new directory location')
+      // effects.notificationToast.error('Could not save new directory location')
     }
   },
 )

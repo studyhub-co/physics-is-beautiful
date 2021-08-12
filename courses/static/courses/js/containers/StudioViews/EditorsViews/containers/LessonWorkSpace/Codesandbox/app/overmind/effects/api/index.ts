@@ -135,10 +135,12 @@ export default {
     sourceDirectoryShortid: string,
     targetDirectoryShortId: string,
   ) {
-    return api.put<IDirectoryAPIResponse>(
+    // return api.put<IDirectoryAPIResponse>(
+    return api.patch<IDirectoryAPIResponse>(
       `/studio/material-problem-type/${sandboxId}/directories/${sourceDirectoryShortid}/`,
       {
-        directory: { directoryShortid: targetDirectoryShortId },
+        directoryShortid: targetDirectoryShortId,
+        // directory: { directoryShortid: targetDirectoryShortId },
       },
     )
   },
@@ -180,6 +182,20 @@ export default {
       {
         title,
         // directory: { title },
+      },
+    )
+  },
+  saveModuleDirectory(
+    sandboxId: string,
+    moduleShortid: string,
+    directoryShortid: string,
+  ) {
+    // return api.put<IDirectoryAPIResponse>(
+    return api.patch<IDirectoryAPIResponse>(
+      `/studio/material-problem-type/${sandboxId}/modules/${moduleShortid}/`,
+      {
+        directoryShortid,
+        // module: { directoryShortid },
       },
     )
   },
