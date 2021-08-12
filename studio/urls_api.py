@@ -28,6 +28,10 @@ material_problem_type_modules_router.register(r'modules',
                                               material_type_modules.MaterialTypeModulesViewSet,
                                               basename='material_problem_type_modules')
 
+material_problem_type_modules_router.register(r'directories',
+                                              material_type_modules.MaterialTypeDirectoriesViewSet,
+                                              basename='material_problem_type_directories')
+
 # router.register(r'material-problem-type', apis.MaterialProblemTypeViewSet, basename='material_problem_type')
 
 public_router = routers.DefaultRouter()

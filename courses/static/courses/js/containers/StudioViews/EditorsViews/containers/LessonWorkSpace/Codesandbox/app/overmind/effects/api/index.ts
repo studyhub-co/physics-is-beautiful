@@ -130,6 +130,12 @@ export default {
     return api.get(`/studio/npm/dependencies/${name}@latest`)
   },
   // TODO add directories API
+  deleteDirectory(sandboxId: string, directoryShortid: string) {
+    // return api.delete(`/sandboxes/${sandboxId}/directories/${directoryShortid}`)
+    return api.delete(
+      `/studio/material-problem-type/${sandboxId}/directories/${directoryShortid}/`,
+    )
+  },
   // saveDirectoryTitle(
   //   sandboxId: string,
   //   directoryShortid: string,
