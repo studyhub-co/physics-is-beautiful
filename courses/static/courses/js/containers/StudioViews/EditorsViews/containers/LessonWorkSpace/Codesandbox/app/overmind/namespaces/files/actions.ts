@@ -1,3 +1,5 @@
+import { generate as generateShortid } from 'shortid'
+
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules'
 import getDefinition from '@codesandbox/common/lib/templates'
 import { ModuleTab } from '@codesandbox/common/lib/types'
@@ -68,10 +70,17 @@ export const directoryCreated: AsyncAction<{
 
     sandbox.directories.push(optimisticDirectory)
 
+    // very strange initial codesandbox code
+    // Shortid generates on the server side while directory creation
+    // but in mass create func uuids creates with generateShortid on the frontend side
+    // Good news - we have own strong server side uuids, so we need to migrate
+    // from confusing codesanbox sort ids to uuid in the future. TODO
+
     try {
       const newDirectory = await effects.api.createDirectory(
         sandbox.id,
         directoryShortid,
+        generateShortid(), // generate shortid on the server side for now
         title,
       )
       const directory = state.editor.currentSandbox.directories.find(
@@ -83,14 +92,15 @@ export const directoryCreated: AsyncAction<{
         shortid: newDirectory.shortid,
       })
 
-      effects.live.sendDirectoryCreated(newDirectory)
+      // effects.live.sendDirectoryCreated(newDirectory)
     } catch (error) {
       const directoryIndex = state.editor.currentSandbox.directories.findIndex(
         directoryItem => directoryItem.shortid === optimisticDirectory.shortid,
       )
 
       sandbox.directories.splice(directoryIndex, 1)
-      effects.notificationToast.error('Unable to save new directory')
+      alert('Unable to save new directory')
+      // effects.notificationToast.error('Unable to save new directory')
     }
   },
 )

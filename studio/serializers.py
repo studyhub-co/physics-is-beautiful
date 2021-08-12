@@ -321,7 +321,9 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
         fields.extend(['directory_shortid', 'title', 'id', 'shortid'])
-        read_only_fields = BaseSerializer.Meta.read_only_fields + ['shortid']
+        read_only_fields = BaseSerializer.Meta.read_only_fields
+        # shortid is frontend generated for now
+        # + ['shortid']
 
 
 class MaterialProblemTypeSerializer(BaseSerializer):

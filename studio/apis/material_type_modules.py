@@ -52,34 +52,66 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
             'directories':[],
             'modules': [], }
         }
+        # mass create modules directories
+        if 'directories' in request.data:
+            for directory in request.data['directories']:
+                # find exiting directory by short id
+                try:
+                    mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
+                        shortid=directory['shortid'],
+                        sandbox__uuid=self.kwargs['material_problem_type_uuid']
+                    )
+                except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
+                    mpt_directory = None
+
+                if not mpt_directory:
+                    # create directory if not exist
+
+                    # find parent directory
+                    directory['sandbox']=self.get_material_problem_type().uuid
+                    try:
+                        parent_dir = MaterialProblemTypeSandboxDirectory.objects.get(
+                            shortid=directory['directory_shortid'],
+                            sandbox__uuid=self.kwargs['material_problem_type_uuid']
+                        )
+                        directory['directory'] = parent_dir.uuid
+                    except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
+                        directory['directory'] = None
+
+                    try:
+                        directory['name'] = directory['title']
+                    except KeyError:
+                        directory['name'] = ''
+                    serializer = MaterialProblemTypeSandboxDirectorySerializer(data=directory,
+                                                                               context={'request': request})
+                    serializer.is_valid(raise_exception=True)
+                    self.perform_create(serializer)
+                    data['data']['directories'].append(serializer.data)
+
         # mass create modules
         if 'modules' in request.data:
             for module in request.data['modules']:
+                try:
+                    parent_dir = MaterialProblemTypeSandboxDirectory.objects.get(
+                        shortid=module['directory_shortid'],
+                        sandbox__uuid=self.kwargs['material_problem_type_uuid']
+                    )
+                    module['directory'] = parent_dir.uuid
+                except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
+                    module['directory'] = None
+
                 # create module
                 module['sandbox']=self.get_material_problem_type().uuid
+
                 try:
                     module['name'] = module['title']
                 except KeyError:
                     module['name'] = ''
                 serializer = self.get_serializer(data=module)
                 serializer.is_valid(raise_exception=True)
+                # TODO validate short id unique
                 self.perform_create(serializer)
                 data['data']['modules'].append(serializer.data)
-
-        # mass create modules directories
-        if 'directories' in request.data:
-            for directory in request.data['directories']:
-                # create directory
-                directory['sandbox']=self.get_material_problem_type().uuid
-                try:
-                    directory['name'] = directory['title']
-                except KeyError:
-                    directory['name'] = ''
-                serializer = MaterialProblemTypeSandboxDirectorySerializer(data=directory,
-                                                                           context={'request': request})
-                serializer.is_valid(raise_exception=True)
-                self.perform_create(serializer)
-                data['data']['directories'].append(serializer.data)
 
         return Response(data, status=status.HTTP_201_CREATED)
 
@@ -124,25 +156,25 @@ class MaterialTypeDirectoriesViewSet(mixins.RetrieveModelMixin,
     def get_queryset(self):
         return MaterialProblemTypeSandboxDirectory.objects.filter(sandbox=self.get_material_problem_type())
 
-    # def create(self, request, *args, **kwargs):
-    #     try:
-    #         mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
-    #             shortid=request.data['directory_shortid'],
-    #             sandbox__uuid=self.kwargs['material_problem_type_uuid']
-    #         )
-    #     except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
-    #         mpt_directory = None
-    #
-    #     request.data['sandbox'] = self.kwargs['material_problem_type_uuid']
-    #     request.data['code'] = ''
-    #     if mpt_directory:
-    #         request.data['directory'] = mpt_directory.uuid
-    #
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def create(self, request, *args, **kwargs):
+        # parent directory
+        try:
+            mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
+                shortid=request.data['directory_shortid'],
+                sandbox__uuid=self.kwargs['material_problem_type_uuid']
+            )
+        except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
+            mpt_directory = None
+
+        request.data['sandbox'] = self.kwargs['material_problem_type_uuid']
+        if mpt_directory:
+            request.data['directory'] = mpt_directory.uuid
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 REGISTRY_URL = 'https://registry.npmjs.org/'

@@ -129,23 +129,55 @@ export default {
     // return api.get(`/dependencies/${name}@latest`);
     return api.get(`/studio/npm/dependencies/${name}@latest`)
   },
-  // TODO add directories API
+  // Directories API
+  saveDirectoryDirectory(
+    sandboxId: string,
+    sourceDirectoryShortid: string,
+    targetDirectoryShortId: string,
+  ) {
+    return api.put<IDirectoryAPIResponse>(
+      `/studio/material-problem-type/${sandboxId}/directories/${sourceDirectoryShortid}/`,
+      {
+        directory: { directoryShortid: targetDirectoryShortId },
+      },
+    )
+  },
+  createDirectory(
+    sandboxId: string,
+    directoryShortid: string,
+    shortid: string,
+    title: string,
+  ): Promise<Directory> {
+    return api
+      .post<IDirectoryAPIResponse>(
+        `/studio/material-problem-type/${sandboxId}/directories/`,
+        {
+          // directory: {
+          // title,
+          name: title,
+          title: title,
+          shortid,
+          directoryShortid,
+          // },
+        },
+      )
+      .then(transformDirectory)
+  },
   deleteDirectory(sandboxId: string, directoryShortid: string) {
-    // return api.delete(`/sandboxes/${sandboxId}/directories/${directoryShortid}`)
     return api.delete(
       `/studio/material-problem-type/${sandboxId}/directories/${directoryShortid}/`,
     )
   },
-  // saveDirectoryTitle(
-  //   sandboxId: string,
-  //   directoryShortid: string,
-  //   title: string
-  // ) {
-  //   return api.put<IDirectoryAPIResponse>(
-  //     `/sandboxes/${sandboxId}/directories/${directoryShortid}`,
-  //     {
-  //       directory: { title },
-  //     }
-  //   );
-  // },
+  saveDirectoryTitle(
+    sandboxId: string,
+    directoryShortid: string,
+    title: string,
+  ) {
+    return api.put<IDirectoryAPIResponse>(
+      `/studio/material-problem-type/${sandboxId}/directories/${directoryShortid}/`,
+      {
+        directory: { title },
+      },
+    )
+  },
 }
