@@ -22,7 +22,7 @@ export { default as vscode } from './vscode'
 // export { default as zeit } from './zeit';
 export { default as netlify } from './netlify'
 export { default as prettyfier } from './prettyfier'
-// export { default as zip } from './zip'
+export { default as zip } from './zip'
 export { default as codesandboxApi } from './codesandboxApi'
 export { default as themes } from './themes'
 // export { default as executor } from './executor';

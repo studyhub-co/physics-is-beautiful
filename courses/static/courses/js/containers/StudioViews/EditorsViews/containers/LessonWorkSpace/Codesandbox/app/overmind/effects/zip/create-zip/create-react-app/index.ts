@@ -1,13 +1,13 @@
-import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types';
+import { Sandbox, Module, Directory } from '@codesandbox/common/lib/types'
 // @ts-ignore
-import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
+import files from 'buffer-loader!./files.zip' // eslint-disable-line import/no-webpack-loader-syntax
 import {
   getResourceTag,
   getIndexHtmlBody,
   createPackageJSON,
   createFile,
   createDirectoryWithFiles,
-} from '..';
+} from '..'
 
 const getHTML = (modules, resources) =>
   `<!doctype html>
@@ -48,36 +48,33 @@ const getHTML = (modules, resources) =>
   -->
 </body>
 </html>
-`;
+`
 
 export default function createZip(
   zip,
   sandbox: Sandbox,
   modules: Array<Module>,
-  directories: Array<Directory>
+  directories: Array<Directory>,
 ) {
   return zip.loadAsync(files).then(async srcFolder => {
-    const src = srcFolder.folder('src');
+    const src = srcFolder.folder('src')
 
     await Promise.all(
       modules
         .filter(x => x.directoryShortid == null)
         .filter(x => x.title !== 'index.html') // This will be included in the body
-        .map(x => createFile(x, src))
-    );
+        .map(x => createFile(x, src)),
+    )
 
     await Promise.all(
       directories
         .filter(x => x.directoryShortid == null)
-        .map(x => createDirectoryWithFiles(modules, directories, x, src))
-    );
+        .map(x => createDirectoryWithFiles(modules, directories, x, src)),
+    )
 
-    const publicFolder = zip.folder('public');
+    const publicFolder = zip.folder('public')
 
-    publicFolder.file(
-      'index.html',
-      getHTML(modules, sandbox.externalResources)
-    );
+    publicFolder.file('index.html', getHTML(modules, sandbox.externalResources))
 
     zip.file(
       'package.json',
@@ -92,8 +89,8 @@ export default function createZip(
           build: 'react-scripts build',
           test: 'react-scripts test --env=jsdom',
           eject: 'react-scripts eject',
-        }
-      )
-    );
-  });
+        },
+      ),
+    )
+  })
 }

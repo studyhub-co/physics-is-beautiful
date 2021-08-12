@@ -60,6 +60,10 @@ ansi-html
 "vue-template-compiler": "^2.6.10",
 "vue-template-es2015-compiler": "^1.9.1",
 "shortid": "^2.2.16",
+# zip
+"buffer-loader": "^0.1.0",
+"file-saver": "^2.0.5",
+"jszip": "^3.7.1",
 
 # search:
 "qs": "^6.5.0",
