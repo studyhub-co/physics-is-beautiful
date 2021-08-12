@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from django.db.models import F
-from django.db import transaction
+# from django.db import transaction
 from django.core.files.images import get_image_dimensions
 
 from rest_framework import serializers
@@ -260,7 +260,6 @@ class CourseSerializer(TaggitSerializer, ExpanderSerializerMixin, BaseSerializer
 
 
 class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
-    # shortid = serializers.SerializerMethodField()
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     directory_shortid = serializers.SerializerMethodField()
@@ -268,8 +267,6 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
     def get_directory_shortid(self, obj):
         if obj.directory:  # parent dir
             return obj.directory.shortid
-            # return to_short_id(obj.directory.name)
-            # return obj.directory.uuid
         else:
             return None
 
@@ -279,28 +276,23 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
     def get_title(self, obj):
         return obj.name
 
-    # def get_shortid(self, obj):
-    #     return to_short_id(obj.name)
-        # return obj.uuid
-
     class Meta:
         model = MaterialProblemTypeSandboxDirectory
         # fields = '__all__'
         fields = [field.name for field in model._meta.fields]
         fields.extend(['shortid', 'title', 'id', 'directory_shortid'])
         read_only_fields = BaseSerializer.Meta.read_only_fields
+        # shortid is frontend generated for now
+        # will generate on the backend if not provided
+        extra_kwargs = {"shortid": {"required": False}}
+        validators = []  # Remove a default "unique together" constraint.
 
 
 class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
     directory_shortid = serializers.SerializerMethodField()
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
-    # shortid = serializers.SerializerMethodField()
     # source_id = serializers.SerializerMethodField()
-
-    # def get_shortid(self, obj):
-    #     return to_short_id(obj.name)
-    #     # return obj.uuid
 
     def get_id(self, obj):
         return obj.uuid
@@ -310,8 +302,6 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
 
     def get_directory_shortid(self, obj):
         if obj.directory:
-            # return obj.directory.uuid
-            # return to_short_id(obj.directory.name)
             return obj.directory.shortid
         else:
             return None
@@ -322,8 +312,11 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
         fields = [field.name for field in model._meta.fields]
         fields.extend(['directory_shortid', 'title', 'id', 'shortid'])
         read_only_fields = BaseSerializer.Meta.read_only_fields
-        # shortid is frontend generated for now
         # + ['shortid']
+        # shortid is frontend generated for now
+        # will generate on the backend if not provided
+        extra_kwargs = {"shortid": {"required": False}}
+        validators = []  # Remove a default "unique together" constraint.
 
 
 class MaterialProblemTypeSerializer(BaseSerializer):
@@ -347,98 +340,8 @@ class MaterialProblemTypeSerializer(BaseSerializer):
     def get_title(self, obj):
         return obj.name
 
-    # # TODO not sure we need save_from_tree_data create_from_tree_data
-    # def save_from_tree_data(self, **kwargs):
-    #     assert not hasattr(self, 'save_object'), (
-    #         'Serializer `%s.%s` has old-style version 2 `.save_object()` '
-    #         'that is no longer compatible with REST framework 3. '
-    #         'Use the new-style `.create()` and `.update()` methods instead.' %
-    #         (self.__class__.__module__, self.__class__.__name__)
-    #     )
-    #
-    #     assert hasattr(self, '_errors'), (
-    #         'You must call `.is_valid()` before calling `.save()`.'
-    #     )
-    #
-    #     assert not self.errors, (
-    #         'You cannot call `.save()` on a serializer with invalid data.'
-    #     )
-    #
-    #     # Guard against incorrect use of `serializer.save(commit=False)`
-    #     assert 'commit' not in kwargs, (
-    #         "'commit' is not a valid keyword argument to the 'save()' method. "
-    #         "If you need to access data before committing to the database then "
-    #         "inspect 'serializer.validated_data' instead. "
-    #         "You can also pass additional keyword arguments to 'save()' if you "
-    #         "need to set extra attributes on the saved model instance. "
-    #         "For example: 'serializer.save(owner=request.user)'.'"
-    #     )
-    #
-    #     assert not hasattr(self, '_data'), (
-    #         "You cannot call `.save()` after accessing `serializer.data`."
-    #         "If you need to access data before committing to the database then "
-    #         "inspect 'serializer.validated_data' instead. "
-    #     )
-    #
-    #     validated_data = dict(
-    #         list(self.validated_data.items()) +
-    #         list(kwargs.items())
-    #     )
-    #
-    #     if self.instance is not None:
-    #         self.instance = self.update(self.instance, validated_data)
-    #         assert self.instance is not None, (
-    #             '`update()` did not return an object instance.'
-    #         )
-    #     else:
-    #         self.instance = self.create_from_tree_data(validated_data)
-    #         assert self.instance is not None, (
-    #             '`create()` did not return an object instance.'
-    #         )
-    #
-    #     return self.instance
-
-    # @transaction.atomic
-    # def create_from_tree_data(self, validated_data):
-    #     modules_data = self.initial_data.pop('modules')
-    #     directories_data = self.initial_data.pop('directories')
-    #     material_problem_type = super().create(validated_data)
-    #     # material_problem_type = MaterialProblemType.objects.create(**validated_data)
-    #
-    #     # directory shortid / instance src dict
-    #     directory_ids = {}
-    #
-    #     # create directories
-    #     # TODO this code don't support descendants dirs
-    #     for directory_data in directories_data:
-    #         # directory_data['author'] = validated_data['author'].pk
-    #         directory_data['name'] = directory_data['title']
-    #         directory_data['sandbox'] = material_problem_type.uuid
-    #         serializer = MaterialProblemTypeSandboxDirectorySerializer(data=directory_data)
-    #         if serializer.is_valid(raise_exception=True):
-    #             instance = serializer.save(author=material_problem_type.author)
-    #             directory_ids[directory_data['shortid']] = instance
-    #
-    #     # create modules (and place it in directory)
-    #     for module_data in modules_data:
-    #         # module_data['author'] = validated_data['author'].pk
-    #         module_data['name'] = module_data['title']
-    #         module_data['sandbox'] = material_problem_type.uuid
-    #
-    #         # try to find module directory
-    #         if module_data['directory_shortid']:
-    #             if module_data['directory_shortid'] in directory_ids:
-    #                 module_data['directory'] = directory_ids[module_data['directory_shortid']].pk
-    #
-    #         serializer = MaterialProblemTypeSandboxModuleSerializer(data=module_data)
-    #         if serializer.is_valid(raise_exception=True):
-    #             serializer.save(author=material_problem_type.author)
-    #
-    #     return material_problem_type
-
     class Meta(BaseSerializer.Meta):
         model = MaterialProblemType
-        # fields = ['uuid', 'name', 'data', 'created_on', 'updated_on']
         fields = '__all__'
         read_only_fields = \
             BaseSerializer.Meta.read_only_fields + ['forked_from_sandbox', 'slug']
@@ -448,11 +351,8 @@ class MaterialProblemTypeSerializer(BaseSerializer):
 
 
 class MaterialProblemTypeSandboxCacheSerializer(serializers.ModelSerializer):
-    # data = serializers.JSONField()
-
     class Meta:
         model = MaterialProblemTypeSandboxCache
-        # fields = '__all__'
         fields = ['version', 'data']
 
 
@@ -460,7 +360,7 @@ class MaterialSerializer(BaseSerializer):
     lesson = serializers.CharField(source='lesson.uuid')
     tags = TagListSerializerField(read_only=True)
     material_problem_type = MaterialProblemTypeSerializer(read_only=True)
-    # we need to be this filed writable
+    # we need to be this field writable
     # screenshot = serializers.SerializerMethodField()
     #
     # def get_screenshot(self, instance):
@@ -483,28 +383,12 @@ class MaterialSerializer(BaseSerializer):
         if 'lesson' in validated_data:
             validated_data['lesson'] = validated_data['lesson']['uuid']
 
-        # update postion
+        # update position
         if 'position' in validated_data and instance.position != validated_data['position']:
             Material.objects.filter(position__gte=validated_data['position'],
                                     lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
 
         return super().update(instance, validated_data)
-
-    # def update(self, instance, validated_data):
-    #     if 'lesson' in validated_data:
-    #         validated_data['lesson'] = validated_data['lesson']['uuid']
-    #
-    #     if 'position' in validated_data and instance.position != validated_data['position']:
-    #         Material.objects.filter(position__gte=validated_data['position'],
-    #                                 lesson=validated_data.get('lesson', instance.lesson)).update(position=F('position')+1)
-    #
-    #     new_answers = validated_data.pop('answers', None)
-    #
-    #     updated = super().update(instance, validated_data)
-    #     if new_answers:
-    #         updated.answers.all().delete()
-    #         new_answers.update(question=updated)
-    #     return updated
 
     def create(self, validated_data):
         validated_data['lesson'] = validated_data['lesson']['uuid']
@@ -525,7 +409,6 @@ class JsonDataImageSerializer(BaseSerializer):
     class Meta:
         model = JsonDataImage
         # fields = '__all__'
-        # fields = ['material', 'image', 'name', 'author', 'uuid']
         fields = ['image', 'name', 'author', 'uuid']
         read_only_fields = BaseSerializer.Meta.read_only_fields
 

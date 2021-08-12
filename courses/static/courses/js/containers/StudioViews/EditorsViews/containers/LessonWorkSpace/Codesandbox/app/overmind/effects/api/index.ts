@@ -173,10 +173,13 @@ export default {
     directoryShortid: string,
     title: string,
   ) {
-    return api.put<IDirectoryAPIResponse>(
+    // return api.put<IDirectoryAPIResponse>(
+    // we need partial update here
+    return api.patch<IDirectoryAPIResponse>(
       `/studio/material-problem-type/${sandboxId}/directories/${directoryShortid}/`,
       {
-        directory: { title },
+        title,
+        // directory: { title },
       },
     )
   },

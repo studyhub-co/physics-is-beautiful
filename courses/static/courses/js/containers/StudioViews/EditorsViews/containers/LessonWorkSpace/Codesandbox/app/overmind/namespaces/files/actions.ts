@@ -223,9 +223,9 @@ export const directoryRenamed: AsyncAction<{
     try {
       await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title)
 
-      if (state.live.isCurrentEditor) {
-        effects.live.sendDirectoryUpdate(directory)
-      }
+      // if (state.live.isCurrentEditor) {
+      //   effects.live.sendDirectoryUpdate(directory)
+      // }
     } catch (error) {
       directory.title = oldTitle
       effects.notificationToast.error('Could not rename directory')

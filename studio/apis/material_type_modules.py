@@ -121,13 +121,12 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
                 shortid=request.data['directory_shortid'],
                 sandbox__uuid=self.kwargs['material_problem_type_uuid']
             )
+            request.data['directory'] = mpt_directory.uuid
         except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
-            mpt_directory = None
+            request.data['directory'] = None
 
         request.data['sandbox'] = self.kwargs['material_problem_type_uuid']
         request.data['code'] = ''
-        if mpt_directory:
-            request.data['directory'] = mpt_directory.uuid
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -161,12 +160,12 @@ class MaterialTypeDirectoriesViewSet(mixins.RetrieveModelMixin,
         try:
             mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
                 shortid=request.data['directory_shortid'],
-                sandbox__uuid=self.kwargs['material_problem_type_uuid']
+                sandbox__uuid=kwargs['material_problem_type_uuid']
             )
         except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
             mpt_directory = None
 
-        request.data['sandbox'] = self.kwargs['material_problem_type_uuid']
+        request.data['sandbox'] = kwargs['material_problem_type_uuid']
         if mpt_directory:
             request.data['directory'] = mpt_directory.uuid
 
@@ -175,6 +174,14 @@ class MaterialTypeDirectoriesViewSet(mixins.RetrieveModelMixin,
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        request.data['sandbox'] = kwargs['material_problem_type_uuid']
+        try:
+            request.data['name'] = request.data['title']
+        except:
+            pass
+        return super().update(request, *args, **kwargs)
 
 
 REGISTRY_URL = 'https://registry.npmjs.org/'

@@ -260,6 +260,7 @@ def to_short_id(text):
     return hashlib.sha1(str(text).encode('utf-8')).hexdigest()[:8]
 
 
+# TODO validate shortid and sandbox unique together?
 @receiver(pre_save, sender=MaterialProblemTypeSandboxModule)
 def module_will_change(sender, instance, **kwargs):
     # generate only is not exist
