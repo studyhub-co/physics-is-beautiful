@@ -41,6 +41,19 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
     # queryset = MaterialProblemTypeSandboxModule.objects.all()
     lookup_field = 'shortid'
 
+    def get_serializer_context(self):
+        context = super(MaterialTypeModulesViewSet, self).get_serializer_context()
+        # do not change shortid for existing module
+        if self.action == 'create':
+            # if not shortid for module
+            if not 'shortid' in context['request'].data or not context['request'].data['shortid']:
+                # if we have sandbox uuid
+                if 'sandbox' in context['request'].data and context['request'].data['sandbox']:
+                    # if sandbox exist will check in serializer
+                    context['request'].data['shortid'] = \
+                        MaterialProblemTypeSandboxModule.get_short_uuid(sandbox_uuid=context['request'].data['sandbox'])
+        return context
+
     def get_queryset(self):
         return MaterialProblemTypeSandboxModule.objects.filter(sandbox=self.get_material_problem_type())
 
@@ -169,6 +182,19 @@ class MaterialTypeDirectoriesViewSet(mixins.RetrieveModelMixin,
     serializer_class = MaterialProblemTypeSandboxDirectorySerializer
     # queryset = MaterialProblemTypeSandboxModule.objects.all()
     lookup_field = 'shortid'
+
+    def get_serializer_context(self):
+        context = super(MaterialTypeDirectoriesViewSet, self).get_serializer_context()
+        # do not change shortid for existing directory
+        if self.action == 'create':
+            # if not shortid for directory
+            if not 'shortid' in context['request'].data or not context['request'].data['shortid']:
+                # if we have sandbox uuid
+                if 'sandbox' in context['request'].data and context['request'].data['sandbox']:
+                    # if sandbox exist will check in serializer
+                    context['request'].data['shortid'] = \
+                        MaterialProblemTypeSandboxDirectory.get_short_uuid(sandbox_uuid=context['request'].data['sandbox'])
+        return context
 
     def get_queryset(self):
         return MaterialProblemTypeSandboxDirectory.objects.filter(sandbox=self.get_material_problem_type())

@@ -285,8 +285,13 @@ class MaterialProblemTypeSandboxDirectorySerializer(BaseSerializer):
         # shortid is frontend generated for now
         # will generate on the backend if not provided
         extra_kwargs = {"shortid": {"required": False}}
-        validators = []  # Remove a default "unique together" constraint.
+        # validators = []  # Remove a default "unique together" constraint.
 
+from rest_framework.validators import UniqueTogetherValidator
+
+# class UniqueIfExistTogetherValidator(UniqueTogetherValidator):
+#     # this validator will validate shortid on
+#     pass
 
 class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
     directory_shortid = serializers.SerializerMethodField()
@@ -316,7 +321,12 @@ class MaterialProblemTypeSandboxModuleSerializer(BaseSerializer):
         # shortid is frontend generated for now
         # will generate on the backend if not provided
         extra_kwargs = {"shortid": {"required": False}}
-        validators = []  # Remove a default "unique together" constraint.
+        # validators = [
+        #     UniqueIfExistTogetherValidator(
+        #         queryset=model.objects.all(),
+        #         fields=['codesandox', 'shortid']
+        #     )
+        # ]
 
 
 class MaterialProblemTypeSerializer(BaseSerializer):

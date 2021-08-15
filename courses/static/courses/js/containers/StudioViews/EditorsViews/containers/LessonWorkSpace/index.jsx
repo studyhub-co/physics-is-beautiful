@@ -61,8 +61,8 @@ import { checkSaveButtonStyle } from '../../../../CoursesViews/components/style'
 import { saveDataMessage } from '../../../../../utils/iframe/postMessages'
 
 function useForceUpdate() {
-  const [value, setValue] = useState(0) // integer state
-  return () => setValue(value => value + 1) // update the state to force render
+  const [_, setState] = useState(false)
+  return () => setState(val => !val)
 }
 
 const Lesson = props => {
@@ -272,9 +272,10 @@ const Lesson = props => {
     bottomPanelsHeight = `calc(100vh - ${appBarHeight}px - 0.2rem)`
   } else {
     bottomPanelsHeight = calculateFullHeightEditor()
-    if (appBarHeight == bottomPanelsHeight) {
+    const lessonTitleHeight = document.getElementById('lesson-title-menu-bar')
+      ?.clientHeight
+    if (lessonTitleHeight == 0) {
       // refresh editor if is not fullscreen & lesson title is hidden
-      // (lesson-toolbar and lesson-toolbar height == 0) // not so good fixme
       setTimeout(function() {
         // wait for DOM update
         forceUpdate()

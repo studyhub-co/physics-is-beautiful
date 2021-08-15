@@ -80,7 +80,7 @@ export const directoryCreated: AsyncAction<{
       const newDirectory = await effects.api.createDirectory(
         sandbox.id,
         directoryShortid,
-        generateShortid(), // generate shortid on the server side for now
+        // generateShortid(), // generate shortid on the server side for now
         title,
       )
       const directory = state.editor.currentSandbox.directories.find(
@@ -129,11 +129,12 @@ export const moduleMovedToDirectory: AsyncAction<{
         moduleShortid,
         directoryShortid,
       )
-      effects.live.sendModuleUpdate(module)
+      // effects.live.sendModuleUpdate(module)
     } catch (error) {
       module.directoryShortid = currentDirectoryShortid
 
-      effects.notificationToast.error('Could not save new module location')
+      alert('Could not save new module location')
+      // effects.notificationToast.error('Could not save new module location')
     }
   },
 )

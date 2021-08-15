@@ -147,7 +147,7 @@ export default {
   createDirectory(
     sandboxId: string,
     directoryShortid: string,
-    shortid: string,
+    // shortid: string,
     title: string,
   ): Promise<Directory> {
     return api
@@ -158,7 +158,7 @@ export default {
           // title,
           name: title,
           title: title,
-          shortid,
+          // shortid,
           directoryShortid,
           // },
         },

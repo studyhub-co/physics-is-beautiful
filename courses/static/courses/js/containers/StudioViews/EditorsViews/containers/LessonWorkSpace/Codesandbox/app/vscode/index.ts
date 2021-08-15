@@ -50,9 +50,6 @@ class VSCodeManager {
   }
 
   private addWorkbenchActions() {
-
-    console.log(context.monaco.editor)
-
     this.addWorkbenchAction({
       id: 'workbench.action.toggleStatusbarVisibility',
       label: 'Toggle Status Bar Visibility',

@@ -160,9 +160,32 @@ class MaterialProblemTypeSandboxDirectory(BaseItemModel):
 
     sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='directories', on_delete=models.CASCADE)
 
+    @staticmethod
+    def get_short_id_in_sandbox(sandbox_uuid):
+        id = uuid.uuid4().hex[:8]
+        try:
+            MaterialProblemTypeSandboxDirectory.objects.get(shortid=id, sandbox__uuid=sandbox_uuid)
+            return False
+        except MaterialProblemTypeSandboxDirectory.DoesNotExist:
+            return id
+
+    @staticmethod
+    def get_short_uuid(sandbox_uuid):
+        new_short_id = False
+        # check that id is not used in this sandbox
+        while new_short_id is False:
+            new_short_id = MaterialProblemTypeSandboxDirectory.get_short_id_in_sandbox(sandbox_uuid)
+
+        return new_short_id
+
     class Meta:
         unique_together = [['sandbox', 'shortid']]
 
+@receiver(pre_save, sender=MaterialProblemTypeSandboxDirectory)
+def directory_will_change(sender, instance, **kwargs):
+    # generate only is not exist
+    if not instance.shortid:
+        instance.shortid = MaterialProblemTypeSandboxDirectory.get_short_uuid(instance.sandbox.uuid)
 
 class MaterialProblemTypeSandboxModule(BaseItemModel):
     code = models.TextField(blank=True)
@@ -199,7 +222,37 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
 
     sandbox = models.ForeignKey(MaterialProblemTypeSandbox, related_name='modules', on_delete=models.CASCADE)
 
+    # TODO validate that we have unique filename in directory
+    # we need new validator because default django
+    # def validate_unique(self, exclude=None):
+    #     if ModelB.objects.exclude(id=self.id).filter(field_c=self.field_c, \
+    #                                                  field_d__isnull=True).exists():
+    #         raise ValidationError("Duplicate ModelB")
+    #     super(ModelB, self).validate_unique(exclude)
+    # def validate_unique(self, exclude=None):
+    #     pass
+
+    @staticmethod
+    def get_module_short_id_in_sandbox(sandbox_uuid):
+        id = uuid.uuid4().hex[:8]
+        try:
+            # FIXME in all we need unique
+            MaterialProblemTypeSandboxModule.objects.get(shortid=id, sandbox__uuid=sandbox_uuid)
+            return False
+        except MaterialProblemTypeSandboxModule.DoesNotExist:
+            return id
+
+    @staticmethod
+    def get_short_uuid(sandbox_uuid):
+        new_short_id = False
+        # check that id is not used in this sandbox
+        while new_short_id is False:
+            new_short_id = MaterialProblemTypeSandboxModule.get_module_short_id_in_sandbox(sandbox_uuid)
+
+        return new_short_id
+
     class Meta:
+        # unique shortid in sanbox
         unique_together = [['sandbox', 'shortid']]
 
     """
@@ -215,6 +268,18 @@ class MaterialProblemTypeSandboxModule(BaseItemModel):
        updated_at: "2020-01-13T13:13:03"
     }
     """
+
+# def to_short_id(text):
+#     # not good function, we can have several modules with the same name
+#     return hashlib.sha1(str(text).encode('utf-8')).hexdigest()[:8]
+
+
+# TODO validate shortid and sandbox unique together?
+@receiver(pre_save, sender=MaterialProblemTypeSandboxModule)
+def module_will_change(sender, instance, **kwargs):
+    # generate only is not exist
+    if not instance.shortid:
+        instance.shortid = MaterialProblemTypeSandboxModule.get_short_uuid(instance.sandbox.uuid)
 
 
 def data_upload_to(instance, filename):
@@ -254,25 +319,6 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
             old_data.delete(save=False)
     except MaterialProblemTypeSandboxCache.DoesNotExist:
         pass
-
-
-def to_short_id(text):
-    return hashlib.sha1(str(text).encode('utf-8')).hexdigest()[:8]
-
-
-# TODO validate shortid and sandbox unique together?
-@receiver(pre_save, sender=MaterialProblemTypeSandboxModule)
-def module_will_change(sender, instance, **kwargs):
-    # generate only is not exist
-    if not instance.shortid:
-        instance.shortid = to_short_id(instance.name)
-
-
-@receiver(pre_save, sender=MaterialProblemTypeSandboxDirectory)
-def directory_will_change(sender, instance, **kwargs):
-    # generate only is not exist
-    if not instance.shortid:
-        instance.shortid = to_short_id(instance.name)
 
 
 @receiver(pre_save, sender=MaterialProblemTypeSandbox)
