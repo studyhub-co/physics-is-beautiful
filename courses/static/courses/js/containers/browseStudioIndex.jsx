@@ -107,7 +107,7 @@ class BrowseStudioDashboard extends React.Component {
                 component={EditCourseProfileView}
               />
               {/*{this.state.showEditCourseProfile ? null : (*/}
-              {/* fixme iti is better to use Route here */}
+              {/* fixme it is better to use Route here */}
               {this.props.match?.path !== '/studio/profile/:uuid/' && (
                 <div>
                   <div className={'lightgrey-round-background-studio'}>

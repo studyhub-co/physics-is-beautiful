@@ -59,7 +59,7 @@ yarn build:sandbox_pib_dev
 ## To run locally
 * Create a `.env` file in the root directory that contains just:
 ```
-DJANGO_SETTINGS_MODULE=pib.local_settings
+DJANGO_SETTINGS_MODULE=settings.local_settings
 ``` 
 * Build the front-end
 development watch mode

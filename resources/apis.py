@@ -22,7 +22,7 @@ from react_comments_django.models import Topic, Thread, Post
 
 # from profiles.models import Profile
 
-from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
+from utils.drf.views_set_mixins import SeparateListObjectSerializerMixin, SeparateFlatCreateUpdateObjectSerializerMixin
 
 
 from editor.apis_public import get_search_mixin

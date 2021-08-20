@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
+import { Helmet } from 'react-helmet'
 
 // withRouter uses current history, history can be define in current app
 // or in parent app
@@ -17,9 +18,7 @@ import ResourceSearchView from './searchView'
 
 import Slider from 'react-slick'
 
-import {
-  getPrefixFromSlidesName
-} from './sliderHelpers'
+import { getPrefixFromSlidesName } from './sliderHelpers'
 
 import SearchRowView from './searchRow'
 
@@ -29,7 +28,7 @@ import ResourceThumbnail from '../../components/resourceThumbnail'
 const slidesNames = ['newSlides', 'popularSlides', 'recentSlides']
 
 class IndexView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       searchString: '',
@@ -39,7 +38,7 @@ class IndexView extends React.Component {
       popularSlides: [],
       popularNextPageUrl: null,
       newSlides: [],
-      newNextPageUrl: null
+      newNextPageUrl: null,
     }
     this.populateSlides = this.populateSlides.bind(this)
     this.handleSearchString = this.handleSearchString.bind(this)
@@ -50,13 +49,13 @@ class IndexView extends React.Component {
     this.doSearch = this.doSearch.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.resourcesActions.loadPopularResourcesList()
     this.props.resourcesActions.loadRecentResourcesList()
     this.props.resourcesActions.loadNewResourcesList()
   }
 
-  populateSlides (slidesListName, props) {
+  populateSlides(slidesListName, props) {
     var slides = []
     var resourcesList = props.popularResourcesList
 
@@ -72,10 +71,12 @@ class IndexView extends React.Component {
     }
 
     for (var index in resourcesList.results) {
-      slides.push(<ResourceThumbnail
-        key={resourcesList.results[index].uuid}
-        resource={resourcesList.results[index]}
-      />)
+      slides.push(
+        <ResourceThumbnail
+          key={resourcesList.results[index].uuid}
+          resource={resourcesList.results[index]}
+        />,
+      )
       // if (!this.alreadyInSlides(slides, resourcesList.results[index].uuid)) {
       //   slides.push(<span>I will be slide</span>)
       // }
@@ -83,32 +84,46 @@ class IndexView extends React.Component {
     return slides
   }
 
-  loadNextSlides (next, slidesListName) {
+  loadNextSlides(next, slidesListName) {
     var self = this
 
-    if (self.state.recentSlides.length <= next + 5 &&
+    if (
+      self.state.recentSlides.length <= next + 5 &&
       self.state.recentNextPageUrl &&
-      slidesListName === 'recentSlides') {
-      self.props.resourcesActions.loadRecentResourcesList(self.state.recentNextPageUrl)
+      slidesListName === 'recentSlides'
+    ) {
+      self.props.resourcesActions.loadRecentResourcesList(
+        self.state.recentNextPageUrl,
+      )
     }
-    if (self.state.popularSlides.length <= next + 5 &&
+    if (
+      self.state.popularSlides.length <= next + 5 &&
       self.state.popularNextPageUrl &&
-      slidesListName === 'popularSlides') {
-      self.props.resourcesActions.loadPopularResourcesList(self.state.popularNextPageUrl)
+      slidesListName === 'popularSlides'
+    ) {
+      self.props.resourcesActions.loadPopularResourcesList(
+        self.state.popularNextPageUrl,
+      )
     }
-    if (self.state.newSlides.length <= next + 5 &&
+    if (
+      self.state.newSlides.length <= next + 5 &&
       self.state.newNextPageUrl &&
-      slidesListName === 'newSlides') {
-      self.props.resourcesActions.loadNewResourcesList(self.state.newNextPageUrl)
+      slidesListName === 'newSlides'
+    ) {
+      self.props.resourcesActions.loadNewResourcesList(
+        self.state.newNextPageUrl,
+      )
     }
   }
 
-  componentWillReceiveProps (props) {
+  componentWillReceiveProps(props) {
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
 
-      if (props[prefix + 'ResourcesList'] &&
-        props[prefix + 'ResourcesList'] !== this.props[prefix + 'ResourcesList']) {
+      if (
+        props[prefix + 'ResourcesList'] &&
+        props[prefix + 'ResourcesList'] !== this.props[prefix + 'ResourcesList']
+      ) {
         var slides = this.populateSlides(slidesNames[i], props)
         var newState = {}
         newState[prefix + 'NextPageUrl'] = props[prefix + 'ResourcesList'].next
@@ -118,13 +133,13 @@ class IndexView extends React.Component {
     }
   }
 
-  onAddResourceClick (addResourceUrl) {
+  onAddResourceClick(addResourceUrl) {
     const { history } = this.props
     history.push(addResourceUrl)
   }
 
   // copy of editor/static/editor/js/containers/browseCurricula/index.jsx
-  getSliderParams (slidesListName) {
+  getSliderParams(slidesListName) {
     const sliderSettings = {
       dots: false,
       infinite: false,
@@ -134,36 +149,37 @@ class IndexView extends React.Component {
       slidesToScroll: 5,
       lazyLoad: true,
       arrows: true,
-      beforeChange: (current, next) => this.loadNextSlides(next, slidesListName),
+      beforeChange: (current, next) =>
+        this.loadNextSlides(next, slidesListName),
       responsive: [
         {
           breakpoint: 1800,
           settings: {
             slidesToShow: 5,
-            slidesToScroll: 5
-          }
+            slidesToScroll: 5,
+          },
         },
         {
           breakpoint: 1500,
           settings: {
             slidesToShow: 4,
-            slidesToScroll: 4
-          }
+            slidesToScroll: 4,
+          },
         },
         {
           breakpoint: 1356,
           settings: {
             slidesToShow: 3,
-            slidesToScroll: 3
-          }
+            slidesToScroll: 3,
+          },
         },
         {
           breakpoint: 1024,
           settings: {
             slidesToShow: 2,
             slidesToScroll: 2,
-            variableWidth: true
-          }
+            variableWidth: true,
+          },
         },
         {
           breakpoint: 512,
@@ -171,54 +187,55 @@ class IndexView extends React.Component {
             slidesToShow: 1,
             slidesToScroll: 1,
             arrows: false,
-            variableWidth: true
-          }
-        }
-      ]
+            variableWidth: true,
+          },
+        },
+      ],
     }
     return sliderSettings
   }
 
-  getPrefixFromSlidesName (slidesName) {
+  getPrefixFromSlidesName(slidesName) {
     return getPrefixFromSlidesName(slidesName)
   }
 
-  searchButtonClick (e) {
+  searchButtonClick(e) {
     var searchString = this.state.searchString
     if (searchString) {
-      this.setState({searchEnabeled: true})
+      this.setState({ searchEnabeled: true })
       this.doSearch()
     }
   }
 
-  handleSearchString (e) {
+  handleSearchString(e) {
     if (!e.target.value) {
-      this.setState({searchString: e.target.value}, this.doSearch) // reset
-      this.setState({searchEnabeled: false})
+      this.setState({ searchString: e.target.value }, this.doSearch) // reset
+      this.setState({ searchEnabeled: false })
     } else {
-      this.setState({searchString: e.target.value})
+      this.setState({ searchString: e.target.value })
     }
   }
 
-  handleSearchInputKeyUp (e) {
-    if (e.keyCode === 13) { // 'enter' key
+  handleSearchInputKeyUp(e) {
+    if (e.keyCode === 13) {
+      // 'enter' key
       this.searchButtonClick()
     }
   }
 
-  clearSearchButtonClick () {
-    this.setState({searchString: ''}, this.doTabsSearch)
-    this.setState({searchEnabeled: false})
+  clearSearchButtonClick() {
+    this.setState({ searchString: '' }, this.doTabsSearch)
+    this.setState({ searchEnabeled: false })
   }
 
-  doSearch () {
+  doSearch() {
     this.props.resourcesActions.resetSearchResources()
     if (this.searchView && this.searchView.getWrappedInstance()) {
       this.searchView.getWrappedInstance().doSearch()
     }
   }
 
-  render () {
+  render() {
     var baseUrl = this.props.match.url.replace(/\/$/, '')
     var addResourceUrl = baseUrl + '/add/'
     // var editUrl = baseUrl + '/:uuid/edit/'
@@ -230,15 +247,23 @@ class IndexView extends React.Component {
 
     return (
       <Sheet>
+        <Helmet>
+          <title>Resources</title>
+        </Helmet>
         <Container fluid>
           <Row>
             <Col sm={10} md={10}>
-              <div className={'blue-title'} style={{lineHeight: '7rem'}}>
+              <div className={'blue-title'} style={{ lineHeight: '7rem' }}>
                 Resources
               </div>
             </Col>
             <Col sm={2} md={2}>
-              <Button onClick={() => { this.onAddResourceClick(addResourceUrl) }} className={'common-button'}>
+              <Button
+                onClick={() => {
+                  this.onAddResourceClick(addResourceUrl)
+                }}
+                className={'common-button'}
+              >
                 <FaPlus /> Add resource
               </Button>
             </Col>
@@ -251,31 +276,43 @@ class IndexView extends React.Component {
             searchString={this.state.searchString}
           />
         </Container>
-        { this.state.searchEnabeled
-          ? <ResourceSearchView
-            ref={(node) => { if (node) this.searchView = node }}
-            resourceSearchString={this.state.searchString} /> : null
-        }
-        <div style={{ 'display': displyDashboard }}>
+        {this.state.searchEnabeled ? (
+          <ResourceSearchView
+            ref={node => {
+              if (node) this.searchView = node
+            }}
+            resourceSearchString={this.state.searchString}
+          />
+        ) : null}
+        <div style={{ display: displyDashboard }}>
           <Container fluid>
             <Row>
               <Col sm={12} md={12}>
-                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
-                    My recently viewed
+                <div
+                  className={'blue-text'}
+                  style={{ lineHeight: '3rem', fontSize: '1.7rem' }}
+                >
+                  My recently viewed
                 </div>
                 <div style={{}}>
                   <Slider {...this.getSliderParams('recentSlides')}>
                     {this.state.recentSlides}
                   </Slider>
                 </div>
-                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
-                    Popular
+                <div
+                  className={'blue-text'}
+                  style={{ lineHeight: '3rem', fontSize: '1.7rem' }}
+                >
+                  Popular
                 </div>
                 <Slider {...this.getSliderParams('popularSlides')}>
                   {this.state.popularSlides}
                 </Slider>
-                <div className={'blue-text'} style={{lineHeight: '3rem', fontSize: '1.7rem'}}>
-                    New
+                <div
+                  className={'blue-text'}
+                  style={{ lineHeight: '3rem', fontSize: '1.7rem' }}
+                >
+                  New
                 </div>
                 <Slider {...this.getSliderParams('newSlides')}>
                   {this.state.newSlides}
@@ -295,29 +332,31 @@ IndexView.propTypes = {
     loadPopularResourcesList: PropTypes.func.isRequired,
     loadRecentResourcesList: PropTypes.func.isRequired,
     loadNewResourcesList: PropTypes.func.isRequired,
-    resetSearchResources: PropTypes.func.isRequired
+    resetSearchResources: PropTypes.func.isRequired,
   }),
   // data
   popularResourcesList: PropTypes.object,
   recentResourcesList: PropTypes.object,
-  newResourcesList: PropTypes.object
+  newResourcesList: PropTypes.object,
   // dispatch: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     popularResourcesList: state.resources.popularResourcesList,
     recentResourcesList: state.resources.recentResourcesList,
-    newResourcesList: state.resources.newResourcesList
+    newResourcesList: state.resources.newResourcesList,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
-    resourcesActions: bindActionCreators(resourcesCreators, dispatch)
+    resourcesActions: bindActionCreators(resourcesCreators, dispatch),
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(IndexView))
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(IndexView),
+)
 export { IndexView as IndexViewNotConnected }

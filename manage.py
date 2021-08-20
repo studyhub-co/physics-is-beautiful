@@ -8,9 +8,9 @@ if __name__ == "__main__":
     # not sure we need this
     # dotenv.read_dotenv()
     if sys.argv[1] == 'test':
-        os.environ['DJANGO_SETTINGS_MODULE'] = 'pib.test_settings'
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.test_settings'
     else:
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pib.production_settings')
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.production_settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

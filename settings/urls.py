@@ -33,31 +33,31 @@ sitemaps = {
 }
 
 urlpatterns = [
-    url(r'^', include('homepage.urls')),
-
-    # TODO remove all unused urls
-    # must be upper than curriculum/
-    url(r'^curriculum/profile/', include(('editor.urls', 'editor'), namespace='curriculum_profile')),
-    # namespace - a fix for api/v1/editor/curricula url (drf router)
-    url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
-    # url(r'^editor/', include('editor.urls')),
-    url(r'^studio/', include(('editor.urls', 'studio'), namespace='studio')),
-    url(r'^browse/', include(('editor.urls', 'browse'), namespace='browse')),
-    url(r'^classroom/', include('classroom.urls')),
-    url(r'^resources/', include('resources.urls')),
+    # url(r'^', include('homepage.urls')),
+    # # TODO remove all unused urls
+    # # must be upper than curriculum/
+    # url(r'^curriculum/profile/', include(('editor.urls', 'editor'), namespace='curriculum_profile')),
+    # # namespace - a fix for api/v1/editor/curricula url (drf router)
+    # url(r'^curriculum/', include('curricula.urls', namespace='main_curricula')),
+    # # url(r'^editor/', include('editor.urls')),
+    # url(r'^studio/', include(('editor.urls', 'studio'), namespace='studio')),
+    # url(r'^browse/', include(('editor.urls', 'browse'), namespace='browse')),
+    # url(r'^classroom/', include('classroom.urls')),
+    # url(r'^resources/', include('resources.urls')),
     url(r'^admin/', admin.site.urls),
-    # TODO add only necessary urls from allauth we will use only models from allauth
+    # # TODO add only necessary urls from allauth we will use only models from allauth
     # we use confirm-email url now
-    url(r'^accounts/', include('allauth.urls')),
-    url(r'^accounts/', include('pib_auth.urls')), # TODO remove?
+   url(r'^accounts/', include('allauth.urls')),
+    # url(r'^accounts/', include('pib_auth.urls')), # TODO remove (mobile version related urls)?
+    # TODO exclude url reverse for user-profile in code
     url(r'^profile/', include('profiles.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
     # url(r'^blog/', include('blog.urls')),
     # url(r'^discussion1/', include('djeddit.urls')),
-    url(r'^discussion/', discussion_app, name='discussion_app'),
+    # url(r'^discussion/', discussion_app, name='discussion_app'),
     # due https://github.com/encode/django-rest-framework/issues/2760 namespace do not work
-    # url(r'^api/v1/', include('pib.urls_api', namespace='api')),
-    url(r'^api/v1/', include('pib.urls_api')),
+    # url(r'^api/v1/', include('settings.urls_api', namespace='api')),
+    url(r'^api/v1/', include('settings.urls_api')),
     url(r'^proxy/static/courses/js/codesandbox-apps/(?P<path>.*)', codesandbox_static_proxy_view),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
@@ -74,16 +74,5 @@ if settings.DEBUG:
             RedirectView.as_view(url='/static/curricula/images/favicon/favicon.ico')),
     ] + urlpatterns
 
-
-# from django.views.generic.base import TemplateView
-
-# # add material id / move to courses urls
-# urlpatterns += [
-#     url(r'^material/$', TemplateView.as_view(template_name='courses/iframe.html'), name='material-frame'),
-# ]
 # catch all urls in main SPA app
-# (.*?) - fix for string non ending with slash
-# urlpatterns += [url(r'^(.*?)/', include('courses.urls', namespace='main')), ]
-# urlpatterns += [re_path(r'^(.*?)/', include('courses.urls', namespace='main')), ]
 urlpatterns += [path(r'', include('courses.urls', namespace='main')), ]
-

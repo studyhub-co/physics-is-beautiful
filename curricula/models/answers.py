@@ -2,7 +2,7 @@ import re
 import math
 
 from sympy import simplify, trigsimp
-from piblib.latex2sympy.process_latex import process_sympy
+from utils.latex2sympy.process_latex import process_sympy
 from shortuuidfield import ShortUUIDField
 
 from django.db import models

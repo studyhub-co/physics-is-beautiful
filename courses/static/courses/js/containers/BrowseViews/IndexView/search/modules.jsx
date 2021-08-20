@@ -95,7 +95,9 @@ class ModulesSearchView extends React.Component {
                 <div key={this.state.nextHref} style={{ clear: 'both' }} />
               } // fix https://github.com/CassetteRocks/react-infinite-scroller/issues/14#issuecomment-225835845
             >
-              <Row>{items}</Row>
+              <Row className="justify-content-around justify-content-md-start">
+                {items}
+              </Row>
             </InfiniteScroll>
             {this.props.modulesSearchList.results.length === 0 ? (
               <h4 style={{ padding: '1rem 0' }}>

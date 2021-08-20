@@ -80,6 +80,8 @@ INSTALLED_APPS = [
     'django_filters',
     # webpack
     'webpack_loader',
+    # configuration of studyhub instance
+    'configuration',
     # Nested admin
     'nested_admin',
     'django_gravatar',
@@ -94,11 +96,11 @@ INSTALLED_APPS = [
     # pib apps
     'pib_auth.apps.PibAuthConfig',
     'profiles.apps.ProfilesConfig',
-    'homepage.apps.HomepageConfig',
+    # 'homepage.apps.HomepageConfig',
     'courses.apps.CoursesConfig',
     'curricula.apps.CurriculaConfig',
     # lib
-    'piblib',
+    'utils',
     # blog
     'user_reputation.apps.UserReputationConfig',
     # 'blog',
@@ -139,7 +141,7 @@ ADMIN_REORDER = (
     'moderation',  'classroom', 'account', 'auth', 'djeddit', 'react_comments_django', 'pib_auth', 'profiles', 'sites', 'socialaccount', 'resources'
 )
 
-ROOT_URLCONF = 'pib.urls'
+ROOT_URLCONF = 'settings.urls'
 
 TEMPLATES = [
     {
@@ -164,7 +166,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pib.wsgi.application'
+WSGI_APPLICATION = 'settings.wsgi.application'
 
 
 # Database

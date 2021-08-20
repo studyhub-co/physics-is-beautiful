@@ -1,4 +1,4 @@
-from ...models.structure import Course
+from ...models.structure.course import Course
 from ...models.user_related import CourseUserDashboard
 from .units import copy_unit
 

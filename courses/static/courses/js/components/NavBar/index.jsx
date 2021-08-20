@@ -446,11 +446,12 @@ const PrimarySearchAppBar = connect(
                 </div>
               </SwipeableDrawer>
             </div>
-            <Typography className={classes.title} variant="h5" noWrap>
+            <Typography className={classes.title} variant="h4" noWrap>
               <a
                 style={{
                   color: 'inherit',
                   textDecoration: 'inherit',
+                  marginRight: '1.5rem',
                 }}
                 href={history.createHref({ pathname: '/' })}
                 onClick={e => {

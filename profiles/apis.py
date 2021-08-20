@@ -19,7 +19,7 @@ from pib_auth.models import User
 from badges.models import Badge
 from badges.serializers import BadgeCountSerializer
 
-from piblib.search_engines import is_search_engine_bot
+from utils.search_engines import is_search_engine_bot
 
 from .models import Profile
 from .serializers import ProfileSerializer, PublicProfileSerializer, LoginSerializer, SignUpSerializer

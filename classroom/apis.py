@@ -14,7 +14,7 @@ from profiles.models import Profile
 
 from courses.serializers import LessonSerializer
 
-from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
+from utils.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
 from .models import Classroom, Assignment, ClassroomStudent, AssignmentProgress
 from .permissions import IsClassroomTeacherOrStudentReadonly, IsAssignmentClassroomTeacherOrStudentReadonly

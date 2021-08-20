@@ -14,7 +14,7 @@ module.exports = {
     editor: './editor/static/editor/js/app',
     classroom: './classroom/static/classroom/js/index',
     resources: './resources/static/resources/js/index',
-    homepage: './homepage/static/homepage/js/index',
+    // homepage: './homepage/static/homepage/js/index',
     notifications_inbox: './notifications/static/notifications_inbox/js/index',
     trophy_inbox: './user_reputation/static/trophy_inbox/js/index',
     // react_djeddit: './static/js/djedditWraper'

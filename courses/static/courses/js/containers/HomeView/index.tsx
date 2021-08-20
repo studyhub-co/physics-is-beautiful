@@ -143,7 +143,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                 id="getStartedButton"
                 className="d-block mx-auto"
                 onClick={() => {
-                  history.push('courses')
+                  history.push('courses/')
                 }}
               >
                 Get Started

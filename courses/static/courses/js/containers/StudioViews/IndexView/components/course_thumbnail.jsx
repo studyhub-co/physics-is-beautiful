@@ -4,7 +4,14 @@ import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { RingLoader } from 'react-spinners'
 import { Col, Dropdown } from 'react-bootstrap'
-import { FaEllipsisV, FaEdit, FaPen, FaCodeBranch, FaShareAlt, FaTrash } from 'react-icons/fa'
+import {
+  FaEllipsisV,
+  FaEdit,
+  FaPen,
+  FaCodeBranch,
+  FaShareAlt,
+  FaTrash,
+} from 'react-icons/fa'
 import copy from 'copy-to-clipboard'
 
 import history from '../../../../history'
@@ -38,7 +45,7 @@ import { Overlay } from '../../../../components/fullscreen_overlay'
 // }
 
 export default class CourseThumbnail extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.onForkSelect = this.onForkSelect.bind(this)
     this.onEditCourseSelect = this.onEditCourseSelect.bind(this)
@@ -46,117 +53,142 @@ export default class CourseThumbnail extends React.Component {
     this.onEditContentSelect = this.onEditContentSelect.bind(this)
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onTitleClick = this.onTitleClick.bind(this)
-    this.state = {showSpinnerOverlay: false}
+    this.state = { showSpinnerOverlay: false }
 
     this.CourseMenuToggle = React.forwardRef(({ children, onClick }, ref) => {
       return (
         <span
           ref={ref}
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault()
             onClick(e)
           }}
           style={{
             padding: '1rem',
-            cursor: 'pointer'
-          }}>
+            cursor: 'pointer',
+          }}
+        >
           {children}
         </span>
       )
     })
   }
 
-  onEditContentSelect (e) {
+  onEditContentSelect(e) {
     this.props.onClick()
   }
 
-  onTitleClick () {
+  onTitleClick() {
     this.props.onClick()
   }
 
-  onCopyShareableLink (e) {
+  onCopyShareableLink(e) {
     copy(window.location.origin + BASE_URL + 'courses/' + this.props.uuid + '/')
   }
 
-  onEditCourseSelect (e) {
+  onEditCourseSelect(e) {
     this.props.onEditCourseProfileClick()
   }
 
-  onDeleteCourse (e) {
+  onDeleteCourse(e) {
     this.props.onDeleteCourseClick(this.props.uuid)
   }
 
-  onForkSelect (e) {
-    this.setState({showSpinnerOverlay: true})
+  onForkSelect(e) {
+    this.setState({ showSpinnerOverlay: true })
     this.props.addCourse(this.props.uuid)
   }
 
-  render () {
-    const spinner = <Overlay>
-      <div className='overlay-wrapper'>
-        <div className='overlay-inner'>
-          <RingLoader
-            color={'#1caff6'}
-            loading={Boolean(true)}
-          />
+  render() {
+    const spinner = (
+      <Overlay>
+        <div className="overlay-wrapper">
+          <div className="overlay-inner">
+            <RingLoader color={'#1caff6'} loading={Boolean(true)} />
+          </div>
         </div>
-      </div>
-    </Overlay>
+      </Overlay>
+    )
 
     return (
       <Col
         sm={2}
         md={2}
         className={'course-card'}
-        style={{'cursor': 'pointer'}}>
+        style={{ cursor: 'pointer' }}
+      >
         {this.state.showSpinnerOverlay && spinner}
         <div
           onClick={this.onTitleClick}
-          style={{paddingBottom: '1rem', overflow: 'hidden', borderRadius: '15px', height: '13rem'}}
+          style={{
+            paddingBottom: '1rem',
+            overflow: 'hidden',
+            borderRadius: '15px',
+            height: '13rem',
+          }}
         >
           <Thumbnail image={this.props.image} />
         </div>
         <div>
-          <Dropdown
-            style={{float: 'right'}}
-            id='dropdown-custom-menu'>
+          <Dropdown style={{ float: 'right' }} id="dropdown-custom-menu">
             {/* <CourseMenuToggle bsRole='toggle' /> */}
-            <Dropdown.Toggle as={this.CourseMenuToggle} id='dropdown-toggle'>
-              <FaEllipsisV style={{fontSize: '2rem'}}>
-              </FaEllipsisV>
+            <Dropdown.Toggle as={this.CourseMenuToggle} id="dropdown-toggle">
+              <FaEllipsisV style={{ fontSize: '2rem' }}></FaEllipsisV>
             </Dropdown.Toggle>
             <Dropdown.Menu rootCloseEvent={'click'}>
-              <Dropdown.Item onSelect={this.onEditContentSelect} eventKey='1'>
+              <Dropdown.Item onSelect={this.onEditContentSelect} eventKey="1">
                 <FaEdit /> Edit content
               </Dropdown.Item>
-              <Dropdown.Item onSelect={this.onEditCourseSelect} eventKey='2'>
+              <Dropdown.Item onSelect={this.onEditCourseSelect} eventKey="2">
                 <FaPen /> Edit profile and settings
               </Dropdown.Item>
-              <Dropdown.Item onSelect={this.onForkSelect} eventKey='3'>
+              <Dropdown.Item onSelect={this.onForkSelect} eventKey="3">
                 <FaCodeBranch /> Fork
               </Dropdown.Item>
-              <Dropdown.Item onSelect={this.onCopyShareableLink} eventKey='4'>
+              <Dropdown.Item onSelect={this.onCopyShareableLink} eventKey="4">
                 <FaShareAlt /> Copy shareable link
               </Dropdown.Item>
-              <Dropdown.Item onSelect={this.onDeleteCourse} eventKey='5'>
+              <Dropdown.Item onSelect={this.onDeleteCourse} eventKey="5">
                 <FaTrash /> Delete
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <div onClick={this.onTitleClick} className={'blue-text'} style={{fontSize: '1.7rem'}}>
+          <div
+            onClick={this.onTitleClick}
+            className={'blue-text'}
+            style={{ fontSize: '1.7rem' }}
+          >
             {this.props.name}
           </div>
-          <div style={{fontSize: '1rem', paddingTop: '0.5rem', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            <a href={''} onClick={() => { history.push(this.props.author.get_absolute_url) }}>
+          <div
+            style={{
+              fontSize: '1rem',
+              paddingTop: '0.5rem',
+              textAlign: 'left',
+              margin: '0 0.5rem 0 0.5rem',
+            }}
+          >
+            <a
+              href={''}
+              onClick={() => {
+                history.push(this.props.author.get_absolute_url)
+              }}
+            >
               {this.props.author.display_name}
-            </a> ∙ {this.props.count_lessons } lessons ∙ { this.props.number_of_learners } learners
+            </a>{' '}
+            ∙ {this.props.count_lessons} lessons ∙{' '}
+            {this.props.number_of_learners} learners
           </div>
-          <div style={{fontSize: '1rem', color: 'gray', textAlign: 'left', margin: '0 0.5rem 0 0.5rem'}}>
-            Created <Moment fromNow>
-              {this.props.created_on}
-            </Moment> ∙ Last updated <Moment fromNow>
-              {this.props.updated_on}
-            </Moment>
+          <div
+            style={{
+              fontSize: '1rem',
+              color: 'gray',
+              textAlign: 'left',
+              margin: '0 0.5rem 0 0.5rem',
+            }}
+          >
+            Created <Moment fromNow>{this.props.created_on}</Moment> ∙ Last
+            updated <Moment fromNow>{this.props.updated_on}</Moment>
           </div>
         </div>
       </Col>
@@ -169,5 +201,5 @@ CourseThumbnail.propTypes = {
   onClick: PropTypes.func.isRequired,
   addCourse: PropTypes.func.isRequired,
   onEditCourseProfileClick: PropTypes.func.isRequired,
-  onDeleteCourseClick: PropTypes.func.isRequired
+  onDeleteCourseClick: PropTypes.func.isRequired,
 }

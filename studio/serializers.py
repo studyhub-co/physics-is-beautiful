@@ -411,7 +411,7 @@ class MaterialSerializer(BaseSerializer):
                   # 'hint', 'text', 'solution_text', 'hint', 'image', 'position',
                   # 'answer_type', 'answers', 'vectors',
                   ]
-        # not support Meta/fields, see piblib.drf.views_set_mixins
+        # not support Meta/fields, see utils.drf.views_set_mixins
         # list_serializer_class = DictSerializer
 
 

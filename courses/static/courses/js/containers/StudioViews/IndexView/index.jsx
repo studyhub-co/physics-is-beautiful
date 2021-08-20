@@ -59,7 +59,7 @@ class IndexView extends React.Component {
       <div>
         <div className="row">
           <Container fluid>
-            <Row>
+            <Row className="justify-content-around justify-content-md-start">
               {courses}
               <AddCourseButton onClick={this.handleAddClick} />
             </Row>

@@ -18,11 +18,11 @@
                 <div style="display: table; margin: 0 auto;">
                     <a title="{{socialaccount_providers.0.name}}" class="socialaccount_provider {{socialaccount_providers.0.id}} {{brand.id}}"
                        href="{% provider_login_url socialaccount_providers.0.id process=process scope=scope auth_params=auth_params %}">
-                        <img class="social-image" src="{% static 'homepage/images/facebook_login.png' %}" alt="{{ socialaccount_providers.0.name }}">
+                        <img class="social-image" src="{% static 'pib_auth/images/facebook_login.png' %}" alt="{{ socialaccount_providers.0.name }}">
                     </a>
                     <a title="{{socialaccount_providers.1.name}}" class="socialaccount_provider {{socialaccount_providers.1.id}} {{brand.id}}"
                        href="{% provider_login_url socialaccount_providers.1.id process=process scope=scope auth_params=auth_params %}">
-                        <img class="social-image" src="{% static 'homepage/images/google_login.png' %}" alt="{{ socialaccount_providers.1.name }}" >
+                        <img class="social-image" src="{% static 'pib_auth/images/google_login.png' %}" alt="{{ socialaccount_providers.1.name }}" >
                     </a>
                 </div>
                 <div class="hr-sect">OR</div>

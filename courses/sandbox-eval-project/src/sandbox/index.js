@@ -35,11 +35,11 @@ requirePolyfills().then(() => {
   // TODO this do not work.
   registerServiceWorker('/sandbox-service-worker.js', {})
 
-  function sendReady () {
+  function sendReady() {
     dispatch({ type: 'initialized' })
   }
 
-  async function handleMessage (data, source) {
+  async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
         compile(data)
@@ -50,12 +50,12 @@ requirePolyfills().then(() => {
           const context = await manager.getTranspilerContext()
           dispatch({
             type: 'transpiler-context',
-            data: context
+            data: context,
           })
         } else {
           dispatch({
             type: 'transpiler-context',
-            data: {}
+            data: {},
           })
         }
       }
@@ -95,7 +95,7 @@ requirePolyfills().then(() => {
     window
       // .fetch(host + `/api/v1/sandboxes/${id}`, {
       .fetch(host + `/api/v1/studio/material-problem-type/${id}/`, {
-        credentials: 'include'
+        credentials: 'include',
       })
       .then(res => res.json())
       .then(res => {
@@ -129,16 +129,16 @@ requirePolyfills().then(() => {
         window.parent.postMessage(
           {
             type: 'material_problem_type_kind',
-            data: mptKind
+            data: mptKind,
           },
-          '*'
+          '*',
         )
 
         x.modules.forEach(m => {
           const path = getModulePath(x.modules, x.directories, m.id)
           moduleObject[path] = {
             path,
-            code: m.code
+            code: m.code,
           }
         })
 
@@ -146,7 +146,7 @@ requirePolyfills().then(() => {
           moduleObject['/package.json'] = {
             // code: generateFileFromSandbox(x.data),
             code: generateFileFromSandbox(x),
-            path: '/package.json'
+            path: '/package.json',
           }
         }
 
@@ -160,8 +160,8 @@ requirePolyfills().then(() => {
           template: x.template,
           version: 3,
           disableDependencyPreprocessing: document.location.search.includes(
-            'csb-dynamic-download'
-          )
+            'csb-dynamic-download',
+          ),
         }
 
         compile(data)

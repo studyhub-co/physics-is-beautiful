@@ -28,7 +28,7 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:8080',
 )
 
-from pib.common_settings import *  # noqa: E402, F401
+from .common_settings import *  # noqa: E402, F401
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
 

@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
 from rest_framework.parsers import MultiPartParser, JSONParser
 
-from piblib.drf.views_set_mixins import SeparateListObjectSerializerMixin
+from utils.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
     MaterialProblemTypeSandboxCache, JsonDataImage
