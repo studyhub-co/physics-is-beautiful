@@ -44,7 +44,7 @@ export class LessonThumbnailPublic extends React.Component {
   render() {
     return (
       <Col
-        xl={2}
+        // xl={2}
         lg={3}
         md={4}
         sm={6}
@@ -68,7 +68,11 @@ export class LessonThumbnailPublic extends React.Component {
           <div
             onClick={this.onTitleClick}
             className={'blue-text'}
-            style={{ fontSize: '2rem' }}
+            style={{
+              fontSize: '2rem',
+              textAlign: 'justify',
+              padding: '0 0.5rem',
+            }}
           >
             {this.props.lesson.name}
           </div>

@@ -31,6 +31,59 @@ html, body {
     font-size: 14px !important;
 }
 
+/* common styles */
+.blue-title {
+    font-size: 2rem;
+    color: rgb(8, 209, 255);
+    padding-bottom: 1rem;
+}
+
+.blue-text {
+    /*color: rgb(8, 209, 255)*/
+    color: #26a1ff;
+}
+
+.course-card {
+    /* todo move elements with this class to basic card */
+    border-radius: 15px;
+    background-color: #efefef;
+    box-shadow: 0 0 10px #d8d8d8;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216);
+    margin: 1rem 1rem 1rem 0;
+    /*float: left;*/
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+
+    /* new values */
+    padding: 0;
+    max-width: 20rem;
+    /*min-width: 18rem; // not good for small width*/
+    width: auto;
+    height: 25rem;
+}
+
+.course-card div img {
+    /*width: 100%; // bad stretch effect */
+    display: inline-block;
+    height: 12rem;
+}
+
+.course-card > div > span {
+    width: 100%;
+    display: block;
+    height: 12rem;
+    font-size: 20rem;
+}
+
+.dropdown-item {
+    font-size: 1.2rem;
+}
+
+/* common with classroom and editor */
+
 #backToDashboard {
     position: absolute;
     left: 10px;
@@ -76,18 +129,18 @@ html, body {
     box-shadow: 0 0 10px #d8d8d8;
 }
 
-.game-sheet {
-    position: relative;
-    width: 80%;
-    margin-top: 30px;
-    border-radius: 15px;
-    padding: 60px;
-    height: 80%;
-    background-color: white;
-    box-shadow: 0 0 10px #d8d8d8;
-    margin-bottom: 60px;
-    height: auto;
-}
+/*.game-sheet {*/
+/*    position: relative;*/
+/*    width: 80%;*/
+/*    margin-top: 30px;*/
+/*    border-radius: 15px;*/
+/*    padding: 60px;*/
+/*    height: 80%;*/
+/*    background-color: white;*/
+/*    box-shadow: 0 0 10px #d8d8d8;*/
+/*    margin-bottom: 60px;*/
+/*    height: auto;*/
+/*}*/
 
 .bounding-box{
     border-radius: 25px;
@@ -102,7 +155,6 @@ html, body {
 }
 
 #footer{
-    padding:0;
     bottom:0;
     left:0;
     right:0;
@@ -111,8 +163,7 @@ html, body {
     position:fixed;
     width: 100%;
     border-radius: 0;
-    padding-left: 5vw;
-    padding-right: 5vw;
+    padding: 0 5vw;
     min-height: 75px;
     z-index: 5;
 }
@@ -743,18 +794,6 @@ img.grayed-out-img {
 
 .rdt_TableHeader > div {
     font-size: 1.2rem !important;
-}
-
-/* common with classroom and editor */
-.blue-title {
-    font-size: 2rem;
-    color: rgb(8, 209, 255);
-    padding-bottom: 2rem;
-}
-
-.blue-text {
-    /*color: rgb(8, 209, 255)*/
-    color: #26a1ff;
 }
 
 

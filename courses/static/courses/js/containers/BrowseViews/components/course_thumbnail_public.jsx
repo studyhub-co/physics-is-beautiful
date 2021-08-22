@@ -20,7 +20,7 @@ import history from '../../../history'
 import {
   addCourse,
   addCourseToDashboard,
-  loadSearchCourses,
+  // loadSearchCourses,
   removeCourseFromDashboard,
 } from '../../../actions/studio'
 import { Thumbnail } from '../../../components/thumbnail'
@@ -173,7 +173,11 @@ class CourseThumbnailPublic extends React.Component {
           <div
             onClick={this.onTitleClick}
             className={'blue-text'}
-            style={{ fontSize: '1.7rem' }}
+            style={{
+              fontSize: '1.7rem',
+              textAlign: 'justify',
+              padding: '0 0.5rem',
+            }}
           >
             {this.props.course.name}
           </div>

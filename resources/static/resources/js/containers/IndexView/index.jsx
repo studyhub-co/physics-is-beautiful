@@ -11,8 +11,6 @@ import { Helmet } from 'react-helmet'
 // or in parent app
 import { withRouter } from 'react-router'
 
-// import history from '../../history'
-
 import { Sheet } from '../../components/Sheet'
 import ResourceSearchView from './searchView'
 
@@ -116,6 +114,7 @@ class IndexView extends React.Component {
     }
   }
 
+  // deprecated TODO replace with componentDidUpdate
   componentWillReceiveProps(props) {
     for (var i = 0, len = slidesNames.length; i < len; i++) {
       var prefix = this.getPrefixFromSlidesName(slidesNames[i])
@@ -240,9 +239,9 @@ class IndexView extends React.Component {
     var addResourceUrl = baseUrl + '/add/'
     // var editUrl = baseUrl + '/:uuid/edit/'
 
-    var displyDashboard = 'block'
+    var displayDashboard = 'block'
     if (this.state.searchEnabeled) {
-      displyDashboard = 'none'
+      displayDashboard = 'none'
     }
 
     return (
@@ -253,7 +252,7 @@ class IndexView extends React.Component {
         <Container fluid>
           <Row>
             <Col sm={10} md={10}>
-              <div className={'blue-title'} style={{ lineHeight: '7rem' }}>
+              <div className={'blue-title'} style={{ lineHeight: '5rem' }}>
                 Resources
               </div>
             </Col>
@@ -284,9 +283,9 @@ class IndexView extends React.Component {
             resourceSearchString={this.state.searchString}
           />
         ) : null}
-        <div style={{ display: displyDashboard }}>
+        <div style={{ display: displayDashboard }}>
           <Container fluid>
-            <Row>
+            <Row style={{ padding: 0, margin: 0 }}>
               <Col sm={12} md={12}>
                 <div
                   className={'blue-text'}

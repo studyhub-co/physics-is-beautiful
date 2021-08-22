@@ -3,14 +3,15 @@
     /*font-size: 12px;*/
 /*}*/
 
-/* common with classroom, need to create common.css */
+/* common with other apps, migrated to main css, todo remove */
 
+/*.resources .blue-title {*/
+/*    font-size: 2rem;*/
+/*    color: rgb(8, 209, 255);*/
+/*    padding-bottom: 2rem;*/
+/*}*/
 
-.resources .blue-title {
-    font-size: 2rem;
-    color: rgb(8, 209, 255);
-    padding-bottom: 2rem;
-}
+/* common with other apps, TODO migrate to main css */
 
 .resources .textbook-title {
     font-size: 3rem;
@@ -95,72 +96,50 @@
     text-align: center;
 }
 
-.resources .curriculum-card {
-    /* todo move elements with this class to basic card */
-    border-radius: 15px;
-    background-color: #efefef;
-    box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
-    margin: 0 1rem 1rem 0;
-    /*float: left;*/
-    position: relative;
-    text-align: center;
-    /*padding-top: 1rem;*/
-    margin-top: 1rem;
+/*.resources .resource-card {*/
+/*    !* todo move elements with this class to basic card *!*/
+/*    border-radius: 15px;*/
+/*    background-color: #efefef;*/
+/*    box-shadow: 0 0 10px #d8d8d8;*/
+/*    border-width: 2px;*/
+/*    border-style: solid;*/
+/*    border-color: rgb(216, 216, 216);*/
+/*    margin: 0 1rem 1rem 0;*/
+/*    !*float: left;*!*/
+/*    position: relative;*/
+/*    text-align: center;*/
+/*    !*padding-top: 1rem;*!*/
+/*    margin-top: 1rem;*/
 
-    vertical-align: top;
+/*    vertical-align: top;*/
 
-    /* new values */
-    padding: 0 1rem 0 1rem;
-    max-width: 25rem;
-    min-width: 20rem;
-    width: auto;
-    height: 25rem;
-    /*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*/
-}
+/*    !* new values *!*/
+/*    padding: 0 1rem 0 1rem;*/
+/*    max-width: 25rem;*/
+/*    min-width: 20rem;*/
+/*    width: auto;*/
+/*    height: 25rem;*/
+/*    !*height: 40rem;  !* temp fix for swiper overflow hidden, drop down menu does not visible at the full *!*!*/
+/*}*/
 
-.resources .curriculum-card div img {
-    /*width: 100%;*/
-    /*display: block;*/
-    height: 18rem;
-}
+/*.resources .curriculum-card div img {*/
+/*    !*width: 100%;*!*/
+/*    !*display: block;*!*/
+/*    height: 18rem;*/
+/*}*/
 
-.resources .curriculum-card > div > span {
-    width: 100%;
-    display: block;
-    height: 18rem;
-    font-size: 18rem;
-}
-
-.pib-swiper-button {
-    height: 90% !important;
-    top: 10% !important;
-}
-
-.pib-swiper-button::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.3);
-    left: 0;
-    top: 0;
-    transition: opacity 0.6s;
-    opacity: 0;
-    border-radius: 0.5rem;
-  }
-
-.pib-swiper-button:hover::after {
-    opacity: 1;
-  }
+/*.resources .curriculum-card > div > span {*/
+/*    width: 100%;*/
+/*    display: block;*/
+/*    height: 18rem;*/
+/*    font-size: 18rem;*/
+/*}*/
 
 .resources .editable-label:not(.empty) .glyphicon-pencil, .editor .mq-editable-label:not(.empty) .glyphicon-pencil{ display:none; }
 .resources .editable-label:hover .glyphicon-pencil, .editor .mq-editable-label:hover .glyphicon-pencil { display:inline; }
 .resources .editable-label:hover, .editor .mq-editable-label:hover, .editor .mq-editable-label:hover .mq-math-mode { cursor:pointer; }
 
-/* common with editor, need to create common.css */
+/*!* common with editor, need to create common.css *!*/
 
 .resources .drag-handle {
     background-image: url(img/drag-handle.png);

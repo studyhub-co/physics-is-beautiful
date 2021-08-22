@@ -22,10 +22,11 @@ export const useStyles = makeStyles(theme => ({
     },
   },
   title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
+    // why we need to hide title?
+    // display: 'none',
+    // [theme.breakpoints.up('sm')]: {
+    //   display: 'block',
+    // },
   },
   search: {
     position: 'relative',

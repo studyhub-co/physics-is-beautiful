@@ -108,8 +108,7 @@ class User(PermissionsMixin, AbstractBaseUser):
 
 
 @receiver(pre_save, sender=User)
-def save_displayname(instance, *args, **kwargs):
+def save_display_name(instance, *args, **kwargs):
     # save display name for a new user
     if not instance.id:
         instance.display_name = '{} {}'.format(instance.first_name, instance.last_name)
-

@@ -234,49 +234,7 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
     margin: 1rem 0 1rem 0;
 }
 
-.course-card {
-    /* todo move elements with this class to basic card */
-    border-radius: 15px;
-    background-color: #efefef;
-    box-shadow: 0 0 10px #d8d8d8;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(216, 216, 216);
-    margin: 1rem 1rem 1rem 0;
-    /*float: left;*/
-    position: relative;
-    text-align: center;
-    vertical-align: top;
 
-    /* new values */
-    padding: 0;
-    max-width: 20rem;
-    min-width: 18rem;
-    width: auto;
-    height: 25rem;
-    /*padding: 0;*/
-    /*width: auto;*/
-    /*height: 22rem;*/
-    /*max-width: 20rem;*/
-    /*min-width: 16rem;*/
-}
-
-.course-card div img {
-    width: 100%;
-    display: block;
-    height: 12rem;
-}
-
-.course-card > div > span {
-    width: 100%;
-    display: block;
-    height: 12rem;
-    font-size: 20rem;
-}
-
-.dropdown-item {
-    font-size: 1.2rem;
-}
 
 /*slick fix*/
 
@@ -325,7 +283,7 @@ h1 .selectable-image img, h2 .selectable-image img { max-width:100px; }
     background-color: white;
     box-shadow: 0 0 10px #d8d8d8;
     margin: 1rem 0 1rem 0;
-    padding: 2rem;
+    padding: 1rem;
     vertical-align: top;
     min-height: 7rem;
 }

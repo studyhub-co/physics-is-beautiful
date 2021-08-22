@@ -40,7 +40,7 @@ class ResourceThumbnail extends React.Component { // TODO create components for 
 
     return (
       <div
-        className={'curriculum-card'}>
+        className={'course-card'}>
         <div
           onClick={this.onTitleClick}
           style={{paddingBottom: '1rem',

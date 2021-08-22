@@ -1,6 +1,5 @@
 from datetime import timedelta as td
 from datetime import datetime
-import time
 
 try:
     from django.utils.deprecation import MiddlewareMixin

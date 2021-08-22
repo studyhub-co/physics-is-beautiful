@@ -201,10 +201,11 @@ const Footer: React.FC<FooterProps> = props => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                paddingBottom: '0.5rem',
               }}
             >
               {reactionResultIcon}
-              <span style={{ paddingLeft: '1rem' }}>{correctMessage}</span>
+              <span style={{ padding: '0.5rem 2rem' }}>{correctMessage}</span>
             </Col>
             <Col
               md={6}

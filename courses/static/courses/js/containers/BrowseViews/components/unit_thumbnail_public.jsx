@@ -17,14 +17,13 @@ export class UnitThumbnailPublic extends React.Component {
   onTitleClick() {
     // history.push('/courses/units/' + this.props.unit.uuid + '/', '_self')
     // we have no units url now
-    console.log(this.props)
     history.push(`/courses/${this.props.unit.course}/#${this.props.unit.uuid}`)
   }
 
   render() {
     return (
       <Col
-        xl={2}
+        // xl={2}
         lg={3}
         md={4}
         sm={6}
@@ -48,7 +47,11 @@ export class UnitThumbnailPublic extends React.Component {
           <div
             onClick={this.onTitleClick}
             className={'blue-text'}
-            style={{ fontSize: '1.7rem' }}
+            style={{
+              fontSize: '1.7rem',
+              textAlign: 'justify',
+              padding: '0 0.5rem',
+            }}
           >
             {this.props.unit.name}
           </div>

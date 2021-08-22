@@ -34,7 +34,7 @@ class ThumbnailMenu extends React.Component {
     this.onCopyShareableLink = this.onCopyShareableLink.bind(this)
     this.onBack = this.onBack.bind(this)
     this.addElementToNewCourse = this.addElementToNewCourse.bind(this)
-    this.onToggle = this.onToggle.bind(this)
+    // this.onToggle = this.onToggle.bind(this)
 
     var baseName = ''
     var uuid = ''
@@ -57,7 +57,7 @@ class ThumbnailMenu extends React.Component {
       level: 1,
       baseName: baseName,
       uuid: uuid,
-      menuOpen: false,
+      // menuOpen: false,
       selectedCourse: null,
       selectedUnit: null,
       selectedModule: null,
@@ -141,16 +141,18 @@ class ThumbnailMenu extends React.Component {
           '/',
       )
     }
-    this.setState({ menuOpen: false })
+    // this.setState({ menuOpen: false })
   }
 
   onBack(e, event) {
     event.stopPropagation()
-    this.setState({ level: this.state.level - 1, menuOpen: true })
+    // this.setState({ level: this.state.level - 1, menuOpen: true })
+    this.setState({ level: this.state.level - 1 })
   }
 
   onForkSelect(e, event) {
-    this.setState({ level: 2, menuOpen: true })
+    // this.setState({ level: 2, menuOpen: true })
+    this.setState({ level: 2 })
   }
 
   onSelectCourse(course, e, event) {
@@ -202,13 +204,13 @@ class ThumbnailMenu extends React.Component {
     )
   }
 
-  onToggle(newValue, event, { source }) {
-    if (newValue) {
-      this.setState({ menuOpen: true })
-    } else if (!event) {
-      this.setState({ menuOpen: false })
-    }
-  }
+  // onToggle(newValue, event, { source }) {
+  //   if (newValue) {
+  //     this.setState({ menuOpen: true })
+  //   } else if (!event) {
+  //     this.setState({ menuOpen: false })
+  //   }
+  // }
 
   render() {
     // set spinner
@@ -418,11 +420,11 @@ class ThumbnailMenu extends React.Component {
       <Dropdown
         style={{ float: 'right', cursor: 'pointer' }}
         id={`dropdown-menu-` + this.props.uuid}
-        onToggle={this.onToggle}
-        show={this.state.menuOpen}
+        // onToggle={this.onToggle}
+        // show={this.state.menuOpen}
       >
         <Dropdown.Toggle as={this.MenuToggle}>
-          <FaEllipsisV style={{ fontSize: '1.5rem' }} />
+          <FaEllipsisV style={{ fontSize: '2rem' }} />
         </Dropdown.Toggle>
         <Dropdown.Menu
         // rootCloseEvent={'click'}

@@ -18,7 +18,7 @@ import { FaSearch, FaTimes } from 'react-icons/fa'
 export default class SearchRowView extends React.Component {
   render() {
     return (
-      <Row style={{ padding: 0 }}>
+      <Row style={{ padding: 0, margin: 0 }}>
         <Col sm={12} md={12}>
           <FormGroup>
             <InputGroup>

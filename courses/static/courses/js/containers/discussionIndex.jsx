@@ -8,10 +8,7 @@ import { Sheet } from '../components/Sheet'
 const DiscussionIndex = props => {
   return (
     <Sheet>
-      <TopicsListComponent
-        anonAsUserObject={Boolean(true)}
-        history={history}
-      />
+      <TopicsListComponent anonAsUserObject={Boolean(true)} history={history} />
     </Sheet>
   )
 }

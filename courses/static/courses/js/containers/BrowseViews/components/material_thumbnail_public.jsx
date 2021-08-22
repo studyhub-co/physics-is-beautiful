@@ -24,7 +24,7 @@ export class MaterialThumbnailPublic extends React.Component {
           <Col sm={2} md={2}>
             <div
               style={{
-                padding: '1rem',
+                // padding: '1rem', // no padding, bad view with mobile
                 overflow: 'hidden',
                 borderRadius: '15px',
               }}

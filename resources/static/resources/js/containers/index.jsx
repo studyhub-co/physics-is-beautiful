@@ -5,5 +5,10 @@ import ProblemView from './ProblemView/index'
 import SolutionView from './SolutionView/index'
 import AdblockView from './AdblockView/adblockView'
 export {
-  IndexView, AddResourceView, ResourceView, ProblemView, SolutionView, AdblockView
+  IndexView,
+  AddResourceView,
+  ResourceView,
+  ProblemView,
+  SolutionView,
+  AdblockView,
 }

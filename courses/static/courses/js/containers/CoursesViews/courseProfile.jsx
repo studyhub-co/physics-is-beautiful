@@ -56,8 +56,6 @@ const CourseProfileView = props => {
           : 'none',
       }}
     >
-      {/*<div className={'container section-sheet'}>*/}
-      {/*  <div className={'pop-up-window'}>*/}
       <Container fluid>
         <Row style={{ padding: 0 }}>
           <Col sm={6} md={6}>
@@ -97,60 +95,21 @@ const CourseProfileView = props => {
       <div style={{ height: '100%' }}>
         {selectedCourse ? (
           <Container fluid>
-            {/*<Row style={{ padding: 0 }}>*/}
-            {/*  <Col*/}
-            {/*    sm={12}*/}
-            {/*    md={12}*/}
-            {/*    style={{*/}
-            {/*      padding: 0,*/}
-            {/*      paddingTop: '37%',*/}
-            {/*      width: '100%',*/}
-            {/*      overflow: 'hidden',*/}
-            {/*      position: 'relative',*/}
-            {/*      backgroundColor: '#12adf4',*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    <div*/}
-            {/*      style={{*/}
-            {/*        position: 'absolute',*/}
-            {/*        top: '0',*/}
-            {/*        left: '0',*/}
-            {/*        bottom: '0',*/}
-            {/*        right: '0',*/}
-            {/*      }}*/}
-            {/*    >*/}
-            {/*      <div*/}
-            {/*        style={{*/}
-            {/*          position: selectedCourse.cover_photo ? 'relative' : '',*/}
-            {/*        }}*/}
-            {/*      >*/}
-            {/*        <div>*/}
-            {/*          {selectedCourse.cover_photo ? (*/}
-            {/*            <ImageBs src={selectedCourse.cover_photo} fluid />*/}
-            {/*          ) : (*/}
-            {/*            <div style={{ height: '100%', width: '100%' }} />*/}
-            {/*          )}*/}
-            {/*        </div>*/}
-            {/*      </div>*/}
-            {/*    </div>*/}
-            {/*  </Col>*/}
-            {/*</Row>*/}
-            {/*<br />*/}
-            <Row style={{ padding: 0 }}>
-              <Col sm={2} md={2}>
-                <div style={{ minHeight: '10rem' }}>
-                  {selectedCourse.image ? (
+            <Row style={{ padding: 0, margin: 0 }}>
+              <Col sm={12} md={2}>
+                {selectedCourse.image && (
+                  <div style={{ minHeight: '10rem' }}>
                     <ImageBs src={selectedCourse.image} fluid />
-                  ) : null}
-                </div>
+                  </div>
+                )}
               </Col>
-              <Col sm={7} md={7}>
-                <Row style={{ padding: 0 }}>
+              <Col sm={12} md={7}>
+                <Row style={{ padding: 0, margin: 0 }}>
                   <Col sm={12} md={12}>
                     <div className={'blue-title'}>{selectedCourse.name}</div>
                   </Col>
                 </Row>
-                <Row style={{ padding: 0 }}>
+                <Row style={{ padding: 0, margin: 0 }}>
                   <Col sm={12} md={12}>
                     <div style={{ fontSize: '2rem' }}>
                       {selectedCourse.author.display_name} ∙{' '}
@@ -161,7 +120,7 @@ const CourseProfileView = props => {
                     </div>
                   </Col>
                 </Row>
-                <Row>
+                <Row style={{ padding: 0, margin: 0 }}>
                   <Col sm={12} md={12}>
                     <div style={{ color: 'gray' }}>
                       Created{' '}
@@ -172,7 +131,7 @@ const CourseProfileView = props => {
                   </Col>
                 </Row>
               </Col>
-              <Col sm={3} md={3}>
+              <Col sm={12} md={3}>
                 <button
                   className={'editor-common-button'}
                   onClick={startCourse}

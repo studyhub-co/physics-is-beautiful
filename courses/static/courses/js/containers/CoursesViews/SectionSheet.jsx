@@ -10,7 +10,7 @@ export class SectionSheet extends React.Component {
     if (this.props.backLink) {
       backLink = (
         <Container fluid>
-          <Row>
+          <Row style={{ padding: 0, margin: 0 }}>
             <Col sm={12} md={12}>
               {/* TODO replace href with history support https://github.com/ReactTraining/history#readme */}
               {/* to make it work as SPA app */}

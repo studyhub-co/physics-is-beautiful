@@ -40,8 +40,8 @@ const CourseInfoPanel = props => {
       {currentCourse && !currentCourse.isFetching && currentCourse.uuid && (
         <Container fluid>
           {/* title */}
-          <Row>
-            <Col md={10}>
+          <Row style={{ padding: 0, margin: 0 }}>
+            <Col md={10} xs={12}>
               <span className="course-title">
                 <Link
                   to={`/courses/${currentCourse.uuid}/profile/`}
@@ -57,13 +57,11 @@ const CourseInfoPanel = props => {
               <span style={{ fontSize: '20px', color: 'darkgrey' }}>
                 &nbsp;{'by'}&nbsp;
                 <a
-                  // target={'_blank'}
                   href={''}
                   onClick={e => {
                     e.preventDefault()
                     history.push(`/profile/${currentCourse.author.id}/`)
                   }}
-                  // href={currentCourse.author.get_absolute_url}
                   className="course-user-link"
                   rel="noreferrer"
                 >
@@ -71,7 +69,7 @@ const CourseInfoPanel = props => {
                 </a>
               </span>
             </Col>
-            <Col md={2} xs={4} style={{ textAlign: 'right' }}>
+            <Col md={2} xs={12} style={{ textAlign: 'right' }}>
               <a
                 style={{
                   margin: 'auto',
@@ -90,28 +88,17 @@ const CourseInfoPanel = props => {
           {state.showMore && (
             <React.Fragment>
               <Row>
-                <Col md={12}>
+                <Col xs={12}>
                   {currentCourse.image && (
                     <img className={'img-fluid'} src={currentCourse.image} />
                   )}
                 </Col>
               </Row>
-              {/*<Row>*/}
-              {/*  <Col sm={12} md={12}>*/}
-              {/*    <div style={{ fontSize: '1rem' }}>*/}
-              {/*      {currentCourse.count_lessons} lesson*/}
-              {/*      {currentCourse.count_lessons > 1 && 's'} ∙{' '}*/}
-              {/*      {currentCourse.number_of_learners} learner*/}
-              {/*      {currentCourse.number_of_learners > 1 && 's'}*/}
-              {/*    </div>*/}
-              {/*  </Col>*/}
-              {/*</Row>*/}
               <Row style={{ fontWeight: 300, fontSize: 18, color: '#555' }}>
-                <Col md={12}>{currentCourse.description}</Col>
+                <Col xs={12}>{currentCourse.description}</Col>
               </Row>
               <Row>
-                <Col md={6} />
-                <Col md={6} style={{ textAlign: 'right', fontSize: 15 }}>
+                <Col xs={12} style={{ textAlign: 'right', fontSize: 15 }}>
                   <Link
                     to={`/courses/${currentCourse.uuid}/profile/`}
                     style={{ cursor: 'pointer', color: 'grey' }}
@@ -217,7 +204,7 @@ const Course = props => {
     setState({
       ...state,
       sections: sections,
-      backLink: null,
+      // backLink: null,
       question: null,
       progress: 0,
       answer: null,
