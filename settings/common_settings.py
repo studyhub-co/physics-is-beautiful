@@ -25,7 +25,12 @@ sentry_sdk.init(
     # To send a representative sample of your errors to Sentry, set the sample_rate option
     # in your SDK configuration to a number between 0 (0% of errors sent) and 1 (100% of errors sent).
     # This is a static rate, which will apply equally to all errors.
-    traces_sample_rate=0.1,
+    # sample_rate=1,
+    # A number between 0 and 1, controlling the percentage chance a given transaction will be sent
+    # to Sentry. (0 represents 0% while 1 represents 100%.) Applies equally to all
+    # transactions created in the app. Either this or traces_sampler must be defined to enable
+    # tracing.
+    traces_sample_rate=0,
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
