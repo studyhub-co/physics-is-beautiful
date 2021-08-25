@@ -29,9 +29,8 @@ def check_classroom_progress(service, user):
         from classroom.models import AssignmentProgress
 
         if isinstance(service.current_lesson, Lesson):
-            pass
-            # TODO uncomment after AssignmentProgress lesson model will be changed
-            # AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
+            # pass
+            AssignmentProgress.objects.recalculate_status_by_lesson(service.current_lesson, user)
 
 
 class MaterialViewSet(ModelViewSet):

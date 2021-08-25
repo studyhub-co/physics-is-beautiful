@@ -1,6 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
-
-from ...models.structure import Lesson
+from ...models.structure.lesson import Lesson
 from ...models.badges import LessonAwards
 from ...models.material import Material, MaterialProblemType
 

@@ -243,6 +243,7 @@ const Lesson = props => {
             )}
           {/* /!* material has no problem type *!/ */}
           {currentMaterialState &&
+            currentMaterialState.uuid &&
             !currentMaterialState.isFetching &&
             !currentMaterialState.material_problem_type && (
               <Sheet>

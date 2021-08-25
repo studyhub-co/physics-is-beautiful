@@ -1,4 +1,9 @@
 # This file should the same as .gitignore except js bundles dir
+
+# if needed: comment below to temporarily enable vscode extensions (and editor) publishing
+# due to long time uploading
+/courses/static/courses/js/codesandbox-apps/
+
 # /static/js/bundles
 .git
 
@@ -16,7 +21,8 @@ yarn.lock
 env/
 # build/
 develop-eggs/
-dist/ - not work with nested admin
+#  dist/ not work with nested admin
+dist/
 downloads/
 eggs/
 .eggs/
@@ -121,21 +127,13 @@ library_test
 # exclude source of SPA
 /courses/static/courses/js/
 
-# if needed: comment below to temporarily enable vscode extensions (and editor) publishing
-# due to long time uploading
-/courses/static/courses/js/codesandbox-apps/
-
+# Update: amazon fixed eb deploy script and it's seem it's works fine now
 # seems above it's not so effective whith eb deploy, so steps are:
 # 1) unpack /courses/static/courses/js/codesandbox-apps/vscode-extensions.zip to the current dir
 # 2) deploy application for the first time (will take a long time due 20k extensions files)
 # 3) remove vscode-extensions dir
 # 4) deploy app for the next times (vscode-extensions dir will be exist on the s3)
 #/courses/static/courses/js/codesandbox-apps/vscode-extensions.zip
-
-# update - the problem with eb script iteration on node_modules with a lot of files
-# it's in .ebignore but iterate proceed in any case
-# TODO (need to think how to fix it + test it on the *nix systems)
-
 
 # exclude source of eval project
 /courses/sandbox-eval-project/

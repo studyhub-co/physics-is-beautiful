@@ -44,13 +44,14 @@ urlpatterns = [
     # url(r'^browse/', include(('editor.urls', 'browse'), namespace='browse')),
     # url(r'^classroom/', include('classroom.urls')),
     # url(r'^resources/', include('resources.urls')),
-    url(r'^admin/', admin.site.urls),
+
     # # TODO add only necessary urls from allauth we will use only models from allauth
     # we use confirm-email url now
     url(r'^accounts/', include('allauth.urls')),
     # url(r'^accounts/', include('pib_auth.urls')), # TODO remove (mobile version related urls)?
     # TODO exclude url reverse for user-profile in code
-    url(r'^profile/', include('profiles.urls')),
+    # url(r'^profile/', include('profiles.urls')),
+    url(r'^admin/', admin.site.urls),
     url(r'^nested_admin/', include('nested_admin.urls')),
     # url(r'^blog/', include('blog.urls')),
     # url(r'^discussion1/', include('djeddit.urls')),

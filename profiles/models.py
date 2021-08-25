@@ -49,7 +49,8 @@ class Profile(BaseModel):
 
     @property
     def get_absolute_url(self):
-        return reverse('user-profile', kwargs={"pk": self.user.id})
+        return '/profile/{}/'.format(self.user.pk)  # we have no django view now
+        # return reverse('user-profile', kwargs={"pk": self.user.id})
 
     def __str__(self):
         return 'Profile: {}'.format(self.user.email)  # todo seems we need switch to username here

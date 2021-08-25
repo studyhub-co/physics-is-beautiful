@@ -1,4 +1,4 @@
-from ...models.structure import Unit
+from ...models.structure.unit import Unit
 
 from .modules import copy_module
 

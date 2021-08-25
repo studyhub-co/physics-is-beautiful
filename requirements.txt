@@ -68,7 +68,7 @@ django-cors-headers==2.4.0
 django-model-utils==3.1.2
 django-user_agents==0.3.2
 future==0.17.1
-# TODO remove
+# TODO remove after new version deployed
 # -e editable mode no needed
 git+https://github.com/physics-is-beautiful/django-react-djeddit.git#egg=django-react-djeddit
 react-comments-django==1.0.2

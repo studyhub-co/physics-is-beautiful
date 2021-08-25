@@ -1,4 +1,4 @@
-from ...models.structure import Module
+from ...models.structure.module import Module
 from ...models.badges import ModuleAwards
 
 from .lessons import copy_lesson

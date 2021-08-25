@@ -99,9 +99,10 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_short_name(self):
         return self.first_name or "User"
 
-    @property
-    def get_absolute_url(self):
-        return reverse('user-profile', kwargs={"pk": self.id})  # self.id(user.id) != profile.id
+    # user-profile.id !== user.id, this function wrong, todo remove
+    # @property
+    # def get_absolute_url(self):
+    #     return reverse('user-profile', kwargs={"pk": self.id})  # self.id(user.id) != profile.id
 
     def __str__(self):
         return '{}'.format(self.display_name)
