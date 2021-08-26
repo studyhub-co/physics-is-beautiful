@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { Route, withRouter } from 'react-router'
-import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -11,6 +10,7 @@ import { StudentIndexView, TeacherIndexView } from '../../containers/index'
 import { Sheet } from '../../components/Sheet'
 
 import * as tabsCreators from '../../actions/tab'
+import { Helmet } from 'react-helmet'
 
 class IndexView extends React.Component {
   render() {
@@ -27,6 +27,10 @@ class IndexView extends React.Component {
 
     return (
       <Sheet>
+        <Helmet>
+          {/* TODO add site title from configuration app */}
+          <title>Classroom</title>
+        </Helmet>
         <Tabs
           name="tab"
           className="tabs"

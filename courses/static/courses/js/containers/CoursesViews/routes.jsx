@@ -7,12 +7,17 @@ import { Route, Switch } from 'react-router'
 import { CourseApp, ModuleApp, LessonApp } from './index'
 import CourseProfile from './courseProfile'
 import NotFoundView from '../../components/NotFoundView'
+import { Helmet } from 'react-helmet'
 // import NotFoundView from '../../components/NotFoundView'
 
 export default class CoursesRouter extends React.Component {
   render() {
     return (
       <div className={'course'}>
+        <Helmet>
+          {/* TODO add site title from configuration app */}
+          <title>Courses</title>
+        </Helmet>
         <Switch>
           <Route
             exact

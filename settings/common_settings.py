@@ -67,8 +67,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
-    # FTS
-    # 'haystack',
     # assets
     'django_s3_storage',
     # For allauth
@@ -103,6 +101,7 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     # 'homepage.apps.HomepageConfig',
     'courses.apps.CoursesConfig',
+    # todo remove after migration
     'curricula.apps.CurriculaConfig',
     # lib
     'utils',

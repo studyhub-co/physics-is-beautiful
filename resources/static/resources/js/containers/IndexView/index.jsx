@@ -247,6 +247,7 @@ class IndexView extends React.Component {
     return (
       <Sheet>
         <Helmet>
+          {/* TODO add site title from configuration app */}
           <title>Resources</title>
         </Helmet>
         <Container fluid>
