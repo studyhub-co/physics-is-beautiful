@@ -49,7 +49,7 @@
     "history": "^4.7.2",
     "js-quantities": "^1.7.2",
     "mathjs": "^3.20.2",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "prop-types": "^15.6.2",
     "react": "^16.8.5",
     "react-ace": "^7.0.2",
