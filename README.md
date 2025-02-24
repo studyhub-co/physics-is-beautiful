@@ -102,7 +102,7 @@ brew install awsebcli
 
 To Deploy:
 
-* `eb deploy`
+* `eb deploy --timeout 20`
 It will deploy to the proper environment depending on what branch you are on.
 
 

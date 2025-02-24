@@ -1,0 +1,101 @@
+services:
+#  postgresql:
+#    container_name: postgresdb
+#    image: postgres:10.19
+#    restart: unless-stopped
+#    volumes:
+#      - studyhub-db-data:/var/lib/postgresql/data
+##    uncomment if you need external access
+#    ports:
+#      - 5432:5432
+#    networks:
+#      - studyhub
+#    environment:
+#      # note that we use user as admin here, this should be fixed for production deploying
+#      POSTGRES_DB: ${DJANGO_DB_NAME}
+#      POSTGRES_USER: ${DJANGO_DB_USER}
+#      POSTGRES_PASSWORD: ${DJANGO_DB_PASS}
+#  pgadmin:
+#    container_name: pgadmin_container
+#    image: dpage/pgadmin4:6.5
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: "studyhub@studyhub.com"
+#      PGADMIN_DEFAULT_PASSWORD: "$${DJANGO_DB_PASS}"
+#      PGADMIN_CONFIG_SERVER_MODE: "False"
+#    volumes:
+#      - studyhub-pgadmin-data:/var/lib/pgadmin
+#    ports:
+#      - "5050:80"
+#    restart: unless-stopped
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.5'
+#          memory: 1G
+#    networks:
+#      - studyhub
+#    depends_on:
+#      - postgresql
+  web:
+    build: .
+#    command: >
+#      sh -c "python manage.py migrate &&
+#             echo \"from pib_auth.models import User; User.objects.create_superuser('${DJANGO_SUPERUSER_EMAIL}', '${DJANGO_SUPERUSER_FIRST_NAME}', '${DJANGO_SUPERUSER_SECOND_NAME}', '${DJANGO_SUPERUSER_PASSWORD}') if User.objects.filter(email='${DJANGO_SUPERUSER_EMAIL}').count() == 0 else None;\" | python manage.py shell &&
+#             python manage.py runserver 0.0.0.0:8000"
+#    command: python manage.py runserver 0.0.0.0:8888 # localdev
+    # TODO add python manage.py migrate
+    # sh -c "NODE_OPTIONS=--max_old_space_size=1000 npm install @vermus/django-react-djeddit-client --legacy-peer-deps &&
+#           sh -c "python manage.py collectstatic --noinput &&
+#    command: >
+#           sh -c "NODE_OPTIONS=--max_old_space_size=1000 npm install @vermus/django-react-djeddit-client --legacy-peer-deps &&
+    # python2.7 need for install django-react-djeddit-client
+    # NODE_OPTIONS=--max_old_space_size=1000
+    command: >
+           sh -c "apt-get -y install nodejs npm &&
+                  apt-get -y install python2.7-minimal && 
+                  npm install --legacy-peer-deps &&
+                  npm run prod && 
+                  python manage.py collectstatic --noinput &&
+                  gunicorn pib.wsgi:application --bind 0.0.0.0:8000"
+#    command: >
+#       sh -c "gunicorn pib.wsgi:application --bind 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+#    env_file: "scripts/.env" # local dev
+    environment:
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_S3_BUCKET_NAME_STATIC=${AWS_S3_BUCKET_NAME_STATIC}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
+      - AWS_STORAGE_PUBLIC_URL=${AWS_STORAGE_PUBLIC_URL}
+      - AWS_STORAGE_PUBLIC_URL_STATIC=${AWS_STORAGE_PUBLIC_URL_STATIC}
+      - CURRICULA_SQL_PROBLEM_TYPE_HOST=${CURRICULA_SQL_PROBLEM_TYPE_HOST}
+      - CURRICULA_SQL_PROBLEM_TYPE_USER=${CURRICULA_SQL_PROBLEM_TYPE_USER}
+      - CURRICULA_SQL_PROBLEM_TYPE_USER_PASSWORD=${CURRICULA_SQL_PROBLEM_TYPE_USER_PASSWORD}
+      - DJANGO_DB_HOST=${DJANGO_DB_HOST}
+      - DJANGO_DB_NAME=${DJANGO_DB_NAME}
+      - DJANGO_DB_PASS=${DJANGO_DB_PASS}
+      - DJANGO_DB_PORT=${DJANGO_DB_PORT}
+      - DJANGO_DB_TYPE=${DJANGO_DB_TYPE}
+      - DJANGO_DB_USER=${DJANGO_DB_USER}
+      - DJANGO_SECRET=${DJANGO_SECRET}
+      - DJANGO_MEDIA_ROOT=${DJANGO_MEDIA_ROOT}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      - DJANGO_STATIC_ROOT=${DJANGO_STATIC_ROOT}
+      - MYSQL_PROBLEM_TYPE_HOST=${MYSQL_PROBLEM_TYPE_HOST}
+      - MYSQL_PROBLEM_TYPE_USER=${MYSQL_PROBLEM_TYPE_USER}
+      - MYSQL_PROBLEM_TYPE_USER_PASSWORD=${MYSQL_PROBLEM_TYPE_USER_PASSWORD}
+      - RAVEN_DSN=${RAVEN_DSN}
+#    networks:
+#      - studyhub
+#    depends_on:
+#      - postgresql
+#
+#volumes:
+#  studyhub-db-data:
+#    external: false
+#  studyhub-pgadmin-data:
+#    external: false
+#networks:
+#  studyhub:
+#    driver: bridge
